@@ -502,34 +502,36 @@ namespace CKAN.GUI
 
         public void MarkAllUpdates()
         {
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+            WithFrozenChangeset(() =>
             {
-                var mod = row.Tag as GUIMod;
-                if (mod?.HasUpdate ?? false)
+                foreach (var row in mainModList.full_list_of_mod_rows.Values)
                 {
-                    if (!Main.Instance.LabelsHeld(mod.Identifier))
+                    var mod = row.Tag as GUIMod;
+                    if (mod?.HasUpdate ?? false)
                     {
-                        mod.SetUpgradeChecked(row, UpdateCol, true);
+                        if (!Main.Instance.LabelsHeld(mod.Identifier))
+                        {
+                            mod.SetUpgradeChecked(row, UpdateCol, true);
+                        }
                     }
                 }
-            }
 
-            // only sort by Update column if checkbox in settings checked
-            if (Main.Instance.configuration.AutoSortByUpdate)
-            {
-                // Retain their current sort as secondaries
-                AddSort(UpdateCol, true);
-                UpdateFilters();
-                // Select the top row and scroll the list to it.
-                if (ModGrid.Rows.Count > 0)
+                // only sort by Update column if checkbox in settings checked
+                if (Main.Instance.configuration.AutoSortByUpdate)
                 {
-                    ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                    // Retain their current sort as secondaries
+                    AddSort(UpdateCol, true);
+                    UpdateFilters();
+                    // Select the top row and scroll the list to it.
+                    if (ModGrid.Rows.Count > 0)
+                    {
+                        ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                    }
                 }
-            }
-            ModGrid.Refresh();
+            });
         }
 
-        private void MarkAllUpdatesToolButton_Click(object sender, EventArgs e)
+        private void UpdateAllToolButton_Click(object sender, EventArgs e)
         {
             MarkAllUpdates();
         }
@@ -898,9 +900,9 @@ namespace CKAN.GUI
                             gui_mod.SetReplaceChecked(row, ReplaceCol);
                             break;
                     }
-                    UpdateChangeSetAndConflicts(
-                        Main.Instance.CurrentInstance,
-                        RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry);
+                    var inst = Main.Instance.CurrentInstance;
+                    UpdateChangeSetAndConflicts(inst,
+                        RegistryManager.Instance(inst, repoData).registry);
                 }
             }
         }
@@ -922,11 +924,19 @@ namespace CKAN.GUI
                     switch (change.ChangeType)
                     {
                         case GUIModChangeType.Install:
-                            guiMod.SetInstallChecked(row, Installed, false);
+                            if (guiMod.IsAutodetected)
+                            {
+                                guiMod.SetUpgradeChecked(row, UpdateCol, false);
+                            }
+                            else
+                            {
+                                guiMod.SetInstallChecked(row, Installed, false);
+                                return;
+                            }
                             break;
                         case GUIModChangeType.Remove:
                             guiMod.SetInstallChecked(row, Installed, true);
-                            break;
+                            return;
                         case GUIModChangeType.Update:
                             guiMod.SetUpgradeChecked(row, UpdateCol, false);
                             break;
@@ -963,9 +973,8 @@ namespace CKAN.GUI
 
         private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)
         {
-            try
+            WithFrozenChangeset(() =>
             {
-                freezeChangeSet = true;
                 if (InstallAllCheckbox.Checked)
                 {
                     // Reset changeset
@@ -973,56 +982,83 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    // Uninstall all
-                    var checkedRows = mainModList.full_list_of_mod_rows.Values
-                        .Where(r => (r.Tag as GUIMod)?.IsInstallChecked ?? false);
-                    foreach (var row in checkedRows)
+                    // Uninstall all and cancel upgrades
+                    foreach (var row in mainModList.full_list_of_mod_rows.Values)
                     {
-                        (row.Tag as GUIMod)?.SetInstallChecked(row, Installed, false);
+                        if (row.Tag is GUIMod gmod)
+                        {
+                            if (gmod.IsUpgradeChecked)
+                            {
+                                gmod.SetUpgradeChecked(row, UpdateCol, false);
+                            }
+                            if (gmod.IsInstallChecked)
+                            {
+                                gmod.SetInstallChecked(row, Installed, false);
+                            }
+                        }
                     }
                 }
-            }
-            finally
-            {
-                // Don't let anything ever prevent us from unfreezing the changeset
-                freezeChangeSet = false;
-                ModGrid.Refresh();
-                UpdateChangeSetAndConflicts(
-                    Main.Instance.CurrentInstance,
-                    RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry);
-            }
+            });
         }
 
         public void ClearChangeSet()
         {
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+            WithFrozenChangeset(() =>
             {
-                GUIMod mod = row.Tag as GUIMod;
-                if (mod.IsInstallChecked != mod.IsInstalled)
+                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
                 {
-                    mod.SetInstallChecked(row, Installed, mod.IsInstalled);
+                    GUIMod mod = row.Tag as GUIMod;
+                    if (mod.IsInstallChecked != mod.IsInstalled)
+                    {
+                        mod.SetInstallChecked(row, Installed, mod.IsInstalled);
+                    }
+                    else if (mod.InstalledMod != null)
+                    {
+                        var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
+                        mod.SelectedMod = registry.GetModuleByVersion(
+                            mod.InstalledMod.identifier, mod.InstalledMod.Module.version)
+                            ?? mod.InstalledMod.Module;
+                    }
+                    mod.SetUpgradeChecked(row, UpdateCol,  false);
+                    mod.SetReplaceChecked(row, ReplaceCol, false);
                 }
-                else if (mod.InstalledMod != null)
+                // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
+                // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
+                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
                 {
-                    var registry = RegistryManager.Instance(Main.Instance.CurrentInstance, repoData).registry;
-                    mod.SelectedMod = registry.GetModuleByVersion(
-                        mod.InstalledMod.identifier, mod.InstalledMod.Module.version)
-                        ?? mod.InstalledMod.Module;
+                    GUIMod mod = row.Tag as GUIMod;
+                    if (mod.InstalledMod != null
+                        && ChangeSet.Contains(new ModChange(mod.InstalledMod?.Module,
+                                                            GUIModChangeType.Remove,
+                                                            new SelectionReason.NoLongerUsed())))
+                    {
+                        mod.SetAutoInstallChecked(row, AutoInstalled, false);
+                    }
                 }
-                mod.SetUpgradeChecked(row, UpdateCol, false);
-                mod.SetReplaceChecked(row, ReplaceCol, false);
+            });
+        }
+
+        private void WithFrozenChangeset(Action action)
+        {
+            if (freezeChangeSet)
+            {
+                // Already frozen by some outer block, let it handle the cleanup
+                action?.Invoke();
             }
-            // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
-            // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
-            foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+            else
             {
-                GUIMod mod = row.Tag as GUIMod;
-                if (mod.InstalledMod != null
-                    && ChangeSet.Contains(new ModChange(mod.InstalledMod?.Module,
-                                                        GUIModChangeType.Remove,
-                                                        new SelectionReason.NoLongerUsed())))
+                freezeChangeSet = true;
+                try
                 {
-                    mod.SetAutoInstallChecked(row, AutoInstalled, false);
+                    action?.Invoke();
+                }
+                finally
+                {
+                    // Don't let anything ever prevent us from unfreezing the changeset
+                    freezeChangeSet = false;
+                    ModGrid.Refresh();
+                    var inst = Main.Instance.CurrentInstance;
+                    UpdateChangeSetAndConflicts(inst, RegistryManager.Instance(inst, repoData).registry);
                 }
             }
         }

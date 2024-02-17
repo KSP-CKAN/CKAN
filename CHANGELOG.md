@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fixes for installing .ckan files and DarkKAN mods (#4006 by: HebaruSan)
 - [Core] Only auto-delete manually installed DLLs if also replacing them (#4024 by: HebaruSan)
 - [Multiple] Show repo ETag and parsing errors in Failed Downloads (#4030 by: HebaruSan)
+- [Multiple] Properly clear AD upgrades from changeset (#4037 by: HebaruSan)
 
 ### Internal
 

@@ -32,7 +32,6 @@ namespace CKAN.GUI
             if (reset)
             {
                 ManageMods.ClearChangeSet();
-                UpdateChangesDialog(null, null);
             }
             tabController.ShowTab("ManageModsTabPage");
         }
