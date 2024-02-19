@@ -15,6 +15,9 @@ var configuration = Argument<string>("configuration", "Debug");
 var solution = Argument<string>("solution", "CKAN.sln");
 
 var rootDirectory = Context.Environment.WorkingDirectory;
+var coreProj = rootDirectory.Combine("Core")
+                            .CombineWithFilePath("CKAN-core.csproj")
+                            .FullPath;
 var buildDirectory = rootDirectory.Combine("_build");
 var nugetDirectory = buildDirectory.Combine("lib")
                                    .Combine("nuget");
@@ -190,37 +193,11 @@ Task("Restore")
     .Description("Intermediate - Download dependencies")
     .Does(() =>
     {
-        if (IsRunningOnWindows())
+        DotNetRestore(solution, new DotNetRestoreSettings
         {
-            DotNetRestore(solution, new DotNetRestoreSettings
-            {
-                PackagesDirectory    = nugetDirectory,
-                EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } },
-            });
-        }
-        else
-        {
-            // NuGet is confused by multi-targeting, and
-            // Mono has no idea what "net7.0" is. Only restore for buildNetFramework.
-            DotNetRestore(solution, new DotNetRestoreSettings
-            {
-                PackagesDirectory    = nugetDirectory,
-                EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } },
-                MSBuildSettings      = new DotNetMSBuildSettings()
-                                           .SetConfiguration(configuration)
-                                           .WithProperty("TargetFramework",
-                                                         buildNetFramework),
-            });
-            DotNetRestore(solution, new DotNetRestoreSettings
-            {
-                PackagesDirectory    = nugetDirectory,
-                EnvironmentVariables = new Dictionary<string, string> { { "Configuration", "NoGUI" } },
-                MSBuildSettings      = new DotNetMSBuildSettings()
-                                           .SetConfiguration("NoGUI")
-                                           .WithProperty("TargetFramework",
-                                                         "net7.0"),
-            });
-        }
+            PackagesDirectory    = nugetDirectory,
+            EnvironmentVariables = new Dictionary<string, string> { { "Configuration", configuration } },
+        });
     });
 
 Task("Build")
@@ -241,15 +218,21 @@ Task("Build")
         }
         else
         {
-            // Mono has no idea what "net7.0" is
+            // Use dotnet to build the Core DLL to get the nupkg
+            // (only created if all TargetFrameworks are built together)
+            DotNetBuild(coreProj, new DotNetBuildSettings
+            {
+                Configuration = configuration,
+            });
+            // Use Mono to build for net48 since dotnet can't use WinForms on Linux
             MSBuild(solution,
                     settings => settings.SetConfiguration(configuration)
                                         .WithProperty("TargetFramework",
                                                       buildNetFramework));
+            // Use dotnet to build the stuff Mono can't build
             DotNetBuild(solution, new DotNetBuildSettings
             {
                 Configuration = "NoGUI",
-                NoRestore     = true,
                 Framework     = "net7.0",
             });
         }
@@ -296,7 +279,7 @@ Task("Repack-Ckan")
                     .Combine(configuration)
                     .Combine("bin")
                     .Combine(buildNetFramework))));
-    // Need netstandard.dll facade to instantiate types from ValveKeyValue on Mono
+    // Need facade to instantiate types from netstandard2.0 DLLs on Mono
     assemblyPaths.Add(FacadesDirectory().CombineWithFilePath("netstandard.dll"));
     var ckanLogFile = repackDirectory.Combine(configuration)
                                      .CombineWithFilePath($"ckan.log");
@@ -355,6 +338,8 @@ Task("Repack-Netkan")
     var netkanLogFile = repackDirectory.Combine(configuration)
                                        .CombineWithFilePath($"netkan.log");
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", netkanBinDirectory));
+    // Need facade to instantiate types from netstandard2.0 DLLs on Mono
+    assemblyPaths.Add(FacadesDirectory().CombineWithFilePath("netstandard.dll"));
     ReportRepacking(netkanFile, netkanLogFile);
     ILRepack(
         netkanFile,
@@ -446,6 +431,7 @@ Task("Test-UnitTests+Only")
         {
             Configuration    = configuration,
             NoBuild          = true,
+            NoLogo           = true,
             Filter           = where,
             ResultsDirectory = nunitOutputDirectory,
             Verbosity        = DotNetVerbosity.Minimal,
@@ -456,7 +442,9 @@ Task("Test-UnitTests+Only")
         DotNetTest(solution, new DotNetTestSettings
         {
             Configuration    = "NoGUI",
+            Framework        = "net7.0",
             NoBuild          = true,
+            NoLogo           = true,
             Filter           = where,
             ResultsDirectory = nunitOutputDirectory,
             Verbosity        = DotNetVerbosity.Minimal,
@@ -471,6 +459,7 @@ Task("Test-UnitTests+Only")
             Configuration = configuration,
             Where         = where,
             Work          = nunitOutputDirectory,
+            NoHeader      = true,
             // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
             Process       = NUnit3ProcessOption.InProcess,
         });

@@ -15,15 +15,42 @@ namespace CKAN.Extensions
                 ? throw new ArgumentNullException(nameof(source))
                 : source is ICollection<T> collection ? collection : source.ToArray();
 
-#if NET45
+#if NET45 || NETSTANDARD2_0
 
-        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
+        #if NET45
+        public
+        #elif NETSTANDARD2_0
+        internal
+        #endif
+        static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
         {
             if (source == null)
+            {
                 throw new ArgumentNullException(nameof(source));
+            }
 
             return new HashSet<T>(source);
         }
+
+        #if NET45
+        public
+        #elif NETSTANDARD2_0
+        internal
+        #endif
+        static HashSet<T> ToHashSet<T>(this IEnumerable<T>  source,
+                                              IEqualityComparer<T> comparer)
+        {
+            if (source == null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            return new HashSet<T>(source, comparer);
+        }
+
+#endif
+
+#if NET45
 
         public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T next)
             => source.Concat(Enumerable.Repeat<T>(next, 1));
@@ -115,7 +142,7 @@ namespace CKAN.Extensions
         public static IEnumerable<V> ZipMany<T, U, V>(this IEnumerable<T> seq1, IEnumerable<U> seq2, Func<T, U, IEnumerable<V>> func)
             => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
 
         /// <summary>
         /// Eliminate duplicate elements based on the value returned by a callback
@@ -142,7 +169,7 @@ namespace CKAN.Extensions
             }
         }
 
-#if NETFRAMEWORK
+#if NETFRAMEWORK || NETSTANDARD2_0
 
         /// <summary>
         /// Make pairs out of the elements of two sequences

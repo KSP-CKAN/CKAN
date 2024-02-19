@@ -14,6 +14,9 @@ using Newtonsoft.Json;
 
 using CKAN.Versioning;
 using CKAN.Games;
+#if NETSTANDARD2_0
+using CKAN.Extensions;
+#endif
 
 namespace CKAN
 {

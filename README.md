@@ -15,6 +15,7 @@ It provides strong assurances that mods are installed in the way prescribed by t
 for the correct version of Kerbal Space Program, alongside their dependencies, and without any conflicting mods.
 
 CKAN is great for players _and_ for authors:
+
 - players can find new content and install it with just a few clicks;
 - modders don't have to worry about misinstall problems or outdated versions;
 

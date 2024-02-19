@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Fix null reference exception in swinfo transformer (#3999 by: HebaruSan)
 - [Netkan] Improve netkan relationship error message (#4020, #4021 by: HebaruSan)
 - [Core] Get KSP2 version from game assembly (#4034 by: HebaruSan)
+- [Multiple] Build nuget package, support netstandard2.0 build (#4039 by: HebaruSan)
 
 ## v1.34.4 (Niven)
 

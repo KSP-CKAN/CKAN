@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
+#if NETSTANDARD2_0
+using CKAN.Extensions;
+#endif
+
 namespace CKAN
 {
     /// <summary>

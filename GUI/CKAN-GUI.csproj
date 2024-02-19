@@ -21,6 +21,7 @@
     <TargetFrameworks>net48;net7.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <UseWindowsForms Condition=" '$(TargetFramework)' == 'net7.0-windows' ">true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
