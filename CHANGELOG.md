@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Prompt for client upgrade when newer spec is found (#4026 by: HebaruSan)
 - [GUI] Ability to clear auto-installed flag from changeset tab (#4033 by: HebaruSan)
 - [Multiple] New Crowdin updates (#4019 by: Olympic1, vinix38; reviewed: HebaruSan)
+- [Core] Support Windows KSP1 instances on Linux (#4044 by: HebaruSan)
 
 ### Bugfixes
 

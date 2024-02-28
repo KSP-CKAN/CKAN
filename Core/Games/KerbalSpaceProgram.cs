@@ -222,7 +222,9 @@ namespace CKAN.Games.KerbalSpaceProgram
         public string[] InstanceAnchorFiles =>
             // KSP.app is a directory :(
               Platform.IsMac     ? new string[] { "buildID64.txt", "buildID.txt" }
-            : Platform.IsUnix    ? new string[] { "KSP.x86_64",    "KSP.x86" }
+            : Platform.IsUnix    ? new string[] { "KSP.x86_64",    "KSP.x86",
+                                                  // Windows EXEs via Proton on Linux
+                                                  "KSP_x64.exe",   "KSP.exe" }
             :                      new string[] { "KSP_x64.exe",   "KSP.exe" };
 
         public Uri DefaultRepositoryURL => new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.tar.gz");
