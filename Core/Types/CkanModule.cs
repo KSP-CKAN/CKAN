@@ -755,17 +755,34 @@ namespace CKAN
         /// Here it's the first 8 characters of the SHA1 of the DOWNLOADED FILE, not the URL!
         /// </summary>
         public Uri InternetArchiveDownload
-        {
-            get
-            {
-                string verStr = version.ToString().Replace(' ', '_').Replace(':', '-');
-                // Some alternate registry repositories don't set download_hash
-                return (download_hash?.sha1 != null && license.All(l => l.Redistributable))
-                    ? new Uri(
-                        $"https://archive.org/download/{identifier}-{verStr}/{download_hash.sha1.Substring(0, 8)}-{identifier}-{verStr}.zip")
-                    : null;
-            }
-        }
+            => !license.Any(l => l.Redistributable)
+                ? null
+                : InternetArchiveURL(
+                    Truncate(bucketExcludePattern.Replace(identifier + "-"
+                                                                  + version.ToString()
+                                                                           .Replace(' ', '_')
+                                                                           .Replace(':', '-'),
+                                                                  ""),
+                             100),
+                    // Some alternate registry repositories don't set download_hash
+                    download_hash?.sha1);
+
+        private static string Truncate(string s, int len)
+            => s.Length <= len ? s
+                               : s.Substring(0, len);
+
+        private static Uri InternetArchiveURL(string bucket, string sha1)
+            => string.IsNullOrEmpty(sha1)
+                ? null
+                : new Uri($"https://archive.org/download/{bucket}/{sha1.Substring(0, 8)}-{bucket}.zip");
+
+        // InternetArchive says:
+        // Bucket names should be valid archive identifiers;
+        // try someting matching this regular expression:
+        // ^[a-zA-Z0-9][a-zA-Z0-9_.-]{4,100}$
+        // (We enforce everything except the minimum of 4 characters)
+        private static readonly Regex bucketExcludePattern = new Regex(@"^[^a-zA-Z0-9]+|[^a-zA-Z0-9._-]",
+                                                                       RegexOptions.Compiled);
 
         private const double K = 1024;
 
