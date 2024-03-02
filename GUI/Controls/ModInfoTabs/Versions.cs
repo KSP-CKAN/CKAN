@@ -241,6 +241,7 @@ namespace CKAN.GUI
                        {
                            if (latestCompatible == null || item.Index < latestCompatible.Index)
                            {
+                               VersionsListView.BeginUpdate();
                                if (latestCompatible != null)
                                {
                                    // Revert color of previous best guess
@@ -250,6 +251,7 @@ namespace CKAN.GUI
                                latestCompatible = item;
                                item.BackColor = Color.Green;
                                item.ForeColor = Color.White;
+                               VersionsListView.EndUpdate();
                            }
                            else
                            {

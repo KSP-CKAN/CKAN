@@ -1399,7 +1399,7 @@ namespace CKAN
                                          .Where(m => m != null);
                 var resolver = new RelationshipResolver(toInstall, installed, opts, registry, crit);
 
-                var resolverModList = resolver.ModList().ToList();
+                var resolverModList = resolver.ModList(false).ToList();
                 if (resolverModList.Count >= toInstall.Count(m => !m.IsMetapackage))
                 {
                     // We can install with no further dependencies

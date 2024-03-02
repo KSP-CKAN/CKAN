@@ -519,10 +519,10 @@ namespace CKAN
         /// Returns a list of all modules to install to satisfy the changes required.
         /// Each mod is after its dependencies and before its reverse dependencies.
         /// </summary>
-        public IEnumerable<CkanModule> ModList()
+        public IEnumerable<CkanModule> ModList(bool parallel = true)
             => modlist.Values
                       .Distinct()
-                      .AsParallel()
+                      .AsParallelIf(parallel)
                       // Put user choices at the bottom; .OrderBy(bool) -> false first
                       .OrderBy(m => ReasonsFor(m).Any(r => r is SelectionReason.UserRequested))
                       // Put dependencies before dependers
@@ -539,8 +539,8 @@ namespace CKAN
                 || r is SelectionReason.Recommended
                 || r is SelectionReason.Suggested;
 
-        private IEnumerable<T> BreadthFirstSearch<T>(IEnumerable<T>                      startingGroup,
-                                                     Func<T, HashSet<T>, IEnumerable<T>> getNextGroup)
+        private static IEnumerable<T> BreadthFirstSearch<T>(IEnumerable<T>                      startingGroup,
+                                                            Func<T, HashSet<T>, IEnumerable<T>> getNextGroup)
         {
             var found    = startingGroup.ToHashSet();
             var toSearch = new Queue<T>(found);
