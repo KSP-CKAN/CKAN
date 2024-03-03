@@ -68,6 +68,11 @@ namespace CKAN.Extensions
         public static ConcurrentDictionary<K, V> ToConcurrentDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
             => new ConcurrentDictionary<K, V>(pairs);
 
+        public static IEnumerable<T> AsParallelIf<T>(this IEnumerable<T> source,
+                                                     bool                parallel)
+            => parallel ? source.AsParallel()
+                        : source;
+
         // https://stackoverflow.com/a/55591477/2422988
         public static ParallelQuery<T> WithProgress<T>(this ParallelQuery<T> source,
                                                        long                  totalCount,

@@ -339,7 +339,7 @@ namespace CKAN
         /// <summary>
         /// Inflates a CKAN object from a JSON string.
         /// </summary>
-        public CkanModule(string json, IGameComparator comparator)
+        public CkanModule(string json, IGameComparator comparator = null)
         {
             try
             {
@@ -355,7 +355,7 @@ namespace CKAN
                     string.Format(Properties.Resources.CkanModuleDeserialisationError, ex.Message),
                     ex);
             }
-            _comparator = comparator;
+            _comparator = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
             CheckHealth();
             CalculateSearchables();
         }
@@ -510,18 +510,12 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Generates a CKAN.META object from a string.
+        /// Generates a CkanModule object from a string.
         /// Also validates that all required fields are present.
         /// Throws a BadMetaDataKraken if any fields are missing.
         /// </summary>
         public static CkanModule FromJson(string json)
-        {
-            log.Debug("Inflating comparator object");
-            IGameComparator comparator = ServiceLocator.Container.Resolve<IGameComparator>();
-
-            log.Debug("Building CkanModule");
-            return new CkanModule(json, comparator);
-        }
+            => new CkanModule(json);
 
         #endregion
 
