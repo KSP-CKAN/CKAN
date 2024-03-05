@@ -216,6 +216,9 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
     <value>Réception des compteurs de téléchargement du répertoire {0}</value>
   </data>
+  <data name="NetRepoNotATarGz" xml:space="preserve">
+    <value>Le fichier doit être un tar.gz ou un zip, impossible de traiter : {0}</value>
+  </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` ne devrait pas être combiné avec `{0}`</value>
   </data>

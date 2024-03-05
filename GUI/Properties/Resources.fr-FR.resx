@@ -192,6 +192,20 @@ Essayez de déplacer {2} en dehors de {3} et redémarrez CKAN.</value>
   <data name="GUIModGameCompatibilityLong" xml:space="preserve">
     <value>{0} (en utilisant la version du mod {1})</value>
   </data>
+  <data name="MainReleasesOrDevBuildsPrompt" xml:space="preserve">
+    <value>CKAN est configuré pour vérifier les mises à jour au démarrage. En plus des versions stables, il existe aussi des versions de développement. Ces dernières vous donneront un accès rapide aux nouvelles fonctionnalités et corrections de bogues, mais avec une plus grande chance de bogues.
+Si vous voulez contribuer activement à CKAN, utilisez les versions de développement pour nous aider à repérer et corriger les bogues le plus tôt possible.
+
+Quelle version souhaitez-vous utiliser ?
+
+(Ce paramètre peut être modifié plus tard dans les paramètres CKAN.)</value>
+  </data>
+  <data name="MainReleasesOrDevBuildsYes" xml:space="preserve">
+    <value>Utiliser uniquement les versions stables</value>
+  </data>
+  <data name="MainReleasesOrDevBuildsNo" xml:space="preserve">
+    <value>Utiliser les versions de développement</value>
+  </data>
   <data name="MainAutoUpdateFailed" xml:space="preserve">
     <value>Erreur durant la mise à jour auto :&#xD;&#xA;{0}</value>
   </data>
@@ -620,6 +634,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="MainRepoSuccess" xml:space="preserve">
     <value>Répertoires mis à jour avec succès.</value>
   </data>
+  <data name="MainRepoOutdatedClient" xml:space="preserve">
+    <value>Répertoires mis à jour, mais des modules nécessitant une nouvelle version de CKAN ont été trouvés. Vérification des mises à jour...</value>
+  </data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve">
     <value>Voulez-vous que CKAN rafraîchisse la liste de mod au lancement ? (Vous pouvez toujours rafraîchir manuellement en utilisant le bouton en haut)</value>
   </data>
@@ -774,6 +791,31 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   </data>
   <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve">
     <value>ATTENTION : INSTALLATION D'UN MODULE AVEC LABEL {0} ({1})</value>
+  </data>
+  <data name="ChangesetDeleteTooltip" xml:space="preserve">
+    <value>Ne pas {0} {1}</value>
+  </data>
+  <data name="ChangesetConfirmRemoveAutoRemoval" xml:space="preserve">
+    <value>{0} va être supprimé car il a été installé en tant que dépendance d'un autre mod, qui va lui-même être supprimé.
+
+Êtes-vous sûr de vouloir le conserver ?</value>
+  </data>
+  <data name="ChangesetConfirmRemoveAutoRemovalYes" xml:space="preserve">
+    <value>Conserver</value>
+  </data>
+  <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ChangesetConfirmRemoveUserRequested" xml:space="preserve">
+    <value>Vous aviez choisi de {0} {1}.
+
+Êtes-vous sûr de vouloir ignorer cette modification ?</value>
+  </data>
+  <data name="ChangesetConfirmRemoveUserRequestedYes" xml:space="preserve">
+    <value>Ignorer</value>
+  </data>
+  <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve">
+    <value>Annuler</value>
   </data>
   <data name="EditLabelsToolTipName" xml:space="preserve">
     <value>Ce label apparaîtra dans le menu Labels avec ce nom, il doit être unique dans cette installation</value>
@@ -938,6 +980,12 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   </data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve">
     <value>Combiner une nouvelle recherche avec vos recherches actuelles</value>
+  </data>
+  <data name="ManageModsSteamPlayTimeYesTooltip" xml:space="preserve">
+    <value>(comptera le temps de jeu dans Steam)</value>
+  </data>
+  <data name="ManageModsSteamPlayTimeNoTooltip" xml:space="preserve">
+    <value>(ne comptera PAS le temps de jeu dans Steam)</value>
   </data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve">
     <value>Décocher pour désinstaller tous les mods, cocher pour annuler les changements</value>

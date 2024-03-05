@@ -133,6 +133,12 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve">
     <value>Ajouter une instance à CKAN</value>
   </data>
+  <data name="ImportFromSteamMenuItem.Text" xml:space="preserve">
+    <value>Importer depuis Steam</value>
+  </data>
+  <data name="ImportFromSteamMenuItem.TooltipText" xml:space="preserve">
+    <value>Scanner la bibliothèque Steam pour trouver des jeux reconnus et les ajouter en tant qu'instances</value>
+  </data>
   <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
     <value>Cloner une instance</value>
   </data>
