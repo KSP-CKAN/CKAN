@@ -117,28 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ModColumn.HeaderText" xml:space="preserve">
-    <value>Mod</value>
+  <data name="GlobalFiltersGroupBox.Text" xml:space="preserve">
+    <value>全局筛选器</value>
   </data>
-  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
-    <value>更改</value>
+  <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
+    <value>实例筛选器</value>
   </data>
-  <data name="ReasonsColumn.HeaderText" xml:space="preserve">
-    <value>操作理由</value>
+  <data name="AddMiniAVCButton.Text" xml:space="preserve">
+    <value>添加 MiniAVC</value>
   </data>
-  <data name="DeleteColumn.HeaderText" xml:space="preserve">
-    <value>跳过？</value>
+  <data name="WarningLabel.Text" xml:space="preserve">
+    <value>注意：对安装筛选器的更改仅对未来的模组安装有效；已安装的文件不受影响。</value>
   </data>
-  <data name="CloseTheGameLabel.Text" xml:space="preserve">
-    <value>注意：要应用这些更改，CKAN必须覆盖或删除文件。如果游戏正在运行，请在继续之前关闭！</value>
-  </data>
-  <data name="BackButton.Text" xml:space="preserve">
-    <value>返回</value>
-  </data>
-  <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>取消更改</value>
-  </data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve">
-    <value>应用</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>安装筛选器</value>
   </data>
 </root>

@@ -112,33 +112,28 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ModColumn.HeaderText" xml:space="preserve">
-    <value>Mod</value>
+  <data name="Usage" xml:space="preserve">
+    <value>用法</value>
   </data>
-  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
-    <value>更改</value>
+  <data name="DownloadNotFound" xml:space="preserve">
+    <value>无法在{0}找到 ckan.exe</value>
   </data>
-  <data name="ReasonsColumn.HeaderText" xml:space="preserve">
-    <value>操作理由</value>
+  <data name="FailedToWait" xml:space="preserve">
+    <value>等待CKAN关闭失败: {0}</value>
   </data>
-  <data name="DeleteColumn.HeaderText" xml:space="preserve">
-    <value>跳过？</value>
+  <data name="FailedToDelete" xml:space="preserve">
+    <value>删除 {0} 失败： {1}</value>
   </data>
-  <data name="CloseTheGameLabel.Text" xml:space="preserve">
-    <value>注意：要应用这些更改，CKAN必须覆盖或删除文件。如果游戏正在运行，请在继续之前关闭！</value>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>未处理的异常:
+{0}</value>
   </data>
-  <data name="BackButton.Text" xml:space="preserve">
-    <value>返回</value>
-  </data>
-  <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>取消更改</value>
-  </data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve">
-    <value>应用</value>
+  <data name="FatalErrorTitle" xml:space="preserve">
+    <value>自动更新程序致命错误</value>
   </data>
 </root>

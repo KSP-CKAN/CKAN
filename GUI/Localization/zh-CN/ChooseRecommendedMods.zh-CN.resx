@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="UncheckAllButton.Text" xml:space="preserve">
+    <value>取消全选</value>
+  </data>
+  <data name="AlwaysUncheckAllButton.Text" xml:space="preserve">
+    <value>总是取消全选</value>
+  </data>
+  <data name="CheckAllButton.Text" xml:space="preserve">
+    <value>全选</value>
+  </data>
+  <data name="CheckRecommendationsButton.Text" xml:space="preserve">
+    <value>检查推荐</value>
+  </data>
   <data name="RecommendedModsCancelButton.Text" xml:space="preserve">
     <value>取消</value>
   </data>
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>继续</value>
-  </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>全（反）选所有推荐或建议Mod</value>
   </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>以下Mod被一个或多个选中Mod所推荐或建议</value>

@@ -117,16 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>变量:</value>
+  <data name="CmdLineColumn.HeaderText" xml:space="preserve">
+    <value>命令行</value>
+  </data>
+  <data name="ResetToDefaultsButton.Text" xml:space="preserve">
+    <value>&amp;重置</value>
+  </data>
+  <data name="AddButton.Text" xml:space="preserve">
+    <value>添加</value>
   </data>
   <data name="AcceptChangesButton.Text" xml:space="preserve">
-    <value>确认</value>
+    <value>&amp;确定</value>
   </data>
   <data name="CancelChangesButton.Text" xml:space="preserve">
     <value>取消</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>启动选项</value>
+    <value>游戏启动选项</value>
   </data>
 </root>
