@@ -117,28 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ModColumn.HeaderText" xml:space="preserve">
-    <value>Mod</value>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>确认</value>
   </data>
-  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
-    <value>Mudança</value>
+  <data name="RefreshButton.Text" xml:space="preserve">
+    <value>刷新</value>
   </data>
-  <data name="ReasonsColumn.HeaderText" xml:space="preserve">
-    <value>Razão para a ação</value>
+  <data name="ExpandAllButton.Text" xml:space="preserve">
+    <value>展开全部</value>
   </data>
-  <data name="DeleteColumn.HeaderText" xml:space="preserve">
-    <value>Ignorar?</value>
+  <data name="CollapseAllButton.Text" xml:space="preserve">
+    <value>折叠全部</value>
   </data>
-  <data name="CloseTheGameLabel.Text" xml:space="preserve">
-    <value>Nota: Para aplicar essas alterações, CKAN deve sobrescrever ou apagar arquivos. Se o jogo estiver rodando, feche-o antes de continuar!</value>
+  <data name="ResetCollapseButton.Text" xml:space="preserve">
+    <value>重置</value>
   </data>
-  <data name="BackButton.Text" xml:space="preserve">
-    <value>Voltar</value>
+  <data name="ShowInFolderButton.Text" xml:space="preserve">
+    <value>在文件管理器中显示</value>
   </data>
-  <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>Limpar</value>
-  </data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve">
-    <value>Aplicar</value>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>删除</value>
   </data>
 </root>

@@ -163,7 +163,7 @@
     <value>&amp;Filtres d'installation</value>
   </data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Ligne de commande du jeu</value>
+    <value>&amp;Lignes de commande du jeu</value>
   </data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Versions de jeu compatibles</value>

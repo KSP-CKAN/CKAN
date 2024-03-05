@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,23 +117,60 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CreateButton.Text" xml:space="preserve"><value>创建</value></data>
-  <data name="SelectOrCreateLabel.Text" xml:space="preserve"><value>选中一个标签以编辑或创建一个新的</value></data>
-  <data name="NameLabel.Text" xml:space="preserve"><value>名称:</value></data>
-  <data name="ColorLabel.Text" xml:space="preserve"><value>背景色:</value></data>
-  <data name="ColorButton.Text" xml:space="preserve"><value>选择...</value></data>
-  <data name="InstanceNameLabel.Text" xml:space="preserve"><value>实例
+  <data name="CreateButton.Text" xml:space="preserve">
+    <value>创建</value>
+  </data>
+  <data name="SelectOrCreateLabel.Text" xml:space="preserve">
+    <value>选中一个标签以编辑或创建一个新的</value>
+  </data>
+  <data name="NameLabel.Text" xml:space="preserve">
+    <value>名称:</value>
+  </data>
+  <data name="ColorLabel.Text" xml:space="preserve">
+    <value>背景色:</value>
+  </data>
+  <data name="ColorButton.Text" xml:space="preserve">
+    <value>选择...</value>
+  </data>
+  <data name="InstanceNameLabel.Text" xml:space="preserve">
+    <value>实例
 （留空以应用
-到所有实例）:</value></data>
-  <data name="HideFromOtherFiltersCheckBox.Text" xml:space="preserve"><value>有其它筛选条件时隐藏</value></data>
-  <data name="NotifyOnChangesCheckBox.Text" xml:space="preserve"><value>更新时提醒</value></data>
-  <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve"><value>更新时移除</value></data>
-  <data name="AlertOnInstallCheckBox.Text" xml:space="preserve"><value>安装时警告</value></data>
-  <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve"><value>安装时移除</value></data>
-  <data name="CloseButton.Text" xml:space="preserve"><value>关闭</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>保存</value></data>
-  <data name="CancelEditButton.Text" xml:space="preserve"><value>取消</value></data>
-  <data name="DeleteButton.Text" xml:space="preserve"><value>删除</value></data>
-  <data name="ExportButton.Text" xml:space="preserve"><value>导出...</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>编辑标签</value></data>
+到所有实例）:</value>
+  </data>
+  <data name="HideFromOtherFiltersCheckBox.Text" xml:space="preserve">
+    <value>有其它筛选条件时隐藏</value>
+  </data>
+  <data name="NotifyOnChangesCheckBox.Text" xml:space="preserve">
+    <value>更新时提醒</value>
+  </data>
+  <data name="RemoveOnChangesCheckBox.Text" xml:space="preserve">
+    <value>更新时移除</value>
+  </data>
+  <data name="AlertOnInstallCheckBox.Text" xml:space="preserve">
+    <value>安装时警告</value>
+  </data>
+  <data name="RemoveOnInstallCheckBox.Text" xml:space="preserve">
+    <value>安装时移除</value>
+  </data>
+  <data name="HoldVersionCheckBox.Text" xml:space="preserve">
+    <value>不要升级</value>
+  </data>
+  <data name="CloseButton.Text" xml:space="preserve">
+    <value>关闭</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="CancelEditButton.Text" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="ExportButton.Text" xml:space="preserve">
+    <value>导出...</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>编辑标签</value>
+  </data>
 </root>

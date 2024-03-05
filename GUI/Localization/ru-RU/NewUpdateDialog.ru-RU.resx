@@ -120,9 +120,6 @@
   <data name="label1.Text" xml:space="preserve">
     <value>Версия:</value>
   </data>
-  <data name="VersionLabel.Text" xml:space="preserve">
-    <value>0.0.0</value>
-  </data>
   <data name="InstallUpdateButton.Text" xml:space="preserve">
     <value>Установить</value>
   </data>

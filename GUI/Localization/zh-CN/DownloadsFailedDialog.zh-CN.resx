@@ -117,28 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ModColumn.HeaderText" xml:space="preserve">
-    <value>Mod</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>下载失败</value>
   </data>
-  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
-    <value>Mudança</value>
+  <data name="RetryColumn.HeaderText" xml:space="preserve">
+    <value>重试?</value>
   </data>
-  <data name="ReasonsColumn.HeaderText" xml:space="preserve">
-    <value>Razão para a ação</value>
+  <data name="SkipColumn.HeaderText" xml:space="preserve">
+    <value>跳过？</value>
   </data>
-  <data name="DeleteColumn.HeaderText" xml:space="preserve">
-    <value>Ignorar?</value>
+  <data name="ErrorColumn.HeaderText" xml:space="preserve">
+    <value>错误</value>
   </data>
-  <data name="CloseTheGameLabel.Text" xml:space="preserve">
-    <value>Nota: Para aplicar essas alterações, CKAN deve sobrescrever ou apagar arquivos. Se o jogo estiver rodando, feche-o antes de continuar!</value>
-  </data>
-  <data name="BackButton.Text" xml:space="preserve">
-    <value>Voltar</value>
-  </data>
-  <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>Limpar</value>
-  </data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve">
-    <value>Aplicar</value>
+  <data name="RetryButton.Text" xml:space="preserve">
+    <value>重试</value>
   </data>
 </root>

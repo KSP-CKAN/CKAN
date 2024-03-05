@@ -744,6 +744,15 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="UpdateSummary" xml:space="preserve">
     <value>Informations sur {0} modules compatibles mises à jour</value>
   </data>
+  <data name="UpgradeCannotCombineFlags" xml:space="preserve">
+    <value>Les arguments `--dev-build` et `--stable-release` ne peuvent pas être utilisés ensemble !</value>
+  </data>
+  <data name="UpgradeSwitchingToDevBuilds" xml:space="preserve">
+    <value>Basculer vers les versions de développement</value>
+  </data>
+  <data name="UpgradeSwitchingToStableReleases" xml:space="preserve">
+    <value>Basculer aux versions stables</value>
+  </data>
   <data name="UpgradeQueryingCKAN" xml:space="preserve">
     <value>Requête de la dernière version de CKAN</value>
   </data>

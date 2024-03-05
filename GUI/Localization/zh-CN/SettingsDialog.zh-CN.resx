@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -120,43 +120,136 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>48</value>
   </metadata>
-  <data name="RepositoryGroupBox.Text" xml:space="preserve"><value>元数据库</value></data>
-  <data name="NewRepoButton.Text" xml:space="preserve"><value>新建</value></data>
-  <data name="UpRepoButton.Text" xml:space="preserve"><value>上移</value></data>
-  <data name="DownRepoButton.Text" xml:space="preserve"><value>下移</value></data>
-  <data name="DeleteRepoButton.Text" xml:space="preserve"><value>删除</value></data>
-  <data name="AuthTokensGroupBox.Text" xml:space="preserve"><value>验证标记</value></data>
-  <data name="NewAuthTokenButton.Text" xml:space="preserve"><value>新建</value></data>
-  <data name="DeleteAuthTokenButton.Text" xml:space="preserve"><value>删除</value></data>
-  <data name="CacheGroupBox.Text" xml:space="preserve"><value>下载缓存</value></data>
-  <data name="CacheSummary.Text" xml:space="preserve"><value>N 个文件, M MB</value></data>
-  <data name="CacheLimitPreLabel.Text" xml:space="preserve"><value>最大缓存大小:</value></data>
-  <data name="CacheLimitPostLabel.Text" xml:space="preserve"><value>MB (留空代表无限制)</value></data>
-  <data name="ChangeCacheButton.Text" xml:space="preserve"><value>更改...</value></data>
-  <data name="ClearCacheButton.Text" xml:space="preserve"><value>清除</value></data>
-  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve"><value>清除到限制</value></data>
-  <data name="PurgeAllMenuItem.Text" xml:space="preserve"><value>清除所有</value></data>
-  <data name="ResetCacheButton.Text" xml:space="preserve"><value>重置</value></data>
-  <data name="OpenCacheButton.Text" xml:space="preserve"><value>打开</value></data>
-  <data name="AutoUpdateGroupBox.Text" xml:space="preserve"><value>自动更新</value></data>
-  <data name="LocalVersionPreLabel.Text" xml:space="preserve"><value>本地版本:</value></data>
-  <data name="LocalVersionLabel.Text" xml:space="preserve"><value>v0.0.0</value></data>
-  <data name="LatestVersionPreLabel.Text" xml:space="preserve"><value>最新版本:</value></data>
-  <data name="LatestVersionLabel.Text" xml:space="preserve"><value>???</value></data>
-  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve"><value>在启动时检查CKAN更新</value></data>
-  <data name="CheckForUpdatesButton.Text" xml:space="preserve"><value>检查更新</value></data>
-  <data name="InstallUpdateButton.Text" xml:space="preserve"><value>安装更新</value></data>
-  <data name="BehaviourGroupBox.Text" xml:space="preserve"><value>行为</value></data>
-  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve"><value>启用任务栏图标</value></data>
-  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve"><value>最小化到任务栏</value></data>
-  <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Mod列表刷新间隔:</value></data>
-  <data name="RefreshPostLabel.Text" xml:space="preserve"><value>分钟</value></data>
-  <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>停止刷新</value></data>
-  <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>更多设置</value></data>
-  <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>语言 (需要重启):</value></data>
-  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>启动时更新元数据库</value></data>
-  <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>在mod列表中隐藏代数 (需要重启)</value></data>
-  <data name="HideVCheckbox.Text" xml:space="preserve"><value>在mod列表中隐藏'v'(需要重启)</value></data>
-  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>当点击添加可用更新时自动按‘更新’排序</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>设置</value></data>
+  <data name="RepositoryGroupBox.Text" xml:space="preserve">
+    <value>元数据库</value>
+  </data>
+  <data name="NewRepoButton.Text" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="UpRepoButton.Text" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="DownRepoButton.Text" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="DeleteRepoButton.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="AuthTokensGroupBox.Text" xml:space="preserve">
+    <value>验证标记</value>
+  </data>
+  <data name="NewAuthTokenButton.Text" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="DeleteAuthTokenButton.Text" xml:space="preserve">
+    <value>删除</value>
+  </data>
+  <data name="CacheGroupBox.Text" xml:space="preserve">
+    <value>下载缓存</value>
+  </data>
+  <data name="CacheSummary.Text" xml:space="preserve">
+    <value>N 个文件, M MB</value>
+  </data>
+  <data name="CacheLimitPreLabel.Text" xml:space="preserve">
+    <value>最大缓存大小:</value>
+  </data>
+  <data name="CacheLimitPostLabel.Text" xml:space="preserve">
+    <value>MB (留空代表无限制)</value>
+  </data>
+  <data name="ChangeCacheButton.Text" xml:space="preserve">
+    <value>更改...</value>
+  </data>
+  <data name="ClearCacheButton.Text" xml:space="preserve">
+    <value>清除</value>
+  </data>
+  <data name="PurgeToLimitMenuItem.Text" xml:space="preserve">
+    <value>清除到限制</value>
+  </data>
+  <data name="PurgeAllMenuItem.Text" xml:space="preserve">
+    <value>清除所有</value>
+  </data>
+  <data name="ResetCacheButton.Text" xml:space="preserve">
+    <value>重置</value>
+  </data>
+  <data name="OpenCacheButton.Text" xml:space="preserve">
+    <value>打开</value>
+  </data>
+  <data name="AutoUpdateGroupBox.Text" xml:space="preserve">
+    <value>自动更新</value>
+  </data>
+  <data name="LocalVersionPreLabel.Text" xml:space="preserve">
+    <value>本地版本:</value>
+  </data>
+  <data name="LocalVersionLabel.Text" xml:space="preserve">
+    <value>v0.0.0</value>
+  </data>
+  <data name="LatestVersionPreLabel.Text" xml:space="preserve">
+    <value>最新版本:</value>
+  </data>
+  <data name="LatestVersionLabel.Text" xml:space="preserve">
+    <value>???</value>
+  </data>
+  <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve">
+    <value>在启动时检查CKAN更新</value>
+  </data>
+  <data name="DevBuildsCheckbox.Text" xml:space="preserve">
+    <value>使用开发版本</value>
+  </data>
+  <data name="CheckForUpdatesButton.Text" xml:space="preserve">
+    <value>检查更新</value>
+  </data>
+  <data name="InstallUpdateButton.Text" xml:space="preserve">
+    <value>安装更新</value>
+  </data>
+  <data name="BehaviourGroupBox.Text" xml:space="preserve">
+    <value>行为</value>
+  </data>
+  <data name="EnableTrayIconCheckBox.Text" xml:space="preserve">
+    <value>启用任务栏图标</value>
+  </data>
+  <data name="MinimizeToTrayCheckBox.Text" xml:space="preserve">
+    <value>最小化到任务栏</value>
+  </data>
+  <data name="RefreshPreLabel.Text" xml:space="preserve">
+    <value>Mod列表刷新间隔:</value>
+  </data>
+  <data name="RefreshPostLabel.Text" xml:space="preserve">
+    <value>分钟</value>
+  </data>
+  <data name="PauseRefreshCheckBox.Text" xml:space="preserve">
+    <value>停止刷新</value>
+  </data>
+  <data name="MoreSettingsGroupBox.Text" xml:space="preserve">
+    <value>更多设置</value>
+  </data>
+  <data name="LanguageSelectionLabel.Text" xml:space="preserve">
+    <value>语言 (需要重启):</value>
+  </data>
+  <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve">
+    <value>启动时更新元数据库</value>
+  </data>
+  <data name="HideEpochsCheckbox.Text" xml:space="preserve">
+    <value>在mod列表中隐藏代数 (需要重启)</value>
+  </data>
+  <data name="HideVCheckbox.Text" xml:space="preserve">
+    <value>在mod列表中隐藏'v'(需要重启)</value>
+  </data>
+  <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
+    <value>当点击添加可用更新时自动按‘更新’排序</value>
+  </data>
+  <data name="RepoNameHeader.Text" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="RepoURLHeader.Text" xml:space="preserve">
+    <value>网址</value>
+  </data>
+  <data name="AuthHostHeader.Text" xml:space="preserve">
+    <value>服务器</value>
+  </data>
+  <data name="AuthTokenHeader.Text" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
 </root>

@@ -117,28 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ModColumn.HeaderText" xml:space="preserve">
-    <value>Mod</value>
+  <data name="TimestampColumn.Text" xml:space="preserve">
+    <value>时间戳</value>
   </data>
-  <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
-    <value>Mudança</value>
+  <data name="NotInstalledGroup.Header" xml:space="preserve">
+    <value>当前未安装</value>
   </data>
-  <data name="ReasonsColumn.HeaderText" xml:space="preserve">
-    <value>Razão para a ação</value>
+  <data name="InstalledGroup.Header" xml:space="preserve">
+    <value>已安装</value>
   </data>
-  <data name="DeleteColumn.HeaderText" xml:space="preserve">
-    <value>Ignorar?</value>
+  <data name="NameColumn.Text" xml:space="preserve">
+    <value>名称</value>
   </data>
-  <data name="CloseTheGameLabel.Text" xml:space="preserve">
-    <value>Nota: Para aplicar essas alterações, CKAN deve sobrescrever ou apagar arquivos. Se o jogo estiver rodando, feche-o antes de continuar!</value>
+  <data name="VersionColumn.Text" xml:space="preserve">
+    <value>版本</value>
   </data>
-  <data name="BackButton.Text" xml:space="preserve">
-    <value>Voltar</value>
+  <data name="AuthorColumn.Text" xml:space="preserve">
+    <value>作者</value>
   </data>
-  <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>Limpar</value>
+  <data name="DescriptionColumn.Text" xml:space="preserve">
+    <value>描述</value>
   </data>
-  <data name="ConfirmChangesButton.Text" xml:space="preserve">
-    <value>Aplicar</value>
+  <data name="SelectInstallMessage.Text" xml:space="preserve">
+    <value>点击左侧的时间戳来查看安装了哪些模组</value>
+  </data>
+  <data name="NoModsMessage.Text" xml:space="preserve">
+    <value>没有安装模组</value>
+  </data>
+  <data name="InstallButton.Text" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>确认</value>
   </data>
 </root>

@@ -192,6 +192,9 @@
   <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve">
     <value>Vérifier les mises à jour CKAN au lancement</value>
   </data>
+  <data name="DevBuildsCheckbox.Text" xml:space="preserve">
+    <value>Utiliser les versions de développement</value>
+  </data>
   <data name="CheckForUpdatesButton.Text" xml:space="preserve">
     <value>Vérifier MàJ</value>
   </data>
