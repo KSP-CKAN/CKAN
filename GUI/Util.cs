@@ -55,17 +55,14 @@ namespace CKAN.GUI
 
         // hides the console window on windows
         // useful when running the GUI
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+        [DllImport("kernel32.dll", SetLastError=true)]
+        private static extern int FreeConsole();
 
         public static void HideConsoleWindow()
         {
             if (Platform.IsWindows)
             {
-                ShowWindow(GetConsoleWindow(), 0);
+                FreeConsole();
             }
         }
 
