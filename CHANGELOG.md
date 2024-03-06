@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Properly clear AD upgrades from changeset (#4037 by: HebaruSan)
 - [Multiple] De-over-parallelize Versions tab (#4049 by: HebaruSan)
 - [GUI] Use better console hiding API (#4051 by: HebaruSan)
+- [Core] Trigger progress updates for frozen downloads (#4052 by: HebaruSan)
 
 ### Internal
 
