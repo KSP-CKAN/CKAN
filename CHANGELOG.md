@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Show repo ETag and parsing errors in Failed Downloads (#4030 by: HebaruSan)
 - [Multiple] Properly clear AD upgrades from changeset (#4037 by: HebaruSan)
 - [Multiple] De-over-parallelize Versions tab (#4049 by: HebaruSan)
+- [GUI] Use better console hiding API (#4051 by: HebaruSan)
 
 ### Internal
 
