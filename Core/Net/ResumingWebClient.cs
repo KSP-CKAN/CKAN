@@ -139,6 +139,7 @@ namespace CKAN
                                         DownloadProgress?.Invoke((int)(100 * bytesDownloaded / contentLength),
                                                                  bytesDownloaded, contentLength);
                                     }),
+                                    TimeSpan.FromSeconds(5),
                                     cancelTokenSrc.Token);
                                 // Make sure caller knows we've finished
                                 DownloadProgress?.Invoke(100, contentLength, contentLength);

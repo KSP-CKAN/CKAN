@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
+using Timer = System.Timers.Timer;
 
 namespace CKAN.Extensions
 {
@@ -64,15 +65,37 @@ namespace CKAN.Extensions
         /// <param name="src">Stream from which to copy</param>
         /// <param name="dest">Stream to which to copy</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with count of bytes received</param>
-        public static void CopyTo(this Stream src, Stream dest, IProgress<long> progress, CancellationToken cancelToken = default)
+        /// <param name="idleInterval">Maximum timespand to elapse between progress updates, will synthesize extra updates as needed</param>
+        public static void CopyTo(this Stream       src,
+                                  Stream            dest,
+                                  IProgress<long>   progress,
+                                  TimeSpan?         idleInterval = null,
+                                  CancellationToken cancelToken = default)
         {
             // CopyTo says its default buffer is 81920, but we want more than 1 update for a 100 KiB file
             const int bufSize = 16384;
             var buffer = new byte[bufSize];
             long total = 0;
+            var lastProgressTime = DateTime.Now;
+            // Sometimes a server just freezes and times out, send extra updates if requested
+            Timer timer = null;
+            if (idleInterval.HasValue)
+            {
+                timer = new Timer(idleInterval.Value > minProgressInterval
+                                      ? idleInterval.Value.TotalMilliseconds
+                                      : minProgressInterval.TotalMilliseconds)
+                {
+                    AutoReset = true,
+                };
+                timer.Elapsed += (sender, args) =>
+                {
+                    progress.Report(total);
+                    lastProgressTime = DateTime.Now;
+                };
+                timer.Start();
+            }
             // Make sure we get an initial progress notification at the start
             progress.Report(total);
-            var lastProgressTime = DateTime.Now;
             while (true)
             {
                 var bytesRead = src.Read(buffer, 0, bufSize);
@@ -84,8 +107,10 @@ namespace CKAN.Extensions
                 total += bytesRead;
                 cancelToken.ThrowIfCancellationRequested();
                 var now = DateTime.Now;
-                if (now - lastProgressTime >= progressInterval)
+                if (now - lastProgressTime >= minProgressInterval)
                 {
+                    timer?.Stop();
+                    timer?.Start();
                     progress.Report(total);
                     lastProgressTime = now;
                 }
@@ -103,6 +128,6 @@ namespace CKAN.Extensions
             }
         }
 
-        private static readonly TimeSpan progressInterval = TimeSpan.FromMilliseconds(200);
+        private static readonly TimeSpan minProgressInterval = TimeSpan.FromMilliseconds(200);
     }
 }

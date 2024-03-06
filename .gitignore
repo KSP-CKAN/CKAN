@@ -33,6 +33,9 @@ bld/
 # Don't ignore the root bin folder
 !/bin/
 
+.config/
+.mypy_cache/
+
 # NuGet Packages
 *.nupkg
 # The packages folder can be ignored because of Package Restore
