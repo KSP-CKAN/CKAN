@@ -19,7 +19,7 @@ namespace Tests.Core.Registry
         private string repoDataDir;
 
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
-        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria (GameVersion.Parse("0.25.0"));
+        private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
 
         [SetUp]
         public void Setup()
@@ -268,7 +268,7 @@ namespace Tests.Core.Registry
                 GameVersionCriteria crit = new GameVersionCriteria(mod.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(mod.identifier, crit);
+                bool has = registry.HasUpdate(mod.identifier, crit, out _);
 
                 // Assert
                 Assert.IsTrue(has, "Can't upgrade manually installed DLL");
@@ -321,7 +321,10 @@ namespace Tests.Core.Registry
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(olderDepMod.identifier, crit);
+                bool has = registry.HasUpdate(olderDepMod.identifier, crit, out _,
+                                              registry.InstalledModules
+                                                      .Select(im => im.Module)
+                                                      .ToList());
 
                 // Assert
                 Assert.IsFalse(has, "Upgrade allowed that would break another mod's dependency");

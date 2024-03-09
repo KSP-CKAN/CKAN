@@ -482,6 +482,7 @@ namespace CKAN.GUI
             this.ManageMods.StartChangeSet += this.ManageMods_StartChangeSet;
             this.ManageMods.RaiseMessage += this.ManageMods_RaiseMessage;
             this.ManageMods.RaiseError += this.ManageMods_RaiseError;
+            this.ManageMods.SetStatusBar += this.ManageMods_SetStatusBar;
             this.ManageMods.ClearStatusBar += this.ManageMods_ClearStatusBar;
             this.ManageMods.LaunchGame += this.LaunchGame;
             this.ManageMods.EditCommandLines += this.EditCommandLines;

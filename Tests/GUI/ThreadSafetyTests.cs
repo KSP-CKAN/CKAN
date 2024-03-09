@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NUnit.Framework;
+
 using CKAN.GUI.Attributes;
 
 namespace Tests.GUI

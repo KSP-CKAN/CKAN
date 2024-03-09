@@ -25,6 +25,8 @@ namespace CKAN.GUI
         public bool RepositoryRemoved { get; private set; } = false;
         public bool RepositoryMoved   { get; private set; } = false;
 
+        private GameInstanceManager manager => Main.Instance.Manager;
+
         private readonly IConfiguration   coreConfig;
         private readonly GUIConfiguration guiConfig;
         private readonly RegistryManager  regMgr;
@@ -103,7 +105,7 @@ namespace CKAN.GUI
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (CachePath.Text != coreConfig.DownloadCacheDir
-                && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
+                && !manager.TrySetupCache(CachePath.Text, out string failReason))
             {
                 user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                 e.Cancel = true;
@@ -260,13 +262,13 @@ namespace CKAN.GUI
             {
                 // Switch main cache since user seems committed to this path
                 if (CachePath.Text != coreConfig.DownloadCacheDir
-                    && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
+                    && !manager.TrySetupCache(CachePath.Text, out string failReason))
                 {
                     user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                     return;
                 }
 
-                Main.Instance.Manager.Cache.EnforceSizeLimit(
+                manager.Cache.EnforceSizeLimit(
                     coreConfig.CacheSizeLimit.Value,
                     regMgr.registry);
                 UpdateCacheInfo(coreConfig.DownloadCacheDir);
@@ -277,13 +279,13 @@ namespace CKAN.GUI
         {
             // Switch main cache since user seems committed to this path
             if (CachePath.Text != coreConfig.DownloadCacheDir
-                && !Main.Instance.Manager.TrySetupCache(CachePath.Text, out string failReason))
+                && !manager.TrySetupCache(CachePath.Text, out string failReason))
             {
                 user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                 return;
             }
 
-            Main.Instance.Manager.Cache.GetSizeInfo(
+            manager.Cache.GetSizeInfo(
                 out int cacheFileCount, out long cacheSize, out _);
 
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
@@ -295,7 +297,7 @@ namespace CKAN.GUI
             if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
             {
                 // Tell the cache object to nuke itself
-                Main.Instance.Manager.Cache.RemoveAll();
+                manager.Cache.RemoveAll();
 
                 UpdateCacheInfo(coreConfig.DownloadCacheDir);
             }

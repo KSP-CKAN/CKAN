@@ -146,10 +146,7 @@ namespace CKAN.GUI
             // Install
             Wait.StartWaiting(InstallMods, PostInstallMods, true,
                 new InstallArgument(
-                    ManageMods.mainModList
-                              .ComputeUserChangeSet(
-                                  RegistryManager.Instance(CurrentInstance, repoData).registry,
-                                  CurrentInstance.VersionCriteria())
+                    ManageMods.ComputeUserChangeSet()
                               .ToList(),
                     RelationshipResolverOptions.DependsOnlyOpts())
             );

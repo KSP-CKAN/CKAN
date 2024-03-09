@@ -250,7 +250,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader GamePlayTime;
         private System.Windows.Forms.ColumnHeader GameInstallPath;
         private System.Windows.Forms.Button SelectButton;
-        private DropdownMenuButton AddNewButton;
+        private CKAN.GUI.DropdownMenuButton AddNewButton;
         private System.Windows.Forms.ContextMenuStrip AddNewMenu;
         private System.Windows.Forms.ContextMenuStrip InstanceListContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem openDirectoryMenuItem;

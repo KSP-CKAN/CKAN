@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Linq;
 
 using log4net;
 
@@ -53,6 +54,11 @@ namespace CKAN.CmdLine
             if (exportFileType == null)
             {
                 var installed = new SortedDictionary<string, ModuleVersion>(registry.Installed());
+                var upgradeable = registry
+                                  .CheckUpgradeable(instance.VersionCriteria(), new HashSet<string>())
+                                  [true]
+                                  .Select(m => m.identifier)
+                                  .ToHashSet();
 
                 foreach (KeyValuePair<string, ModuleVersion> mod in installed)
                 {
@@ -102,7 +108,7 @@ namespace CKAN.CmdLine
                                     }
                                 }
                             }
-                            else if (latest.version.IsEqualTo(current_version) && !registry.HasUpdate(mod.Key, instance.VersionCriteria()))
+                            else if (!upgradeable.Contains(mod.Key))
                             {
                                 // Up to date
                                 log.InfoFormat("Latest {0} is {1}", mod.Key, latest.version);
@@ -119,7 +125,7 @@ namespace CKAN.CmdLine
                                     }
                                 }
                             }
-                            else if (latest.version.IsGreaterThan(mod.Value) || registry.HasUpdate(mod.Key, instance.VersionCriteria()))
+                            else
                             {
                                 // Upgradable
                                 bullet = "^";

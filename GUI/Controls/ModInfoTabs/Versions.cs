@@ -64,6 +64,10 @@ namespace CKAN.GUI
             }
         }
 
+        private GameInstance        currentInstance => Main.Instance.CurrentInstance;
+        private GameInstanceManager manager         => Main.Instance.Manager;
+        private IUser               user            => Main.Instance.currentUser;
+
         private readonly RepositoryDataManager repoData;
         private GUIMod                  visibleGuiModule;
         private bool                    ignoreItemCheck;
@@ -71,39 +75,37 @@ namespace CKAN.GUI
 
         private void VersionsListView_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (ignoreItemCheck || e.CurrentValue == e.NewValue)
+            if (!ignoreItemCheck && e.CurrentValue != e.NewValue
+                && VersionsListView.Items[e.Index].Tag is CkanModule module)
             {
-                return;
-            }
-            ListViewItem item   = VersionsListView.Items[e.Index];
-            CkanModule   module = item.Tag as CkanModule;
-            switch (e.NewValue)
-            {
-                case CheckState.Checked:
-                    if (allowInstall(module))
-                    {
-                        // Add this version to the change set
-                        visibleGuiModule.SelectedMod = module;
-                    }
-                    else
-                    {
-                        // Abort! Abort!
-                        e.NewValue = CheckState.Unchecked;
-                    }
-                    break;
+                switch (e.NewValue)
+                {
+                    case CheckState.Checked:
+                        if (allowInstall(module))
+                        {
+                            // Add this version to the change set
+                            visibleGuiModule.SelectedMod = module;
+                        }
+                        else
+                        {
+                            // Abort! Abort!
+                            e.NewValue = CheckState.Unchecked;
+                        }
+                        break;
 
-                case CheckState.Unchecked:
-                    // Remove or cancel installation
-                    visibleGuiModule.SelectedMod = null;
-                    break;
+                    case CheckState.Unchecked:
+                        // Remove or cancel installation
+                        visibleGuiModule.SelectedMod = null;
+                        break;
+                }
             }
         }
 
         [ForbidGUICalls]
-        private static bool installable(ModuleInstaller     installer,
-                                        CkanModule          module,
-                                        IRegistryQuerier    registry)
-            => installable(installer, module, registry, Main.Instance.CurrentInstance.VersionCriteria());
+        private bool installable(ModuleInstaller     installer,
+                                 CkanModule          module,
+                                 IRegistryQuerier    registry)
+            => installable(installer, module, registry, currentInstance.VersionCriteria());
 
         [ForbidGUICalls]
         private static bool installable(ModuleInstaller     installer,
@@ -117,12 +119,8 @@ namespace CKAN.GUI
 
         private bool allowInstall(CkanModule module)
         {
-            GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
             IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            var installer = new ModuleInstaller(
-                currentInstance,
-                Main.Instance.Manager.Cache,
-                Main.Instance.currentUser);
+            var installer = new ModuleInstaller(currentInstance, manager.Cache, user);
 
             return installable(installer, module, registry)
                 || Main.Instance.YesNoDialog(
@@ -157,7 +155,6 @@ namespace CKAN.GUI
 
         private List<CkanModule> getVersions(GUIMod gmod)
         {
-            GameInstance currentInstance = Main.Instance.Manager.CurrentInstance;
             IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
 
             // Can't be functional because AvailableByIdentifier throws exceptions
@@ -183,7 +180,6 @@ namespace CKAN.GUI
 
         private ListViewItem[] getItems(GUIMod gmod, List<CkanModule> versions)
         {
-            GameInstance     currentInstance  = Main.Instance.Manager.CurrentInstance;
             IRegistryQuerier registry         = RegistryManager.Instance(currentInstance, repoData).registry;
             ModuleVersion    installedVersion = registry.InstalledVersion(gmod.Identifier);
 
@@ -220,20 +216,20 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private void checkInstallable(ListViewItem[] items)
         {
-            var currentInstance = Main.Instance.Manager.CurrentInstance;
-            var registry        = RegistryManager.Instance(currentInstance, repoData).registry;
-            var installer       = new ModuleInstaller(currentInstance,
-                                                      Main.Instance.Manager.Cache,
-                                                      Main.Instance.currentUser);
+            var registry  = RegistryManager.Instance(currentInstance, repoData).registry;
+            var installer = new ModuleInstaller(currentInstance, manager.Cache, user);
             ListViewItem latestCompatible = null;
             // Load balance the items so they're processed roughly in-order instead of blocks
             Partitioner.Create(items, true)
                        // Distribute across cores
                        .AsParallel()
-                       // Abort when they switch to another mod
-                       .WithCancellation(cancelTokenSrc.Token)
                        // Return them as they're processed
                        .WithMergeOptions(ParallelMergeOptions.NotBuffered)
+                       // Abort when they switch to another mod
+                       .WithCancellation(cancelTokenSrc.Token)
+                       // Check the important ones first
+                       .OrderBy(item => (item.Tag as CkanModule) != visibleGuiModule.InstalledMod?.Module
+                                        && (item.Tag as CkanModule) != visibleGuiModule.SelectedMod)
                        // Slow step to be performed across multiple cores
                        .Where(item => installable(installer, item.Tag as CkanModule, registry))
                        // Jump back to GUI thread for the updates for each compatible item

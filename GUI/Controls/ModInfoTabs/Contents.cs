@@ -27,7 +27,6 @@ namespace CKAN.GUI
         {
             set
             {
-                var module = value?.ToModule();
                 if (value != selectedModule)
                 {
                     selectedModule = value;
@@ -93,7 +92,7 @@ namespace CKAN.GUI
                 ContentsPreviewTree.Enabled = true;
                 ContentsPreviewTree.Nodes.Clear();
                 var rootNode = ContentsPreviewTree.Nodes.Add("", module.ToString(), "folderZip", "folderZip");
-                if (!Main.Instance.Manager.Cache.IsMaybeCachedZip(module))
+                if (!manager.Cache.IsMaybeCachedZip(module))
                 {
                     NotCachedLabel.Text = Properties.Resources.ModInfoNotCached;
                     ContentsDownloadButton.Enabled = true;
@@ -103,7 +102,7 @@ namespace CKAN.GUI
                 else
                 {
                     rootNode.Text = Path.GetFileName(
-                        Main.Instance.Manager.Cache.GetCachedFilename(module));
+                        manager.Cache.GetCachedFilename(module));
                     NotCachedLabel.Text = Properties.Resources.ModInfoCached;
                     ContentsDownloadButton.Enabled = false;
                     ContentsOpenButton.Enabled = true;
@@ -114,7 +113,7 @@ namespace CKAN.GUI
                     {
                         var paths = new ModuleInstaller(
                                 manager.CurrentInstance,
-                                Main.Instance.Manager.Cache,
+                                manager.Cache,
                                 Main.Instance.currentUser)
                             .GetModuleContentsList(module)
                             // Load fully in bg

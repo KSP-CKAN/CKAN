@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] New Crowdin updates (#4019 by: Olympic1, vinix38; reviewed: HebaruSan)
 - [Core] Support Windows KSP1 instances on Linux (#4044 by: HebaruSan)
 - [GUI] I18n updates from Crowdin (#4050 by: HebaruSan)
+- [Multiple] Better version specific relationships at install and upgrade (#4023 by: HebaruSan)
 
 ### Bugfixes
 

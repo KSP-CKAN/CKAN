@@ -79,5 +79,10 @@ namespace CKAN.GUI
                 return false;
             }
         }
+
+        public IEnumerable<string> HeldIdentifiers(GameInstance inst)
+            => LabelsFor(inst.Name).Where(l => l.HoldVersion)
+                                   .SelectMany(l => l.IdentifiersFor(inst.game))
+                                   .Distinct();
     }
 }

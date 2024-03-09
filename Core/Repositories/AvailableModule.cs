@@ -171,6 +171,20 @@ namespace CKAN
                         }
                     }
                 }
+                // And check reverse depends for version limits
+                if (other.depends != null)
+                {
+                    foreach (RelationshipDescriptor rel in other.depends)
+                    {
+                        // If 'others' matches an identifier, it must also match the versions, else fail
+                        if (rel.ContainsAny(Enumerable.Repeat(module.identifier, 1))
+                            && !rel.MatchesAny(selfArray, null, null))
+                        {
+                            log.DebugFormat("Unmatched reverse dependency from {0}, rejecting", other);
+                            return false;
+                        }
+                    }
+                }
             }
             return true;
         }

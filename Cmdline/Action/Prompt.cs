@@ -202,7 +202,7 @@ namespace CKAN.CmdLine
             CKAN.GameInstance inst = MainClass.GetGameInstance(manager);
             var registry = RegistryManager.Instance(inst, repoData).registry;
             return registry.Installed(false, false)
-                           .Select(kvp => kvp.Key)
+                           .Keys
                            .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)
                                            && !registry.GetInstalledVersion(ident).IsDLC)
                            .ToArray();
@@ -214,7 +214,7 @@ namespace CKAN.CmdLine
 
         private string[] GetGameInstances(string prefix)
             => manager.Instances
-                      .Select(kvp => kvp.Key)
+                      .Keys
                       .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
                       .ToArray();
 

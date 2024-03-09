@@ -468,19 +468,9 @@ namespace CKAN
                     throw new ModuleNotFoundKraken(ident, version,
                         string.Format(Properties.Resources.CkanModuleNotAvailable, ident, version));
                 }
+                return module;
             }
-            else
-            {
-                module = registry.LatestAvailable(mod, ksp_version)
-                      ?? registry.InstalledModule(mod)?.Module;
-
-                if (module == null)
-                {
-                    throw new ModuleNotFoundKraken(mod, null,
-                        string.Format(Properties.Resources.CkanModuleNotInstalledOrAvailable, mod));
-                }
-            }
-            return module;
+            return null;
         }
 
         public static readonly Regex idAndVersionMatcher =

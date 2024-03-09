@@ -17,6 +17,8 @@ namespace CKAN.GUI
             StartPosition = FormStartPosition.CenterScreen;
         }
 
+        private PluginController pluginController => Main.Instance.pluginController;
+
         private readonly OpenFileDialog m_AddNewPluginDialog = new OpenFileDialog();
 
         private void PluginsDialog_Load(object sender, EventArgs e)
@@ -35,7 +37,7 @@ namespace CKAN.GUI
 
         private void RefreshActivePlugins()
         {
-            var activePlugins = Main.Instance.pluginController.ActivePlugins;
+            var activePlugins = pluginController.ActivePlugins;
 
             ActivePluginsListBox.Items.Clear();
             foreach (var plugin in activePlugins)
@@ -46,7 +48,7 @@ namespace CKAN.GUI
 
         private void RefreshDormantPlugins()
         {
-            var dormantPlugins = Main.Instance.pluginController.DormantPlugins;
+            var dormantPlugins = pluginController.DormantPlugins;
 
             DormantPluginsListBox.Items.Clear();
             foreach (var plugin in dormantPlugins)
@@ -70,7 +72,7 @@ namespace CKAN.GUI
             }
 
             var plugin = (IGUIPlugin) ActivePluginsListBox.SelectedItem;
-            Main.Instance.pluginController.DeactivatePlugin(plugin);
+            pluginController.DeactivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -83,8 +85,8 @@ namespace CKAN.GUI
             }
 
             var plugin = (IGUIPlugin)ActivePluginsListBox.SelectedItem;
-            Main.Instance.pluginController.DeactivatePlugin(plugin);
-            Main.Instance.pluginController.ActivatePlugin(plugin);
+            pluginController.DeactivatePlugin(plugin);
+            pluginController.ActivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -104,7 +106,7 @@ namespace CKAN.GUI
             }
 
             var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
-            Main.Instance.pluginController.ActivatePlugin(plugin);
+            pluginController.ActivatePlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -117,7 +119,7 @@ namespace CKAN.GUI
             }
 
             var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
-            Main.Instance.pluginController.UnloadPlugin(plugin);
+            pluginController.UnloadPlugin(plugin);
             RefreshActivePlugins();
             RefreshDormantPlugins();
         }
@@ -127,7 +129,7 @@ namespace CKAN.GUI
             if (m_AddNewPluginDialog.ShowDialog(this) == DialogResult.OK)
             {
                 var path = m_AddNewPluginDialog.FileName;
-                Main.Instance.pluginController.AddNewAssemblyToPluginsPath(path);
+                pluginController.AddNewAssemblyToPluginsPath(path);
                 RefreshDormantPlugins();
             }
         }

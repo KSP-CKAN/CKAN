@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -39,12 +40,12 @@ namespace Tests.GUI
 
                 var mod = new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
                                      null, false, false);
-                Assert.False(mod.IsUpgradeChecked);
+                Assert.True(mod.SelectedMod == mod.InstalledMod?.Module);
             }
         }
 
         [Test]
-        public void HasUpdateReturnsTrueWhenUpdateAvailable()
+        public void HasUpdate_UpdateAvailable_ReturnsTrue()
         {
             var user = new NullUser();
             using (var tidy = new DisposableKSP())
@@ -63,9 +64,14 @@ namespace Tests.GUI
                     var registry = new Registry(repoData.Manager, repo.repo);
 
                     registry.RegisterModule(old_version, Enumerable.Empty<string>(), null, false);
+                    var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP.VersionCriteria(),
+                                                                      new HashSet<string>());
 
                     var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
-                                         null, false, false);
+                                         null, false, false)
+                    {
+                        HasUpdate = upgradeableGroups[true].Any(m => m.identifier == old_version.identifier),
+                    };
                     Assert.True(mod.HasUpdate);
                 }
             }

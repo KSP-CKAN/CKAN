@@ -266,6 +266,9 @@ namespace CKAN.ConsoleUI {
                 const int lblW = 16;
                 int nameW = midL - 2 - lblW - 2 - 1;
                 int depsH = (h - 2) * numDeps / (numDeps + numConfs);
+                var upgradeableGroups = registry
+                                        .CheckUpgradeable(manager.CurrentInstance.VersionCriteria(),
+                                                          new HashSet<string>());
 
                 AddObject(new ConsoleFrame(
                     1, top, midL, top + h - 1,
@@ -290,7 +293,8 @@ namespace CKAN.ConsoleUI {
                     foreach (RelationshipDescriptor rd in mod.depends) {
                         tb.AddLine(ScreenObject.TruncateLength(
                             // Show install status
-                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
+                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString(),
+                                                                         upgradeableGroups[true]))
                                 + rd.ToString(),
                             nameW
                         ));
@@ -315,7 +319,8 @@ namespace CKAN.ConsoleUI {
                     foreach (RelationshipDescriptor rd in mod.conflicts) {
                         tb.AddLine(ScreenObject.TruncateLength(
                             // Show install status
-                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString()))
+                            ModListScreen.StatusSymbol(plan.GetModStatus(manager, registry, rd.ToString(),
+                                                                         upgradeableGroups[true]))
                             + rd.ToString(),
                             nameW
                         ));

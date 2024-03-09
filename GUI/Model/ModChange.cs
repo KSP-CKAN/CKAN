@@ -157,7 +157,7 @@ namespace CKAN.GUI
         /// <summary>
         /// The target version for upgrading
         /// </summary>
-        public readonly CkanModule targetMod;
+        public CkanModule targetMod;
 
         private bool IsReinstall
             => targetMod.identifier == Mod.identifier

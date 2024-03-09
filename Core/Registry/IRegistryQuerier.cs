@@ -168,45 +168,99 @@ namespace CKAN
                 && querier.InstalledVersion(identifier) is UnmanagedModuleVersion;
 
         /// <summary>
-        /// Is the mod installed and does it have a newer version compatible with version
+        /// Is the mod installed and does it have a newer version compatible with versionCrit
         /// </summary>
-        public static bool HasUpdate(this IRegistryQuerier querier, string identifier, GameVersionCriteria version)
+        public static bool HasUpdate(this IRegistryQuerier   querier,
+                                     string                  identifier,
+                                     GameVersionCriteria     versionCrit,
+                                     out CkanModule          latestMod,
+                                     ICollection<CkanModule> installed = null)
         {
-            CkanModule newest_version;
+            // Check if it's installed (including manually!)
+            var instVer = querier.InstalledVersion(identifier);
+            if (instVer == null)
+            {
+                latestMod = null;
+                return false;
+            }
+            // Check if it's available
             try
             {
-                // Check if it's both installed and available
-                newest_version = querier.LatestAvailable(identifier, version);
-                if (newest_version == null || !querier.IsInstalled(identifier, false))
-                {
-                    return false;
-                }
-                // Check if the installed module is up to date
-                if (newest_version.version <= querier.InstalledVersion(identifier)
-                    && !querier.MetadataChanged(identifier))
-                {
-                    return false;
-                }
-                // All quick checks pass. Now check the relationships.
-                var instMod = querier.InstalledModule(identifier);
-                RelationshipResolver resolver = new RelationshipResolver(
-                    new CkanModule[] { newest_version },
-                    // Remove the old module when installing the new one
-                    instMod == null ? null : new CkanModule[] { instMod.Module },
-                    new RelationshipResolverOptions()
-                    {
-                        with_recommends = false,
-                        without_toomanyprovides_kraken = true,
-                    },
-                    querier,
-                    version
-                );
+                latestMod = querier.LatestAvailable(identifier, versionCrit, null, installed);
             }
-            catch (Exception)
+            catch
+            {
+                latestMod = null;
+            }
+            if (latestMod == null)
             {
                 return false;
             }
+            // Check if the installed module is up to date
+            var comp = latestMod.version.CompareTo(instVer);
+            if (comp == -1
+                || (comp == 0 && !querier.MetadataChanged(identifier)))
+            {
+                latestMod = null;
+                return false;
+            }
+            // Checking with a RelationshipResolver here would commit us to
+            // testing against the currently installed modules in the registry,
+            // which could block us from upgrading away from a problem.
+            // Trust our LatestAvailable call above.
             return true;
+        }
+
+        public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
+                                                                          GameVersionCriteria   versionCrit,
+                                                                          HashSet<string>       heldIdents)
+        {
+            // Get the absolute latest versions ignoring restrictions,
+            // to break out of mutual version-depending deadlocks
+            var unlimited = querier.Installed(false)
+                                   .Keys
+                                   .Select(ident => !heldIdents.Contains(ident)
+                                                    && querier.HasUpdate(ident, versionCrit,
+                                                                         out CkanModule latest)
+                                                    && !latest.IsDLC
+                                                        ? latest
+                                                        : querier.GetInstalledVersion(ident))
+                                   .Where(m => m != null)
+                                   .ToList();
+            return querier.CheckUpgradeable(versionCrit, heldIdents, unlimited);
+        }
+
+        public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
+                                                                          GameVersionCriteria   versionCrit,
+                                                                          HashSet<string>       heldIdents,
+                                                                          List<CkanModule>      initial)
+        {
+            // Use those as the installed modules
+            var upgradeable    = new List<CkanModule>();
+            var notUpgradeable = new List<CkanModule>();
+            foreach (var ident in initial.Select(module => module.identifier))
+            {
+                if (!heldIdents.Contains(ident)
+                    && querier.HasUpdate(ident, versionCrit,
+                                         out CkanModule latest, initial)
+                    && !latest.IsDLC)
+                {
+                    upgradeable.Add(latest);
+                }
+                else
+                {
+                    var current = querier.InstalledModule(ident);
+                    if (current != null && !current.Module.IsDLC)
+                    {
+                        notUpgradeable.Add(current.Module);
+                    }
+                }
+            }
+            return new Dictionary<bool, List<CkanModule>>
+            {
+                { true,  upgradeable    },
+                { false, notUpgradeable },
+            };
         }
 
         private static bool MetadataChanged(this IRegistryQuerier querier, string identifier)

@@ -594,7 +594,7 @@ namespace CKAN
                                 .Concat(WellKnownDlcScan())
                                 .ToDictionary());
 
-        private IEnumerable<KeyValuePair<string, ModuleVersion>> TestDlcScan(string dlcDir)
+        private static IEnumerable<KeyValuePair<string, ModuleVersion>> TestDlcScan(string dlcDir)
             => (Directory.Exists(dlcDir)
                        ? Directory.EnumerateFiles(dlcDir, "*.dlc",
                                                   SearchOption.TopDirectoryOnly)
