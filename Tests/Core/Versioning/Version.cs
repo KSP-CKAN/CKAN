@@ -1,5 +1,6 @@
-using CKAN.Versioning;
 using NUnit.Framework;
+
+using CKAN.Versioning;
 
 namespace Tests.Core.Versioning
 {

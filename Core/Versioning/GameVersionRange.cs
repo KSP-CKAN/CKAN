@@ -16,18 +16,8 @@ namespace CKAN.Versioning
 
         public GameVersionRange(GameVersionBound lower, GameVersionBound upper)
         {
-            if (lower is null)
-            {
-                throw new ArgumentNullException("lower");
-            }
-
-            if (upper is null)
-            {
-                throw new ArgumentNullException("upper");
-            }
-
-            Lower = lower;
-            Upper = upper;
+            Lower = lower ?? GameVersionBound.Unbounded;
+            Upper = upper ?? GameVersionBound.Unbounded;
 
             _string = DeriveString(this);
         }
@@ -35,7 +25,7 @@ namespace CKAN.Versioning
         public GameVersionRange(GameVersion lower, GameVersion upper)
             : this(lower?.ToVersionRange().Lower, upper?.ToVersionRange().Upper) { }
 
-        public override string ToString() =>_string;
+        public override string ToString() => _string;
 
         public GameVersionRange IntersectWith(GameVersionRange other)
         {

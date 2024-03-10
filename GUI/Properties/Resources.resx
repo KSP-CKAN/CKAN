@@ -200,13 +200,18 @@ This means that CKAN forgot about all your installed mods, but they are still in
   <data name="AllModVersionsInstallPrompt" xml:space="preserve"><value>{0} is not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with it, you should NOT ask its maintainers for help.
 
 Do you really want to install it?</value></data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
+  <data name="MetapackageAddCompatibilityPrompt" xml:space="preserve"><value>The selected modpacks are compatible with {0}, but your game instance is only compatible with {1}. This may cause some dependencies to fail to install.
+
+Do you want to add the additional versions to this game instance's compatibility list?</value></data>
+  <data name="MetapackageAddCompatibilityYes" xml:space="preserve"><value>Add compatible versions</value></data>
+  <data name="MetapackageAddCompatibilityNo" xml:space="preserve"><value>Keep current compatibility</value></data>
   <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve"><value>Some of the selected mods (or their dependencies) are not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with them, you should NOT ask their maintainers for help.
 
 {0}
 
 Are you sure you want to install them? Cancelling will abort the entire installation.</value></data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Install</value></data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Cancel</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
   <data name="MainChangesetReinstall" xml:space="preserve"><value>Re-install (metadata changed)</value></data>
   <data name="MainChangesetUserReinstall" xml:space="preserve"><value>Re-install (user requested)</value></data>
