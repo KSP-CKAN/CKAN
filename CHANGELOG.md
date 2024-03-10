@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] De-over-parallelize Versions tab (#4049 by: HebaruSan)
 - [GUI] Use better console hiding API (#4051 by: HebaruSan)
 - [Core] Trigger progress updates for frozen downloads (#4052 by: HebaruSan)
+- [GUI] Fix NRE on trying to update all when there's nothing to update (#4054 by: HebaruSan)
 
 ### Internal
 

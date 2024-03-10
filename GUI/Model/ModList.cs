@@ -43,7 +43,7 @@ namespace CKAN.GUI
     public class ModList
     {
         //identifier, row
-        internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows;
+        internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
 
         public event Action ModFiltersUpdated;
         public IReadOnlyCollection<GUIMod> Modules { get; private set; } =

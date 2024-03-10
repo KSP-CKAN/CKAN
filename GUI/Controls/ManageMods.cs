@@ -154,17 +154,17 @@ namespace CKAN.GUI
                 var removing = changeIdentifiersOfType(GUIModChangeType.Remove)
                                .Except(changeIdentifiersOfType(GUIModChangeType.Install))
                                .ToHashSet();
-                foreach (var kvp in mainModList.full_list_of_mod_rows)
+                foreach ((string ident, DataGridViewRow row) in mainModList.full_list_of_mod_rows)
                 {
-                    if (removing.Contains(kvp.Key))
+                    if (removing.Contains(ident))
                     {
                         // Set strikeout font for rows being uninstalled
-                        kvp.Value.DefaultCellStyle.Font = uninstallingFont;
+                        row.DefaultCellStyle.Font = uninstallingFont;
                     }
-                    else if (kvp.Value.DefaultCellStyle.Font != null)
+                    else if (row.DefaultCellStyle.Font != null)
                     {
                         // Clear strikeout font for rows not being uninstalled
-                        kvp.Value.DefaultCellStyle.Font = null;
+                        row.DefaultCellStyle.Font = null;
                     }
                 }
             });
