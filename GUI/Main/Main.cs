@@ -696,7 +696,7 @@ namespace CKAN.GUI
         private void InstallFromCkanFiles(string[] files)
         {
             // We'll need to make some registry changes to do this.
-            RegistryManager registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
+            var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
             var crit = CurrentInstance.VersionCriteria();
 
             var installed = registry_manager.registry.InstalledModules.Select(inst => inst.Module).ToList();
@@ -743,6 +743,34 @@ namespace CKAN.GUI
                     continue;
                 }
             }
+
+            CkanModule.GetMinMaxVersions(toInstall.Where(m => m.IsMetapackage),
+                                         out _, out _,
+                                         out GameVersion minGame, out GameVersion maxGame);
+            var filesRange = new GameVersionRange(minGame, maxGame);
+            var instRanges = crit.Versions.Select(gv => gv.ToVersionRange())
+                                          .ToList();
+            var missing = CurrentInstance.game
+                                         .KnownVersions
+                                         .Where(gv => filesRange.Contains(gv)
+                                                      && !instRanges.Any(ir => ir.Contains(gv)))
+                                         // Use broad Major.Minor group for each specific version
+                                         .Select(gv => new GameVersion(gv.Major, gv.Minor))
+                                         .Distinct()
+                                         .ToList();
+            if (missing.Any()
+                && YesNoDialog(string.Format(Properties.Resources.MetapackageAddCompatibilityPrompt,
+                                             filesRange.ToSummaryString(CurrentInstance.game),
+                                             crit.ToSummaryString(CurrentInstance.game)),
+                               Properties.Resources.MetapackageAddCompatibilityYes,
+                               Properties.Resources.MetapackageAddCompatibilityNo))
+            {
+                CurrentInstance.SetCompatibleVersions(crit.Versions
+                                                          .Concat(missing)
+                                                          .ToList());
+                crit = CurrentInstance.VersionCriteria();
+            }
+
             // Get all recursively incompatible module identifiers (quickly)
             var allIncompat = registry_manager.registry.IncompatibleModules(crit)
                 .Select(mod => mod.identifier)
@@ -751,12 +779,11 @@ namespace CKAN.GUI
             var myIncompat = toInstall.Where(mod => allIncompat.Contains(mod.identifier)).ToList();
             if (!myIncompat.Any()
                 // Confirm installation of incompatible like the Versions tab does
-                || Instance.YesNoDialog(
-                    string.Format(Properties.Resources.ModpackInstallIncompatiblePrompt,
-                        string.Join(Environment.NewLine, myIncompat),
-                        crit.ToSummaryString(CurrentInstance.game)),
-                    Properties.Resources.AllModVersionsInstallYes,
-                    Properties.Resources.AllModVersionsInstallNo))
+                || YesNoDialog(string.Format(Properties.Resources.ModpackInstallIncompatiblePrompt,
+                                             string.Join(Environment.NewLine, myIncompat),
+                                             crit.ToSummaryString(CurrentInstance.game)),
+                               Properties.Resources.AllModVersionsInstallYes,
+                               Properties.Resources.AllModVersionsInstallNo))
             {
                 UpdateChangesDialog(toInstall.Select(m => new ModChange(m, GUIModChangeType.Install))
                                              .ToList(),

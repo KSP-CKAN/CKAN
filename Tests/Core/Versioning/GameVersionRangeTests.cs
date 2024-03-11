@@ -463,27 +463,25 @@ namespace Tests.Core.Versioning
         }
 
         [Test]
-        public void CtorThrowsOnNullLowerParameter()
+        public void Ctor_NullLowerParameter_Unbounded()
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act =
-                () => new GameVersionRange(null, new GameVersionBound(new GameVersion(1, 2, 3, 4), false));
+            var range = new GameVersionRange(null, new GameVersionBound(new GameVersion(1, 2, 3, 4), false));
 
             // Assert
-            Assert.That(act, Throws.Exception);
+            Assert.AreEqual(GameVersionBound.Unbounded, range.Lower);
         }
 
         [Test]
-        public void CtorThrowsOnNullUpperParameter()
+        public void Ctor_NullUpperParameter_Unbounded()
         {
             // Act
             // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act =
-                () => new GameVersionRange(new GameVersionBound(new GameVersion(1, 2, 3, 4), false), null);
+            var range = new GameVersionRange(new GameVersionBound(new GameVersion(1, 2, 3, 4), false), null);
 
             // Assert
-            Assert.That(act, Throws.Exception);
+            Assert.AreEqual(GameVersionBound.Unbounded, range.Upper);
         }
 
         [TestCaseSource("ToStringCases")]

@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] I18n updates from Crowdin (#4050 by: HebaruSan)
 - [Multiple] Better version specific relationships at install and upgrade (#4023 by: HebaruSan)
 - [GUI] Proportional, granular progress updates for installing (#4055 by: HebaruSan)
+- [GUI] Modpack compatibility prompt, GameComparator clean-up (#4056 by: HebaruSan)
 
 ### Bugfixes
 

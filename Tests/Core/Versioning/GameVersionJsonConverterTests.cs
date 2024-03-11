@@ -1,7 +1,9 @@
 using System;
-using CKAN.Versioning;
+
 using Newtonsoft.Json;
 using NUnit.Framework;
+
+using CKAN.Versioning;
 
 #pragma warning disable 414
 

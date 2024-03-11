@@ -1,3 +1,5 @@
+using System.Linq;
+
 using CKAN.Versioning;
 
 namespace CKAN
@@ -6,22 +8,13 @@ namespace CKAN
     {
         public BaseGameComparator() { }
 
-        public virtual bool Compatible(GameVersionCriteria gameVersionCriteria, CkanModule module)
-        {
-            if (gameVersionCriteria.Versions.Count == 0)
-            {
-                return true;
-            }
-            foreach (GameVersion gameVersion in gameVersionCriteria.Versions)
-            {
-                if (SingleVersionsCompatible (gameVersion, module))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        public virtual bool Compatible(GameVersionCriteria gameVersionCriteria,
+                                       CkanModule          module)
+            => gameVersionCriteria.Versions.Count == 0
+                || gameVersionCriteria.Versions
+                                      .Any(gv => SingleVersionsCompatible(gv, module));
 
-        public abstract bool SingleVersionsCompatible(GameVersion gameVersionCriteria, CkanModule module);
+        public abstract bool SingleVersionsCompatible(GameVersion gameVersionCriteria,
+                                                      CkanModule  module);
     }
 }

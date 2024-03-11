@@ -1,7 +1,9 @@
 using System;
+
+using NUnit.Framework;
+
 using CKAN;
 using CKAN.Versioning;
-using NUnit.Framework;
 using Tests.Data;
 
 namespace Tests.Core.Types
@@ -19,10 +21,7 @@ namespace Tests.Core.Types
             gameMod = TestData.kOS_014_module();
         }
 
-        [Test]
-        [TestCase(typeof(StrictGameComparator), true)]
-        [TestCase(typeof(GrasGameComparator), true)]
-        [TestCase(typeof(YoyoGameComparator), true)]
+        [Test, TestCase(typeof(StrictGameComparator), true)]
         public void TotallyCompatible(Type type, bool expected)
         {
             var comparator = (IGameComparator) Activator.CreateInstance(type);
@@ -35,10 +34,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
-        [Test]
-        [TestCase(typeof(StrictGameComparator), false)]
-        [TestCase(typeof(GrasGameComparator), true)]
-        [TestCase(typeof(YoyoGameComparator), true)]
+        [Test, TestCase(typeof(StrictGameComparator), false)]
         public void GenerallySafeLax(Type type, bool expected)
         {
             var comparator = (IGameComparator) Activator.CreateInstance(type);
@@ -51,10 +47,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
-        [Test]
-        [TestCase(typeof(StrictGameComparator), false)]
-        [TestCase(typeof(GrasGameComparator), false)]
-        [TestCase(typeof(YoyoGameComparator), true)]
+        [Test, TestCase(typeof(StrictGameComparator), false)]
         public void GenerallySafeStrict(Type type, bool expected)
         {
             var comparator = (IGameComparator) Activator.CreateInstance(type);
@@ -69,10 +62,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expected, comparator.Compatible(new GameVersionCriteria (gameVersion), gameMod));
         }
 
-        [Test]
-        [TestCase(typeof(StrictGameComparator), false)]
-        [TestCase(typeof(GrasGameComparator), false)]
-        [TestCase(typeof(YoyoGameComparator), true)]
+        [Test, TestCase(typeof(StrictGameComparator), false)]
         public void Incompatible(Type type, bool expected)
         {
             var comparator = (IGameComparator) Activator.CreateInstance(type);
@@ -83,7 +73,7 @@ namespace Tests.Core.Types
 
         public static readonly object[] TestStrictGameComparatorCases =
         {
-                        //MOD comapat.      //KSP           //expected
+            //             Mod compat.      KSP             expected
             new object[] { "1.0",           "1.0.4",        true },
             new object[] { "1.1",           "1.0.4",        false },
 
@@ -131,26 +121,26 @@ namespace Tests.Core.Types
 
         public static readonly object[] TestStrictGameComparatorMinMaxCases =
         {
-                        //Min comapat     //Max comapat     //KSP           //expected
-            new object[] { "1.0.4",           null,           "1.0.3",       false },
-            new object[] { "1.0.4",           null,           "1.0.4",       true },
-            new object[] { "1.0.4",           null,           "1.0.5",       true },
-            new object[] { "1.0.4",           null,           "1.1",         true },
+            //             Min comapat      Max comapat     KSP           expected
+            new object[] { "1.0.4",         null,           "1.0.3",      false },
+            new object[] { "1.0.4",         null,           "1.0.4",      true },
+            new object[] { "1.0.4",         null,           "1.0.5",      true },
+            new object[] { "1.0.4",         null,           "1.1",        true },
 
-            new object[] { "1.0",           null,           "0.9",          false },
-            new object[] { "1.0",           null,           "1.0",          true },
-            new object[] { "1.0",           null,           "1.0.4",        true },
-            new object[] { "1.0",           null,           "1.1",          true },
+            new object[] { "1.0",           null,           "0.9",        false },
+            new object[] { "1.0",           null,           "1.0",        true },
+            new object[] { "1.0",           null,           "1.0.4",      true },
+            new object[] { "1.0",           null,           "1.1",        true },
 
-            new object[] { "1.1",           null,           "1.0.4",        false },
-            new object[] { "1.1",           null,           "1.1",          true },
-            new object[] { "1.1",           null,           "1.1.1",        true },
-            new object[] { "1.1",           null,           "1.2",          true },
+            new object[] { "1.1",           null,           "1.0.4",      false },
+            new object[] { "1.1",           null,           "1.1",        true },
+            new object[] { "1.1",           null,           "1.1.1",      true },
+            new object[] { "1.1",           null,           "1.2",        true },
 
-            new object[] { null,            "1.0.4",        "1.0.5",        false },
-            new object[] { null,            "1.0.4",        "1.0.4",        true },
-            new object[] { null,            "1.0.4",        "1.0.3",        true },
-            new object[] { null,            "1.0.4",        "1.0",          true },
+            new object[] { null,            "1.0.4",        "1.0.5",      false },
+            new object[] { null,            "1.0.4",        "1.0.4",      true },
+            new object[] { null,            "1.0.4",        "1.0.3",      true },
+            new object[] { null,            "1.0.4",        "1.0",        true },
 
             new object[] { null,            "1.0",          "0.9",        true },
             new object[] { null,            "1.0",          "1.0",        true },
