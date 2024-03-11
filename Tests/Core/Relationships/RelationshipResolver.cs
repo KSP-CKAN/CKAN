@@ -312,7 +312,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod_a };
 
-                registry.RegisterModule(mod_a, Array.Empty<string>(), null, false);
+                registry.RegisterModule(mod_a, new List<string>(), null, false);
 
                 var relationship_resolver = new RelationshipResolver(
                     list, null, options, registry, null);
@@ -1036,8 +1036,8 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
 
                 // Start with eve and eveDefaultConfig installed
-                registry.RegisterModule(eve, Array.Empty<string>(), ksp.KSP, false);
-                registry.RegisterModule(eveDefaultConfig, Array.Empty<string>(), ksp.KSP, false);
+                registry.RegisterModule(eve, new List<string>(), ksp.KSP, false);
+                registry.RegisterModule(eveDefaultConfig, new List<string>(), ksp.KSP, false);
 
                 Assert.DoesNotThrow(() => registry.CheckSanity());
 

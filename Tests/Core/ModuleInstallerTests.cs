@@ -319,7 +319,7 @@ namespace Tests.Core
 
                 Assert.Throws<FileExistsKraken>(delegate
                 {
-                    ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
+                    ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false, null);
                 });
 
                 // Cleanup
@@ -357,7 +357,7 @@ namespace Tests.Core
 
             // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
             File.Delete(tmpfile);
-            ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false);
+            ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false, null);
 
             return tmpfile;
         }
@@ -662,7 +662,7 @@ namespace Tests.Core
                 var registry = RegistryManager.Instance(inst.KSP, repoData.Manager).registry;
                 // Make files to be registered to another mod
                 var absFiles = registeredFiles.Select(f => inst.KSP.ToAbsoluteGameDir(f))
-                                              .ToArray();
+                                              .ToList();
                 foreach (var absPath in absFiles)
                 {
                     Directory.CreateDirectory(Path.GetDirectoryName(absPath));
@@ -874,7 +874,7 @@ namespace Tests.Core
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache);
 
                 // Act
-                registry.RegisterModule(replaced, Enumerable.Empty<string>(), inst.KSP, false);
+                registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
                 manager.Cache.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
                 var replacement = querier.GetReplacement(replaced.identifier,
                                                          new GameVersionCriteria(new GameVersion(1, 12)));
@@ -940,7 +940,7 @@ namespace Tests.Core
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache);
 
                 // Act
-                registry.RegisterModule(replaced, Enumerable.Empty<string>(), inst.KSP, false);
+                registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
                 manager.Cache.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
                 var replacement = querier.GetReplacement(replaced.identifier,
                                                          new GameVersionCriteria(new GameVersion(1, 11)));
@@ -1006,14 +1006,14 @@ namespace Tests.Core
                 foreach (var m in regularMods)
                 {
                     registry.RegisterModule(CkanModule.FromJson(m),
-                                            Enumerable.Empty<string>(),
+                                            new List<string>(),
                                             inst.KSP,
                                             false);
                 }
                 foreach (var m in autoInstMods)
                 {
                     registry.RegisterModule(CkanModule.FromJson(m),
-                                            Enumerable.Empty<string>(),
+                                            new List<string>(),
                                             inst.KSP,
                                             true);
                 }
@@ -1098,7 +1098,7 @@ namespace Tests.Core
                     if (!querier.IsInstalled(module.identifier, false))
                     {
                         registry.RegisterModule(module,
-                                                Enumerable.Empty<string>(),
+                                                new List<string>(),
                                                 inst.KSP,
                                                 false);
                     }
@@ -1106,7 +1106,7 @@ namespace Tests.Core
                 foreach (var m in autoInstMods)
                 {
                     registry.RegisterModule(CkanModule.FromJson(m),
-                                            Enumerable.Empty<string>(),
+                                            new List<string>(),
                                             inst.KSP,
                                             true);
                 }

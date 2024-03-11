@@ -29,12 +29,15 @@ namespace CKAN
         /// <param name="currentFileOffset">How far into the current file we are</param>
         public void Report(long currentFileOffset)
         {
-            var percent = basePercent + (int)(100 * currentFileOffset / totalSize);
-            // Only report each percentage once, to avoid spamming UI calls
-            if (percent > lastPercent)
+            if (totalSize > 0)
             {
-                percentProgress.Report(percent);
-                lastPercent = percent;
+                var percent = basePercent + (int)(100 * currentFileOffset / totalSize);
+                // Only report each percentage once, to avoid spamming UI calls
+                if (percent > lastPercent)
+                {
+                    percentProgress.Report(percent);
+                    lastPercent = percent;
+                }
             }
         }
 
@@ -44,7 +47,10 @@ namespace CKAN
         public void NextFile()
         {
             doneSize += sizes[currentIndex];
-            basePercent = (int)(100 * doneSize / totalSize);
+            if (totalSize > 0)
+            {
+                basePercent = (int)(100 * doneSize / totalSize);
+            }
             ++currentIndex;
             if (basePercent > lastPercent)
             {

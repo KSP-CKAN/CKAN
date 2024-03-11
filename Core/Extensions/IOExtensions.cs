@@ -115,6 +115,12 @@ namespace CKAN.Extensions
                     lastProgressTime = now;
                 }
             }
+            if (timer != null)
+            {
+                timer.Stop();
+                timer.Close();
+                timer = null;
+            }
             // Make sure we get a final progress notification after we're done
             progress.Report(total);
         }
