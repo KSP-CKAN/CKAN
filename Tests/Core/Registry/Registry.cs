@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
@@ -316,8 +315,8 @@ namespace Tests.Core.Registry
                 CkanModule dependingMod = registry.GetModuleByVersion("DependingMod", "1.0");
 
                 GameInstance gameInst = gameInstWrapper.KSP;
-                registry.RegisterModule(olderDepMod,  Array.Empty<string>(), gameInst, false);
-                registry.RegisterModule(dependingMod, Array.Empty<string>(), gameInst, false);
+                registry.RegisterModule(olderDepMod,  new List<string>(), gameInst, false);
+                registry.RegisterModule(dependingMod, new List<string>(), gameInst, false);
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
 
                 // Act
@@ -420,7 +419,7 @@ namespace Tests.Core.Registry
             using (var tScope = new TransactionScope())
             {
                 reg = CKAN.Registry.Empty();
-                reg.RegisterModule(module, Enumerable.Empty<string>(),
+                reg.RegisterModule(module, new List<string>(),
                                    gameInstWrapper.KSP, false);
 
                 CollectionAssert.AreEqual(
@@ -451,7 +450,7 @@ namespace Tests.Core.Registry
             using (var gameInstWrapper = new DisposableKSP())
             using (var tScope = new TransactionScope())
             {
-                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                registry.RegisterModule(module, new List<string>(),
                                         gameInstWrapper.KSP, false);
 
                 CollectionAssert.AreEqual(
@@ -481,7 +480,7 @@ namespace Tests.Core.Registry
                                  ""version"":      ""1.0"",
                                  ""download"":     ""https://github.com/""
                              }");
-                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                registry.RegisterModule(module, new List<string>(),
                                         gameInstWrapper.KSP, false);
 
                 CollectionAssert.AreEqual(
@@ -515,7 +514,7 @@ namespace Tests.Core.Registry
                                  ""version"":      ""1.0"",
                                  ""download"":     ""https://github.com/""
                              }");
-                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                registry.RegisterModule(module, new List<string>(),
                                         gameInstWrapper.KSP, false);
 
                 using (var tScope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
@@ -528,7 +527,7 @@ namespace Tests.Core.Registry
                                           ""version"":      ""1.0"",
                                           ""download"":     ""https://github.com/""
                                       }");
-                        registry.RegisterModule(module2, Enumerable.Empty<string>(),
+                        registry.RegisterModule(module2, new List<string>(),
                                                 gameInstWrapper.KSP, false);
                     });
                     tScope2.Complete();
@@ -553,7 +552,7 @@ namespace Tests.Core.Registry
                                  ""version"":      ""1.0"",
                                  ""download"":     ""https://github.com/""
                              }");
-                registry.RegisterModule(module, Enumerable.Empty<string>(),
+                registry.RegisterModule(module, new List<string>(),
                                         gameInstWrapper.KSP, false);
 
                 using (var tScope2 = new TransactionScope())
@@ -566,7 +565,7 @@ namespace Tests.Core.Registry
                                           ""version"":      ""1.0"",
                                           ""download"":     ""https://github.com/""
                                       }");
-                        registry.RegisterModule(module2, Enumerable.Empty<string>(),
+                        registry.RegisterModule(module2, new List<string>(),
                                                 gameInstWrapper.KSP, false);
                     });
                     tScope2.Complete();

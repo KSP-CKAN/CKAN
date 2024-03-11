@@ -79,7 +79,7 @@ namespace Tests.CmdLine
                 regMgr.registry.RepositoriesAdd(repo.repo);
                 var fromModule = regMgr.registry.GetModuleByVersion(identifier, fromVersion);
                 var toModule   = regMgr.registry.GetModuleByVersion(identifier, toVersion);
-                regMgr.registry.RegisterModule(fromModule, Enumerable.Empty<string>(), inst.KSP, false);
+                regMgr.registry.RegisterModule(fromModule, new List<string>(), inst.KSP, false);
                 manager.Cache.Store(toModule, TestData.DogeCoinFlagZip(), null);
                 var opts = new UpgradeOptions()
                 {
@@ -598,7 +598,7 @@ namespace Tests.CmdLine
                 foreach (var fromModule in instMods)
                 {
                     regMgr.registry.RegisterModule(fromModule,
-                                                   Enumerable.Empty<string>(),
+                                                   new List<string>(),
                                                    inst.KSP, false);
                 }
                 // Pre-store mods that might be installed

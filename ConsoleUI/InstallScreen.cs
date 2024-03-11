@@ -65,10 +65,8 @@ namespace CKAN.ConsoleUI {
 
                         HashSet<string> possibleConfigOnlyDirs = null;
 
-                        ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this)
-                        {
-                            onReportModInstalled = OnModInstalled
-                        };
+                        ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
+                        inst.onReportModInstalled += OnModInstalled;
                         if (plan.Remove.Count > 0) {
                             inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                             plan.Remove.Clear();
@@ -103,9 +101,9 @@ namespace CKAN.ConsoleUI {
                         }
 
                         trans.Complete();
+                        inst.onReportModInstalled -= OnModInstalled;
                         // Don't let the installer re-use old screen references
                         inst.User = null;
-                        inst.onReportModInstalled = null;
 
                     } catch (CancelledActionKraken) {
                         // Don't need to tell the user they just cancelled out.

@@ -199,7 +199,7 @@ namespace Tests.Core.Registry
                 var regMgr   = RegistryManager.Instance(gameInst, repoData.Manager);
                 var registry = regMgr.registry;
                 var absReg   = registered.Select(p => gameInst.ToAbsoluteGameDir(p))
-                                                .ToArray();
+                                                .ToList();
                 var absUnreg = unregistered.Select(p => gameInst.ToAbsoluteGameDir(p))
                                                   .ToArray();
 
