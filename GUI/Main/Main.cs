@@ -418,33 +418,28 @@ namespace CKAN.GUI
             configuration?.Save();
             configuration = GUIConfigForInstance(Manager.SteamLibrary, CurrentInstance);
 
-            AutoUpdatePrompts(ServiceLocator.Container
-                                            .Resolve<IConfiguration>(),
-                              configuration);
-
-            bool autoUpdating = configuration.CheckForUpdatesOnLaunch
-                                && CheckForCKANUpdate();
-            if (autoUpdating)
-            {
-                UpdateCKAN();
-            }
-
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
             if (!Directory.Exists(pluginsPath))
             {
                 Directory.CreateDirectory(pluginsPath);
             }
-
             pluginController = new PluginController(pluginsPath, true);
 
             CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
 
             ManageMods.InstanceUpdated();
-            bool repoUpdateNeeded = configuration.RefreshOnStartup;
-            if (!autoUpdating)
+
+            AutoUpdatePrompts(ServiceLocator.Container
+                                            .Resolve<IConfiguration>(),
+                              configuration);
+
+            if (configuration.CheckForUpdatesOnLaunch && CheckForCKANUpdate())
             {
-                // If not allowing, don't do anything
-                if (repoUpdateNeeded)
+                UpdateCKAN();
+            }
+            else
+            {
+                if (configuration.RefreshOnStartup)
                 {
                     UpdateRepo(refreshWithoutChanges: true);
                 }

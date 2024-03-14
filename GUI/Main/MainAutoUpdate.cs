@@ -85,7 +85,7 @@ namespace CKAN.GUI
             var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
             var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo,
-                                update.Version));
+                                              update.Version));
 
             log.Info("Starting CKAN update");
             Wait.StartWaiting((sender, args) => updater.StartUpdateProcess(true, mainConfig.DevBuilds ?? false, currentUser),
