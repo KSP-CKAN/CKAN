@@ -288,7 +288,10 @@ namespace CKAN
                                              subtotal.Item2 ?? item.Item2,
                                              subtotal.Item3 ?? item.Item3,
                                              subtotal.Item4 ?? item.Item4,
-                                             subtotal.Item5 || item.Item1 == null),
+                                             subtotal.Item5 || (item.Item1 == null
+                                                                && item.Item2 == null
+                                                                && item.Item3 == null
+                                                                && item.Item4 == null)),
                                  (total, subtotal)
                                      => new ArchiveList(total.Item1.Concat(subtotal.Item1).ToList(),
                                                         total.Item2 ?? subtotal.Item2,
