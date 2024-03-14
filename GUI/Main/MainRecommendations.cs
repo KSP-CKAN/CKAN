@@ -21,7 +21,7 @@ namespace CKAN.GUI
 
         private void ChooseRecommendedMods_OnConflictFound(string message)
         {
-            currentUser.RaiseMessage(message);
+            StatusLabel.ToolTipText = StatusLabel.Text = message;
         }
 
         private void auditRecommendationsMenuItem_Click(object sender, EventArgs e)
