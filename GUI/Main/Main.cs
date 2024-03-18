@@ -739,31 +739,36 @@ namespace CKAN.GUI
                 }
             }
 
-            CkanModule.GetMinMaxVersions(toInstall.Where(m => m.IsMetapackage),
-                                         out _, out _,
-                                         out GameVersion minGame, out GameVersion maxGame);
-            var filesRange = new GameVersionRange(minGame, maxGame);
-            var instRanges = crit.Versions.Select(gv => gv.ToVersionRange())
-                                          .ToList();
-            var missing = CurrentInstance.game
-                                         .KnownVersions
-                                         .Where(gv => filesRange.Contains(gv)
-                                                      && !instRanges.Any(ir => ir.Contains(gv)))
-                                         // Use broad Major.Minor group for each specific version
-                                         .Select(gv => new GameVersion(gv.Major, gv.Minor))
-                                         .Distinct()
-                                         .ToList();
-            if (missing.Any()
-                && YesNoDialog(string.Format(Properties.Resources.MetapackageAddCompatibilityPrompt,
-                                             filesRange.ToSummaryString(CurrentInstance.game),
-                                             crit.ToSummaryString(CurrentInstance.game)),
-                               Properties.Resources.MetapackageAddCompatibilityYes,
-                               Properties.Resources.MetapackageAddCompatibilityNo))
+            var modpacks = toInstall.Where(m => m.IsMetapackage)
+                                    .ToArray();
+            if (modpacks.Any())
             {
-                CurrentInstance.SetCompatibleVersions(crit.Versions
-                                                          .Concat(missing)
-                                                          .ToList());
-                crit = CurrentInstance.VersionCriteria();
+                CkanModule.GetMinMaxVersions(modpacks,
+                                             out _, out _,
+                                             out GameVersion minGame, out GameVersion maxGame);
+                var filesRange = new GameVersionRange(minGame, maxGame);
+                var instRanges = crit.Versions.Select(gv => gv.ToVersionRange())
+                                              .ToList();
+                var missing = CurrentInstance.game
+                                             .KnownVersions
+                                             .Where(gv => filesRange.Contains(gv)
+                                                          && !instRanges.Any(ir => ir.Contains(gv)))
+                                             // Use broad Major.Minor group for each specific version
+                                             .Select(gv => new GameVersion(gv.Major, gv.Minor))
+                                             .Distinct()
+                                             .ToList();
+                if (missing.Any()
+                    && YesNoDialog(string.Format(Properties.Resources.MetapackageAddCompatibilityPrompt,
+                                                 filesRange.ToSummaryString(CurrentInstance.game),
+                                                 crit.ToSummaryString(CurrentInstance.game)),
+                                   Properties.Resources.MetapackageAddCompatibilityYes,
+                                   Properties.Resources.MetapackageAddCompatibilityNo))
+                {
+                    CurrentInstance.SetCompatibleVersions(crit.Versions
+                                                              .Concat(missing)
+                                                              .ToList());
+                    crit = CurrentInstance.VersionCriteria();
+                }
             }
 
             // Get all recursively incompatible module identifiers (quickly)
