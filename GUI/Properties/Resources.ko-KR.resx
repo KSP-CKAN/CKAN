@@ -171,9 +171,6 @@
 {0}</value></data>
   <data name="MainLaunchDontShow" xml:space="preserve"><value>이 모드들에 관해서는 다시 보여주지 않기 {0} {1}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>실행</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>게임을 실행할 수 없었어요.
-
-{0}</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN 모드팩 (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>일반 텍스트(*.txt)</value></data>
   <data name="MainMarkdown" xml:space="preserve"><value>마크다운 (*.md)</value></data>

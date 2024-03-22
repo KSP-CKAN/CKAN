@@ -271,11 +271,6 @@ Spróbuj przenieść {2} z {3} i uruchomić ponownie CKAN.</value>
   <data name="MainLaunch" xml:space="preserve">
     <value>Uruchom</value>
   </data>
-  <data name="MainLaunchFailed" xml:space="preserve">
-    <value>Nie można uruchomić gry.
-
-{0}</value>
-  </data>
   <data name="MainModPack" xml:space="preserve">
     <value>CKAN modpack (*.ckan)</value>
   </data>

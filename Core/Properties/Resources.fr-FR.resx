@@ -393,6 +393,9 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="GameInstancePathNotFound" xml:space="preserve">
     <value>{0} n'existe pas</value>
   </data>
+  <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>Impossible de lancer le jeu.
+
+{0}</value></data>
   <data name="ModuleInstallerDownloading" xml:space="preserve">
     <value>Téléchargement de {0} ...</value>
   </data>
@@ -582,7 +585,7 @@ Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bri
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>

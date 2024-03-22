@@ -171,11 +171,6 @@ Versuche {2} aus {3} zu verschieben und CKAN neu zu starten.</value></data>
   </data>
   <data name="MainLaunch" xml:space="preserve"><value>Starten</value></data>
   <data name="MainLaunchDontShow" xml:space="preserve"><value>Für diese Mods und {0} {1} nicht mehr anzeigen</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve">
-    <value>Das Spiel konnte nicht gestartet werden.
-
-{0}</value>
-  </data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN Modpack (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Klartext (*.txt)</value></data>
   <data name="MainNotFound" xml:space="preserve"><value>Nicht gefunden.</value></data>

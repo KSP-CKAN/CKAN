@@ -168,9 +168,6 @@ Tentando mover {2} de {3} e reiniciar o CKAN.</value></data>
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Inicializar</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>Não é possivel inicializar o jogo.
-
-{0}</value></data>
   <data name="MainModPack" xml:space="preserve"><value>Lista de mods do CKAN (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Texto plano (*.txt)</value></data>
   <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>

@@ -177,6 +177,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of Ctrl+P for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlP = new ConsoleKeyInfo(
+            (char)16, ConsoleKey.P, false, false, true
+        );
+
+        /// <summary>
         /// Representation of Ctrl+Q for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo CtrlQ = new ConsoleKeyInfo(

@@ -285,11 +285,6 @@ Quelle version souhaitez-vous utiliser ?
   <data name="MainLaunch" xml:space="preserve">
     <value>Lancement</value>
   </data>
-  <data name="MainLaunchFailed" xml:space="preserve">
-    <value>Impossible de lancer le jeu.
-
-{0}</value>
-  </data>
   <data name="MainModPack" xml:space="preserve">
     <value>Modpack CKAN (*.ckan)</value>
   </data>

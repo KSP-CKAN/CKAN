@@ -371,6 +371,46 @@ namespace CKAN
                    && Directory.EnumerateFileSystemEntries(absPath, "*", SearchOption.AllDirectories)
                                .Any(f => registry.FileOwner(ToRelativeGameDir(f)) != null));
 
+        public void PlayGame(string command, Action onExit = null)
+        {
+            var split = (command ?? "").Split(' ');
+            if (split.Length == 0)
+            {
+                return;
+            }
+
+            split = game.AdjustCommandLine(split, Version());
+            var binary = split[0];
+            var args = string.Join(" ", split.Skip(1));
+
+            try
+            {
+                Directory.SetCurrentDirectory(GameDir());
+                Process p = new Process()
+                {
+                    StartInfo = new ProcessStartInfo()
+                    {
+                        FileName = binary,
+                        Arguments = args
+                    },
+                    EnableRaisingEvents = true
+                };
+
+                p.Exited += (sender, e) =>
+                {
+                    playTime.Stop(CkanDir());
+                    onExit?.Invoke();
+                };
+
+                p.Start();
+                playTime.Start();
+            }
+            catch (Exception exception)
+            {
+                User.RaiseError(Properties.Resources.GameInstancePlayGameFailed, exception.Message);
+            }
+        }
+
         public override string ToString()
             => string.Format(Properties.Resources.GameInstanceToString, game.ShortName, gameDir);
 
