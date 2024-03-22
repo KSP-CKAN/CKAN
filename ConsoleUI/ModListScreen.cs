@@ -57,6 +57,14 @@ namespace CKAN.ConsoleUI {
                         Width    = 20,
                         Renderer = m => registry.LatestCompatibleGameVersion(game.KnownVersions, m.identifier)?.ToString() ?? "",
                         Comparer = (a, b) => registry.LatestCompatibleGameVersion(game.KnownVersions, a.identifier).CompareTo(registry.LatestCompatibleGameVersion(game.KnownVersions, b.identifier))
+                    }, new ConsoleListBoxColumn<CkanModule>() {
+                        Header   = Properties.Resources.ModListDownloadsHeader,
+                        Width    = 12,
+                        Renderer = m => repoData.GetDownloadCount(registry.Repositories.Values, m.identifier)
+                                                ?.ToString()
+                                                ?? "",
+                        Comparer = (a, b) => (repoData.GetDownloadCount(registry.Repositories.Values, a.identifier) ?? 0)
+                                             .CompareTo(repoData.GetDownloadCount(registry.Repositories.Values, b.identifier) ?? 0),
                     }
                 },
                 1, 0, ListSortDirection.Descending,
