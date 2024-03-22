@@ -305,6 +305,7 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModListNameHeader" xml:space="preserve"><value>Name</value></data>
   <data name="ModListVersionHeader" xml:space="preserve"><value>Version</value></data>
   <data name="ModListMaxGameVersionHeader" xml:space="preserve"><value>Max game version</value></data>
+  <data name="ModListDownloadsHeader" xml:space="preserve"><value>Downloads</value></data>
   <data name="ModListSearchFocusedGhostText" xml:space="preserve"><value>&lt;Type to search&gt;</value></data>
   <data name="ModListSearchUnfocusedGhostText" xml:space="preserve"><value>&lt;Ctrl+F to search&gt;</value></data>
   <data name="ModListCount" xml:space="preserve"><value>{0} mods</value></data>

@@ -663,6 +663,9 @@ Jeśli go odinstalujesz, CKAN nie będzie mógł go ponownie zainstalować.</val
   <data name="ModListMaxGameVersionHeader" xml:space="preserve">
     <value>Maksymalna wersja gry</value>
   </data>
+  <data name="ModListDownloadsHeader" xml:space="preserve">
+    <value>Ilość pobrań</value>
+  </data>
   <data name="ModListSearchFocusedGhostText" xml:space="preserve">
     <value>&lt;Wyszukaj&gt;</value>
   </data>
