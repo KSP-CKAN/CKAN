@@ -21,7 +21,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     int len = opt.Caption.Length + (
                         string.IsNullOrEmpty(opt.Key) ? 0 : 2 + opt.Key.Length
                     ) + (
-                        opt.SubMenu     != null ? 3 :
+                        opt.SubMenu     != null || opt.SubMenuFunc != null ? 3 :
                         opt.RadioActive != null ? 4 :
                         0
                     );
@@ -66,7 +66,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                         if (options[selectedOption].OnExec != null) {
                             val = options[selectedOption].OnExec(theme);
                         }
-                        options[selectedOption].SubMenu?.Run(
+                        (options[selectedOption].SubMenu ?? (options[selectedOption].SubMenuFunc?.Invoke()))
+                            ?.Run(
                                 theme,
                                 right - 2,
                                 top + selectedOption + 2);
@@ -153,7 +154,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private string AnnotatedCaption(ConsoleMenuOption opt)
-            => opt.SubMenu != null
+            => opt.SubMenu != null || opt.SubMenuFunc != null
                 ? opt.Caption.PadRight(longestLength - 1) + submenuIndicator
                 : opt.RadioActive != null
                     ? opt.RadioActive()
@@ -184,9 +185,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="radio">If set, this option is a radio button, and this function returns its value</param>
         /// <param name="submenu">Submenu to open for this option</param>
         /// <param name="enabled">true if this option should be drawn normally and allowed for selection, false to draw it grayed out and not allow selection</param>
+        /// <param name="submenuFunc">Function to generate submenu to open for this option</param>
         public ConsoleMenuOption(string cap, string key, string tt, bool close,
                 Func<ConsoleTheme, bool> exec = null, Func<bool> radio = null, ConsolePopupMenu submenu = null,
-                bool enabled = true)
+                bool enabled = true, Func<ConsolePopupMenu> submenuFunc = null)
         {
             Caption     = cap;
             Key         = key;
@@ -196,6 +198,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             SubMenu     = submenu;
             RadioActive = radio;
             Enabled     = enabled;
+            SubMenuFunc = submenuFunc;
         }
 
         /// <summary>
@@ -226,6 +229,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Submenu to open for this option
         /// </summary>
         public readonly ConsolePopupMenu SubMenu;
+        /// <summary>
+        /// Function to generate submenu to open for this option
+        /// </summary>
+        public readonly Func<ConsolePopupMenu> SubMenuFunc;
         /// <summary>
         /// Function to call to check whether this option is enabled
         /// </summary>

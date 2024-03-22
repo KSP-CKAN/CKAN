@@ -979,25 +979,14 @@ namespace CKAN.GUI
 
         private void LaunchGame(string command = null)
         {
-            if (string.IsNullOrEmpty(command))
-            {
-                command = configuration.CommandLines.First();
-            }
-            var split = command.Split(' ');
-            if (split.Length == 0)
-            {
-                return;
-            }
-
             var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
-
             var suppressedIdentifiers = CurrentInstance.GetSuppressedCompatWarningIdentifiers;
             var incomp = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
                 .Where(m => !m.Module.IsDLC && !suppressedIdentifiers.Contains(m.identifier))
                 .ToList();
             if (incomp.Any())
             {
-                // Warn that it might not be safe to run Game with incompatible modules installed
+                // Warn that it might not be safe to run game with incompatible modules installed
                 string incompatDescrip = incomp
                     .Select(m => $"{m.Module} ({m.Module.CompatibleGameVersions(CurrentInstance.game)})")
                     .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
@@ -1022,41 +1011,8 @@ namespace CKAN.GUI
                 }
             }
 
-            split = CurrentInstance.game.AdjustCommandLine(split, CurrentInstance.Version());
-            var binary = split[0];
-            var args = string.Join(" ", split.Skip(1));
-
-            try
-            {
-
-                Directory.SetCurrentDirectory(CurrentInstance.GameDir());
-
-                Process p = new Process()
-                {
-                    StartInfo = new ProcessStartInfo()
-                    {
-                        FileName = binary,
-                        Arguments = args
-                    },
-                    EnableRaisingEvents = true
-                };
-
-                GameInstance inst = CurrentInstance;
-                p.Exited += (sender, e) => GameExit(inst);
-
-                p.Start();
-                CurrentInstance.playTime.Start();
-            }
-            catch (Exception exception)
-            {
-                currentUser.RaiseError(Properties.Resources.MainLaunchFailed, exception.Message);
-            }
-        }
-
-        private void GameExit(GameInstance inst)
-        {
-            inst.playTime.Stop(inst.CkanDir());
-            UpdateStatusBar();
+            CurrentInstance.PlayGame(command ?? configuration.CommandLines.First(),
+                                     UpdateStatusBar);
         }
 
         // This is used by Reinstall

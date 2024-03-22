@@ -169,9 +169,6 @@
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>启动</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>无法启动游戏.
-
-{0}</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Plain text (*.txt)</value></data>
   <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>

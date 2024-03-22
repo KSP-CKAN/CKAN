@@ -170,9 +170,6 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
 
 {0}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>起動</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>起動に失敗しました。
-
-{0}</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN Modパック (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>平文 (*.txt)</value></data>
   <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>

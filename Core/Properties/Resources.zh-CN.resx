@@ -393,6 +393,9 @@
   <data name="GameInstancePathNotFound" xml:space="preserve">
     <value>{0} 不存在</value>
   </data>
+  <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>无法启动游戏.
+
+{0}</value></data>
   <data name="ModuleInstallerDownloading" xml:space="preserve">
     <value>正在下载 "{0}"</value>
   </data>

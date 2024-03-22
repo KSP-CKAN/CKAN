@@ -180,9 +180,6 @@ Which build would you like to use?
 {0}</value></data>
   <data name="MainLaunchDontShow" xml:space="preserve"><value>Don't show this again for these mods on {0} {1}</value></data>
   <data name="MainLaunch" xml:space="preserve"><value>Launch</value></data>
-  <data name="MainLaunchFailed" xml:space="preserve"><value>Couldn't start game.
-
-{0}</value></data>
   <data name="MainModPack" xml:space="preserve"><value>CKAN modpack (*.ckan)</value></data>
   <data name="MainPlainText" xml:space="preserve"><value>Plain text (*.txt)</value></data>
   <data name="MainMarkdown" xml:space="preserve"><value>Markdown (*.md)</value></data>

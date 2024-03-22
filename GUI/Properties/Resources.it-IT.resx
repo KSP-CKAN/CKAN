@@ -271,11 +271,6 @@ Prova a spostare {2} da {3} e a riavviare CKAN.</value>
   <data name="MainLaunch" xml:space="preserve">
     <value>Avvia</value>
   </data>
-  <data name="MainLaunchFailed" xml:space="preserve">
-    <value>Impossibile avviare il gioco.
-
-{0}</value>
-  </data>
   <data name="MainModPack" xml:space="preserve">
     <value>Modpack CKAN (*.ckan)</value>
   </data>

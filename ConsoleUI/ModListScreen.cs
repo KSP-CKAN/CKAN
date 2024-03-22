@@ -147,6 +147,7 @@ namespace CKAN.ConsoleUI {
             AddObject(searchBox);
             AddObject(moduleList);
 
+            AddBinding(Keys.CtrlP, (object sender, ConsoleTheme theme) => PlayGame());
             AddBinding(Keys.CtrlQ, (object sender, ConsoleTheme theme) => false);
             AddBinding(Keys.AltX,  (object sender, ConsoleTheme theme) => false);
             AddBinding(Keys.F1,    (object sender, ConsoleTheme theme) => Help(theme));
@@ -279,6 +280,22 @@ namespace CKAN.ConsoleUI {
             ));
 
             List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
+                new ConsoleMenuOption(Properties.Resources.ModListPlayMenu, "",
+                                      Properties.Resources.ModListPlayMenuTip,
+                                      true, null, null, null, true,
+                                      () => new ConsolePopupMenu(
+                                                manager.CurrentInstance
+                                                       .game
+                                                       .DefaultCommandLines(manager.SteamLibrary,
+                                                                            new DirectoryInfo(manager.CurrentInstance.GameDir()))
+                                                       .Select((cmd, i) => new ConsoleMenuOption(
+                                                                               cmd,
+                                                                               i == 0 ? $"{Properties.Resources.Ctrl}+P"
+                                                                                      : "",
+                                                                               cmd, true,
+                                                                               th => PlayGame(cmd)))
+                                                       .ToList())),
+                null,
                 new ConsoleMenuOption(Properties.Resources.ModListSortMenu, "",
                     Properties.Resources.ModListSortMenuTip,
                     true, null, null, moduleList.SortMenu()),
@@ -430,6 +447,19 @@ namespace CKAN.ConsoleUI {
         private int daysSinceUpdated(string filename)
         {
             return (DateTime.Now - File.GetLastWriteTime(filename)).Days;
+        }
+
+        private bool PlayGame()
+            => PlayGame(manager.CurrentInstance
+                               .game
+                               .DefaultCommandLines(manager.SteamLibrary,
+                                                    new DirectoryInfo(manager.CurrentInstance.GameDir()))
+                               .FirstOrDefault());
+
+        private bool PlayGame(string commandLine)
+        {
+            manager.CurrentInstance.PlayGame(commandLine);
+            return true;
         }
 
         private bool UpdateRegistry(ConsoleTheme theme, bool showNewModsPrompt = true)

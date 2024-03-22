@@ -380,6 +380,9 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="GameInstancePathNotFound" xml:space="preserve">
     <value>{0} nie istnieje</value>
   </data>
+  <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>Nie można uruchomić gry.
+
+{0}</value></data>
   <data name="ModuleInstallerDownloading" xml:space="preserve">
     <value>Pobieranie "{0}"</value>
   </data>
