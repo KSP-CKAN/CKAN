@@ -56,7 +56,7 @@ namespace CKAN.GUI
             string sel = comboBoxKnownInstance.SelectedItem as string;
             textBoxClonePath.Text = string.IsNullOrEmpty(sel)
                 ? ""
-                : manager.Instances[sel].GameDir().Replace('/', Path.DirectorySeparatorChar);
+                : Platform.FormatPath(manager.Instances[sel].GameDir());
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace CKAN.GUI
             try
             {
                 if (!manager.Instances.TryGetValue(comboBoxKnownInstance.SelectedItem as string, out GameInstance instanceToClone)
-                    || existingPath != instanceToClone.GameDir().Replace('/', Path.DirectorySeparatorChar))
+                    || existingPath != Platform.FormatPath(instanceToClone.GameDir()))
                 {
                     IGame sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
                     if (sourceGame == null)
@@ -154,13 +154,15 @@ namespace CKAN.GUI
             }
             catch (NotKSPDirKraken kraken)
             {
-                user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid, kraken.path.Replace('/', Path.DirectorySeparatorChar)));
+                user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid,
+                                Platform.FormatPath(kraken.path)));
                 reactivateDialog();
                 return;
             }
             catch (PathErrorKraken kraken)
             {
-                user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty, kraken.path.Replace('/', Path.DirectorySeparatorChar)));
+                user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty,
+                                Platform.FormatPath(kraken.path)));
                 reactivateDialog();
                 return;
             }

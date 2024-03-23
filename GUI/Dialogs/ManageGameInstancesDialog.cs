@@ -136,7 +136,7 @@ namespace CKAN.GUI
                 list.Add(instance.playTime?.ToString() ?? "");
             }
 
-            list.Add(instance.GameDir().Replace('/', Path.DirectorySeparatorChar));
+            list.Add(Platform.FormatPath(instance.GameDir()));
             return list.ToArray();
         }
 

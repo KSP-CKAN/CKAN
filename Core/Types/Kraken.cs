@@ -233,7 +233,7 @@ namespace CKAN
             : base(string.Format(Properties.Resources.KrakenFailedToDeleteFiles,
                                  identifier,
                                  string.Join(Environment.NewLine,
-                                             undeletableFiles.Select(f => f.Replace('/', Path.DirectorySeparatorChar)))))
+                                             undeletableFiles.Select(Platform.FormatPath))))
         {
             this.undeletableFiles = undeletableFiles;
         }
@@ -482,7 +482,7 @@ namespace CKAN
 
         public override string ToString()
             => string.Format(Properties.Resources.KrakenAlreadyRunning,
-                             lockfilePath.Replace('/', Path.DirectorySeparatorChar));
+                             Platform.FormatPath(lockfilePath));
     }
 
     /// <summary>

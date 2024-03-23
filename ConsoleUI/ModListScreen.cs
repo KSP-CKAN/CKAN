@@ -45,7 +45,7 @@ namespace CKAN.ConsoleUI {
                         Renderer = StatusSymbol
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = Properties.Resources.ModListNameHeader,
-                        Width    = 44,
+                        Width    = null,
                         Renderer = m => m.name ?? ""
                     }, new ConsoleListBoxColumn<CkanModule>() {
                         Header   = Properties.Resources.ModListVersionHeader,
@@ -639,8 +639,11 @@ namespace CKAN.ConsoleUI {
 
         private bool ApplyChanges(ConsoleTheme theme)
         {
-            LaunchSubScreen(theme, new InstallScreen(manager, repoData, plan, debug));
-            RefreshList(theme);
+            if (plan.NonEmpty())
+            {
+                LaunchSubScreen(theme, new InstallScreen(manager, repoData, plan, debug));
+                RefreshList(theme);
+            }
             return true;
         }
 

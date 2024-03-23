@@ -39,7 +39,7 @@ namespace CKAN.ConsoleUI {
                     },
                     new ConsoleListBoxColumn<string>() {
                         Header   = Properties.Resources.AuthTokenListTokenHeader,
-                        Width    = 50,
+                        Width    = null,
                         Renderer = (string s) => {
                             return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out string token)
                                 ? token

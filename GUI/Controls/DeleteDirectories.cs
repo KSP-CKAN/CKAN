@@ -34,7 +34,7 @@ namespace CKAN.GUI
             instance = ksp;
             var items = possibleConfigOnlyDirs
                 .OrderBy(d => d)
-                .Select(d => new ListViewItem(instance.ToRelativeGameDir(d).Replace('/', Path.DirectorySeparatorChar))
+                .Select(d => new ListViewItem(Platform.FormatPath(instance.ToRelativeGameDir(d)))
                     {
                         Tag     = d,
                         Checked = true
@@ -112,7 +112,7 @@ namespace CKAN.GUI
                             lvi.Tag as string,
                             "*",
                             SearchOption.AllDirectories)
-                        .Select(f => new ListViewItem(instance.ToRelativeGameDir(f).Replace('/', Path.DirectorySeparatorChar))))
+                        .Select(f => new ListViewItem(Platform.FormatPath(CKANPathUtils.ToRelative(f, lvi.Tag as string)))))
                     .ToArray());
             if (DirectoriesListView.SelectedItems.Count == 0)
             {

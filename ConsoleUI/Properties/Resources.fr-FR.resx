@@ -466,6 +466,12 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
   <data name="InstallModInstalled" xml:space="preserve">
     <value>{0} installé avec succès {1} {2}</value>
   </data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Supprimer les Dossiers</value></data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Attention, il reste certains dossiers, parce que CKAN ne sait pas s'il peut supprimer les fichiers restants. Garder ces dossiers peut casser d'autres mods ! Si vous n'avez pas besoin de ces fichiers, il est recommandé de les supprimer.</value></data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Dossiers</value></data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve"><value>Contenu du Dossier</value></data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve"><value>Tout Garder</value></data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve"><value>Supprimer Coché</value></data>
   <data name="ModInfoTitle" xml:space="preserve">
     <value>Détails du Mod</value>
   </data>

@@ -53,7 +53,7 @@ namespace CKAN.ConsoleUI {
                     },
                     new ConsoleListBoxColumn<Dependency>() {
                         Header   = Properties.Resources.RecommendationsNameHeader,
-                        Width    = 36,
+                        Width    = null,
                         Renderer = (Dependency d) => d.module.ToString()
                     },
                     new ConsoleListBoxColumn<Dependency>() {

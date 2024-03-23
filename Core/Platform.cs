@@ -69,6 +69,9 @@ namespace CKAN
             IsWindows ? StringComparison.OrdinalIgnoreCase
                       : StringComparison.Ordinal;
 
+        public static string FormatPath(string p)
+            => p.Replace('/', Path.DirectorySeparatorChar);
+
         public static bool IsAdministrator()
         {
             if (File.Exists("/.dockerenv"))

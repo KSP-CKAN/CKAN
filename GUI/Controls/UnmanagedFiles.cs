@@ -56,7 +56,7 @@ namespace CKAN.GUI
             GameFolderTree.Nodes.Clear();
             var rootNode = GameFolderTree.Nodes.Add(
                 "",
-                inst.GameDir().Replace('/', Path.DirectorySeparatorChar),
+                Platform.FormatPath(inst.GameDir()),
                 "folder", "folder");
 
             UseWaitCursor = true;
@@ -167,7 +167,7 @@ namespace CKAN.GUI
             }
             else if (!string.IsNullOrEmpty(relPath) && Main.Instance.YesNoDialog(
                 string.Format(Properties.Resources.DeleteUnmanagedFileConfirmation,
-                    relPath.Replace('/', Path.DirectorySeparatorChar)),
+                              Platform.FormatPath(relPath)),
                 Properties.Resources.DeleteUnmanagedFileDelete,
                 Properties.Resources.DeleteUnmanagedFileCancel))
             {

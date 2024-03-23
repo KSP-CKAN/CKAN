@@ -52,7 +52,7 @@ namespace CKAN.ConsoleUI {
                         Comparer = (a, b) => a.Version()?.CompareTo(b.Version() ?? GameVersion.Any) ?? 1
                     }, new ConsoleListBoxColumn<GameInstance>() {
                         Header   = Properties.Resources.InstanceListPathHeader,
-                        Width    = 70,
+                        Width    = null,
                         Renderer = k => k.GameDir()
                     }
                 },
@@ -229,7 +229,7 @@ namespace CKAN.ConsoleUI {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         string.Format(Properties.Resources.InstanceListLoadingError,
-                                      Path.Combine(ksp.CkanDir(), "registry.json").Replace('/', Path.DirectorySeparatorChar),
+                                      Platform.FormatPath(Path.Combine(ksp.CkanDir(), "registry.json")),
                                       e.ToString()),
                         new List<string>() { Properties.Resources.OK }
                     );

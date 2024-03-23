@@ -334,7 +334,7 @@ namespace CKAN.GUI
                                      .Any(relF => registry.FileOwner(relF) != null));
                 if (possibleConfigOnlyDirs.Count > 0)
                 {
-                    currentUser.RaiseMessage("");
+                    Util.Invoke(this, () => StatusLabel.ToolTipText = StatusLabel.Text = "");
                     tabController.ShowTab("DeleteDirectoriesTabPage", 4);
                     tabController.SetTabLock(true);
 

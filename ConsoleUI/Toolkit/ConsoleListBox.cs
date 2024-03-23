@@ -2,6 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -42,6 +43,11 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             filterAndSort();
         }
+
+        /// <summary>
+        /// Fired when the user changes the selection with the arrow keys
+        /// </summary>
+        public event Action SelectionChanged;
 
         /// <summary>
         /// Set which column to sort by
@@ -90,7 +96,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// Return the number of rows shown in the box
         /// </returns>
-        public int VisibleRowCount() { return sortedFilteredData?.Count ?? 0; }
+        public int VisibleRowCount() => sortedFilteredData?.Count ?? 0;
 
         /// <summary>
         /// Draw the list box
@@ -133,6 +139,15 @@ namespace CKAN.ConsoleUI.Toolkit {
                 topRow = selectedRow - h + 2;
             }
 
+            var remainingWidth = contentR - l + 1
+                                 - columns.Select(col => col.Width ?? 0)
+                                          .Sum()
+                                 - (padding.Length * (columns.Count - 1));
+            var autoWidthCount = columns.Count(col => !col.Width.HasValue);
+            var autoWidth = autoWidthCount > 0 && remainingWidth > 0
+                                ? remainingWidth / autoWidthCount
+                                : 1;
+
             for (int y = 0, index = topRow - 1; y < h; ++y, ++index) {
                 Console.SetCursorPosition(l, t + y);
                 if (y == 0) {
@@ -142,14 +157,15 @@ namespace CKAN.ConsoleUI.Toolkit {
                     for (int i = 0; i < columns.Count; ++i) {
                         ConsoleListBoxColumn<RowT> col = columns[i];
                         if (i > 0) {
-                            Console.Write("  ");
+                            Console.Write(padding);
                         }
                         // Truncate to designated size of the ListBox
                         int maxW = r - Console.CursorLeft + 1;
                         if (maxW > 0) {
+                            var w = col.Width ?? autoWidth;
                             Console.Write(FmtHdr(
                                 i,
-                                col.Width < maxW ? col.Width : maxW
+                                w < maxW ? w : maxW
                             ));
                         }
                     }
@@ -165,14 +181,15 @@ namespace CKAN.ConsoleUI.Toolkit {
                     for (int i = 0; i < columns.Count; ++i) {
                         ConsoleListBoxColumn<RowT> col = columns[i];
                         if (i > 0) {
-                            Console.Write("  ");
+                            Console.Write(padding);
                         }
                         // Truncate to designated size of the ListBox
                         int maxW = contentR - Console.CursorLeft + 1;
                         if (maxW > 0) {
+                            var w = col.Width ?? autoWidth;
                             Console.Write(FormatExactWidth(
                                 col.Renderer(sortedFilteredData[index]).Trim(),
-                                col.Width < maxW ? col.Width : maxW
+                                w < maxW ? w : maxW
                             ));
                         }
                     }
@@ -214,11 +231,13 @@ namespace CKAN.ConsoleUI.Toolkit {
                 case ConsoleKey.UpArrow:
                     if (selectedRow > 0) {
                         --selectedRow;
+                        SelectionChanged?.Invoke();
                     }
                     break;
                 case ConsoleKey.DownArrow:
                     if (selectedRow < sortedFilteredData.Count - 1) {
                         ++selectedRow;
+                        SelectionChanged?.Invoke();
                     }
                     break;
                 case ConsoleKey.PageUp:
@@ -227,6 +246,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                     } else {
                         selectedRow = 0;
                     }
+                    SelectionChanged?.Invoke();
                     break;
                 case ConsoleKey.PageDown:
                     if (selectedRow < sortedFilteredData.Count - 1 - h) {
@@ -234,12 +254,15 @@ namespace CKAN.ConsoleUI.Toolkit {
                     } else {
                         selectedRow = sortedFilteredData.Count - 1;
                     }
+                    SelectionChanged?.Invoke();
                     break;
                 case ConsoleKey.Home:
                     selectedRow = 0;
+                    SelectionChanged?.Invoke();
                     break;
                 case ConsoleKey.End:
                     selectedRow = sortedFilteredData.Count - 1;
+                    SelectionChanged?.Invoke();
                     break;
                 case ConsoleKey.Tab:
                     Blur(!k.Modifiers.HasFlag(ConsoleModifiers.Shift));
@@ -265,6 +288,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                                 ).IndexOf($"{k.KeyChar}", StringComparison.CurrentCultureIgnoreCase) == 0) {
 
                                 selectedRow = candidateRow;
+                                SelectionChanged?.Invoke();
                                 break;
                             }
                         }
@@ -338,10 +362,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Set the data shown in the list
         /// </summary>
         /// <param name="newData">List of objects to show</param>
-        public void SetData(IList<RowT> newData)
+        /// <param name="resetSelection">If true, select the top row after refreshing</param>
+        public void SetData(IList<RowT> newData, bool resetSelection = false)
         {
             data = newData;
             filterAndSort();
+            if (resetSelection) {
+                selectedRow = 0;
+            }
         }
 
         private string FmtHdr(int colIndex, int w)
@@ -414,8 +442,9 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private static readonly Regex nonAlphaNumPrefix = new Regex("^[^a-zA-Z0-9]*", RegexOptions.Compiled);
 
-        private static readonly string sortUp      = "^";
-        private static readonly string sortDown    = "v";
+        private const string sortUp   = "^";
+        private const string sortDown = "v";
+        private const string padding  = "  ";
     }
 
     /// <summary>
@@ -442,9 +471,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public Comparison<RowT>   Comparer;
         /// <summary>
-        /// Number of screen columns to use for this column
+        /// Number of screen columns to use for this column.
+        /// If null, take up remaining space left behind by other columns.
         /// </summary>
-        public int                Width;
+        public int?               Width;
     }
 
 }

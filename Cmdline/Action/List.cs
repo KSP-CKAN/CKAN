@@ -43,7 +43,7 @@ namespace CKAN.CmdLine
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameFound,
                                   instance.game.ShortName,
-                                  instance.GameDir().Replace('/', Path.DirectorySeparatorChar));
+                                  Platform.FormatPath(instance.GameDir()));
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameVersion, instance.game.ShortName, instance.Version());
                 user.RaiseMessage("");

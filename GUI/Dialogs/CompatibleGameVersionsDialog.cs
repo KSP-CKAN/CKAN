@@ -38,7 +38,7 @@ namespace CKAN.GUI
             var compatibleVersions = inst.GetCompatibleVersions();
 
             GameVersionLabel.Text  = inst.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone;
-            GameLocationLabel.Text = inst.GameDir().Replace('/', Path.DirectorySeparatorChar);
+            GameLocationLabel.Text = Platform.FormatPath(inst.GameDir());
             var knownVersions = inst.game.KnownVersions;
             var majorVersionsList = CreateMajorVersionsList(knownVersions);
             var compatibleVersionsLeftOthers = compatibleVersions.Except(knownVersions)

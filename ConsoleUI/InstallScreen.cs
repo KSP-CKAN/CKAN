@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,6 +106,8 @@ namespace CKAN.ConsoleUI {
                         // Don't let the installer re-use old screen references
                         inst.User = null;
 
+                        HandlePossibleConfigOnlyDirs(theme, registry, possibleConfigOnlyDirs);
+
                     } catch (CancelledActionKraken) {
                         // Don't need to tell the user they just cancelled out.
                     } catch (FileNotFoundKraken ex) {
@@ -162,6 +165,26 @@ namespace CKAN.ConsoleUI {
                         RaiseError(ex.Message);
                     }
                 } while (retry);
+            }
+        }
+
+        private void HandlePossibleConfigOnlyDirs(ConsoleTheme    theme,
+                                                  Registry        registry,
+                                                  HashSet<string> possibleConfigOnlyDirs)
+        {
+            if (possibleConfigOnlyDirs != null)
+            {
+                // Check again for registered files, since we may
+                // just have installed or upgraded some
+                possibleConfigOnlyDirs.RemoveWhere(
+                    d => !Directory.Exists(d)
+                         || Directory.EnumerateFileSystemEntries(d, "*", SearchOption.AllDirectories)
+                                     .Select(absF => manager.CurrentInstance.ToRelativeGameDir(absF))
+                                     .Any(relF => registry.FileOwner(relF) != null));
+                if (possibleConfigOnlyDirs.Count > 0)
+                {
+                    LaunchSubScreen(theme, new DeleteDirectoriesScreen(manager.CurrentInstance, possibleConfigOnlyDirs));
+                }
             }
         }
 
