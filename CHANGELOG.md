@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Modpack compatibility prompt, GameComparator clean-up (#4056 by: HebaruSan)
 - [ConsoleUI] Add downloads column for ConsoleUI (#4063 by: HebaruSan)
 - [ConsoleUI] Play game option for ConsoleUI (#4064 by: HebaruSan)
+- [ConsoleUI] ConsoleUI prompt to delete non-empty folders after uninstall (#4066 by: HebaruSan)
 
 ### Bugfixes
 

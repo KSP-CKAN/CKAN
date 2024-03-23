@@ -50,7 +50,7 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>() {
                         Header   = Properties.Resources.FiltersGlobalHeader,
-                        Width    = 40,
+                        Width    = null,
                         Renderer = f => f,
                     }
                 },
@@ -73,7 +73,7 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>() {
                         Header   = Properties.Resources.FiltersInstanceHeader,
-                        Width    = 40,
+                        Width    = null,
                         Renderer = f => f,
                     }
                 },

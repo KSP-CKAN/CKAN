@@ -66,7 +66,7 @@ namespace CKAN.ConsoleUI {
                         }, new ConsoleListBoxColumn<Repository>() {
                             Header   = Properties.Resources.InstanceEditRepoURLHeader,
                             Renderer = r => r.uri.ToString(),
-                            Width    = 50
+                            Width    = null
                         }
                     },
                     1, 0, ListSortDirection.Ascending

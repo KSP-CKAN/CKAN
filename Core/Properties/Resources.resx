@@ -203,6 +203,7 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="GameInstanceToString" xml:space="preserve"><value>{0} Install: {1}</value></data>
   <data name="GameInstanceManagerPortable" xml:space="preserve"><value>portable</value></data>
   <data name="GameInstanceManagerAuto" xml:space="preserve"><value>Auto {0}</value></data>
+  <data name="GameInstanceManagerSelectGamePrompt" xml:space="preserve"><value>Please select the game that is installed at {0}</value></data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve"><value>The specified instance is not a valid {0} instance</value></data>
   <data name="GameInstanceFakeBadVersion" xml:space="preserve"><value>The specified {0} version is not a known version: {1}</value></data>
   <data name="GameInstanceFakeNotEmpty" xml:space="preserve"><value>The specified folder already exists and is not empty</value></data>

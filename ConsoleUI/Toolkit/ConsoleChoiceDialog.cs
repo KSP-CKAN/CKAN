@@ -51,7 +51,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 new List<ConsoleListBoxColumn<ChoiceT>>() {
                     new ConsoleListBoxColumn<ChoiceT>() {
                         Header   = hdr,
-                        Width    = w - 6,
+                        Width    = null,
                         Renderer = renderer,
                         Comparer = comparer
                     }

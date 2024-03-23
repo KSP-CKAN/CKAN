@@ -30,7 +30,7 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<GameVersion>>() {
                     new ConsoleListBoxColumn<GameVersion>() {
                         Header   = Properties.Resources.CompatibleVersionsListHeader,
-                        Width    = r - l - 5,
+                        Width    = null,
                         Renderer = v => v.ToString(),
                         Comparer = (v1, v2) => v1.CompareTo(v2)
                     }

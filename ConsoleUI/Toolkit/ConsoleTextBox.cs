@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace CKAN.ConsoleUI.Toolkit {
 
     /// <summary>
-    /// Object displaying a long screen in a big box
+    /// Object displaying a long string in a big box
     /// </summary>
     public class ConsoleTextBox : ScreenObject {
 

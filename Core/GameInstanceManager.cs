@@ -655,7 +655,8 @@ namespace CKAN
                 default:
                     // Prompt user to choose
                     int selection = user.RaiseSelectionDialog(
-                        $"Please select the game that is installed at {path.FullName.Replace('/', Path.DirectorySeparatorChar)}",
+                        string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
+                                      Platform.FormatPath(path.FullName)),
                         matchingGames.Select(g => g.ShortName).ToArray());
                     return selection >= 0 ? matchingGames[selection] : null;
             }

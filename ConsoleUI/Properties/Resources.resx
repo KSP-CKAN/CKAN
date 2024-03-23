@@ -238,6 +238,14 @@ Edit authentication tokens now?</value></data>
 {1}</value></data>
   <data name="InstallNotInstalled" xml:space="preserve"><value>{0} is not installed, can't remove</value></data>
   <data name="InstallModInstalled" xml:space="preserve"><value>{0} Successfully installed {1} {2}</value></data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Delete Directories</value></data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Warning, some folders have been left behind because CKAN does not know whether it is safe to delete their remaining files. Keeping these folders may break other mods! If you do not need these files, deleting them is recommended.</value></data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Directories</value></data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve"><value>Directory Contents</value></data>
+  <data name="DeleteDirectoriesDeleteDirTip" xml:space="preserve"><value>Delete folder</value></data>
+  <data name="DeleteDirectoriesKeepDirTip" xml:space="preserve"><value>Keep folder</value></data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve"><value>Keep all</value></data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve"><value>Delete checked</value></data>
   <data name="ModInfoTitle" xml:space="preserve"><value>Mod Details</value></data>
   <data name="ModInfoMenuTip" xml:space="preserve"><value>Links</value></data>
   <data name="ModInfoAuthors" xml:space="preserve"><value>By {0}</value></data>
