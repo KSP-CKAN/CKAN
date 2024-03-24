@@ -980,6 +980,12 @@ namespace CKAN.GUI
                                 checkCell.Value = false;
                             }
                             break;
+                        case GUIModChangeType.Update:
+                            if (row.Cells[UpdateCol.Index] is DataGridViewCheckBoxCell updateCell)
+                            {
+                                updateCell.Value = false;
+                            }
+                            break;
                     }
                 }
                 UpdateChangeSetAndConflicts(
@@ -1043,6 +1049,10 @@ namespace CKAN.GUI
                     if (row.Cells[ReplaceCol.Index] is DataGridViewCheckBoxCell checkCell)
                     {
                         checkCell.Value = false;
+                    }
+                    if (row.Cells[UpdateCol.Index] is DataGridViewCheckBoxCell updateCell)
+                    {
+                        updateCell.Value = false;
                     }
                 }
                 // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
