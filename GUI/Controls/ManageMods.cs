@@ -877,8 +877,9 @@ namespace CKAN.GUI
                             switch (ModGrid.Columns[e.ColumnIndex].Name)
                             {
                                 case "Installed":
-                                    gmod.SelectedMod = nowChecked ? gmod.InstalledMod?.Module
-                                                                      ?? gmod.LatestAvailableMod
+                                    gmod.SelectedMod = nowChecked ? gmod.SelectedMod
+                                                                    ?? gmod.InstalledMod?.Module
+                                                                    ?? gmod.LatestAvailableMod
                                                                   : null;
                                     break;
                                 case "UpdateCol":
@@ -909,23 +910,38 @@ namespace CKAN.GUI
                 switch (e.PropertyName)
                 {
                     case "SelectedMod":
-                        if (row.Cells[Installed.Index] is DataGridViewCheckBoxCell instCell)
+                        Util.Invoke(this, () =>
                         {
-                            instCell.Value = gmod.SelectedMod != null;
-                        }
-                        if (row.Cells[UpdateCol.Index] is DataGridViewCheckBoxCell upgCell)
-                        {
-                            upgCell.Value = gmod.InstalledMod != null
-                                            && gmod.SelectedMod != null
-                                            && gmod.InstalledMod.Module.version < gmod.SelectedMod.version;
-                        }
+                            if (row.Cells[Installed.Index] is DataGridViewCheckBoxCell instCell)
+                            {
+                                bool newVal = gmod.SelectedMod != null;
+                                if ((bool)instCell.Value != newVal)
+                                {
+                                    instCell.Value = newVal;
+                                }
+                            }
+                            if (row.Cells[UpdateCol.Index] is DataGridViewCheckBoxCell upgCell)
+                            {
+                                bool newVal = gmod.InstalledMod != null
+                                              && gmod.SelectedMod != null
+                                              && gmod.InstalledMod.Module.version < gmod.SelectedMod.version;
+                                if ((bool)upgCell.Value != newVal)
+                                {
+                                    upgCell.Value = newVal;
+                                }
+                            }
 
-                        // This call is needed to force the UI to update,
-                        // otherwise the checkboxes can look checked when unchecked or vice versa
-                        ModGrid.RefreshEdit();
-                        // Update the changeset
-                        UpdateChangeSetAndConflicts(currentInstance,
-                            RegistryManager.Instance(currentInstance, repoData).registry);
+                            if (Platform.IsWindows)
+                            {
+                                // This call is needed to force the UI to update on Windows,
+                                // otherwise the checkboxes can look checked when unchecked or vice versa.
+                                // Unfortunately, it crashes on Mono.
+                                ModGrid.RefreshEdit();
+                            }
+                            // Update the changeset
+                            UpdateChangeSetAndConflicts(currentInstance,
+                                RegistryManager.Instance(currentInstance, repoData).registry);
+                        });
                         break;
                 }
             }
