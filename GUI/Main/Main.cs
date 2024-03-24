@@ -547,6 +547,10 @@ namespace CKAN.GUI
                 }
             }
 
+            // Remove the tray icon
+            minimizeNotifyIcon.Visible = false;
+            minimizeNotifyIcon.Dispose();
+
             base.OnFormClosing(e);
         }
 

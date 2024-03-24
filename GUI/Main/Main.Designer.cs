@@ -85,7 +85,7 @@ namespace CKAN.GUI
             this.InstallationHistory = new CKAN.GUI.InstallationHistory();
             this.ChooseProvidedModsTabPage = new System.Windows.Forms.TabPage();
             this.ChooseProvidedMods = new CKAN.GUI.ChooseProvidedMods();
-            this.minimizeNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.minimizeNotifyIcon = new System.Windows.Forms.NotifyIcon();
             this.minimizedContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.updatesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
