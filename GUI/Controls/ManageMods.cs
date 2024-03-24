@@ -334,16 +334,16 @@ namespace CKAN.GUI
             {
                 mlbl.Remove(currentInstance.game, module.Identifier);
             }
-            if (mlbl.HoldVersion)
-            {
-                UpdateAllToolButton.Enabled = mainModList.Modules.Any(mod =>
-                    mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
-            }
             var registry = RegistryManager.Instance(currentInstance, repoData).registry;
             mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
                                       currentInstance.Name, currentInstance.game, registry);
             mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
             UpdateHiddenTagsAndLabels();
+            if (mlbl.HoldVersion)
+            {
+                UpdateCol.Visible = UpdateAllToolButton.Enabled =
+                    mainModList.ResetHasUpdate(currentInstance, registry, ChangeSet, ModGrid.Rows);
+            }
         }
 
         private void editLabelsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -359,6 +359,8 @@ namespace CKAN.GUI
                                           currentInstance.Name, currentInstance.game, registry);
             }
             UpdateHiddenTagsAndLabels();
+            UpdateCol.Visible = UpdateAllToolButton.Enabled =
+                mainModList.ResetHasUpdate(currentInstance, registry, ChangeSet, ModGrid.Rows);
         }
 
         #endregion
@@ -1433,7 +1435,7 @@ namespace CKAN.GUI
             // After the update / replacement, they are hidden again.
             Util.Invoke(ModGrid, () =>
             {
-                UpdateCol.Visible  = mainModList.Modules.Any(mod => mod.HasUpdate);
+                UpdateCol.Visible  = has_unheld_updates;
                 ReplaceCol.Visible = mainModList.Modules.Any(mod => mod.IsInstalled && mod.HasReplacement);
             });
 

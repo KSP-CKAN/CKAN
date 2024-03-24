@@ -506,28 +506,45 @@ namespace CKAN.GUI
             var upgGroups = registry.CheckUpgradeable(inst.VersionCriteria(),
                                                       ModuleLabels.HeldIdentifiers(inst)
                                                                   .ToHashSet());
+            var dlls = registry.InstalledDlls.ToList();
             foreach ((var upgradeable, var mods) in upgGroups)
             {
                 foreach (var ident in mods.Select(m => m.identifier))
                 {
-                    var row = full_list_of_mod_rows[ident];
-                    if (row.Tag is GUIMod gmod && gmod.HasUpdate != upgradeable)
-                    {
-                        gmod.HasUpdate = upgradeable;
-                        if (row.Visible)
-                        {
-                            // Swap whether the row has an upgrade checkbox
-                            var newRow =
-                                full_list_of_mod_rows[ident] =
-                                    MakeRow(gmod, ChangeSet, inst.Name, inst.game);
-                            var rowIndex = row.Index;
-                            rows.Remove(row);
-                            rows.Insert(rowIndex, newRow);
-                        }
-                    }
+                    dlls.Remove(ident);
+                    CheckRowUpgradeable(inst, ChangeSet, rows, ident, upgradeable);
                 }
             }
+            // AD mods don't have CkanModules in the return value of CheckUpgradeable
+            foreach (var ident in dlls)
+            {
+                CheckRowUpgradeable(inst, ChangeSet, rows, ident, false);
+            }
             return upgGroups[true].Count > 0;
+        }
+
+        private void CheckRowUpgradeable(GameInstance              inst,
+                                         List<ModChange>           ChangeSet,
+                                         DataGridViewRowCollection rows,
+                                         string                    ident,
+                                         bool                      upgradeable)
+        {
+            if (full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow row)
+                && row.Tag is GUIMod gmod
+                && gmod.HasUpdate != upgradeable)
+            {
+                gmod.HasUpdate = upgradeable;
+                if (row.Visible)
+                {
+                    // Swap whether the row has an upgrade checkbox
+                    var newRow =
+                        full_list_of_mod_rows[ident] =
+                            MakeRow(gmod, ChangeSet, inst.Name, inst.game);
+                    var rowIndex = row.Index;
+                    rows.Remove(row);
+                    rows.Insert(rowIndex, newRow);
+                }
+            }
         }
 
         /// <summary>
