@@ -885,7 +885,8 @@ namespace CKAN.GUI
                                 case "UpdateCol":
                                     gmod.SelectedMod = nowChecked
                                         ? gmod.SelectedMod != null
-                                          && gmod.InstalledMod.Module.version < gmod.SelectedMod.version
+                                          && (gmod.InstalledMod == null
+                                              || gmod.InstalledMod.Module.version < gmod.SelectedMod.version)
                                             ? gmod.SelectedMod
                                             : gmod.LatestAvailableMod
                                         : gmod.InstalledMod?.Module;
@@ -929,9 +930,9 @@ namespace CKAN.GUI
                             }
                             if (row.Cells[UpdateCol.Index] is DataGridViewCheckBoxCell upgCell)
                             {
-                                bool newVal = gmod.InstalledMod != null
-                                              && gmod.SelectedMod != null
-                                              && gmod.InstalledMod.Module.version < gmod.SelectedMod.version;
+                                bool newVal = gmod.SelectedMod != null
+                                              && (gmod.InstalledMod == null
+                                                  || gmod.InstalledMod.Module.version < gmod.SelectedMod.version);
                                 if ((bool)upgCell.Value != newVal)
                                 {
                                     upgCell.Value = newVal;

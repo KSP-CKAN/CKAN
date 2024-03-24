@@ -558,14 +558,20 @@ namespace CKAN.GUI
                                          ModuleLabels.HeldIdentifiers(inst)
                                                      .ToHashSet())
                        .SelectMany(kvp => kvp.Value
-                                             .Where(mod => !registry.IsAutodetected(mod.identifier))
-                                             .Select(mod => new GUIMod(registry.InstalledModule(mod.identifier),
-                                                                       repoData, registry,
-                                                                       versionCriteria, null,
-                                                                       hideEpochs, hideV)
-                                                            {
-                                                                HasUpdate = kvp.Key,
-                                                            }))
+                                             .Select(mod => registry.IsAutodetected(mod.identifier)
+                                                            ? new GUIMod(mod, repoData, registry,
+                                                                         versionCriteria, null,
+                                                                         hideEpochs, hideV)
+                                                              {
+                                                                  HasUpdate = kvp.Key,
+                                                              }
+                                                            : new GUIMod(registry.InstalledModule(mod.identifier),
+                                                                         repoData, registry,
+                                                                         versionCriteria, null,
+                                                                         hideEpochs, hideV)
+                                                              {
+                                                                  HasUpdate = kvp.Key,
+                                                              }))
                        .Concat(registry.CompatibleModules(versionCriteria)
                                        .Where(m => !installedIdents.Contains(m.identifier))
                                        .AsParallel()
