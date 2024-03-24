@@ -889,6 +889,13 @@ namespace CKAN.GUI
                                             ? gmod.SelectedMod
                                             : gmod.LatestAvailableMod
                                         : gmod.InstalledMod?.Module;
+
+                                    if (nowChecked && gmod.SelectedMod == gmod.LatestAvailableMod)
+                                    {
+                                        // Reinstall, force update without change
+                                        UpdateChangeSetAndConflicts(currentInstance,
+                                            RegistryManager.Instance(currentInstance, repoData).registry);
+                                    }
                                     break;
                                 case "AutoInstalled":
                                     gmod.SetAutoInstallChecked(row, AutoInstalled);
@@ -1837,7 +1844,7 @@ namespace CKAN.GUI
             => mainModList.ComputeUserChangeSet(
                   RegistryManager.Instance(currentInstance, repoData).registry,
                   currentInstance.VersionCriteria(),
-                  ReplaceCol);
+                  UpdateCol, ReplaceCol);
 
         [ForbidGUICalls]
         public void UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
@@ -1852,7 +1859,7 @@ namespace CKAN.GUI
             Dictionary<GUIMod, string> new_conflicts = null;
 
             var gameVersion = inst.VersionCriteria();
-            var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, ReplaceCol);
+            var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, UpdateCol, ReplaceCol);
             try
             {
                 // Set the target versions of upgrading mods based on what's actually allowed

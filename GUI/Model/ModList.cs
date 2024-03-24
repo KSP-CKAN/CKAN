@@ -422,19 +422,25 @@ namespace CKAN.GUI
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
-        private IEnumerable<ModChange> rowChanges(DataGridViewRow row, DataGridViewColumn replaceCol)
+        private IEnumerable<ModChange> rowChanges(DataGridViewRow row,
+                                                  DataGridViewColumn upgradeCol,
+                                                  DataGridViewColumn replaceCol)
             => (row.Tag as GUIMod).GetModChanges(
+                   upgradeCol != null && upgradeCol.Visible
+                   && row.Cells[upgradeCol.Index] is DataGridViewCheckBoxCell upgradeCell
+                   && (bool)upgradeCell.Value,
                    replaceCol != null && replaceCol.Visible
                    && row.Cells[replaceCol.Index] is DataGridViewCheckBoxCell replaceCell
                    && (bool)replaceCell.Value);
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier    registry,
                                                        GameVersionCriteria crit,
+                                                       DataGridViewColumn  upgradeCol,
                                                        DataGridViewColumn  replaceCol)
         {
             log.Debug("Computing user changeset");
             var modChanges = full_list_of_mod_rows?.Values
-                                                   .SelectMany(row => rowChanges(row, replaceCol))
+                                                   .SelectMany(row => rowChanges(row, upgradeCol, replaceCol))
                                                    .ToList()
                                                   ?? new List<ModChange>();
 
@@ -443,6 +449,8 @@ namespace CKAN.GUI
             if (registry != null)
             {
                 var upgrades = modChanges.OfType<ModUpgrade>()
+                                         // Skip reinstalls
+                                         .Where(upg => upg.Mod != upg.targetMod)
                                          .ToArray();
                 if (upgrades.Length > 0)
                 {
@@ -463,8 +471,12 @@ namespace CKAN.GUI
                             ? allowedMod
                             // Not upgradeable!
                             : change.Mod;
+                        if (change.Mod == change.targetMod)
+                        {
+                            // This upgrade was voided by dependencies or conflicts
+                            modChanges.Remove(change);
+                        }
                     }
-                    modChanges.RemoveAll(ch => ch is ModUpgrade upg && upg.Mod == upg.targetMod);
                 }
             }
 
