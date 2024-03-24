@@ -121,7 +121,7 @@ namespace CKAN.CmdLine
                 if (options.upgrade_all)
                 {
                     var to_upgrade = registry
-                                     .CheckUpgradeable(instance.VersionCriteria(), new HashSet<string>())
+                                     .CheckUpgradeable(instance, new HashSet<string>())
                                      [true];
                     if (to_upgrade.Count == 0)
                     {
@@ -225,7 +225,7 @@ namespace CKAN.CmdLine
                                                     .ToList();
                     // Modules allowed by THOSE modules' relationships
                     var upgradeable = registry
-                                      .CheckUpgradeable(crit, heldIdents, limiters)
+                                      .CheckUpgradeable(instance, heldIdents, limiters)
                                       [true]
                                       .ToDictionary(m => m.identifier,
                                                     m => m);

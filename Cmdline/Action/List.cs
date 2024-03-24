@@ -54,7 +54,7 @@ namespace CKAN.CmdLine
             {
                 var installed = new SortedDictionary<string, ModuleVersion>(registry.Installed());
                 var upgradeable = registry
-                                  .CheckUpgradeable(instance.VersionCriteria(), new HashSet<string>())
+                                  .CheckUpgradeable(instance, new HashSet<string>())
                                   [true]
                                   .Select(m => m.identifier)
                                   .ToHashSet();

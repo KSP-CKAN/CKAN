@@ -88,7 +88,7 @@ namespace CKAN.ConsoleUI {
                         }
                         if (plan.Upgrade.Count > 0) {
                             var upgGroups = registry
-                                            .CheckUpgradeable(manager.CurrentInstance.VersionCriteria(),
+                                            .CheckUpgradeable(manager.CurrentInstance,
                                                               // Hold identifiers not chosen for upgrading
                                                               registry.Installed(false)
                                                                       .Keys

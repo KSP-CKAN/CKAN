@@ -435,6 +435,7 @@ namespace CKAN.GUI
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier    registry,
                                                        GameVersionCriteria crit,
+                                                       GameInstance        instance,
                                                        DataGridViewColumn  upgradeCol,
                                                        DataGridViewColumn  replaceCol)
         {
@@ -454,7 +455,7 @@ namespace CKAN.GUI
                                          .ToArray();
                 if (upgrades.Length > 0)
                 {
-                    var upgradeable = registry.CheckUpgradeable(crit,
+                    var upgradeable = registry.CheckUpgradeable(instance,
                                                                 // Hold identifiers not chosen for upgrading
                                                                 registry.Installed(false)
                                                                         .Select(kvp => kvp.Key)
@@ -503,7 +504,7 @@ namespace CKAN.GUI
                                    List<ModChange>           ChangeSet,
                                    DataGridViewRowCollection rows)
         {
-            var upgGroups = registry.CheckUpgradeable(inst.VersionCriteria(),
+            var upgGroups = registry.CheckUpgradeable(inst,
                                                       ModuleLabels.HeldIdentifiers(inst)
                                                                   .ToHashSet());
             var dlls = registry.InstalledDlls.ToList();
@@ -571,7 +572,7 @@ namespace CKAN.GUI
                                                HashSet<string>       installedIdents,
                                                bool                  hideEpochs,
                                                bool                  hideV)
-            => registry.CheckUpgradeable(versionCriteria,
+            => registry.CheckUpgradeable(inst,
                                          ModuleLabels.HeldIdentifiers(inst)
                                                      .ToHashSet())
                        .SelectMany(kvp => kvp.Value

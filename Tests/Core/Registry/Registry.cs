@@ -256,6 +256,7 @@ namespace Tests.Core.Registry
                 var mod = registry.GetModuleByVersion("AutoDetectedMod", "1.0");
 
                 GameInstance gameInst = gameInstWrapper.KSP;
+                gameInst.SetCompatibleVersions(new List<GameVersion> { mod.ksp_version });
                 registry.SetDlls(new Dictionary<string, string>()
                 {
                     {
@@ -264,10 +265,9 @@ namespace Tests.Core.Registry
                                                                 "GameData", $"{mod.identifier}.dll"))
                     }
                 });
-                GameVersionCriteria crit = new GameVersionCriteria(mod.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(mod.identifier, crit, out _);
+                bool has = registry.HasUpdate(mod.identifier, gameInst, out _);
 
                 // Assert
                 Assert.IsTrue(has, "Can't upgrade manually installed DLL");
@@ -320,7 +320,7 @@ namespace Tests.Core.Registry
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(olderDepMod.identifier, crit, out _,
+                bool has = registry.HasUpdate(olderDepMod.identifier, gameInst, out _,
                                               registry.InstalledModules
                                                       .Select(im => im.Module)
                                                       .ToList());

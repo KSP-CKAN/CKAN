@@ -1857,6 +1857,7 @@ namespace CKAN.GUI
             => mainModList.ComputeUserChangeSet(
                   RegistryManager.Instance(currentInstance, repoData).registry,
                   currentInstance.VersionCriteria(),
+                  currentInstance,
                   UpdateCol, ReplaceCol);
 
         [ForbidGUICalls]
@@ -1872,7 +1873,7 @@ namespace CKAN.GUI
             Dictionary<GUIMod, string> new_conflicts = null;
 
             var gameVersion = inst.VersionCriteria();
-            var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, UpdateCol, ReplaceCol);
+            var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, inst, UpdateCol, ReplaceCol);
             try
             {
                 // Set the target versions of upgrading mods based on what's actually allowed

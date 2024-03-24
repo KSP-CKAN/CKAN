@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -172,7 +173,7 @@ namespace CKAN
         /// </summary>
         public static bool HasUpdate(this IRegistryQuerier   querier,
                                      string                  identifier,
-                                     GameVersionCriteria     versionCrit,
+                                     GameInstance            instance,
                                      out CkanModule          latestMod,
                                      ICollection<CkanModule> installed = null)
         {
@@ -186,7 +187,7 @@ namespace CKAN
             // Check if it's available
             try
             {
-                latestMod = querier.LatestAvailable(identifier, versionCrit, null, installed);
+                latestMod = querier.LatestAvailable(identifier, instance.VersionCriteria(), null, installed);
             }
             catch
             {
@@ -199,7 +200,15 @@ namespace CKAN
             // Check if the installed module is up to date
             var comp = latestMod.version.CompareTo(instVer);
             if (comp == -1
-                || (comp == 0 && !querier.MetadataChanged(identifier)))
+                || (comp == 0 && !querier.MetadataChanged(identifier)
+                              // Check if any of the files or directories are missing
+                              && (instance == null
+                                  || (querier.InstalledModule(identifier)
+                                             ?.Files
+                                              .Select(instance.ToAbsoluteGameDir)
+                                              .All(p => Directory.Exists(p) || File.Exists(p))
+                                             // Manually installed, consider up to date
+                                             ?? true))))
             {
                 latestMod = null;
                 return false;
@@ -212,7 +221,7 @@ namespace CKAN
         }
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
-                                                                          GameVersionCriteria   versionCrit,
+                                                                          GameInstance          instance,
                                                                           HashSet<string>       heldIdents)
         {
             // Get the absolute latest versions ignoring restrictions,
@@ -220,18 +229,18 @@ namespace CKAN
             var unlimited = querier.Installed(false)
                                    .Keys
                                    .Select(ident => !heldIdents.Contains(ident)
-                                                    && querier.HasUpdate(ident, versionCrit,
+                                                    && querier.HasUpdate(ident, instance,
                                                                          out CkanModule latest)
                                                     && !latest.IsDLC
                                                         ? latest
                                                         : querier.GetInstalledVersion(ident))
                                    .Where(m => m != null)
                                    .ToList();
-            return querier.CheckUpgradeable(versionCrit, heldIdents, unlimited);
+            return querier.CheckUpgradeable(instance, heldIdents, unlimited);
         }
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
-                                                                          GameVersionCriteria   versionCrit,
+                                                                          GameInstance          instance,
                                                                           HashSet<string>       heldIdents,
                                                                           List<CkanModule>      initial)
         {
@@ -241,7 +250,7 @@ namespace CKAN
             foreach (var ident in initial.Select(module => module.identifier))
             {
                 if (!heldIdents.Contains(ident)
-                    && querier.HasUpdate(ident, versionCrit,
+                    && querier.HasUpdate(ident, instance,
                                          out CkanModule latest, initial)
                     && !latest.IsDLC)
                 {
