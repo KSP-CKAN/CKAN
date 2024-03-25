@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Add downloads column for ConsoleUI (#4063 by: HebaruSan)
 - [ConsoleUI] Play game option for ConsoleUI (#4064 by: HebaruSan)
 - [ConsoleUI] ConsoleUI prompt to delete non-empty folders after uninstall (#4066 by: HebaruSan)
+- [Multiple] Treat mods with missing files as upgradeable/reinstallable (#4067 by: HebaruSan)
 
 ### Bugfixes
 

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -547,6 +546,10 @@ namespace CKAN.GUI
                     transaction.Complete();
                 }
             }
+
+            // Remove the tray icon
+            minimizeNotifyIcon.Visible = false;
+            minimizeNotifyIcon.Dispose();
 
             base.OnFormClosing(e);
         }

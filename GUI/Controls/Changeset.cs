@@ -40,7 +40,6 @@ namespace CKAN.GUI
                 changes?.Select(ch => new ChangesetRow(ch, AlertLabels, conflicts))
                         .ToList()
                        ?? new List<ChangesetRow>());
-            ChangesGrid.AutoResizeColumns();
         }
 
         public CkanModule SelectedItem => SelectedRow?.Change.Mod;
@@ -70,6 +69,7 @@ namespace CKAN.GUI
                     }
                 }
             }
+            ChangesGrid.AutoResizeColumns();
         }
 
         private void ChangesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -101,8 +101,13 @@ namespace CKAN.GUI
 
         private void ChangesGrid_SelectionChanged(object sender, EventArgs e)
         {
+            if (ChangesGrid.SelectedRows.Count > 0 && !Visible)
+            {
+                // Suppress selection while inactive
+                ChangesGrid.ClearSelection();
+            }
             // Don't pop up mod info when they click the X icons
-            if (ChangesGrid.CurrentCell?.OwningColumn is DataGridViewTextBoxColumn)
+            else if (ChangesGrid.CurrentCell?.OwningColumn is DataGridViewTextBoxColumn)
             {
                 OnSelectedItemsChanged?.Invoke(SelectedRow?.Change.Mod);
             }

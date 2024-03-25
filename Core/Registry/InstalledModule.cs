@@ -2,7 +2,6 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
@@ -12,51 +11,9 @@ namespace CKAN
     [JsonObject(MemberSerialization.OptIn)]
     public class InstalledModuleFile
     {
-
-        // TODO: This class should also record file paths as well.
-        // It's just sha1 now for registry compatibility.
-
-        [JsonProperty("sha1_sum", NullValueHandling = NullValueHandling.Ignore)]
-        private readonly string sha1_sum;
-
-        public string Sha1 => sha1_sum;
-
-        public InstalledModuleFile(string path, GameInstance ksp)
-        {
-            string absolute_path = ksp.ToAbsoluteGameDir(path);
-            // TODO: What is the net performance cost of calculating this? Big files are not quick to hash!
-            sha1_sum = Sha1Sum(absolute_path);
-        }
-
-        // We need this because otherwise JSON.net tries to pass in
-        // our sha1's as paths, and things go wrong.
         [JsonConstructor]
-        private InstalledModuleFile()
+        public InstalledModuleFile()
         {
-        }
-
-        /// <summary>
-        /// Returns the sha1 sum of the given filename.
-        /// Returns null if passed a directory.
-        /// Throws an exception on failure to access the file.
-        /// </summary>
-        private static string Sha1Sum(string path)
-        {
-            if (Directory.Exists(path))
-            {
-                return null;
-            }
-
-            SHA1 hasher = SHA1.Create();
-
-            // Even if we throw an exception, the using block here makes sure
-            // we close our file.
-            using (var fh = File.OpenRead(path))
-            {
-                string sha1 = BitConverter.ToString(hasher.ComputeHash(fh));
-                fh.Close();
-                return sha1;
-            }
         }
     }
 
@@ -127,7 +84,7 @@ namespace CKAN
                     }
 
                     // IMF needs a KSP object so it can compute the SHA1.
-                    installed_files[file] = new InstalledModuleFile(file, ksp);
+                    installed_files[file] = new InstalledModuleFile();
                 }
             }
         }

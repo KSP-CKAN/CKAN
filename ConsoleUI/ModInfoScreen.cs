@@ -267,7 +267,7 @@ namespace CKAN.ConsoleUI {
                 int nameW = midL - 2 - lblW - 2 - 1;
                 int depsH = (h - 2) * numDeps / (numDeps + numConfs);
                 var upgradeableGroups = registry
-                                        .CheckUpgradeable(manager.CurrentInstance.VersionCriteria(),
+                                        .CheckUpgradeable(manager.CurrentInstance,
                                                           new HashSet<string>());
 
                 AddObject(new ConsoleFrame(

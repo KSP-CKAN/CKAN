@@ -304,16 +304,16 @@ namespace CKAN.GUI
         /// <returns>The CkanModule associated with this GUIMod or null if there is none</returns>
         public CkanModule ToModule() => Mod;
 
-        public IEnumerable<ModChange> GetModChanges(bool replaceChecked)
+        public IEnumerable<ModChange> GetModChanges(bool upgradeChecked, bool replaceChecked)
         {
             if (replaceChecked)
             {
                 yield return new ModChange(Mod, GUIModChangeType.Replace);
             }
             else if (!(SelectedMod?.Equals(InstalledMod?.Module)
-                  ?? InstalledMod?.Module.Equals(SelectedMod)
-                  // Both null
-                  ?? true))
+                       ?? InstalledMod?.Module?.Equals(SelectedMod)
+                       // Both null
+                       ?? true))
             {
                 if (InstalledMod != null && SelectedMod == LatestAvailableMod)
                 {
@@ -333,6 +333,14 @@ namespace CKAN.GUI
                         yield return new ModChange(SelectedMod, GUIModChangeType.Install);
                     }
                 }
+            }
+            else if (upgradeChecked)
+            {
+                // Reinstall
+                yield return new ModUpgrade(Mod,
+                                            GUIModChangeType.Update,
+                                            SelectedMod,
+                                            false);
             }
         }
 

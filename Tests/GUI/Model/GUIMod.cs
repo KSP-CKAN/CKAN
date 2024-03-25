@@ -64,7 +64,7 @@ namespace Tests.GUI
                     var registry = new Registry(repoData.Manager, repo.repo);
 
                     registry.RegisterModule(old_version, new List<string>(), null, false);
-                    var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP.VersionCriteria(),
+                    var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP,
                                                                       new HashSet<string>());
 
                     var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.VersionCriteria(),

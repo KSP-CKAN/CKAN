@@ -607,7 +607,7 @@ namespace CKAN.ConsoleUI {
                     }
                 }
                 upgradeableGroups = registry
-                                    .CheckUpgradeable(crit, new HashSet<string>());
+                                    .CheckUpgradeable(manager.CurrentInstance, new HashSet<string>());
             }
             return allMods;
         }

@@ -227,6 +227,7 @@ Task("Build")
             // Use Mono to build for net48 since dotnet can't use WinForms on Linux
             MSBuild(solution,
                     settings => settings.SetConfiguration(configuration)
+                                        .SetMaxCpuCount(0)
                                         .WithProperty("TargetFramework",
                                                       buildNetFramework));
             // Use dotnet to build the stuff Mono can't build

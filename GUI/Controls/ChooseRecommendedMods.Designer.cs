@@ -58,7 +58,6 @@ namespace CKAN.GUI
             this.Toolbar.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.Toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.UncheckAllButton,
-            this.AlwaysUncheckAllButton,
             this.UncheckCheckSeparator,
             this.CheckAllButton,
             this.CheckRecommendationsButton});
