@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using log4net.Core;
 using log4net.Appender;
 
@@ -10,9 +11,13 @@ namespace CKAN.NetKAN
 
         protected override void Append(LoggingEvent evt)
         {
-            Warnings.Add(evt.RenderedMessage);
+            // Skip duplicate messages for better multi-kref handling
+            if (!Warnings.Contains(evt.RenderedMessage))
+            {
+                Warnings.Add(evt.RenderedMessage);
+            }
         }
 
-        public List<string> Warnings = new List<string>();
+        public readonly List<string> Warnings = new List<string>();
     }
 }
