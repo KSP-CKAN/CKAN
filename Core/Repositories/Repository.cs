@@ -49,7 +49,7 @@ namespace CKAN
             => other != null && uri == other.uri;
 
         public override int GetHashCode()
-            => uri.GetHashCode();
+            => uri?.GetHashCode() ?? 0;
 
         public override string ToString()
             => string.Format("{0} ({1}, {2})", name, priority, uri);

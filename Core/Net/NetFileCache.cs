@@ -555,7 +555,7 @@ namespace CKAN
         {
             using (SHA1 sha1 = SHA1.Create())
             {
-                byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url.ToString()));
+                byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url?.ToString() ?? ""));
 
                 return BitConverter.ToString(hash).Replace("-", "").Substring(0, 8);
             }
