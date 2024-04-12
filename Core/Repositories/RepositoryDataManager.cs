@@ -91,7 +91,7 @@ namespace CKAN
         public void Prepopulate(List<Repository> repos, IProgress<int> percentProgress)
         {
             // Look up the sizes of repos that have uncached files
-            var reposAndSizes = repos.Where(r => !repositoriesData.ContainsKey(r))
+            var reposAndSizes = repos.Where(r => r.uri != null && !repositoriesData.ContainsKey(r))
                                      .Select(r => new Tuple<Repository, string>(r, GetRepoDataPath(r)))
                                      .Where(tuple => File.Exists(tuple.Item2))
                                      .Select(tuple => new Tuple<Repository, long>(tuple.Item1,
@@ -140,13 +140,15 @@ namespace CKAN
 
             // Check if any ETags have changed, quit if not
             user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);
-            var toUpdate = repos.DefaultIfEmpty(new Repository("default", game.DefaultRepositoryURL))
+            var toUpdate = repos.DefaultIfEmpty(new Repository($"{game.ShortName}-{Repository.default_ckan_repo_name}",
+                                                               game.DefaultRepositoryURL))
                                 .DistinctBy(r => r.uri)
-                                .Where(r => r.uri.IsFile
-                                            || skipETags
-                                            || (!etags.TryGetValue(r.uri, out string etag)
-                                                || !File.Exists(GetRepoDataPath(r))
-                                                || etag != Net.CurrentETag(r.uri)))
+                                .Where(r => r.uri != null
+                                            && (r.uri.IsFile
+                                                || skipETags
+                                                || (!etags.TryGetValue(r.uri, out string etag)
+                                                    || !File.Exists(GetRepoDataPath(r))
+                                                    || etag != Net.CurrentETag(r.uri))))
                                 .ToArray();
             if (toUpdate.Length < 1)
             {
@@ -300,7 +302,7 @@ namespace CKAN
             new Dictionary<Repository, RepositoryData>();
 
         private string GetRepoDataPath(Repository repo)
-            => GetRepoDataPath(repo, NetFileCache.CreateURLHash(repo.uri));
+            => GetRepoDataPath(repo, NetFileCache.CreateURLHash(repo?.uri));
 
         private string GetRepoDataPath(Repository repo, string hash)
             => Directory.EnumerateFiles(reposDir)

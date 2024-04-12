@@ -134,7 +134,7 @@ namespace CKAN.GUI
                 .OrderBy(r => r.priority)
                 .Select(r => new ListViewItem(new string[]
                     {
-                        r.name, r.uri.ToString(),
+                        r.name, r.uri?.ToString() ?? "",
                     })
                     {
                         Tag = r,
