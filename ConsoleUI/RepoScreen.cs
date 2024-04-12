@@ -75,7 +75,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override string LeftHeader()
         {
-            return $"CKAN {Meta.GetVersion()}";
+            return $"{Meta.GetProductName()} {Meta.GetVersion()}";
         }
 
         /// <summary>
