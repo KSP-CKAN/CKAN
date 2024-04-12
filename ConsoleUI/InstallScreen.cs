@@ -81,7 +81,8 @@ namespace CKAN.ConsoleUI {
                                                                                   registry.InstalledModules
                                                                                           .Select(im => im.Module)
                                                                                           .ToArray(),
-                                                                                  plan.Install))
+                                                                                  plan.Install)
+                                                         ?? m)
                                             .ToArray();
                             inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
                             plan.Install.Clear();

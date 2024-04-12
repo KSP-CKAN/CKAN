@@ -66,15 +66,20 @@ namespace CKAN.ConsoleUI {
             );
             dependencyList.AddTip("+", Properties.Resources.Toggle);
             dependencyList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
-                ChangePlan.toggleContains(accepted, dependencyList.Selection.module);
+                var mod = dependencyList.Selection.module;
+                if (accepted.Contains(mod) || TryWithoutConflicts(accepted.Append(mod))) {
+                    ChangePlan.toggleContains(accepted, mod);
+                }
                 return true;
             });
 
             dependencyList.AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
             dependencyList.AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
-                foreach (var kvp in dependencies) {
-                    if (!accepted.Contains(kvp.Key)) {
-                        ChangePlan.toggleContains(accepted, kvp.Key);
+                if (TryWithoutConflicts(dependencies.Keys)) {
+                    foreach (var kvp in dependencies) {
+                        if (!accepted.Contains(kvp.Key)) {
+                            ChangePlan.toggleContains(accepted, kvp.Key);
+                        }
                     }
                 }
                 return true;
@@ -107,16 +112,15 @@ namespace CKAN.ConsoleUI {
 
             AddTip("F9", Properties.Resources.Accept);
             AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
-                foreach (CkanModule mod in accepted) {
-                    plan.Install.Add(mod);
+                if (TryWithoutConflicts(accepted)) {
+                    plan.Install.UnionWith(accepted);
+                    // Add the rest to rejected
+                    rejected.UnionWith(dependencies.Keys
+                                                   .Except(accepted)
+                                                   .Select(m => m.identifier));
+                    return false;
                 }
-                // Add the rest to rejected
-                foreach (var kvp in dependencies) {
-                    if (!accepted.Contains(kvp.Key)) {
-                        rejected.Add(kvp.Key.identifier);
-                    }
-                }
-                return false;
+                return true;
             });
         }
 
@@ -177,6 +181,36 @@ namespace CKAN.ConsoleUI {
         private string StatusSymbol(CkanModule mod)
             => accepted.Contains(mod) ? installing
                                       : notinstalled;
+
+        private bool TryWithoutConflicts(IEnumerable<CkanModule> toAdd)
+        {
+            if (HasConflicts(toAdd, out List<string> conflictDescriptions)) {
+                RaiseError("{0}", string.Join(Environment.NewLine,
+                                              conflictDescriptions));
+                return false;
+            }
+            return true;
+        }
+
+        private bool HasConflicts(IEnumerable<CkanModule> toAdd,
+                                  out List<string>        descriptions)
+        {
+            try
+            {
+                var resolver = new RelationshipResolver(
+                    plan.Install.Concat(toAdd).Distinct(),
+                    plan.Remove.Select(ident => registry.InstalledModule(ident)?.Module),
+                    RelationshipResolverOptions.ConflictsOpts(), registry,
+                    manager.CurrentInstance.VersionCriteria());
+                descriptions = resolver.ConflictDescriptions.ToList();
+                return descriptions.Count > 0;
+            }
+            catch (DependencyNotSatisfiedKraken k)
+            {
+                descriptions = new List<string>() { k.Message };
+                return true;
+            }
+        }
 
         private readonly HashSet<CkanModule> accepted = new HashSet<CkanModule>();
         private readonly HashSet<string>     rejected;
