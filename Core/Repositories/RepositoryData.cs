@@ -372,7 +372,7 @@ namespace CKAN
                 }
 
                 // If we haven't handled our exception, then it really was exceptional.
-                if (handled == false)
+                if (!handled)
                 {
                     if (exception == null)
                     {
