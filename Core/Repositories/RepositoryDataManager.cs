@@ -140,7 +140,8 @@ namespace CKAN
 
             // Check if any ETags have changed, quit if not
             user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);
-            var toUpdate = repos.DefaultIfEmpty(new Repository("default", game.DefaultRepositoryURL))
+            var toUpdate = repos.DefaultIfEmpty(new Repository($"{game.ShortName}-{Repository.default_ckan_repo_name}",
+                                                               game.DefaultRepositoryURL))
                                 .DistinctBy(r => r.uri)
                                 .Where(r => r.uri != null
                                             && (r.uri.IsFile
