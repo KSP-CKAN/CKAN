@@ -146,9 +146,7 @@ namespace CKAN
                                 .Where(r => r.uri != null
                                             && (r.uri.IsFile
                                                 || skipETags
-                                                || (!etags.TryGetValue(r.uri, out string etag)
-                                                    || !File.Exists(GetRepoDataPath(r))
-                                                    || etag != Net.CurrentETag(r.uri))))
+                                                || repoDataStale(r)))
                                 .ToArray();
             if (toUpdate.Length < 1)
             {
@@ -240,11 +238,15 @@ namespace CKAN
         /// </summary>
         public event Action<Repository[]> Updated;
 
+        #region ETags
+
         private void loadETags()
         {
             try
             {
-                etags = JsonConvert.DeserializeObject<Dictionary<Uri, string>>(File.ReadAllText(etagsPath));
+                etags = JsonConvert.DeserializeObject<Dictionary<Uri, string>>(File.ReadAllText(etagsPath))
+                        // An empty or all-null file can deserialize as null
+                        ?? new Dictionary<Uri, string>();
             }
             catch
             {
@@ -269,6 +271,16 @@ namespace CKAN
                 etags.Remove(url);
             }
         }
+
+        private bool repoDataStale(Repository r)
+            // No ETag on file
+            => !etags.TryGetValue(r.uri, out string etag)
+               // No data on disk
+               || !File.Exists(GetRepoDataPath(r))
+               // Current ETag doesn't match
+               || etag != Net.CurrentETag(r.uri);
+
+        #endregion
 
         private RepositoryData GetRepoData(Repository repo)
             => repositoriesData.TryGetValue(repo, out RepositoryData data)
