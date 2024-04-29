@@ -24,7 +24,7 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             git make sed gzip fakeroot lintian dpkg-dev gpg gpg-agent createrepo python3-pip
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Check version
         id: check_version

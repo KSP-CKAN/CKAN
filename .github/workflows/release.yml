@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Installing checkout/build dependencies
         run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev gpg createrepo
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3

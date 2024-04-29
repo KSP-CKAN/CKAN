@@ -36,7 +36,7 @@ jobs:
           apt-get install -y apt-transport-https
       - name: Installing checkout/build dependencies
         run: apt-get update && apt-get install -y git
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
