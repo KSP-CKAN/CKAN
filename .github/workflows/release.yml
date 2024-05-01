@@ -5,30 +5,45 @@ on:
     types:
       - created
 
+env:
+  AWS_S3_BUCKET: ksp-ckan
+
 jobs:
-  release:
+  test-release:
+    uses: ./.github/workflows/test.yml
+
+  smoke-inflator:
+    uses: ./.github/workflows/smoke.yml
+
+  sign-release:
     runs-on: ubuntu-latest
-
-    container:
-      image: mono:latest
-
+    needs:
+      - test-release
+      - smoke-inflator
+    outputs:
+      artifact-url: ${{steps.sign.outputs.signing-request-id }}
     steps:
-      - name: Installing checkout/build dependencies
-        run: apt-get update && apt-get install -y git make sed libplist-utils xorriso gzip fakeroot lintian rpm wget jq dpkg-dev gpg createrepo
-      - uses: actions/checkout@v4
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
+      - uses: signpath/github-action-submit-signing-request@v0.3
+        id: sign
         with:
-          dotnet-version: '7'
-      - name: Installing runtime dependencies
-        run: apt-get install -y xvfb
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: '0cd9fc3f-b78d-4214-b152-b2e93c952e14'
+          project-slug: 'CKAN'
+          signing-policy-slug: 'test-signing'
+          github-artifact-name: 'Release-repack-unsigned'
+          artifact-configuration-slug: release
+          wait-for-completion: true
 
-      - name: Build ckan.exe and netkan.exe
-        run: ./build --configuration=Release
-      - name: Run tests
-        run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
-
+  upload-nuget:
+    runs-on: ubuntu-latest
+    needs:
+      - test-release
+      - smoke-inflator
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-out
+          path: _build/out/
       - name: Publish ckan.dll to NuGet
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
@@ -37,14 +52,53 @@ jobs:
           curl -o nuget.exe -L 'https://dist.nuget.org/win-x86-commandline/v5.6.0/nuget.exe'
           mono nuget.exe push _build/out/CKAN/Release/bin/*.nupkg ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
 
+  build-dmg:
+    runs-on: ubuntu-latest
+    needs:
+      - test-release
+      - smoke-inflator
+    steps:
+      - uses: actions/checkout@v4
+      - name: OSX build dependencies
+        run: sudo apt-get install -y libplist-utils xorriso
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
+      - name: Upload OSX release
+        run: gh release upload ${{ github.event.release.tag_name }} _build/osx/CKAN.dmg
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-deb:
+    runs-on: ubuntu-latest
+    needs:
+      - test-release
+      - smoke-inflator
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
+      - name: Set Version
+        run: |
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d "v")
+          echo "DEB_VERSION=${VERSION}.$(date +'%g%j')" >> $GITHUB_ENV
       - name: Build deb
         env:
           CODENAME: stable
         run: ./build deb --configuration=Release --exclusive
-      - name: Build rpm
-        run: ./build rpm --configuration=Release --exclusive
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -58,115 +112,107 @@ jobs:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Push deb to S3
+        run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
+      - name: Push stable APT repo to S3
+        run: aws s3 sync _build/deb/apt-repo-dist s3://${AWS_S3_BUCKET}/deb/dists/stable --follow-symlinks
+      - name: Upload Deb release
+        run: gh release upload ${{ github.event.release.tag_name }} _build/deb/ckan_${DEB_VERSION}_all.deb
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-rpm:
+    runs-on: ubuntu-latest
+    needs:
+      - test-release
+      - smoke-inflator
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installing rpm build dependencies
+        run: sudo apt-get install -y createrepo-c
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
+      - name: Set Version
+        run: |
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d "v")
+          echo "RPM_VERSION=${VERSION}.$(date +'%g%j')" >> $GITHUB_ENV
+      - name: Build rpm
+        run: ./build rpm --configuration=Release --exclusive
+      - name: Import GPG key
+        env:
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: |
+          echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
       - name: Build rpm repository
         env:
           CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build rpm-repo --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Push rpm to S3
+        run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/stable --follow-symlinks
+      - name: Upload RPM release
+        run: gh release upload ${{ github.event.release.tag_name }} _build/rpm/RPMS/noarch/ckan-${RPM_VERSION}-1.noarch.rpm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get release data
-        id: release_data
-        run: |
-          URL=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].upload_url' | tr -d \")
-          echo "upload_url=$URL" >> $GITHUB_OUTPUT
-          VERSION=$(wget -qO- https://api.github.com/repos/$GITHUB_REPOSITORY/releases | jq '.[0].tag_name' | tr -d \"v)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          RPM_VERSION=$(echo ${VERSION}.$(date +'%g%j') | sed -e 's/-/_/g')
-          echo "rpm_version=$RPM_VERSION" >> $GITHUB_OUTPUT
-          DEB_VERSION=${VERSION}.$(date +'%g%j')
-          echo "deb_version=$DEB_VERSION" >> $GITHUB_OUTPUT
-      - name: Push deb to S3
-        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
-        uses: jakejarvis/s3-sync-action@master
+  upload-binaries:
+    runs-on: ubuntu-latest
+    needs:
+      - test-release
+      - smoke-inflator
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/download-artifact@v4
         with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-root
-          DEST_DIR: deb
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
-      - name: Push stable APT repo to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-dist
-          DEST_DIR: deb/dists/stable
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
-      - name: Push stable RPM repo to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/rpm/repo
-          DEST_DIR: rpm/stable
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
-
+          name: Release-repack-unsigned
+          path: _build/repack/
       - name: Upload ckan.exe
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/repack/Release/ckan.exe
-          asset_name: ckan.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
-      - name: Upload CKAN.dmg
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/osx/CKAN.dmg
-          asset_name: CKAN.dmg
-          asset_content_type: application/x-apple-diskimage
-      - name: Upload ckan_*.deb
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/deb/ckan_${{ steps.release_data.outputs.deb_version }}_all.deb
-          asset_name: ckan_${{ steps.release_data.outputs.version }}_all.deb
-          asset_content_type: application/vnd.debian.binary-package
-      - name: Upload ckan-*.rpm
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/rpm/RPMS/noarch/ckan-${{ steps.release_data.outputs.rpm_version }}-1.noarch.rpm
-          asset_name: ckan-${{ steps.release_data.outputs.version }}-1.noarch.rpm
-          asset_content_type: application/x-rpm
+        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/ckan.exe
       - name: Upload AutoUpdater.exe
-        uses: actions/upload-release-asset@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.release_data.outputs.upload_url }}
-          asset_path: _build/repack/Release/AutoUpdater.exe
-          asset_name: AutoUpdater.exe
-          asset_content_type: application/vnd.microsoft.portable-executable
+        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/AutoUpdater.exe
 
+  notify-discord:
+    runs-on: ubuntu-latest
+    needs:
+      - build-dmg
+      - build-deb
+      - build-rpm
+      - upload-binaries
+      - upload-nuget
+    env:
+      JOB_STATUS: failure
+    if: always()
+    steps:
+      - name: Set Success
+        run: echo "JOB_STATUS=success" >> $GITHUB_ENV
+        if: contains('failure', join(needs.*.result, ' ')) == false
       - name: Send Discord Notification
         env:
-          JOB_STATUS: ${{ job.status }}
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
-        if: ${{ always() && env.WEBHOOK_URL }}]
+        if: env.WEBHOOK_URL
         run: |
           git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
           bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
