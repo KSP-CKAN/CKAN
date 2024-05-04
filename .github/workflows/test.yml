@@ -1,0 +1,50 @@
+name: Test CKAN + NetKAN
+
+on:
+  push:
+    branches-ignore:
+      - master
+  workflow_call:
+
+jobs:
+  build-debug:
+    uses: ./.github/workflows/build.yml
+  test-build:
+    needs: build-debug
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install runtime dependencies
+        run: sudo apt-get install -y xvfb
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Debug-out
+          path: _build/out/
+      - uses: actions/download-artifact@v4
+        with:
+          name: Debug-repack-unsigned
+          path: _build/repack/
+      - name: Run tests
+        run: xvfb-run ./build test+only --configuration=Debug --where="Category!=FlakyNetwork"
+
+  notify:
+    needs:
+      - test-build
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Send Discord Notification
+        env:
+          JOB_STATUS: failure
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        if: env.WEBHOOK_URL
+        run: |
+          git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
+        shell: bash
