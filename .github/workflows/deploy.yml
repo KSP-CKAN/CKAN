@@ -11,107 +11,162 @@ on:
 
 concurrency: deploy
 
+env:
+  AWS_S3_BUCKET: ksp-ckan
+
 jobs:
-  deploy:
+  test-release:
+    uses: ./.github/workflows/test.yml
+
+  smoke-inflator:
+    uses: ./.github/workflows/smoke.yml
+
+  upload-release-s3:
+    needs:
+      - test-release
+      - smoke-inflator
     runs-on: ubuntu-latest
-
-    container:
-      image: mono:latest
-
+    outputs:
+      odd-build: ${{ steps.check-version.outputs.odd-build }}
+      credentials: ${{ steps.credentials.outputs.credentials }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
-      - name: Installing checkout/build dependencies
-        run: |
-          apt-get update
-          apt-get install -y --no-install-recommends \
-            git make sed gzip fakeroot lintian dpkg-dev gpg gpg-agent createrepo python3-pip
       - uses: actions/checkout@v4
-
       - name: Check version
-        id: check_version
+        id: check-version
         shell: bash
         run: |
           VERSION=$(egrep '^\s*\#\#\s+v.*$' CHANGELOG.md | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-.*$//')
           if [[ $VERSION =~ [13579]$ ]]
           then
-            echo 'odd_build=true' >> $GITHUB_OUTPUT
+            echo 'odd-build=true' >> $GITHUB_OUTPUT
           fi
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
+      - name: Credentials
+        id: credentials
+        run: echo 'credentials=false' >> $GITHUB_OUTPUT
+        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+        if: steps.credentials.outputs.credentials
+      - name: Push deb to S3
+        run: aws s3 sync _build/repack/Release s3://${AWS_S3_BUCKET} --follow-symlinks
+        if: steps.credentials.outputs.credentials
 
+  upload-deb:
+    needs: upload-release-s3
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    if: needs.upload-release-s3.outputs.odd-build && needs.upload-release-s3.outputs.credentials
+    steps:
+      - uses: actions/checkout@v4
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '7'
-      - name: Installing runtime dependencies
-        run: apt-get install -y xvfb
-
-      - name: Restore cache for _build/tools
-        uses: actions/cache@v1
+      - uses: actions/download-artifact@v4
         with:
-          path: _build/tools
-          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
-      - name: Restore cache for _build/cake
-        uses: actions/cache@v1
-        with:
-          path: _build/cake
-          key: build-cake-${{ hashFiles('build.cake') }}
-      - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v1
-        with:
-          path: _build/lib/nuget
-          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-      - name: Restore cache for ~/.nuget/packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.nuget/packages
-          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-
-      - name: Build ckan.exe and netkan.exe
-        run: ./build --configuration=Release
-
-      - name: Create a version.json file for S3
-        shell: bash
-        run: |
-          export PIP_ROOT_USER_ACTION=ignore
-          pip3 install --upgrade pip
-          pip3 install gitpython
-          git config --global --add safe.directory '*'
-          python3 bin/version_info.py > _build/repack/Release/version.json
-
+          name: Release-repack-unsigned
+          path: _build/repack/
       - name: Build deb
         env:
           CODENAME: nightly
         run: ./build deb --configuration=Release --exclusive
-        if: ${{ steps.check_version.outputs.odd_build }}
-      - name: Build rpm
-        run: ./build rpm --configuration=Release --exclusive
-        if: ${{ steps.check_version.outputs.odd_build }}
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: |
           echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
-        if: ${{ env.DEBIAN_PRIVATE_KEY && steps.check_version.outputs.odd_build }}
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Sign deb release
         env:
           CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build deb-sign --configuration=Release --exclusive
-        if: ${{ env.DEBIAN_PRIVATE_KEY && steps.check_version.outputs.odd_build }}
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Push deb to S3
+        run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
+      - name: Push stable APT repo to S3
+        run: aws s3 sync _build/deb/apt-repo-dist s3://${AWS_S3_BUCKET}/deb/dists/nightly --follow-symlinks
+
+  upload-rpm:
+    needs: upload-release-s3
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    if: needs.upload-release-s3.outputs.odd-build && needs.upload-release-s3.outputs.credentials
+    steps:
+      - uses: actions/checkout@v4
+      - name: Installing rpm build dependencies
+        run: sudo apt-get install -y createrepo-c
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
+      - name: Build rpm
+        run: ./build rpm --configuration=Release --exclusive
+      - name: Import GPG key
+        env:
+          DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
+        run: |
+          echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Build rpm repository
         env:
           CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build rpm-repo --configuration=Release --exclusive
-        if: ${{ env.DEBIAN_PRIVATE_KEY && steps.check_version.outputs.odd_build }}
+        if: ${{ env.DEBIAN_PRIVATE_KEY }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Push rpm to S3
+        run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/nightly --follow-symlinks
 
-      - name: Run tests
-        run: xvfb-run ./build test+only --configuration=Release --where="Category!=FlakyNetwork"
-
-      - name: Install Docker
-        run: |
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
-
+  upload-inflator:
+    needs: upload-release-s3
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    if: needs.upload-release-s3.outputs.credentials
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
       - name: Generate inflator Docker image and publish to Hub
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -119,10 +174,28 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-west-2
-        if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD && env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
+        if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          cp -v _build/repack/Release/netkan.exe _build/.
           ./build docker-inflator --exclusive
+
+  upload-metadata-tester:
+    needs:
+      - test-release
+      - smoke-inflator
+    runs-on: ubuntu-latest
+    if: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7'
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
       - name: Generate metadata tester Docker image and publish to Hub
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -130,66 +203,29 @@ jobs:
         if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          cp -v _build/repack/Release/*kan.exe _build/.
           ./build docker-metadata --exclusive
 
-      - name: Push ckan.exe and netkan.exe to S3
-        # Send ckan.exe and netkan.exe to https://ksp-ckan.s3-us-west-2.amazonaws.com/
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/repack/Release
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Push deb to S3
-        # Send deb file to https://ksp-ckan.s3-us-west-2.amazonaws.com/
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-root
-          DEST_DIR: deb
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && steps.check_version.outputs.odd_build }}
-      - name: Push nightly APT repo to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/deb/apt-repo-dist
-          DEST_DIR: deb/dists/nightly
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && steps.check_version.outputs.odd_build }}
-      - name: Push nightly RPM repo to S3
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --follow-symlinks
-        env:
-          AWS_S3_BUCKET: ksp-ckan
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: us-east-1
-          SOURCE_DIR: _build/rpm/repo
-          DEST_DIR: rpm/nightly
-        if: ${{ env.AWS_ACCESS_KEY_ID && env.AWS_SECRET_ACCESS_KEY && steps.check_version.outputs.odd_build }}
-
+  notify-discord:
+    runs-on: ubuntu-latest
+    needs:
+      - upload-deb
+      - upload-rpm
+      - upload-inflator
+      - upload-metadata-tester
+    env:
+      JOB_STATUS: failure
+    if: always()
+    steps:
+      - name: Set Success
+        run: echo "JOB_STATUS=success" >> $GITHUB_ENV
+        if: contains('failure', join(needs.*.result, ' ')) == false
       - name: Send Discord Notification
         env:
-          JOB_STATUS: ${{ job.status }}
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
           HOOK_OS_NAME: ${{ runner.os }}
           WORKFLOW_NAME: ${{ github.workflow }}
-        if: ${{ always() && env.WEBHOOK_URL }}
+        if: env.WEBHOOK_URL
         run: |
           git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
           bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
