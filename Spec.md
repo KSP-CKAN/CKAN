@@ -785,6 +785,10 @@ When used, the following fields will be auto-filled if not already present:
 
 ###### `#/ckan/curse/:cid`
 
+The Curse API that we used to use was sunsetted, so Curse is no longer supported.
+
+<details><summary>Expand to see the old info</summary>
+
 Indicates that data should be fetched from Curse, using the `:cid` provided. The `:cid` may be a number for modules indexed prior to March 2018, or the name from the Curse URL otherwise. For example: `#/ckan/curse/220221` or `#/ckan/curse/photonsail`.
 
 When used, the following fields will be auto-filled if not already present:
@@ -799,6 +803,8 @@ When used, the following fields will be auto-filled if not already present:
 - `download_content_type`
 - `resources.curse`
 - `ksp_version`
+
+</details>
 
 ###### `#/ckan/github/:user/:repo[(/asset_match/:filter_regexp)|(/version_from_asset/:version_regexp)]`
 
