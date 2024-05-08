@@ -619,7 +619,7 @@ namespace CKAN.ConsoleUI {
                 // Because that's supposed to work.
                 regMgr.Save(true);
                 string path = Path.Combine(
-                    manager.CurrentInstance.CkanDir(),
+                    Platform.FormatPath(manager.CurrentInstance.CkanDir()),
                     $"{Properties.Resources.ModListExportPrefix}-{manager.CurrentInstance.Name}.ckan"
                 );
                 RaiseError(Properties.Resources.ModListExported, path);
