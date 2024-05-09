@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Play game option for ConsoleUI (#4064 by: HebaruSan)
 - [ConsoleUI] ConsoleUI prompt to delete non-empty folders after uninstall (#4066 by: HebaruSan)
 - [Multiple] Treat mods with missing files as upgradeable/reinstallable (#4067 by: HebaruSan)
+- [ConsoleUI] Conflicting recommendations check for ConsoleUI (#4085 by: HebaruSan)
 
 ### Bugfixes
 

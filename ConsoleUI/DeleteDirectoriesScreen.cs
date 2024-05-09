@@ -107,7 +107,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
-        protected override string LeftHeader() => $"CKAN {Meta.GetVersion()}";
+        protected override string LeftHeader() => $"{Meta.GetProductName()} {Meta.GetVersion()}";
 
         /// <summary>
         /// Show the Delete Directories header
