@@ -165,7 +165,6 @@ jobs:
         if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          cp -v _build/repack/Release/netkan.exe _build/.
           ./build docker-inflator --exclusive
 
   upload-metadata-tester:
@@ -187,7 +186,6 @@ jobs:
         if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          cp -v _build/repack/Release/*kan.exe _build/.
           ./build docker-metadata --exclusive
 
   notify-discord:
