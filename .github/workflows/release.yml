@@ -194,7 +194,7 @@ jobs:
     steps:
       - name: Set Success
         run: echo "JOB_STATUS=success" >> $GITHUB_ENV
-        if: contains('failure', join(needs.*.result, ' ')) == false
+        if: contains(needs.*.result, 'failure') == false
       - name: Send Discord Notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
