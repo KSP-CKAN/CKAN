@@ -59,8 +59,7 @@ Task("docker-inflator")
     // Versions of Docker prior to 18.03.0-ce require the Dockerfile to be within the build context
     var dockerFile        = inflatorDirectory.CombineWithFilePath("Dockerfile.netkan");
     CreateDirectory(inflatorDirectory);
-    CopyFile(buildDirectory.CombineWithFilePath("netkan.exe"),
-          inflatorDirectory.CombineWithFilePath("netkan.exe"));
+    CopyFile(netkanFile, inflatorDirectory.CombineWithFilePath("netkan.exe"));
     CopyFile(rootDirectory.CombineWithFilePath("Dockerfile.netkan"), dockerFile);
 
     var mainTag   = "kspckan/inflator";
@@ -109,10 +108,8 @@ Task("docker-metadata")
     // Versions of Docker prior to 18.03.0-ce require the Dockerfile to be within the build context
     var dockerFile        = metadataDirectory.CombineWithFilePath("Dockerfile.metadata");
     CreateDirectory(metadataDirectory);
-    CopyFile(buildDirectory.CombineWithFilePath("netkan.exe"),
-          metadataDirectory.CombineWithFilePath("netkan.exe"));
-    CopyFile(buildDirectory.CombineWithFilePath("ckan.exe"),
-          metadataDirectory.CombineWithFilePath("ckan.exe"));
+    CopyFile(netkanFile, metadataDirectory.CombineWithFilePath("netkan.exe"));
+    CopyFile(ckanFile,   metadataDirectory.CombineWithFilePath("ckan.exe"));
     CopyFile(rootDirectory.CombineWithFilePath("Dockerfile.metadata"), dockerFile);
 
     var mainTag   = "kspckan/metadata";

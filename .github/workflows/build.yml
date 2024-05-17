@@ -1,101 +1,33 @@
 name: Build CKAN + NetKAN
 
 on:
-  push:
-    branches:
-      - master
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
+  workflow_call:
+    inputs:
+      configuration:
+        type: string
+        default: Debug
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        mono:
-          - latest
-          - '6.12'
-          - '6.10'
-          - '6.8'
-        configuration:
-          - Debug
-          - Release
-
-    container:
-      image: mono:${{ matrix.mono }}
-
     steps:
-      - name: Adding HTTPS support to APT for old Mono images
-        run: |
-          apt-get update || true
-          apt-get install -y apt-transport-https
-      - name: Installing checkout/build dependencies
-        run: apt-get update && apt-get install -y git
-      - uses: actions/checkout@v3
-
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7'
-      - name: Install runtime dependencies
-        run: apt-get install -y xvfb
-      - name: Restore cache for _build/tools
-        uses: actions/cache@v3
-        with:
-          path: _build/tools
-          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
-      - name: Restore cache for _build/cake
-        uses: actions/cache@v3
-        with:
-          path: _build/cake
-          key: build-cake-${{ hashFiles('build.cake') }}
-      - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v3
-        with:
-          path: _build/lib/nuget
-          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-      - name: Restore cache for ~/.nuget/packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.nuget/packages
-          key: nuget-packref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-
+      - uses: actions/checkout@v4
       - name: Build ckan.exe and netkan.exe
-        run: ./build --configuration=${{ matrix.configuration}}
-      - name: Run tests
-        run: xvfb-run ./build test+only --configuration=${{ matrix.configuration }} --where="Category!=FlakyNetwork"
-      - name: Run inflator container smoke test
-        run: |
-          cd _build
-          curl -fsSL https://get.docker.com -o get-docker.sh
-          sh get-docker.sh
-          docker build --tag inflator --file ../Dockerfile.netkan .
-          docker run --rm --name inflator --entrypoint /bin/bash inflator -c "
-            mono netkan.exe https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan
-          "
-        if: matrix.configuration == 'release'
-
+        run: ./build --configuration=${{ inputs.configuration }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.configuration }}-repack-unsigned
+          path: _build/repack/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.configuration }}-out
+          path: _build/out/
+          retention-days: 1
       - name: Upload ckan.exe artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ckan.exe
           path: _build/repack/Release/ckan.exe
           retention-days: 7
-        if: matrix.configuration == 'release' && matrix.mono == 'latest' && github.event_name == 'pull_request'
-
-      - name: Send Discord Notification
-        env:
-          JOB_STATUS: ${{ job.status }}
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
-          HOOK_OS_NAME: ${{ runner.os }}
-          WORKFLOW_NAME: ${{ github.workflow }}
-        if: ${{ failure() && env.WEBHOOK_URL }}
-        run: |
-          git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
-          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
-        shell: bash
+        if: inputs.configuration == 'Release'

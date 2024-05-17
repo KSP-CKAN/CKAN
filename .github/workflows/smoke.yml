@@ -1,0 +1,49 @@
+name: Smoke Test NetKAN
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  workflow_call:
+
+jobs:
+  build-release:
+    uses: ./.github/workflows/build.yml
+    with:
+      configuration: Release
+  smoke-test-inflator:
+    needs: build-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
+      - name: Run inflator container smoke test
+        working-directory: _build
+        run: |
+          cp -v repack/Release/netkan.exe .
+          docker build --tag inflator --file ../Dockerfile.netkan .
+          docker run --rm --name inflator --entrypoint /bin/bash inflator -c "
+            mono netkan.exe https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan
+          "
+  notify:
+    needs:
+      - smoke-test-inflator
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Send Discord Notification
+        env:
+          JOB_STATUS: failure
+          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
+          HOOK_OS_NAME: ${{ runner.os }}
+          WORKFLOW_NAME: ${{ github.workflow }}
+        if: env.WEBHOOK_URL
+        run: |
+          git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
+        shell: bash
