@@ -165,7 +165,7 @@ jobs:
         if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          ./build docker-inflator --exclusive
+          ./build docker-inflator --configuration=Release --exclusive
 
   upload-metadata-tester:
     needs:
@@ -185,7 +185,7 @@ jobs:
         if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
         run: |
           echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          ./build docker-metadata --exclusive
+          ./build docker-metadata --configuration=Release --exclusive
 
   notify-discord:
     runs-on: ubuntu-latest
@@ -200,7 +200,7 @@ jobs:
     steps:
       - name: Set Success
         run: echo "JOB_STATUS=success" >> $GITHUB_ENV
-        if: contains('failure', join(needs.*.result, ' ')) == false
+        if: contains(needs.*.result, 'failure') == false
       - name: Send Discord Notification
         env:
           WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
