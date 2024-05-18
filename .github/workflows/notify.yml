@@ -1,0 +1,26 @@
+name: Send Discord Notification
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        type: string
+        required: true
+      success:
+        type: boolean
+        required: true
+    secrets:
+      DISCORD_WEBHOOK:
+        required: true
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          WORKFLOW_NAME: ${{ inputs.name }}
+          HOOK_OS_NAME: ${{ runner.os }}
+        shell: bash
+        run: |
+          git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
+          bash webhook/send.sh ${{ inputs.success && 'success' || 'failure' }} ${{ secrets.DISCORD_WEBHOOK }}
