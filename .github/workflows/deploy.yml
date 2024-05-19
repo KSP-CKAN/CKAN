@@ -211,6 +211,7 @@ jobs:
     needs:
       - test-release
       - smoke-inflator
+      - upload-release-s3
       - upload-deb
       - upload-rpm
       - upload-inflator
