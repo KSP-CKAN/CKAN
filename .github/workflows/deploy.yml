@@ -189,6 +189,8 @@ jobs:
 
   notify-discord:
     needs:
+      - test-release
+      - smoke-inflator
       - upload-deb
       - upload-rpm
       - upload-inflator

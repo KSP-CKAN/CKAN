@@ -153,6 +153,14 @@ class CkanPullRequest:
         if not branch:
             print(f'PR #{self.pull_request.number} commit {self.pull_request.head.sha} not found!')
             return False
+        pr_commits = self.pull_request.get_commits()
+        incomplete_checks = [run
+                             for run in pr_commits[pr_commits.totalCount - 1].get_check_runs()
+                             if run.status != 'completed'
+                                or run.conclusion not in ('success', 'skipped')]
+        if incomplete_checks:
+            print('Incomplete checks:', ', '.join(ch.name for ch in incomplete_checks))
+            return False
         # Valid; do it!
         # repo.index.merge_tree doesn't auto resolve conflicts
         repo.git.merge(branch, no_commit=True, no_ff=True)
