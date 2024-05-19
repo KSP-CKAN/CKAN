@@ -17,10 +17,13 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: DiscordHooks/github-actions-discord-webhook
+          path: webhook
+          fetch-depth: 1
       - env:
           WORKFLOW_NAME: ${{ inputs.name }}
           HOOK_OS_NAME: ${{ runner.os }}
         shell: bash
-        run: |
-          git clone --depth 1 https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
-          bash webhook/send.sh ${{ inputs.success && 'success' || 'failure' }} ${{ secrets.DISCORD_WEBHOOK }}
+        run: bash webhook/send.sh ${{ inputs.success && 'success' || 'failure' }} ${{ secrets.DISCORD_WEBHOOK }}
