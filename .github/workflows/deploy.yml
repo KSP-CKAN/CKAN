@@ -34,7 +34,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - name: Check version
+      - name: Treat as dev build if final piece of version is odd
         id: check-version
         shell: bash
         run: |
@@ -58,7 +58,7 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
         if: steps.credentials.outputs.credentials
-      - name: Push deb to S3
+      - name: Push ckan.exe, netkan.exe, and version.json to S3
         run: aws s3 sync _build/repack/Release s3://${AWS_S3_BUCKET} --follow-symlinks
         if: steps.credentials.outputs.credentials
 
@@ -71,7 +71,8 @@ jobs:
     if: needs.upload-release-s3.outputs.odd-build && needs.upload-release-s3.outputs.credentials
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
@@ -100,7 +101,7 @@ jobs:
           aws-region: us-east-1
       - name: Push deb to S3
         run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
-      - name: Push stable APT repo to S3
+      - name: Push nightly APT repo to S3
         run: aws s3 sync _build/deb/apt-repo-dist s3://${AWS_S3_BUCKET}/deb/dists/nightly --follow-symlinks
 
   upload-rpm:
@@ -112,9 +113,10 @@ jobs:
     if: needs.upload-release-s3.outputs.odd-build && needs.upload-release-s3.outputs.credentials
     steps:
       - uses: actions/checkout@v4
-      - name: Installing rpm build dependencies
+      - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
@@ -127,7 +129,7 @@ jobs:
           echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
-      - name: Build rpm repository
+      - name: Build nightly RPM repo
         env:
           CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -139,7 +141,7 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Push rpm to S3
+      - name: Push nightly PRM repo to S3
         run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/nightly --follow-symlinks
 
   upload-inflator:
@@ -151,11 +153,12 @@ jobs:
     if: needs.upload-release-s3.outputs.credentials
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Generate inflator Docker image and publish to Hub
+      - name: Generate inflator Docker image, publish to Hub, and restart AWS containers
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -174,7 +177,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
