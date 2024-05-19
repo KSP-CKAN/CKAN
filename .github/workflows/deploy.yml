@@ -58,6 +58,16 @@ jobs:
         with:
           name: Release-repack-unsigned
           path: _build/repack/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.11
+      - name: Create a version.json file for dev builds on S3
+        shell: bash
+        run: |
+          export PIP_ROOT_USER_ACTION=ignore
+          pip install gitpython
+          git config --global --add safe.directory '*'
+          python bin/version_info.py > _build/repack/Release/version.json
       - name: Push ckan.exe, netkan.exe, and version.json to S3
         run: aws s3 sync _build/repack/Release s3://${AWS_S3_BUCKET} --follow-symlinks
 
