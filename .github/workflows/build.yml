@@ -14,14 +14,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build ckan.exe and netkan.exe
         run: ./build --configuration=${{ inputs.configuration }}
-      - uses: actions/upload-artifact@v4
+      - name: Upload repack artifact
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.configuration }}-repack-unsigned
           path: _build/repack/
           retention-days: 7
-      - uses: actions/upload-artifact@v4
+      - name: Upload out artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.configuration }}-out
+          name: ${{ inputs.configuration }}-out-unsigned
           path: _build/out/
           retention-days: 1
       - name: Upload ckan.exe artifact

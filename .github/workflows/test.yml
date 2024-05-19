@@ -16,11 +16,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install runtime dependencies
         run: sudo apt-get install -y xvfb
-      - uses: actions/download-artifact@v4
+      - name: Download out artifact
+        uses: actions/download-artifact@v4
         with:
-          name: Debug-out
+          name: Debug-out-unsigned
           path: _build/out/
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Debug-repack-unsigned
           path: _build/repack/

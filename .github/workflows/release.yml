@@ -40,9 +40,10 @@ jobs:
       - test-release
       - smoke-inflator
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download out artifact
+        uses: actions/download-artifact@v4
         with:
-          name: Release-repack-out
+          name: Release-out-unsigned
           path: _build/out/
       - name: Publish ckan.dll to NuGet
         env:
@@ -59,15 +60,16 @@ jobs:
       - smoke-inflator
     steps:
       - uses: actions/checkout@v4
-      - name: OSX build dependencies
+      - name: Install OSX build dependencies
         run: sudo apt-get install -y libplist-utils xorriso
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
-      - name: Upload OSX release
+      - name: Upload OSX release asset
         run: gh release upload ${{ github.event.release.tag_name }} _build/osx/CKAN.dmg
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -78,12 +80,19 @@ jobs:
       - test-release
       - smoke-inflator
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Set Version
+      - name: Set deb version
         run: |
           VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d "v")
           echo "DEB_VERSION=${VERSION}.$(date +'%g%j')" >> $GITHUB_ENV
@@ -104,17 +113,11 @@ jobs:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
       - name: Push deb to S3
         run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
       - name: Push stable APT repo to S3
         run: aws s3 sync _build/deb/apt-repo-dist s3://${AWS_S3_BUCKET}/deb/dists/stable --follow-symlinks
-      - name: Upload Deb release
+      - name: Upload deb release asset
         run: gh release upload ${{ github.event.release.tag_name }} _build/deb/ckan_${DEB_VERSION}_all.deb
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,16 +128,23 @@ jobs:
       - test-release
       - smoke-inflator
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
       - uses: actions/checkout@v4
-      - name: Installing rpm build dependencies
+      - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Set Version
+      - name: Set rpm version
         run: |
-          VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d "v")
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d v)
           echo "RPM_VERSION=${VERSION}.$(date +'%g%j')" >> $GITHUB_ENV
       - name: Build rpm
         run: ./build rpm --configuration=Release --exclusive
@@ -144,21 +154,15 @@ jobs:
         run: |
           echo "$DEBIAN_PRIVATE_KEY" | base64 --decode | gpg --batch --import
           gpg --list-secret-keys --keyid-format LONG
-      - name: Build rpm repository
+      - name: Build stable RPM repo
         env:
           CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build rpm-repo --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      - name: Push rpm to S3
+      - name: Push stable RPM repo to S3
         run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/stable --follow-symlinks
-      - name: Upload RPM release
+      - name: Upload RPM release asset
         run: gh release upload ${{ github.event.release.tag_name }} _build/rpm/RPMS/noarch/ckan-${RPM_VERSION}-1.noarch.rpm
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -171,14 +175,13 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Upload ckan.exe
-        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/ckan.exe
-      - name: Upload AutoUpdater.exe
-        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/AutoUpdater.exe
+      - name: Upload ckan.exe and AutoUpdater.exe release assets
+        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/ckan.exe _build/repack/Release/AutoUpdater.exe
 
   notify-discord:
     needs:

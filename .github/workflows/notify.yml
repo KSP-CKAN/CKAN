@@ -15,14 +15,17 @@ on:
 
 jobs:
   notify:
+    name: Notify Discord
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Clone Discord hooks repo
+        uses: actions/checkout@v4
         with:
           repository: DiscordHooks/github-actions-discord-webhook
           path: webhook
           fetch-depth: 1
-      - env:
+      - name: Send notification
+        env:
           WORKFLOW_NAME: ${{ inputs.name }}
           HOOK_OS_NAME: ${{ runner.os }}
         shell: bash
