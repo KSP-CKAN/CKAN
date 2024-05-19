@@ -134,7 +134,7 @@ jobs:
           path: _build/repack/
       - name: Set Version
         run: |
-          VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d "v")
+          VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d v)
           echo "RPM_VERSION=${VERSION}.$(date +'%g%j')" >> $GITHUB_ENV
       - name: Build rpm
         run: ./build rpm --configuration=Release --exclusive
