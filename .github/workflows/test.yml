@@ -29,18 +29,11 @@ jobs:
 
   notify:
     needs:
+      - build-debug
       - test-build
-    runs-on: ubuntu-latest
     if: failure()
-    steps:
-      - name: Send Discord Notification
-        env:
-          JOB_STATUS: failure
-          WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK }}
-          HOOK_OS_NAME: ${{ runner.os }}
-          WORKFLOW_NAME: ${{ github.workflow }}
-        if: env.WEBHOOK_URL
-        run: |
-          git clone https://github.com/DiscordHooks/github-actions-discord-webhook.git webhook
-          bash webhook/send.sh $JOB_STATUS $WEBHOOK_URL
-        shell: bash
+    uses: ./.github/workflows/notify.yml
+    with:
+      name: ${{ github.workflow }}
+      success: ${{ !contains(needs.*.result, 'failure') }}
+    secrets: inherit
