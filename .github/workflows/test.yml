@@ -19,7 +19,7 @@ jobs:
       - name: Download out artifact
         uses: actions/download-artifact@v4
         with:
-          name: Debug-out
+          name: Debug-out-unsigned
           path: _build/out/
       - name: Download repack artifact
         uses: actions/download-artifact@v4

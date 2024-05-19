@@ -23,7 +23,7 @@ jobs:
       - name: Upload out artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ inputs.configuration }}-out
+          name: ${{ inputs.configuration }}-out-unsigned
           path: _build/out/
           retention-days: 1
       - name: Upload ckan.exe artifact

@@ -43,7 +43,7 @@ jobs:
       - name: Download out artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-out
+          name: Release-out-unsigned
           path: _build/out/
       - name: Publish ckan.dll to NuGet
         env:
