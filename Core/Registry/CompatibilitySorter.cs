@@ -259,7 +259,7 @@ namespace CKAN
         /// </returns>
         private IEnumerable<string> RelationshipIdentifiers(RelationshipDescriptor rel)
             => rel is ModuleRelationshipDescriptor modRel
-                ? Enumerable.Repeat<string>(modRel.name, 1)
+                ? Enumerable.Repeat(modRel.name, 1)
                 : rel is AnyOfRelationshipDescriptor anyRel
                     ? anyRel.any_of.SelectMany(RelationshipIdentifiers)
                     : Enumerable.Empty<string>();
