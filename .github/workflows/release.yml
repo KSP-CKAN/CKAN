@@ -180,10 +180,8 @@ jobs:
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Upload ckan.exe
-        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/ckan.exe
-      - name: Upload AutoUpdater.exe
-        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/AutoUpdater.exe
+      - name: Upload ckan.exe and AutoUpdater.exe release assets
+        run: gh release upload ${{ github.event.release.tag_name }} _build/repack/Release/ckan.exe _build/repack/Release/AutoUpdater.exe
 
   notify-discord:
     needs:
