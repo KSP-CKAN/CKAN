@@ -80,6 +80,12 @@ jobs:
       - test-release
       - smoke-inflator
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
       - uses: actions/checkout@v4
       - name: Download repack artifact
         uses: actions/download-artifact@v4
@@ -107,12 +113,6 @@ jobs:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
       - name: Push deb to S3
         run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
       - name: Push stable APT repo to S3
@@ -128,6 +128,12 @@ jobs:
       - test-release
       - smoke-inflator
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
       - uses: actions/checkout@v4
       - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
@@ -154,12 +160,6 @@ jobs:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
         run: ./build rpm-repo --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
       - name: Push stable RPM repo to S3
         run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/stable --follow-symlinks
       - name: Upload RPM release asset
