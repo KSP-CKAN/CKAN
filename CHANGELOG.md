@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] ConsoleUI prompt to delete non-empty folders after uninstall (#4066 by: HebaruSan)
 - [Multiple] Treat mods with missing files as upgradeable/reinstallable (#4067 by: HebaruSan)
 - [ConsoleUI] Conflicting recommendations check for ConsoleUI (#4085 by: HebaruSan)
+- [Build] Linux: Improve desktop entries (#4092 by: mmvanheusden; reviewed: HebaruSan)
 
 ### Bugfixes
 
