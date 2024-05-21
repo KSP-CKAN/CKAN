@@ -12,6 +12,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v3
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
+      - name: Restore cache for _build/cake
+        uses: actions/cache@v3
+        with:
+          path: _build/cake
+          key: build-cake-${{ hashFiles('build.cake') }}
+      - name: Restore cache for _build/lib/nuget
+        uses: actions/cache@v3
+        with:
+          path: |
+            _build/lib/nuget
+            ~/.nuget/packages
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Build ckan.exe and netkan.exe
         run: ./build --configuration=${{ inputs.configuration }}
       - name: Upload repack artifact

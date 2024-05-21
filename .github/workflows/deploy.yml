@@ -164,9 +164,6 @@ jobs:
       - test-release
       - smoke-inflator
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - uses: actions/checkout@v4
       - name: Download repack artifact
@@ -174,17 +171,40 @@ jobs:
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Generate inflator Docker image, publish to Hub, and restart AWS containers
+      - name: Download Inflator image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: inflator-image
+          path: /tmp
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Load Inflator image
+        run: docker load --input /tmp/inflator-image.tar
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Push Inflator image to Docker Hub
+        uses: docker/build-push-action@v5
+        with:
+          file: Dockerfile.netkan
+          context: _build/repack/Release
+          tags: kspckan/inflator:latest
+          push: true
+      - name: Redeploy Inflator containers
         env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-west-2
-        if: ${{ env.DOCKERHUB_USERNAME && env.DOCKERHUB_PASSWORD }}
+        shell: bash
         run: |
-          echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-          ./build docker-inflator --configuration=Release --exclusive
+          docker image pull kspckan/netkan
+          for CONTAINER in InflatorKsp InflatorKsp2
+          do
+            docker run kspckan/netkan redeploy-service --cluster NetKANCluster --service-name $CONTAINER
+          done
 
   upload-metadata-tester:
     needs:

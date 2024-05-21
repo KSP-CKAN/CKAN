@@ -23,14 +23,31 @@ jobs:
         with:
           name: Release-repack-unsigned
           path: _build/repack/
-      - name: Run inflator container smoke test
-        working-directory: _build
-        run: |
-          cp -v repack/Release/netkan.exe .
-          docker build --tag inflator --file ../Dockerfile.netkan .
-          docker run --rm --name inflator --entrypoint /bin/bash inflator -c "
-            mono netkan.exe https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan
-          "
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Inflator image
+        uses: docker/build-push-action@v5
+        with:
+          file: Dockerfile.netkan
+          context: _build/repack/Release
+          tags: kspckan/inflator
+          outputs: type=image
+      - name: Smoke test Inflator image
+        run: >
+          docker run --rm --entrypoint /bin/bash kspckan/inflator -c "mono netkan.exe
+          https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan"
+      - name: Export Inflator image tar file
+        uses: docker/build-push-action@v5
+        with:
+          file: Dockerfile.netkan
+          context: _build/repack/Release
+          tags: kspckan/inflator
+          outputs: type=docker,dest=/tmp/inflator-image.tar
+      - name: Upload Inflator image tar file artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: inflator-image
+          path: /tmp/inflator-image.tar
   notify:
     needs:
       - build-release
