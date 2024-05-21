@@ -49,54 +49,6 @@ Task("Netkan")
     .Description("Build only netkan.exe")
     .IsDependentOn("Repack-Netkan");
 
-Task("docker-inflator")
-    .Description("Build the Docker image for the Inflator and push it to Dockerhub.")
-    .IsDependentOn("Repack-Netkan")
-    .Does(() =>
-{
-    var dockerDirectory   = buildDirectory.Combine("docker");
-    var inflatorDirectory = dockerDirectory.Combine("inflator");
-    // Versions of Docker prior to 18.03.0-ce require the Dockerfile to be within the build context
-    var dockerFile        = inflatorDirectory.CombineWithFilePath("Dockerfile.netkan");
-    CreateDirectory(inflatorDirectory);
-    CopyFile(netkanFile, inflatorDirectory.CombineWithFilePath("netkan.exe"));
-    CopyFile(rootDirectory.CombineWithFilePath("Dockerfile.netkan"), dockerFile);
-
-    var mainTag   = "kspckan/inflator";
-    var latestTag = mainTag + ":latest";
-    DockerBuild(
-        new DockerImageBuildSettings()
-        {
-            File = dockerFile.FullPath,
-            Tag  = new string[] { mainTag }
-        },
-        inflatorDirectory.FullPath
-    );
-    DockerTag(mainTag, latestTag);
-    DockerPush(latestTag);
-
-    // Restart the Inflator
-    var netkanImage = "kspckan/netkan";
-    DockerPull(netkanImage);
-    var runSettings = new DockerContainerRunSettings()
-    {
-        Env = new string[]
-        {
-            "AWS_ACCESS_KEY_ID",
-            "AWS_SECRET_ACCESS_KEY",
-            "AWS_DEFAULT_REGION"
-        }
-    };
-    DockerRun(runSettings, netkanImage,
-        "redeploy-service",
-        "--cluster",      "NetKANCluster",
-        "--service-name", "InflatorKsp");
-    DockerRun(runSettings, netkanImage,
-        "redeploy-service",
-        "--cluster",      "NetKANCluster",
-        "--service-name", "InflatorKsp2");
-});
-
 Task("docker-metadata")
     .Description("Build the Docker image for the metadata testing and push it to Dockerhub.")
     .IsDependentOn("Repack-Netkan")
