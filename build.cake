@@ -1,6 +1,5 @@
 #addin "nuget:?package=Cake.SemVer&version=4.0.0"
 #addin "nuget:?package=semver&version=2.3.0"
-#addin "nuget:?package=Cake.Docker&version=0.11.1"
 #addin nuget:?package=Cake.Git&version=3.0.0
 #tool "nuget:?package=ILRepack&version=2.0.27"
 #tool "nuget:?package=NUnit.ConsoleRunner&version=3.16.3"
@@ -48,35 +47,6 @@ Task("Ckan")
 Task("Netkan")
     .Description("Build only netkan.exe")
     .IsDependentOn("Repack-Netkan");
-
-Task("docker-metadata")
-    .Description("Build the Docker image for the metadata testing and push it to Dockerhub.")
-    .IsDependentOn("Repack-Netkan")
-    .IsDependentOn("Repack-Ckan")
-    .Does(() =>
-{
-    var dockerDirectory   = buildDirectory.Combine("docker");
-    var metadataDirectory = dockerDirectory.Combine("metadata");
-    // Versions of Docker prior to 18.03.0-ce require the Dockerfile to be within the build context
-    var dockerFile        = metadataDirectory.CombineWithFilePath("Dockerfile.metadata");
-    CreateDirectory(metadataDirectory);
-    CopyFile(netkanFile, metadataDirectory.CombineWithFilePath("netkan.exe"));
-    CopyFile(ckanFile,   metadataDirectory.CombineWithFilePath("ckan.exe"));
-    CopyFile(rootDirectory.CombineWithFilePath("Dockerfile.metadata"), dockerFile);
-
-    var mainTag   = "kspckan/metadata";
-    var latestTag = mainTag + ":latest";
-    DockerBuild(
-        new DockerImageBuildSettings()
-        {
-            File = dockerFile.FullPath,
-            Tag  = new string[] { mainTag }
-        },
-        metadataDirectory.FullPath
-    );
-    DockerTag(mainTag, latestTag);
-    DockerPush(latestTag);
-});
 
 Task("osx")
     .Description("Build the macOS(OSX) dmg package.")
