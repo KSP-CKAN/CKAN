@@ -49,7 +49,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Build nuget package, support netstandard2.0 build (#4039 by: HebaruSan)
 - [Core] Use fully sanitized archive.org bucket names (#4043 by: HebaruSan)
 - [Netkan] Omit duplicate inflation warnings in queue (#4071 by: HebaruSan)
-- [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094 by: techman83, HebaruSan; reviewed: HebaruSan)
+- [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094, #4095 by: techman83, HebaruSan; reviewed: HebaruSan)
 
 ## v1.34.4 (Niven)
 
