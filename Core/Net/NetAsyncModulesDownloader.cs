@@ -42,16 +42,16 @@ namespace CKAN
             this.cache = cache;
         }
 
-        internal NetAsyncDownloader.DownloadTarget TargetFromModuleGroup(
+        internal NetAsyncDownloader.DownloadTargetFile TargetFromModuleGroup(
                 HashSet<CkanModule> group,
                 string[]            preferredHosts)
             => TargetFromModuleGroup(group, group.OrderBy(m => m.identifier).First(), preferredHosts);
 
-        private NetAsyncDownloader.DownloadTarget TargetFromModuleGroup(
+        private NetAsyncDownloader.DownloadTargetFile TargetFromModuleGroup(
                 HashSet<CkanModule> group,
                 CkanModule          first,
                 string[]            preferredHosts)
-            => new NetAsyncDownloader.DownloadTarget(
+            => new NetAsyncDownloader.DownloadTargetFile(
                 group.SelectMany(mod => mod.download)
                      .Concat(group.Select(mod => mod.InternetArchiveDownload)
                                   .Where(uri => uri != null)
@@ -90,7 +90,7 @@ namespace CKAN
                     .Where(grp => grp.All(mod => mod.download.All(dlUri => !activeURLs.Contains(dlUri))))
                     // Each group gets one target containing all the URLs
                     .Select(grp => TargetFromModuleGroup(grp, preferredHosts))
-                    .ToList());
+                    .ToArray());
                 this.modules.Clear();
                 AllComplete?.Invoke();
             }
@@ -125,8 +125,13 @@ namespace CKAN
         private readonly NetModuleCache          cache;
         private          CancellationTokenSource cancelTokenSrc;
 
-        private void ModuleDownloadComplete(Uri url, string filename, Exception error, string etag)
+        private void ModuleDownloadComplete(NetAsyncDownloader.DownloadTarget target,
+                                            Exception error,
+                                            string etag)
         {
+            var url      = target.urls.First();
+            var filename = (target as NetAsyncDownloader.DownloadTargetFile)?.filename;
+
             log.DebugFormat("Received download completion: {0}, {1}, {2}",
                             url, filename, error?.Message);
             if (error != null)

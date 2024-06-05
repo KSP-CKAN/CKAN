@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -36,7 +35,13 @@ namespace CKAN
         private volatile bool download_canceled;
         private readonly ManualResetEvent complete_or_canceled;
 
-        public event Action<Uri, string, Exception, string> onOneCompleted;
+        /// <summary>
+        /// Invoked when a download completes or fails.
+        /// </summary>
+        /// <param>The download that is done</param>
+        /// <param>Exception thrown if failed</param>
+        /// <param>ETag of the URL</param>
+        public event Action<DownloadTarget, Exception, string> onOneCompleted;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader
@@ -54,7 +59,7 @@ namespace CKAN
         {
             var targets = new[]
             {
-                new DownloadTarget(url, filename)
+                new DownloadTargetFile(url, filename)
             };
             DownloadWithProgress(targets, user);
             return targets.First().filename;
@@ -63,15 +68,11 @@ namespace CKAN
         public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser user = null)
         {
             var downloader = new NetAsyncDownloader(user ?? new NullUser());
-            downloader.onOneCompleted += (url, filename, error, etag) =>
+            downloader.onOneCompleted += (target, error, etag) =>
             {
                 if (error != null)
                 {
                     user?.RaiseError(error.ToString());
-                }
-                else
-                {
-                    File.Move(filename, downloadTargets.First(p => p.urls.Contains(url)).filename);
                 }
             };
             downloader.DownloadAndWait(downloadTargets);
@@ -88,7 +89,7 @@ namespace CKAN
                 if (downloads.Count + queuedDownloads.Count > completed_downloads)
                 {
                     // Some downloads are still in progress, add to the current batch
-                    foreach (DownloadTarget target in targets)
+                    foreach (var target in targets)
                     {
                         DownloadModule(new DownloadPart(target));
                     }
@@ -259,7 +260,7 @@ namespace CKAN
                     dl.CurrentUri.ToString().Replace(" ", "%20"));
 
                 // Start the download!
-                dl.Download(dl.CurrentUri, dl.path);
+                dl.Download();
             }
         }
 
@@ -403,7 +404,7 @@ namespace CKAN
                 log.InfoFormat("Finished downloading {0}", string.Join(", ", dl.target.urls));
                 dl.bytesLeft = 0;
                 // Let calling code find out how big this file is
-                dl.target.size = new FileInfo(dl.target.filename).Length;
+                dl.target.CalculateSize();
             }
 
             PopFromQueue(doneUri.Host);
@@ -411,7 +412,7 @@ namespace CKAN
             try
             {
                 // Tell calling code that this file is ready
-                onOneCompleted?.Invoke(dl.target.urls.First(), dl.path, dl.error, etag);
+                onOneCompleted?.Invoke(dl.target, dl.error, etag);
             }
             catch (Exception exc)
             {

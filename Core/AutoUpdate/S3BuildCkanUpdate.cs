@@ -29,9 +29,9 @@ namespace CKAN
 
         public override IList<NetAsyncDownloader.DownloadTarget> Targets => new[]
         {
-            new NetAsyncDownloader.DownloadTarget(
+            new NetAsyncDownloader.DownloadTargetFile(
                 UpdaterDownload, updaterFilename),
-            new NetAsyncDownloader.DownloadTarget(
+            new NetAsyncDownloader.DownloadTargetFile(
                 ReleaseDownload, ckanFilename),
         };
 
