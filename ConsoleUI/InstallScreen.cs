@@ -75,13 +75,14 @@ namespace CKAN.ConsoleUI {
                         NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
                         if (plan.Install.Count > 0) {
                             var iList = plan.Install
-                                            .Select(m => registry.LatestAvailable(m.identifier,
-                                                                                  manager.CurrentInstance.VersionCriteria(),
-                                                                                  null,
-                                                                                  registry.InstalledModules
-                                                                                          .Select(im => im.Module)
-                                                                                          .ToArray(),
-                                                                                  plan.Install)
+                                            .Select(m => Utilities.DefaultIfThrows(() =>
+                                                             registry.LatestAvailable(m.identifier,
+                                                                                      manager.CurrentInstance.VersionCriteria(),
+                                                                                      null,
+                                                                                      registry.InstalledModules
+                                                                                              .Select(im => im.Module)
+                                                                                              .ToArray(),
+                                                                                      plan.Install))
                                                          ?? m)
                                             .ToArray();
                             inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);

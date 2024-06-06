@@ -17,7 +17,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="startPath">Path of directory to start in</param>
         /// <param name="filPat">Glob-style wildcard string for matching files to show</param>
         /// <param name="toggleHeader">Header for the column with checkmarks for selected files</param>
-        public ConsoleFileMultiSelectDialog(string title, string startPath, string filPat, string toggleHeader)
+        /// <param name="acceptTip">Description of the F9 action to accept selections</param>
+        public ConsoleFileMultiSelectDialog(string title,
+                                            string startPath,
+                                            string filPat,
+                                            string toggleHeader,
+                                            string acceptTip)
             : base()
         {
             CenterHeader = () => title;
@@ -40,7 +45,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             ));
 
             pathField = new ConsoleField(
-                left + 2 + labelW, top + 2, right - 2,
+                left + 2 + labelW + 1, top + 2, right - 2,
                 curDir.FullName
             );
             pathField.OnChange += pathFieldChanged;
@@ -128,10 +133,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 return true;
             });
 
-            AddTip("F9", Properties.Resources.FileSelectImport, () => chosenFiles.Count > 0);
-            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
-                return false;
-            });
+            AddTip("F9", acceptTip, () => chosenFiles.Count > 0);
+            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => false);
         }
 
         private bool selectRow()
@@ -141,7 +144,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 {
                     curDir = di;
                     pathField.Value = curDir.FullName;
-                    fileList.SetData(getFileList());
+                    fileList.SetData(getFileList(), true);
                 }
             } else {
                 if (fileList.Selection is FileInfo fi)
@@ -300,11 +303,11 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         private static readonly string chosen  = Symbols.checkmark;
 
-        private const int idealW = 76;
-        private       int labelW => Properties.Resources.FileSelectDirectory.Length;
-        private const int hPad   = 2;
-        private const int top    =  2;
-        private const int bottom = -2;
+        private const  int idealW = 76;
+        private static int labelW => Properties.Resources.FileSelectDirectory.Length;
+        private const  int hPad   = 2;
+        private const  int top    =  2;
+        private const  int bottom = -2;
     }
 
 }

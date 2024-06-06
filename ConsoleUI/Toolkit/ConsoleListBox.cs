@@ -139,7 +139,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 topRow = selectedRow - h + 2;
             }
 
-            var remainingWidth = contentR - l + 1
+            var remainingWidth = contentR - l - 1
                                  - columns.Select(col => col.Width ?? 0)
                                           .Sum()
                                  - (padding.Length * (columns.Count - 1));

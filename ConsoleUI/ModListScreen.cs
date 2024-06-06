@@ -315,6 +315,9 @@ namespace CKAN.ConsoleUI {
                 new ConsoleMenuOption(Properties.Resources.ModListExportMenu, "",
                     Properties.Resources.ModListExportMenuTip,
                     true, ExportInstalled),
+                new ConsoleMenuOption(Properties.Resources.ModListInstallFromCkanMenu, "",
+                    Properties.Resources.ModListInstallFromCkanMenuTip,
+                    true, InstallFromCkan),
                 null,
                 new ConsoleMenuOption(Properties.Resources.ModListInstanceSettingsMenu, "",
                     Properties.Resources.ModListInstanceSettingsMenuTip,
@@ -597,10 +600,7 @@ namespace CKAN.ConsoleUI {
                 var crit = manager.CurrentInstance.VersionCriteria();
                 allMods = new List<CkanModule>(registry.CompatibleModules(crit));
                 foreach (InstalledModule im in registry.InstalledModules) {
-                    CkanModule m = null;
-                    try {
-                        m = registry.LatestAvailable(im.identifier, crit);
-                    } catch (ModuleNotFoundKraken) { }
+                    var m = Utilities.DefaultIfThrows(() => registry.LatestAvailable(im.identifier, crit));
                     if (m == null) {
                         // Add unavailable installed mods to the list
                         allMods.Add(im.Module);
@@ -625,6 +625,30 @@ namespace CKAN.ConsoleUI {
                 RaiseError(Properties.Resources.ModListExported, path);
             } catch (Exception ex) {
                 RaiseError(Properties.Resources.ModListExportFailed, ex.Message);
+            }
+            return true;
+        }
+
+        private bool InstallFromCkan(ConsoleTheme theme)
+        {
+            var modules = InstallFromCkanDialog.ChooseCkanFiles(theme, manager.CurrentInstance);
+            if (modules.Length > 0) {
+                var crit = manager.CurrentInstance.VersionCriteria();
+                var installed = regMgr.registry.InstalledModules.Select(inst => inst.Module).ToList();
+                var cp = new ChangePlan();
+                cp.Install.UnionWith(
+                    modules.Concat(
+                        modules.Where(m => m.IsMetapackage && m.depends != null)
+                               .SelectMany(m => m.depends.Where(rel => !rel.MatchesAny(installed, null, null))
+                                                         .Select(rel =>
+                                                             // If there's a compatible match, return it
+                                                             // Metapackages aren't intending to prompt users to choose providing mods
+                                                             rel.ExactMatch(regMgr.registry, crit, installed, modules)
+                                                             // Otherwise look for incompatible
+                                                             ?? rel.ExactMatch(regMgr.registry, null, installed, modules))
+                                                         .Where(mod => mod != null))));
+                LaunchSubScreen(theme, new InstallScreen(manager, repoData, cp, debug));
+                RefreshList(theme);
             }
             return true;
         }

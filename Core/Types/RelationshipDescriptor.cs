@@ -133,7 +133,7 @@ namespace CKAN
                                               GameVersionCriteria     crit,
                                               ICollection<CkanModule> installed = null,
                                               ICollection<CkanModule> toInstall = null)
-            => registry.LatestAvailable(name, crit, this, installed, toInstall);
+            => Utilities.DefaultIfThrows(() => registry.LatestAvailable(name, crit, this, installed, toInstall));
 
         public override bool Equals(RelationshipDescriptor other)
             => Equals(other as ModuleRelationshipDescriptor);
