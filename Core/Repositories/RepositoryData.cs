@@ -191,9 +191,27 @@ namespace CKAN
             }
         }
 
+        public static RepositoryData FromStream(Stream stream, IGame game, IProgress<long> progress)
+        {
+            switch (FileIdentifier.IdentifyFile(stream))
+            {
+                case FileType.TarGz: return FromTarGzStream(stream, game, progress);
+                case FileType.Zip:   return FromZipStream(stream, game, progress);
+                default: throw new UnsupportedKraken(Properties.Resources.NetRepoNotATarGzStream);
+            }
+        }
+
         private static RepositoryData FromTarGz(string path, IGame game, IProgress<long> progress)
         {
-            using (var inputStream    = File.OpenRead(path))
+            using (var inputStream = File.OpenRead(path))
+            {
+                return FromTarGzStream(inputStream, game, progress);
+            }
+        }
+
+        private static RepositoryData FromTarGzStream(Stream inputStream, IGame game, IProgress<long> progress)
+        {
+            inputStream.Seek(0, SeekOrigin.Begin);
             using (var progressStream = new ReadProgressStream(inputStream, progress))
             using (var gzipStream     = new GZipInputStream(progressStream))
             using (var tarStream      = new TarInputStream(gzipStream, Encoding.UTF8))
@@ -253,6 +271,14 @@ namespace CKAN
         private static RepositoryData FromZip(string path, IGame game, IProgress<long> progress)
         {
             using (var inputStream = File.OpenRead(path))
+            {
+                return FromZipStream(inputStream, game, progress);
+            }
+        }
+
+        private static RepositoryData FromZipStream(Stream inputStream, IGame game, IProgress<long> progress)
+        {
+            inputStream.Seek(0, SeekOrigin.Begin);
             using (var progressStream = new ReadProgressStream(inputStream, progress))
             using (var zipfile = new ZipFile(progressStream))
             {

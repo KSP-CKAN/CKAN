@@ -24,8 +24,8 @@ namespace Tests.Core.Net
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser());
             var fromPath   = TestData.DataDir(pathWithinTestData);
-            var target     = new NetAsyncDownloader.DownloadTarget(new Uri(fromPath),
-                                                         Path.GetTempFileName());
+            var target     = new NetAsyncDownloader.DownloadTargetFile(new Uri(fromPath),
+                                                                       Path.GetTempFileName());
             var targets    = new NetAsyncDownloader.DownloadTarget[] { target };
             var origSize   = new FileInfo(fromPath).Length;
 
@@ -70,8 +70,8 @@ namespace Tests.Core.Net
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser());
             var fromPaths  = pathsWithinTestData.Select(p => TestData.DataDir(p)).ToArray();
-            var targets    = fromPaths.Select(p => new NetAsyncDownloader.DownloadTarget(new Uri(p),
-                                                                               Path.GetTempFileName()))
+            var targets    = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
+                                                                                             Path.GetTempFileName()))
                                       .ToArray();
             var origSizes  = fromPaths.Select(p => new FileInfo(p).Length).ToArray();
 
@@ -186,8 +186,8 @@ namespace Tests.Core.Net
             // Arrange
             var downloader   = new NetAsyncDownloader(new NullUser());
             var fromPaths    = pathsWithinTestData.Select(p => Path.GetFullPath(TestData.DataDir(p))).ToArray();
-            var targets      = fromPaths.Select(p => new NetAsyncDownloader.DownloadTarget(new Uri(p),
-                                                                                 Path.GetTempFileName()))
+            var targets      = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
+                                                                                               Path.GetTempFileName()))
                                         .ToArray();
             var badIndices   = fromPaths.Select((p, i) => new Tuple<int, bool>(i, File.Exists(p)))
                                         .Where(tuple => !tuple.Item2)

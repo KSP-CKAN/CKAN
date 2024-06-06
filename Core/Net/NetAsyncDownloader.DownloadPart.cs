@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.ComponentModel;
 
 using Autofac;
@@ -14,7 +13,6 @@ namespace CKAN
         private class DownloadPart
         {
             public readonly DownloadTarget target;
-            public readonly string         path;
 
             public DateTime  lastProgressUpdateTime;
             public long      lastProgressUpdateSize;
@@ -38,14 +36,14 @@ namespace CKAN
             public DownloadPart(DownloadTarget target)
             {
                 this.target = target;
-                path = target.filename ?? Path.GetTempFileName();
                 size = bytesLeft = target.size;
                 lastProgressUpdateTime = DateTime.Now;
                 triedDownloads = 0;
             }
 
-            public void Download(Uri url, string path)
+            public void Download()
             {
+                var url = CurrentUri;
                 ResetAgent();
                 // Check whether to use an auth token for this host
                 if (url.IsAbsoluteUri
@@ -56,7 +54,7 @@ namespace CKAN
                     // Send our auth token to the GitHub API (or whoever else needs one)
                     agent.Headers.Add("Authorization", $"token {token}");
                 }
-                agent.DownloadFileAsyncWithResume(url, path);
+                target.DownloadWith(agent, url);
             }
 
             public Uri CurrentUri => target.urls[triedDownloads];

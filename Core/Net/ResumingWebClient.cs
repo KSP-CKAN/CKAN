@@ -14,7 +14,7 @@ using CKAN.Extensions;
 
 namespace CKAN
 {
-    internal class ResumingWebClient : WebClient
+    public class ResumingWebClient : WebClient
     {
         /// <summary>
         /// A version of DownloadFileAsync that appends to its destination
@@ -39,9 +39,17 @@ namespace CKAN
                     // Reset in case we try multiple with same webclient
                     bytesToSkip = 0;
                 }
-                // Ideally the bytes to skip would be passed in the userToken param,
-                // but GetWebRequest can't access it!!
                 OpenReadAsync(url, path);
+            });
+        }
+
+        public void DownloadFileAsyncWithResume(Uri url, Stream stream)
+        {
+            contentLength = 0;
+            Task.Factory.StartNew(() =>
+            {
+                bytesToSkip = 0;
+                OpenReadAsync(url, stream);
             });
         }
 
@@ -115,36 +123,41 @@ namespace CKAN
                 {
                     if (!netStream.CanRead || contentLength == 0)
                     {
-                        log.DebugFormat("OnOpenReadCompleted got closed stream or zero contentLength, skipping download to {0}", destination);
+                        log.DebugFormat("OnOpenReadCompleted got closed stream or zero contentLength, skipping download to {0}",
+                                        destination ?? "stream");
                         // Synthesize a progress update for 100% completion
-                        var fi = new FileInfo(destination);
-                        DownloadProgress?.Invoke(100, fi.Length, fi.Length);
+                        if (!string.IsNullOrEmpty(destination)
+                            && File.Exists(destination))
+                        {
+                            var fi = new FileInfo(destination);
+                            DownloadProgress?.Invoke(100, fi.Length, fi.Length);
+                        }
                     }
                     else
                     {
                         try
                         {
-                            log.DebugFormat("OnOpenReadCompleted got open stream, appending to {0}", destination);
-                            using (var fileStream = new FileStream(destination, FileMode.Append, FileAccess.Write))
+                            log.DebugFormat("OnOpenReadCompleted got open stream, appending to {0}",
+                                            destination ?? "stream");
+                            // file:// URLs don't support timeouts
+                            if (netStream.CanTimeout)
                             {
-                                // file:// URLs don't support timeouts
-                                if (netStream.CanTimeout)
-                                {
-                                    log.DebugFormat("Default stream read timeout is {0}", netStream.ReadTimeout);
-                                    netStream.ReadTimeout = timeoutMs;
-                                }
-                                cancelTokenSrc = new CancellationTokenSource();
-                                netStream.CopyTo(fileStream, new Progress<long>(bytesDownloaded =>
-                                    {
-                                        DownloadProgress?.Invoke((int)(100 * bytesDownloaded / contentLength),
-                                                                 bytesDownloaded, contentLength);
-                                    }),
-                                    TimeSpan.FromSeconds(5),
-                                    cancelTokenSrc.Token);
-                                // Make sure caller knows we've finished
-                                DownloadProgress?.Invoke(100, contentLength, contentLength);
-                                cancelTokenSrc = null;
+                                log.DebugFormat("Default stream read timeout is {0}", netStream.ReadTimeout);
+                                netStream.ReadTimeout = timeoutMs;
                             }
+                            cancelTokenSrc = new CancellationTokenSource();
+                            switch (e.UserState)
+                            {
+                                case string path:
+                                    ToFile(netStream, path);
+                                    break;
+                                case Stream stream:
+                                    ToStream(netStream, stream);
+                                    break;
+                            }
+                            // Make sure caller knows we've finished
+                            DownloadProgress?.Invoke(100, contentLength, contentLength);
+                            cancelTokenSrc = null;
                         }
                         catch (OperationCanceledException exc)
                         {
@@ -163,6 +176,29 @@ namespace CKAN
             OnDownloadFileCompleted(new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
         }
 
+        private void ToFile(Stream netStream, string path)
+        {
+            using (var outStream = new FileStream(path, FileMode.Append, FileAccess.Write))
+            {
+                ToStream(netStream, outStream);
+            }
+        }
+
+        private void ToStream(Stream netStream, Stream outStream)
+        {
+            netStream.CopyTo(outStream, new Progress<long>(bytesDownloaded =>
+                {
+                    DownloadProgress?.Invoke((int)(100 * bytesDownloaded / contentLength),
+                                             bytesDownloaded, contentLength);
+                }),
+                TimeSpan.FromSeconds(5),
+                cancelTokenSrc.Token);
+        }
+
+        /// <summary>
+        /// Ideally the bytes to skip would be passed in the userToken param of OpenReadAsync,
+        /// but GetWebRequest can't access it, so we store it here.
+        /// </summary>
         private long bytesToSkip   = 0;
         private long contentLength = 0;
         private CancellationTokenSource cancelTokenSrc;

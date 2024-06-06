@@ -159,7 +159,7 @@ namespace CKAN
             try
             {
                 // Download metadata
-                var targets = toUpdate.Select(r => new NetAsyncDownloader.DownloadTarget(r.uri))
+                var targets = toUpdate.Select(r => new NetAsyncDownloader.DownloadTargetStream(r.uri))
                                       .ToArray();
                 downloader.DownloadAndWait(targets);
 
@@ -168,24 +168,23 @@ namespace CKAN
                 string msg = "";
                 var progress = new ProgressFilesOffsetsToPercent(
                     new Progress<int>(p => user.RaiseProgress(msg, p)),
-                    targets.Select(t => new FileInfo(t.filename).Length));
+                    targets.Select(t => t.size));
                 foreach ((var repo, var target) in toUpdate.Zip(targets))
                 {
-                    var file = target.filename;
                     msg = string.Format(Properties.Resources.NetRepoLoadingModulesFromRepo,
                                         repo.name);
-                    log.InfoFormat("Loading {0}...", file);
+                    log.InfoFormat("Loading repo stream...");
                     try
                     {
-                        // Load the file, save to in memory cache
-                        var repoData = repositoriesData[repo] =
-                            RepositoryData.FromDownload(file, game, progress);
-                        // Save parsed data to disk
-                        log.DebugFormat("Saving data for {0} repo...", repo.name);
-                        repoData.SaveTo(GetRepoDataPath(repo));
-                        // Delete downloaded archive
-                        log.DebugFormat("Deleting {0}...", file);
-                        File.Delete(file);
+                        using (target)
+                        {
+                            // Load the stream, save to in memory cache
+                            var repoData = repositoriesData[repo] =
+                                RepositoryData.FromStream(target.contents, game, progress);
+                            // Save parsed data to disk
+                            log.DebugFormat("Saving data for {0} repo...", repo.name);
+                            repoData.SaveTo(GetRepoDataPath(repo));
+                        }
                     }
                     catch (UnsupportedKraken kraken)
                     {
@@ -260,8 +259,9 @@ namespace CKAN
             file_transaction.WriteAllText(etagsPath, JsonConvert.SerializeObject(etags, Formatting.Indented));
         }
 
-        private void setETag(Uri url, string filename, Exception error, string etag)
+        private void setETag(NetAsyncDownloader.DownloadTarget target, Exception error, string etag)
         {
+            var url = target.urls.First();
             if (etag != null)
             {
                 etags[url] = etag;

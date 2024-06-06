@@ -39,6 +39,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Trigger progress updates for frozen downloads (#4052 by: HebaruSan)
 - [GUI] Fix NRE on trying to update all when there's nothing to update (#4054 by: HebaruSan)
 - [Core] Fix NRE in repo update with corrupted etags.json file (#4077, #4078 by: HebaruSan)
+- [Core] Skip temp files for repo updates (#4102 by: HebaruSan)
 
 ### Internal
 
