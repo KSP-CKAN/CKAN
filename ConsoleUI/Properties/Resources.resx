@@ -153,7 +153,7 @@
   <data name="Details" xml:space="preserve"><value>Details</value></data>
   <data name="Up" xml:space="preserve"><value>Up</value></data>
   <data name="Down" xml:space="preserve"><value>Down</value></data>
-  <data name="FileSelectDirectory" xml:space="preserve"><value>Directory</value></data>
+  <data name="FileSelectDirectory" xml:space="preserve"><value>Directory:</value></data>
   <data name="FileSelectCountFooter" xml:space="preserve"><value>{0} selected, {1}</value></data>
   <data name="FileSelectNameHeader" xml:space="preserve"><value>Name</value></data>
   <data name="FileSelectSizeHeader" xml:space="preserve"><value>Size</value></data>
@@ -341,6 +341,11 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModListImportMenuTip" xml:space="preserve"><value>Select manually downloaded mods to import into CKAN</value></data>
   <data name="ModListExportMenu" xml:space="preserve"><value>Export installed...</value></data>
   <data name="ModListExportMenuTip" xml:space="preserve"><value>Save your mod list</value></data>
+  <data name="ModListInstallFromCkanMenu" xml:space="preserve"><value>Install from .ckan file...</value></data>
+  <data name="ModListInstallFromCkanMenuTip" xml:space="preserve"><value>Install modpacks or custom modules</value></data>
+  <data name="ModListInstallFromCkanFailed" xml:space="preserve"><value>Install from .ckan file failed!</value></data>
+  <data name="CkanFileSelectTitle" xml:space="preserve"><value>Choose .ckan Files to Install</value></data>
+  <data name="CkanFileSelectHeader" xml:space="preserve"><value>Install</value></data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve"><value>Game instance settings...</value></data>
   <data name="ModListInstanceSettingsMenuTip" xml:space="preserve"><value>Configure the current game instance</value></data>
   <data name="ModListSelectInstanceMenu" xml:space="preserve"><value>Select game instance...</value></data>

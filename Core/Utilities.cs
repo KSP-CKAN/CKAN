@@ -27,6 +27,18 @@ namespace CKAN
             "nl-NL",
         };
 
+        public static T DefaultIfThrows<T>(Func<T> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch
+            {
+                return default;
+            }
+        }
+
         /// <summary>
         /// Copies a directory and optionally its subdirectories as a transaction.
         /// </summary>

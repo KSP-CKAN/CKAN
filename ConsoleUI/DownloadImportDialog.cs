@@ -24,6 +24,7 @@ namespace CKAN.ConsoleUI {
                 Properties.Resources.ImportSelectTitle,
                 FindDownloadsPath(gameInst),
                 "*.zip",
+                Properties.Resources.ImportSelectHeader,
                 Properties.Resources.ImportSelectHeader
             );
             HashSet<FileInfo> files = cfmsd.Run(theme);

@@ -217,7 +217,7 @@ namespace CKAN.CmdLine
                                              .ToHashSet();
                     // The modules we'll have after upgrading as aggressively as possible
                     var limiters = identsAndVersions.Select(req => CkanModule.FromIDandVersion(registry, req, crit)
-                                                                   ?? DefaultIfThrows(
+                                                                   ?? Utilities.DefaultIfThrows(
                                                                        () => registry.LatestAvailable(req, crit))
                                                                    ?? registry.GetInstalledVersion(req))
                                                     .Concat(heldIdents.Select(ident => registry.GetInstalledVersion(ident)))
@@ -252,18 +252,6 @@ namespace CKAN.CmdLine
                     }
                 },
                 m => identsAndVersions.Add(m.identifier));
-        }
-
-        public static T DefaultIfThrows<T>(Func<T> func)
-        {
-            try
-            {
-                return func();
-            }
-            catch
-            {
-                return default;
-            }
         }
 
         private static string UpToFirst(string orig, char toFind)

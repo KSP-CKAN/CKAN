@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Treat mods with missing files as upgradeable/reinstallable (#4067 by: HebaruSan)
 - [ConsoleUI] Conflicting recommendations check for ConsoleUI (#4085 by: HebaruSan)
 - [Build] Linux: Improve desktop entries (#4092 by: mmvanheusden; reviewed: HebaruSan)
+- [ConsoleUI] Install from .ckan file option for ConsoleUI (#4103 by: HebaruSan)
 
 ### Bugfixes
 
