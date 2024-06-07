@@ -53,6 +53,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Use fully sanitized archive.org bucket names (#4043 by: HebaruSan)
 - [Netkan] Omit duplicate inflation warnings in queue (#4071 by: HebaruSan)
 - [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094, #4095 by: techman83, HebaruSan; reviewed: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4105 by: vinix38, frankieorabona, ambition, Francesco Ricina, S.O.2; reviewed: HebaruSan)
 
 ## v1.34.4 (Niven)
 

@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="UncheckAllButton.Text" xml:space="preserve">
+    <value>Deseleziona Tutto</value>
+  </data>
+  <data name="AlwaysUncheckAllButton.Text" xml:space="preserve">
+    <value>Deseleziona sempre tutto</value>
+  </data>
+  <data name="CheckAllButton.Text" xml:space="preserve">
+    <value>Seleziona tutto</value>
+  </data>
+  <data name="CheckRecommendationsButton.Text" xml:space="preserve">
+    <value>Verifica Raccomandazioni</value>
+  </data>
   <data name="RecommendedModsCancelButton.Text" xml:space="preserve">
     <value>Annulla</value>
   </data>
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>Continue</value>
-  </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>(De-)Seleziona tutto</value>
   </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>I moduli scelti raccomandano, suggeriscono o sono supportati dai seguenti moduli:</value>

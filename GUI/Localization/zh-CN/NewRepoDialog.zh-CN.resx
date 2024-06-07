@@ -121,10 +121,10 @@
     <value>官方元数据库</value>
   </data>
   <data name="RepoCancel.Text" xml:space="preserve">
-    <value>取消</value>
+    <value>&amp;取消</value>
   </data>
   <data name="RepoOK.Text" xml:space="preserve">
-    <value>确认</value>
+    <value>&amp;添加</value>
   </data>
   <data name="RepoNameHeader.Text" xml:space="preserve">
     <value>名称</value>

@@ -121,6 +121,6 @@
     <value>忽略</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Error!</value>
+    <value>错误!</value>
   </data>
 </root>

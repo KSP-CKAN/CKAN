@@ -774,6 +774,12 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="UpgradeNotFound" xml:space="preserve">
     <value>Le module {0} est introuvable</value>
   </data>
+  <data name="UpgradeAlreadyUpToDate" xml:space="preserve">
+    <value>Le module {0} est déjà à jour</value>
+  </data>
+  <data name="UpgradeAllUpToDate" xml:space="preserve">
+    <value>Tous les modules sont à jour</value>
+  </data>
   <data name="UpgradeDLC" xml:space="preserve">
     <value>CKAN ne peut pas mettre à niveau l'extension '{0}' pour vous</value>
   </data>

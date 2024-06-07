@@ -127,7 +127,7 @@
     <value>Ajouter</value>
   </data>
   <data name="AcceptChangesButton.Text" xml:space="preserve">
-    <value>&amp;Ajouter</value>
+    <value>&amp;Accepter</value>
   </data>
   <data name="CancelChangesButton.Text" xml:space="preserve">
     <value>An&amp;nuler</value>
