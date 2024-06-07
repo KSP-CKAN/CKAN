@@ -25,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Conflicting recommendations check for ConsoleUI (#4085 by: HebaruSan)
 - [Build] Linux: Improve desktop entries (#4092 by: mmvanheusden; reviewed: HebaruSan)
 - [ConsoleUI] Install from .ckan file option for ConsoleUI (#4103 by: HebaruSan)
+- [Build] Support icons from libraries for deb and rpm (#4104 by: HebaruSan)
 
 ### Bugfixes
 

@@ -14,8 +14,8 @@ DEBCHANGESRC:=changelog
 DEBCHANGEDEST:=$(DESTDIR)/usr/share/doc/ckan/changelog.Debian.gz
 MANSRC:=ckan.1
 MANDEST:=$(DESTDIR)/usr/share/man/man1/ckan.1.gz
-ICONSRC:=ckan.ico
-ICONDEST:=$(DESTDIR)/usr/share/icons/ckan.ico
+ICONSIZES=16 32 48 64 96 128 256
+ICONDEST:=$(foreach size,$(ICONSIZES),$(DESTDIR)/usr/share/icons/hicolor/$(size)x$(size)/apps/ckan.png)
 COPYRIGHTSRC:=copyright
 COPYRIGHTDEST:=$(DESTDIR)/usr/share/doc/ckan/copyright
 DESKTOPSRC:=ckan.desktop
@@ -113,9 +113,12 @@ $(MANDEST): $(MANSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)
 	umask 0022 && gzip --best -n -c $< > $@
 
-$(ICONDEST): $(ICONSRC)
-	umask 0022 && mkdir -p $(shell dirname $@)
-	umask 0022 && cp $< $@
+define icon_rule_template =
+$$(DESTDIR)/usr/share/icons/hicolor/$(1)x$(1)/apps/ckan.png: ../assets/ckan-$(1).png
+	umask 0022 && mkdir -p $$(shell dirname $$@)
+	umask 0022 && cp $$< $$@
+endef
+$(foreach size,$(ICONSIZES),$(eval $(call icon_rule_template,$(size))))
 
 $(COPYRIGHTDEST): $(COPYRIGHTSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)

@@ -12,9 +12,15 @@ Source0: ckan
 Source1: ckan.exe
 Source2: ckan.1
 Source3: ckan.desktop
-Source4: ckan.ico
-Source5: ckan-consoleui.desktop
-Source6: ckan-cmdprompt.desktop
+Source4: ckan-consoleui.desktop
+Source5: ckan-cmdprompt.desktop
+Source6: ckan-16.png
+Source7: ckan-32.png
+Source8: ckan-48.png
+Source9: ckan-64.png
+Source10: ckan-96.png
+Source11: ckan-128.png
+Source12: ckan-256.png
 
 %description
 KSP-CKAN official client.
@@ -35,10 +41,14 @@ mkdir -p %{buildroot}%{_mandir}/man1
 cp %{SOURCE2} %{buildroot}%{_mandir}/man1
 mkdir -p %{buildroot}%{_datadir}/applications
 cp %{SOURCE3} %{buildroot}%{_datadir}/applications
+cp %{SOURCE4} %{buildroot}%{_datadir}/applications
 cp %{SOURCE5} %{buildroot}%{_datadir}/applications
-cp %{SOURCE6} %{buildroot}%{_datadir}/applications
-mkdir -p %{buildroot}%{_datadir}/icons
-cp %{SOURCE4} %{buildroot}%{_datadir}/icons
+for SRC in %{SOURCE6} %{SOURCE7} %{SOURCE8} %{SOURCE9} %{SOURCE10} %{SOURCE11} %{SOURCE12}
+do
+    DIM=$(basename "${SRC}" | sed -e 's/[^0-9]//g')
+    mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${DIM}x${DIM}/apps
+    cp "${SRC}" %{buildroot}%{_datadir}/icons/hicolor/${DIM}x${DIM}/apps/ckan.png
+done
 
 %files
 %{_bindir}/*

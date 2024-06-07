@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using CKAN.ConsoleUI.Toolkit;
+
 using Autofac;
+
+using CKAN.ConsoleUI.Toolkit;
 using CKAN.Configuration;
 
 namespace CKAN.ConsoleUI {

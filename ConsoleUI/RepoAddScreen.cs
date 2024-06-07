@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using CKAN.Games;
 
 namespace CKAN.ConsoleUI {

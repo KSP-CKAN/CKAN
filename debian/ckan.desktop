@@ -2,7 +2,7 @@
 Name=CKAN
 Comment=Comprehensive Kerbal Archive Network Client
 Keywords=Kerbal Space Program;KSP;Mod;
-Icon=/usr/share/icons/ckan.ico
+Icon=ckan
 Categories=Game;PackageManager;
 Exec=/usr/bin/ckan
 Terminal=false
