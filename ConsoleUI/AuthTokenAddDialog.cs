@@ -1,5 +1,7 @@
 using System;
+
 using Autofac;
+
 using CKAN.ConsoleUI.Toolkit;
 using CKAN.Configuration;
 

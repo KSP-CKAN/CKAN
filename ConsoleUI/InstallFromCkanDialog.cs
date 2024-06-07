@@ -1,8 +1,8 @@
 using System;
 using System.IO;
+using System.Linq;
 
 using CKAN.ConsoleUI.Toolkit;
-using System.Linq;
 
 namespace CKAN.ConsoleUI {
 

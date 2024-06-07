@@ -1,4 +1,5 @@
 using System;
+
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
