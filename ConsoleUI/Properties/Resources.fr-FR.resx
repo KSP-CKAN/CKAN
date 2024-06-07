@@ -226,7 +226,7 @@
     <value>Bas</value>
   </data>
   <data name="FileSelectDirectory" xml:space="preserve">
-    <value>Dossier</value>
+    <value>Dossier :</value>
   </data>
   <data name="FileSelectCountFooter" xml:space="preserve">
     <value>{0} sélectionné, {1}</value>
@@ -466,12 +466,30 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
   <data name="InstallModInstalled" xml:space="preserve">
     <value>{0} installé avec succès {1} {2}</value>
   </data>
-  <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Supprimer les Dossiers</value></data>
-  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Attention, il reste certains dossiers, parce que CKAN ne sait pas s'il peut supprimer les fichiers restants. Garder ces dossiers peut casser d'autres mods ! Si vous n'avez pas besoin de ces fichiers, il est recommandé de les supprimer.</value></data>
-  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Dossiers</value></data>
-  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve"><value>Contenu du Dossier</value></data>
-  <data name="DeleteDirectoriesCancelTip" xml:space="preserve"><value>Tout Garder</value></data>
-  <data name="DeleteDirectoriesApplyTip" xml:space="preserve"><value>Supprimer Coché</value></data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>Supprimer les Dossiers</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>Attention, il reste certains dossiers, parce que CKAN ne sait pas s'il peut supprimer les fichiers restants. Garder ces dossiers peut casser d'autres mods ! Si vous n'avez pas besoin de ces fichiers, il est recommandé de les supprimer.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>Dossiers</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>Contenu du Dossier</value>
+  </data>
+  <data name="DeleteDirectoriesDeleteDirTip" xml:space="preserve">
+    <value>Supprimer le dossier</value>
+  </data>
+  <data name="DeleteDirectoriesKeepDirTip" xml:space="preserve">
+    <value>Garder le dossier</value>
+  </data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve">
+    <value>Tout Garder</value>
+  </data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve">
+    <value>Supprimer Coché</value>
+  </data>
   <data name="ModInfoTitle" xml:space="preserve">
     <value>Détails du Mod</value>
   </data>
@@ -711,6 +729,12 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   <data name="ModListUpdatedDaysAgo" xml:space="preserve">
     <value>Mis à jour il y a au moins {0} jours</value>
   </data>
+  <data name="ModListPlayMenu" xml:space="preserve">
+    <value>Jouer au jeu</value>
+  </data>
+  <data name="ModListPlayMenuTip" xml:space="preserve">
+    <value>Lancer le jeu</value>
+  </data>
   <data name="ModListSortMenu" xml:space="preserve">
     <value>Trier...</value>
   </data>
@@ -746,6 +770,21 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   </data>
   <data name="ModListExportMenuTip" xml:space="preserve">
     <value>Sauvegarder votre liste de mods</value>
+  </data>
+  <data name="ModListInstallFromCkanMenu" xml:space="preserve">
+    <value>Installer depuis un fichier .ckan ...</value>
+  </data>
+  <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
+    <value>Installer des modpacks ou des modules personnalisés</value>
+  </data>
+  <data name="ModListInstallFromCkanFailed" xml:space="preserve">
+    <value>L'installation à partir du fichier .ckan a échoué !</value>
+  </data>
+  <data name="CkanFileSelectTitle" xml:space="preserve">
+    <value>Choisir des fichiers .ckan à installer</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>Installer</value>
   </data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve">
     <value>Paramètres de l'instance de jeu...</value>

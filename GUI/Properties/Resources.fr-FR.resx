@@ -328,18 +328,29 @@ Cela veut dire que CKAN a oublié tous les mods que vous avez installé, mais ce
 
 Voulez-vous vraiment l'installer ?</value>
   </data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve">
+    <value>Installer</value>
+  </data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="MetapackageAddCompatibilityPrompt" xml:space="preserve">
+    <value>Les modpacks sélectionnés sont compatibles avec {0}, mais votre instance de jeu n'est compatible qu'avec {1}. Cela peut entraîner l'échec de l'installation de certaines dépendances.
+
+Voulez-vous ajouter les versions supplémentaires à la liste de compatibilité de ce jeu ?</value>
+  </data>
+  <data name="MetapackageAddCompatibilityYes" xml:space="preserve">
+    <value>Ajouter aux versions compatibles</value>
+  </data>
+  <data name="MetapackageAddCompatibilityNo" xml:space="preserve">
+    <value>Garder la compatibilité actuelle</value>
+  </data>
   <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve">
     <value>Certains des mods sélectionnés (ou leurs dépendances) ne sont pas pris en charge par vos versions de jeu compatibles actuelles ({1}) et pourraient ne pas fonctionner du tout. Si vous avez des problèmes avec eux, vous NE devez PAS demander de l'aide à leurs développeurs.
 
 {0}
 
 Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.</value>
-  </data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Installer</value>
-  </data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve">
-    <value>Annuler</value>
   </data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Mise à jour demandée vers la version {0}.</value>
