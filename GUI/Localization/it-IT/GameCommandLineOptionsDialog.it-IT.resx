@@ -117,16 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Argomenti:</value>
+  <data name="CmdLineColumn.HeaderText" xml:space="preserve">
+    <value>Linee di comando</value>
+  </data>
+  <data name="ResetToDefaultsButton.Text" xml:space="preserve">
+    <value>&amp;Ripristina</value>
+  </data>
+  <data name="AddButton.Text" xml:space="preserve">
+    <value>Aggiungi</value>
   </data>
   <data name="AcceptChangesButton.Text" xml:space="preserve">
-    <value>OK</value>
+    <value>&amp;Accetta</value>
   </data>
   <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>Annulla</value>
+    <value>&amp;Annulla</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Argomenti da linea di comando</value>
+    <value>Linee di comando gioco</value>
   </data>
 </root>
