@@ -130,7 +130,7 @@
     <value>&amp;确定</value>
   </data>
   <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>取消</value>
+    <value>&amp;取消</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>游戏启动选项</value>

@@ -121,7 +121,7 @@
     <value>用法</value>
   </data>
   <data name="DownloadNotFound" xml:space="preserve">
-    <value>无法在{0}找到 ckan.exe</value>
+    <value>未找到下载的 ckan.exe 地址: {0}</value>
   </data>
   <data name="FailedToWait" xml:space="preserve">
     <value>等待CKAN关闭失败: {0}</value>

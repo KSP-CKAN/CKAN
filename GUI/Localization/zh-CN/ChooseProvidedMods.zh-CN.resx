@@ -130,6 +130,6 @@
     <value>Mod描述</value>
   </data>
   <data name="ChooseProvidedModsLabel.Text" xml:space="preserve">
-    <value>Several mods provide the virtual module Foo, choose one of the following mods:</value>
+    <value>几个模组提供虚拟模块Foo，选择以下模组之一：</value>
   </data>
 </root>
