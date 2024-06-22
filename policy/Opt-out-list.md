@@ -8,6 +8,5 @@ Ferram4        | Ferram4       | Complex mods with changing dependencies and ins
 nightingale    | jrossignol    | Self-managing metadata
 RoverDude      | BobPalmer     | Self-managing metadata
 Sarbian        | Sarbian       | Self-managing metadata
-Angel-125      | Angel-125     | Installation problems and request by author
 DefiantZombie  | DefiantZombie | Request by author
 cakepie        | cake-pie      | Guard against hot code unsuitable for general release
