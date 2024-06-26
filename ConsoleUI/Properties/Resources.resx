@@ -262,6 +262,8 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModInfoRepositoryTip" xml:space="preserve"><value>Open the repository URL in a browser</value></data>
   <data name="ModInfoBugtracker" xml:space="preserve"><value>Bugtracker</value></data>
   <data name="ModInfoBugtrackerTip" xml:space="preserve"><value>Open the bug tracker URL in a browser</value></data>
+  <data name="ModInfoDiscussions" xml:space="preserve"><value>Discussions</value></data>
+  <data name="ModInfoDiscussionsTip" xml:space="preserve"><value>Open the discussions URL in a browser</value></data>
   <data name="ModInfoSpaceDock" xml:space="preserve"><value>SpaceDock</value></data>
   <data name="ModInfoSpaceDockTip" xml:space="preserve"><value>Open the SpaceDock URL in a browser</value></data>
   <data name="ModInfoCurse" xml:space="preserve"><value>Curse</value></data>

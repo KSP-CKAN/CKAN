@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Linux: Improve desktop entries (#4092 by: mmvanheusden; reviewed: HebaruSan)
 - [ConsoleUI] Install from .ckan file option for ConsoleUI (#4103 by: HebaruSan)
 - [Build] Support icons from libraries for deb and rpm (#4104 by: HebaruSan)
+- [Multiple] Store GitHub Discussions links and display in UIs (#4111 by: HebaruSan)
 
 ### Bugfixes
 

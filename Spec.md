@@ -640,6 +640,7 @@ are described. Unless specified otherwise, these are URLs:
 
 - `homepage` : The preferred landing page for the mod.
 - `bugtracker` : The mod's bugtracker if it exists.
+- `discussions` : The mod's discussions page if it exists.
 - `license` : The mod's license.
 - `repository` : The repository where the module source can be found.
 - `ci` :  (**v1.6**) Continuous Integration (e.g. Jenkins) Server where the module is being built. `x_ci` is an alias used in netkan.

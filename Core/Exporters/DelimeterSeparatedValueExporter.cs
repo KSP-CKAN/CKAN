@@ -50,6 +50,7 @@ namespace CKAN.Exporters
                                  "repository",
                                  "homepage",
                                  "bugtracker",
+                                 "discussions",
                                  "spacedock",
                                  "curse");
 
@@ -74,6 +75,7 @@ namespace CKAN.Exporters
                                      WriteRepository(mod.Module.resources),
                                      WriteHomepage(mod.Module.resources),
                                      WriteBugtracker(mod.Module.resources),
+                                     WriteDiscussions(mod.Module.resources),
                                      WriteSpaceDock(mod.Module.resources),
                                      WriteCurse(mod.Module.resources));
                 }
@@ -98,6 +100,11 @@ namespace CKAN.Exporters
         private string WriteBugtracker(ResourcesDescriptor resources)
             => resources != null && resources.bugtracker != null
                 ? QuoteIfNecessary(resources.bugtracker.ToString())
+                : string.Empty;
+
+        private string WriteDiscussions(ResourcesDescriptor resources)
+            => resources != null && resources.discussions != null
+                ? QuoteIfNecessary(resources.discussions.ToString())
                 : string.Empty;
 
         private string WriteSpaceDock(ResourcesDescriptor resources)

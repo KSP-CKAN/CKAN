@@ -281,6 +281,11 @@ namespace CKAN.CmdLine
                     user.RaiseMessage(Properties.Resources.ShowBugTracker,
                                       Net.NormalizeUri(module.resources.bugtracker.ToString()));
                 }
+                if (module.resources.discussions != null)
+                {
+                    user.RaiseMessage(Properties.Resources.ShowDiscussions,
+                                      Net.NormalizeUri(module.resources.discussions.ToString()));
+                }
                 if (module.resources.curse != null)
                 {
                     user.RaiseMessage(Properties.Resources.ShowCurse,

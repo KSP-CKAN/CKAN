@@ -201,6 +201,11 @@
                     "type"        : "string",
                     "format"      : "uri"
                 },
+                "discussions" : {
+                    "description" : "Mod discussions",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
                 "license" : {
                     "description" : "Mod license",
                     "type"        : "string",
