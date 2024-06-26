@@ -152,17 +152,7 @@ namespace CKAN.NetKAN.Transformers
                                 $"#/ckan/github/{owner}/{repo}", false, false
                             ));
 
-                            if (sdMod.source_code != repoInfo.HtmlUrl)
-                            {
-                                TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", repoInfo.HtmlUrl);
-                            }
-                            // Fall back to homepage from GitHub
-                            TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage", repoInfo.Homepage);
-                            if (repoInfo.HasIssues)
-                            {
-                                // Set bugtracker if repo has issues list
-                                TryAddResourceURL(metadata.Identifier, resourcesJson, "bugtracker", $"{repoInfo.HtmlUrl}/issues");
-                            }
+                            GithubTransformer.SetRepoResources(repoInfo, resourcesJson);
                             if (repoInfo.Archived)
                             {
                                 Log.Warn("Repo is archived, consider freezing");

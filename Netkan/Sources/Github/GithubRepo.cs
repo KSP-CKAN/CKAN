@@ -34,6 +34,9 @@ namespace CKAN.NetKAN.Sources.Github
         [JsonProperty("has_issues")]
         public bool HasIssues { get; set; }
 
+        [JsonProperty("has_discussions")]
+        public bool HasDiscussions { get; set; }
+
         [JsonProperty("archived")]
         public bool Archived { get; set; }
     }

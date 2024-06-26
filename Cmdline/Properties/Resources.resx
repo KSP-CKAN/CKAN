@@ -349,6 +349,7 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="ShowSpaceDock" xml:space="preserve"><value>  SpaceDock:	{0}</value></data>
   <data name="ShowRepository" xml:space="preserve"><value>  Repository:	{0}</value></data>
   <data name="ShowBugTracker" xml:space="preserve"><value>  Bug tracker:	{0}</value></data>
+  <data name="ShowDiscussions" xml:space="preserve"><value>  Discussions:	{0}</value></data>
   <data name="ShowCurse" xml:space="preserve"><value>  Curse:	{0}</value></data>
   <data name="ShowStore" xml:space="preserve"><value>  Store:	{0}</value></data>
   <data name="ShowSteamStore" xml:space="preserve"><value>  Steam store:	{0}</value></data>

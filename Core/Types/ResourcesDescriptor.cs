@@ -26,35 +26,39 @@ namespace CKAN
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri bugtracker;
 
-        [JsonProperty("ci", Order = 6, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("discussions", Order = 6, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
+        public Uri discussions;
+
+        [JsonProperty("ci", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri ci;
 
-        [JsonProperty("license", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("license", Order = 8, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri license;
 
-        [JsonProperty("manual", Order = 8, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("manual", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonIgnoreBadUrlConverter))]
         public Uri manual;
 
-        [JsonProperty("metanetkan", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("metanetkan", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri metanetkan;
 
-        [JsonProperty("remote-avc", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("remote-avc", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri remoteAvc;
 
-        [JsonProperty("remote-swinfo", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("remote-swinfo", Order = 12, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri remoteSWInfo;
 
-        [JsonProperty("store", Order = 12, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("store", Order = 13, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri store;
 
-        [JsonProperty("steamstore", Order = 13, NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("steamstore", Order = 14, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri steamstore;
     }

@@ -150,6 +150,13 @@ namespace CKAN.ConsoleUI {
                         th => LaunchURL(th, mod.resources.bugtracker)
                     ));
                 }
+                if (mod.resources.discussions != null) {
+                    opts.Add(new ConsoleMenuOption(
+                        Properties.Resources.ModInfoDiscussions, "", Properties.Resources.ModInfoDiscussionsTip,
+                        true,
+                        th => LaunchURL(th, mod.resources.discussions)
+                    ));
+                }
                 if (mod.resources.spacedock != null) {
                     opts.Add(new ConsoleMenuOption(
                         Properties.Resources.ModInfoSpaceDock,  "", Properties.Resources.ModInfoSpaceDockTip,

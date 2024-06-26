@@ -154,18 +154,9 @@ namespace CKAN.NetKAN.Transformers
             {
                 json["resources"] = new JObject();
             }
-
-            var resourcesJson = (JObject)json["resources"];
-
-            if (!string.IsNullOrWhiteSpace(ghRepo.Homepage))
+            if (json["resources"] is JObject resourcesJson)
             {
-                resourcesJson.SafeAdd("homepage", ghRepo.Homepage);
-            }
-
-            resourcesJson.SafeAdd("repository", ghRepo.HtmlUrl);
-            if (ghRepo.HasIssues)
-            {
-                resourcesJson.SafeAdd("bugtracker", $"{ghRepo.HtmlUrl}/issues");
+                SetRepoResources(ghRepo, resourcesJson);
             }
 
             if (ghRelease != null)
@@ -216,6 +207,23 @@ namespace CKAN.NetKAN.Transformers
             {
                 Log.WarnFormat("No releases found for {0}", ghRef.Repository);
                 return metadata;
+            }
+        }
+
+        public static void SetRepoResources(GithubRepo repo, JObject resources)
+        {
+            resources.SafeAdd("repository", repo.HtmlUrl);
+            if (!string.IsNullOrWhiteSpace(repo.Homepage))
+            {
+                resources.SafeAdd("homepage", repo.Homepage);
+            }
+            if (repo.HasIssues)
+            {
+                resources.SafeAdd("bugtracker", $"{repo.HtmlUrl}/issues");
+            }
+            if (repo.HasDiscussions)
+            {
+                resources.SafeAdd("discussions", $"{repo.HtmlUrl}/discussions");
             }
         }
 

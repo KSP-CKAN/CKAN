@@ -78,6 +78,7 @@ namespace CKAN.GUI
                     AddResourceLink(Properties.Resources.ModInfoCurseLabel,                 res.curse);
                     AddResourceLink(Properties.Resources.ModInfoRepositoryLabel,            res.repository);
                     AddResourceLink(Properties.Resources.ModInfoBugTrackerLabel,            res.bugtracker);
+                    AddResourceLink(Properties.Resources.ModInfoDiscussionsLabel,           res.discussions);
                     AddResourceLink(Properties.Resources.ModInfoContinuousIntegrationLabel, res.ci);
                     AddResourceLink(Properties.Resources.ModInfoLicenseLabel,               res.license);
                     AddResourceLink(Properties.Resources.ModInfoManualLabel,                res.manual);
