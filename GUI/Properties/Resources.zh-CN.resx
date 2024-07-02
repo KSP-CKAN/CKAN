@@ -123,7 +123,7 @@
     <value>CKAN元数据 (*.ckan)|*.ckan</value>
   </data>
   <data name="ExportInstalledModsDialogTitle" xml:space="preserve">
-    <value>导出Mod列表</value>
+    <value>导出模组列表</value>
   </data>
   <data name="AboutDialogLabel2Text" xml:space="preserve">
     <value>版本 {0}</value>
@@ -132,40 +132,40 @@
     <value>游戏程序文件</value>
   </data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve">
-    <value>请输入新实例名称.</value>
+    <value>请输入新游戏实例名称.</value>
   </data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve">
-    <value>请输入新实例路径.</value>
+    <value>请输入新游戏实例路径.</value>
   </data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
-    <value>"正在克隆实例..."</value>
+    <value>"正在克隆游戏实例..."</value>
   </data>
   <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
-    <value>您想要克隆的实例不可用: {0}</value>
+    <value>您想要克隆的游戏实例不可用: {0}</value>
   </data>
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve">
-    <value>目标文件夹并非空文件夹: {0}</value>
+    <value>目标文件夹不是空文件夹: {0}</value>
   </data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve">
     <value>克隆失败: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
-    <value>成功克隆实例.</value>
+    <value>成功克隆游戏实例.</value>
   </data>
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve">
-    <value>正在创建新实例...</value>
+    <value>正在创建新游戏实例...</value>
   </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
-    <value>该名称已被占用.</value>
+    <value>该游戏实例名称已被占用.</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
-    <value>成功创建实例.</value>
+    <value>成功创建游戏实例.</value>
   </data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
     <value>&lt;NONE&gt;</value>
   </data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve">
-    <value>游戏已经在您上次确认您的兼容游戏版本后更新. 请确认设置是否正确.</value>
+    <value>游戏已经在您设置被允许的模组兼容游戏版本之后更改版本. 请确认设置是否正确.</value>
   </data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve">
     <value>{0} (上一个游戏版本: {1})</value>
@@ -193,11 +193,11 @@
     <value>{0} (正在使用的Mod版本: {1})</value>
   </data>
   <data name="MainReleasesOrDevBuildsPrompt" xml:space="preserve">
-    <value>CKAN被配置为在启动时检查更新。除了正常稳定的版本外，也可以使用开发版本。 使用 开发版本将使您能够尽早访问新的功能和错误修正，但是出现错误的可能性更大。 请考虑使用开发版本来帮助我们找到并修复错误，然后将其变成稳定版本。
+    <value>CKAN被设置为在启动时检查更新。除了正常稳定的版本外，也可以使用开发版本。 使用开发版本将使您能够尽早访问新的功能和错误修正，但是出现未被发现或者未经修复错误的可能性更大。您可以考虑使用开发版本来帮助我们找到并修复错误，同时也可以切换至稳定版本。
 
-您想要使用哪个版本？
+您想要使用哪个渠道的版本？
 
-(此设置以后可以在 CKAN 设置中更改。)</value>
+(此设置可以在 CKAN 设置中更改。)</value>
   </data>
   <data name="MainReleasesOrDevBuildsYes" xml:space="preserve">
     <value>仅使用稳定版本</value>
@@ -218,10 +218,10 @@
     <value>返回</value>
   </data>
   <data name="MainQuitWithUnmetDeps" xml:space="preserve">
-    <value>有未满足的依赖. 真的要退出吗？</value>
+    <value>有没有安装的依赖性模组. 您真的要退出吗？</value>
   </data>
   <data name="MainQuitWithUnappliedChanges" xml:space="preserve">
-    <value>您有未应用的更改. 真的要退出吗？
+    <value>您还有模组安装设置未更改. 真的要退出吗？
 
 {0}</value>
   </data>
@@ -232,37 +232,37 @@
     <value>更新CKAN到 {0}</value>
   </data>
   <data name="MainDepNotSatisfied" xml:space="preserve">
-    <value>{0} 依赖于 {1}, 而它并不与当前安装的游戏版本兼容</value>
+    <value>模组 {0} 依赖于模组 {1}, 而模组 {1} 并不与当前安装的游戏版本兼容</value>
   </data>
   <data name="MainFilterAll" xml:space="preserve">
-    <value>筛选 (全部)</value>
+    <value>筛选 (全部模组)</value>
   </data>
   <data name="MainFilterIncompatible" xml:space="preserve">
-    <value>筛选 (不兼容)</value>
+    <value>筛选 (不兼容的模组)</value>
   </data>
   <data name="MainFilterInstalled" xml:space="preserve">
-    <value>筛选 (已安装)</value>
+    <value>筛选 (已安装的模组)</value>
   </data>
   <data name="MainFilterUpgradeable" xml:space="preserve">
-    <value>筛选 (可更新)</value>
+    <value>筛选 (可更新的模组)</value>
   </data>
   <data name="MainFilterReplaceable" xml:space="preserve">
-    <value>筛选 (可替换)</value>
+    <value>筛选 (可替换的模组)</value>
   </data>
   <data name="MainFilterCached" xml:space="preserve">
-    <value>筛选 (已缓存)</value>
+    <value>筛选 (已缓存的模组)</value>
   </data>
   <data name="MainFilterUncached" xml:space="preserve">
-    <value>筛选 (未缓存)</value>
+    <value>筛选 (未缓存的模组)</value>
   </data>
   <data name="MainFilterNew" xml:space="preserve">
     <value>筛选 (新)</value>
   </data>
   <data name="MainFilterNotInstalled" xml:space="preserve">
-    <value>筛选 (未安装)</value>
+    <value>筛选 (未安装的模组)</value>
   </data>
   <data name="MainFilterCompatible" xml:space="preserve">
-    <value>筛选 (兼容)</value>
+    <value>筛选 (兼容的模组)</value>
   </data>
   <data name="MainFilterLabel" xml:space="preserve">
     <value>标签 ({0})</value>
@@ -274,7 +274,7 @@
     <value>分类 (未分类)</value>
   </data>
   <data name="MainLaunchWithIncompatible" xml:space="preserve">
-    <value>有一些安装的Mod不兼容！启动游戏可能不安全. 真的要启动吗？
+    <value>有一些已安装的模组与您的游戏版本不兼容！启动游戏可能出现故障. 您真的要启动吗？
 
 {0}</value>
   </data>
@@ -306,7 +306,7 @@
     <value>未找到.</value>
   </data>
   <data name="MainCantInstallDLC" xml:space="preserve">
-    <value>CKAN无法安装扩展 {0}！</value>
+    <value>CKAN无法安装DLC {0}！</value>
   </data>
   <data name="MainLoadingGameInstance" xml:space="preserve">
     <value>加载游戏实例</value>
@@ -314,7 +314,7 @@
   <data name="MainCorruptedRegistry" xml:space="preserve">
     <value>损坏的注册表存档到 {0}: {1}
 
-这意味着CKAN丢失了您已安装的模组列表， 但它们仍在GameData中。 您可以通过导入 {2} 文件重新安装它们。</value>
+这意味着CKAN丢失了您已安装的模组列表， 但它们仍在GameData文件夹中。 您可以通过导入 {2} 文件重新安装它们。</value>
   </data>
   <data name="MainDeleteLockfileYes" xml:space="preserve">
     <value>强制</value>
@@ -334,18 +334,18 @@
     <value>取消</value>
   </data>
   <data name="MetapackageAddCompatibilityPrompt" xml:space="preserve">
-    <value>所选的模组包与 {0} 兼容，但您的游戏实例只兼容 {1}。 这可能导致一些依赖项无法安装。
+    <value>所选的模组包与 {0} 兼容，但您的游戏实例只兼容 {1}。 这可能导致一些依赖模组无法安装。
 
 您想要将额外的版本添加到游戏实例的兼容性列表中吗？</value>
   </data>
   <data name="MetapackageAddCompatibilityYes" xml:space="preserve">
-    <value>添加兼容版本</value>
+    <value>添加兼容游戏版本</value>
   </data>
   <data name="MetapackageAddCompatibilityNo" xml:space="preserve">
-    <value>保持当前兼容版本</value>
+    <value>保持当前兼容游戏版本</value>
   </data>
   <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve">
-    <value>您当前兼容的游戏版本({1}) 不支持所选模组(或其依赖)，可能根本无法运行。 如果你对此有任何问题，你不应该要求他们的维护者提供帮助。
+    <value>您当前兼容的游戏版本({1}) 不支持所选模组(或其依赖)，可能根本无法运行。 如果你对此有任何问题，不建议向模组的维护者提供帮助。
 
 {0}
 
@@ -361,7 +361,7 @@
     <value>重新安装 (用户请求)</value>
   </data>
   <data name="MainImportTitle" xml:space="preserve">
-    <value>导入Mod</value>
+    <value>导入模组</value>
   </data>
   <data name="MainImportFilter" xml:space="preserve">
     <value>Mods (*.zip)|*.zip</value>
@@ -376,16 +376,16 @@
     <value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的游戏版本.</value>
   </data>
   <data name="MainInstallNotFound" xml:space="preserve">
-    <value>需要Mod {0} 但它未在索引中列出或不兼容您当前的游戏版本.</value>
+    <value>需要模组 {0} 但它未在索引中列出或不兼容您当前的游戏版本.</value>
   </data>
   <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>检测到损坏的元数据，来自Mod {0}: {1}</value>
+    <value>检测到损坏的元数据，来自模组 {0}: {1}</value>
   </data>
   <data name="MainInstallFileExists" xml:space="preserve">
-    <value>哦不！ 我们尝试去覆写其它Mod的文件！
+    <value>我们正在尝试去覆盖其它模组（或游戏本体）已经安装的文件！
 请尝试 `ckan更新` 并重试.
 
-如果这个问题反复出现，可能时由于打包时出现bug.
+如果这个问题反复出现，可能是由于打包时出现bug.
 请在此处报告:
 
 https://github.com/KSP-CKAN/NetKAN/issues/new/choose
@@ -398,8 +398,7 @@ Owning Mod(已有Mod): {2}
 CKAN Version(CKAN版本)   : {3}</value>
   </data>
   <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>哦不！
-
+    <value>
 看起来您正在尝试安装一个已经安装的Mod，或者正在尝试安装已经与其它已安装Mod冲突的Mod.
 
 作为一个安全特性，CKAN*永远不会*覆写或修改并非由自己安装的文件.
@@ -453,7 +452,7 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>安装时发生错误！</value>
   </data>
   <data name="MainInstallUnknownError" xml:space="preserve">
-    <value>发生未知错误，请重试！</value>
+    <value>发生未知错误，请重试！如果仍然发生，请向https://github.com/KSP-CKAN/CKAN/issues/new/choose报告</value>
   </data>
   <data name="MainInstallKnownError" xml:space="preserve">
     <value>如果上面的消息指明是一个下载错误，请重试. 否则请向我们提交一个issue便于我们调查.
@@ -506,10 +505,10 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>持续集成：</value>
   </data>
   <data name="ModInfoLicenseLabel" xml:space="preserve">
-    <value>协议:</value>
+    <value>模组协议:</value>
   </data>
   <data name="ModInfoManualLabel" xml:space="preserve">
-    <value>使用手册：</value>
+    <value>使用说明：</value>
   </data>
   <data name="ModInfoMetanetkanLabel" xml:space="preserve">
     <value>Metanetkan:</value>
@@ -611,37 +610,37 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>没有找到推荐或建议Mod.</value>
   </data>
   <data name="MainRepoWaitTitle" xml:space="preserve">
-    <value>正在更新元数据库</value>
+    <value>正在更新模组数据库</value>
   </data>
   <data name="LoadingCachedRepoData" xml:space="preserve">
     <value>加载缓存存储库数据</value>
   </data>
   <data name="MainRepoScanning" xml:space="preserve">
-    <value>正在扫描DLC和手动安装的Mod...</value>
+    <value>正在扫描游戏DLC和手动安装的Mod...</value>
   </data>
   <data name="MainRepoContacting" xml:space="preserve">
-    <value>正在连接元数据库...</value>
+    <value>正在连接模组数据库...</value>
   </data>
   <data name="MainRepoUpdating" xml:space="preserve">
-    <value>正在更新元数据库...</value>
+    <value>正在更新模组数据库...</value>
   </data>
   <data name="MainRepoFailedToConnect" xml:space="preserve">
-    <value>无法连接到元数据库. 错误码: {0}</value>
+    <value>无法连接到模组数据库. 错误码: {0}</value>
   </data>
   <data name="MainRepoUpToDate" xml:space="preserve">
-    <value>元数据库已是最新.</value>
+    <value>模组数据库已是最新.</value>
   </data>
   <data name="MainRepoFailed" xml:space="preserve">
-    <value>元数据库更新失败！</value>
+    <value>模组数据库更新失败！</value>
   </data>
   <data name="MainRepoSuccess" xml:space="preserve">
-    <value>元数据库成功更新.</value>
+    <value>模组数据库成功更新.</value>
   </data>
   <data name="MainRepoOutdatedClient" xml:space="preserve">
-    <value>仓库已更新，但找到了需要新版本的 CKAN的模组。正在检查更新...</value>
+    <value>仓库已更新，但找到了需要新版本的CKAN的模组。正在检查更新...</value>
   </data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve">
-    <value>您想要在CKAN在每次加载时刷新Mod列表吗？ (您一直可以通过上方的按钮手动刷新.)</value>
+    <value>您想要在CKAN在每次加载时刷新模组列表吗？ (您也可以通过上方的“刷新”按钮手动刷新.)</value>
   </data>
   <data name="MainRepoBalloonTipDetails" xml:space="preserve">
     <value>{0} 个更新可用</value>
@@ -656,10 +655,10 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>暂停</value>
   </data>
   <data name="MainTrayNoUpdates" xml:space="preserve">
-    <value>没有可用更新</value>
+    <value>没有可用模组更新</value>
   </data>
   <data name="MainTrayUpdatesAvailable" xml:space="preserve">
-    <value>{0} 个可用更新</value>
+    <value>{0} 个可用模组更新</value>
   </data>
   <data name="MainWaitPleaseWait" xml:space="preserve">
     <value>请稍候</value>
@@ -695,10 +694,10 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>选择一个文件夹来存储CKAN下载的Mod:</value>
   </data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve">
-    <value>您知道想要删除 {0} 个缓存文件来释放 {1} 空间?</value>
+    <value>您想要删除 {0} 个缓存文件来释放 {1} 空间?</value>
   </data>
   <data name="SettingsDialogRepoDeleteConfirm" xml:space="preserve">
-    <value>您确定要删除 {0} 仓库吗？此操作无法撤销！</value>
+    <value>您确定要`永久`删除 {0} 仓库吗？</value>
   </data>
   <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve">
     <value>删除</value>
@@ -738,11 +737,11 @@ CKAN Version(CKAN版本)   : {3}</value>
   </data>
   <data name="SettingsDialogUpdateFailed" xml:space="preserve">
     <value>更新时发生错误.
-无法自动更新，因为CKAN.exe为只读或者我们不允许覆写它. 请在 https://github.com/KSP-CKAN/CKAN/releases/latest 手动更新.</value>
+无法自动更新，因为CKAN.exe为只读或者我们不允许覆盖它. 请在 https://github.com/KSP-CKAN/CKAN/releases/latest 中下载并手动更新.</value>
   </data>
   <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN需要处理 ckan:// URLs 的权限.
-您想要允许CKAN这么做吗? 如果您点击否您将不会再次看到此消息.</value>
+    <value>CKAN需要获得计算机的管理员权限.
+您是否允许CKAN这么做? 如果您不允许，将不会再看到此消息.</value>
   </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;复制链接地址</value>
@@ -766,7 +765,7 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>全局</value>
   </data>
   <data name="EditLabelsDialogConfirmDelete" xml:space="preserve">
-    <value>您真的想要删除 {0} 吗？该操作无法撤回！</value>
+    <value>您真的要`永久`删除 {0} 吗？</value>
   </data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve">
     <value>保存更改？</value>
@@ -799,7 +798,7 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>不要 {0} {1}</value>
   </data>
   <data name="ChangesetConfirmRemoveAutoRemoval" xml:space="preserve">
-    <value>{0} 正在被移除，因为它是作为另一个正在移除的模型的依赖安装的。
+    <value>{0} 正在被移除，因为它是作为另一个正在移除的模组的依赖安装的。
 
 您确定要保留它吗？</value>
   </data>
@@ -807,7 +806,7 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>保留</value>
   </data>
   <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve">
-    <value>取消</value>
+    <value>舍弃</value>
   </data>
   <data name="ChangesetConfirmRemoveUserRequested" xml:space="preserve">
     <value>您已选择 {0} {1}。
@@ -818,7 +817,7 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>跳过</value>
   </data>
   <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve">
-    <value>取消</value>
+    <value>坚持</value>
   </data>
   <data name="EditLabelsToolTipName" xml:space="preserve">
     <value>这个标签将会以这个名称出现在标签菜单，在每个实例中必须唯一</value>
@@ -1064,7 +1063,7 @@ CKAN Version(CKAN版本)   : {3}</value>
 Ctrl-单击或Shift-单击以合并当前搜索</value>
   </data>
   <data name="FolderContainsManagedFiles">
-    <value>无法删除 {0} ，因为它包含了由 CKAN安装的文件。
+    <value>无法删除 {0} ，因为它包含了CKAN安装的文件。
 如果您想要删除此文件夹，请正常卸载这些模组。</value>
   </data>
   <data name="DeleteUnmanagedFileConfirmation">
