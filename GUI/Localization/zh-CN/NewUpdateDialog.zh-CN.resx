@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label1.Text" xml:space="preserve">
-    <value>版本:</value>
+    <value>CKAN版本:</value>
   </data>
   <data name="InstallUpdateButton.Text" xml:space="preserve">
-    <value>下载</value>
+    <value>下载更新（推荐）</value>
   </data>
   <data name="CancelUpdateButton.Text" xml:space="preserve">
-    <value>下次一定</value>
+    <value>放弃此次升级（您可以在 设置>CKAN设置>检查更新 中更新）</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>有新版本的CKAN可用</value>
+    <value>您可以现在更新CKAN</value>
   </data>
 </root>
