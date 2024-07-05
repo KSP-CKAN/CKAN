@@ -7,6 +7,10 @@ on:
       - synchronize
       - reopened
   workflow_call:
+    outputs:
+      repack-artifact-id:
+        description: "Artifact ID of the repack"
+        value: ${{ jobs.build-release.outputs.repack-artifact-id }}
 
 jobs:
   build-release:
