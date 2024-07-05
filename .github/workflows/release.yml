@@ -23,14 +23,14 @@ jobs:
     outputs:
       artifact-url: ${{steps.sign.outputs.signing-request-id }}
     steps:
-      - uses: signpath/github-action-submit-signing-request@v0.3
+      - uses: signpath/github-action-submit-signing-request@v0.4
         id: sign
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: 0cd9fc3f-b78d-4214-b152-b2e93c952e14
           project-slug: CKAN
           signing-policy-slug: test-signing
-          github-artifact-name: Release-repack-unsigned
+          github-artifact-id: ${{ needs.smoke-inflator.outputs.repack-artifact-id }}
           artifact-configuration-slug: release
           wait-for-completion: true
 
