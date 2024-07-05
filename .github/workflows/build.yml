@@ -6,24 +6,30 @@ on:
       configuration:
         type: string
         default: Debug
+    outputs:
+      repack-artifact-id:
+        description: "Artifact ID of the repack"
+        value: ${{ jobs.build.outputs.repack-artifact-id }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      repack-artifact-id: ${{ steps.upload-repack-artifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
       - name: Restore cache for _build/tools
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
       - name: Restore cache for _build/cake
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: _build/cake
           key: build-cake-${{ hashFiles('build.cake') }}
       - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             _build/lib/nuget
