@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>32</value>
+  </metadata>
+  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+    <value>文件</value>
+  </data>
+  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+    <value>管理游戏实例</value>
+  </data>
+  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>打开游戏目录</value>
+  </data>
+  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+    <value>从.ckan安装...</value>
+  </data>
+  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;保存已安装的Mod列表...</value>
+  </data>
+  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+    <value>导出Mod包...</value>
+  </data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;导入已下载Mod...</value>
+  </data>
+  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+    <value>检查推荐</value>
+  </data>
+  <data name="ExitToolButton.Text" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>CKAN设置</value>
+  </data>
+  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
+    <value>CKAN插件</value>
+  </data>
+  <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
+    <value>首选的 &amp;服务器</value>
+  </data>
+  <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
+    <value>安装 &amp;过滤器</value>
+  </data>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;游戏启动选项</value>
+  </data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>兼容的游戏版本</value>
+  </data>
+  <data name="helpToolStripMenuItem.Text" xml:space="preserve">
+    <value>帮助</value>
+  </data>
+  <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;用户指南</value>
+  </data>
+  <data name="discordToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Discord</value>
+  </data>
+  <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
+    <value>报告CKAN客户端的问题</value>
+  </data>
+  <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve">
+    <value>报告Mod元数据的问题</value>
+  </data>
+  <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
+    <value>关于</value>
+  </data>
+  <data name="ManageModsTabPage.Text" xml:space="preserve">
+    <value>管理模组</value>
+  </data>
+  <data name="ChangesetTabPage.Text" xml:space="preserve">
+    <value>更改列表</value>
+  </data>
+  <data name="WaitTabPage.Text" xml:space="preserve">
+    <value>状态日志</value>
+  </data>
+  <data name="ChooseProvidedModsTabPage.Text" xml:space="preserve">
+    <value>选择Mod</value>
+  </data>
+  <data name="ChooseRecommendedModsTabPage.Text" xml:space="preserve">
+    <value>选择推荐或建议Mod</value>
+  </data>
+  <data name="PlayTimeTabPage.Text" xml:space="preserve">
+    <value>游戏时间</value>
+  </data>
+  <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve">
+    <value>删除目录</value>
+  </data>
+  <data name="EditModpackTabPage.Text" xml:space="preserve">
+    <value>编辑Mod包</value>
+  </data>
+  <data name="UnmanagedFilesTabPage.Text" xml:space="preserve">
+    <value>未被管理的文件</value>
+  </data>
+  <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
+    <value>安装历史记录</value>
+  </data>
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
+    <value>CKAN</value>
+  </data>
+  <data name="updatesToolStripMenuItem.Text" xml:space="preserve">
+    <value>N 个可用更新</value>
+  </data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="pauseToolStripMenuItem.Text" xml:space="preserve">
+    <value>暂停</value>
+  </data>
+  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve">
+    <value>打开CKAN</value>
+  </data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>启动游戏</value>
+  </data>
+  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+    <value>打开游戏目录</value>
+  </data>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
+    <value>CKAN设置</value>
+  </data>
+  <data name="quitToolStripMenuItem.Text" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+    <value>游戏 &amp;时间...</value>
+  </data>
+  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;未被管理的文件...</value>
+  </data>
+  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+    <value>安装 &amp;历史记录...</value>
+  </data>
+</root>

@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>开始游戏</value>
+  </data>
+  <data name="EditCommandLinesToolStripMenuItem.Text" xml:space="preserve">
+    <value>编辑命令行...</value>
+  </data>
+  <data name="RefreshToolButton.Text" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="UpdateAllToolButton.Text" xml:space="preserve">
+    <value>添加可用更新</value>
+  </data>
+  <data name="ApplyToolButton.Text" xml:space="preserve">
+    <value>应用更改</value>
+  </data>
+  <data name="FilterToolButton.Text" xml:space="preserve">
+    <value>筛选</value>
+  </data>
+  <data name="FilterCompatibleButton.Text" xml:space="preserve">
+    <value>兼容</value>
+  </data>
+  <data name="FilterInstalledButton.Text" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="FilterInstalledUpdateButton.Text" xml:space="preserve">
+    <value>已安装 (更新可用)</value>
+  </data>
+  <data name="FilterReplaceableButton.Text" xml:space="preserve">
+    <value>可替换</value>
+  </data>
+  <data name="FilterCachedButton.Text" xml:space="preserve">
+    <value>已缓存</value>
+  </data>
+  <data name="FilterUncachedButton.Text" xml:space="preserve">
+    <value>未缓存</value>
+  </data>
+  <data name="FilterNewButton.Text" xml:space="preserve">
+    <value>新兼容</value>
+  </data>
+  <data name="FilterNotInstalledButton.Text" xml:space="preserve">
+    <value>未安装</value>
+  </data>
+  <data name="FilterIncompatibleButton.Text" xml:space="preserve">
+    <value>不兼容</value>
+  </data>
+  <data name="FilterAllButton.Text" xml:space="preserve">
+    <value>所有</value>
+  </data>
+  <data name="FilterTagsToolButton.Text" xml:space="preserve">
+    <value>分类</value>
+  </data>
+  <data name="FilterLabelsToolButton.Text" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve">
+    <value>上一个选中Mod...</value>
+  </data>
+  <data name="NavForwardToolButton.ToolTipText" xml:space="preserve">
+    <value>下一个选中Mod...</value>
+  </data>
+  <data name="hiddenTagsLabelsLinkList.TagToolTipText" xml:space="preserve">
+    <value>单击以显示或隐藏标签</value>
+  </data>
+  <data name="Installed.HeaderText" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="AutoInstalled.HeaderText" xml:space="preserve">
+    <value>自动安装</value>
+  </data>
+  <data name="UpdateCol.HeaderText" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="ReplaceCol.HeaderText" xml:space="preserve">
+    <value>替换</value>
+  </data>
+  <data name="ModName.HeaderText" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="Author.HeaderText" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="InstalledVersion.HeaderText" xml:space="preserve">
+    <value>已安装版本</value>
+  </data>
+  <data name="LatestVersion.HeaderText" xml:space="preserve">
+    <value>最新版本</value>
+  </data>
+  <data name="GameCompatibility.HeaderText" xml:space="preserve">
+    <value>最高游戏版本</value>
+  </data>
+  <data name="DownloadSize.HeaderText" xml:space="preserve">
+    <value>下载大小</value>
+  </data>
+  <data name="InstallSize.HeaderText" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="ReleaseDate.HeaderText" xml:space="preserve">
+    <value>发布日期</value>
+  </data>
+  <data name="InstallDate.HeaderText" xml:space="preserve">
+    <value>安装日期</value>
+  </data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve">
+    <value>下载量</value>
+  </data>
+  <data name="Description.HeaderText" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="reinstallToolStripMenuItem.Text" xml:space="preserve">
+    <value>重新安装</value>
+  </data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve">
+    <value>下载内容</value>
+  </data>
+  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve">
+    <value>清除内容</value>
+  </data>
+  <data name="labelsToolStripMenuItem.Text" xml:space="preserve">
+    <value>标签</value>
+  </data>
+  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
+    <value>编辑标签...</value>
+  </data>
+  <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
+    <value>Ctrl-单击或Shift-单击重新下载元数据，即使自上次刷新以来没有变化</value>
+  </data>
+</root>
