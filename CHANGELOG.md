@@ -44,6 +44,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix NRE on trying to update all when there's nothing to update (#4054 by: HebaruSan)
 - [Core] Fix NRE in repo update with corrupted etags.json file (#4077, #4078 by: HebaruSan)
 - [Core] Skip temp files for repo updates (#4102 by: HebaruSan)
+- [Core] Fix default transaction timeout (#4119 by: romi2002; reviewed: HebaruSan)
 
 ### Internal
 
