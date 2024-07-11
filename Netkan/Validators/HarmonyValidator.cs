@@ -37,7 +37,8 @@ namespace CKAN.NetKAN.Validators
 
                     var harmonyDLLs = _moduleService.GetPlugins(mod, zip, inst)
                         .Select(instF => instF.source.Name)
-                        .Where(f => f.IndexOf("Harmony", StringComparison.InvariantCultureIgnoreCase) != -1)
+                        .Where(f => f.IndexOf("Harmony", Math.Max(0, f.LastIndexOf('/')),
+                                              StringComparison.InvariantCultureIgnoreCase) != -1)
                         .OrderBy(f => f)
                         .ToList();
                     bool bundlesHarmony   = harmonyDLLs.Any();
