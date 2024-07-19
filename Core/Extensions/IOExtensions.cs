@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using Timer = System.Timers.Timer;
@@ -9,55 +8,13 @@ namespace CKAN.Extensions
 {
     public static class IOExtensions
     {
-        private static bool StringArrayStartsWith(string[] child, string[] parent)
-        {
-            if (parent.Length > child.Length)
-            {
-                // Only child is allowed to have extra pieces
-                return false;
-            }
-            for (int i = 0; i < parent.Length; ++i)
-            {
-                if (!parent[i].Equals(child[i], Platform.PathComparison))
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        private static readonly char[] pathDelims = new char[] {Path.DirectorySeparatorChar};
-
         /// <summary>
-        /// Check whether a given path is an ancestor of another
-        /// </summary>
-        /// <param name="parent">The path to treat as potential ancestor</param>
-        /// <param name="child">The path to treat as potential descendant</param>
-        /// <returns>true if child is a descendant of parent, false otherwise</returns>
-        public static bool IsAncestorOf(this DirectoryInfo parent, DirectoryInfo child)
-            => StringArrayStartsWith(
-                child.FullName.Split(pathDelims, StringSplitOptions.RemoveEmptyEntries),
-                parent.FullName.Split(pathDelims, StringSplitOptions.RemoveEmptyEntries));
-
-        /// <summary>
-        /// Extension method to fill in the gap of getting from a
-        /// directory to its drive in .NET.
-        /// Returns the drive with the longest RootDirectory.FullName
-        /// that's a prefix of the dir's FullName.
+        /// Extension method to get from a directory to its drive.
         /// </summary>
         /// <param name="dir">Any DirectoryInfo object</param>
         /// <returns>The DriveInfo associated with this directory, if any, else null</returns>
         public static DriveInfo GetDrive(this DirectoryInfo dir)
-            => Platform.IsMono
-                // Mono's DriveInfo.GetDrives doesn't return mounted filesystems, so we
-                // can't get the drive for a dir on Linux or Mac
-                ? null
-                : DriveInfo.GetDrives()
-                           .Where(dr => dr.IsReady
-                                        && dr.DriveType != DriveType.NoRootDirectory
-                                        && dr.RootDirectory.IsAncestorOf(dir))
-                           .OrderByDescending(dr => dr.RootDirectory.FullName.Length)
-                           .FirstOrDefault();
+            => new DriveInfo(dir.FullName);
 
         /// <summary>
         /// A version of Stream.CopyTo with progress updates.

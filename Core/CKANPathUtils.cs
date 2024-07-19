@@ -127,16 +127,19 @@ namespace CKAN
 
         public static void CheckFreeSpace(DirectoryInfo where, long bytesToStore, string errorDescription)
         {
-            var bytesFree = where.GetDrive()?.AvailableFreeSpace;
-            if (bytesFree.HasValue && bytesToStore > bytesFree.Value) {
-                throw new NotEnoughSpaceKraken(errorDescription, where,
-                                               bytesFree.Value, bytesToStore);
+            if (bytesToStore > 0)
+            {
+                var bytesFree = where.GetDrive()?.AvailableFreeSpace;
+                if (bytesFree.HasValue && bytesToStore > bytesFree.Value) {
+                    throw new NotEnoughSpaceKraken(errorDescription, where,
+                                                   bytesFree.Value, bytesToStore);
+                }
+                log.DebugFormat("Storing {0} to {1} ({2} free)...",
+                                CkanModule.FmtSize(bytesToStore),
+                                where.FullName,
+                                bytesFree.HasValue ? CkanModule.FmtSize(bytesFree.Value)
+                                                   : "unknown bytes");
             }
-            log.DebugFormat("Storing {0} to {1} ({2} free)...",
-                            CkanModule.FmtSize(bytesToStore),
-                            where.FullName,
-                            bytesFree.HasValue ? CkanModule.FmtSize(bytesFree.Value)
-                                               : "unknown bytes");
         }
 
     }

@@ -45,6 +45,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix NRE in repo update with corrupted etags.json file (#4077, #4078 by: HebaruSan)
 - [Core] Skip temp files for repo updates (#4102 by: HebaruSan)
 - [Core] Fix default transaction timeout (#4119 by: romi2002; reviewed: HebaruSan)
+- [Core] Use DriveInfo constructor to get drive from path (#4125 by: HebaruSan)
 
 ### Internal
 
