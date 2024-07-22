@@ -615,7 +615,7 @@ Debian](https://www.debian.org/doc/debian-policy/ch-relationships.html).
 A list of mods which *conflict* with this mod. The current mod
 *will not* be installed if any of these mods are already on the system.
 
-##### replaced-by
+##### replaced_by
 
 (**v1.26**) This is a way to mark a specific mod identifier as being
 obsoleted and tell the client what it has been *replaced by*. It contains a
