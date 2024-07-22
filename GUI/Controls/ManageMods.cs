@@ -904,6 +904,10 @@ namespace CKAN.GUI
                                     gmod.SetAutoInstallChecked(row, AutoInstalled);
                                     OnRegistryChanged?.Invoke();
                                     break;
+                                case "ReplaceCol":
+                                    UpdateChangeSetAndConflicts(currentInstance,
+                                        RegistryManager.Instance(currentInstance, repoData).registry);
+                                    break;
                             }
                         }
                         break;
