@@ -624,6 +624,12 @@ namespace CKAN
                 return false;
             }
 
+            if (replaced_by == null ? other.replaced_by != null
+                                    : !replaced_by.Equals(other.replaced_by))
+            {
+                return false;
+            }
+
             if (provides != other.provides)
             {
                 if (provides == null || other.provides == null)
