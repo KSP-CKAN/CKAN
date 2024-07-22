@@ -129,7 +129,15 @@ namespace CKAN.GUI
         {
             var modules_to_install = new List<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
-            var upgrading = new HashSet<CkanModule>();
+            var extraInstalls = new HashSet<CkanModule>();
+
+            changeSet.UnionWith(changeSet.Where(ch => ch.ChangeType == GUIModChangeType.Replace)
+                                         .Select(ch => registry.GetReplacement(ch.Mod, version))
+                                         .OfType<ModuleReplacement>()
+                                         .GroupBy(repl => repl.ReplaceWith)
+                                         .Select(grp => new ModChange(grp.Key, GUIModChangeType.Install,
+                                                                      grp.Select(repl => new SelectionReason.Replacement(repl.ToReplace))))
+                                         .ToHashSet());
 
             foreach (var change in changeSet)
             {
@@ -140,7 +148,7 @@ namespace CKAN.GUI
                     case GUIModChangeType.Update:
                         var mod = (change as ModUpgrade)?.targetMod ?? change.Mod;
                         modules_to_install.Add(mod);
-                        upgrading.Add(mod);
+                        extraInstalls.Add(mod);
                         break;
                     case GUIModChangeType.Install:
                         modules_to_install.Add(change.Mod);
@@ -149,11 +157,10 @@ namespace CKAN.GUI
                         modules_to_remove.Add(change.Mod);
                         break;
                     case GUIModChangeType.Replace:
-                        ModuleReplacement repl = registry.GetReplacement(change.Mod, version);
-                        if (repl != null)
+                        if (registry.GetReplacement(change.Mod, version) is ModuleReplacement repl)
                         {
                             modules_to_remove.Add(repl.ToReplace);
-                            modules_to_install.Add(repl.ReplaceWith);
+                            extraInstalls.Add(repl.ReplaceWith);
                         }
                         break;
                     default:
@@ -172,14 +179,16 @@ namespace CKAN.GUI
                     .ToList(),
                 modules_to_install))
             {
-                if (installed_modules.TryGetValue(dependent, out CkanModule depMod))
+                if (!changeSet.Any(ch => ch.ChangeType == GUIModChangeType.Replace
+                                      && ch.Mod.identifier == dependent)
+                    && installed_modules.TryGetValue(dependent, out CkanModule depMod))
                 {
-                    CkanModule module_by_version = registry.GetModuleByVersion(depMod.identifier,
-                    depMod.version)
-                        ?? registry.InstalledModule(dependent).Module;
-                    changeSet.Add(new ModChange(module_by_version, GUIModChangeType.Remove,
+                    var modByVer = registry.GetModuleByVersion(depMod.identifier,
+                                                               depMod.version)
+                                   ?? registry.InstalledModule(dependent).Module;
+                    changeSet.Add(new ModChange(modByVer, GUIModChangeType.Remove,
                                                 new SelectionReason.DependencyRemoved()));
-                    modules_to_remove.Add(module_by_version);
+                    modules_to_remove.Add(modByVer);
                 }
             }
 
@@ -197,11 +206,13 @@ namespace CKAN.GUI
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
             return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>>(
-                changeSet.Where(ch => !(ch.ChangeType is GUIModChangeType.Install))
+                changeSet.Where(ch => !(ch.ChangeType is GUIModChangeType.Install
+                                        // Leave in replacements
+                                        && !ch.Reasons.Any(r => r is SelectionReason.Replacement)))
                          .OrderBy(ch => ch.Mod.identifier)
                          .Union(resolver.ModList()
-                                        // Changeset already contains Update changes for these
-                                        .Except(upgrading)
+                                        // Changeset already contains changes for these
+                                        .Except(extraInstalls)
                                         .Where(m => !m.IsMetapackage)
                                         .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m)))),
                 resolver.ConflictList,
@@ -226,12 +237,11 @@ namespace CKAN.GUI
             return registry.InstalledModules
                 .Where(im => !removingIdents.Contains(im.identifier))
                 .Concat(changeSet
-                    .Where(ch => ch.ChangeType != GUIModChangeType.Remove)
+                    .Where(ch => ch.ChangeType != GUIModChangeType.Remove
+                              && ch.ChangeType != GUIModChangeType.Replace)
                     .Select(ch => new InstalledModule(
                         null,
-                        ch.ChangeType == GUIModChangeType.Replace
-                            ? registry.GetReplacement(ch.Mod, crit)?.ReplaceWith
-                            : (ch as ModUpgrade)?.targetMod ?? ch.Mod,
+                        (ch as ModUpgrade)?.targetMod ?? ch.Mod,
                         Enumerable.Empty<string>(),
                         false)));
         }

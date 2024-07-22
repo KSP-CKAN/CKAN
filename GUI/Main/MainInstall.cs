@@ -124,7 +124,10 @@ namespace CKAN.GUI
                         if (repl != null)
                         {
                             toUninstall.Add(repl.ToReplace);
-                            toInstall.Add(repl.ReplaceWith);
+                            if (!toInstall.Contains(repl.ReplaceWith))
+                            {
+                                toInstall.Add(repl.ReplaceWith);
+                            }
                         }
                         break;
                 }

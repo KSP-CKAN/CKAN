@@ -922,6 +922,10 @@ namespace CKAN
 
             public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverReplacementReason, Parent.name);
+
+            public override string DescribeWith(IEnumerable<SelectionReason> others)
+                => string.Format(Properties.Resources.RelationshipResolverReplacementReason,
+                    string.Join(", ", Enumerable.Repeat(this, 1).Concat(others).Select(r => r.Parent.name)));
         }
 
         public sealed class Suggested : SelectionReason
