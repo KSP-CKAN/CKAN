@@ -133,6 +133,8 @@
   <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Creating new instance...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>This name is already used.</value></data>
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Successfully created instance.</value></data>
+  <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve"><value>Create junction points (Windows) or symbolic links (Unix) to stock directories instead of copying them.
+If you choose this option, DO NOT move or delete the old instance!!</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>The game has been updated since you last reviewed your compatible game versions. Please make sure that settings are correct.</value></data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (previous game version: {1})</value></data>

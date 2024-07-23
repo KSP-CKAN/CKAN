@@ -30,6 +30,7 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(CloneGameInstanceDialog));
+            this.ToolTip = new System.Windows.Forms.ToolTip();
             this.labelOldInstance = new System.Windows.Forms.Label();
             this.comboBoxKnownInstance = new System.Windows.Forms.ComboBox();
             this.labelOldPath = new System.Windows.Forms.Label();
@@ -42,11 +43,19 @@ namespace CKAN.GUI
             this.buttonPathBrowser = new System.Windows.Forms.Button();
             this.checkBoxSetAsDefault = new System.Windows.Forms.CheckBox();
             this.checkBoxSwitchInstance = new System.Windows.Forms.CheckBox();
+            this.checkBoxShareStock = new System.Windows.Forms.CheckBox();
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.folderBrowserDialogNewPath = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
+            //
+            // ToolTip
+            //
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
             //
             // labelOldInstance
             //
@@ -154,7 +163,7 @@ namespace CKAN.GUI
             //
             this.checkBoxSetAsDefault.AutoSize = true;
             this.checkBoxSetAsDefault.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBoxSetAsDefault.Location = new System.Drawing.Point(12, 144);
+            this.checkBoxSetAsDefault.Location = new System.Drawing.Point(181, 144);
             this.checkBoxSetAsDefault.Name = "checkBoxSetAsDefault";
             this.checkBoxSetAsDefault.Size = new System.Drawing.Size(157, 17);
             this.checkBoxSetAsDefault.TabIndex = 19;
@@ -167,20 +176,33 @@ namespace CKAN.GUI
             this.checkBoxSwitchInstance.Checked = true;
             this.checkBoxSwitchInstance.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxSwitchInstance.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.checkBoxSwitchInstance.Location = new System.Drawing.Point(181, 144);
+            this.checkBoxSwitchInstance.Location = new System.Drawing.Point(181, 174);
             this.checkBoxSwitchInstance.Name = "checkBoxSwitchInstance";
             this.checkBoxSwitchInstance.Size = new System.Drawing.Size(136, 17);
             this.checkBoxSwitchInstance.TabIndex = 20;
             this.checkBoxSwitchInstance.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.checkBoxSwitchInstance, "checkBoxSwitchInstance");
             //
+            // checkBoxShareStock
+            //
+            this.checkBoxShareStock.AutoSize = true;
+            this.checkBoxShareStock.Checked = true;
+            this.checkBoxShareStock.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxShareStock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBoxShareStock.Location = new System.Drawing.Point(181, 204);
+            this.checkBoxShareStock.Name = "checkBoxShareStock";
+            this.checkBoxShareStock.Size = new System.Drawing.Size(136, 17);
+            this.checkBoxShareStock.TabIndex = 21;
+            this.checkBoxShareStock.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.checkBoxShareStock, "checkBoxShareStock");
+            //
             // buttonOK
             //
             this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonOK.Location = new System.Drawing.Point(256, 170);
+            this.buttonOK.Location = new System.Drawing.Point(256, 230);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
-            this.buttonOK.TabIndex = 21;
+            this.buttonOK.TabIndex = 22;
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
             resources.ApplyResources(this.buttonOK, "buttonOK");
@@ -188,10 +210,10 @@ namespace CKAN.GUI
             // buttonCancel
             //
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCancel.Location = new System.Drawing.Point(337, 170);
+            this.buttonCancel.Location = new System.Drawing.Point(337, 230);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-            this.buttonCancel.TabIndex = 22;
+            this.buttonCancel.TabIndex = 23;
             this.buttonCancel.UseVisualStyleBackColor = true;
             this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             resources.ApplyResources(this.buttonCancel, "buttonCancel");
@@ -204,7 +226,7 @@ namespace CKAN.GUI
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(230, 23);
             this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBar.TabIndex = 23;
+            this.progressBar.TabIndex = 24;
             this.progressBar.Visible = false;
             //
             // CloneGameInstanceDialog
@@ -213,7 +235,7 @@ namespace CKAN.GUI
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 205);
+            this.ClientSize = new System.Drawing.Size(424, 265);
             this.Controls.Add(this.labelOldInstance);
             this.Controls.Add(this.comboBoxKnownInstance);
             this.Controls.Add(this.labelOldPath);
@@ -222,6 +244,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.buttonPathBrowser);
             this.Controls.Add(this.checkBoxSwitchInstance);
+            this.Controls.Add(this.checkBoxShareStock);
             this.Controls.Add(this.textBoxNewPath);
             this.Controls.Add(this.labelNewPath);
             this.Controls.Add(this.checkBoxSetAsDefault);
@@ -247,6 +270,7 @@ namespace CKAN.GUI
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.Label labelOldInstance;
         private System.Windows.Forms.ComboBox comboBoxKnownInstance;
         private System.Windows.Forms.Label labelOldPath;
@@ -259,6 +283,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.Button buttonPathBrowser;
         private System.Windows.Forms.CheckBox checkBoxSetAsDefault;
         private System.Windows.Forms.CheckBox checkBoxSwitchInstance;
+        private System.Windows.Forms.CheckBox checkBoxShareStock;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogNewPath;

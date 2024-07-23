@@ -15,7 +15,7 @@ using CKAN.Games;
 namespace CKAN.GUI
 {
     /// <summary>
-    /// The GUI implementation of clone and fake.
+    /// The GUI implementation of clone.
     /// It's a separate window, handling the whole process.
     /// </summary>
     #if NET5_0_OR_GREATER
@@ -33,6 +33,8 @@ namespace CKAN.GUI
             this.user    = user;
 
             InitializeComponent();
+
+            ToolTip.SetToolTip(checkBoxShareStock, Properties.Resources.CloneGameInstanceToolTipShareStock);
 
             // Populate the instances combobox with names of known instances
             comboBoxKnownInstance.DataSource = new string[] { "" }
@@ -138,7 +140,7 @@ namespace CKAN.GUI
                 {
                     if (instanceToClone.Valid)
                     {
-                        manager.CloneInstance(instanceToClone, newName, newPath);
+                        manager.CloneInstance(instanceToClone, newName, newPath, checkBoxShareStock.Checked);
                     }
                     else
                     {
