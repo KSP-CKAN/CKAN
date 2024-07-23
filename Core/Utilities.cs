@@ -1,7 +1,8 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Diagnostics;
-using System.Transactions;
+using System.Collections.Generic;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -40,34 +41,39 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Copies a directory and optionally its subdirectories as a transaction.
+        /// Copies a directory and its subdirectories as a transaction
         /// </summary>
-        /// <param name="sourceDirPath">Source directory path.</param>
-        /// <param name="destDirPath">Destination directory path.</param>
-        /// <param name="copySubDirs">Copy sub dirs recursively if set to <c>true</c>.</param>
-        public static void CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs)
+        /// <param name="sourceDirPath">Source directory path</param>
+        /// <param name="destDirPath">Destination directory path</param>
+        /// <param name="subFolderRelPathsToSymlink">Relative subdirs that should be symlinked to the originals instead of copied</param>
+        public static void CopyDirectory(string   sourceDirPath,
+                                         string   destDirPath,
+                                         string[] subFolderRelPathsToSymlink,
+                                         string[] subFolderRelPathsToLeaveEmpty)
         {
-            TxFileManager file_transaction = new TxFileManager();
-            using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
+            using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                _CopyDirectory(sourceDirPath, destDirPath, copySubDirs, file_transaction);
+                CopyDirectory(sourceDirPath, destDirPath, new TxFileManager(),
+                              subFolderRelPathsToSymlink, subFolderRelPathsToLeaveEmpty);
                 transaction.Complete();
             }
         }
 
-
-        private static void _CopyDirectory(string sourceDirPath, string destDirPath, bool copySubDirs, TxFileManager file_transaction)
+        private static void CopyDirectory(string        sourceDirPath,
+                                          string        destDirPath,
+                                          TxFileManager file_transaction,
+                                          string[]      subFolderRelPathsToSymlink,
+                                          string[]      subFolderRelPathsToLeaveEmpty)
         {
-            DirectoryInfo sourceDir = new DirectoryInfo(sourceDirPath);
-
+            var sourceDir = new DirectoryInfo(sourceDirPath);
             if (!sourceDir.Exists)
             {
                 throw new DirectoryNotFoundKraken(
                     sourceDirPath,
-                    "Source directory does not exist or could not be found.");
+                    $"Source directory {sourceDirPath} does not exist or could not be found.");
             }
 
-            // If the destination directory doesn't exist, create it.
+            // If the destination directory doesn't exist, create it
             if (!Directory.Exists(destDirPath))
             {
                 file_transaction.CreateDirectory(destDirPath);
@@ -77,9 +83,8 @@ namespace CKAN
                 throw new PathErrorKraken(destDirPath, "Directory not empty: ");
             }
 
-            // Get the files in the directory and copy them to the new location.
-            FileInfo[] files = sourceDir.GetFiles();
-            foreach (FileInfo file in files)
+            // Get the files in the directory and copy them to the new location
+            foreach (var file in sourceDir.GetFiles())
             {
                 if (file.Name == "registry.locked")
                 {
@@ -91,25 +96,44 @@ namespace CKAN
                     continue;
                 }
 
-                string temppath = Path.Combine(destDirPath, file.Name);
-                file_transaction.Copy(file.FullName, temppath, false);
+                file_transaction.Copy(file.FullName, Path.Combine(destDirPath, file.Name), false);
             }
 
             // Create all first level subdirectories
-            DirectoryInfo[] dirs = sourceDir.GetDirectories();
-
-            foreach (DirectoryInfo subdir in dirs)
+            foreach (var subdir in sourceDir.GetDirectories())
             {
-                string temppath = Path.Combine(destDirPath, subdir.Name);
-                file_transaction.CreateDirectory(temppath);
-
-                // If copying subdirectories, copy their contents to new location.
-                if (copySubDirs)
+                var temppath = Path.Combine(destDirPath, subdir.Name);
+                // If already a sym link, replicate it in the new location
+                if (DirectoryLink.TryGetTarget(subdir.FullName, out string existingLinkTarget))
                 {
-                    _CopyDirectory(subdir.FullName, temppath, copySubDirs, file_transaction);
+                    DirectoryLink.Create(existingLinkTarget, temppath, file_transaction);
+                }
+                else
+                {
+                    if (subFolderRelPathsToSymlink.Contains(subdir.Name, Platform.PathComparer))
+                    {
+                        DirectoryLink.Create(subdir.FullName, temppath, file_transaction);
+                    }
+                    else
+                    {
+                        file_transaction.CreateDirectory(temppath);
+
+                        if (!subFolderRelPathsToLeaveEmpty.Contains(subdir.Name, Platform.PathComparer))
+                        {
+                            // Copy subdir contents to new location
+                            CopyDirectory(subdir.FullName, temppath, file_transaction,
+                                          SubPaths(subdir.Name, subFolderRelPathsToSymlink).ToArray(),
+                                          SubPaths(subdir.Name, subFolderRelPathsToLeaveEmpty).ToArray());
+                        }
+                    }
                 }
             }
         }
+
+        // Select only paths within subdir, prune prefixes
+        private static IEnumerable<string> SubPaths(string parent, string[] paths)
+            => paths.Where(p => p.StartsWith($"{parent}/", Platform.PathComparison))
+                    .Select(p => p.Remove(0, parent.Length + 1));
 
         /// <summary>
         /// Launch a URL. For YEARS this was done by Process.Start in a
