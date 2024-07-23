@@ -97,6 +97,9 @@ namespace CKAN.CmdLine
 
     internal class CloneOptions : CommonOptions
     {
+        [Option("share-stock", DefaultValue = false, HelpText = "Use junction points (Windows) or symbolic links (Unix) for stock dirs instead of copying")]
+        public bool shareStock { get; set; }
+
         [ValueOption(0)] public string nameOrPath { get; set; }
         [ValueOption(1)] public string new_name { get; set; }
         [ValueOption(2)] public string new_path { get; set; }
@@ -341,7 +344,7 @@ namespace CKAN.CmdLine
                         if (instance.Name == instanceNameOrPath)
                         {
                             // Found it, now clone it.
-                            Manager.CloneInstance(instance, newName, newPath);
+                            Manager.CloneInstance(instance, newName, newPath, options.shareStock);
                             break;
                         }
                     }
@@ -350,7 +353,7 @@ namespace CKAN.CmdLine
                 // If it's valid, go on.
                 else if (Manager.InstanceAt(instanceNameOrPath) is CKAN.GameInstance instance && instance.Valid)
                 {
-                    Manager.CloneInstance(instance, newName, newPath);
+                    Manager.CloneInstance(instance, newName, newPath, options.shareStock);
                 }
                 // There is no instance with this name or at this path.
                 else
