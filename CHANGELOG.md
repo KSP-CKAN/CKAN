@@ -27,7 +27,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Install from .ckan file option for ConsoleUI (#4103 by: HebaruSan)
 - [Build] Support icons from libraries for deb and rpm (#4104 by: HebaruSan)
 - [Multiple] Store GitHub Discussions links and display in UIs (#4111 by: HebaruSan)
-- [GUI] Chinese translation fixes (#4115, #4116 by: zhouyiqing0304; reviewed: HebaruSan)
+- [GUI] Chinese translation fixes (#4115, #4116, #4131 by: zhouyiqing0304; reviewed: HebaruSan)
 
 ### Bugfixes
 

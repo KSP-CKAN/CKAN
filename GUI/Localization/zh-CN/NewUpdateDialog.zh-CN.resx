@@ -121,10 +121,10 @@
     <value>CKAN版本:</value>
   </data>
   <data name="InstallUpdateButton.Text" xml:space="preserve">
-    <value>下载更新（推荐）</value>
+    <value>下载更新</value>
   </data>
   <data name="CancelUpdateButton.Text" xml:space="preserve">
-    <value>放弃此次升级（您可以在 设置>CKAN设置>检查更新 中更新）</value>
+    <value>放弃更新</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>您可以现在更新CKAN</value>
