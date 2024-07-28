@@ -107,6 +107,17 @@ namespace CKAN
             }
         }
 
+        public TimeSpan LastUpdate(IEnumerable<Repository> repos)
+            => repos.Distinct().Where(r => repoDataStale(r))
+                               .Select(r => RepoUpdateTimestamp(r))
+                               .OfType<DateTime>()
+                               .Select(dt => DateTime.Now - dt)
+                               .DefaultIfEmpty(TimeSpan.Zero)
+                               .Min();
+
+        public static readonly TimeSpan TimeTillStale     = TimeSpan.FromDays(3);
+        public static readonly TimeSpan TimeTillVeryStale = TimeSpan.FromDays(14);
+
         /// <summary>
         /// Values to describe the result of an attempted repository update.
         /// Failure is actually handled by throwing exceptions, so I'm not sure we need that.
@@ -150,6 +161,11 @@ namespace CKAN
                                 .ToArray();
             if (toUpdate.Length < 1)
             {
+                // Update timestamp for already up to date repos
+                foreach (var f in repos.Select(GetRepoDataPath))
+                {
+                    File.SetLastWriteTimeUtc(f, DateTime.UtcNow);
+                }
                 user.RaiseProgress(Properties.Resources.NetRepoAlreadyUpToDate, 100);
                 user.RaiseMessage(Properties.Resources.NetRepoNoChanges);
                 return UpdateResult.NoChanges;
@@ -306,6 +322,13 @@ namespace CKAN
                      .Select(repo => GetRepoData(repo))
                      .Where(data => data != null)
                ?? Enumerable.Empty<RepositoryData>();
+
+        private DateTime? RepoUpdateTimestamp(Repository repo)
+            => FileTimestamp(GetRepoDataPath(repo));
+
+        private static DateTime? FileTimestamp(string path)
+            => File.Exists(path) ? (DateTime?)File.GetLastWriteTime(path)
+                                 : null;
 
         private string etagsPath => Path.Combine(reposDir, "etags.json");
         private Dictionary<Uri, string> etags = new Dictionary<Uri, string>();

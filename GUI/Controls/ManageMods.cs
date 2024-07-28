@@ -1455,6 +1455,30 @@ namespace CKAN.GUI
 
             UpdateHiddenTagsAndLabels();
 
+            var timeSinceUpdate = guiConfig.RefreshOnStartup ? TimeSpan.Zero
+                                                             : repoData.LastUpdate(registry.Repositories.Values);
+            Util.Invoke(this, () =>
+            {
+                if (timeSinceUpdate < RepositoryDataManager.TimeTillStale)
+                {
+                    RefreshToolButton.Image = EmbeddedImages.refresh;
+                    RefreshToolButton.ToolTipText = new SingleAssemblyComponentResourceManager(typeof(ManageMods))
+                                                    .GetString($"{RefreshToolButton.Name}.ToolTipText");
+                }
+                else if (timeSinceUpdate < RepositoryDataManager.TimeTillVeryStale)
+                {
+                    RefreshToolButton.Image = EmbeddedImages.refreshStale;
+                    RefreshToolButton.ToolTipText = string.Format(Properties.Resources.ManageModsRefreshStaleToolTip,
+                                                                  Math.Round(timeSinceUpdate.TotalDays));
+                }
+                else
+                {
+                    RefreshToolButton.Image = EmbeddedImages.refreshVeryStale;
+                    RefreshToolButton.ToolTipText = string.Format(Properties.Resources.ManageModsRefreshVeryStaleToolTip,
+                                                                  Math.Round(timeSinceUpdate.TotalDays));
+                }
+            });
+
             ClearStatusBar?.Invoke();
             Util.Invoke(this, () => ModGrid.Focus());
             return true;

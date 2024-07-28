@@ -453,6 +453,12 @@ Are you sure you want to skip this change?</value></data>
   <data name="ManageModsHiddenLabels" xml:space="preserve"><value>Hidden labels:</value></data>
   <data name="ManageModsHiddenTags" xml:space="preserve"><value>Hidden tags:</value></data>
   <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve"><value>Hidden labels and tags:</value></data>
+  <data name="ManageModsRefreshStaleToolTip" xml:space="preserve"><value>Your mod list was last updated {0} days ago.
+Click Refresh regularly to keep it up to date.
+Or choose "Update repositories on launch" in the settings.</value></data>
+  <data name="ManageModsRefreshVeryStaleToolTip" xml:space="preserve"><value>Your mod list was last updated {0} days ago!
+Click Refresh to update!
+Or choose "Update repositories on launch" in the settings.</value></data>
   <data name="TotalPlayTime" xml:space="preserve"><value>Total play time: {0} hours</value></data>
   <data name="ChangeTypeNone" xml:space="preserve"><value>None</value></data>
   <data name="ChangeTypeInstall" xml:space="preserve"><value>Install</value></data>
