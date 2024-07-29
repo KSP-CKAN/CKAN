@@ -327,8 +327,8 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModListAutoInstTip" xml:space="preserve"><value>Mark auto-installed</value></data>
   <data name="ModListUserSelectedTip" xml:space="preserve"><value>Mark user-selected</value></data>
   <data name="ModListApplyChangesTip" xml:space="preserve"><value>Apply changes</value></data>
-  <data name="ModListUpdatedDayAgo" xml:space="preserve"><value>Updated at least {0} day ago</value></data>
-  <data name="ModListUpdatedDaysAgo" xml:space="preserve"><value>Updated at least {0} days ago</value></data>
+  <data name="ModListUpdatedDayAgo" xml:space="preserve"><value>Updated {0} day ago</value></data>
+  <data name="ModListUpdatedDaysAgo" xml:space="preserve"><value>Updated {0} days ago</value></data>
   <data name="ModListPlayMenu" xml:space="preserve"><value>Play game</value></data>
   <data name="ModListPlayMenuTip" xml:space="preserve"><value>Launch the game</value></data>
   <data name="ModListSortMenu" xml:space="preserve"><value>Sort...</value></data>

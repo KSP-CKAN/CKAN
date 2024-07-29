@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Support icons from libraries for deb and rpm (#4104 by: HebaruSan)
 - [Multiple] Store GitHub Discussions links and display in UIs (#4111 by: HebaruSan)
 - [GUI] Chinese translation fixes (#4115, #4116, #4131 by: zhouyiqing0304; reviewed: HebaruSan)
+- [Multiple] Visually indicate to users that they should click Refresh (#4133 by: HebaruSan)
 
 ### Bugfixes
 

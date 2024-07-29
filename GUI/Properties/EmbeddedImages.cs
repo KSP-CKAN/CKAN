@@ -13,7 +13,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public class EmbeddedImages
+    public static class EmbeddedImages
     {
         public static readonly Icon AppIcon = new Icon(
                 Assembly.GetExecutingAssembly()
@@ -36,6 +36,8 @@ namespace CKAN.GUI
         public static Bitmap info                 => get("info");
         public static Bitmap ksp                  => get("ksp");
         public static Bitmap refresh              => get("refresh");
+        public static Bitmap refreshStale         => get("refreshStale");
+        public static Bitmap refreshVeryStale     => get("refreshVeryStale");
         public static Bitmap resetCollapse        => get("resetCollapse");
         public static Bitmap search               => get("search");
         public static Bitmap settings             => get("settings");

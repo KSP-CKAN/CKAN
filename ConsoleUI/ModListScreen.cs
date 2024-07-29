@@ -265,17 +265,16 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(
                 -searchWidth, -1, -2,
                 () => {
-                    int days = daysSinceUpdated(registryFilePath());
+                    var days = Math.Round(timeSinceUpdate.TotalDays);
                     return days <  1 ? ""
                         :  days == 1 ? string.Format(Properties.Resources.ModListUpdatedDayAgo,  days)
                         :              string.Format(Properties.Resources.ModListUpdatedDaysAgo, days);
                 },
                 null,
                 (ConsoleTheme th) => {
-                    int daysSince = daysSinceUpdated(registryFilePath());
-                    return daysSince < daysTillStale     ? th.RegistryUpToDate
-                        :  daysSince < daystillVeryStale ? th.RegistryStale
-                        :                                  th.RegistryVeryStale;
+                    return timeSinceUpdate < RepositoryDataManager.TimeTillStale     ? th.RegistryUpToDate
+                        :  timeSinceUpdate < RepositoryDataManager.TimeTillVeryStale ? th.RegistryStale
+                        :                                                              th.RegistryVeryStale;
                 }
             ));
 
@@ -442,16 +441,6 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private string registryFilePath()
-        {
-            return Path.Combine(manager.CurrentInstance.CkanDir(), "registry.json");
-        }
-
-        private int daysSinceUpdated(string filename)
-        {
-            return (DateTime.Now - File.GetLastWriteTime(filename)).Days;
-        }
-
         private bool PlayGame()
             => PlayGame(manager.CurrentInstance
                                .game
@@ -591,6 +580,7 @@ namespace CKAN.ConsoleUI {
 
         private List<CkanModule> GetAllMods(ConsoleTheme theme, bool force = false)
         {
+            timeSinceUpdate = repoData.LastUpdate(registry.Repositories.Values);
             ScanForMods();
             if (allMods == null || force) {
                 if (!registry?.HasAnyAvailable() ?? false)
@@ -722,12 +712,13 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private readonly GameInstanceManager   manager;
-        private RegistryManager       regMgr;
-        private Registry              registry;
+        private readonly GameInstanceManager                manager;
+        private          RegistryManager                    regMgr;
+        private          Registry                           registry;
         private readonly RepositoryDataManager              repoData;
         private          Dictionary<bool, List<CkanModule>> upgradeableGroups;
         private readonly bool                               debug;
+        private          TimeSpan                           timeSinceUpdate = TimeSpan.Zero;
 
         private readonly ConsoleField               searchBox;
         private readonly ConsoleListBox<CkanModule> moduleList;
@@ -739,8 +730,6 @@ namespace CKAN.ConsoleUI {
             Properties.Resources.ModListSearchFocusedGhostText.Length,
             Properties.Resources.ModListSearchUnfocusedGhostText.Length
         ));
-        private const int daysTillStale     = 7;
-        private const int daystillVeryStale = 30;
 
         private static readonly string unavailable   = "!";
         private static readonly string notinstalled  = " ";
