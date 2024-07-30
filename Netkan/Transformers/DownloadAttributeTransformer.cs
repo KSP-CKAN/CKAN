@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+
 using log4net;
 using Newtonsoft.Json.Linq;
+
+using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
@@ -45,8 +48,12 @@ namespace CKAN.NetKAN.Transformers
                     json["download_hash"] = new JObject();
 
                     var download_hashJson = (JObject)json["download_hash"];
-                    Log.Debug("Calculating download SHA1...");
-                    download_hashJson.SafeAdd("sha1", _fileService.GetFileHashSha1(file));
+                    // Older clients will complain if download_hash is set without sha1
+                    if (metadata.SpecVersion <= v1p34)
+                    {
+                        Log.Debug("Calculating download SHA1...");
+                        download_hashJson.SafeAdd("sha1", _fileService.GetFileHashSha1(file));
+                    }
                     Log.Debug("Calculating download SHA256...");
                     download_hashJson.SafeAdd("sha256", _fileService.GetFileHashSha256(file));
 
@@ -63,5 +70,6 @@ namespace CKAN.NetKAN.Transformers
                 yield return metadata;
             }
         }
+        private static readonly ModuleVersion v1p34 = new ModuleVersion("v1.34");
     }
 }
