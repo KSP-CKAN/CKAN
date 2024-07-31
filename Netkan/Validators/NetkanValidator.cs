@@ -17,7 +17,6 @@ namespace CKAN.NetKAN.Validators
                 new KrefValidator(),
                 new AlphaNumericIdentifierValidator(),
                 new RelationshipsValidator(),
-                new LicensesValidator(),
                 new KrefDownloadMutexValidator(),
                 new DownloadVersionValidator(),
                 new OverrideValidator(),

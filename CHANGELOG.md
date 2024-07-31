@@ -63,6 +63,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094, #4095, #4117 by: techman83, HebaruSan; reviewed: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#4105 by: vinix38, frankieorabona, ambition, Francesco Ricina, S.O.2; reviewed: HebaruSan)
 - [Netkan] Allow string "Harmony" in DLL parent folder names (#4123 by: HebaruSan)
+- [Netkan] Allow licenses to be absent from netkans (#4137 by: HebaruSan)
 
 ## v1.34.4 (Niven)
 
