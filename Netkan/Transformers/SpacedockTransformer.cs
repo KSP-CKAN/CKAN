@@ -106,7 +106,7 @@ namespace CKAN.NetKAN.Transformers
             // "GPLv3" - Becomes "GPL-3.0"
             // "LGPL" - Specific version is indeterminate
 
-            var sdLicense = sdMod.license.Trim();
+            var sdLicense = sdMod.license.Trim().Replace(' ', '-');
 
             switch (sdLicense)
             {
