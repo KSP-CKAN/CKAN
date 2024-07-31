@@ -49,6 +49,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Use DriveInfo constructor to get drive from path (#4125 by: HebaruSan)
 - [Core] Detect changes to `replaced_by` (#4127 by: HebaruSan)
 - [Multiple] Update changeset on Replace checkbox change, other `replaced_by` fixes (#4128 by: HebaruSan)
+- [Multiple] Stop checking multiple hashes (#4135 by: HebaruSan)
 
 ### Internal
 

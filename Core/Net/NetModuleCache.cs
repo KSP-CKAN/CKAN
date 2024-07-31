@@ -155,10 +155,8 @@ namespace CKAN
         /// </returns>
         public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false, CancellationToken cancelToken = default)
         {
-            // ZipValid takes a lot longer than the hash steps, so scale them 60:20:20
-            const int zipValidPercent   = 60;
-            const int hashSha1Percent   = 20;
-            const int hashSha256Percent = 20;
+            // ZipValid takes a lot longer than the hash check, so scale them 70:30 if hashes are present
+            int zipValidPercent = module.download_hash == null ? 100 : 70;
 
             progress?.Report(0);
             // Check file exists
@@ -192,24 +190,31 @@ namespace CKAN
             // Some older metadata doesn't have hashes
             if (module.download_hash != null)
             {
-                // Check SHA1 match
-                string sha1 = GetFileHashSha1(path, new Progress<long>(percent =>
-                    progress?.Report(zipValidPercent + (percent * hashSha1Percent / 100))), cancelToken);
-                if (sha1 != module.download_hash.sha1)
+                int hashPercent = 100 - zipValidPercent;
+                // Only check one hash, sha256 if it's set, sha1 otherwise
+                if (!string.IsNullOrEmpty(module.download_hash.sha256))
                 {
-                    throw new InvalidModuleFileKraken(module, path, string.Format(
-                        Properties.Resources.NetModuleCacheMismatchSHA1,
-                        module, path, sha1, module.download_hash.sha1));
+                    // Check SHA256 match
+                    string sha256 = GetFileHashSha256(path, new Progress<long>(percent =>
+                        progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
+                    if (sha256 != module.download_hash.sha256)
+                    {
+                        throw new InvalidModuleFileKraken(module, path, string.Format(
+                            Properties.Resources.NetModuleCacheMismatchSHA256,
+                            module, path, sha256, module.download_hash.sha256));
+                    }
                 }
-
-                // Check SHA256 match
-                string sha256 = GetFileHashSha256(path, new Progress<long>(percent =>
-                    progress?.Report(zipValidPercent + hashSha1Percent + (percent * hashSha256Percent / 100))), cancelToken);
-                if (sha256 != module.download_hash.sha256)
+                else if (!string.IsNullOrEmpty(module.download_hash.sha1))
                 {
-                    throw new InvalidModuleFileKraken(module, path, string.Format(
-                        Properties.Resources.NetModuleCacheMismatchSHA256,
-                        module, path, sha256, module.download_hash.sha256));
+                    // Check SHA1 match
+                    string sha1 = GetFileHashSha1(path, new Progress<long>(percent =>
+                        progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
+                    if (sha1 != module.download_hash.sha1)
+                    {
+                        throw new InvalidModuleFileKraken(module, path, string.Format(
+                            Properties.Resources.NetModuleCacheMismatchSHA1,
+                            module, path, sha1, module.download_hash.sha1));
+                    }
                 }
             }
 
