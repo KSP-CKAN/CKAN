@@ -65,6 +65,17 @@ namespace CKAN.Games.KerbalSpaceProgram
             "PDLauncher",
         };
 
+        public string[] LeaveEmptyInClones => new string[]
+        {
+            "saves",
+            "Screenshots",
+            "thumbs",
+            "Missions",
+            "Logs",
+            "CKAN/history",
+            "CKAN/downloads",
+        };
+
         public string[] ReservedPaths => new string[]
         {
             "GameData", "Ships", "Missions"

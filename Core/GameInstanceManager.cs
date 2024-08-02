@@ -239,7 +239,10 @@ namespace CKAN
         /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
         /// <exception cref="PathErrorKraken">Thrown by CopyDirectory() if the target folder already exists and is not empty.</exception>
         /// <exception cref="IOException">Thrown by CopyDirectory() if something goes wrong during the process.</exception>
-        public void CloneInstance(GameInstance existingInstance, string newName, string newPath)
+        public void CloneInstance(GameInstance existingInstance,
+                                  string       newName,
+                                  string       newPath,
+                                  bool         shareStockFolders = false)
         {
             if (HasInstance(newName))
             {
@@ -252,11 +255,13 @@ namespace CKAN
             }
 
             log.Debug("Copying directory.");
-            Utilities.CopyDirectory(existingInstance.GameDir(), newPath, true);
+            Utilities.CopyDirectory(existingInstance.GameDir(), newPath,
+                                    shareStockFolders ? existingInstance.game.StockFolders
+                                                      : Array.Empty<string>(),
+                                    existingInstance.game.LeaveEmptyInClones);
 
             // Add the new instance to the config
-            GameInstance new_instance = new GameInstance(existingInstance.game, newPath, newName, User);
-            AddInstance(new_instance);
+            AddInstance(new GameInstance(existingInstance.game, newPath, newName, User));
         }
 
         /// <summary>

@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Store GitHub Discussions links and display in UIs (#4111 by: HebaruSan)
 - [GUI] Chinese translation fixes (#4115, #4116, #4131 by: zhouyiqing0304; reviewed: HebaruSan)
 - [Multiple] Visually indicate to users that they should click Refresh (#4133 by: HebaruSan)
+- [Multiple] Option to clone smaller instances with junction points (Windows) or symbolic links (Unix) (#4129 by: HebaruSan)
 
 ### Bugfixes
 

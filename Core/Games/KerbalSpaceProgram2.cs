@@ -59,6 +59,12 @@ namespace CKAN.Games.KerbalSpaceProgram2
             "PDLauncher",
         };
 
+        public string[] LeaveEmptyInClones => new string[]
+        {
+            "CKAN/history",
+            "CKAN/downloads",
+        };
+
         public string[] ReservedPaths => Array.Empty<string>();
 
         public string[] CreateableDirs => new string[]
