@@ -963,7 +963,9 @@ namespace CKAN.GUI
 
         public void RemoveChangesetItem(ModChange change)
         {
-            if (change.IsRemovable
+            if (currentChangeSet != null
+                && currentChangeSet.Contains(change)
+                && change.IsRemovable
                 && mainModList.full_list_of_mod_rows.TryGetValue(change.Mod.identifier,
                                                                  out DataGridViewRow row)
                 && row.Tag is GUIMod guiMod)

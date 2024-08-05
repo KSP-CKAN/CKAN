@@ -11,7 +11,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Alternate game command lines and Steam refactor (#4010, #4013, #4028 by: HebaruSan)
 - [Multiple] Recommendations usability improvements (#4025 by: HebaruSan)
 - [Multiple] Prompt for client upgrade when newer spec is found (#4026, #4057 by: HebaruSan)
-- [GUI] Ability to clear auto-installed flag from changeset tab (#4033 by: HebaruSan)
+- [GUI] Ability to clear auto-installed flag from changeset tab (#4033, #4143 by: HebaruSan)
 - [Multiple] New Crowdin updates (#4019 by: Olympic1, vinix38; reviewed: HebaruSan)
 - [Core] Support Windows KSP1 instances on Linux (#4044 by: HebaruSan)
 - [GUI] I18n updates from Crowdin (#4050 by: HebaruSan)
