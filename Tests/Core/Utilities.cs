@@ -61,6 +61,8 @@ namespace Tests.Core
             var fi3 = new FileInfo(Path.Combine(tempDir, "KSP-0.25", "GameData", "README.md"));
             Assert.IsFalse(fi3.Attributes.HasFlag(FileAttributes.ReparsePoint),
                            "KSP-0.25/GameData/README.md should not be a symlink");
+
+            DirectoryLink.Remove(fi2.FullName);
         }
 
         [Test]

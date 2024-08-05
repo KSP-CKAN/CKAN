@@ -90,12 +90,42 @@ namespace CKAN
             return !string.IsNullOrEmpty(target);
         }
 
+        public static void Remove(string link)
+        {
+            if (Platform.IsWindows)
+            {
+                if (Directory.Exists(link))
+                {
+                    var h = CreateFile(link, GenericWrite, FileShare.Write, IntPtr.Zero,
+                                       FileMode.Open, BackupSemantics | OpenReparsePoint, IntPtr.Zero);
+                    if (!h.IsInvalid)
+                    {
+                        var junctionInfo = ReparseDataBuffer.Empty();
+                        if (!DeviceIoControl(h, FSCTL_DELETE_REPARSE_POINT,
+                                             ref junctionInfo, 8,
+                                             null, 0,
+                                             out _, IntPtr.Zero))
+                        {
+                            throw new Kraken($"Failed to remove junction at {link}: {Marshal.GetLastWin32Error()}");
+                        }
+                        h.Close();
+                        Directory.Delete(link);
+                    }
+                }
+            }
+            else
+            {
+                File.Delete(link);
+            }
+        }
+
         private const uint GenericWrite               = 0x40000000u;
         private const uint BackupSemantics            = 0x02000000u;
         private const uint OpenReparsePoint           = 0x00200000u;
-        private const uint FSCTL_SET_REPARSE_POINT    = 0x000900A4u;
         private const uint IO_REPARSE_TAG_MOUNT_POINT = 0xA0000003u;
+        private const uint FSCTL_SET_REPARSE_POINT    = 0x000900A4u;
         private const uint FSCTL_GET_REPARSE_POINT    = 0x000900A8u;
+        private const uint FSCTL_DELETE_REPARSE_POINT = 0x000900ACu;
 
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern bool DeviceIoControl(SafeFileHandle        hDevice,
@@ -129,6 +159,20 @@ namespace CKAN
             public           ushort PrintNameLength;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8184)]
             public           string PathBuffer;
+
+            public static ReparseDataBuffer Empty()
+            {
+                return new ReparseDataBuffer
+                {
+                    ReparseTag           = IO_REPARSE_TAG_MOUNT_POINT,
+                    ReparseDataLength    = 0,
+                    SubstituteNameOffset = 0,
+                    SubstituteNameLength = 0,
+                    PrintNameOffset      = 0,
+                    PrintNameLength      = 0,
+                    PathBuffer           = "",
+                };
+            }
 
             public static ReparseDataBuffer FromPath(string target, out int byteCount)
             {
