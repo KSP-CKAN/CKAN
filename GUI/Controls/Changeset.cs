@@ -79,6 +79,8 @@ namespace CKAN.GUI
                 && row.Change.IsRemovable
                 && row.ConfirmUncheck())
             {
+                (ChangesGrid.DataSource as BindingList<ChangesetRow>)?.Remove(row);
+                changeset.Remove(row.Change);
                 OnRemoveItem?.Invoke(row.Change);
             }
         }
