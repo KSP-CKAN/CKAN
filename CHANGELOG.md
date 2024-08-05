@@ -51,6 +51,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Detect changes to `replaced_by` (#4127 by: HebaruSan)
 - [Multiple] Update changeset on Replace checkbox change, other `replaced_by` fixes (#4128 by: HebaruSan)
 - [Multiple] Stop checking multiple hashes (#4135 by: HebaruSan)
+- [Core] Fix max version column for wildcard compat (#4142 by: HebaruSan)
 
 ### Internal
 
