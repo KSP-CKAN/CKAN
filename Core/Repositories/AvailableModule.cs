@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -195,26 +196,25 @@ namespace CKAN
         /// </summary>
         public GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions)
         {
-            // Cheat slightly for performance:
-            // Find the CkanModule with the highest ksp_version_max,
-            // then get the real latest compatible of just that one mod
-            GameVersion best    = null;
-            CkanModule  bestMod = null;
-            foreach (var mod in module_version.Values)
+            var ranges = module_version.Values
+                                       .Select(m => new GameVersionRange(m.EarliestCompatibleGameVersion(),
+                                                                         m.LatestCompatibleGameVersion()))
+                                       .Memoize();
+            if (ranges.Any(r => r.Upper.Value.IsAny))
             {
-                var v = mod.LatestCompatibleGameVersion();
-                if (v.IsAny)
-                {
-                    // Can't get later than Any, so stop
-                    return mod.LatestCompatibleRealGameVersion(realVersions);
-                }
-                else if (best == null || best < v)
-                {
-                    best    = v;
-                    bestMod = mod;
-                }
+                // Can't get later than Any, so no need for more complex logic
+                return realVersions?.LastOrDefault()
+                                   ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
+                                                           .Max();
             }
-            return bestMod.LatestCompatibleRealGameVersion(realVersions);
+            // Find the range with the highest upper bound
+            var bestRange = ranges.Distinct()
+                                  .Aggregate((best, r) => r.Upper == GameVersionBound.Highest(best.Upper, r.Upper)
+                                                              ? r
+                                                              : best);
+            return realVersions?.LastOrDefault(v => bestRange.Contains(v))
+                               ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
+                                                       .Max();
         }
 
         /// <summary>
