@@ -141,8 +141,11 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>Basculer à la nouvelle instance</value>
   </data>
+  <data name="checkBoxShareStock.Text" xml:space="preserve">
+    <value>Partager les fichiers de jeu communs</value>
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
-    <value>Créer</value>
+    <value>Cloner</value>
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>Annuler</value>

@@ -161,6 +161,10 @@
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
     <value>Instance créée avec succès.</value>
   </data>
+  <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve">
+    <value>Créer des points de jonction (Windows) ou des liens symboliques (Unix) vers les dossiers de jeu communs au lieu de les copier.
+Si vous choisissez cette option, NE PAS déplacer ou supprimer l'ancienne instance !!</value>
+  </data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
     <value>&lt;AUCUNE&gt;</value>
   </data>
@@ -504,6 +508,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="ModInfoBugTrackerLabel" xml:space="preserve">
     <value>Traqueur de bogues :</value>
+  </data>
+  <data name="ModInfoDiscussionsLabel" xml:space="preserve">
+    <value>Discussions :</value>
   </data>
   <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve">
     <value>Intégration continue :</value>
@@ -1004,6 +1011,16 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   </data>
   <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve">
     <value>Étiquettes et labels cachés :</value>
+  </data>
+  <data name="ManageModsRefreshStaleToolTip" xml:space="preserve">
+    <value>Votre liste de mods a été synchronisée il y a {0} jours.
+Cliquez "Rafraîchir" régulièrement pour la garder à jour.
+Ou cochez "mettre à jour au lancement" dans les paramètres.</value>
+  </data>
+  <data name="ManageModsRefreshVeryStaleToolTip" xml:space="preserve">
+    <value>Votre liste de mods a été synchronisée il y a {0} jours !
+Cliquez "Rafraîchir" pour mettre à jour !
+Ou cochez "mettre à jour au lancement" dans les paramètres.</value>
   </data>
   <data name="TotalPlayTime" xml:space="preserve">
     <value>Temps de Jeu Total : {0} heures</value>

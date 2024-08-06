@@ -705,6 +705,9 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="ShowBugTracker" xml:space="preserve">
     <value>  Traqueur de bogues :	{0}</value>
   </data>
+  <data name="ShowDiscussions" xml:space="preserve">
+    <value>  Discussions :	{0}</value>
+  </data>
   <data name="ShowCurse" xml:space="preserve">
     <value>  Curse :	{0}</value>
   </data>
