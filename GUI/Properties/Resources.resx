@@ -431,6 +431,7 @@ Are you sure you want to skip this change?</value></data>
   <data name="TriStateToggleBothTooltip" xml:space="preserve"><value>Yes or No</value></data>
   <data name="TriStateToggleNoTooltip" xml:space="preserve"><value>No</value></data>
   <data name="ModSearchDescriptionPrefix" xml:space="preserve"><value>desc:</value></data>
+  <data name="ModSearchLicensePrefix" xml:space="preserve"><value>lic:</value></data>
   <data name="ModSearchLanguagePrefix" xml:space="preserve"><value>lang:</value></data>
   <data name="ModSearchDependsPrefix" xml:space="preserve"><value>dep:</value></data>
   <data name="ModSearchRecommendsPrefix" xml:space="preserve"><value>rec:</value></data>

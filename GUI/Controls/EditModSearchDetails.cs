@@ -56,6 +56,7 @@ namespace CKAN.GUI
                 FilterByNameTextBox.Text,
                 FilterByAuthorTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByDescriptionTextBox.Text,
+                FilterByLicenseTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByLanguageTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByDependsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByRecommendsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
@@ -81,6 +82,8 @@ namespace CKAN.GUI
             FilterByAuthorTextBox.Text      = search?.Authors.Aggregate("", CombinePieces)
                                               ?? "";
             FilterByDescriptionTextBox.Text = search?.Description
+                                              ?? "";
+            FilterByLicenseTextBox.Text     = search?.Licenses.Aggregate("", CombinePieces)
                                               ?? "";
             FilterByLanguageTextBox.Text    = search?.Localizations.Aggregate("", CombinePieces)
                                               ?? "";

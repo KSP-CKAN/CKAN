@@ -36,6 +36,8 @@ namespace CKAN.GUI
             this.FilterByAuthorTextBox = new CKAN.GUI.HintTextBox();
             this.FilterByDescriptionLabel = new System.Windows.Forms.Label();
             this.FilterByDescriptionTextBox = new CKAN.GUI.HintTextBox();
+            this.FilterByLicenseLabel = new System.Windows.Forms.Label();
+            this.FilterByLicenseTextBox = new CKAN.GUI.HintTextBox();
             this.FilterByLanguageLabel = new System.Windows.Forms.Label();
             this.FilterByLanguageTextBox = new CKAN.GUI.HintTextBox();
             this.FilterByDependsLabel = new System.Windows.Forms.Label();
@@ -138,26 +140,50 @@ namespace CKAN.GUI
             this.FilterByDescriptionTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByDescriptionTextBox, "FilterByDescriptionTextBox");
             //
+            // FilterByLicenseLabel
+            //
+            this.FilterByLicenseLabel.AutoSize = true;
+            this.FilterByLicenseLabel.BackColor = System.Drawing.Color.Transparent;
+            this.FilterByLicenseLabel.Location = new System.Drawing.Point(6, 87);
+            this.FilterByLicenseLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.FilterByLicenseLabel.Name = "FilterByLicenseLabel";
+            this.FilterByLicenseLabel.Size = new System.Drawing.Size(149, 20);
+            this.FilterByLicenseLabel.TabIndex = 6;
+            resources.ApplyResources(this.FilterByLicenseLabel, "FilterByLicenseLabel");
+            //
+            // FilterByLicenseTextBox
+            //
+            this.FilterByLicenseTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
+            this.FilterByLicenseTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FilterByLicenseTextBox.Location = new System.Drawing.Point(130, 85);
+            this.FilterByLicenseTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.FilterByLicenseTextBox.Name = "FilterByLicenseTextBox";
+            this.FilterByLicenseTextBox.Size = new System.Drawing.Size(160, 26);
+            this.FilterByLicenseTextBox.TabIndex = 7;
+            this.FilterByLicenseTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
+            this.FilterByLicenseTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
+            resources.ApplyResources(this.FilterByLicenseTextBox, "FilterByLicenseTextBox");
+            //
             // FilterByLanguageLabel
             //
             this.FilterByLanguageLabel.AutoSize = true;
             this.FilterByLanguageLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByLanguageLabel.Location = new System.Drawing.Point(6, 87);
+            this.FilterByLanguageLabel.Location = new System.Drawing.Point(6, 113);
             this.FilterByLanguageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByLanguageLabel.Name = "FilterByLanguageLabel";
             this.FilterByLanguageLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByLanguageLabel.TabIndex = 6;
+            this.FilterByLanguageLabel.TabIndex = 8;
             resources.ApplyResources(this.FilterByLanguageLabel, "FilterByLanguageLabel");
             //
             // FilterByLanguageTextBox
             //
             this.FilterByLanguageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByLanguageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByLanguageTextBox.Location = new System.Drawing.Point(130, 85);
+            this.FilterByLanguageTextBox.Location = new System.Drawing.Point(130, 111);
             this.FilterByLanguageTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByLanguageTextBox.Name = "FilterByLanguageTextBox";
             this.FilterByLanguageTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterByLanguageTextBox.TabIndex = 7;
+            this.FilterByLanguageTextBox.TabIndex = 9;
             this.FilterByLanguageTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByLanguageTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByLanguageTextBox, "FilterByLanguageTextBox");
@@ -166,22 +192,22 @@ namespace CKAN.GUI
             //
             this.FilterByDependsLabel.AutoSize = true;
             this.FilterByDependsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByDependsLabel.Location = new System.Drawing.Point(6, 113);
+            this.FilterByDependsLabel.Location = new System.Drawing.Point(6, 139);
             this.FilterByDependsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByDependsLabel.Name = "FilterByDependsLabel";
             this.FilterByDependsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByDependsLabel.TabIndex = 8;
+            this.FilterByDependsLabel.TabIndex = 10;
             resources.ApplyResources(this.FilterByDependsLabel, "FilterByDependsLabel");
             //
             // FilterByDependsTextBox
             //
             this.FilterByDependsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByDependsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByDependsTextBox.Location = new System.Drawing.Point(130, 111);
+            this.FilterByDependsTextBox.Location = new System.Drawing.Point(130, 137);
             this.FilterByDependsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByDependsTextBox.Name = "FilterByDependsTextBox";
             this.FilterByDependsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterByDependsTextBox.TabIndex = 9;
+            this.FilterByDependsTextBox.TabIndex = 11;
             this.FilterByDependsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByDependsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByDependsTextBox, "FilterByDependsTextBox");
@@ -190,22 +216,22 @@ namespace CKAN.GUI
             //
             this.FilterByRecommendsLabel.AutoSize = true;
             this.FilterByRecommendsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByRecommendsLabel.Location = new System.Drawing.Point(6, 139);
+            this.FilterByRecommendsLabel.Location = new System.Drawing.Point(6, 165);
             this.FilterByRecommendsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByRecommendsLabel.Name = "FilterByRecommendsLabel";
             this.FilterByRecommendsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByRecommendsLabel.TabIndex = 10;
+            this.FilterByRecommendsLabel.TabIndex = 12;
             resources.ApplyResources(this.FilterByRecommendsLabel, "FilterByRecommendsLabel");
             //
             // FilterByRecommendsTextBox
             //
             this.FilterByRecommendsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByRecommendsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByRecommendsTextBox.Location = new System.Drawing.Point(130, 137);
+            this.FilterByRecommendsTextBox.Location = new System.Drawing.Point(130, 163);
             this.FilterByRecommendsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByRecommendsTextBox.Name = "FilterByRecommendsTextBox";
             this.FilterByRecommendsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterByRecommendsTextBox.TabIndex = 11;
+            this.FilterByRecommendsTextBox.TabIndex = 13;
             this.FilterByRecommendsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByRecommendsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByRecommendsTextBox, "FilterByRecommendsTextBox");
@@ -214,22 +240,22 @@ namespace CKAN.GUI
             //
             this.FilterBySuggestsLabel.AutoSize = true;
             this.FilterBySuggestsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterBySuggestsLabel.Location = new System.Drawing.Point(6, 165);
+            this.FilterBySuggestsLabel.Location = new System.Drawing.Point(6, 191);
             this.FilterBySuggestsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterBySuggestsLabel.Name = "FilterBySuggestsLabel";
             this.FilterBySuggestsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterBySuggestsLabel.TabIndex = 12;
+            this.FilterBySuggestsLabel.TabIndex = 14;
             resources.ApplyResources(this.FilterBySuggestsLabel, "FilterBySuggestsLabel");
             //
             // FilterBySuggestsTextBox
             //
             this.FilterBySuggestsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterBySuggestsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterBySuggestsTextBox.Location = new System.Drawing.Point(130, 163);
+            this.FilterBySuggestsTextBox.Location = new System.Drawing.Point(130, 189);
             this.FilterBySuggestsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterBySuggestsTextBox.Name = "FilterBySuggestsTextBox";
             this.FilterBySuggestsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterBySuggestsTextBox.TabIndex = 13;
+            this.FilterBySuggestsTextBox.TabIndex = 15;
             this.FilterBySuggestsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterBySuggestsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterBySuggestsTextBox, "FilterBySuggestsTextBox");
@@ -238,22 +264,22 @@ namespace CKAN.GUI
             //
             this.FilterByConflictsLabel.AutoSize = true;
             this.FilterByConflictsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByConflictsLabel.Location = new System.Drawing.Point(6, 191);
+            this.FilterByConflictsLabel.Location = new System.Drawing.Point(6, 217);
             this.FilterByConflictsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByConflictsLabel.Name = "FilterByConflictsLabel";
             this.FilterByConflictsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByConflictsLabel.TabIndex = 14;
+            this.FilterByConflictsLabel.TabIndex = 16;
             resources.ApplyResources(this.FilterByConflictsLabel, "FilterByConflictsLabel");
             //
             // FilterByConflictsTextBox
             //
             this.FilterByConflictsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByConflictsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByConflictsTextBox.Location = new System.Drawing.Point(130, 189);
+            this.FilterByConflictsTextBox.Location = new System.Drawing.Point(130, 215);
             this.FilterByConflictsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByConflictsTextBox.Name = "FilterByConflictsTextBox";
             this.FilterByConflictsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterByConflictsTextBox.TabIndex = 15;
+            this.FilterByConflictsTextBox.TabIndex = 17;
             this.FilterByConflictsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByConflictsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByConflictsTextBox, "FilterByConflictsTextBox");
@@ -262,22 +288,22 @@ namespace CKAN.GUI
             //
             this.FilterBySupportsLabel.AutoSize = true;
             this.FilterBySupportsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterBySupportsLabel.Location = new System.Drawing.Point(6, 217);
+            this.FilterBySupportsLabel.Location = new System.Drawing.Point(6, 243);
             this.FilterBySupportsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterBySupportsLabel.Name = "FilterBySupportsLabel";
             this.FilterBySupportsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterBySupportsLabel.TabIndex = 14;
+            this.FilterBySupportsLabel.TabIndex = 18;
             resources.ApplyResources(this.FilterBySupportsLabel, "FilterBySupportsLabel");
             //
             // FilterBySupportsTextBox
             //
             this.FilterBySupportsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterBySupportsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterBySupportsTextBox.Location = new System.Drawing.Point(130, 215);
+            this.FilterBySupportsTextBox.Location = new System.Drawing.Point(130, 241);
             this.FilterBySupportsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterBySupportsTextBox.Name = "FilterBySupportsTextBox";
             this.FilterBySupportsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterBySupportsTextBox.TabIndex = 15;
+            this.FilterBySupportsTextBox.TabIndex = 19;
             this.FilterBySupportsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterBySupportsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterBySupportsTextBox, "FilterBySupportsTextBox");
@@ -286,22 +312,22 @@ namespace CKAN.GUI
             //
             this.FilterByTagsLabel.AutoSize = true;
             this.FilterByTagsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByTagsLabel.Location = new System.Drawing.Point(6, 243);
+            this.FilterByTagsLabel.Location = new System.Drawing.Point(6, 269);
             this.FilterByTagsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByTagsLabel.Name = "FilterByTagsLabel";
             this.FilterByTagsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByTagsLabel.TabIndex = 14;
+            this.FilterByTagsLabel.TabIndex = 20;
             resources.ApplyResources(this.FilterByTagsLabel, "FilterByTagsLabel");
             //
             // FilterByTagsTextBox
             //
             this.FilterByTagsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByTagsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByTagsTextBox.Location = new System.Drawing.Point(130, 241);
+            this.FilterByTagsTextBox.Location = new System.Drawing.Point(130, 267);
             this.FilterByTagsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByTagsTextBox.Name = "FilterByTagsTextBox";
             this.FilterByTagsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterByTagsTextBox.TabIndex = 15;
+            this.FilterByTagsTextBox.TabIndex = 21;
             this.FilterByTagsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByTagsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByTagsTextBox, "FilterByTagsTextBox");
@@ -310,22 +336,22 @@ namespace CKAN.GUI
             //
             this.FilterByLabelsLabel.AutoSize = true;
             this.FilterByLabelsLabel.BackColor = System.Drawing.Color.Transparent;
-            this.FilterByLabelsLabel.Location = new System.Drawing.Point(6, 269);
+            this.FilterByLabelsLabel.Location = new System.Drawing.Point(6, 295);
             this.FilterByLabelsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.FilterByLabelsLabel.Name = "FilterByLabelsLabel";
             this.FilterByLabelsLabel.Size = new System.Drawing.Size(149, 20);
-            this.FilterByLabelsLabel.TabIndex = 14;
+            this.FilterByLabelsLabel.TabIndex = 22;
             resources.ApplyResources(this.FilterByLabelsLabel, "FilterByLabelsLabel");
             //
             // FilterByLabelsTextBox
             //
             this.FilterByLabelsTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right));
             this.FilterByLabelsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.FilterByLabelsTextBox.Location = new System.Drawing.Point(130, 267);
+            this.FilterByLabelsTextBox.Location = new System.Drawing.Point(130, 293);
             this.FilterByLabelsTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FilterByLabelsTextBox.Name = "FilterByLabelsTextBox";
             this.FilterByLabelsTextBox.Size = new System.Drawing.Size(160, 26);
-            this.FilterByLabelsTextBox.TabIndex = 15;
+            this.FilterByLabelsTextBox.TabIndex = 23;
             this.FilterByLabelsTextBox.TextChanged += new System.EventHandler(this.FilterTextBox_TextChanged);
             this.FilterByLabelsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FilterTextBox_KeyDown);
             resources.ApplyResources(this.FilterByLabelsTextBox, "FilterByLabelsTextBox");
@@ -334,97 +360,98 @@ namespace CKAN.GUI
             //
             this.CompatibleLabel.AutoSize = true;
             this.CompatibleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CompatibleLabel.Location = new System.Drawing.Point(6, 295);
+            this.CompatibleLabel.Location = new System.Drawing.Point(6, 321);
             this.CompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CompatibleLabel.Name = "CompatibleLabel";
             this.CompatibleLabel.Size = new System.Drawing.Size(149, 20);
-            this.CompatibleLabel.TabIndex = 14;
+            this.CompatibleLabel.TabIndex = 24;
             resources.ApplyResources(this.CompatibleLabel, "CompatibleLabel");
             //
             // CompatibleToggle
             //
-            this.CompatibleToggle.Location = new System.Drawing.Point(130, 293);
+            this.CompatibleToggle.Location = new System.Drawing.Point(130, 319);
             this.CompatibleToggle.Changed += this.TriStateChanged;
             //
             // InstalledLabel
             //
             this.InstalledLabel.AutoSize = true;
             this.InstalledLabel.BackColor = System.Drawing.Color.Transparent;
-            this.InstalledLabel.Location = new System.Drawing.Point(6, 321);
+            this.InstalledLabel.Location = new System.Drawing.Point(6, 347);
             this.InstalledLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstalledLabel.Name = "InstalledLabel";
             this.InstalledLabel.Size = new System.Drawing.Size(149, 20);
-            this.InstalledLabel.TabIndex = 14;
+            this.InstalledLabel.TabIndex = 25;
             resources.ApplyResources(this.InstalledLabel, "InstalledLabel");
             //
             // InstalledToggle
             //
-            this.InstalledToggle.Location = new System.Drawing.Point(130, 319);
+            this.InstalledToggle.Location = new System.Drawing.Point(130, 345);
             this.InstalledToggle.Changed += this.TriStateChanged;
             //
             // CachedLabel
             //
             this.CachedLabel.AutoSize = true;
             this.CachedLabel.BackColor = System.Drawing.Color.Transparent;
-            this.CachedLabel.Location = new System.Drawing.Point(6, 347);
+            this.CachedLabel.Location = new System.Drawing.Point(6, 373);
             this.CachedLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.CachedLabel.Name = "CachedLabel";
             this.CachedLabel.Size = new System.Drawing.Size(149, 20);
-            this.CachedLabel.TabIndex = 14;
+            this.CachedLabel.TabIndex = 26;
             resources.ApplyResources(this.CachedLabel, "CachedLabel");
             //
             // CachedToggle
             //
-            this.CachedToggle.Location = new System.Drawing.Point(130, 345);
+            this.CachedToggle.Location = new System.Drawing.Point(130, 371);
             this.CachedToggle.Changed += this.TriStateChanged;
             //
             // NewlyCompatibleLabel
             //
             this.NewlyCompatibleLabel.AutoSize = true;
             this.NewlyCompatibleLabel.BackColor = System.Drawing.Color.Transparent;
-            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 373);
+            this.NewlyCompatibleLabel.Location = new System.Drawing.Point(6, 399);
             this.NewlyCompatibleLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NewlyCompatibleLabel.Name = "NewlyCompatibleLabel";
             this.NewlyCompatibleLabel.Size = new System.Drawing.Size(149, 20);
-            this.NewlyCompatibleLabel.TabIndex = 14;
+            this.NewlyCompatibleLabel.TabIndex = 27;
             resources.ApplyResources(this.NewlyCompatibleLabel, "NewlyCompatibleLabel");
             //
             // NewlyCompatibleToggle
             //
-            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(130, 371);
+            this.NewlyCompatibleToggle.Location = new System.Drawing.Point(130, 397);
             this.NewlyCompatibleToggle.Changed += this.TriStateChanged;
             //
             // UpgradeableLabel
             //
             this.UpgradeableLabel.AutoSize = true;
             this.UpgradeableLabel.BackColor = System.Drawing.Color.Transparent;
-            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 399);
+            this.UpgradeableLabel.Location = new System.Drawing.Point(6, 425);
             this.UpgradeableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.UpgradeableLabel.Name = "UpgradeableLabel";
             this.UpgradeableLabel.Size = new System.Drawing.Size(149, 20);
-            this.UpgradeableLabel.TabIndex = 14;
+            this.UpgradeableLabel.TabIndex = 28;
             resources.ApplyResources(this.UpgradeableLabel, "UpgradeableLabel");
             //
             // UpgradeableToggle
             //
-            this.UpgradeableToggle.Location = new System.Drawing.Point(130, 397);
+            this.UpgradeableToggle.Location = new System.Drawing.Point(130, 423);
             this.UpgradeableToggle.Changed += this.TriStateChanged;
             //
             // ReplaceableLabel
             //
             this.ReplaceableLabel.AutoSize = true;
             this.ReplaceableLabel.BackColor = System.Drawing.Color.Transparent;
-            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 425);
+            this.ReplaceableLabel.Location = new System.Drawing.Point(6, 451);
             this.ReplaceableLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ReplaceableLabel.Name = "ReplaceableLabel";
             this.ReplaceableLabel.Size = new System.Drawing.Size(149, 20);
-            this.ReplaceableLabel.TabIndex = 14;
+            this.ReplaceableLabel.TabIndex = 29;
             resources.ApplyResources(this.ReplaceableLabel, "ReplaceableLabel");
             //
             // ReplaceableToggle
             //
-            this.ReplaceableToggle.Location = new System.Drawing.Point(130, 423);
+            this.ReplaceableToggle.Location = new System.Drawing.Point(130, 449);
             this.ReplaceableToggle.Changed += this.TriStateChanged;
+
             //
             // EditModSearchDetails
             //
@@ -437,6 +464,8 @@ namespace CKAN.GUI
             this.Controls.Add(this.FilterByNameTextBox);
             this.Controls.Add(this.FilterByDescriptionLabel);
             this.Controls.Add(this.FilterByDescriptionTextBox);
+            this.Controls.Add(this.FilterByLicenseLabel);
+            this.Controls.Add(this.FilterByLicenseTextBox);
             this.Controls.Add(this.FilterByLanguageLabel);
             this.Controls.Add(this.FilterByLanguageTextBox);
             this.Controls.Add(this.FilterByDependsLabel);
@@ -466,7 +495,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.ReplaceableLabel);
             this.Controls.Add(this.ReplaceableToggle);
             this.Name = "EditModSearchDetails";
-            this.Size = new System.Drawing.Size(300, 460);
+            this.Size = new System.Drawing.Size(300, 486);
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -481,6 +510,8 @@ namespace CKAN.GUI
         private CKAN.GUI.HintTextBox FilterByAuthorTextBox;
         private System.Windows.Forms.Label FilterByDescriptionLabel;
         private CKAN.GUI.HintTextBox FilterByDescriptionTextBox;
+        private System.Windows.Forms.Label FilterByLicenseLabel;
+        private CKAN.GUI.HintTextBox FilterByLicenseTextBox;
         private System.Windows.Forms.Label FilterByLanguageLabel;
         private CKAN.GUI.HintTextBox FilterByLanguageTextBox;
         private System.Windows.Forms.Label FilterByDependsLabel;
