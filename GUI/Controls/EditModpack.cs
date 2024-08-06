@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,6 +33,7 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(GameVersionMaxComboBox,  Properties.Resources.EditModpackTooltipGameVersionMax);
             ToolTip.SetToolTip(LicenseComboBox,         Properties.Resources.EditModpackTooltipLicense);
             ToolTip.SetToolTip(IncludeVersionsCheckbox, Properties.Resources.EditModpackTooltipIncludeVersions);
+            ToolTip.SetToolTip(IncludeOptRelsCheckbox,  Properties.Resources.EditModpackTooltipIncludeOptRels);
             ToolTip.SetToolTip(DependsRadioButton,      Properties.Resources.EditModpackTooltipDepends);
             ToolTip.SetToolTip(RecommendsRadioButton,   Properties.Resources.EditModpackTooltipRecommends);
             ToolTip.SetToolTip(SuggestsRadioButton,     Properties.Resources.EditModpackTooltipSuggests);
@@ -322,7 +324,7 @@ namespace CKAN.GUI
                 badField.Focus();
                 user.RaiseError(error);
             }
-            else if (TrySavePrompt(modpackExportOptions, out _, out string filename))
+            else if (TrySavePrompt(modpackExportOptions, out string filename))
             {
                 if (module.depends.Count == 0)
                 {
@@ -336,10 +338,14 @@ namespace CKAN.GUI
                 {
                     module.suggests = null;
                 }
-                CkanModule.ToFile(ApplyVersionsCheckbox(module), filename);
+                CkanModule.ToFile(ApplyCheckboxes(module), filename);
+                OpenFileBrowser(filename);
                 task?.SetResult(true);
             }
         }
+
+        private CkanModule ApplyCheckboxes(CkanModule input)
+            => ApplyIncludeOptRelsCheckbox(ApplyVersionsCheckbox(input));
 
         private CkanModule ApplyVersionsCheckbox(CkanModule input)
         {
@@ -375,7 +381,38 @@ namespace CKAN.GUI
             }
         }
 
-        private bool TrySavePrompt(List<ExportOption> exportOptions, out ExportOption selectedOption, out string filename)
+        private CkanModule ApplyIncludeOptRelsCheckbox(CkanModule input)
+        {
+            if (IncludeOptRelsCheckbox.Checked)
+            {
+                return input;
+            }
+            else
+            {
+                var newMod = CkanModule.FromJson(CkanModule.ToJson(input));
+                foreach (var rel in newMod.depends)
+                {
+                    rel.suppress_recommendations = true;
+                }
+                return newMod;
+            }
+        }
+
+        private void OpenFileBrowser(string location)
+        {
+            if (File.Exists(location))
+            {
+                // We need the folder of the file
+                // Otherwise the OS would try to open the file in its default application
+                location = Path.GetDirectoryName(location);
+            }
+            if (Directory.Exists(location))
+            {
+                Utilities.ProcessStartURL(location);
+            }
+        }
+
+        private bool TrySavePrompt(List<ExportOption> exportOptions, out string filename)
         {
             var dlg = new SaveFileDialog()
             {
@@ -384,13 +421,11 @@ namespace CKAN.GUI
             };
             if (dlg.ShowDialog(ParentForm) == DialogResult.OK)
             {
-                selectedOption = exportOptions[dlg.FilterIndex - 1];
                 filename       = dlg.FileName;
                 return true;
             }
             else
             {
-                selectedOption = null;
                 filename       = null;
                 return false;
             }

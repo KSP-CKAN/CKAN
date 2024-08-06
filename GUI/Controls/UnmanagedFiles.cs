@@ -221,7 +221,7 @@ namespace CKAN.GUI
                 if (!Directory.Exists(location))
                 {
                     // User either selected the parent node
-                    // or he clicked on the tree node of a cached, but not installed mod
+                    // or clicked on the tree node of a cached, but not installed mod
                     return;
                 }
 
