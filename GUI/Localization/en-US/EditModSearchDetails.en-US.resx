@@ -117,22 +117,5 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FilterByNameLabel.Text" xml:space="preserve"><value>Name:</value></data>
-  <data name="FilterByAuthorLabel.Text" xml:space="preserve"><value>Author:</value></data>
-  <data name="FilterByDescriptionLabel.Text" xml:space="preserve"><value>Description:</value></data>
-  <data name="FilterByLicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
-  <data name="FilterByLanguageLabel.Text" xml:space="preserve"><value>Language:</value></data>
-  <data name="FilterByDependsLabel.Text" xml:space="preserve"><value>Depends on:</value></data>
-  <data name="FilterByRecommendsLabel.Text" xml:space="preserve"><value>Recommends:</value></data>
-  <data name="FilterBySuggestsLabel.Text" xml:space="preserve"><value>Suggests:</value></data>
-  <data name="FilterByConflictsLabel.Text" xml:space="preserve"><value>Conflicts with:</value></data>
-  <data name="FilterBySupportsLabel.Text" xml:space="preserve"><value>Supports:</value></data>
-  <data name="FilterByTagsLabel.Text" xml:space="preserve"><value>Tags:</value></data>
-  <data name="FilterByLabelsLabel.Text" xml:space="preserve"><value>Labels:</value></data>
-  <data name="CompatibleLabel.Text" xml:space="preserve"><value>Compatible:</value></data>
-  <data name="InstalledLabel.Text" xml:space="preserve"><value>Installed:</value></data>
-  <data name="CachedLabel.Text" xml:space="preserve"><value>Cached:</value></data>
-  <data name="NewlyCompatibleLabel.Text" xml:space="preserve"><value>Newly compatible:</value></data>
-  <data name="UpgradeableLabel.Text" xml:space="preserve"><value>Upgradeable:</value></data>
-  <data name="ReplaceableLabel.Text" xml:space="preserve"><value>Replaceable:</value></data>
+  <data name="FilterByLicenseLabel.Text" xml:space="preserve"><value>License:</value></data>
 </root>

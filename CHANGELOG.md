@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Visually indicate to users that they should click Refresh (#4133 by: HebaruSan)
 - [Multiple] Option to clone smaller instances with junction points (Windows) or symbolic links (Unix) (#4129, #4144 by: HebaruSan)
 - [Multiple] Recommendation suppression for modpacks (#4147 by: HebaruSan; reviewed: JonnyOThan)
+- [GUI] Search by licenses (#4148 by: HebaruSan)
 
 ### Bugfixes
 

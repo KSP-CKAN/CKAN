@@ -30,7 +30,8 @@ namespace CKAN.GUI
         /// <param name="conflicts">Identifier prefix to find in mod conflicts relationships</param>
         /// <param name="combined">Full formatted search string if known, will be auto generated otherwise</param>
         public ModSearch(
-            string byName, List<string> byAuthors, string byDescription, List<string> localizations,
+            string byName, List<string> byAuthors, string byDescription,
+            List<string> licenses, List<string> localizations,
             List<string> depends, List<string> recommends, List<string> suggests, List<string> conflicts,
             List<string> supports,
             List<string> tagNames, List<ModuleLabel> labels,
@@ -44,6 +45,7 @@ namespace CKAN.GUI
             Description = (ShouldNegateTerm(byDescription, out string subDesc) ? "-" : "")
                 + CkanModule.nonAlphaNums.Replace(subDesc, "");
             initStringList(Localizations, localizations);
+            initStringList(Licenses, licenses);
 
             initStringList(DependsOn,     depends);
             initStringList(Recommends,    recommends);
@@ -117,6 +119,11 @@ namespace CKAN.GUI
         public readonly string Description;
 
         /// <summary>
+        /// License substring to search for in mod licenses
+        /// </summary>
+        public readonly List<string> Licenses = new List<string>();
+
+        /// <summary>
         /// Language to search for in mod localizations
         /// </summary>
         public readonly List<string> Localizations = new List<string>();
@@ -169,7 +176,8 @@ namespace CKAN.GUI
         public static ModSearch FromAuthors(IEnumerable<string> authors)
             => new ModSearch(
                 // Can't search for spaces, so massage them like SearchableAuthors
-                "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "", null,
+                "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "",
+                null, null,
                 null, null, null, null, null,
                 null, null,
                 null, null, null, null,
@@ -185,6 +193,7 @@ namespace CKAN.GUI
                 Name + other.Name,
                 Authors.Concat(other.Authors).Distinct().ToList(),
                 Description + other.Description,
+                Licenses.Concat(other.Licenses).Distinct().ToList(),
                 Localizations.Concat(other.Localizations).Distinct().ToList(),
                 DependsOn.Concat(other.DependsOn).Distinct().ToList(),
                 Recommends.Concat(other.Recommends).Distinct().ToList(),
@@ -221,6 +230,10 @@ namespace CKAN.GUI
             if (!string.IsNullOrWhiteSpace(Description))
             {
                 pieces.Add(AddTermPrefix(Properties.Resources.ModSearchDescriptionPrefix, Description));
+            }
+            foreach (var license in Licenses.Where(lic => !string.IsNullOrEmpty(lic)))
+            {
+                pieces.Add(AddTermPrefix(Properties.Resources.ModSearchLicensePrefix, license));
             }
             foreach (var localization in Localizations.Where(lang => !string.IsNullOrEmpty(lang)))
             {
@@ -309,6 +322,7 @@ namespace CKAN.GUI
             string byName          = "";
             var    byAuthors       = new List<string>();
             string byDescription   = "";
+            var    byLicenses      = new List<string>();
             var    byLocalizations = new List<string>();
 
             var depends    = new List<string>();
@@ -337,6 +351,10 @@ namespace CKAN.GUI
                 else if (TryPrefix(s, Properties.Resources.ModSearchDescriptionPrefix, out string desc))
                 {
                     byDescription += (ShouldNegateTerm(desc, out string subDesc) ? "-" : "") + CkanModule.nonAlphaNums.Replace(subDesc, "");
+                }
+                else if (TryPrefix(s, Properties.Resources.ModSearchLicensePrefix, out string lic))
+                {
+                    byLicenses.Add(lic);
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchLanguagePrefix, out string lang))
                 {
@@ -437,7 +455,8 @@ namespace CKAN.GUI
                 }
             }
             return new ModSearch(
-                byName, byAuthors, byDescription, byLocalizations,
+                byName, byAuthors, byDescription,
+                byLicenses, byLocalizations,
                 depends, recommends, suggests, conflicts, supports,
                 tagNames, labels,
                 compatible, installed, cached, newlyCompatible,
@@ -495,6 +514,7 @@ namespace CKAN.GUI
             => MatchesName(mod)
                 && MatchesAuthors(mod)
                 && MatchesDescription(mod)
+                && MatchesLicenses(mod)
                 && MatchesLocalizations(mod)
                 && MatchesDepends(mod)
                 && MatchesRecommends(mod)
@@ -529,6 +549,19 @@ namespace CKAN.GUI
                 || ShouldNegateTerm(Description, out string subDesc) ^ (
                     mod.SearchableAbstract.IndexOf(subDesc, StringComparison.InvariantCultureIgnoreCase) != -1
                     || mod.SearchableDescription.IndexOf(subDesc, StringComparison.InvariantCultureIgnoreCase) != -1);
+
+        private bool MatchesLicenses(GUIMod mod)
+        {
+            var ckm = mod.ToModule();
+            return Licenses.Count < 1
+                || (
+                    ckm.license != null
+                    && Licenses.All(searchLic =>
+                        ShouldNegateTerm(searchLic, out string subLic)
+                        ^ ckm.license.Any(modLic =>
+                            modLic.ToString().StartsWith(subLic, StringComparison.InvariantCultureIgnoreCase)))
+                );
+        }
 
         private bool MatchesLocalizations(GUIMod mod)
         {
@@ -604,6 +637,7 @@ namespace CKAN.GUI
                 && Upgradeable     == other.Upgradeable
                 && Replaceable     == other.Replaceable
                 && Authors.SequenceEqual(other.Authors)
+                && Licenses.SequenceEqual(other.Licenses)
                 && Localizations.SequenceEqual(other.Localizations)
                 && DependsOn.SequenceEqual(other.DependsOn)
                 && Recommends.SequenceEqual(other.Recommends)
