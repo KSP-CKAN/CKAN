@@ -534,6 +534,12 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   <data name="ModInfoBugtrackerTip" xml:space="preserve">
     <value>Ouvrir le lien du traqueur de bogues dans un navigateur</value>
   </data>
+  <data name="ModInfoDiscussions" xml:space="preserve">
+    <value>Discussions</value>
+  </data>
+  <data name="ModInfoDiscussionsTip" xml:space="preserve">
+    <value>Ouvrir le lien de la discussion dans un navigateur</value>
+  </data>
   <data name="ModInfoSpaceDock" xml:space="preserve">
     <value>SpaceDock</value>
   </data>
@@ -724,10 +730,10 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Appliquer les changements</value>
   </data>
   <data name="ModListUpdatedDayAgo" xml:space="preserve">
-    <value>Mis à jour il y a au moins {0} jour</value>
+    <value>Mis à jour il y a {0} jour(s)</value>
   </data>
   <data name="ModListUpdatedDaysAgo" xml:space="preserve">
-    <value>Mis à jour il y a au moins {0} jours</value>
+    <value>Mis à jour il y a {0} jour(s)</value>
   </data>
   <data name="ModListPlayMenu" xml:space="preserve">
     <value>Jouer au jeu</value>
