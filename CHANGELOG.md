@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Chinese translation fixes (#4115, #4116, #4131 by: zhouyiqing0304; reviewed: HebaruSan)
 - [Multiple] Visually indicate to users that they should click Refresh (#4133 by: HebaruSan)
 - [Multiple] Option to clone smaller instances with junction points (Windows) or symbolic links (Unix) (#4129, #4144 by: HebaruSan)
+- [Multiple] Recommendation suppression for modpacks (#4147 by: HebaruSan; reviewed: JonnyOThan)
 
 ### Bugfixes
 

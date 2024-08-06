@@ -48,6 +48,7 @@ namespace CKAN.GUI
             this.LicenseLabel = new System.Windows.Forms.Label();
             this.LicenseComboBox = new System.Windows.Forms.ComboBox();
             this.IncludeVersionsCheckbox = new System.Windows.Forms.CheckBox();
+            this.IncludeOptRelsCheckbox = new System.Windows.Forms.CheckBox();
             this.RelationshipsListView = new CKAN.GUI.ThemedListView();
             this.ModNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ModVersionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -91,6 +92,7 @@ namespace CKAN.GUI
             this.TopEditPanel.Controls.Add(this.LicenseLabel);
             this.TopEditPanel.Controls.Add(this.LicenseComboBox);
             this.TopEditPanel.Controls.Add(this.IncludeVersionsCheckbox);
+            this.TopEditPanel.Controls.Add(this.IncludeOptRelsCheckbox);
             this.TopEditPanel.Dock = System.Windows.Forms.DockStyle.Top;
             this.TopEditPanel.Name = "TopEditPanel";
             this.TopEditPanel.Size = new System.Drawing.Size(500, 160);
@@ -166,7 +168,7 @@ namespace CKAN.GUI
             this.AuthorLabel.Location = new System.Drawing.Point(10, 130);
             this.AuthorLabel.Name = "AuthorLabel";
             this.AuthorLabel.Size = new System.Drawing.Size(75, 23);
-            this.AuthorLabel.TabIndex = 4;
+            this.AuthorLabel.TabIndex = 6;
             resources.ApplyResources(this.AuthorLabel, "AuthorLabel");
             // 
             // AuthorTextBox
@@ -175,7 +177,7 @@ namespace CKAN.GUI
             this.AuthorTextBox.Location = new System.Drawing.Point(125, 130);
             this.AuthorTextBox.Name = "AbstractTextBox";
             this.AuthorTextBox.Size = new System.Drawing.Size(250, 23);
-            this.AuthorTextBox.TabIndex = 5;
+            this.AuthorTextBox.TabIndex = 7;
             this.AuthorTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.AuthorTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.AuthorTextBox, "AuthorTextBox");
@@ -187,7 +189,7 @@ namespace CKAN.GUI
             this.VersionLabel.Location = new System.Drawing.Point(400, 10);
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(75, 23);
-            this.VersionLabel.TabIndex = 6;
+            this.VersionLabel.TabIndex = 8;
             resources.ApplyResources(this.VersionLabel, "VersionLabel");
             // 
             // VersionTextBox
@@ -196,7 +198,7 @@ namespace CKAN.GUI
             this.VersionTextBox.Location = new System.Drawing.Point(515, 10);
             this.VersionTextBox.Name = "VersionTextBox";
             this.VersionTextBox.Size = new System.Drawing.Size(250, 23);
-            this.VersionTextBox.TabIndex = 7;
+            this.VersionTextBox.TabIndex = 9;
             this.VersionTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.VersionTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             resources.ApplyResources(this.VersionTextBox, "VersionTextBox");
@@ -208,7 +210,7 @@ namespace CKAN.GUI
             this.GameVersionLabel.Location = new System.Drawing.Point(400, 40);
             this.GameVersionLabel.Name = "GameVersionLabel";
             this.GameVersionLabel.Size = new System.Drawing.Size(75, 23);
-            this.GameVersionLabel.TabIndex = 8;
+            this.GameVersionLabel.TabIndex = 10;
             resources.ApplyResources(this.GameVersionLabel, "GameVersionLabel");
             // 
             // GameVersionMinComboBox
@@ -218,7 +220,7 @@ namespace CKAN.GUI
             this.GameVersionMinComboBox.Location = new System.Drawing.Point(515, 40);
             this.GameVersionMinComboBox.Name = "GameVersionMinComboBox";
             this.GameVersionMinComboBox.Size = new System.Drawing.Size(70, 23);
-            this.GameVersionMinComboBox.TabIndex = 9;
+            this.GameVersionMinComboBox.TabIndex = 11;
             resources.ApplyResources(this.GameVersionMinComboBox, "GameVersionMinComboBox");
             // 
             // GameVersionMaxComboBox
@@ -228,7 +230,7 @@ namespace CKAN.GUI
             this.GameVersionMaxComboBox.Location = new System.Drawing.Point(595, 40);
             this.GameVersionMaxComboBox.Name = "GameVersionMaxComboBox";
             this.GameVersionMaxComboBox.Size = new System.Drawing.Size(70, 23);
-            this.GameVersionMaxComboBox.TabIndex = 10;
+            this.GameVersionMaxComboBox.TabIndex = 12;
             resources.ApplyResources(this.GameVersionMaxComboBox, "GameVersionMaxComboBox");
             // 
             // LicenseLabel
@@ -238,7 +240,7 @@ namespace CKAN.GUI
             this.LicenseLabel.Location = new System.Drawing.Point(400, 70);
             this.LicenseLabel.Name = "LicenseLabel";
             this.LicenseLabel.Size = new System.Drawing.Size(75, 23);
-            this.LicenseLabel.TabIndex = 11;
+            this.LicenseLabel.TabIndex = 13;
             resources.ApplyResources(this.LicenseLabel, "LicenseLabel");
             // 
             // LicenseComboBox
@@ -248,7 +250,7 @@ namespace CKAN.GUI
             this.LicenseComboBox.Location = new System.Drawing.Point(515, 70);
             this.LicenseComboBox.Name = "LicenseComboBox";
             this.LicenseComboBox.Size = new System.Drawing.Size(150, 23);
-            this.LicenseComboBox.TabIndex = 12;
+            this.LicenseComboBox.TabIndex = 14;
             resources.ApplyResources(this.LicenseComboBox, "LicenseComboBox");
             //
             // IncludeVersionsCheckbox
@@ -260,8 +262,20 @@ namespace CKAN.GUI
             this.IncludeVersionsCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.IncludeVersionsCheckbox.Name = "IncludeVersionsCheckbox";
             this.IncludeVersionsCheckbox.Size = new System.Drawing.Size(131, 24);
-            this.IncludeVersionsCheckbox.TabIndex = 13;
+            this.IncludeVersionsCheckbox.TabIndex = 15;
             resources.ApplyResources(this.IncludeVersionsCheckbox, "IncludeVersionsCheckbox");
+            //
+            // IncludeOptRelsCheckbox
+            //
+            this.IncludeOptRelsCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)));
+            this.IncludeOptRelsCheckbox.AutoSize = true;
+            this.IncludeOptRelsCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IncludeOptRelsCheckbox.Location = new System.Drawing.Point(515, 130);
+            this.IncludeOptRelsCheckbox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.IncludeOptRelsCheckbox.Name = "IncludeOptRelsCheckbox";
+            this.IncludeOptRelsCheckbox.Size = new System.Drawing.Size(131, 24);
+            this.IncludeOptRelsCheckbox.TabIndex = 16;
+            resources.ApplyResources(this.IncludeOptRelsCheckbox, "IncludeOptRelsCheckbox");
             //
             // RelationshipsListView
             //
@@ -277,7 +291,7 @@ namespace CKAN.GUI
             this.RelationshipsListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.RelationshipsListView.Name = "RelationshipsListView";
             this.RelationshipsListView.Size = new System.Drawing.Size(1510, 841);
-            this.RelationshipsListView.TabIndex = 14;
+            this.RelationshipsListView.TabIndex = 17;
             this.RelationshipsListView.UseCompatibleStateImageBehavior = false;
             this.RelationshipsListView.View = System.Windows.Forms.View.Details;
             this.RelationshipsListView.Groups.Add(this.DependsGroup);
@@ -343,7 +357,7 @@ namespace CKAN.GUI
             this.DependsRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DependsRadioButton.Name = "DependsRadioButton";
             this.DependsRadioButton.Size = new System.Drawing.Size(112, 30);
-            this.DependsRadioButton.TabIndex = 16;
+            this.DependsRadioButton.TabIndex = 18;
             this.DependsRadioButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.DependsRadioButton.Click += new System.EventHandler(this.DependsRadioButton_CheckedChanged);
             resources.ApplyResources(this.DependsRadioButton, "DependsRadioButton");
@@ -354,7 +368,7 @@ namespace CKAN.GUI
             this.RecommendsRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RecommendsRadioButton.Name = "RecommendsRadioButton";
             this.RecommendsRadioButton.Size = new System.Drawing.Size(112, 30);
-            this.RecommendsRadioButton.TabIndex = 17;
+            this.RecommendsRadioButton.TabIndex = 19;
             this.RecommendsRadioButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.RecommendsRadioButton.Click += new System.EventHandler(this.RecommendsRadioButton_CheckedChanged);
             resources.ApplyResources(this.RecommendsRadioButton, "RecommendsRadioButton");
@@ -365,7 +379,7 @@ namespace CKAN.GUI
             this.SuggestsRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SuggestsRadioButton.Name = "SuggestsRadioButton";
             this.SuggestsRadioButton.Size = new System.Drawing.Size(112, 30);
-            this.SuggestsRadioButton.TabIndex = 18;
+            this.SuggestsRadioButton.TabIndex = 20;
             this.SuggestsRadioButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.SuggestsRadioButton.Click += new System.EventHandler(this.SuggestsRadioButton_CheckedChanged);
             resources.ApplyResources(this.SuggestsRadioButton, "SuggestsRadioButton");
@@ -376,7 +390,7 @@ namespace CKAN.GUI
             this.IgnoreRadioButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IgnoreRadioButton.Name = "IgnoreRadioButton";
             this.IgnoreRadioButton.Size = new System.Drawing.Size(112, 30);
-            this.IgnoreRadioButton.TabIndex = 19;
+            this.IgnoreRadioButton.TabIndex = 21;
             this.IgnoreRadioButton.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.IgnoreRadioButton.Click += new System.EventHandler(this.IgnoreRadioButton_CheckedChanged);
             resources.ApplyResources(this.IgnoreRadioButton, "IgnoreRadioButton");
@@ -388,7 +402,7 @@ namespace CKAN.GUI
             this.CancelExportButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelExportButton.Name = "CancelExportButton";
             this.CancelExportButton.Size = new System.Drawing.Size(112, 30);
-            this.CancelExportButton.TabIndex = 20;
+            this.CancelExportButton.TabIndex = 22;
             this.CancelExportButton.UseVisualStyleBackColor = true;
             this.CancelExportButton.Click += new System.EventHandler(this.CancelExportButton_Click);
             resources.ApplyResources(this.CancelExportButton, "CancelExportButton");
@@ -442,6 +456,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.Label LicenseLabel;
         private System.Windows.Forms.ComboBox LicenseComboBox;
         private System.Windows.Forms.CheckBox IncludeVersionsCheckbox;
+        private System.Windows.Forms.CheckBox IncludeOptRelsCheckbox;
         private System.Windows.Forms.ListView RelationshipsListView;
         private System.Windows.Forms.ColumnHeader ModNameColumn;
         private System.Windows.Forms.ColumnHeader ModVersionColumn;

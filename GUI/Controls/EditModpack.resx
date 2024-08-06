@@ -125,6 +125,7 @@
   <data name="GameVersionLabel.Text" xml:space="preserve"><value>Game versions:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve"><value>Save mod versions</value></data>
+  <data name="IncludeOptRelsCheckbox.Text" xml:space="preserve"><value>Include optional relationships</value></data>
   <data name="ModNameColumn.Text" xml:space="preserve"><value>Mod</value></data>
   <data name="ModVersionColumn.Text" xml:space="preserve"><value>Version</value></data>
   <data name="ModAbstractColumn.Text" xml:space="preserve"><value>Description</value></data>
