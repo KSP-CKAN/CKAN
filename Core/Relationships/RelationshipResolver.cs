@@ -229,6 +229,7 @@ namespace CKAN
                 if (options.get_recommenders && descriptor.suppress_recommendations)
                 {
                     log.DebugFormat("Skipping {0} because get_recommenders option is set", descriptor.ToString());
+                    suppressedRecommenders.Add(descriptor);
                     continue;
                 }
                 options = orig_options.OptionsFor(descriptor);
@@ -575,17 +576,24 @@ namespace CKAN
 
         public IEnumerable<CkanModule> Recommendations(HashSet<CkanModule> dependencies)
             => modlist.Values.Except(dependencies)
-                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Recommended
-                                                                && dependencies.Contains(r.Parent)))
+                             .Where(m => ValidRecSugReasons(dependencies,
+                                                            ReasonsFor(m).Where(r => r is SelectionReason.Recommended)
+                                                                         .ToList()))
                              .OrderByDescending(totalDependers);
 
         public IEnumerable<CkanModule> Suggestions(HashSet<CkanModule> dependencies,
                                                    List<CkanModule>    recommendations)
             => modlist.Values.Except(dependencies)
                              .Except(recommendations)
-                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Suggested
-                                                                && dependencies.Contains(r.Parent)))
+                             .Where(m => ValidRecSugReasons(dependencies,
+                                                            ReasonsFor(m).Where(r => r is SelectionReason.Suggested)
+                                                                         .ToList()))
                              .OrderByDescending(totalDependers);
+
+        private bool ValidRecSugReasons(HashSet<CkanModule>   dependencies,
+                                        List<SelectionReason> recSugReasons)
+            => recSugReasons.Any(r => dependencies.Contains(r.Parent))
+               && !suppressedRecommenders.Any(rel => recSugReasons.Any(r => rel.WithinBounds(r.Parent)));
 
         public ParallelQuery<KeyValuePair<CkanModule, HashSet<string>>> Supporters(
             HashSet<CkanModule>     supported,
@@ -681,6 +689,12 @@ namespace CKAN
         private readonly List<ModPair> conflicts = new List<ModPair>();
         private readonly Dictionary<CkanModule, List<SelectionReason>> reasons =
             new Dictionary<CkanModule, List<SelectionReason>>();
+
+        /// <summary>
+        /// Depends relationships with suppress_recommendations=true,
+        /// to be applied to all recommendations and suggestions
+        /// </summary>
+        private HashSet<RelationshipDescriptor> suppressedRecommenders = new HashSet<RelationshipDescriptor>();
 
         private readonly IRegistryQuerier            registry;
         private readonly GameVersionCriteria         versionCrit;
