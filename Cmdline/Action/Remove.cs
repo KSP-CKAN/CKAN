@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using CommandLine;
 using log4net;
 
 namespace CKAN.CmdLine
@@ -107,7 +108,11 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseMessage(Properties.Resources.RemoveNothing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                foreach (var h in Actions.GetHelp("remove"))
+                {
+                    user.RaiseError(h);
+                }
                 return Exit.BADOPT;
             }
 
@@ -120,4 +125,18 @@ namespace CKAN.CmdLine
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Remove));
     }
+
+    internal class RemoveOptions : InstanceSpecificOptions
+    {
+        [Option("re", HelpText = "Parse arguments as regular expressions")]
+        public bool regex { get; set; }
+
+        [ValueList(typeof(List<string>))]
+        [InstalledIdentifiers]
+        public List<string> modules { get; set; }
+
+        [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
+        public bool rmall { get; set; }
+    }
+
 }

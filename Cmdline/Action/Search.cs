@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using CommandLine;
+
 namespace CKAN.CmdLine
 {
     public class Search : ICommand
@@ -20,7 +22,11 @@ namespace CKAN.CmdLine
             // Check the input.
             if (string.IsNullOrWhiteSpace(options.search_term) && string.IsNullOrWhiteSpace(options.author_term))
             {
-                user.RaiseError(Properties.Resources.SearchNoTerm);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                foreach (var h in Actions.GetHelp("search"))
+                {
+                    user.RaiseError(h);
+                }
                 return Exit.BADOPT;
             }
 
@@ -198,4 +204,20 @@ namespace CKAN.CmdLine
         private readonly RepositoryDataManager repoData;
         private readonly IUser                 user;
     }
+
+    internal class SearchOptions : InstanceSpecificOptions
+    {
+        [Option("detail", HelpText = "Show full name, latest compatible version and short description of each module")]
+        public bool detail { get; set; }
+
+        [Option("all", HelpText = "Show incompatible mods too")]
+        public bool all { get; set; }
+
+        [Option("author", HelpText = "Limit search results to mods by matching authors")]
+        public string author_term { get; set; }
+
+        [ValueOption(0)]
+        public string search_term { get; set; }
+    }
+
 }

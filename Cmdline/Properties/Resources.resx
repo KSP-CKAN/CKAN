@@ -178,8 +178,9 @@ If you must run as an administrator, the `--asroot` parameter will bypass this c
   <data name="CompatHelpSummary" xml:space="preserve"><value>Manage game version compatibility</value></data>
   <data name="CompatVersionHeader" xml:space="preserve"><value>Version</value></data>
   <data name="CompatActualHeader" xml:space="preserve"><value>Actual</value></data>
-  <data name="CompatInvalid" xml:space="preserve"><value>ERROR: Invalid game version</value></data>
-  <data name="CompatCantForget" xml:space="preserve"><value>ERROR: Cannot forget actual game version</value></data>
+  <data name="CompatMissing" xml:space="preserve"><value>No game versions specified!</value></data>
+  <data name="CompatInvalid" xml:space="preserve"><value>Invalid game versions: {0}</value></data>
+  <data name="CompatCantForget" xml:space="preserve"><value>Cannot forget actual game version: {0}</value></data>
   <data name="InstanceHelpSummary" xml:space="preserve"><value>Manage game instances</value></data>
   <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="InstanceListYes" xml:space="preserve"><value>Yes</value></data>

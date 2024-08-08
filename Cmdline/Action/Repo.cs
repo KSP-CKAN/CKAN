@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
 using CommandLine;
@@ -31,44 +32,52 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
+
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"ckan repo - {Properties.Resources.RepoHelpSummary}");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"ckan repo - {Properties.Resources.RepoHelpSummary}";
+                yield return $"{Properties.Resources.Usage}: ckan repo <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                ht.AddPreOptionsLine("repo " + verb + " - " + GetDescription(verb));
+                yield return "repo " + verb + " - " + GetDescription(typeof(RepoSubOptions), verb);
                 switch (verb)
                 {
                     // First the commands with two arguments
                     case "add":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name url");
+                        yield return $"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name url";
                         break;
 
                     case "priority":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name priority");
+                        yield return $"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name priority";
                         break;
 
                     // Then the commands with one argument
                     case "remove":
                     case "forget":
                     case "default":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name");
+                        yield return $"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}] name";
                         break;
 
                     // Now the commands with only --flag type options
                     case "available":
                     case "list":
                     default:
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}]");
+                        yield return $"{Properties.Resources.Usage}: ckan repo {verb} [{Properties.Resources.Options}]";
                         break;
                 }
             }
-            return ht;
         }
     }
 
@@ -133,9 +142,9 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    User     = new ConsoleUser(options.Headless);
-                    Manager  = manager ?? new GameInstanceManager(User);
-                    exitCode = options.Handle(Manager, User);
+                    user     = new ConsoleUser(options.Headless);
+                    Manager  = manager ?? new GameInstanceManager(user);
+                    exitCode = options.Handle(Manager, user);
                     if (exitCode != Exit.OK)
                     {
                         return;
@@ -169,7 +178,7 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            User.RaiseMessage(Properties.Resources.RepoUnknownCommand, option);
+                            user.RaiseMessage(Properties.Resources.RepoUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
@@ -191,7 +200,7 @@ namespace CKAN.CmdLine
 
         private int AvailableRepositories()
         {
-            User.RaiseMessage(Properties.Resources.RepoAvailableHeader);
+            user.RaiseMessage(Properties.Resources.RepoAvailableHeader);
             RepositoryList repositories;
 
             try
@@ -200,7 +209,7 @@ namespace CKAN.CmdLine
             }
             catch
             {
-                User.RaiseError(Properties.Resources.RepoAvailableFailed, MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
+                user.RaiseError(Properties.Resources.RepoAvailableFailed, MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
                 return Exit.ERROR;
             }
 
@@ -212,7 +221,7 @@ namespace CKAN.CmdLine
 
             foreach (Repository repository in repositories.repositories)
             {
-                User.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
+                user.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
             }
 
             return Exit.OK;
@@ -238,17 +247,17 @@ namespace CKAN.CmdLine
 
             const string columnFormat = "{0}  {1}  {2}";
 
-            User.RaiseMessage(columnFormat,
+            user.RaiseMessage(columnFormat,
                               priorityHeader.PadRight(priorityWidth),
                               nameHeader.PadRight(nameWidth),
                               urlHeader.PadRight(urlWidth));
-            User.RaiseMessage(columnFormat,
+            user.RaiseMessage(columnFormat,
                               new string('-', priorityWidth),
                               new string('-', nameWidth),
                               new string('-', urlWidth));
             foreach (Repository repository in repositories.Values.OrderBy(r => r.priority))
             {
-                User.RaiseMessage(columnFormat,
+                user.RaiseMessage(columnFormat,
                                   repository.priority.ToString().PadRight(priorityWidth),
                                   repository.name.PadRight(nameWidth),
                                   repository.uri);
@@ -262,7 +271,8 @@ namespace CKAN.CmdLine
 
             if (options.name == null)
             {
-                User.RaiseMessage("add <name> [ <uri> ] - {0}", Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage("add");
                 return Exit.BADOPT;
             }
 
@@ -276,7 +286,7 @@ namespace CKAN.CmdLine
                 }
                 catch
                 {
-                    User.RaiseError(Properties.Resources.RepoAvailableFailed, Manager.CurrentInstance.game.RepositoryListURL.ToString());
+                    user.RaiseError(Properties.Resources.RepoAvailableFailed, Manager.CurrentInstance.game.RepositoryListURL.ToString());
                     return Exit.ERROR;
                 }
 
@@ -292,7 +302,7 @@ namespace CKAN.CmdLine
                 // Nothing found in the master list?
                 if (options.uri == null)
                 {
-                    User.RaiseMessage(Properties.Resources.RepoAddNotFound, options.name);
+                    user.RaiseMessage(Properties.Resources.RepoAddNotFound, options.name);
                     return Exit.BADOPT;
                 }
             }
@@ -302,19 +312,19 @@ namespace CKAN.CmdLine
 
             if (repositories.ContainsKey(options.name))
             {
-                User.RaiseMessage(Properties.Resources.RepoAddDuplicate, options.name);
+                user.RaiseMessage(Properties.Resources.RepoAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
             if (repositories.Values.Any(r => r.uri.ToString() == options.uri))
             {
-                User.RaiseMessage(Properties.Resources.RepoAddDuplicateURL, options.uri);
+                user.RaiseMessage(Properties.Resources.RepoAddDuplicateURL, options.uri);
                 return Exit.BADOPT;
             }
 
             manager.registry.RepositoriesAdd(new Repository(options.name, options.uri,
                                                             manager.registry.Repositories.Count));
 
-            User.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
+            user.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
             manager.Save();
 
             return Exit.OK;
@@ -324,13 +334,14 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                User.RaiseMessage("priority <name> <priority> - {0}", Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage("priority");
                 return Exit.BADOPT;
             }
             var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
             if (options.priority < 0 || options.priority >= manager.registry.Repositories.Count)
             {
-                User.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
+                user.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
                     options.priority, manager.registry.Repositories.Count - 1);
                 return Exit.BADOPT;
             }
@@ -365,7 +376,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                User.RaiseMessage(Properties.Resources.RepoPriorityNotFound, options.name);
+                user.RaiseMessage(Properties.Resources.RepoPriorityNotFound, options.name);
                 return Exit.BADOPT;
             }
         }
@@ -374,7 +385,8 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                User.RaiseError("forget <name> - {0}", Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage("forget");
                 return Exit.BADOPT;
             }
 
@@ -389,10 +401,10 @@ namespace CKAN.CmdLine
                 name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
                 if (name == null)
                 {
-                    User.RaiseMessage(Properties.Resources.RepoForgetNotFound, options.name);
+                    user.RaiseMessage(Properties.Resources.RepoForgetNotFound, options.name);
                     return Exit.BADOPT;
                 }
-                User.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
+                user.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
             }
 
             manager.registry.RepositoriesRemove(name);
@@ -401,7 +413,7 @@ namespace CKAN.CmdLine
             {
                 remaining[i].priority = i;
             }
-            User.RaiseMessage(Properties.Resources.RepoForgetRemoved, options.name);
+            user.RaiseMessage(Properties.Resources.RepoForgetRemoved, options.name);
             manager.Save();
 
             return Exit.OK;
@@ -424,15 +436,23 @@ namespace CKAN.CmdLine
             manager.registry.RepositoriesAdd(
                 new Repository(Repository.default_ckan_repo_name, uri, repositories.Count));
 
-            User.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, uri);
+            user.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, uri);
             manager.Save();
 
             return Exit.OK;
         }
 
+        private void PrintUsage(string verb)
+        {
+            foreach (var h in RepoSubOptions.GetHelp(verb))
+            {
+                user.RaiseError(h);
+            }
+        }
+
         private GameInstanceManager   Manager;
         private readonly RepositoryDataManager repoData;
-        private IUser                 User;
+        private IUser                 user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
     }

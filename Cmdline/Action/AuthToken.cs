@@ -135,31 +135,39 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
+
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"ckan authtoken - {Properties.Resources.AuthTokenHelpSummary}");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan authtoken <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"ckan authtoken - {Properties.Resources.AuthTokenHelpSummary}";
+                yield return $"{Properties.Resources.Usage}: ckan authtoken <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                ht.AddPreOptionsLine("authtoken " + verb + " - " + GetDescription(verb));
+                yield return "authtoken " + verb + " - " + GetDescription(typeof(AuthTokenSubOptions), verb);
                 switch (verb)
                 {
                     case "add":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan authtoken {verb} [{Properties.Resources.Options}] host token");
+                        yield return $"{Properties.Resources.Usage}: ckan authtoken {verb} [{Properties.Resources.Options}] host token";
                         break;
                     case "remove":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan authtoken {verb} [{Properties.Resources.Options}] host");
+                        yield return $"{Properties.Resources.Usage}: ckan authtoken {verb} [{Properties.Resources.Options}] host";
                         break;
                     case "list":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan authtoken {verb} [{Properties.Resources.Options}]");
+                        yield return $"{Properties.Resources.Usage}: ckan authtoken {verb} [{Properties.Resources.Options}]";
                         break;
                 }
             }
-            return ht;
         }
     }
 

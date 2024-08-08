@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Option to clone smaller instances with junction points (Windows) or symbolic links (Unix) (#4129, #4144 by: HebaruSan)
 - [Multiple] Recommendation suppression for modpacks (#4147 by: HebaruSan; reviewed: JonnyOThan)
 - [GUI] Search by licenses (#4148 by: HebaruSan)
+- [CLI] Make `ckan compat add` take multiple versions, add `clear` and `set` (#4151 by: HebaruSan)
 
 ### Bugfixes
 

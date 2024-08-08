@@ -72,7 +72,8 @@ namespace CKAN.CmdLine
         {
             if (opts.modules.Count < 1)
             {
-                user.RaiseMessage("{0}: ckan mark {1} Mod [Mod2 ...]", Properties.Resources.Usage, verb);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
@@ -120,6 +121,14 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
+        private void PrintUsage(string verb)
+        {
+            foreach (var h in MarkSubOptions.GetHelp(verb))
+            {
+                user.RaiseError(h);
+            }
+        }
+
         private GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
         private IUser                 user;
@@ -136,29 +145,37 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
+
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"ckan mark - {Properties.Resources.MarkHelpSummary}");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan mark <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"ckan mark - {Properties.Resources.MarkHelpSummary}";
+                yield return $"{Properties.Resources.Usage}: ckan mark <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                ht.AddPreOptionsLine("mark " + verb + " - " + GetDescription(verb));
+                yield return "mark " + verb + " - " + GetDescription(typeof(MarkSubOptions), verb);
                 switch (verb)
                 {
                     case "auto":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan mark {verb} [{Properties.Resources.Options}] Mod [Mod2 ...]");
+                        yield return $"{Properties.Resources.Usage}: ckan mark {verb} [{Properties.Resources.Options}] Mod [Mod2 ...]";
                         break;
 
                     case "user":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan mark {verb} [{Properties.Resources.Options}] Mod [Mod2 ...]");
+                        yield return $"{Properties.Resources.Usage}: ckan mark {verb} [{Properties.Resources.Options}] Mod [Mod2 ...]";
                         break;
                 }
             }
-            return ht;
         }
     }
 

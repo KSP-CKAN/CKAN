@@ -1,5 +1,7 @@
 using System.Linq;
 
+using CommandLine;
+
 namespace CKAN.CmdLine
 {
     public class Available : ICommand
@@ -45,4 +47,11 @@ namespace CKAN.CmdLine
         private readonly IUser                 user;
         private readonly RepositoryDataManager repoData;
     }
+
+    internal class AvailableOptions : InstanceSpecificOptions
+    {
+        [Option("detail", HelpText = "Show short description of each module")]
+        public bool detail { get; set; }
+    }
+
 }

@@ -126,7 +126,9 @@ namespace CKAN
 
         public void SetCompatibleVersions(List<GameVersion> compatibleVersions)
         {
-            _compatibleVersions = compatibleVersions.Distinct().ToList();
+            _compatibleVersions = compatibleVersions.Distinct()
+                                                    .OrderByDescending(v => v)
+                                                    .ToList();
             SaveCompatibleVersions();
         }
 

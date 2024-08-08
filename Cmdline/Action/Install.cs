@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
+using CommandLine;
 using log4net;
 
 namespace CKAN.CmdLine
@@ -34,12 +35,11 @@ namespace CKAN.CmdLine
             var options = raw_options as InstallOptions;
             if (options.modules.Count == 0 && options.ckan_files == null)
             {
-                // What? No mods specified?
-                user.RaiseMessage("{0}:", Properties.Resources.Usage);
-                user.RaiseMessage(
-                    "    ckan install Mod [Mod2, ...] [--with-suggests] [--with-all-suggests] [--no-recommends]");
-                user.RaiseMessage(
-                    "    ckan install -c file_or_url.ckan [file_or_url2.ckan, ...] [--with-suggests] [--with-all-suggests] [--no-recommends]");
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                foreach (var h in Actions.GetHelp("install"))
+                {
+                    user.RaiseError(h);
+                }
                 return Exit.BADOPT;
             }
 
@@ -257,4 +257,27 @@ namespace CKAN.CmdLine
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Install));
     }
+
+    internal class InstallOptions : InstanceSpecificOptions
+    {
+        [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files or URLs to process")]
+        public string[] ckan_files { get; set; }
+
+        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
+
+        [Option("allow-incompatible", DefaultValue = false, HelpText = "Install modules that are not compatible with the current game version")]
+        public bool allow_incompatible { get; set; }
+
+        [ValueList(typeof(List<string>))]
+        [AvailableIdentifiers]
+        public List<string> modules { get; set; }
+    }
+
 }

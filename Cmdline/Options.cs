@@ -108,7 +108,7 @@ namespace CKAN.CmdLine
         public CacheSubOptions Cache { get; set; }
 
         [VerbOption("compat", HelpText = "Manage game version compatibility")]
-        public CompatOptions Compat { get; set; }
+        public CompatSubOptions Compat { get; set; }
 
         [VerbOption("compare", HelpText = "Compare version strings")]
         public CompareOptions Compare { get; set; }
@@ -122,21 +122,28 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
 
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine(" ");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"{Properties.Resources.Usage}: ckan <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                string descr = GetDescription(verb);
+                string descr = GetDescription(typeof(Action), verb);
                 if (!string.IsNullOrEmpty(descr))
                 {
-                    ht.AddPreOptionsLine(" ");
-                    ht.AddPreOptionsLine($"ckan {verb} - {descr}");
+                    yield return $"ckan {verb} - {descr}";
                 }
                 switch (verb)
                 {
@@ -150,21 +157,19 @@ namespace CKAN.CmdLine
                     case "remove":
                     case "uninstall":
                     case "upgrade":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] modules");
-                        break;
                     case "show":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] module");
+                        yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] module [module2 ...]";
                         break;
 
                     // Commands with other string arguments
                     case "search":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] substring");
+                        yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] substring";
                         break;
                     case "compare":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] version1 version2");
+                        yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] version1 version2";
                         break;
                     case "import":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] paths");
+                        yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] path [path2 ...]";
                         break;
 
                     // Commands with only --flag type options
@@ -176,11 +181,10 @@ namespace CKAN.CmdLine
                     case "clean":
                     case "version":
                     default:
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}]");
+                        yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}]";
                         break;
                 }
             }
-            return ht;
         }
 
     }
@@ -188,13 +192,14 @@ namespace CKAN.CmdLine
     public abstract class VerbCommandOptions
     {
         protected string GetDescription(string verb)
-        {
-            return GetType().GetProperties()
+            => GetDescription(GetType(), verb);
+
+        protected static string GetDescription(Type t, string verb)
+            => t.GetProperties()
                 .Select(property => (BaseOptionAttribute)Attribute.GetCustomAttribute(
                     property, typeof(BaseOptionAttribute), false))
                 .FirstOrDefault(attrib => attrib?.LongName == verb)
                 ?.HelpText;
-        }
     }
 
     // Options common to all classes.
@@ -366,105 +371,10 @@ namespace CKAN.CmdLine
     // Each action defines its own options that it supports.
     // Don't forget to cast to this type when you're processing them later on.
 
-    internal class InstallOptions : InstanceSpecificOptions
-    {
-        [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files or URLs to process")]
-        public string[] ckan_files { get; set; }
-
-        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
-        public bool no_recommends { get; set; }
-
-        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
-        public bool with_suggests { get; set; }
-
-        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
-        public bool with_all_suggests { get; set; }
-
-        [Option("allow-incompatible", DefaultValue = false, HelpText = "Install modules that are not compatible with the current game version")]
-        public bool allow_incompatible { get; set; }
-
-        [ValueList(typeof(List<string>))]
-        [AvailableIdentifiers]
-        public List<string> modules { get; set; }
-    }
-
-    internal class UpgradeOptions : InstanceSpecificOptions
-    {
-        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
-        public string ckan_file { get; set; }
-
-        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
-        public bool no_recommends { get; set; }
-
-        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
-        public bool with_suggests { get; set; }
-
-        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
-        public bool with_all_suggests { get; set; }
-
-        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
-        public bool upgrade_all { get; set; }
-
-        [Option("dev-build", DefaultValue = false,
-                HelpText = "For `ckan` option only, use dev builds")]
-        public bool dev_build { get; set; }
-
-        [Option("stable-release", DefaultValue = false,
-                HelpText = "For `ckan` option only, use stable releases")]
-        public bool stable_release { get; set; }
-
-        [ValueList(typeof (List<string>))]
-        [InstalledIdentifiers]
-        public List<string> modules { get; set; }
-    }
-
-    internal class ReplaceOptions : InstanceSpecificOptions
-    {
-        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
-        public string ckan_file { get; set; }
-
-        [Option("no-recommends", HelpText = "Do not install recommended modules")]
-        public bool no_recommends { get; set; }
-
-        [Option("with-suggests", HelpText = "Install suggested modules")]
-        public bool with_suggests { get; set; }
-
-        [Option("with-all-suggests", HelpText = "Install suggested modules all the way down")]
-        public bool with_all_suggests { get; set; }
-
-        [Option("allow-incompatible", DefaultValue = false, HelpText = "Install modules that are not compatible with the current game version")]
-        public bool allow_incompatible { get; set; }
-
-        [Option("all", HelpText = "Replace all available replaced modules")]
-        public bool replace_all { get; set; }
-
-        // TODO: How do we provide helptext on this?
-        [ValueList(typeof (List<string>))]
-        [InstalledIdentifiers]
-        public List<string> modules { get; set; }
-    }
-
-    internal class ScanOptions : InstanceSpecificOptions
-    {
-    }
-
-    internal class ListOptions : InstanceSpecificOptions
-    {
-        [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
-        public bool porcelain { get; set; }
-
-        [Option("export", HelpText = "Export list of modules in specified format to stdout")]
-        public string export { get; set; }
-    }
+    internal class ScanOptions : InstanceSpecificOptions { }
 
     internal class VersionOptions   : CommonOptions { }
     internal class CleanOptions     : InstanceSpecificOptions { }
-
-    internal class AvailableOptions : InstanceSpecificOptions
-    {
-        [Option("detail", HelpText = "Show short description of each module")]
-        public bool detail { get; set; }
-    }
 
     #if NETFRAMEWORK || WINDOWS
     internal class GuiOptions : InstanceSpecificOptions
@@ -478,80 +388,6 @@ namespace CKAN.CmdLine
     {
         [Option("theme", HelpText = "Name of color scheme to use, falls back to environment variable CKAN_CONSOLEUI_THEME")]
         public string Theme { get; set; }
-    }
-
-    internal class UpdateOptions : InstanceSpecificOptions
-    {
-        [Option("list-changes", DefaultValue = false, HelpText = "List new and removed modules")]
-        public bool list_changes { get; set; }
-    }
-
-    internal class RemoveOptions : InstanceSpecificOptions
-    {
-        [Option("re", HelpText = "Parse arguments as regular expressions")]
-        public bool regex { get; set; }
-
-        [ValueList(typeof(List<string>))]
-        [InstalledIdentifiers]
-        public List<string> modules { get; set; }
-
-        [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
-        public bool rmall { get; set; }
-    }
-
-    internal class ImportOptions : InstanceSpecificOptions
-    {
-        [ValueList(typeof(List<string>))]
-        public List<string> paths { get; set; }
-    }
-
-    internal class ShowOptions : InstanceSpecificOptions
-    {
-        [Option("without-description", HelpText = "Don't show the name, abstract, or description")]
-        public bool without_description { get; set; }
-
-        [Option("without-module-info", HelpText = "Don't show the version, authors, status, license, tags, languages")]
-        public bool without_module_info { get; set; }
-
-        [Option("without-relationships", HelpText = "Don't show dependencies or conflicts")]
-        public bool without_relationships { get; set; }
-
-        [Option("without-resources", HelpText = "Don't show home page, etc.")]
-        public bool without_resources { get; set; }
-
-        [Option("without-files", HelpText = "Don't show contained files")]
-        public bool without_files { get; set; }
-
-        [Option("with-versions", HelpText = "Print table of all versions of the mod and their compatible game versions")]
-        public bool with_versions { get; set; }
-
-        [ValueList(typeof(List<string>))]
-        [AvailableIdentifiers]
-        public List<string> modules { get; set; }
-    }
-
-    internal class SearchOptions : InstanceSpecificOptions
-    {
-        [Option("detail", HelpText = "Show full name, latest compatible version and short description of each module")]
-        public bool detail { get; set; }
-
-        [Option("all", HelpText = "Show incompatible mods too")]
-        public bool all { get; set; }
-
-        [Option("author", HelpText = "Limit search results to mods by matching authors")]
-        public string author_term { get; set; }
-
-        [ValueOption(0)]
-        public string search_term { get; set; }
-    }
-
-    internal class CompareOptions : CommonOptions
-    {
-        [Option("machine-readable", HelpText = "Output in a machine readable format: -1, 0 or 1")]
-        public bool machine_readable { get; set;}
-
-        [ValueOption(0)] public string Left  { get; set; }
-        [ValueOption(1)] public string Right { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]

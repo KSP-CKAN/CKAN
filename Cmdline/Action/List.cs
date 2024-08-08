@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using CommandLine;
 using log4net;
 
 using CKAN.Exporters;
@@ -177,4 +178,14 @@ namespace CKAN.CmdLine
 
         private static readonly ILog log = LogManager.GetLogger(typeof(List));
     }
+
+    internal class ListOptions : InstanceSpecificOptions
+    {
+        [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
+        public bool porcelain { get; set; }
+
+        [Option("export", HelpText = "Export list of modules in specified format to stdout")]
+        public string export { get; set; }
+    }
+
 }

@@ -101,7 +101,8 @@ namespace CKAN.CmdLine
         {
             if (opts.filters.Count < 1)
             {
-                user.RaiseMessage("{0}: ckan filter {1} filter1 [filter2 ...]", Properties.Resources.Usage, verb);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
@@ -162,7 +163,8 @@ namespace CKAN.CmdLine
         {
             if (opts.filters.Count < 1)
             {
-                user.RaiseMessage("{0}: ckan filter {1} filter1 [filter2 ...]", Properties.Resources.Usage, verb);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
@@ -217,6 +219,14 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
+        private void PrintUsage(string verb)
+        {
+            foreach (var h in FilterSubOptions.GetHelp(verb))
+            {
+                user.RaiseError(h);
+            }
+        }
+
         private GameInstanceManager manager;
         private IUser               user;
     }
@@ -235,33 +245,41 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
+
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"ckan filter - {Properties.Resources.FilterHelpSummary}");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"ckan filter - {Properties.Resources.FilterHelpSummary}";
+                yield return $"{Properties.Resources.Usage}: ckan filter <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                ht.AddPreOptionsLine("filter " + verb + " - " + GetDescription(verb));
+                yield return "filter " + verb + " - " + GetDescription(typeof(FilterSubOptions), verb);
                 switch (verb)
                 {
                     case "list":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter {verb}");
+                        yield return $"{Properties.Resources.Usage}: ckan filter {verb}";
                         break;
 
                     case "add":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter {verb} [{Properties.Resources.Options}] filter1 [filter2 ...]");
+                        yield return $"{Properties.Resources.Usage}: ckan filter {verb} [{Properties.Resources.Options}] filter1 [filter2 ...]";
                         break;
 
                     case "remove":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan filter {verb} [{Properties.Resources.Options}] filter1 [filter2 ...]");
+                        yield return $"{Properties.Resources.Usage}: ckan filter {verb} [{Properties.Resources.Options}] filter1 [filter2 ...]";
                         break;
                 }
             }
-            return ht;
         }
     }
 
