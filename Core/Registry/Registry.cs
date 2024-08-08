@@ -496,6 +496,12 @@ namespace CKAN
         [JsonIgnore]
         private HashSet<string> untagged;
 
+        [JsonIgnore]
+        private Dictionary<string, List<CkanModule>> downloadHashesIndex;
+
+        [JsonIgnore]
+        private Dictionary<string, List<CkanModule>> downloadUrlHashIndex;
+
         // Index of which mods provide what, format:
         //   providers[provided] = { provider1, provider2, ... }
         // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
@@ -508,10 +514,12 @@ namespace CKAN
             // These member variables hold references to data from our repo data manager
             // that reflects how the available modules look to this instance.
             // Clear them when we have reason to believe the upstream available modules have changed.
-            providers = null;
-            sorter    = null;
-            tags      = null;
-            untagged  = null;
+            providers            = null;
+            sorter               = null;
+            tags                 = null;
+            untagged             = null;
+            downloadHashesIndex  = null;
+            downloadUrlHashIndex = null;
         }
 
         private void InvalidateInstalledCaches()
@@ -1222,71 +1230,52 @@ namespace CKAN
                                        satisfiedFilter);
 
         /// <summary>
-        /// Get a dictionary of all mod versions indexed by their downloads' SHA-1 hash.
+        /// Get a dictionary of all mod versions indexed by their downloads' SHA-256 and SHA-1 hashes.
         /// Useful for finding the mods for a group of files without repeatedly searching the entire registry.
         /// </summary>
         /// <returns>
-        /// dictionary[sha1] = {mod1, mod2, mod3};
+        /// dictionary[sha256 or sha1] = {mod1, mod2, mod3};
         /// </returns>
-        public Dictionary<string, List<CkanModule>> GetSha1Index()
+        public Dictionary<string, List<CkanModule>> GetDownloadHashesIndex()
+            => downloadHashesIndex = downloadHashesIndex
+                ?? repoDataMgr.GetAllAvailableModules(repositories.Values)
+                              .SelectMany(availMod => availMod.module_version.Values)
+                              .SelectMany(ModWithDownloadHashes)
+                              .GroupBy(tuple => tuple.Item1,
+                                       tuple => tuple.Item2)
+                              .ToDictionary(grp => grp.Key,
+                                            grp => grp.ToList());
+
+        private IEnumerable<Tuple<string, CkanModule>> ModWithDownloadHashes(CkanModule m)
         {
-            var index = new Dictionary<string, List<CkanModule>>();
-            foreach (var am in repoDataMgr.GetAllAvailableModules(repositories.Values))
+            if (!string.IsNullOrEmpty(m.download_hash?.sha256))
             {
-                foreach (var kvp2 in am.module_version)
-                {
-                    CkanModule mod = kvp2.Value;
-                    if (mod.download_hash != null)
-                    {
-                        if (index.ContainsKey(mod.download_hash.sha1))
-                        {
-                            index[mod.download_hash.sha1].Add(mod);
-                        }
-                        else
-                        {
-                            index.Add(mod.download_hash.sha1, new List<CkanModule>() {mod});
-                        }
-                    }
-                }
+                yield return new Tuple<string, CkanModule>(m.download_hash.sha256, m);
             }
-            return index;
+            if (!string.IsNullOrEmpty(m.download_hash?.sha1))
+            {
+                yield return new Tuple<string, CkanModule>(m.download_hash.sha1, m);
+            }
         }
 
         /// <summary>
-        /// Get a dictionary of all mod versions indexed by their download URLs' hash.
+        /// Get a dictionary of all mod versions indexed by their download URLs' hashes.
         /// Useful for finding the mods for a group of URLs without repeatedly searching the entire registry.
         /// </summary>
         /// <returns>
         /// dictionary[urlHash] = {mod1, mod2, mod3};
         /// </returns>
-        public Dictionary<string, List<CkanModule>> GetDownloadHashIndex()
-        {
-            var index = new Dictionary<string, List<CkanModule>>();
-            foreach (var am in repoDataMgr?.GetAllAvailableModules(repositories.Values)
+        public Dictionary<string, List<CkanModule>> GetDownloadUrlHashIndex()
+            => downloadUrlHashIndex = downloadUrlHashIndex
+                ?? (repoDataMgr?.GetAllAvailableModules(repositories.Values)
                                ?? Enumerable.Empty<AvailableModule>())
-            {
-                foreach (var kvp2 in am.module_version)
-                {
-                    CkanModule mod = kvp2.Value;
-                    if (mod.download != null)
-                    {
-                        foreach (var dlUri in mod.download)
-                        {
-                            string hash = NetFileCache.CreateURLHash(dlUri);
-                            if (index.ContainsKey(hash))
-                            {
-                                index[hash].Add(mod);
-                            }
-                            else
-                            {
-                                index.Add(hash, new List<CkanModule>() {mod});
-                            }
-                        }
-                    }
-                }
-            }
-            return index;
-        }
+                                .SelectMany(am => am.module_version.Values)
+                                .Where(m => m.download != null && m.download.Count > 0)
+                                .SelectMany(m => m.download.Select(url => new Tuple<Uri, CkanModule>(url, m)))
+                                .GroupBy(tuple => tuple.Item1,
+                                         tuple => tuple.Item2)
+                                .ToDictionary(grp => NetFileCache.CreateURLHash(grp.Key),
+                                              grp => grp.ToList());
 
         /// <summary>
         /// Return all hosts from latest versions of all available modules,

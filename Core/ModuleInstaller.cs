@@ -1514,20 +1514,20 @@ namespace CKAN
             HashSet<CkanModule> installable = new HashSet<CkanModule>();
             List<FileInfo>      deletable   = new List<FileInfo>();
             // Get the mapping of known hashes to modules
-            Dictionary<string, List<CkanModule>> index = registry.GetSha1Index();
+            var index = registry.GetDownloadHashesIndex();
             int i = 0;
             foreach (FileInfo f in files)
             {
                 int percent = i * 100 / files.Count;
                 user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting, f.Name, percent), percent);
-                // Calc SHA-1 sum
-                string sha1 = Cache.GetFileHashSha1(f.FullName, new Progress<long>(bytes => {}));
-                // Find SHA-1 sum in registry (potentially multiple)
-                if (index.ContainsKey(sha1))
+                // Find SHA-256 or SHA-1 sum in registry (potentially multiple)
+                if (index.TryGetValue(Cache.GetFileHashSha256(f.FullName, new Progress<long>(bytes => {})),
+                                      out List<CkanModule> matches)
+                    || index.TryGetValue(Cache.GetFileHashSha1(f.FullName, new Progress<long>(bytes => {})),
+                                      out matches))
                 {
                     deletable.Add(f);
-                    List<CkanModule> matches = index[sha1];
-                    foreach (CkanModule mod in matches)
+                    foreach (var mod in matches)
                     {
                         if (mod.IsCompatible(instance.VersionCriteria()))
                         {

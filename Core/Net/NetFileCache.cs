@@ -302,7 +302,7 @@ namespace CKAN
                     );
 
                 // This object lets us find the modules associated with a cached file
-                Dictionary<string, List<CkanModule>> hashMap = registry.GetDownloadHashIndex();
+                var hashMap = registry.GetDownloadUrlHashIndex();
 
                 // Prune the module lists to only those that are compatible
                 foreach (var kvp in hashMap)
