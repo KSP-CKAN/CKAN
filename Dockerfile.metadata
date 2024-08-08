@@ -2,7 +2,7 @@
 FROM ubuntu:22.04 as base
 
 # Don't prompt for time zone
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 
 # Put user-installed Python code in path
 ENV PATH "$PATH:/root/.local/bin"
@@ -33,7 +33,8 @@ RUN apt-get install -y --no-install-recommends \
     python3-pip python3-setuptools python3-dev
 
 # Install the meta tester's Python code and its Infra dep
-ENV PIP_ROOT_USER_ACTION=ignore
+ENV PIP_ROOT_USER_ACTION ignore
+ENV PIP_BREAK_SYSTEM_PACKAGES 1
 RUN pip3 install --upgrade pip
 RUN pip3 install 'git+https://github.com/KSP-CKAN/NetKAN-Infra#subdirectory=netkan'
 RUN pip3 install 'git+https://github.com/KSP-CKAN/xKAN-meta_testing'

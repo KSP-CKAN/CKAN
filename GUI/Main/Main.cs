@@ -717,7 +717,7 @@ namespace CKAN.GUI
                                 rel.ExactMatch(registry_manager.registry, crit, installed, toInstall)
                                 // Otherwise look for incompatible
                                 ?? rel.ExactMatch(registry_manager.registry, null, installed, toInstall))
-                            .Where(mod => mod != null));
+                            .OfType<CkanModule>());
                     }
                     toInstall.Add(module);
                 }
