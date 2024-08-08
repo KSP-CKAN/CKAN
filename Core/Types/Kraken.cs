@@ -276,8 +276,8 @@ namespace CKAN
 
         // These aren't set at construction time, but exist so that we can decorate the
         // kraken as appropriate.
-        public CkanModule installingModule;
-        public string owningModule;
+        public CkanModule      installingModule;
+        public InstalledModule owningModule;
 
         public FileExistsKraken(string filename, string reason = null, Exception innerException = null)
             : base(reason, innerException)

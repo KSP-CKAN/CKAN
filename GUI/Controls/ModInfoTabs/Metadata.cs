@@ -49,7 +49,9 @@ namespace CKAN.GUI
                     MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString();
                 }
 
-                var compatMod = gui_module.LatestCompatibleMod ?? gui_module.LatestAvailableMod ?? gui_module.ToModule();
+                var compatMod = gui_module.LatestCompatibleMod
+                                ?? gui_module.LatestAvailableMod
+                                ?? gui_module.ToModule();
                 MetadataModuleGameCompatibilityTextBox.Text = string.Format(
                     Properties.Resources.GUIModGameCompatibilityLong,
                     gui_module.GameCompatibility,

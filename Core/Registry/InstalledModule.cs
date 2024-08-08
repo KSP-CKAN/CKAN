@@ -45,10 +45,10 @@ namespace CKAN
         [JsonProperty]
         private Dictionary<string, InstalledModuleFile> installed_files;
 
-        public IEnumerable<string> Files => installed_files.Keys;
-        public string identifier => source_module.identifier;
-        public CkanModule Module => source_module;
-        public DateTime InstallTime => install_time;
+        public IEnumerable<string> Files       => installed_files.Keys;
+        public string              identifier  => source_module.identifier;
+        public CkanModule          Module      => source_module;
+        public DateTime            InstallTime => install_time;
 
         public bool AutoInstalled
         {
@@ -125,7 +125,7 @@ namespace CKAN
             // We need case insensitive path matching on Windows
             var normalised_installed_files = new Dictionary<string, InstalledModuleFile>(Platform.PathComparer);
 
-            foreach (KeyValuePair<string, InstalledModuleFile> tuple in installed_files)
+            foreach (var tuple in installed_files)
             {
                 string path = CKANPathUtils.NormalizePath(tuple.Key);
 
@@ -141,5 +141,11 @@ namespace CKAN
         }
 
         #endregion
+
+        public override string ToString()
+            => string.Format(AutoInstalled ? Properties.Resources.InstalledModuleToStringAutoInstalled
+                                           : Properties.Resources.InstalledModuleToString,
+                             Module,
+                             InstallTime);
     }
 }

@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 # Don't prompt for time zone
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 
 # Set up Mono's APT repo
 RUN apt-get update \
