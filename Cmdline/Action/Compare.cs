@@ -1,3 +1,5 @@
+using CommandLine;
+
 using CKAN.Versioning;
 
 namespace CKAN.CmdLine
@@ -46,11 +48,25 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseMessage("{0}: ckan compare version1 version2", Properties.Resources.Usage);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                foreach (var h in Actions.GetHelp("compare"))
+                {
+                    user.RaiseError(h);
+                }
                 return Exit.BADOPT;
             }
 
             return Exit.OK;
         }
     }
+
+    internal class CompareOptions : CommonOptions
+    {
+        [Option("machine-readable", HelpText = "Output in a machine readable format: -1, 0 or 1")]
+        public bool machine_readable { get; set;}
+
+        [ValueOption(0)] public string Left  { get; set; }
+        [ValueOption(1)] public string Right { get; set; }
+    }
+
 }

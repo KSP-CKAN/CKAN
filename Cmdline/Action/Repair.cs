@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CommandLine;
 using CommandLine.Text;
 
@@ -11,27 +13,35 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
+
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"ckan repair - {Properties.Resources.RepairHelpSummary}");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repair <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"ckan repair - {Properties.Resources.RepairHelpSummary}";
+                yield return $"{Properties.Resources.Usage}: ckan repair <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                ht.AddPreOptionsLine("repair " + verb + " - " + GetDescription(verb));
+                yield return "repair " + verb + " - " + GetDescription(typeof(RepairSubOptions), verb);
                 switch (verb)
                 {
                     // Commands with only --flag type options
                     case "registry":
                     default:
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan repair {verb} [{Properties.Resources.Options}]");
+                        yield return $"{Properties.Resources.Usage}: ckan repair {verb} [{Properties.Resources.Options}]";
                         break;
                 }
             }
-            return ht;
         }
     }
 

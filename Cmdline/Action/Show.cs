@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using CommandLine;
+
 using CKAN.Versioning;
 
 namespace CKAN.CmdLine
@@ -20,8 +22,11 @@ namespace CKAN.CmdLine
             ShowOptions options = (ShowOptions) raw_options;
             if (options.modules == null || options.modules.Count < 1)
             {
-                // empty argument
-                user.RaiseMessage("show <module> - {0}", Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                foreach (var h in Actions.GetHelp("show"))
+                {
+                    user.RaiseError(h);
+                }
                 return Exit.BADOPT;
             }
 
@@ -381,4 +386,30 @@ namespace CKAN.CmdLine
         private IUser user { get; set; }
         private readonly RepositoryDataManager repoData;
     }
+
+    internal class ShowOptions : InstanceSpecificOptions
+    {
+        [Option("without-description", HelpText = "Don't show the name, abstract, or description")]
+        public bool without_description { get; set; }
+
+        [Option("without-module-info", HelpText = "Don't show the version, authors, status, license, tags, languages")]
+        public bool without_module_info { get; set; }
+
+        [Option("without-relationships", HelpText = "Don't show dependencies or conflicts")]
+        public bool without_relationships { get; set; }
+
+        [Option("without-resources", HelpText = "Don't show home page, etc.")]
+        public bool without_resources { get; set; }
+
+        [Option("without-files", HelpText = "Don't show contained files")]
+        public bool without_files { get; set; }
+
+        [Option("with-versions", HelpText = "Print table of all versions of the mod and their compatible game versions")]
+        public bool with_versions { get; set; }
+
+        [ValueList(typeof(List<string>))]
+        [AvailableIdentifiers]
+        public List<string> modules { get; set; }
+    }
+
 }

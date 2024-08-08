@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Transactions;
 
+using CommandLine;
 using Autofac;
 
 using CKAN.Versioning;
@@ -44,12 +45,10 @@ namespace CKAN.CmdLine
 
             if (options.modules.Count == 0 && !options.upgrade_all)
             {
-                // What? No files specified?
-                user.RaiseMessage("{0}: ckan upgrade Mod [Mod2, ...]", Properties.Resources.Usage);
-                user.RaiseMessage("  or   ckan upgrade --all");
-                if (AutoUpdate.CanUpdate)
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                foreach (var h in Actions.GetHelp("upgrade"))
                 {
-                    user.RaiseMessage("  or   ckan upgrade ckan [--stable-release|--dev-build]");
+                    user.RaiseError(h);
                 }
                 return Exit.BADOPT;
             }
@@ -318,4 +317,35 @@ namespace CKAN.CmdLine
         private readonly GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
     }
+
+    internal class UpgradeOptions : InstanceSpecificOptions
+    {
+        [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
+        public string ckan_file { get; set; }
+
+        [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
+        public bool no_recommends { get; set; }
+
+        [Option("with-suggests", DefaultValue = false, HelpText = "Install suggested modules")]
+        public bool with_suggests { get; set; }
+
+        [Option("with-all-suggests", DefaultValue = false, HelpText = "Install suggested modules all the way down")]
+        public bool with_all_suggests { get; set; }
+
+        [Option("all", DefaultValue = false, HelpText = "Upgrade all available updated modules")]
+        public bool upgrade_all { get; set; }
+
+        [Option("dev-build", DefaultValue = false,
+                HelpText = "For `ckan` option only, use dev builds")]
+        public bool dev_build { get; set; }
+
+        [Option("stable-release", DefaultValue = false,
+                HelpText = "For `ckan` option only, use stable releases")]
+        public bool stable_release { get; set; }
+
+        [ValueList(typeof (List<string>))]
+        [InstalledIdentifiers]
+        public List<string> modules { get; set; }
+    }
+
 }

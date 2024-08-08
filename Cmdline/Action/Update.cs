@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using CommandLine;
+
 namespace CKAN.CmdLine
 {
     public class Update : ICommand
@@ -141,4 +143,11 @@ namespace CKAN.CmdLine
         private readonly RepositoryDataManager repoData;
         private readonly IUser                 user;
     }
+
+    internal class UpdateOptions : InstanceSpecificOptions
+    {
+        [Option("list-changes", DefaultValue = false, HelpText = "List new and removed modules")]
+        public bool list_changes { get; set; }
+    }
+
 }

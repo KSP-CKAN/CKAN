@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+using CommandLine;
 using log4net;
 
 namespace CKAN.CmdLine
@@ -39,7 +40,11 @@ namespace CKAN.CmdLine
                 HashSet<FileInfo> toImport = GetFiles(opts);
                 if (toImport.Count < 1)
                 {
-                    user.RaiseMessage($"{Properties.Resources.Usage}: ckan import {Properties.Resources.Path} [path2, ...]");
+                    user.RaiseError(Properties.Resources.ArgumentMissing);
+                    foreach (var h in Actions.GetHelp("import"))
+                    {
+                        user.RaiseError(h);
+                    }
                     return Exit.ERROR;
                 }
                 else
@@ -107,6 +112,12 @@ namespace CKAN.CmdLine
         private        readonly IUser                 user;
 
         private static readonly ILog                  log = LogManager.GetLogger(typeof(Import));
+    }
+
+    internal class ImportOptions : InstanceSpecificOptions
+    {
+        [ValueList(typeof(List<string>))]
+        public List<string> paths { get; set; }
     }
 
 }

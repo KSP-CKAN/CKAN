@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using CommandLine;
 using CommandLine.Text;
 using Autofac;
@@ -29,25 +31,34 @@ namespace CKAN.CmdLine
         [HelpVerbOption]
         public string GetUsage(string verb)
         {
-            HelpText ht = HelpText.AutoBuild(this, verb);
+            var ht = HelpText.AutoBuild(this, verb);
+            foreach (var h in GetHelp(verb))
+            {
+                ht.AddPreOptionsLine(h);
+            }
+            return ht;
+        }
+
+        public static IEnumerable<string> GetHelp(string verb)
+        {
             // Add a usage prefix line
-            ht.AddPreOptionsLine(" ");
+            yield return " ";
             if (string.IsNullOrEmpty(verb))
             {
-                ht.AddPreOptionsLine($"ckan cache - {Properties.Resources.CacheHelpSummary}");
-                ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache <{Properties.Resources.Command}> [{Properties.Resources.Options}]");
+                yield return $"ckan cache - {Properties.Resources.CacheHelpSummary}";
+                yield return $"{Properties.Resources.Usage}: ckan cache <{Properties.Resources.Command}> [{Properties.Resources.Options}]";
             }
             else
             {
-                ht.AddPreOptionsLine("cache " + verb + " - " + GetDescription(verb));
+                yield return "cache " + verb + " - " + GetDescription(typeof(CacheSubOptions), verb);
                 switch (verb)
                 {
                     // First the commands with one string argument
                     case "set":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] path");
+                        yield return $"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] path";
                         break;
                     case "setlimit":
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] megabytes");
+                        yield return $"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] megabytes";
                         break;
 
                     // Now the commands with only --flag type options
@@ -56,11 +67,10 @@ namespace CKAN.CmdLine
                     case "reset":
                     case "showlimit":
                     default:
-                        ht.AddPreOptionsLine($"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}]");
+                        yield return $"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}]";
                         break;
                 }
             }
-            return ht;
         }
     }
 
@@ -158,7 +168,8 @@ namespace CKAN.CmdLine
         {
             if (string.IsNullOrEmpty(options.Path))
             {
-                user.RaiseError("set <{0}> - {1}", Properties.Resources.Path, Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
+                PrintUsage("set");
                 return Exit.BADOPT;
             }
 
@@ -229,6 +240,14 @@ namespace CKAN.CmdLine
                               fileCount,
                               CkanModule.FmtSize(bytes),
                               CkanModule.FmtSize(bytesFree));
+        }
+
+        private void PrintUsage(string verb)
+        {
+            foreach (var h in CacheSubOptions.GetHelp(verb))
+            {
+                user.RaiseError(h);
+            }
         }
 
         private IUser               user;
