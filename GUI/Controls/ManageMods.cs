@@ -523,7 +523,7 @@ namespace CKAN.GUI
                     {
                         if (!Main.Instance.LabelsHeld(gmod.Identifier))
                         {
-                            gmod.SelectedMod = gmod.LatestAvailableMod;
+                            gmod.SelectedMod = gmod.LatestCompatibleMod;
                         }
                     }
                 }
@@ -881,7 +881,7 @@ namespace CKAN.GUI
                                 case "Installed":
                                     gmod.SelectedMod = nowChecked ? gmod.SelectedMod
                                                                     ?? gmod.InstalledMod?.Module
-                                                                    ?? gmod.LatestAvailableMod
+                                                                    ?? gmod.LatestCompatibleMod
                                                                   : null;
                                     break;
                                 case "UpdateCol":
@@ -890,10 +890,10 @@ namespace CKAN.GUI
                                           && (gmod.InstalledMod == null
                                               || gmod.InstalledMod.Module.version < gmod.SelectedMod.version)
                                             ? gmod.SelectedMod
-                                            : gmod.LatestAvailableMod
+                                            : gmod.LatestCompatibleMod
                                         : gmod.InstalledMod?.Module;
 
-                                    if (nowChecked && gmod.SelectedMod == gmod.LatestAvailableMod)
+                                    if (nowChecked && gmod.SelectedMod == gmod.LatestCompatibleMod)
                                     {
                                         // Reinstall, force update without change
                                         UpdateChangeSetAndConflicts(currentInstance,
