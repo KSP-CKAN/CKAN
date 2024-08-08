@@ -1069,7 +1069,7 @@ namespace CKAN
         /// <summary>
         /// <see cref = "IRegistryQuerier.InstalledVersion" />
         /// </summary>
-        public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides=true)
+        public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides = true)
         {
             // If it's genuinely installed, return the details we have.
             // (Includes DLCs)
@@ -1100,27 +1100,17 @@ namespace CKAN
         /// <see cref = "IRegistryQuerier.GetInstalledVersion" />
         /// </summary>
         public CkanModule GetInstalledVersion(string mod_identifier)
-            => installed_modules.TryGetValue(mod_identifier, out InstalledModule installedModule)
-                ? installedModule.Module
-                : null;
+            => InstalledModule(mod_identifier)?.Module;
 
         /// <summary>
         /// Returns the module which owns this file, or null if not known.
         /// Throws a PathErrorKraken if an absolute path is provided.
         /// </summary>
-        public string FileOwner(string file)
-        {
-            file = CKANPathUtils.NormalizePath(file);
-
-            if (Path.IsPathRooted(file))
-            {
-                throw new PathErrorKraken(
-                    file,
-                    "KSPUtils.FileOwner can only work with relative paths.");
-            }
-
-            return installed_files.TryGetValue(file, out string fileOwner) ? fileOwner : null;
-        }
+        public InstalledModule FileOwner(string file)
+            => installed_files.TryGetValue(CKANPathUtils.NormalizePath(file),
+                                           out string fileOwner)
+                ? InstalledModule(fileOwner)
+                : null;
 
         /// <summary>
         /// <see cref="IRegistryQuerier.CheckSanity"/>
