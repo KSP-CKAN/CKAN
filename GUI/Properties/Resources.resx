@@ -329,7 +329,9 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainRepoFailed" xml:space="preserve"><value>Repository update failed!</value></data>
   <data name="MainRepoSuccess" xml:space="preserve"><value>Repositories successfully updated.</value></data>
   <data name="MainRepoOutdatedClient" xml:space="preserve"><value>Repositories updated, but found modules that require a new version of CKAN. Checking for updates...</value></data>
-  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Would you like CKAN to refresh the modlist every time it is loaded? (You can always manually refresh using the button up top.)</value></data>
+  <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Would you like CKAN to refresh the mod list automatically every time it is loaded?
+
+You can refresh the mod list manually with the Refresh button at the top, and you can change this setting later in the Settings. If you disable automatic refreshes, it's a good idea to refresh every few days.</value></data>
   <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} update(s) available</value></data>
   <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Click to upgrade</value></data>
   <data name="MainTrayIconResume" xml:space="preserve"><value>Resume</value></data>
