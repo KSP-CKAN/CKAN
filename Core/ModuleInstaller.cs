@@ -68,7 +68,7 @@ namespace CKAN
                              ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
                 .First());
 
-            return cache.Store(module, tmp_file, new Progress<long>(bytes => {}), filename, true);
+            return cache.Store(module, tmp_file, new Progress<int>(percent => {}), filename, true);
         }
 
         /// <summary>
@@ -1501,6 +1501,37 @@ namespace CKAN
 
         #endregion
 
+        private bool TryGetFileHashMatches(HashSet<FileInfo>                          files,
+                                           Registry                                   registry,
+                                           out Dictionary<FileInfo, List<CkanModule>> matched,
+                                           out List<FileInfo>                         notFound,
+                                           IProgress<int>                             percentProgress)
+        {
+            matched      = new Dictionary<FileInfo, List<CkanModule>>();
+            notFound     = new List<FileInfo>();
+            var index    = registry.GetDownloadHashesIndex();
+            var progress = new ProgressScalePercentsByFileSizes(percentProgress,
+                                                                files.Select(fi => fi.Length));
+            foreach (var fi in files.Distinct())
+            {
+                if (index.TryGetValue(Cache.GetFileHashSha256(fi.FullName, progress),
+                                      out List<CkanModule> modules)
+                    // The progress bar will jump back and "redo" the same span
+                    // for non-matched files, but that's... OK?
+                    || index.TryGetValue(Cache.GetFileHashSha1(fi.FullName, progress),
+                                         out modules))
+                {
+                    matched.Add(fi, modules);
+                }
+                else
+                {
+                    notFound.Add(fi);
+                }
+                progress.NextFile();
+            }
+            return matched.Count > 0;
+        }
+
         /// <summary>
         /// Import a list of files into the download cache, with progress bar and
         /// interactive prompts for installation and deletion.
@@ -1509,69 +1540,106 @@ namespace CKAN
         /// <param name="user">Object for user interaction</param>
         /// <param name="installMod">Function to call to mark a mod for installation</param>
         /// <param name="allowDelete">True to ask user whether to delete imported files, false to leave the files as is</param>
-        public void ImportFiles(HashSet<FileInfo> files, IUser user, Action<CkanModule> installMod, Registry registry, bool allowDelete = true)
+        public bool ImportFiles(HashSet<FileInfo>  files,
+                                IUser              user,
+                                Action<CkanModule> installMod,
+                                Registry           registry,
+                                bool               allowDelete = true)
         {
-            HashSet<CkanModule> installable = new HashSet<CkanModule>();
-            List<FileInfo>      deletable   = new List<FileInfo>();
-            // Get the mapping of known hashes to modules
-            var index = registry.GetDownloadHashesIndex();
-            int i = 0;
-            foreach (FileInfo f in files)
+            if (!TryGetFileHashMatches(files, registry,
+                                       out Dictionary<FileInfo, List<CkanModule>> matched,
+                                       out List<FileInfo> notFound,
+                                       new Progress<int>(p =>
+                                           user.RaiseProgress(Properties.Resources.ModuleInstallerImportScanningFiles,
+                                                              p))))
             {
-                int percent = i * 100 / files.Count;
-                user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting, f.Name, percent), percent);
-                // Find SHA-256 or SHA-1 sum in registry (potentially multiple)
-                if (index.TryGetValue(Cache.GetFileHashSha256(f.FullName, new Progress<long>(bytes => {})),
-                                      out List<CkanModule> matches)
-                    || index.TryGetValue(Cache.GetFileHashSha1(f.FullName, new Progress<long>(bytes => {})),
-                                      out matches))
-                {
-                    deletable.Add(f);
-                    foreach (var mod in matches)
-                    {
-                        if (mod.IsCompatible(instance.VersionCriteria()))
-                        {
-                            installable.Add(mod);
-                        }
-                        if (Cache.IsMaybeCachedZip(mod))
-                        {
-                            user.RaiseMessage(Properties.Resources.ModuleInstallerImportAlreadyCached, f.Name);
-                        }
-                        else
-                        {
-                            user.RaiseMessage(Properties.Resources.ModuleInstallerImportingMod,
-                                mod.identifier, StripEpoch(mod.version));
-                            Cache.Store(mod, f.FullName, new Progress<long>(bytes => {}));
-                        }
-                    }
-                }
-                else
-                {
-                    user.RaiseMessage(Properties.Resources.ModuleInstallerImportNotFound, f.Name);
-                }
-                ++i;
+                // We're not going to do anything, so let the user know they failed
+                user.RaiseError(Properties.Resources.ModuleInstallerImportNotFound,
+                                string.Join(", ", notFound.Select(fi => fi.Name)));
+                return false;
             }
-            if (installable.Count > 0 && user.RaiseYesNoDialog(string.Format(
-                Properties.Resources.ModuleInstallerImportInstallPrompt,
-                installable.Count, instance.Name, instance.GameDir())))
+
+            if (notFound.Count > 0)
+            {
+                // At least one was found, so just warn about the rest
+                user.RaiseMessage(" ");
+                user.RaiseMessage(Properties.Resources.ModuleInstallerImportNotFound,
+                                  string.Join(", ", notFound.Select(fi => fi.Name)));
+            }
+            var installable = matched.Values.SelectMany(modules => modules)
+                                            .Where(m => registry.IdentifierCompatible(m.identifier,
+                                                                                      instance.VersionCriteria()))
+                                            .ToHashSet();
+
+            var deletable = matched.Keys.ToList();
+            var delete    = allowDelete
+                            && deletable.Count > 0
+                            && user.RaiseYesNoDialog(string.Format(Properties.Resources.ModuleInstallerImportDeletePrompt,
+                                                                   deletable.Count));
+
+            // Store once per "primary" URL since each has its own URL hash
+            var cachedGroups = matched.SelectMany(kvp => kvp.Value.DistinctBy(m => m.download.First())
+                                                                  .Select(m => (File:   kvp.Key,
+                                                                                Module: m)))
+                                      .GroupBy(tuple => Cache.IsMaybeCachedZip(tuple.Module))
+                                      .ToDictionary(grp => grp.Key,
+                                                    grp => grp.ToArray());
+            if (cachedGroups.TryGetValue(true, out (FileInfo File, CkanModule Module)[] alreadyStored))
+            {
+                // Notify about files that are already cached
+                user.RaiseMessage(" ");
+                user.RaiseMessage(Properties.Resources.ModuleInstallerImportAlreadyCached,
+                                  string.Join(", ", alreadyStored.Select(tuple => $"{tuple.Module} ({tuple.File.Name})")));
+            }
+            if (cachedGroups.TryGetValue(false, out (FileInfo File, CkanModule Module)[] toStore))
+            {
+                // Store any new files
+                user.RaiseMessage(" ");
+                var description = "";
+                var progress = new ProgressScalePercentsByFileSizes(
+                                   new Progress<int>(p =>
+                                       user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting,
+                                                                        description),
+                                                          p)),
+                                   toStore.Select(tuple => tuple.File.Length));
+                foreach ((FileInfo fi, CkanModule module) in toStore)
+                {
+
+                    // Update the progress string
+                    description = $"{module} ({fi.Name})";
+                    Cache.Store(module, fi.FullName, progress,
+                                // Move if user said we could delete and we don't need to make any more copies
+                                move: delete && toStore.Last(tuple => tuple.File == fi).Module == module,
+                                // Skip revalidation because we had to check the hashes to get here!
+                                validate: false);
+                    progress.NextFile();
+                }
+            }
+
+            // Here we have installable containing mods that can be installed, and the importable files have been stored in cache.
+            if (installable.Count > 0
+                && user.RaiseYesNoDialog(string.Format(Properties.Resources.ModuleInstallerImportInstallPrompt,
+                                                       installable.Count,
+                                                       instance.Name,
+                                                       instance.GameDir())))
             {
                 // Install the imported mods
-                foreach (CkanModule mod in installable)
+                foreach (var mod in installable)
                 {
                     installMod(mod);
                 }
             }
-            if (allowDelete && deletable.Count > 0 && user.RaiseYesNoDialog(string.Format(
-                Properties.Resources.ModuleInstallerImportDeletePrompt, deletable.Count)))
+            if (delete)
             {
-                // Delete old files
-                foreach (FileInfo f in deletable)
+                // Delete old files that weren't already moved into cache
+                foreach (var f in deletable.Where(f => f.Exists))
                 {
                     f.Delete();
                 }
             }
 
             EnforceCacheSizeLimit(registry);
+            return true;
         }
 
         private void EnforceCacheSizeLimit(Registry registry)
@@ -1588,47 +1656,38 @@ namespace CKAN
         /// Remove prepending v V. Version_ etc
         /// </summary>
         public static string StripV(string version)
-        {
-            Match match = Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$");
-
-            return match.Success
-                ? match.Groups["num"].Value + match.Groups["ver"].Value
-                : version;
-        }
+            => Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$") is Match match
+               && match.Success
+                   ? match.Groups["num"].Value + match.Groups["ver"].Value
+                   : version;
 
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         /// <param name="version">A version that might contain an epoch</param>
         public static string StripEpoch(ModuleVersion version)
-        {
-            return StripEpoch(version.ToString());
-        }
+            => StripEpoch(version.ToString());
 
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
         /// <param name="version">A version string that might contain an epoch</param>
         public static string StripEpoch(string version)
-        {
             // If our version number starts with a string of digits, followed by
             // a colon, and then has no more colons, we're probably safe to assume
             // the first string of digits is an epoch
-            return epochMatch.IsMatch(version)
+            => epochMatch.IsMatch(version)
                 ? epochReplace.Replace(version, @"$2")
                 : version;
-        }
 
         /// <summary>
         /// As above, but includes the original in parentheses
         /// </summary>
         /// <param name="version">A version string that might contain an epoch</param>
         public static string WithAndWithoutEpoch(string version)
-        {
-            return epochMatch.IsMatch(version)
+            => epochMatch.IsMatch(version)
                 ? $"{epochReplace.Replace(version, @"$2")} ({version})"
                 : version;
-        }
 
         private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);

@@ -245,7 +245,7 @@
   <data name="ModuleInstallerReplaceAutodetected" xml:space="preserve"><value>Невозможно заменить {0}, так как он не был установлен CKAN.
 Удалите его вручную и попробуйте снова.</value></data>
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve"><value>Невозможно заменить {0}, так как он не установлен. Сначала установите {1}.</value></data>
-  <data name="ModuleInstallerImporting" xml:space="preserve"><value>Импорт {0}... ({1}%)</value></data>
+  <data name="ModuleInstallerImporting" xml:space="preserve"><value>Импорт {0}...</value></data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve"><value>Уже кэшировано: {0}</value></data>
   <data name="ModuleInstallerImportingMod" xml:space="preserve"><value>Импорт {0} {1}...</value></data>
   <data name="ModuleInstallerImportNotFound" xml:space="preserve"><value>Не найдено в указателе: {0}</value></data>

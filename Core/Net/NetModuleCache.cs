@@ -127,7 +127,7 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha1(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
             => cache.GetFileHashSha1(filePath, progress, cancelToken);
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha256(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
             => cache.GetFileHashSha256(filePath, progress, cancelToken);
 
         /// <summary>
@@ -153,73 +153,81 @@ namespace CKAN
         /// <returns>
         /// Name of the new file in the cache
         /// </returns>
-        public string Store(CkanModule module, string path, IProgress<long> progress, string description = null, bool move = false, CancellationToken cancelToken = default)
+        public string Store(CkanModule        module,
+                            string            path,
+                            IProgress<int>    progress,
+                            string            description = null,
+                            bool              move        = false,
+                            CancellationToken cancelToken = default,
+                            bool              validate    = true)
         {
-            // ZipValid takes a lot longer than the hash check, so scale them 70:30 if hashes are present
-            int zipValidPercent = module.download_hash == null ? 100 : 70;
-
-            progress?.Report(0);
-            // Check file exists
-            FileInfo fi = new FileInfo(path);
-            if (!fi.Exists)
+            if (validate)
             {
-                throw new FileNotFoundKraken(path);
-            }
+                // ZipValid takes a lot longer than the hash check, so scale them 70:30 if hashes are present
+                int zipValidPercent = module.download_hash == null ? 100 : 70;
 
-            // Check file size
-            if (module.download_size > 0 && fi.Length != module.download_size)
-            {
-                throw new InvalidModuleFileKraken(module, path, string.Format(
-                    Properties.Resources.NetModuleCacheBadLength,
-                    module, path, fi.Length, module.download_size));
-            }
-
-            cancelToken.ThrowIfCancellationRequested();
-
-            // Check valid CRC
-            if (!ZipValid(path, out string invalidReason, new Progress<long>(percent =>
-                progress?.Report(percent * zipValidPercent / 100))))
-            {
-                throw new InvalidModuleFileKraken(module, path, string.Format(
-                    Properties.Resources.NetModuleCacheNotValidZIP,
-                    module, path, invalidReason));
-            }
-
-            cancelToken.ThrowIfCancellationRequested();
-
-            // Some older metadata doesn't have hashes
-            if (module.download_hash != null)
-            {
-                int hashPercent = 100 - zipValidPercent;
-                // Only check one hash, sha256 if it's set, sha1 otherwise
-                if (!string.IsNullOrEmpty(module.download_hash.sha256))
+                progress?.Report(0);
+                // Check file exists
+                FileInfo fi = new FileInfo(path);
+                if (!fi.Exists)
                 {
-                    // Check SHA256 match
-                    string sha256 = GetFileHashSha256(path, new Progress<long>(percent =>
-                        progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
-                    if (sha256 != module.download_hash.sha256)
+                    throw new FileNotFoundKraken(path);
+                }
+
+                // Check file size
+                if (module.download_size > 0 && fi.Length != module.download_size)
+                {
+                    throw new InvalidModuleFileKraken(module, path, string.Format(
+                        Properties.Resources.NetModuleCacheBadLength,
+                        module, path, fi.Length, module.download_size));
+                }
+
+                cancelToken.ThrowIfCancellationRequested();
+
+                // Check valid CRC
+                if (!ZipValid(path, out string invalidReason, new Progress<int>(percent =>
+                    progress?.Report(percent * zipValidPercent / 100))))
+                {
+                    throw new InvalidModuleFileKraken(module, path, string.Format(
+                        Properties.Resources.NetModuleCacheNotValidZIP,
+                        module, path, invalidReason));
+                }
+
+                cancelToken.ThrowIfCancellationRequested();
+
+                // Some older metadata doesn't have hashes
+                if (module.download_hash != null)
+                {
+                    int hashPercent = 100 - zipValidPercent;
+                    // Only check one hash, sha256 if it's set, sha1 otherwise
+                    if (!string.IsNullOrEmpty(module.download_hash.sha256))
                     {
-                        throw new InvalidModuleFileKraken(module, path, string.Format(
-                            Properties.Resources.NetModuleCacheMismatchSHA256,
-                            module, path, sha256, module.download_hash.sha256));
+                        // Check SHA256 match
+                        string sha256 = GetFileHashSha256(path, new Progress<int>(percent =>
+                            progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
+                        if (sha256 != module.download_hash.sha256)
+                        {
+                            throw new InvalidModuleFileKraken(module, path, string.Format(
+                                Properties.Resources.NetModuleCacheMismatchSHA256,
+                                module, path, sha256, module.download_hash.sha256));
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(module.download_hash.sha1))
+                    {
+                        // Check SHA1 match
+                        string sha1 = GetFileHashSha1(path, new Progress<int>(percent =>
+                            progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
+                        if (sha1 != module.download_hash.sha1)
+                        {
+                            throw new InvalidModuleFileKraken(module, path, string.Format(
+                                Properties.Resources.NetModuleCacheMismatchSHA1,
+                                module, path, sha1, module.download_hash.sha1));
+                        }
                     }
                 }
-                else if (!string.IsNullOrEmpty(module.download_hash.sha1))
-                {
-                    // Check SHA1 match
-                    string sha1 = GetFileHashSha1(path, new Progress<long>(percent =>
-                        progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
-                    if (sha1 != module.download_hash.sha1)
-                    {
-                        throw new InvalidModuleFileKraken(module, path, string.Format(
-                            Properties.Resources.NetModuleCacheMismatchSHA1,
-                            module, path, sha1, module.download_hash.sha1));
-                    }
-                }
+
+                cancelToken.ThrowIfCancellationRequested();
             }
-
-            cancelToken.ThrowIfCancellationRequested();
-
             // If no exceptions, then everything is fine
             var success = cache.Store(module.download[0], path, description ?? module.StandardName(), move);
             // Make sure completion is signalled so progress bars go away
@@ -237,7 +245,9 @@ namespace CKAN
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
         /// </returns>
-        public static bool ZipValid(string filename, out string invalidReason, IProgress<long> progress)
+        public static bool ZipValid(string         filename,
+                                    out string     invalidReason,
+                                    IProgress<int> progress)
         {
             try
             {
@@ -265,7 +275,7 @@ namespace CKAN
                                 else if (st.Entry != null && progress != null)
                                 {
                                     // Report progress
-                                    var percent = 100 * st.Entry.ZipFileIndex / zip.Count;
+                                    var percent = (int)(100 * st.Entry.ZipFileIndex / zip.Count);
                                     if (percent > highestPercent)
                                     {
                                         progress.Report(percent);

@@ -569,7 +569,7 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha1(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
             => GetFileHash(filePath, "sha1", sha1Cache, SHA1.Create, progress, cancelToken);
 
         /// <summary>
@@ -580,7 +580,7 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<long> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha256(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
             => GetFileHash(filePath, "sha256", sha256Cache, SHA256.Create, progress, cancelToken);
 
         /// <summary>
@@ -595,7 +595,7 @@ namespace CKAN
                                    string hashSuffix,
                                    Dictionary<string, string> cache,
                                    Func<HashAlgorithm> getHashAlgo,
-                                   IProgress<long> progress,
+                                   IProgress<int> progress,
                                    CancellationToken cancelToken)
         {
             string hashFile = $"{filePath}.{hashSuffix}";

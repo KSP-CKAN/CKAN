@@ -150,7 +150,7 @@ namespace CKAN
                                                 || m.InternetArchiveDownload == url);
                     User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
                     cache.Store(module, filename,
-                        new Progress<long>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
+                        new Progress<int>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
                         module.StandardName(),
                         false,
                         cancelTokenSrc.Token);
