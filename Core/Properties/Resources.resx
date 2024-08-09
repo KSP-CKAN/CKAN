@@ -255,12 +255,13 @@ Overwrite?</value></data>
   <data name="ModuleInstallerReplaceAutodetected" xml:space="preserve"><value>Can't replace {0} as it was not installed by CKAN.
 Please remove manually before trying to install it.</value></data>
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve"><value>Can't replace {0} as it is not installed. Please attempt to install {1} instead.</value></data>
-  <data name="ModuleInstallerImporting" xml:space="preserve"><value>Importing {0}... ({1}%)</value></data>
+  <data name="ModuleInstallerImportScanningFiles" xml:space="preserve"><value>Scanning files...</value></data>
+  <data name="ModuleInstallerImporting" xml:space="preserve"><value>Importing {0}...</value></data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve"><value>Already cached: {0}</value></data>
   <data name="ModuleInstallerImportingMod" xml:space="preserve"><value>Importing {0} {1}...</value></data>
   <data name="ModuleInstallerImportNotFound" xml:space="preserve"><value>Not found in index: {0}</value></data>
   <data name="ModuleInstallerImportInstallPrompt" xml:space="preserve"><value>Install {0} compatible imported mods in game instance {1} ({2})?</value></data>
-  <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve"><value>Import complete. Delete {0} old files?</value></data>
+  <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve"><value>Scanning complete. Delete {0} old files after import?</value></data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve"><value>Dependency on {0} version {1} not satisfied</value></data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve"><value>Module not found: {0} {1}</value></data>
   <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve"><value>{0} dependency on {1} version {2} not satisfied</value></data>

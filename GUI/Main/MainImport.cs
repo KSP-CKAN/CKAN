@@ -19,7 +19,7 @@ namespace CKAN.GUI
         private void ImportModules()
         {
             // Prompt the user to select one or more ZIP files
-            OpenFileDialog dlg = new OpenFileDialog()
+            var dlg = new OpenFileDialog()
             {
                 Title            = Properties.Resources.MainImportTitle,
                 AddExtension     = true,
@@ -37,31 +37,45 @@ namespace CKAN.GUI
                 tabController.RenameTab("WaitTabPage", Properties.Resources.MainImportWaitTitle);
                 ShowWaitDialog();
                 DisableMainWindow();
-
-                try
-                {
-                    new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser).ImportFiles(
-                        GetFiles(dlg.FileNames),
-                        currentUser,
-                        (CkanModule mod) =>
-                        {
-                            if (ManageMods.mainModList
-                                          .full_list_of_mod_rows
-                                          .TryGetValue(mod.identifier,
-                                                       out DataGridViewRow row)
-                                && row.Tag is GUIMod gmod)
+                Wait.StartWaiting(
+                    (sender, e) =>
+                    {
+                        e.Result = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser).ImportFiles(
+                            GetFiles(dlg.FileNames),
+                            currentUser,
+                            (CkanModule mod) =>
                             {
-                                gmod.SelectedMod = mod;
+                                if (ManageMods.mainModList
+                                              .full_list_of_mod_rows
+                                              .TryGetValue(mod.identifier,
+                                                           out DataGridViewRow row)
+                                    && row.Tag is GUIMod gmod)
+                                {
+                                    gmod.SelectedMod = mod;
+                                }
+                            },
+                            RegistryManager.Instance(CurrentInstance, repoData).registry);
+                    },
+                    (sender, e) =>
+                    {
+                        if (e.Error == null && e.Result is bool result && result)
+                        {
+                            // Put GUI back the way we found it
+                            HideWaitDialog();
+                        }
+                        else
+                        {
+                            if (e.Error is Exception exc)
+                            {
+                                log.Error(exc.Message, exc);
+                                currentUser.RaiseMessage(exc.Message);
                             }
-                        },
-                        RegistryManager.Instance(CurrentInstance, repoData).registry);
-                }
-                finally
-                {
-                    // Put GUI back the way we found it
-                    EnableMainWindow();
-                    HideWaitDialog();
-                }
+                            Wait.Finish();
+                        }
+                        EnableMainWindow();
+                    },
+                    false,
+                    null);
             }
         }
 

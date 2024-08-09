@@ -160,7 +160,7 @@ namespace Tests.GUI
                 // Act
 
                 // Install module and set it as pre-installed
-                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
+                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<int>(percent => {}));
                 registry.RegisterModule(anyVersionModule, new List<string>(), instance.KSP, false);
 
                 HashSet<string> possibleConfigOnlyDirs = null;

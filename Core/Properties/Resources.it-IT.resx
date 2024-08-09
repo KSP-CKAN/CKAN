@@ -504,7 +504,7 @@ Rimuovilo manualmente prima di provare a installarlo.</value>
     <value>Non è possibile sostituire {0} perché non è installato. Prova invece a installare {1}.</value>
   </data>
   <data name="ModuleInstallerImporting" xml:space="preserve">
-    <value>Importazione di {0}... ({1}%)</value>
+    <value>Importazione di {0}...</value>
   </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>Già in cache: {0}</value>

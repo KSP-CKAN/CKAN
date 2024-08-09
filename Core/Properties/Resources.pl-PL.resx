@@ -488,7 +488,7 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
     <value>Nie można zastąpić {0} ponieważ nie jest zainstalowany. Spróbuj zainstalować {1}.</value>
   </data>
   <data name="ModuleInstallerImporting" xml:space="preserve">
-    <value>Importowanie {0}... ({1}%)</value>
+    <value>Importowanie {0}...</value>
   </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>Już w folderze cache: {0}</value>

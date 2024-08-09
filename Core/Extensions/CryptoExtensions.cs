@@ -20,8 +20,10 @@ namespace CKAN.Extensions
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
         /// <param name="cancelToken">A cancellation token that can be used to abort the hash</param>
         /// <returns>The requested hash of the input stream</returns>
-        public static byte[] ComputeHash(this HashAlgorithm hashAlgo, Stream stream,
-            IProgress<long> progress, CancellationToken cancelToken = default)
+        public static byte[] ComputeHash(this HashAlgorithm hashAlgo,
+                                         Stream             stream,
+                                         IProgress<int>     progress,
+                                         CancellationToken  cancelToken = default)
         {
             const int bufSize = 1024 * 1024;
             var buffer = new byte[bufSize];
@@ -44,7 +46,7 @@ namespace CKAN.Extensions
                 }
 
                 totalBytesRead += bytesRead;
-                progress.Report(100 * totalBytesRead / stream.Length);
+                progress.Report((int)(100 * totalBytesRead / stream.Length));
             }
             return hashAlgo.Hash;
         }

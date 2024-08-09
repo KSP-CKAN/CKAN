@@ -506,7 +506,7 @@
     <value>无法替换 {0} 因为它还未安装。请尝试安装 {1}。</value>
   </data>
   <data name="ModuleInstallerImporting" xml:space="preserve">
-    <value>导入 {0}... ({1}%)</value>
+    <value>导入 {0}...</value>
   </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>已缓存: {0}</value>
