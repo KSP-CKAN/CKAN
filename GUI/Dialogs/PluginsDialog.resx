@@ -124,5 +124,5 @@
   <data name="ActivatePluginButton.Text" xml:space="preserve"><value>Activate</value></data>
   <data name="AddNewPluginButton.Text" xml:space="preserve"><value>Add new...</value></data>
   <data name="UnloadPluginButton.Text" xml:space="preserve"><value>Unload</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>CKAN Plugins</value></data>
+  <data name="$this.Text" xml:space="preserve"><value>Plugins</value></data>
 </root>

@@ -952,12 +952,17 @@ namespace CKAN.GUI
 
         private void discordToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL(HelpURLs.Discord);
+            Utilities.ProcessStartURL(HelpURLs.CKANDiscord);
+        }
+
+        private void modSupportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Utilities.ProcessStartURL(Manager.CurrentInstance.game.ModSupportURL.ToString());
         }
 
         private void reportClientIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.ProcessStartURL("https://github.com/KSP-CKAN/CKAN/issues/new/choose");
+            Utilities.ProcessStartURL(HelpURLs.CKANIssues);
         }
 
         private void reportMetadataIssueToolStripMenuItem_Click(object sender, EventArgs e)

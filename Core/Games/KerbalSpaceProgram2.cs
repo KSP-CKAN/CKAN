@@ -213,6 +213,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public Uri MetadataBugtrackerURL => new Uri("https://github.com/KSP-CKAN/KSP2-NetKAN/issues/new/choose");
 
+        public Uri ModSupportURL => new Uri("https://forum.kerbalspaceprogram.com/forum/137-ksp2-technical-support-pc-modded-installs/");
+
         private const string DataDir = "KSP2_x64_Data";
 
         // Key: Allowed value of install_to

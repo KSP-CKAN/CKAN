@@ -244,6 +244,8 @@ namespace CKAN.Games.KerbalSpaceProgram
 
         public Uri MetadataBugtrackerURL => new Uri("https://github.com/KSP-CKAN/NetKAN/issues/new/choose");
 
+        public Uri ModSupportURL => new Uri("https://forum.kerbalspaceprogram.com/forum/70-ksp1-technical-support-pc-modded-installs/");
+
         private static string Missions(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Missions"));
 

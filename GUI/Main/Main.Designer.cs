@@ -53,6 +53,7 @@ namespace CKAN.GUI
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.userGuideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.discordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modSupportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportClientIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportMetadataIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -309,6 +310,7 @@ namespace CKAN.GUI
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.userGuideToolStripMenuItem,
             this.discordToolStripMenuItem,
+            this.modSupportToolStripMenuItem,
             this.reportClientIssueToolStripMenuItem,
             this.reportMetadataIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
@@ -329,6 +331,13 @@ namespace CKAN.GUI
             this.discordToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
             this.discordToolStripMenuItem.Click += new System.EventHandler(this.discordToolStripMenuItem_Click);
             resources.ApplyResources(this.discordToolStripMenuItem, "discordToolStripMenuItem");
+            //
+            // modSupportToolStripMenuItem
+            //
+            this.modSupportToolStripMenuItem.Name = "modSupportToolStripMenuItem";
+            this.modSupportToolStripMenuItem.Size = new System.Drawing.Size(230, 30);
+            this.modSupportToolStripMenuItem.Click += new System.EventHandler(this.modSupportToolStripMenuItem_Click);
+            resources.ApplyResources(this.modSupportToolStripMenuItem, "modSupportToolStripMenuItem");
             //
             // reportClientIssueToolStripMenuItem
             //
@@ -901,6 +910,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem userGuideToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem discordToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modSupportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportClientIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportMetadataIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;

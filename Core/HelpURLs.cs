@@ -5,6 +5,8 @@ namespace CKAN
     /// </summary>
     public static class HelpURLs
     {
+        #region CKAN documentation
+
         public const string UserGuide = "https://github.com/KSP-CKAN/CKAN/wiki/User-guide";
         public const string ManageInstances = "https://github.com/KSP-CKAN/CKAN/wiki/User-guide#adding-game-folders";
         public const string CompatibleGameVersions = "https://github.com/KSP-CKAN/CKAN/wiki/User-guide#choosing-compatible-game-versions";
@@ -23,6 +25,14 @@ namespace CKAN
         public const string UnmanagedFiles = "https://github.com/KSP-CKAN/CKAN/pull/3833";
         public const string InstallationHistory = "https://github.com/KSP-CKAN/CKAN/pull/3834";
 
-        public const string Discord = "https://discord.gg/Mb4nXQD";
+        #endregion
+
+        #region Support
+
+        // See IGame.ModSupportURL for in-game support links
+        public const string CKANDiscord = "https://discord.gg/Mb4nXQD";
+        public const string CKANIssues = "https://github.com/KSP-CKAN/CKAN/issues/new/choose";
+
+        #endregion
     }
 }
