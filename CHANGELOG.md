@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Recommendation suppression for modpacks (#4147 by: HebaruSan; reviewed: JonnyOThan)
 - [GUI] Search by licenses (#4148 by: HebaruSan)
 - [CLI] Make `ckan compat add` take multiple versions, add `clear` and `set` (#4151 by: HebaruSan)
+- [GUI] Add mod support links to Help menu (#4154 by: HebaruSan)
 
 ### Bugfixes
 
