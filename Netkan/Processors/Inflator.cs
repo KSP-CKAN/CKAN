@@ -48,6 +48,7 @@ namespace CKAN.NetKAN.Processors
                     .SelectMany(netkan => transformer.Transform(netkan, opts))
                     .GroupBy(module => module.Version)
                     .Select(grp => Metadata.Merge(grp.ToArray()))
+                    .SelectMany(merged => specVersionTransformer.Transform(merged, opts))
                     .ToList();
                 log.Debug("Finished transformation");
 
@@ -120,6 +121,7 @@ namespace CKAN.NetKAN.Processors
         private readonly IHttpService http;
 
         private readonly NetkanTransformer transformer;
+        private readonly SpecVersionTransformer specVersionTransformer = new SpecVersionTransformer();
 
         private readonly NetkanValidator netkanValidator = new NetkanValidator();
         private readonly CkanValidator   ckanValidator;

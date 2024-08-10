@@ -123,34 +123,5 @@ namespace Tests.NetKAN.Transformers
                 "MetaNetkanTransformer should not override existing properties."
             );
         }
-
-        [TestCase("v1.2", "v1.4", "v1.4")]
-        [TestCase("v1.4", "v1.2", "v1.4")]
-        public void SelectsTheHigherSpecVresion(string specVersion, string targetSpecVersion, string expected)
-        {
-            // Arrange
-            var targetJson = new JObject();
-            targetJson["spec_version"] = targetSpecVersion;
-
-            var mHttp = new Mock<IHttpService>();
-
-            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
-                .Returns(targetJson.ToString());
-
-            var sut = new MetaNetkanTransformer(mHttp.Object, null);
-
-            var json = new JObject();
-            json["spec_version"] = specVersion;
-            json["$kref"] = "#/ckan/netkan/http://awesomemod.example/AwesomeMod.netkan";
-
-            // Act
-            var result = sut.Transform(new Metadata(json), opts).First();
-            var transformedJson = result.Json();
-
-            // Assert
-            Assert.That((string)transformedJson["spec_version"], Is.EqualTo(expected),
-                "MetaNetkanTransformer should select the higher of the two spec_versions."
-            );
-        }
     }
 }

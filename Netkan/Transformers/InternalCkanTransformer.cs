@@ -61,9 +61,6 @@ namespace CKAN.NetKAN.Transformers
                         json.SafeAdd(property.Name, property.Value);
                     }
 
-                    json["spec_version"] = ModuleVersion.Max(metadata.SpecVersion, new Metadata(internalJson).SpecVersion)
-                        .ToSpecVersionJson();
-
                     json.SafeMerge("resources", internalJson["resources"]);
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);

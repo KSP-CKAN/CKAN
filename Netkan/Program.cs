@@ -4,12 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using CommandLine;
 
+using CommandLine;
 using log4net;
 using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using YamlDotNet.RepresentationModel;
 
 using CKAN.Games;
 using CKAN.Versioning;
@@ -17,7 +18,6 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Extensions;
-using YamlDotNet.RepresentationModel;
 
 namespace CKAN.NetKAN
 {

@@ -35,7 +35,6 @@ namespace Tests.NetKAN.Validators
             );
         }
 
-        [TestCase("spec_version")]
         [TestCase("identifier")]
         [TestCase("version")]
         [TestCase("download")]

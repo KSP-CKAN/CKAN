@@ -12,7 +12,7 @@ using CKAN.NetKAN.Sources.Gitlab;
 namespace CKAN.NetKAN.Transformers
 {
     /// <summary>
-    /// An <see cref="ITransformer"/> that looks up data from GitHub.
+    /// An <see cref="ITransformer"/> that looks up data from GitLab.
     /// </summary>
     internal sealed class GitlabTransformer : ITransformer
     {
