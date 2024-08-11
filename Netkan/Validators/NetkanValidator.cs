@@ -12,17 +12,12 @@ namespace CKAN.NetKAN.Validators
         {
             _validators = new List<IValidator>()
             {
-                new SpecVersionFormatValidator(),
                 new HasIdentifierValidator(),
                 new KrefValidator(),
                 new AlphaNumericIdentifierValidator(),
-                new RelationshipsValidator(),
                 new KrefDownloadMutexValidator(),
                 new DownloadVersionValidator(),
                 new OverrideValidator(),
-                new VersionStrictValidator(),
-                new ReplacedByValidator(),
-                new InstallValidator(),
             };
         }
 

@@ -95,46 +95,5 @@ namespace Tests.NetKAN.Transformers
                 "InternalCkanTransformer should not override existing properties."
             );
         }
-
-        [TestCase("v1.2", "v1.4", "v1.4")]
-        [TestCase("v1.4", "v1.2", "v1.4")]
-        public void HigherOfTwoSpecVersionsIsChosen(
-            string specVersion, string internalSpecVersion, string expectedSpecVersion
-        )
-        {
-            // Arrange
-            const string filePath = "/DoesNotExist.zip";
-
-            var internalCkan = new JObject();
-            internalCkan["spec_version"] = internalSpecVersion;
-
-            var mHttp = new Mock<IHttpService>();
-            var mModuleService = new Mock<IModuleService>();
-
-            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
-                .Returns(filePath);
-
-            mModuleService.Setup(i => i.GetInternalCkan(
-                    It.IsAny<CkanModule>(), It.IsAny<string>(),
-                    It.IsAny<GameInstance>()))
-                .Returns(internalCkan);
-
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
-
-            var json = new JObject();
-            json["spec_version"] = specVersion;
-            json["identifier"] = "DoesNotExist";
-            json["version"] = "1.0";
-            json["download"] = "https://awesomemod.example/AwesomeMod.zip";
-
-            // Act
-            var result = sut.Transform(new Metadata(json), opts).First();
-            var transformedJson = result.Json();
-
-            // Assert
-            Assert.That((string)transformedJson["spec_version"], Is.EqualTo(expectedSpecVersion),
-                "InternalCkanTransformer should use the higher of the two spec_versions."
-            );
-        }
     }
 }

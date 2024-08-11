@@ -15,7 +15,7 @@ namespace CKAN.NetKAN.Model
     {
         private const string KrefPropertyName          = "$kref";
         private const string VrefPropertyName          = "$vref";
-        private const string SpecVersionPropertyName   = "spec_version";
+        public  const string SpecVersionPropertyName   = "spec_version";
         private const string VersionPropertyName       = "version";
         private const string DownloadPropertyName      = "download";
         public  const string UpdatedPropertyName       = "release_date";
@@ -84,10 +84,6 @@ namespace CKAN.NetKAN.Model
                         specVersionToken
                     ));
                 }
-            }
-            else
-            {
-                throw new Kraken(string.Format("{0} must be specified.", SpecVersionPropertyName));
             }
 
             if (json.TryGetValue(VersionPropertyName, out JToken versionToken))

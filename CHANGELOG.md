@@ -71,6 +71,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Translation updates from Crowdin (#4105, #4149 by: vinix38, frankieorabona, ambition, Francesco Ricina, S.O.2; reviewed: HebaruSan)
 - [Netkan] Allow string "Harmony" in DLL parent folder names (#4123 by: HebaruSan)
 - [Netkan] Allow licenses to be absent from netkans (#4137 by: HebaruSan)
+- [Netkan] Autogenerate `spec_version` and make it optional in netkans (#4155 by: HebaruSan)
 
 ## v1.34.4 (Niven)
 

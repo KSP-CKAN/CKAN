@@ -66,9 +66,6 @@ namespace CKAN.NetKAN.Transformers
                     var targetMetadata =  new Metadata(targetJson);
                     if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")
                     {
-                        json["spec_version"] = ModuleVersion.Max(metadata.SpecVersion, targetMetadata.SpecVersion)
-                            .ToSpecVersionJson();
-
                         if (targetJson["$kref"] != null)
                         {
                             json["$kref"] = targetJson["$kref"];
