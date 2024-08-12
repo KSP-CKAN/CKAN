@@ -50,13 +50,14 @@ namespace CKAN.NetKAN.Transformers
              : HasLicense(json, "MPL-2.0") ? v1p30
 
              : (json["install"] as JArray)?.OfType<JObject>().Any(stanza =>
-                 (string)stanza["install_to"] == "Ships" && (
+                 ((string)stanza["install_to"]).StartsWith("Ships/Script")
+                 || ((string)stanza["install_to"] == "Ships" && (
                      // find: .../Script, install_to: Ships
                      ((string)stanza["find"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
                      // file: .../Script, install_to: Ships
                      || ((string)stanza["file"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
                      // install_to: Ships, as: Script
-                     || (((string)stanza["as"])?.EndsWith("Script") ?? false))) ?? false ? v1p29
+                     || (((string)stanza["as"])?.EndsWith("Script") ?? false)))) ?? false ? v1p29
 
              : (string)json["kind"] == "dlc" ? v1p28
 
