@@ -40,8 +40,7 @@ namespace CKAN
         public static readonly bool IsUnix = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
 
         /// <summary>
-        /// Are we on a flavour of Windows? This is implemented internally by checking
-        /// if we're not on Unix or Mac.
+        /// Are we on a flavour of Windows?
         /// </summary>
         /// <value><c>true</c> if is windows; otherwise, <c>false</c>.</value>
         #if NET6_0_OR_GREATER

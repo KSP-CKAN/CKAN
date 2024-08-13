@@ -49,7 +49,7 @@ namespace CKAN.NetKAN.Transformers
 
                     var download_hashJson = (JObject)json["download_hash"];
                     // Older clients will complain if download_hash is set without sha1
-                    if (metadata.SpecVersion <= v1p34)
+                    if (metadata.SpecVersion == null || metadata.SpecVersion <= v1p34)
                     {
                         Log.Debug("Calculating download SHA1...");
                         download_hashJson.SafeAdd("sha1", _fileService.GetFileHashSha1(file));
