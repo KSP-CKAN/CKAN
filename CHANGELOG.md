@@ -1,3 +1,4 @@
+- [Multiple] More translation updates (#4157 by: HebaruSan; reviewed: )
 # Change Log
 
 All notable changes to this project will be documented in this file.
@@ -68,7 +69,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Use fully sanitized archive.org bucket names (#4043 by: HebaruSan)
 - [Netkan] Omit duplicate inflation warnings in queue (#4071 by: HebaruSan)
 - [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094, #4095, #4117 by: techman83, HebaruSan; reviewed: HebaruSan)
-- [Multiple] Translation updates from Crowdin (#4105, #4149 by: vinix38, frankieorabona, ambition, Francesco Ricina, S.O.2; reviewed: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4105, #4149, #4157 by: vinix38, frankieorabona, ambition, Francesco Ricina, S.O.2; reviewed: HebaruSan)
 - [Netkan] Allow string "Harmony" in DLL parent folder names (#4123 by: HebaruSan)
 - [Netkan] Allow licenses to be absent from netkans (#4137 by: HebaruSan)
 - [Netkan] Autogenerate `spec_version` and make it optional in netkans (#4155 by: HebaruSan)

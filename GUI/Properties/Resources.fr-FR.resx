@@ -388,7 +388,7 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   </data>
   <data name="MainInstallFileExists" xml:space="preserve">
     <value>Oh non ! Nous avons essayé de remplacer un fichier appartenant à un autre mod !
-Veuillez essayer  `ckan update` avant de réessayer.
+Veuillez essayer `ckan update` avant de réessayer.
 
 Si ce problème se produit de nouveau, il pourrait s'agir d'un bogue d'emballage.
 Veuillez le signaler à :
@@ -397,10 +397,10 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 
 Veuillez inclure les informations suivantes dans votre rapport :
 
-Fichier          : {0}
-Mod à installer  : {1}
+Fichier : {0}
+Mod à installer : {1}
 Mod propriétaire : {2}
-Version CKAN     : {3}</value>
+Version CKAN : {3}</value>
   </data>
   <data name="MainInstallUnownedFileExists" xml:space="preserve">
     <value>Oh non !
@@ -651,7 +651,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
     <value>Répertoires mis à jour, mais des modules nécessitant une nouvelle version de CKAN ont été trouvés. Vérification des mises à jour...</value>
   </data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve">
-    <value>Voulez-vous que CKAN rafraîchisse la liste de mod au lancement ? (Vous pouvez toujours rafraîchir manuellement en utilisant le bouton en haut)</value>
+    <value>Voulez-vous actualiser automatiquement la liste de mods au chargement ?
+
+Vous pouvez actualiser manuellement la liste de mods en cliquant le bouton Rafraîchir, ou changer ce paramètre plus tard dans les Paramètres. Si vous désactivez l'actualisation automatique, il est recommandé de rafraîchir tous les quelques jours.</value>
   </data>
   <data name="MainRepoBalloonTipDetails" xml:space="preserve">
     <value>{0} mise·s à jour disponible·s</value>
@@ -910,6 +912,10 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   <data name="EditModpackTooltipIncludeVersions" xml:space="preserve">
     <value>Si coché, le modpack inclura les versions exactes des mods affichés, sinon n'importe quelle version fera l'affaire</value>
   </data>
+  <data name="EditModpackTooltipIncludeOptRels" xml:space="preserve">
+    <value>Si coché, les utilisateurs qui installent ce modpack verront aussi les recommandations et les suggestions des mods de ce modpack.
+Sinon, seuls ces derniers seront installés.</value>
+  </data>
   <data name="EditModpackTooltipDepends" xml:space="preserve">
     <value>Déplacer les mods sélectionnés dans le groupe dépendance. Ces mods seront certainement installés.</value>
   </data>
@@ -939,6 +945,9 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   </data>
   <data name="ModSearchDescriptionPrefix" xml:space="preserve">
     <value>desc:</value>
+  </data>
+  <data name="ModSearchLicensePrefix" xml:space="preserve">
+    <value>lic:</value>
   </data>
   <data name="ModSearchLanguagePrefix" xml:space="preserve">
     <value>lang:</value>

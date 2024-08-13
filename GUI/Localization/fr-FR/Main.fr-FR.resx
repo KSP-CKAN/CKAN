@@ -154,7 +154,7 @@
     <value>&amp;Paramètres CKAN</value>
   </data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Plugins &amp;CKAN</value>
+    <value>&amp;Plugins</value>
   </data>
   <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Hôtes préférés</value>
@@ -172,10 +172,13 @@
     <value>&amp;Aide</value>
   </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
-    <value>Guide d'&amp;utilisation</value>
+    <value>&amp;Guide de l'utilisateur CKAN</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Discord</value>
+    <value>&amp;Discord CKAN</value>
+  </data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
+    <value>Obtenir de l'aide pour un problème dans le jeu avec des mods</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
     <value>Signaler un problème avec le &amp;client CKAN</value>

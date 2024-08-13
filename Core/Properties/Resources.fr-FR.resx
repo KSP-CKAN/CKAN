@@ -514,6 +514,9 @@ Veuillez le retirer manuellement avant d'essayer de l'installer.</value>
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve">
     <value>Impossible de remplacer {0} car il n'est pas installé. Veuillez essayer d'installer {1} à la place.</value>
   </data>
+  <data name="ModuleInstallerImportScanningFiles" xml:space="preserve">
+    <value>Analyse des fichiers...</value>
+  </data>
   <data name="ModuleInstallerImporting" xml:space="preserve">
     <value>Importation de {0}...</value>
   </data>
@@ -530,7 +533,7 @@ Veuillez le retirer manuellement avant d'essayer de l'installer.</value>
     <value>Installer {0} mods importés compatibles dans l'instance de jeu {1} ({2}) ?</value>
   </data>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve">
-    <value>Importation terminée. Supprimer {0} vieux fichiers ?</value>
+    <value>Analyse terminée. Supprimer {0} vieux fichiers après l'import ?</value>
   </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve">
     <value>La dépendance sur {0} version {1} n'est pas satisfaite</value>
@@ -593,7 +596,7 @@ Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bri
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
@@ -680,5 +683,11 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="ModpackName" xml:space="preserve">
     <value>installé-{0}</value>
+  </data>
+  <data name="InstalledModuleToString" xml:space="preserve">
+    <value>{0} ( {1} installé)</value>
+  </data>
+  <data name="InstalledModuleToStringAutoInstalled" xml:space="preserve">
+    <value>{0} ({1} installé en tant qu'auto-installé)</value>
   </data>
 </root>
