@@ -49,6 +49,7 @@ namespace CKAN.NetKAN.Processors
                     .GroupBy(module => module.Version)
                     .Select(grp => Metadata.Merge(grp.ToArray()))
                     .SelectMany(merged => specVersionTransformer.Transform(merged, opts))
+                    .SelectMany(withSpecVersion => sortTransformer.Transform(withSpecVersion, opts))
                     .ToList();
                 log.Debug("Finished transformation");
 
@@ -122,6 +123,7 @@ namespace CKAN.NetKAN.Processors
 
         private readonly NetkanTransformer transformer;
         private readonly SpecVersionTransformer specVersionTransformer = new SpecVersionTransformer();
+        private readonly PropertySortTransformer sortTransformer = new PropertySortTransformer();
 
         private readonly NetkanValidator netkanValidator = new NetkanValidator();
         private readonly CkanValidator   ckanValidator;
