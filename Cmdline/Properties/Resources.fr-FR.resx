@@ -278,11 +278,14 @@ Si vous n'avez vraiment pas le choix, le paramètre "--asroot" permet d'utiliser
   <data name="CompatActualHeader" xml:space="preserve">
     <value>Actuelle</value>
   </data>
+  <data name="CompatMissing" xml:space="preserve">
+    <value>Aucune version de jeu spécifiée !</value>
+  </data>
   <data name="CompatInvalid" xml:space="preserve">
-    <value>ERREUR : Version de jeu invalide</value>
+    <value>Versions de jeu invalides : {0}</value>
   </data>
   <data name="CompatCantForget" xml:space="preserve">
-    <value>ERREUR : Impossible d'oublier la version de jeu actuelle</value>
+    <value>Impossible d'oublier la version réelle du jeu : {0}</value>
   </data>
   <data name="InstanceHelpSummary" xml:space="preserve">
     <value>Gérer les instances de jeu</value>
