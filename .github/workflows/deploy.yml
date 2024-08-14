@@ -117,6 +117,15 @@ jobs:
         run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
       - name: Push nightly APT repo to S3
         run: aws s3 sync _build/deb/apt-repo-dist s3://${AWS_S3_BUCKET}/deb/dists/nightly --follow-symlinks
+      - name: CKAN-ModInstaller repo dispatch
+        env:
+          REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+        if: env.REPO_ACCESS_TOKEN
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          repository: KSP-CKAN/CKAN-ModInstaller
+          event-type: deploy
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
   upload-rpm:
     needs:

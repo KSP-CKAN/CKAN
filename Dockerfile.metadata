@@ -1,5 +1,5 @@
 # Everything we need in both the build and prod images
-FROM ubuntu:22.04 as base
+FROM ubuntu:22.04 AS base
 
 # Don't prompt for time zone
 ENV DEBIAN_FRONTEND noninteractive
@@ -26,7 +26,7 @@ RUN apt-get install -y --no-install-recommends \
     mono-runtime ca-certificates-mono libmono-microsoft-csharp4.0-cil libmono-system-data4.0-cil libmono-system-runtime-serialization4.0-cil libmono-system-transactions4.0-cil libmono-system-net-http-webrequest4.0-cil
 
 # Isolate Python build stuff in a separate container
-FROM base as build
+FROM base AS build
 
 # Install Python build deps
 RUN apt-get install -y --no-install-recommends \
