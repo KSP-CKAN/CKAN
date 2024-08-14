@@ -1,4 +1,3 @@
-- [Multiple] More translation updates (#4157 by: HebaruSan; reviewed: )
 # Change Log
 
 All notable changes to this project will be documented in this file.
@@ -73,6 +72,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Allow string "Harmony" in DLL parent folder names (#4123 by: HebaruSan)
 - [Netkan] Allow licenses to be absent from netkans (#4137 by: HebaruSan)
 - [Netkan] Autogenerate `spec_version` and make it optional in netkans (#4155 by: HebaruSan)
+- [UNKNOWN] Trigger mod installer deploy after APT repo update (#4158 by: HebaruSan)
 
 ## v1.34.4 (Niven)
 
