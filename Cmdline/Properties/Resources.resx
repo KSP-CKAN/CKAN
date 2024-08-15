@@ -359,11 +359,13 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="ShowFileName" xml:space="preserve"><value>Filename: {0}</value></data>
   <data name="ShowVersionHeader" xml:space="preserve"><value>Version</value></data>
   <data name="ShowGameVersionsHeader" xml:space="preserve"><value>Game Versions</value></data>
-  <data name="UpdateChangesSummary" xml:space="preserve"><value>Found {0} new modules, {1} removed modules and {2} updated modules</value></data>
+  <data name="UpdateBadGame" xml:space="preserve"><value>Game {0} not found! Valid options are: {1}</value></data>
+  <data name="UpdateURLRepoName" xml:space="preserve"><value>URL #{0}</value></data>
+  <data name="UpdateChangesSummary" xml:space="preserve"><value>Found {0} new modules, {1} removed modules, and {2} updated modules.</value></data>
   <data name="UpdateAddedHeader" xml:space="preserve"><value>New modules [Name (CKAN identifier)]:</value></data>
   <data name="UpdateRemovedHeader" xml:space="preserve"><value>Removed modules [Name (CKAN identifier)]:</value></data>
   <data name="UpdateUpdatedHeader" xml:space="preserve"><value>Updated modules [Name (CKAN identifier)]:</value></data>
-  <data name="UpdateSummary" xml:space="preserve"><value>Updated information on {0} compatible modules</value></data>
+  <data name="UpdateSummary" xml:space="preserve"><value>Updated information on {0} modules.</value></data>
   <data name="UpgradeCannotCombineFlags" xml:space="preserve"><value>The `--dev-build` and `--stable-release` flags cannot be combined!</value></data>
   <data name="UpgradeSwitchingToDevBuilds" xml:space="preserve"><value>Switching to dev builds</value></data>
   <data name="UpgradeSwitchingToStableReleases" xml:space="preserve"><value>Switching to stable releases</value></data>
