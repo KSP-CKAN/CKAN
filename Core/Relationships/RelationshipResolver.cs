@@ -694,7 +694,7 @@ namespace CKAN
         /// Depends relationships with suppress_recommendations=true,
         /// to be applied to all recommendations and suggestions
         /// </summary>
-        private HashSet<RelationshipDescriptor> suppressedRecommenders = new HashSet<RelationshipDescriptor>();
+        private readonly HashSet<RelationshipDescriptor> suppressedRecommenders = new HashSet<RelationshipDescriptor>();
 
         private readonly IRegistryQuerier            registry;
         private readonly GameVersionCriteria         versionCrit;

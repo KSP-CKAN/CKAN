@@ -217,12 +217,11 @@ namespace CKAN.CmdLine
                         return Version(user);
 
                     case "update":
-                        return (new Update(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new Update(repoData, user, manager)).RunCommand(cmdline.options);
 
                     case "available":
                         return (new Available(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
-                    case "add":
                     case "install":
                         Scan(GetGameInstance(manager), user, cmdline.action);
                         return (new Install(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
@@ -247,7 +246,6 @@ namespace CKAN.CmdLine
                     case "search":
                         return (new Search(repoData, user)).RunCommand(GetGameInstance(manager), options);
 
-                    case "uninstall":
                     case "remove":
                         return (new Remove(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 

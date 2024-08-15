@@ -3,6 +3,8 @@ using System.ComponentModel;
 
 using Newtonsoft.Json;
 
+using CKAN.Games;
+
 namespace CKAN
 {
     public class Repository : IEquatable<Repository>
@@ -53,5 +55,9 @@ namespace CKAN
 
         public override string ToString()
             => string.Format("{0} ({1}, {2})", name, priority, uri);
+
+        public static Repository DefaultGameRepo(IGame game)
+            => new Repository($"{game.ShortName}-{default_ckan_repo_name}",
+                              game.DefaultRepositoryURL);
     }
 }
