@@ -350,6 +350,7 @@ Task("Test-UnitTests+Only")
         DotNetTest(solution, new DotNetTestSettings
         {
             Configuration    = configuration,
+            NoRestore        = true,
             NoBuild          = true,
             NoLogo           = true,
             Filter           = where,
@@ -363,6 +364,7 @@ Task("Test-UnitTests+Only")
         {
             Configuration    = "NoGUI",
             Framework        = "net7.0",
+            NoRestore        = true,
             NoBuild          = true,
             NoLogo           = true,
             Filter           = where,

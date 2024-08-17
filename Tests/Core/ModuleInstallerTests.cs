@@ -227,21 +227,14 @@ namespace Tests.Core
 
             CkanModule bugged_mod = TestData.DogeCoinFlag_101_bugged_module();
 
-            Assert.Throws<BadMetadataKraken>(delegate
+            var exc = Assert.Throws<BadMetadataKraken>(delegate
                 {
                     ModuleInstaller.FindInstallableFiles(bugged_mod, TestData.DogeCoinFlagZip(), ksp.KSP);
                 });
 
-            try
-            {
-                ModuleInstaller.FindInstallableFiles(bugged_mod, TestData.DogeCoinFlagZip(), ksp.KSP);
-            }
-            catch (BadMetadataKraken ex)
-            {
-                // Make sure our module information is attached.
-                Assert.IsNotNull(ex.module);
-                Assert.AreEqual(bugged_mod.identifier, ex.module.identifier);
-            }
+            // Make sure our module information is attached.
+            Assert.IsNotNull(exc.module);
+            Assert.AreEqual(bugged_mod.identifier, exc.module.identifier);
         }
 
 #pragma warning disable 0414
@@ -695,49 +688,45 @@ namespace Tests.Core
         [Test]
         public void ModuleManagerInstancesAreDecoupled()
         {
-            string mod_file_name = "DogeCoinFlag/Flags/dogecoin.png";
+            const string mod_file_name = "DogeCoinFlag/Flags/dogecoin.png";
 
-            // Create a new disposable KSP instance to run the test on.
-            Assert.DoesNotThrow(delegate
+            for (int i = 0; i < 5; i++)
             {
-                for (int i = 0; i < 5; i++)
-                {
-                    using (var repo = new TemporaryRepository(TestData.DogeCoinFlag_101()))
-                    using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-                    using (var ksp = new DisposableKSP())
-                    using (var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-                    using (var manager = new GameInstanceManager(nullUser, config)
-                        {
-                            CurrentInstance = ksp.KSP
-                        })
+                // Create a new disposable KSP instance to run the test on.
+                using (var repo = new TemporaryRepository(TestData.DogeCoinFlag_101()))
+                using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+                using (var ksp = new DisposableKSP())
+                using (var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+                using (var manager = new GameInstanceManager(nullUser, config)
                     {
-                        var regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
-                        var registry = regMgr.registry;
-                        registry.RepositoriesClear();
-                        registry.RepositoriesAdd(repo.repo);
+                        CurrentInstance = ksp.KSP
+                    })
+                {
+                    var regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
+                    var registry = regMgr.registry;
+                    registry.RepositoriesClear();
+                    registry.RepositoriesAdd(repo.repo);
 
-                        // Copy the zip file to the cache directory.
-                        manager.Cache.Store(TestData.DogeCoinFlag_101_module(),
-                                            TestData.DogeCoinFlagZip(),
-                                            new Progress<int>(percent => {}));
+                    // Copy the zip file to the cache directory.
+                    manager.Cache.Store(TestData.DogeCoinFlag_101_module(),
+                                        TestData.DogeCoinFlagZip(),
+                                        new Progress<int>(percent => {}));
 
-                        // Attempt to install it.
-                        var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
+                    // Attempt to install it.
+                    var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
-                        HashSet<string> possibleConfigOnlyDirs = null;
-                        new ModuleInstaller(ksp.KSP, manager.Cache, nullUser)
-                            .InstallList(modules,
-                                         new RelationshipResolverOptions(),
-                                         RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                         ref possibleConfigOnlyDirs);
+                    HashSet<string> possibleConfigOnlyDirs = null;
+                    new ModuleInstaller(ksp.KSP, manager.Cache, nullUser)
+                        .InstallList(modules,
+                                     new RelationshipResolverOptions(),
+                                     RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
+                                     ref possibleConfigOnlyDirs);
 
-                        // Check that the module is installed.
-                        string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
-
-                        Assert.IsTrue(File.Exists(mod_file_path));
-                    }
+                    // Check that the module is installed.
+                    Assert.IsTrue(File.Exists(Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP),
+                                                           mod_file_name)));
                 }
-            });
+            }
         }
 
         [TestCase("Ships")]
@@ -820,6 +809,116 @@ namespace Tests.Core
                     CKANPathUtils.NormalizePath(
                         Path.Combine(ksp.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs")),
                     results.First().destination);
+            }
+        }
+
+        [Test]
+        public void FindInstallableFiles_ZipSlip_Throws()
+        {
+            // Arrange
+            // Create a ZIP file with an entry that tries to exploit Zip Slip
+            var zip = ZipFile.Create(new MemoryStream());
+            zip.BeginUpdate();
+            zip.AddDirectory("AwesomeMod");
+            zip.Add(new ZipEntry("AwesomeMod/../../../outside.txt") { Size = 0, CompressedSize = 0 });
+            zip.CommitUpdate();
+            // Create a mod that would install the top folder of that path
+            var mod = CkanModule.FromJson(@"
+                {
+                    ""spec_version"": 1,
+                    ""identifier"": ""AwesomeMod"",
+                    ""version"": ""1.0.0"",
+                    ""download"": ""https://awesomemod.example/AwesomeMod.zip""
+                }");
+
+            // Act / Assert
+            Assert.Throws<BadInstallLocationKraken>(
+                delegate
+                {
+                    using (var ksp = new DisposableKSP())
+                    {
+                        var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP);
+                    }
+                },
+                "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
+        }
+
+        [Test]
+        public void InstallList_RealZipSlip_Throws()
+        {
+            // Arrange
+            using (var repo = new TemporaryRepository(TestData.DogeCoinFlag_101ZipSlip()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var ksp = new DisposableKSP())
+            using (var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var manager = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = ksp.KSP
+                })
+            {
+                var registry = RegistryManager.Instance(manager.CurrentInstance,
+                                                        repoData.Manager)
+                                              .registry;
+                registry.RepositoriesClear();
+                registry.RepositoriesAdd(repo.repo);
+
+                // Copy the zip file to the cache directory.
+                manager.Cache.Store(TestData.DogeCoinFlag_101ZipSlip_module(),
+                                    TestData.DogeCoinFlagZipSlipZip(),
+                                    new Progress<int>(percent => {}));
+
+                // Attempt to install it.
+                var modules = new List<CkanModule> { TestData.DogeCoinFlag_101ZipSlip_module() };
+
+                // Act / Assert
+                Assert.Throws<BadInstallLocationKraken>(
+                    delegate
+                    {
+                        HashSet<string> possibleConfigOnlyDirs = null;
+                        new ModuleInstaller(ksp.KSP, manager.Cache, nullUser)
+                            .InstallList(modules,
+                                         new RelationshipResolverOptions(),
+                                         RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
+                                         ref possibleConfigOnlyDirs);
+                    },
+                    "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
+            }
+        }
+
+        [Test]
+        public void InstallList_RealZipBomb_DoesNotThrow()
+        {
+            // Arrange
+            using (var repo = new TemporaryRepository(TestData.DogeCoinFlag_101ZipBomb()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var ksp = new DisposableKSP())
+            using (var config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var manager = new GameInstanceManager(nullUser, config)
+                {
+                    CurrentInstance = ksp.KSP
+                })
+            {
+                var registry = RegistryManager.Instance(manager.CurrentInstance,
+                                                        repoData.Manager)
+                                              .registry;
+                registry.RepositoriesClear();
+                registry.RepositoriesAdd(repo.repo);
+
+                // Copy the zip file to the cache directory.
+                manager.Cache.Store(TestData.DogeCoinFlag_101ZipBomb_module(),
+                                    TestData.DogeCoinFlagZipBombZip(),
+                                    new Progress<int>(percent => {}));
+
+                // Attempt to install it.
+                var modules = new List<CkanModule> { TestData.DogeCoinFlag_101ZipBomb_module() };
+
+                // Act / Assert
+                HashSet<string> possibleConfigOnlyDirs = null;
+                new ModuleInstaller(ksp.KSP, manager.Cache, nullUser)
+                    .InstallList(modules,
+                                 new RelationshipResolverOptions(),
+                                 RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
+                                 ref possibleConfigOnlyDirs);
             }
         }
 

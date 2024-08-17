@@ -30,6 +30,9 @@ namespace Tests.Data
         public static string DogeCoinFlagZip()
             => Path.Combine(DataDir(), "DogeCoinFlag-1.01.zip");
 
+        /// <summary>
+        /// Returns the full path to DogeCoinFlag-1.01-avc.zip
+        /// </summary>
         public static string DogeCoinFlagAvcZip()
             => Path.Combine(DataDir(), "DogeCoinFlag-1.01-avc.zip");
 
@@ -45,6 +48,18 @@ namespace Tests.Data
         /// </summary>
         public static string DogeCoinFlagZipCorrupt()
             => Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
+
+        /// <summary>
+        /// Returns the full path to DogeCoinFlag-1.01-zip-bomb.zip
+        /// </summary>
+        public static string DogeCoinFlagZipBombZip()
+            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-zip-bomb.zip");
+
+        /// <summary>
+        /// Returns the full path to DogeCoinFlag-1.01-zip-slip.zip
+        /// </summary>
+        public static string DogeCoinFlagZipSlipZip()
+            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-zip-slip.zip");
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This doesn't contain any bugs.
@@ -253,6 +268,66 @@ namespace Tests.Data
                 }
             ";
 
+        ///<summary>
+        /// DogeCoinFlag 1.01 info. This file tries to abuse the Zip Slip vulnerability
+        ///</summary>
+        public static string DogeCoinFlag_101ZipSlip()
+            => @"
+                {
+                    ""spec_version"": 1,
+                    ""identifier"": ""DogeCoinFlag"",
+                    ""name"": ""Dogecoin Flag"",
+                    ""license"": ""CC-BY"",
+                    ""abstract"": ""A ZIP file where the file paths contain .. to try to escape game dir"",
+                    ""author"": ""pjf"",
+                    ""version"": ""1.01"",
+                    ""download"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                    ""ksp_version"": ""0.25"",
+                    ""install"": [
+                        {
+                            ""file"": ""DogeCoinFlag-1.01/GameData/DogeCoinFlag"",
+                            ""install_to"": ""GameData""
+                        }
+                    ]
+                }
+            ";
+
+        ///<summary>
+        /// DogeCoinFlag 1.01 info. This file tries to abuse the Zip Slip vulnerability
+        ///</summary>
+        public static string DogeCoinFlag_101ZipBomb()
+            => @"
+                {
+                    ""spec_version"": 1,
+                    ""identifier"": ""DogeCoinFlag"",
+                    ""name"": ""Dogecoin Flag"",
+                    ""license"": ""CC-BY"",
+                    ""abstract"": ""A ZIP file where the file sizes are massively inflated"",
+                    ""author"": ""pjf"",
+                    ""version"": ""1.01"",
+                    ""download"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                    ""ksp_version"": ""0.25"",
+                    ""install"": [
+                        {
+                            ""file"": ""0"",
+                            ""install_to"": ""GameData""
+                        },
+                        {
+                            ""file"": ""A"",
+                            ""install_to"": ""GameData""
+                        },
+                        {
+                            ""file"": ""1G"",
+                            ""install_to"": ""GameData""
+                        },
+                        {
+                            ""file"": ""5N"",
+                            ""install_to"": ""GameData""
+                        }
+                    ]
+                }
+            ";
+
         public static CkanModule DogeCoinFlag_101_module()
             => CkanModule.FromJson(DogeCoinFlag_101());
 
@@ -285,6 +360,12 @@ namespace Tests.Data
 
             return doge;
         }
+
+        public static CkanModule DogeCoinFlag_101ZipSlip_module()
+            => CkanModule.FromJson(DogeCoinFlag_101ZipSlip());
+
+        public static CkanModule DogeCoinFlag_101ZipBomb_module()
+            => CkanModule.FromJson(DogeCoinFlag_101ZipBomb());
 
         // Identical to DogeCoinFlag_101, but with a spec version over 9000!
         public static string FutureMetaData()

@@ -509,7 +509,7 @@ namespace CKAN
                 outputName = leadingRE.Replace(outputName, "");
             }
 
-            // Now outputname looks like PATH/what/ever/file.ext, where
+            // Now outputName looks like PATH/what/ever/file.ext, where
             // PATH is the part that matched `file` or `find` or `find_regexp`
 
             if (!string.IsNullOrWhiteSpace(@as))
@@ -534,10 +534,15 @@ namespace CKAN
                 }
             }
 
+            if (outputName.Contains("/../") || outputName.EndsWith("/.."))
+            {
+                throw new BadInstallLocationKraken(
+                    string.Format(Properties.Resources.ModuleInstallDescriptorInvalidInstallPath,
+                                  outputName));
+            }
+
             // Return our snipped, normalised, and ready to go output filename!
-            return CKANPathUtils.NormalizePath(
-                Path.Combine(installDir, outputName)
-            );
+            return CKANPathUtils.NormalizePath(Path.Combine(installDir, outputName));
         }
 
         private string ShortestMatchingPrefix(string fullPath)
