@@ -67,7 +67,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Build nuget package, support netstandard2.0 build (#4039 by: HebaruSan)
 - [Core] Use fully sanitized archive.org bucket names (#4043 by: HebaruSan)
 - [Netkan] Omit duplicate inflation warnings in queue (#4071 by: HebaruSan)
-- [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094, #4095, #4117 by: techman83, HebaruSan; reviewed: HebaruSan)
+- [Build] Refactor + Modernise Actions (#4082, #4088, #4089, #4091, #4093, #4094, #4095, #4117, #4162 by: techman83, HebaruSan; reviewed: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#4105, #4149, #4157 by: vinix38, frankieorabona, ambition, Francesco Ricina, S.O.2; reviewed: HebaruSan)
 - [Netkan] Allow string "Harmony" in DLL parent folder names (#4123 by: HebaruSan)
 - [Netkan] Allow licenses to be absent from netkans (#4137 by: HebaruSan)
