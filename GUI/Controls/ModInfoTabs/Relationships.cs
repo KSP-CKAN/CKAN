@@ -141,8 +141,15 @@ namespace CKAN.GUI
             };
             DependsGraphTree.Nodes.Add(root);
             AddChildren(registry, root);
-            DependsGraphTree.EndUpdate();
             root.Expand();
+            // Expand virtual depends nodes
+            foreach (var node in root.Nodes.OfType<TreeNode>()
+                                           .Where(nd => nd.Nodes.Count > 0
+                                                        && nd.ImageIndex == (int)RelationshipType.Depends + 1))
+            {
+                node.Expand();
+            }
+            DependsGraphTree.EndUpdate();
         }
 
         private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
@@ -270,8 +277,18 @@ namespace CKAN.GUI
                         // Then give up and note the name without a module
                         ?? nonindexedNode(dependency, relationship))));
 
-        private TreeNode findDependencyShallow(IRegistryQuerier registry, RelationshipDescriptor relDescr, RelationshipType relationship, GameVersionCriteria crit)
+        private TreeNode findDependencyShallow(IRegistryQuerier       registry,
+                                               RelationshipDescriptor relDescr,
+                                               RelationshipType       relationship,
+                                               GameVersionCriteria    crit)
         {
+            var childNodes = relDescr.LatestAvailableWithProvides(
+                                          registry, crit,
+                                          // Ignore conflicts with installed mods
+                                          new List<CkanModule>())
+                                     .Select(dep => indexedNode(registry, dep, relationship, relDescr, crit))
+                                     .ToList();
+
             // Check if this dependency is installed
             if (relDescr.MatchesAny(registry.InstalledModules.Select(im => im.Module).ToList(),
                                     registry.InstalledDlls.ToHashSet(),
@@ -279,34 +296,43 @@ namespace CKAN.GUI
                                     registry.InstalledDlc,
                                     out CkanModule matched))
             {
-                return matched != null
-                    ? indexedNode(registry, matched, relationship, relDescr, crit)
-                    : nonModuleNode(relDescr, null, relationship);
+                if (matched == null)
+                {
+                    childNodes.Add(nonModuleNode(relDescr, null, relationship));
+                }
+                else
+                {
+                    var newNode = indexedNode(registry, matched, relationship, relDescr, crit);
+                    if (childNodes.FindIndex(nd => (nd.Tag as CkanModule)?.identifier == matched.identifier)
+                        is int index && index != -1)
+                    {
+                        // Replace the latest provider with the installed version
+                        childNodes[index] = newNode;
+                    }
+                    else
+                    {
+                        childNodes.Add(newNode);
+                    }
+                }
             }
 
-            // Find modules that satisfy this dependency
-            List<CkanModule> dependencyModules = relDescr.LatestAvailableWithProvides(
-                registry, crit,
-                // Ignore conflicts with installed mods
-                new List<CkanModule>());
-            if (dependencyModules.Count == 0)
+            if (childNodes.Count == 0)
             {
                 // Nothing found, don't return a node
                 return null;
             }
-            else if (dependencyModules.Count == 1
-                && relDescr.ContainsAny(new string[] { dependencyModules[0].identifier }))
+            else if (childNodes.Count == 1
+                     && childNodes[0].Tag is CkanModule module
+                     && relDescr.ContainsAny(new string[] { module.identifier }))
             {
                 // Only one exact match module, return a simple node
-                return indexedNode(registry, dependencyModules[0], relationship, relDescr, crit);
+                return childNodes[0];
             }
             else
             {
                 // Several found or not same id, return a "provides" node
-                return providesNode(relDescr.ToString(),
-                                    relationship,
-                                    dependencyModules.Select(dep => indexedNode(
-                                        registry, dep, relationship, relDescr, crit)));
+                return providesNode(relDescr.ToString(), relationship,
+                                    childNodes.ToArray());
             }
         }
 
@@ -326,18 +352,27 @@ namespace CKAN.GUI
                         .Select(r => indexedNode(registry, otherMod, relationship, r, crit)))));
         }
 
-        private TreeNode providesNode(string identifier, RelationshipType relationship, IEnumerable<TreeNode> children)
+        private TreeNode providesNode(string           identifier,
+                                      RelationshipType relationship,
+                                      TreeNode[]       children)
         {
             int icon = (int)relationship + 1;
-            return new TreeNode(string.Format(Properties.Resources.ModInfoVirtual, identifier), icon, icon, children.ToArray())
+            var node = new TreeNode(string.Format(Properties.Resources.ModInfoVirtual,
+                                                  identifier),
+                                    icon, icon, children)
             {
                 Name        = identifier,
                 ToolTipText = relationship.Localize(),
                 ForeColor   = SystemColors.GrayText,
             };
+            return node;
         }
 
-        private TreeNode indexedNode(IRegistryQuerier registry, CkanModule module, RelationshipType relationship, RelationshipDescriptor relDescr, GameVersionCriteria crit)
+        private TreeNode indexedNode(IRegistryQuerier       registry,
+                                     CkanModule             module,
+                                     RelationshipType       relationship,
+                                     RelationshipDescriptor relDescr,
+                                     GameVersionCriteria    crit)
         {
             int icon = (int)relationship + 1;
             bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
@@ -350,26 +385,37 @@ namespace CKAN.GUI
                 ToolTipText = $"{relationship.Localize()} {relDescr}",
                 Tag         = module,
                 ForeColor   = (compatible && !missingDLC)
-                    ? SystemColors.WindowText
-                    : Color.Red,
+                                  ? SystemColors.WindowText
+                                  : Color.Red,
+                NodeFont    = new Font(DependsGraphTree.Font,
+                                       registry.IsInstalled(module.identifier, false)
+                                           ? FontStyle.Bold
+                                           : FontStyle.Regular),
             };
         }
 
-        private TreeNode nonModuleNode(RelationshipDescriptor relDescr, ModuleVersion version, RelationshipType relationship)
+        private TreeNode nonModuleNode(RelationshipDescriptor relDescr,
+                                       ModuleVersion          version,
+                                       RelationshipType       relationship)
         {
             int icon = (int)relationship + 1;
             return new TreeNode($"{relDescr} {version}", icon, icon)
             {
                 Name        = relDescr.ToString(),
-                ToolTipText = relationship.Localize()
+                ToolTipText = relationship.Localize(),
+                NodeFont    = new Font(DependsGraphTree.Font,
+                                       FontStyle.Bold),
             };
         }
 
-        private TreeNode nonindexedNode(RelationshipDescriptor relDescr, RelationshipType relationship)
+        private TreeNode nonindexedNode(RelationshipDescriptor relDescr,
+                                        RelationshipType       relationship)
         {
             // Completely nonexistent dependency, e.g. "AJE"
             int icon = (int)relationship + 1;
-            return new TreeNode(string.Format(Properties.Resources.ModInfoNotIndexed, relDescr.ToString()), icon, icon)
+            return new TreeNode(string.Format(Properties.Resources.ModInfoNotIndexed,
+                                              relDescr.ToString()),
+                                icon, icon)
             {
                 Name        = relDescr.ToString(),
                 ToolTipText = relationship.Localize(),
