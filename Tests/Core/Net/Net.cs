@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Net;
 
 using NUnit.Framework;
 
@@ -11,17 +12,17 @@ namespace Tests.Core.Net
         // TODO: Test certificate errors. How?
         // URL we expect to always be up.
         private const string KnownURL = "http://example.com/";
-        private static void BadDownload()
-        {
-            CKAN.Net.Download("cheese sandwich");
-        }
 
         [Test]
         [Category("Online")]
         public void DownloadThrowsOnInvalidURL()
         {
             // Download should throw an exception on an invalid URL.
-            Assert.That(BadDownload, Throws.Exception);
+            Assert.Throws<WebException>(
+                delegate
+                {
+                    CKAN.Net.Download("cheese sandwich");
+                });
         }
 
         [Test]
@@ -49,14 +50,12 @@ namespace Tests.Core.Net
         [Category("FlakyNetwork"), Category("Online")]
         public void SpaceDockSSL()
         {
-            Assert.DoesNotThrow(delegate
+            string file = CKAN.Net.Download("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1");
+            if (!File.Exists(file))
             {
-                string file = CKAN.Net.Download("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1");
-                if (!File.Exists(file))
-                {
-                    throw new Exception("File not downloaded");
-                }
-            });
+                throw new Exception("File not downloaded");
+            }
+            File.Delete(file);
         }
     }
 }

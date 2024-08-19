@@ -9,7 +9,8 @@ using NUnit.Framework;
 
 namespace Tests
 {
-    [TestFixture] public class Util
+    [TestFixture]
+    public class Util
     {
         [Test]
         public void AssembliesHaveNoAsyncVoids()

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using CKAN;
 using Tests.Data;
 
-namespace Tests.Core.AutoUpdateTests
+namespace Tests.Core.Net.AutoUpdateTests
 {
     [TestFixture]
     public class AutoUpdateTests
