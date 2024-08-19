@@ -213,6 +213,10 @@ namespace Tests.Core.Net
                     Assert.IsTrue(File.Exists(t.filename));
                 }
             });
+            foreach (var t in targets)
+            {
+                File.Delete(t.filename);
+            }
         }
     }
 }

@@ -14,8 +14,7 @@ namespace CKAN.Configuration
 {
     public class JsonConfiguration : IConfiguration
     {
-
-        #region JSON Structures
+        #region JSON structures
 
         [JsonConverter(typeof(ConfigConverter))]
         private class Config
@@ -50,6 +49,15 @@ namespace CKAN.Configuration
 
         #endregion
 
+        /// <summary>
+        /// Loads configuration from the given file, or the default path if null.
+        /// </summary>
+        public JsonConfiguration(string newConfig = null)
+        {
+            configFile = newConfig ?? defaultConfigFile;
+            LoadConfig();
+        }
+
         // The standard location of the config file. Where this actually points is platform dependent,
         // but it's the same place as the downloads folder. The location can be overwritten with the
         // CKAN_CONFIG_FILE environment variable.
@@ -60,405 +68,251 @@ namespace CKAN.Configuration
         public static readonly string DefaultDownloadCacheDir =
             Path.Combine(CKANPathUtils.AppDataPath, "downloads");
 
-        // The actual config file state, and its location on the disk (we allow
-        // the location to be changed for unit tests). Note that these are static
-        // because we only want to have one copy of the config file in memory. This
-        // version is considered authoritative, and we save it to the disk every time
-        // it gets changed.
+        // The actual config file state and its location on the disk (we allow
+        // the location to be changed for unit tests). This version is considered
+        // authoritative, and we save it to the disk every time it gets changed.
         //
         // If you have multiple instances of CKAN running at the same time, each will
         // believe that their copy of the config file in memory is authoritative, so
         // changes made by one copy will not be respected by the other.
-        //
-        // Since we only have one copy in memory, we need to use _lock in order to
-        // keep things consistent. Depending on performance needs, it may make sense
-        // to switch to a read/write lock---but only do that after profiling. It is
-        // almost certainly more effort than it's worth, and may not actually provide
-        // any performance gains.
-        private static readonly object _lock = new object();
-        private static string configFile = defaultConfigFile;
-        private static Config config = null;
-
-        // <summary>
-        // Where the config file is located.
-        // </summary>
-        public string ConfigFile => configFile;
+        private string configFile = defaultConfigFile;
+        private Config config     = null;
 
         public string DownloadCacheDir
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.DownloadCacheDir ?? DefaultDownloadCacheDir;
-                }
-            }
+            get => config.DownloadCacheDir ?? DefaultDownloadCacheDir;
+
             set
             {
-                lock (_lock)
+                if (string.IsNullOrEmpty(value))
                 {
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        config.DownloadCacheDir = null;
-                    }
-                    else
-                    {
-                        if (!Path.IsPathRooted(value))
-                        {
-                            value = Path.GetFullPath(value);
-                        }
-                        config.DownloadCacheDir = value;
-                    }
-
-                    SaveConfig();
+                    config.DownloadCacheDir = null;
                 }
+                else
+                {
+                    if (!Path.IsPathRooted(value))
+                    {
+                        value = Path.GetFullPath(value);
+                    }
+                    config.DownloadCacheDir = value;
+                }
+                SaveConfig();
             }
         }
 
         public long? CacheSizeLimit
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.CacheSizeLimit;
-                }
-            }
+            get => config.CacheSizeLimit;
 
             set
             {
-                lock (_lock)
-                {
-                    config.CacheSizeLimit = value < 0 ? null : value;
-
-                    SaveConfig();
-                }
+                config.CacheSizeLimit = value < 0 ? null : value;
+                SaveConfig();
             }
         }
 
         public int RefreshRate
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.RefreshRate ?? 0;
-                }
-            }
+            get => config.RefreshRate ?? 0;
 
             set
             {
-                lock (_lock)
-                {
-                    config.RefreshRate = value <= 0 ? null : (int?)value;
-
-                    SaveConfig();
-                }
+                config.RefreshRate = value <= 0 ? null : (int?)value;
+                SaveConfig();
             }
         }
 
         public string Language
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.Language;
-                }
-            }
+            get => config.Language;
 
             set
             {
-                lock (_lock)
+                if (Utilities.AvailableLanguages.Contains(value))
                 {
-                    if (Utilities.AvailableLanguages.Contains(value))
-                    {
-                        config.Language = value;
-                        SaveConfig();
-                    }
-                }
-            }
-        }
-
-
-        public string AutoStartInstance
-        {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.AutoStartInstance ?? "";
-                }
-            }
-
-            set
-            {
-                lock (_lock)
-                {
-                    config.AutoStartInstance = value ?? "";
-
+                    config.Language = value;
                     SaveConfig();
                 }
             }
         }
 
-        // <summary>
-        // For testing purposes only. This constructor discards the global configuration
-        // state, and recreates it from the specified file.
-        // </summary>
-        //
-        // N.B., if you're adding the ability to specify a config file from the CLI, this
-        // might be the way to do it. However, you need to ensure that the configuration
-        // doesn't get loaded from the default location first, as that might end up
-        // creating files and directories that the user is trying to avoid creating by
-        // specifying the configuration file on the command line.
-        public JsonConfiguration(string newConfig = null)
+        public string AutoStartInstance
         {
-            lock (_lock)
+            get => config.AutoStartInstance ?? "";
+
+            set
             {
-                configFile = newConfig ?? defaultConfigFile;
-                LoadConfig();
+                config.AutoStartInstance = value ?? "";
+                SaveConfig();
             }
         }
 
-
         public IEnumerable<Tuple<string, string, string>> GetInstances()
-        {
-            lock (_lock)
-            {
-                return config.GameInstances.Select(instance =>
+            => config.GameInstances.Select(instance =>
                     new Tuple<string, string, string>(
                         instance.Name,
                         instance.Path,
-                        instance.Game)
-                );
-            }
-        }
+                        instance.Game));
 
         public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
-            lock (_lock)
+            config.GameInstances = instances.Select(instance => new GameInstanceEntry
             {
-                config.GameInstances = instances.Select(instance => new GameInstanceEntry
-                {
-                    Name = instance.Key,
-                    Path = instance.Value.GameDir(),
-                    Game = instance.Value.game.ShortName
-                }).ToList();
-
-                SaveConfig();
-            }
+                Name = instance.Key,
+                Path = instance.Value.GameDir(),
+                Game = instance.Value.game.ShortName
+            }).ToList();
+            SaveConfig();
         }
 
         public IEnumerable<string> GetAuthTokenHosts()
-        {
-            lock (_lock)
-            {
-                return config.AuthTokens.Keys;
-            }
-        }
-
+            => config.AuthTokens.Keys;
 
         public bool TryGetAuthToken(string host, out string token)
-        {
-            lock (_lock)
-            {
-                return config.AuthTokens.TryGetValue(host, out token);
-            }
-        }
+            => config.AuthTokens.TryGetValue(host, out token);
 
         public void SetAuthToken(string host, string token)
         {
-            lock (_lock)
+            if (string.IsNullOrEmpty(token))
             {
-                if (string.IsNullOrEmpty(token))
-                {
-                    config.AuthTokens.Remove(host);
-                }
-                else
-                {
-                    config.AuthTokens[host] = token;
-                }
-
-                SaveConfig();
+                config.AuthTokens.Remove(host);
             }
+            else
+            {
+                config.AuthTokens[host] = token;
+            }
+            SaveConfig();
         }
 
         public string[] GlobalInstallFilters
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.GlobalInstallFilters;
-                }
-            }
+            get => config.GlobalInstallFilters;
 
             set
             {
-                lock (_lock)
-                {
-                    config.GlobalInstallFilters = value;
-                    SaveConfig();
-                }
+                config.GlobalInstallFilters = value;
+                SaveConfig();
             }
         }
 
         public string[] PreferredHosts
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.PreferredHosts;
-                }
-            }
+            get => config.PreferredHosts;
 
             set
             {
-                lock (_lock)
-                {
-                    config.PreferredHosts = value;
-                    SaveConfig();
-                }
+                config.PreferredHosts = value;
+                SaveConfig();
             }
         }
 
         public bool? DevBuilds
         {
-            get
-            {
-                lock (_lock)
-                {
-                    return config.DevBuilds;
-                }
-            }
+            get => config.DevBuilds;
 
             set
             {
-                lock (_lock)
-                {
-                    config.DevBuilds = value;
-                    SaveConfig();
-                }
+                config.DevBuilds = value;
+                SaveConfig();
             }
         }
 
         // <summary>
         // Save the JSON configuration file.
         // </summary>
-        private static void SaveConfig()
+        private void SaveConfig()
         {
-            lock (_lock)
-            {
-                string json = JsonConvert.SerializeObject(config, Formatting.Indented);
-                File.WriteAllText(configFile, json);
-            }
+            File.WriteAllText(configFile,
+                              JsonConvert.SerializeObject(config, Formatting.Indented));
         }
 
-        // <summary>
-        // Load the JSON configuration file. This will replace the current state.
-        //
-        // If the configuration file does not exist, this will create it and then
-        // try to populate it with values in the registry left from the old system.
-        // </summary>
+        /// <summary>
+        /// Load the JSON configuration file.
+        ///
+        /// If the configuration file does not exist, this will create it and then
+        /// try to populate it with values in the registry left from the old system.
+        /// </summary>
         private void LoadConfig()
         {
-            lock (_lock)
+            try
             {
-                try
+                config = JsonConvert.DeserializeObject<Config>(File.ReadAllText(configFile))
+                         ?? new Config();
+
+                if (config.GameInstances == null)
                 {
-                    string json = File.ReadAllText(configFile);
-                    config = JsonConvert.DeserializeObject<Config>(json);
-
-                    if (config == null)
+                    config.GameInstances = new List<GameInstanceEntry>();
+                }
+                else
+                {
+                    var gameName = new KerbalSpaceProgram().ShortName;
+                    foreach (var e in config.GameInstances)
                     {
-                        config = new Config();
-                    }
-
-                    if (config.GameInstances == null)
-                    {
-                        config.GameInstances = new List<GameInstanceEntry>();
-                    }
-                    else
-                    {
-                        var game = new KerbalSpaceProgram();
-                        foreach (GameInstanceEntry e in config.GameInstances)
+                        if (e.Game == null)
                         {
-                            if (e.Game == null)
-                            {
-                                e.Game = game.ShortName;
-                            }
+                            e.Game = gameName;
                         }
                     }
-
-                    if (config.AuthTokens == null)
-                    {
-                        config.AuthTokens = new Dictionary<string, string>();
-                    }
                 }
-                catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
+                if (config.AuthTokens == null)
                 {
-                    // This runs if the configuration does not exist. We will create a new configuration and
-                    // try to migrate from the registry.
-                    config = new Config();
-
-                    // Ensure the directory exists
-                    new FileInfo(configFile).Directory.Create();
-
-                    // Try to migrate from the real registry
-                    if (
-                        #if NET6_0_OR_GREATER
-                        Platform.IsWindows &&
-                        #endif
-                        Win32RegistryConfiguration.DoesRegistryConfigurationExist())
-                    {
-                        Migrate();
-
-                        // TODO: At some point, we can uncomment this to clean up after ourselves.
-                        // Win32RegistryConfiguration.DeleteAllKeys();
-                    }
-
-                    SaveConfig();
+                    config.AuthTokens = new Dictionary<string, string>();
                 }
             }
-        }
-
-        // <summary>
-        // Copy the configuration from the registry here.
-        // </summary>
-        #if NET5_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-        #endif
-        private void Migrate()
-        {
-            Win32RegistryConfiguration registry = new Win32RegistryConfiguration();
-
-            lock (_lock)
+            catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
             {
-                var instances = registry.GetInstances();
-                config.GameInstances = instances.Select(instance => new GameInstanceEntry
-                {
-                    Name = instance.Item1,
-                    Path = instance.Item2,
-                    Game = instance.Item3
-                }).ToList();
+                // This runs if the configuration does not exist
+                // Ensure the directory exists
+                new FileInfo(configFile).Directory.Create();
 
-                config.AutoStartInstance = registry.AutoStartInstance;
-                config.DownloadCacheDir = registry.DownloadCacheDir;
-                config.CacheSizeLimit = registry.CacheSizeLimit;
-                config.RefreshRate = registry.RefreshRate;
-
-                foreach (string host in registry.GetAuthTokenHosts())
+                // Try to migrate from the real registry
+                if (
+                    #if NET6_0_OR_GREATER
+                    Platform.IsWindows &&
+                    #endif
+                    Win32RegistryConfiguration.DoesRegistryConfigurationExist())
                 {
-                    if (registry.TryGetAuthToken(host, out string token))
-                    {
-                        config.AuthTokens[host] = token;
-                    }
+                    // Try to migrate from the Windows registry
+                    config = FromWindowsRegistry(new Win32RegistryConfiguration());
+
+                    // TODO: At some point, we can uncomment this to clean up after ourselves.
+                    // Win32RegistryConfiguration.DeleteAllKeys();
                 }
-
+                else
+                {
+                    // Create a new configuration
+                    config = new Config();
+                }
                 SaveConfig();
             }
         }
+
+        /// <summary>
+        /// Extract the configuration from the Windows registry
+        /// </summary>
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
+        private static Config FromWindowsRegistry(Win32RegistryConfiguration regCfg)
+            => new Config()
+            {
+                GameInstances     = regCfg.GetInstances()
+                                          .Select(instance => new GameInstanceEntry
+                                                              {
+                                                                  Name = instance.Item1,
+                                                                  Path = instance.Item2,
+                                                                  Game = instance.Item3
+                                                              })
+                                          .ToList(),
+                AutoStartInstance = regCfg.AutoStartInstance,
+                DownloadCacheDir  = regCfg.DownloadCacheDir,
+                CacheSizeLimit    = regCfg.CacheSizeLimit,
+                RefreshRate       = regCfg.RefreshRate,
+                AuthTokens        = regCfg.GetAuthTokenHosts()
+                                          .ToDictionary(host => host,
+                                                        host => regCfg.TryGetAuthToken(host, out string token)
+                                                                    ? token
+                                                                    : null),
+            };
     }
 }
