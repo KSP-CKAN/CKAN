@@ -262,6 +262,18 @@ namespace CKAN.CmdLine
                 log.Info("Verbose logging enabled");
             }
 
+            // Auto-detect whether IO device is interactive
+            if (!Headless && (Console.IsInputRedirected || Console.IsOutputRedirected))
+            {
+                log.InfoFormat("Setting headless mode ({0})",
+                               Console.IsInputRedirected
+                                   ? Console.IsOutputRedirected
+                                       ? "I/O redirected"
+                                       : "input redirected"
+                                   : "output redirected");
+                Headless = true;
+            }
+
             // Assign user-agent string if user has given us one
             if (NetUserAgent != null)
             {
