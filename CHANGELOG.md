@@ -35,6 +35,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Make `ckan compat add` take multiple versions, add `clear` and `set` (#4151 by: HebaruSan)
 - [GUI] Add mod support links to Help menu (#4154 by: HebaruSan)
 - [GUI] Don't hide other providing mods for installed, make installed bold (#4163 by: HebaruSan)
+- [CLI] Set headless mode automatically (#4166 by: HebaruSan)
 
 ### Bugfixes
 
