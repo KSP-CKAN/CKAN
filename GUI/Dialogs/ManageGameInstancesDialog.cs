@@ -18,41 +18,23 @@ namespace CKAN.GUI
     #endif
     public partial class ManageGameInstancesDialog : Form
     {
-        private static GameInstanceManager manager => Main.Instance.Manager;
-        private readonly IUser _user;
-        private RenameInstanceDialog _renameInstanceDialog;
-        private readonly OpenFileDialog _instanceDialog = new OpenFileDialog()
-        {
-            AddExtension     = false,
-            CheckFileExists  = false,
-            CheckPathExists  = false,
-            InitialDirectory = Environment.CurrentDirectory,
-            Filter           = GameFolderFilter(manager),
-            Multiselect      = false
-        };
-
-        /// <summary>
-        /// Generate filter string for OpenFileDialog
-        /// </summary>
-        /// <param name="mgr">Game instance manager that can tell us about the build ID files</param>
-        /// <returns>
-        /// "Build metadata files (buildID.txt;buildID64.txt)|buildID.txt;buildID64.txt"
-        /// </returns>
-        public static string GameFolderFilter(GameInstanceManager mgr)
-        => Properties.Resources.GameProgramFileDescription
-            + "|" + string.Join(";", mgr.AllInstanceAnchorFiles);
-
-        public bool HasSelections => GameInstancesListView.SelectedItems.Count > 0;
-
         /// <summary>
         /// Initialize the game instance selection window
         /// </summary>
+        /// <param name="mgr">Game instance manager object to provide our game instances</param>
         /// <param name="centerScreen">true to center the window on the screen, false to center it on the parent</param>
-        public ManageGameInstancesDialog(bool centerScreen, IUser user)
+        /// <param name="user">IUser object reference for raising dialogs</param>
+        public ManageGameInstancesDialog(GameInstanceManager mgr,
+                                         bool                centerScreen,
+                                         IUser               user)
         {
-            _user = user;
+            manager = mgr;
+            this.user = user;
             InitializeComponent();
             DialogResult = DialogResult.Cancel;
+
+            instanceDialog.Filter = GameFolderFilter(manager);
+            instanceDialog.FileOk += InstanceFileOK;
 
             if (centerScreen)
             {
@@ -100,6 +82,19 @@ namespace CKAN.GUI
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             GameInstancesListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
+
+        /// <summary>
+        /// Generate filter string for OpenFileDialog
+        /// </summary>
+        /// <param name="mgr">Game instance manager that can tell us about the build ID files</param>
+        /// <returns>
+        /// "Build metadata files (buildID.txt;buildID64.txt)|buildID.txt;buildID64.txt"
+        /// </returns>
+        public static string GameFolderFilter(GameInstanceManager mgr)
+        => Properties.Resources.GameProgramFileDescription
+            + "|" + string.Join(";", mgr.AllInstanceAnchorFiles);
+
+        public bool HasSelections => GameInstancesListView.SelectedItems.Count > 0;
 
         private void AddOrRemoveColumn(ListView listView, ColumnHeader column, bool condition, int index)
         {
@@ -157,22 +152,20 @@ namespace CKAN.GUI
         }
 
         private static string FormatVersion(GameVersion v)
-        {
-            return v == null
+            => v == null
                 ? Properties.Resources.CompatibleGameVersionsDialogNone
                 // The BUILD component is not useful visually
                 : new GameVersion(v.Major, v.Minor, v.Patch).ToString();
-        }
 
         private void AddToCKANMenuItem_Click(object sender, EventArgs e)
         {
-            if (_instanceDialog.ShowDialog(this) != DialogResult.OK
-                    || !File.Exists(_instanceDialog.FileName))
+            if (instanceDialog.ShowDialog(this) != DialogResult.OK
+                    || !File.Exists(instanceDialog.FileName))
             {
                 return;
             }
 
-            var path = Path.GetDirectoryName(_instanceDialog.FileName);
+            var path = Path.GetDirectoryName(instanceDialog.FileName);
             try
             {
                 var instanceName = Path.GetFileName(path);
@@ -181,17 +174,17 @@ namespace CKAN.GUI
                     instanceName = path;
                 }
                 instanceName = manager.GetNextValidInstanceName(instanceName);
-                manager.AddInstance(path, instanceName, _user);
+                manager.AddInstance(path, instanceName, user);
                 UpdateInstancesList();
             }
             catch (NotKSPDirKraken k)
             {
-                _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
+                user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
                     new object[] { k.path });
             }
             catch (Exception exc)
             {
-                _user.RaiseError(exc.Message);
+                user.RaiseError(exc.Message);
             }
         }
 
@@ -213,7 +206,7 @@ namespace CKAN.GUI
         {
             var old_instance = manager.CurrentInstance;
 
-            var result = new CloneGameInstanceDialog(manager, _user, (string)GameInstancesListView.SelectedItems[0].Tag).ShowDialog(this);
+            var result = new CloneGameInstanceDialog(manager, user, (string)GameInstancesListView.SelectedItems[0].Tag).ShowDialog(this);
             if (result == DialogResult.OK && !Equals(old_instance, manager.CurrentInstance))
             {
                 DialogResult = DialogResult.OK;
@@ -246,7 +239,7 @@ namespace CKAN.GUI
                 }
                 catch (NotKSPDirKraken k)
                 {
-                    _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
+                    user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
                 }
             }
         }
@@ -270,7 +263,7 @@ namespace CKAN.GUI
                 }
                 catch (NotKSPDirKraken k)
                 {
-                    _user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
+                    user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
                 }
             }
         }
@@ -321,7 +314,7 @@ namespace CKAN.GUI
 
             if (!Directory.Exists(path))
             {
-                _user.RaiseError(Properties.Resources.ManageGameInstancesDirectoryDeleted, path);
+                user.RaiseError(Properties.Resources.ManageGameInstancesDirectoryDeleted, path);
                 return;
             }
 
@@ -333,14 +326,14 @@ namespace CKAN.GUI
             var instance = (string)GameInstancesListView.SelectedItems[0].Tag;
 
             // show the dialog, and only continue if the user selected "OK"
-            _renameInstanceDialog = new RenameInstanceDialog();
-            if (_renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK)
+            var renameInstanceDialog = new RenameInstanceDialog();
+            if (renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK)
             {
                 return;
             }
 
             // proceed with instance rename
-            manager.RenameInstance(instance, _renameInstanceDialog.GetResult());
+            manager.RenameInstance(instance, renameInstanceDialog.GetResult());
             UpdateInstancesList();
         }
 
@@ -358,6 +351,40 @@ namespace CKAN.GUI
             RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
             ForgetButton.Enabled = HasSelections && (string)GameInstancesListView.SelectedItems[0].Tag != manager.CurrentInstance?.Name;
             ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
+        }
+
+        private readonly GameInstanceManager manager;
+
+        private readonly IUser               user;
+
+        private readonly OpenFileDialog      instanceDialog = new OpenFileDialog()
+        {
+            AddExtension     = false,
+            CheckFileExists  = false,
+            CheckPathExists  = false,
+            DereferenceLinks = false,
+            InitialDirectory = Environment.CurrentDirectory,
+            Multiselect      = false,
+        };
+
+        private void InstanceFileOK(object sender, CancelEventArgs e)
+        {
+            if (sender is OpenFileDialog dlg)
+            {
+                // OpenFileDialog always shows shortcuts (!!!!!),
+                // so we have to re-enforce the filter ourselves
+                var chosen  = Path.GetFileName(dlg.FileName);
+                var allowed = manager.AllInstanceAnchorFiles;
+                if (!allowed.Contains(chosen))
+                {
+                    e.Cancel = true;
+                    user.RaiseError(Properties.Resources.ManageGameInstancesInvalidFileSelected,
+                                    chosen,
+                                    string.Join(Environment.NewLine,
+                                                allowed.OrderBy(f => f)
+                                                       .Select(f => $"  - {f}")));
+                }
+            }
         }
     }
 }

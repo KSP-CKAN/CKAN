@@ -59,6 +59,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Stop checking multiple hashes (#4135 by: HebaruSan)
 - [Core] Fix max version column for wildcard compat (#4142 by: HebaruSan)
 - [Multiple] Refactor ZIP importing (#4153 by: HebaruSan)
+- [GUI] Work around OpenFileDialog always showing all shortcuts despite filters (#4168 by: HebaruSan)
 
 ### Internal
 

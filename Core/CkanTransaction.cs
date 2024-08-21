@@ -26,7 +26,7 @@ namespace CKAN
         }
 
         // System.ArgumentOutOfRangeException : Time-out interval must be less than 2^32-2. (Parameter 'dueTime')
-        private const double timeoutMs = Int32.MaxValue;
+        private const double timeoutMs = int.MaxValue;
         private static readonly TimeSpan maxCoretimeout = TimeSpan.FromMilliseconds(timeoutMs);
 
         private static readonly TransactionOptions transOpts = new TransactionOptions()

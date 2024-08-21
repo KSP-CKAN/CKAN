@@ -326,7 +326,7 @@ namespace CKAN.GUI
             bool gotInstance = false;
             Util.Invoke(this, () =>
             {
-                var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog(this);
+                var result = new ManageGameInstancesDialog(Manager, !actuallyVisible, currentUser).ShowDialog(this);
                 gotInstance = result == DialogResult.OK;
             });
             return gotInstance;
@@ -335,7 +335,7 @@ namespace CKAN.GUI
         private void manageGameInstancesMenuItem_Click(object sender, EventArgs e)
         {
             var old_instance = CurrentInstance;
-            var result = new ManageGameInstancesDialog(!actuallyVisible, currentUser).ShowDialog(this);
+            var result = new ManageGameInstancesDialog(Manager, !actuallyVisible, currentUser).ShowDialog(this);
             if (result == DialogResult.OK && !Equals(old_instance, CurrentInstance))
             {
                 for (bool done = false; !done;)
