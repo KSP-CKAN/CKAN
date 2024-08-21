@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using log4net;
 
-using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;

@@ -75,7 +75,7 @@ namespace CKAN.Configuration
         // If you have multiple instances of CKAN running at the same time, each will
         // believe that their copy of the config file in memory is authoritative, so
         // changes made by one copy will not be respected by the other.
-        private string configFile = defaultConfigFile;
+        private readonly string configFile = defaultConfigFile;
         private Config config     = null;
 
         public string DownloadCacheDir

@@ -193,7 +193,7 @@ namespace CKAN.GUI
             }
 
             foreach (var im in registry.FindRemovableAutoInstalled(
-                InstalledAfterChanges(registry, changeSet, version).ToList(), version))
+                InstalledAfterChanges(registry, changeSet).ToList(), version))
             {
                 changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
                 modules_to_remove.Add(im.Module);
@@ -228,7 +228,7 @@ namespace CKAN.GUI
         /// <param name="crit">Compatible versions of current instance</param>
         /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
         private IEnumerable<InstalledModule> InstalledAfterChanges(
-            IRegistryQuerier registry, HashSet<ModChange> changeSet, GameVersionCriteria crit)
+            IRegistryQuerier registry, HashSet<ModChange> changeSet)
         {
             var removingIdents = changeSet
                 .Where(ch => ch.ChangeType != GUIModChangeType.Install)

@@ -5,7 +5,6 @@ using System.Linq;
 using log4net;
 using Newtonsoft.Json.Linq;
 
-using CKAN.Versioning;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
