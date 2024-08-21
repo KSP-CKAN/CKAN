@@ -344,6 +344,13 @@ You can refresh the mod list manually with the Refresh button at the top, and yo
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Directory "{0}" doesn't exist.</value></data>
   <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (INVALID)</value></data>
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (LOCKED)</value></data>
+  <data name="ManageGameInstancesInvalidFileSelected" xml:space="preserve"><value>Not a valid game instance file:  "{0}"
+
+If you selected a shortcut, don't do that; Windows won't let us hide them from this dialog even though they're invalid.
+
+Find the folder where your game is installed and choose one of these files:
+
+{1}</value></data>
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}, {2} free</value></data>
