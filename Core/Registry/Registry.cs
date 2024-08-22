@@ -491,6 +491,9 @@ namespace CKAN
         private CompatibilitySorter sorter;
 
         [JsonIgnore]
+        private Dictionary<string, ProvidesModuleVersion> installedProvides = null;
+
+        [JsonIgnore]
         private Dictionary<string, ModuleTag> tags;
 
         [JsonIgnore]
@@ -528,6 +531,7 @@ namespace CKAN
             // These member variables hold references to data that depends on installed modules.
             // Clear them when the installed modules have changed.
             sorter = null;
+            installedProvides = null;
         }
 
         private void RepositoriesUpdated(Repository[] which)
@@ -610,20 +614,16 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
-        public CkanModule LatestAvailable(
-            string identifier,
-            GameVersionCriteria gameVersion,
-            RelationshipDescriptor relationshipDescriptor = null,
-            ICollection<CkanModule> installed = null,
-            ICollection<CkanModule> toInstall = null)
-        {
-            log.DebugFormat("Finding latest available for {0}", identifier);
-            return getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor,
-                                                                installed, toInstall))
-                                        .Where(m => m != null)
-                                        .OrderByDescending(m => m.version)
-                                        .FirstOrDefault();
-        }
+        public CkanModule LatestAvailable(string                  identifier,
+                                          GameVersionCriteria     gameVersion,
+                                          RelationshipDescriptor  relationshipDescriptor = null,
+                                          ICollection<CkanModule> installed              = null,
+                                          ICollection<CkanModule> toInstall              = null)
+            => getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor,
+                                                            installed, toInstall))
+                                    .Where(m => m != null)
+                                    .OrderByDescending(m => m.version)
+                                    .FirstOrDefault();
 
         /// <summary>
         /// Find modules with a given identifier
@@ -633,12 +633,9 @@ namespace CKAN
         /// List of all modules with this identifier
         /// </returns>
         public IEnumerable<CkanModule> AvailableByIdentifier(string identifier)
-        {
-            log.DebugFormat("Finding all available versions for {0}", identifier);
-            return getAvail(identifier).SelectMany(am => am.AllAvailable())
-                                       .Distinct()
-                                       .OrderByDescending(m => m.version);
-        }
+            => getAvail(identifier).SelectMany(am => am.AllAvailable())
+                                   .Distinct()
+                                   .OrderByDescending(m => m.version);
 
         /// <summary>
         /// Returns the specified CkanModule with the version specified,
@@ -646,18 +643,9 @@ namespace CKAN
         /// <see cref = "IRegistryQuerier.GetModuleByVersion" />
         /// </summary>
         public CkanModule GetModuleByVersion(string ident, ModuleVersion version)
-        {
-            log.DebugFormat("Trying to find {0} version {1}", ident, version);
-            try
-            {
-                return getAvail(ident)?.Select(am => am.ByVersion(version))
-                                       .FirstOrDefault(m => m != null);
-            }
-            catch
-            {
-                return null;
-            }
-        }
+            => Utilities.DefaultIfThrows(() => getAvail(ident))
+                        ?.Select(am => am.ByVersion(version))
+                         .FirstOrDefault(m => m != null);
 
         /// <summary>
         /// Get full JSON metadata string for a mod's available versions
@@ -679,8 +667,9 @@ namespace CKAN
         /// <param name="identifier">Name of mod to check</param>
         public GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions,
                                                        string            identifier)
-            => getAvail(identifier).Select(am => am.LatestCompatibleGameVersion(realVersions))
-                                   .Max();
+            => Utilities.DefaultIfThrows(() => getAvail(identifier))
+                        ?.Select(am => am.LatestCompatibleGameVersion(realVersions))
+                         .Max();
 
         /// <summary>
         /// Generate the providers index so we can find providing modules quicker
@@ -1051,58 +1040,51 @@ namespace CKAN
         /// </returns>
         internal Dictionary<string, ProvidesModuleVersion> ProvidedByInstalled()
         {
-            // TODO: In the future it would be nice to cache this list, and mark it for rebuild
-            // if our installed modules change.
-            var installed = new Dictionary<string, ProvidesModuleVersion>();
-
-            foreach (var modinfo in installed_modules)
+            if (installedProvides == null)
             {
-                CkanModule module = modinfo.Value.Module;
-
-                // Skip if this module provides nothing.
-                if (module.provides == null)
-                {
-                    continue;
-                }
-
-                foreach (string provided in module.provides)
-                {
-                    installed[provided] = new ProvidesModuleVersion(module.identifier, module.version.ToString());
-                }
+                installedProvides = installed_modules.Values
+                                                     .Select(im => im.Module)
+                                                     .Where(m => m.provides != null)
+                                                     .SelectMany(m => m.provides.Select(p =>
+                                                                          new KeyValuePair<string, ProvidesModuleVersion>(
+                                                                              p, new ProvidesModuleVersion(
+                                                                                     m.identifier, m.version.ToString()))))
+                                                     .DistinctBy(kvp => kvp.Key)
+                                                     .ToDictionary();
             }
-
-            return installed;
+            return installedProvides;
         }
+
+        private ProvidesModuleVersion ProvidedByInstalled(string provided)
+            => installedProvides != null
+                   // The dictionary helps if we already have it cached...
+                   ? installedProvides.TryGetValue(provided, out ProvidesModuleVersion version)
+                         ? version
+                         : null
+                   // ... but otherwise it's not worth the expense to calculate it
+                   : installed_modules.Values
+                                      .Select(im => im.Module)
+                                      .Where(m => m.provides != null
+                                                  && m.provides.Contains(provided))
+                                      .Select(m => new ProvidesModuleVersion(m.identifier,
+                                                                             m.version.ToString()))
+                                      .FirstOrDefault();
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.InstalledVersion" />
         /// </summary>
         public ModuleVersion InstalledVersion(string modIdentifier, bool with_provides = true)
-        {
             // If it's genuinely installed, return the details we have.
             // (Includes DLCs)
-            if (installed_modules.TryGetValue(modIdentifier, out InstalledModule installedModule))
-            {
-                return installedModule.Module.version;
-            }
-
-            // If it's in our autodetected registry, return that.
-            if (installed_dlls.ContainsKey(modIdentifier))
-            {
-                return new UnmanagedModuleVersion(null);
-            }
-
-            // Finally we have our provided checks. We'll skip these if
-            // withProvides is false.
-            if (!with_provides)
-            {
-                return null;
-            }
-
-            var provided = ProvidedByInstalled();
-
-            return provided.TryGetValue(modIdentifier, out ProvidesModuleVersion version) ? version : null;
-        }
+            => installed_modules.TryGetValue(modIdentifier,
+                                             out InstalledModule installedModule)
+                   ? installedModule.Module.version
+                   // If it's in our autodetected registry, return that.
+                   : installed_dlls.ContainsKey(modIdentifier) ? (ModuleVersion)new UnmanagedModuleVersion(null)
+                   // Finally we have our provided checks. We'll skip these if
+                   // withProvides is false.
+                   : with_provides ? ProvidedByInstalled(modIdentifier)
+                   : null;
 
         /// <summary>
         /// <see cref = "IRegistryQuerier.GetInstalledVersion" />
