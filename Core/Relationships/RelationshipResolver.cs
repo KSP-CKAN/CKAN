@@ -9,7 +9,7 @@ using CKAN.Extensions;
 
 namespace CKAN
 {
-    using ModPair = KeyValuePair<CkanModule, CkanModule>;
+    using ModPair = KeyValuePair<CkanModule, CkanModule?>;
 
     /// <summary>
     /// Resolves relationships between mods. Primarily used to satisfy missing dependencies and to check for conflicts on proposed installs.
@@ -28,10 +28,10 @@ namespace CKAN
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="versionCrit">The current KSP version criteria to consider</param>
         public RelationshipResolver(IEnumerable<CkanModule>     modulesToInstall,
-                                    IEnumerable<CkanModule>     modulesToRemove,
+                                    IEnumerable<CkanModule>?    modulesToRemove,
                                     RelationshipResolverOptions options,
                                     IRegistryQuerier            registry,
-                                    GameVersionCriteria         versionCrit)
+                                    GameVersionCriteria?        versionCrit)
             : this(options, registry, versionCrit)
         {
             if (modulesToRemove != null)
@@ -52,7 +52,7 @@ namespace CKAN
         /// <param name="versionCrit">The current KSP version criteria to consider</param>
         private RelationshipResolver(RelationshipResolverOptions options,
                                      IRegistryQuerier            registry,
-                                     GameVersionCriteria         versionCrit)
+                                     GameVersionCriteria?        versionCrit)
         {
             this.options     = options;
             this.registry    = registry;
@@ -127,8 +127,8 @@ namespace CKAN
             }
             catch (BadRelationshipsKraken k) when (options.without_enforce_consistency)
             {
-                conflicts.AddRange(k.Conflicts.Select(kvp => new ModPair(kvp.Item1, kvp.Item3))
-                                              .Where(kvp => !conflicts.Contains(kvp))
+                conflicts.AddRange(k.Conflicts.Select(tuple => new ModPair(tuple.Item1, tuple.Item3))
+                                              .Where(pair => !conflicts.Contains(pair))
                                               .ToArray());
             }
         }
@@ -143,7 +143,7 @@ namespace CKAN
             foreach (var module in mods)
             {
                 installed_modules.Remove(module);
-                conflicts.RemoveAll(kvp => kvp.Key.Equals(module) || kvp.Value.Equals(module));
+                conflicts.RemoveAll(kvp => module.Equals(kvp.Key) || module.Equals(kvp.Value));
             }
         }
 
@@ -151,9 +151,9 @@ namespace CKAN
         /// Resolves all relationships for a module.
         /// May recurse to ResolveStanza, which may add additional modules to be installed.
         /// </summary>
-        private void Resolve(CkanModule                          module,
-                             RelationshipResolverOptions         options,
-                             IEnumerable<RelationshipDescriptor> old_stanza = null)
+        private void Resolve(CkanModule                           module,
+                             RelationshipResolverOptions          options,
+                             IEnumerable<RelationshipDescriptor>? old_stanza = null)
         {
             if (alreadyResolved.Contains(module))
             {
@@ -210,11 +210,11 @@ namespace CKAN
         ///
         /// See RelationshipResolverOptions for further adjustments that can be made.
         /// </summary>
-        private void ResolveStanza(List<RelationshipDescriptor>        stanza,
-                                   SelectionReason                     reason,
-                                   RelationshipResolverOptions         options,
-                                   bool                                soft_resolve = false,
-                                   IEnumerable<RelationshipDescriptor> old_stanza   = null)
+        private void ResolveStanza(List<RelationshipDescriptor>?        stanza,
+                                   SelectionReason                      reason,
+                                   RelationshipResolverOptions          options,
+                                   bool                                 soft_resolve = false,
+                                   IEnumerable<RelationshipDescriptor>? old_stanza   = null)
         {
             if (stanza == null)
             {
@@ -236,7 +236,7 @@ namespace CKAN
 
                 // If we already have this dependency covered,
                 // resolve its relationships if we haven't already.
-                if (descriptor.MatchesAny(modlist.Values, null, null, out CkanModule installingCandidate))
+                if (descriptor.MatchesAny(modlist.Values, null, null, out CkanModule? installingCandidate))
                 {
                     if (installingCandidate != null)
                     {
@@ -252,11 +252,14 @@ namespace CKAN
                 else if (descriptor.ContainsAny(modlist.Keys))
                 {
                     // Two installing mods depend on different versions of this dependency
-                    CkanModule module = modlist.Values.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
+                    var module = modlist.Values.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
-                        conflicts.Add(new ModPair(module, reason.Parent));
-                        conflicts.Add(new ModPair(reason.Parent, module));
+                        if (module != null && reason is SelectionReason.RelationshipReason rel)
+                        {
+                            conflicts.Add(new ModPair(module, rel.Parent));
+                            conflicts.Add(new ModPair(rel.Parent, module));
+                        }
                         continue;
                     }
                     else
@@ -277,11 +280,14 @@ namespace CKAN
                 else if (descriptor.ContainsAny(installed_modules.Select(im => im.identifier)))
                 {
                     // We need a different version of the mod than is already installed
-                    CkanModule module = installed_modules.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
+                    var module = installed_modules.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
                     if (options.proceed_with_inconsistencies)
                     {
-                        conflicts.Add(new ModPair(module, reason.Parent));
-                        conflicts.Add(new ModPair(reason.Parent, module));
+                        if (module != null && reason is SelectionReason.RelationshipReason rel)
+                        {
+                            conflicts.Add(new ModPair(module, rel.Parent));
+                            conflicts.Add(new ModPair(rel.Parent, module));
+                        }
                         continue;
                     }
                     else
@@ -298,7 +304,8 @@ namespace CKAN
                     .LatestAvailableWithProvides(registry, versionCrit, installed_modules, modlist.Values)
                     .Where(mod => !modlist.ContainsKey(mod.identifier)
                                   && descriptor1.WithinBounds(mod)
-                                  && MightBeInstallable(mod, reason.Parent, installed_modules))
+                                  && reason is SelectionReason.RelationshipReason rel
+                                  && MightBeInstallable(mod, rel.Parent, installed_modules))
                     .ToList();
                 if (!candidates.Any())
                 {
@@ -314,10 +321,10 @@ namespace CKAN
 
                 if (!candidates.Any())
                 {
-                    if (!soft_resolve)
+                    if (!soft_resolve && reason is SelectionReason.RelationshipReason rel)
                     {
                         log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your game version.", descriptor.ToString());
-                        throw new DependencyNotSatisfiedKraken(reason.Parent, descriptor.ToString());
+                        throw new DependencyNotSatisfiedKraken(rel.Parent, descriptor.ToString() ?? "");
                     }
                     log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your game version.", descriptor.ToString());
                     continue;
@@ -327,7 +334,7 @@ namespace CKAN
                     // Oh no, too many to pick from!
                     if (options.without_toomanyprovides_kraken)
                     {
-                        if (options.get_recommenders && !(reason is SelectionReason.Depends))
+                        if (options.get_recommenders && reason is not SelectionReason.Depends)
                         {
                             for (int i = 0; i < candidates.Count; ++i)
                             {
@@ -346,18 +353,18 @@ namespace CKAN
                         List<CkanModule> provide = candidates
                             .Where(cand => old_stanza.Any(rel => rel.WithinBounds(cand)))
                             .ToList();
-                        if (provide.Count != 1)
+                        if (provide.Count != 1 && reason is SelectionReason.RelationshipReason rel)
                         {
                             // We still have either nothing, or too many to pick from
                             // Just throw the TMP now
-                            throw new TooManyModsProvideKraken(reason.Parent, descriptor.ToString(),
+                            throw new TooManyModsProvideKraken(rel.Parent, descriptor.ToString() ?? "",
                                                                candidates, descriptor.choice_help_text);
                         }
                         candidates[0] = provide.First();
                     }
-                    else
+                    else if (reason is SelectionReason.RelationshipReason rel)
                     {
-                        throw new TooManyModsProvideKraken(reason.Parent, descriptor.ToString(),
+                        throw new TooManyModsProvideKraken(rel.Parent, descriptor.ToString() ?? "",
                                                            candidates, descriptor.choice_help_text);
                     }
                 }
@@ -391,16 +398,16 @@ namespace CKAN
                     throw new InconsistentKraken(string.Format(
                         Properties.Resources.RelationshipResolverConflictsWith,
                         conflictingModDescription(conflicting_mod, null),
-                        conflictingModDescription(candidate, reason.Parent)));
+                        conflictingModDescription(candidate, (reason as SelectionReason.RelationshipReason)?.Parent)));
                 }
             }
         }
 
-        private string conflictingModDescription(CkanModule mod, CkanModule parent)
+        private string conflictingModDescription(CkanModule? mod, CkanModule? parent)
             => mod == null
                 ? Properties.Resources.RelationshipResolverAnUnmanaged
                 : parent == null && ReasonsFor(mod).Any(r => r is SelectionReason.UserRequested
-                                                             || r is SelectionReason.Installed)
+                                                               or SelectionReason.Installed)
                     // No parenthetical needed if it's user requested
                     ? mod.ToString()
                     // Explain why we're looking at this mod
@@ -426,9 +433,9 @@ namespace CKAN
 
             log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
 
-            if (modlist.TryGetValue(module.identifier, out CkanModule possibleDup))
+            if (modlist.TryGetValue(module.identifier, out CkanModule? possibleDup))
             {
-                if (possibleDup.identifier == module.identifier)
+                if (possibleDup?.identifier == module.identifier)
                 {
                     // We should never add the same module twice!
                     log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
@@ -462,9 +469,9 @@ namespace CKAN
             }
         }
 
-        private bool MightBeInstallable(CkanModule              module,
-                                        CkanModule              stanzaSource = null,
-                                        ICollection<CkanModule> installed    = null)
+        private bool MightBeInstallable(CkanModule               module,
+                                        CkanModule?              stanzaSource = null,
+                                        ICollection<CkanModule>? installed    = null)
             => MightBeInstallable(module, stanzaSource,
                                   installed ?? new List<CkanModule>(),
                                   new List<string>());
@@ -479,7 +486,7 @@ namespace CKAN
         /// <param name="compatible">For internal use</param>
         /// <returns>Whether its dependencies are compatible with the current game version</returns>
         private bool MightBeInstallable(CkanModule              module,
-                                        CkanModule              stanzaSource,
+                                        CkanModule?             stanzaSource,
                                         ICollection<CkanModule> installed,
                                         List<string>            parentCompat)
         {
@@ -535,11 +542,6 @@ namespace CKAN
         private int totalDependers(CkanModule module)
             => allDependers(module).Count();
 
-        private static bool AnyRelationship(SelectionReason r)
-            => r is SelectionReason.Depends
-                || r is SelectionReason.Recommended
-                || r is SelectionReason.Suggested;
-
         private static IEnumerable<T> BreadthFirstSearch<T>(IEnumerable<T>                      startingGroup,
                                                             Func<T, HashSet<T>, IEnumerable<T>> getNextGroup)
         {
@@ -558,12 +560,12 @@ namespace CKAN
             }
         }
 
-        private IEnumerable<CkanModule> allDependers(CkanModule                  module,
-                                                     Func<SelectionReason, bool> followReason = null)
+        private IEnumerable<CkanModule> allDependers(CkanModule                   module)
             => BreadthFirstSearch(Enumerable.Repeat(module, 1),
                                   (searching, found) =>
-                                      ReasonsFor(searching).Where(followReason ?? AnyRelationship)
+                                      ReasonsFor(searching).OfType<SelectionReason.RelationshipReason>()
                                                            .Select(r => r.Parent)
+                                                           .OfType<CkanModule>()
                                                            .Except(found));
 
         public IEnumerable<CkanModule> Dependencies()
@@ -571,14 +573,14 @@ namespace CKAN
                                   (searching, found) =>
                                       modlist.Values
                                              .Except(found)
-                                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Depends
-                                                                                && r.Parent == searching)));
+                                             .Where(m => ReasonsFor(m).Any(r => r is SelectionReason.Depends dep
+                                                                                && dep.Parent == searching)));
 
         public IEnumerable<CkanModule> Recommendations(HashSet<CkanModule> dependencies)
             => modlist.Values.Except(dependencies)
                              .Where(m => ValidRecSugReasons(dependencies,
-                                                            ReasonsFor(m).Where(r => r is SelectionReason.Recommended)
-                                                                         .ToList()))
+                                                            ReasonsFor(m).OfType<SelectionReason.Recommended>()
+                                                                         .ToArray()))
                              .OrderByDescending(totalDependers);
 
         public IEnumerable<CkanModule> Suggestions(HashSet<CkanModule> dependencies,
@@ -586,14 +588,16 @@ namespace CKAN
             => modlist.Values.Except(dependencies)
                              .Except(recommendations)
                              .Where(m => ValidRecSugReasons(dependencies,
-                                                            ReasonsFor(m).Where(r => r is SelectionReason.Suggested)
-                                                                         .ToList()))
+                                                            ReasonsFor(m).OfType<SelectionReason.Suggested>()
+                                                                         .ToArray()))
                              .OrderByDescending(totalDependers);
 
         private bool ValidRecSugReasons(HashSet<CkanModule>   dependencies,
-                                        List<SelectionReason> recSugReasons)
-            => recSugReasons.Any(r => dependencies.Contains(r.Parent))
-               && !suppressedRecommenders.Any(rel => recSugReasons.Any(r => rel.WithinBounds(r.Parent)));
+                                        SelectionReason.RelationshipReason[] recSugReasons)
+            => recSugReasons.OfType<SelectionReason.RelationshipReason>()
+                            .Any(r => dependencies.Contains(r.Parent))
+               && !suppressedRecommenders.Any(rel => recSugReasons.Any(r => r.Parent != null
+                                                                            && rel.WithinBounds(r.Parent)));
 
         public ParallelQuery<KeyValuePair<CkanModule, HashSet<string>>> Supporters(
             HashSet<CkanModule>     supported,
@@ -607,9 +611,10 @@ namespace CKAN
                        // Find each module that "supports" something we're installing
                        .Select(mod => new KeyValuePair<CkanModule, HashSet<string>>(
                                           mod,
-                                          mod.supports
+                                          (mod.supports ?? Enumerable.Empty<RelationshipDescriptor>())
                                              .Where(rel => rel.MatchesAny(supported, null, null))
                                              .Select(rel => (rel as ModuleRelationshipDescriptor)?.name)
+                                             .OfType<string>()
                                              .Where(name => !string.IsNullOrEmpty(name))
                                              .ToHashSet()))
                        .Where(kvp => kvp.Value.Count > 0);
@@ -648,7 +653,7 @@ namespace CKAN
         public bool IsConsistent => !conflicts.Any();
 
         public List<SelectionReason> ReasonsFor(CkanModule mod)
-            => reasons.TryGetValue(mod, out List<SelectionReason> r)
+            => reasons.TryGetValue(mod, out List<SelectionReason>? r)
                 ? r
                 : new List<SelectionReason>();
 
@@ -665,12 +670,13 @@ namespace CKAN
         /// true if auto-installed, false otherwise
         /// </returns>
         public bool IsAutoInstalled(CkanModule mod)
-            => ReasonsFor(mod).All(reason => reason is SelectionReason.Depends
-                                             && !reason.Parent.IsMetapackage);
+            => ReasonsFor(mod).All(reason => reason is SelectionReason.Depends dep
+                                             && dep.Parent != null
+                                             && !dep.Parent.IsMetapackage);
 
         private void AddReason(CkanModule module, SelectionReason reason)
         {
-            if (reasons.TryGetValue(module, out List<SelectionReason> modReasons))
+            if (reasons.TryGetValue(module, out List<SelectionReason>? modReasons))
             {
                 modReasons.Add(reason);
             }
@@ -697,7 +703,7 @@ namespace CKAN
         private readonly HashSet<RelationshipDescriptor> suppressedRecommenders = new HashSet<RelationshipDescriptor>();
 
         private readonly IRegistryQuerier            registry;
-        private readonly GameVersionCriteria         versionCrit;
+        private readonly GameVersionCriteria?        versionCrit;
         private readonly RelationshipResolverOptions options;
 
         /// <summary>
@@ -848,63 +854,26 @@ namespace CKAN
     public abstract class SelectionReason : IEquatable<SelectionReason>
     {
         // Currently assumed to exist for any relationship other than UserRequested or Installed
-        public virtual CkanModule Parent { get; protected set; }
-        public virtual string DescribeWith(IEnumerable<SelectionReason> others) => ToString();
+        public virtual string DescribeWith(IEnumerable<SelectionReason> others)
+            => ToString() ?? "";
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => Equals(obj as SelectionReason);
 
-        public bool Equals(SelectionReason rsn)
-        {
-            // Parent throws in some derived classes
-            try
-            {
-                return GetType() == rsn?.GetType()
-                       && Parent == rsn?.Parent;
-            }
-            catch
-            {
-                // If thrown, then the type check passed and Parent threw
-                return true;
-            }
-        }
+        public bool Equals(SelectionReason? rsn)
+            => GetType() == rsn?.GetType();
 
         public override int GetHashCode()
-        {
-            var type = GetType();
-            // Parent throws in some derived classes
-            try
-            {
-                #if NET5_0_OR_GREATER
-                return HashCode.Combine(type, Parent);
-                #else
-                unchecked
-                {
-                    return (type, Parent).GetHashCode();
-                }
-                #endif
-            }
-            catch
-            {
-                // If thrown, then we're type-only
-                return type.GetHashCode();
-            }
-        }
+            => GetType().GetHashCode();
 
         public class Installed : SelectionReason
         {
-            public override CkanModule Parent
-                => throw new Exception("Should never be called on Installed");
-
             public override string ToString()
                 => Properties.Resources.RelationshipResolverInstalledReason;
         }
 
         public class UserRequested : SelectionReason
         {
-            public override CkanModule Parent
-                => throw new Exception("Should never be called on UserRequested");
-
             public override string ToString()
                 => Properties.Resources.RelationshipResolverUserReason;
         }
@@ -921,76 +890,90 @@ namespace CKAN
                 => Properties.Resources.RelationshipResolverNoLongerUsedReason;
         }
 
-        public class Replacement : SelectionReason
+        public abstract class RelationshipReason : SelectionReason, IEquatable<RelationshipReason>
+        {
+            public RelationshipReason(CkanModule parent)
+            {
+                Parent = parent;
+            }
+
+            public CkanModule Parent;
+
+            public bool Equals(RelationshipReason? rsn)
+                => GetType() == rsn?.GetType()
+                   && Parent == rsn?.Parent;
+
+            public override int GetHashCode()
+            {
+                var type = GetType();
+                #if NET5_0_OR_GREATER
+                return HashCode.Combine(type, Parent);
+                #else
+                unchecked
+                {
+                    return (type, Parent).GetHashCode();
+                }
+                #endif
+            }
+        }
+
+        public class Replacement : RelationshipReason
         {
             public Replacement(CkanModule module)
+                : base(module)
             {
-                if (module == null)
-                {
-                    #pragma warning disable IDE0016
-                    throw new ArgumentNullException();
-                    #pragma warning restore IDE0016
-                }
-                Parent = module;
             }
 
             public override string ToString()
-                => string.Format(Properties.Resources.RelationshipResolverReplacementReason, Parent.name);
+                => string.Format(Properties.Resources.RelationshipResolverReplacementReason,
+                                 Parent.name);
 
             public override string DescribeWith(IEnumerable<SelectionReason> others)
                 => string.Format(Properties.Resources.RelationshipResolverReplacementReason,
-                    string.Join(", ", Enumerable.Repeat(this, 1).Concat(others).Select(r => r.Parent.name)));
+                                 string.Join(", ",
+                                             Enumerable.Repeat(this, 1)
+                                                       .Concat(others)
+                                                       .OfType<RelationshipReason>()
+                                                       .Select(r => r.Parent.name)));
         }
 
-        public sealed class Suggested : SelectionReason
+        public sealed class Suggested : RelationshipReason
         {
             public Suggested(CkanModule module)
+                : base(module)
             {
-                if (module == null)
-                {
-                    #pragma warning disable IDE0016
-                    throw new ArgumentNullException();
-                    #pragma warning restore IDE0016
-                }
-                Parent = module;
             }
 
             public override string ToString()
-                => string.Format(Properties.Resources.RelationshipResolverSuggestedReason, Parent.name);
+                => string.Format(Properties.Resources.RelationshipResolverSuggestedReason,
+                                 Parent.name);
         }
 
-        public sealed class Depends : SelectionReason
+        public sealed class Depends : RelationshipReason
         {
             public Depends(CkanModule module)
+                : base(module)
             {
-                if (module == null)
-                {
-                    #pragma warning disable IDE0016
-                    throw new ArgumentNullException();
-                    #pragma warning restore IDE0016
-                }
-                Parent = module;
             }
 
             public override string ToString()
-                => string.Format(Properties.Resources.RelationshipResolverDependsReason, Parent.name);
+                => string.Format(Properties.Resources.RelationshipResolverDependsReason,
+                                 Parent.name);
 
             public override string DescribeWith(IEnumerable<SelectionReason> others)
                 => string.Format(Properties.Resources.RelationshipResolverDependsReason,
-                    string.Join(", ", Enumerable.Repeat(this, 1).Concat(others).Select(r => r.Parent.name)));
+                                 string.Join(", ",
+                                             Enumerable.Repeat(this, 1)
+                                                       .Concat(others)
+                                                       .OfType<RelationshipReason>()
+                                                       .Select(r => r.Parent.name)));
         }
 
-        public sealed class Recommended : SelectionReason
+        public sealed class Recommended : RelationshipReason
         {
             public Recommended(CkanModule module, int providesIndex)
+                : base(module)
             {
-                if (module == null)
-                {
-                    #pragma warning disable IDE0016
-                    throw new ArgumentNullException();
-                    #pragma warning restore IDE0016
-                }
-                Parent        = module;
                 ProvidesIndex = providesIndex;
             }
 
@@ -1000,7 +983,8 @@ namespace CKAN
                 => new Recommended(Parent, providesIndex);
 
             public override string ToString()
-                => string.Format(Properties.Resources.RelationshipResolverRecommendedReason, Parent.name);
+                => string.Format(Properties.Resources.RelationshipResolverRecommendedReason,
+                                 Parent.name);
         }
     }
 }

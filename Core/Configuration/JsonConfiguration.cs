@@ -5,9 +5,11 @@ using System.Linq;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 
+using CKAN.Extensions;
 using CKAN.Games.KerbalSpaceProgram;
 
 namespace CKAN.Configuration
@@ -19,16 +21,16 @@ namespace CKAN.Configuration
         [JsonConverter(typeof(ConfigConverter))]
         private class Config
         {
-            public string AutoStartInstance { get; set; }
-            public string DownloadCacheDir { get; set; }
-            public long? CacheSizeLimit { get; set; }
-            public int? RefreshRate { get; set; }
-            public string Language { get; set; }
-            public IList<GameInstanceEntry> GameInstances { get; set; } = new List<GameInstanceEntry>();
-            public IDictionary<string, string> AuthTokens { get; set; } = new Dictionary<string, string>();
-            public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
-            public string[] PreferredHosts { get; set; } = Array.Empty<string>();
-            public bool? DevBuilds { get; set; }
+            public string?                      AutoStartInstance    { get; set; }
+            public string?                      DownloadCacheDir     { get; set; }
+            public long?                        CacheSizeLimit       { get; set; }
+            public int?                         RefreshRate          { get; set; }
+            public string?                      Language             { get; set; }
+            public IList<GameInstanceEntry>?    GameInstances        { get; set; } = new List<GameInstanceEntry>();
+            public IDictionary<string, string>? AuthTokens           { get; set; } = new Dictionary<string, string>();
+            public string[]?                    GlobalInstallFilters { get; set; } = Array.Empty<string>();
+            public string?[]?                   PreferredHosts       { get; set; } = Array.Empty<string>();
+            public bool?                        DevBuilds            { get; set; }
         }
 
         public class ConfigConverter : JsonPropertyNamesChangedConverter
@@ -42,6 +44,14 @@ namespace CKAN.Configuration
 
         private class GameInstanceEntry
         {
+            [JsonConstructor]
+            public GameInstanceEntry(string name, string path, string game)
+            {
+                Name = name;
+                Path = path;
+                Game = game;
+            }
+
             public string Name { get; set; }
             public string Path { get; set; }
             public string Game { get; set; }
@@ -52,7 +62,7 @@ namespace CKAN.Configuration
         /// <summary>
         /// Loads configuration from the given file, or the default path if null.
         /// </summary>
-        public JsonConfiguration(string newConfig = null)
+        public JsonConfiguration(string? newConfig = null)
         {
             configFile = newConfig ?? defaultConfigFile;
             LoadConfig();
@@ -76,9 +86,9 @@ namespace CKAN.Configuration
         // believe that their copy of the config file in memory is authoritative, so
         // changes made by one copy will not be respected by the other.
         private readonly string configFile = defaultConfigFile;
-        private Config config     = null;
+        private Config config;
 
-        public string DownloadCacheDir
+        public string? DownloadCacheDir
         {
             get => config.DownloadCacheDir ?? DefaultDownloadCacheDir;
 
@@ -117,12 +127,12 @@ namespace CKAN.Configuration
 
             set
             {
-                config.RefreshRate = value <= 0 ? null : (int?)value;
+                config.RefreshRate = value <= 0 ? null : value;
                 SaveConfig();
             }
         }
 
-        public string Language
+        public string? Language
         {
             get => config.Language;
 
@@ -136,7 +146,7 @@ namespace CKAN.Configuration
             }
         }
 
-        public string AutoStartInstance
+        public string? AutoStartInstance
         {
             get => config.AutoStartInstance ?? "";
 
@@ -148,45 +158,57 @@ namespace CKAN.Configuration
         }
 
         public IEnumerable<Tuple<string, string, string>> GetInstances()
-            => config.GameInstances.Select(instance =>
+            => config.GameInstances?.Select(instance =>
                     new Tuple<string, string, string>(
                         instance.Name,
                         instance.Path,
-                        instance.Game));
+                        instance.Game))
+                ?? Enumerable.Empty<Tuple<string, string, string>>();
 
         public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
-            config.GameInstances = instances.Select(instance => new GameInstanceEntry
-            {
-                Name = instance.Key,
-                Path = instance.Value.GameDir(),
-                Game = instance.Value.game.ShortName
-            }).ToList();
+            config.GameInstances = instances.Select(inst => new GameInstanceEntry(inst.Key,
+                                                                                  inst.Value.GameDir(),
+                                                                                  inst.Value.game.ShortName))
+                                            .ToList();
             SaveConfig();
         }
 
         public IEnumerable<string> GetAuthTokenHosts()
-            => config.AuthTokens.Keys;
+            => config.AuthTokens?.Keys
+                                ?? Enumerable.Empty<string>();
 
-        public bool TryGetAuthToken(string host, out string token)
-            => config.AuthTokens.TryGetValue(host, out token);
-
-        public void SetAuthToken(string host, string token)
+        public bool TryGetAuthToken(string host,
+                                    [NotNullWhen(returnValue: true)] out string? token)
         {
-            if (string.IsNullOrEmpty(token))
+            if (config.AuthTokens == null)
             {
-                config.AuthTokens.Remove(host);
+                token = null;
+                return false;
+            }
+            return config.AuthTokens.TryGetValue(host, out token);
+        }
+
+        public void SetAuthToken(string host, string? token)
+        {
+            if (token == null || string.IsNullOrEmpty(token))
+            {
+                config.AuthTokens?.Remove(host);
             }
             else
             {
-                config.AuthTokens[host] = token;
+                if (config.AuthTokens is not null)
+                {
+                    config.AuthTokens[host] = token;
+                }
             }
             SaveConfig();
         }
 
         public string[] GlobalInstallFilters
         {
-            get => config.GlobalInstallFilters;
+            get => config.GlobalInstallFilters
+                   ?? Array.Empty<string>();
 
             set
             {
@@ -195,9 +217,10 @@ namespace CKAN.Configuration
             }
         }
 
-        public string[] PreferredHosts
+        public string?[] PreferredHosts
         {
-            get => config.PreferredHosts;
+            get => config.PreferredHosts
+                   ?? Array.Empty<string>();
 
             set
             {
@@ -232,6 +255,7 @@ namespace CKAN.Configuration
         /// If the configuration file does not exist, this will create it and then
         /// try to populate it with values in the registry left from the old system.
         /// </summary>
+        [MemberNotNull(nameof(config))]
         private void LoadConfig()
         {
             try
@@ -248,22 +272,16 @@ namespace CKAN.Configuration
                     var gameName = new KerbalSpaceProgram().ShortName;
                     foreach (var e in config.GameInstances)
                     {
-                        if (e.Game == null)
-                        {
-                            e.Game = gameName;
-                        }
+                        e.Game ??= gameName;
                     }
                 }
-                if (config.AuthTokens == null)
-                {
-                    config.AuthTokens = new Dictionary<string, string>();
-                }
+                config.AuthTokens ??= new Dictionary<string, string>();
             }
-            catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
+            catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
             {
                 // This runs if the configuration does not exist
                 // Ensure the directory exists
-                new FileInfo(configFile).Directory.Create();
+                new FileInfo(configFile).Directory?.Create();
 
                 // Try to migrate from the real registry
                 if (
@@ -297,22 +315,20 @@ namespace CKAN.Configuration
             => new Config()
             {
                 GameInstances     = regCfg.GetInstances()
-                                          .Select(instance => new GameInstanceEntry
-                                                              {
-                                                                  Name = instance.Item1,
-                                                                  Path = instance.Item2,
-                                                                  Game = instance.Item3
-                                                              })
+                                          .Select(inst => new GameInstanceEntry(inst.Item1,
+                                                                                inst.Item2,
+                                                                                inst.Item3))
                                           .ToList(),
                 AutoStartInstance = regCfg.AutoStartInstance,
                 DownloadCacheDir  = regCfg.DownloadCacheDir,
                 CacheSizeLimit    = regCfg.CacheSizeLimit,
                 RefreshRate       = regCfg.RefreshRate,
                 AuthTokens        = regCfg.GetAuthTokenHosts()
-                                          .ToDictionary(host => host,
-                                                        host => regCfg.TryGetAuthToken(host, out string token)
-                                                                    ? token
-                                                                    : null),
+                                          .Select(host => regCfg.TryGetAuthToken(host, out string? token)
+                                                              ? new KeyValuePair<string, string>(host, token)
+                                                              : (KeyValuePair<string, string>?)null)
+                                          .OfType<KeyValuePair<string, string>>()
+                                          .ToDictionary(),
             };
     }
 }

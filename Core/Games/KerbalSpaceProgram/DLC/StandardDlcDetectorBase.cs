@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN.DLC;
 using CKAN.Versioning;
@@ -32,13 +33,17 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
             RegexOptions.Compiled | RegexOptions.IgnoreCase
         );
 
-        protected StandardDlcDetectorBase(IGame game,
-                                          string identifierBaseName,
-                                          GameVersion releaseGameVersion,
-                                          Dictionary<string, string> canonicalVersions = null)
+        protected StandardDlcDetectorBase(IGame                       game,
+                                          string                      identifierBaseName,
+                                          GameVersion                 releaseGameVersion,
+                                          Dictionary<string, string>? canonicalVersions = null)
             : this(game, identifierBaseName, identifierBaseName, releaseGameVersion, canonicalVersions) { }
 
-        protected StandardDlcDetectorBase(IGame game, string identifierBaseName, string directoryBaseName, GameVersion releaseGameVersion, Dictionary<string, string> canonicalVersions = null)
+        protected StandardDlcDetectorBase(IGame                       game,
+                                          string                      identifierBaseName,
+                                          string                      directoryBaseName,
+                                          GameVersion                 releaseGameVersion,
+                                          Dictionary<string, string>? canonicalVersions = null)
         {
             if (string.IsNullOrWhiteSpace(identifierBaseName))
             {
@@ -50,14 +55,16 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
                 throw new ArgumentException("Value must be provided.", nameof(directoryBaseName));
             }
 
-            this.game = game;
+            this.game          = game;
             IdentifierBaseName = identifierBaseName;
-            DirectoryBaseName = directoryBaseName;
+            DirectoryBaseName  = directoryBaseName;
             ReleaseGameVersion = releaseGameVersion;
-            CanonicalVersions = canonicalVersions ?? new Dictionary<string, string>();
+            CanonicalVersions  = canonicalVersions ?? new Dictionary<string, string>();
         }
 
-        public virtual bool IsInstalled(GameInstance ksp, out string identifier, out UnmanagedModuleVersion version)
+        public virtual bool IsInstalled(GameInstance                ksp,
+                                        [NotNullWhen(returnValue: true)] out string?                 identifier,
+                                        [NotNullWhen(returnValue: true)] out UnmanagedModuleVersion? version)
         {
             var directoryPath = Path.Combine(ksp.GameDir(), InstallPath());
             var readmeFilePath = Path.Combine(directoryPath, "readme.txt");
@@ -71,7 +78,7 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
                                   .Select(line => VersionPattern.Match(line))
                                   .Where(match => match.Success)
                                   .Select(match => match.Groups["version"].Value)
-                                  .Select(verStr => CanonicalVersions.TryGetValue(verStr, out string overrideVer)
+                                  .Select(verStr => CanonicalVersions.TryGetValue(verStr, out string? overrideVer)
                                                         ? overrideVer
                                                         : verStr)
                                   // A null string results in UnmanagedModuleVersion with IsUnknownVersion==true

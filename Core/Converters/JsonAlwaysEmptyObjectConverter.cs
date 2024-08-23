@@ -11,7 +11,7 @@ namespace CKAN
     /// </summary>
     public class JsonAlwaysEmptyObjectConverter : JsonConverter
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             // Read and discard this field's object (without this, loading stops!)
             _ = JToken.Load(reader);
@@ -19,7 +19,7 @@ namespace CKAN
         }
 
         public override bool CanWrite => true;
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             serializer.Serialize(writer, new JObject());
         }

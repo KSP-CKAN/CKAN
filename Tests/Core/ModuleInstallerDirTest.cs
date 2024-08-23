@@ -112,7 +112,6 @@ namespace Tests.Core
         {
             Assert.DoesNotThrow(delegate ()
             {
-                _installer.AddParentDirectories(null);
                 _installer.AddParentDirectories(new HashSet<string>());
                 _installer.AddParentDirectories(new HashSet<string>() { string.Empty });
                 _installer.AddParentDirectories(new HashSet<string>() { Path.GetPathRoot(Environment.CurrentDirectory) });

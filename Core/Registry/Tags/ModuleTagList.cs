@@ -12,7 +12,7 @@ namespace CKAN
         public static readonly string DefaultPath =
             Path.Combine(CKANPathUtils.AppDataPath, "tags.json");
 
-        public static ModuleTagList Load(string path)
+        public static ModuleTagList? Load(string path)
         {
             try
             {
@@ -23,6 +23,8 @@ namespace CKAN
                 return null;
             }
         }
+
+        public static readonly ModuleTagList ModuleTags = Load(DefaultPath) ?? new ModuleTagList();
 
         public bool Save(string path)
         {

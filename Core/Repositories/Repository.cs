@@ -23,11 +23,9 @@ namespace CKAN
         public bool   x_mirror;
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string x_comment;
+        public string? x_comment;
 
-        public Repository()
-        { }
-
+        [JsonConstructor]
         public Repository(string name, Uri uri)
         {
             this.name = name;
@@ -44,10 +42,10 @@ namespace CKAN
             this.priority = priority;
         }
 
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
             => Equals(other as Repository);
 
-        public bool Equals(Repository other)
+        public bool Equals(Repository? other)
             => other != null && uri == other.uri;
 
         public override int GetHashCode()

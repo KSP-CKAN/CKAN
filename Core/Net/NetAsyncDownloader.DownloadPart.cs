@@ -19,7 +19,7 @@ namespace CKAN
             public long      bytesLeft;
             public long      size;
             public long      bytesPerSecond;
-            public Exception error;
+            public Exception? error;
 
             // Number of target URLs already tried and failed
             private int triedDownloads;
@@ -27,11 +27,11 @@ namespace CKAN
             /// <summary>
             /// Percentage, bytes received, total bytes to receive
             /// </summary>
-            public event Action<int, long, long>                         Progress;
-            public event Action<object, AsyncCompletedEventArgs, string> Done;
+            public event Action<int, long, long>?                           Progress;
+            public event Action<object?, AsyncCompletedEventArgs, string?>? Done;
 
             private string mimeType => target.mimeType;
-            private ResumingWebClient agent;
+            private ResumingWebClient? agent;
 
             public DownloadPart(DownloadTarget target)
             {
@@ -46,15 +46,18 @@ namespace CKAN
                 var url = CurrentUri;
                 ResetAgent();
                 // Check whether to use an auth token for this host
-                if (url.IsAbsoluteUri
-                    && ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out string token)
-                        && !string.IsNullOrEmpty(token))
+                if (agent != null)
                 {
-                    log.InfoFormat("Using auth token for {0}", url.Host);
-                    // Send our auth token to the GitHub API (or whoever else needs one)
-                    agent.Headers.Add("Authorization", $"token {token}");
+                    if (url.IsAbsoluteUri
+                        && ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(url.Host, out string? token)
+                            && !string.IsNullOrEmpty(token))
+                    {
+                        log.InfoFormat("Using auth token for {0}", url.Host);
+                        // Send our auth token to the GitHub API (or whoever else needs one)
+                        agent.Headers.Add("Authorization", $"token {token}");
+                    }
+                    target.DownloadWith(agent, url);
                 }
-                target.DownloadWith(agent, url);
             }
 
             public Uri CurrentUri => target.urls[triedDownloads];

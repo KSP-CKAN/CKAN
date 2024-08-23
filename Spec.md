@@ -163,6 +163,10 @@ A short, one line description of the mod and what it does.
 The author, or list of authors, for this mod. No restrictions are
 placed upon this field.
 
+This field was optional prior to **v1.28**, but this was more of an oversight
+than an intentional design decision. It should always have been populated,
+but the client didn't always enforce this.
+
 ##### download
 
 A fully formed URL, indicating where a machine may download the

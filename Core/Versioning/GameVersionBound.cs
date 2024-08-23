@@ -17,11 +17,6 @@ namespace CKAN.Versioning
 
         public GameVersionBound(GameVersion value, bool inclusive)
         {
-            if (value is null)
-            {
-                throw new ArgumentNullException("value");
-            }
-
             if (!value.IsAny && !value.IsFullyDefined)
             {
                 throw new ArgumentException("Version must be either fully undefined or fully defined.", "value");
@@ -70,7 +65,7 @@ namespace CKAN.Versioning
 
     public sealed partial class GameVersionBound : IEquatable<GameVersionBound>
     {
-        public bool Equals(GameVersionBound other)
+        public bool Equals(GameVersionBound? other)
         {
             if (other is null)
             {
@@ -85,7 +80,7 @@ namespace CKAN.Versioning
             return Equals(Value, other.Value) && Inclusive == other.Inclusive;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -103,24 +98,24 @@ namespace CKAN.Versioning
         public override int GetHashCode()
             => (Value, Inclusive).GetHashCode();
 
-        public static bool operator ==(GameVersionBound left, GameVersionBound right) => Equals(left, right);
-        public static bool operator !=(GameVersionBound left, GameVersionBound right) => !Equals(left, right);
+        public static bool operator ==(GameVersionBound? left, GameVersionBound? right) => Equals(left, right);
+        public static bool operator !=(GameVersionBound? left, GameVersionBound? right) => !Equals(left, right);
     }
 
     public sealed partial class GameVersionBound
     {
         /// <summary>
-        /// Returns the lowest of a set of <see cref="GameVersionBound"/> objects. Analagous to
-        /// <see cref="GameVersion.Min(GameVersion[])"/> but does not produce a stable sort because in the event of a
+        /// Returns the lowest of a set of <see cref="GameVersionBound"/> objects.
+        /// Does not produce a stable sort because in the event of a
         /// tie inclusive bounds are treated as both lower and higher than equivalent exclusive bounds.
         /// </summary>
         /// <param name="versionBounds">The set of <see cref="GameVersionBound"/> objects to compare.</param>
         /// <returns>The lowest value in <see cref="versionBounds"/>.</returns>
-        public static GameVersionBound Lowest(params GameVersionBound[] versionBounds)
+        public static GameVersionBound Lowest(params GameVersionBound?[] versionBounds)
         {
             if (versionBounds == null)
             {
-                throw new ArgumentNullException("versionBounds");
+                throw new ArgumentNullException(nameof(versionBounds));
             }
 
             if (!versionBounds.Any())
@@ -128,30 +123,30 @@ namespace CKAN.Versioning
                 throw new ArgumentException("Value cannot be empty.", "versionBounds");
             }
 
-            if (versionBounds.Any(i => i == null))
+            if (versionBounds.Contains(null))
             {
                 throw new ArgumentException("Value cannot contain null.", "versionBounds");
             }
 
-            return versionBounds
-                .OrderBy(i => i == Unbounded)
-                .ThenBy(i => i.Value)
-                .ThenBy(i => i.Inclusive)
-                .First();
+            return versionBounds.OfType<GameVersionBound>()
+                                .OrderBy(i => i == Unbounded)
+                                .ThenBy(i => i.Value)
+                                .ThenBy(i => i.Inclusive)
+                                .First();
         }
 
         /// <summary>
-        /// Returns the highest of a set of <see cref="GameVersionBound"/> objects. Analagous to
-        /// <see cref="GameVersion.Max(GameVersion[])"/> but does not produce a stable sort because in the event of a
+        /// Returns the highest of a set of <see cref="GameVersionBound"/> objects.
+        /// Does not produce a stable sort because in the event of a
         /// tie inclusive bounds are treated as both lower and higher than equivalent exclusive bounds.
         /// </summary>
         /// <param name="versionBounds">The set of <see cref="GameVersionBound"/> objects to compare.</param>
         /// <returns>The highest value in <see cref="versionBounds"/>.</returns>
-        public static GameVersionBound Highest(params GameVersionBound[] versionBounds)
+        public static GameVersionBound Highest(params GameVersionBound?[] versionBounds)
         {
             if (versionBounds == null)
             {
-                throw new ArgumentNullException("versionBounds");
+                throw new ArgumentNullException(nameof(versionBounds));
             }
 
             if (!versionBounds.Any())
@@ -159,16 +154,16 @@ namespace CKAN.Versioning
                 throw new ArgumentException("Value cannot be empty.", "versionBounds");
             }
 
-            if (versionBounds.Any(i => i == null))
+            if (versionBounds.Contains(null))
             {
                 throw new ArgumentException("Value cannot contain null.", "versionBounds");
             }
 
-            return versionBounds
-                .OrderBy(i => i == Unbounded)
-                .ThenByDescending(i => i.Value)
-                .ThenBy(i => i.Inclusive)
-                .First();
+            return versionBounds.OfType<GameVersionBound>()
+                                .OrderBy(i => i == Unbounded)
+                                .ThenByDescending(i => i.Value)
+                                .ThenBy(i => i.Inclusive)
+                                .First();
         }
     }
 }

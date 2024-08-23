@@ -7,7 +7,7 @@ namespace CKAN
 {
     public class ReadProgressStream : ContainerStream
     {
-        public ReadProgressStream(Stream stream, IProgress<long> progress)
+        public ReadProgressStream(Stream stream, IProgress<long>? progress)
             : base(stream)
         {
             if (!stream.CanRead)
@@ -32,8 +32,8 @@ namespace CKAN
             return amountRead;
         }
 
-        private readonly IProgress<long> progress;
-        private long lastProgress = 0;
+        private readonly IProgress<long>? progress;
+        private          long             lastProgress = 0;
     }
 
     public abstract class ContainerStream : Stream
@@ -43,7 +43,7 @@ namespace CKAN
             if (stream == null)
             {
                 #pragma warning disable IDE0016
-                throw new ArgumentNullException("stream");
+                throw new ArgumentNullException(nameof(stream));
                 #pragma warning restore IDE0016
             }
             inner = stream;

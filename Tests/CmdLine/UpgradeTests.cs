@@ -117,6 +117,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -135,6 +136,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -149,6 +151,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -167,6 +170,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -179,6 +183,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.2.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -197,6 +202,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.2.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -218,6 +224,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -236,6 +243,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -250,6 +258,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -262,6 +271,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.2.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -283,6 +293,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -301,6 +312,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -315,6 +327,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -327,6 +340,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.2.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -346,6 +360,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -364,6 +379,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -378,6 +394,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -397,6 +414,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -415,6 +433,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -429,6 +448,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -449,6 +469,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -467,6 +488,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -481,6 +503,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -493,6 +516,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -513,6 +537,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""depends"": [
@@ -531,6 +556,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.0.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -545,6 +571,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Depender"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [
@@ -557,6 +584,7 @@ namespace Tests.CmdLine
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""Dependency"",
+                             ""author"":       ""Modder"",
                              ""version"":      ""1.1.0"",
                              ""download"":     ""https://github.com/"",
                              ""install"": [

@@ -5,7 +5,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
     public interface IKspBuildMap
     {
-        GameVersion this[string buildId] { get; }
+        GameVersion? this[string buildId] { get; }
 
         List<GameVersion> KnownVersions { get; }
 

@@ -57,15 +57,19 @@ namespace CKAN.Extensions
 
 #endif
 
-        public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
+#if NETFRAMEWORK || NETSTANDARD || NET5_0 || NET6_0 || NET7_0
+
+        public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs) where K: class
             => pairs.ToDictionary(kvp => kvp.Key,
                                   kvp => kvp.Value);
 
-        public static Dictionary<K, V> ToDictionary<K, V>(this ParallelQuery<KeyValuePair<K, V>> pairs)
+        public static Dictionary<K, V> ToDictionary<K, V>(this ParallelQuery<KeyValuePair<K, V>> pairs) where K: class
             => pairs.ToDictionary(kvp => kvp.Key,
                                   kvp => kvp.Value);
 
-        public static ConcurrentDictionary<K, V> ToConcurrentDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
+#endif
+
+        public static ConcurrentDictionary<K, V> ToConcurrentDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs) where K: class
             => new ConcurrentDictionary<K, V>(pairs);
 
         public static IEnumerable<T> AsParallelIf<T>(this IEnumerable<T> source,
@@ -76,7 +80,7 @@ namespace CKAN.Extensions
         // https://stackoverflow.com/a/55591477/2422988
         public static ParallelQuery<T> WithProgress<T>(this ParallelQuery<T> source,
                                                        long                  totalCount,
-                                                       IProgress<int>        progress)
+                                                       IProgress<int>?       progress)
         {
             long count       = 0;
             int  prevPercent = -1;
@@ -98,7 +102,7 @@ namespace CKAN.Extensions
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             }
             else if (source is Memoized<T>)
             {
@@ -111,9 +115,8 @@ namespace CKAN.Extensions
             }
         }
 
-        public static void RemoveWhere<K, V>(
-            this Dictionary<K, V> source,
-            Func<KeyValuePair<K, V>, bool> predicate)
+        public static void RemoveWhere<K, V>(this Dictionary<K, V> source,
+                                             Func<KeyValuePair<K, V>, bool> predicate) where K: class
         {
             var pairs = source.ToList();
             foreach (var kvp in pairs)
@@ -166,9 +169,9 @@ namespace CKAN.Extensions
         /// <param name="start">The first node</param>
         /// <param name="getNext">Function to go from one node to the next</param>
         /// <returns>All the nodes in the list as a sequence</returns>
-        public static IEnumerable<T> TraverseNodes<T>(this T start, Func<T, T> getNext)
+        public static IEnumerable<T> TraverseNodes<T>(this T start, Func<T, T?> getNext)
         {
-            for (T t = start; t != null; t = getNext(t))
+            for (T? t = start; t != null; t = getNext(t))
             {
                 yield return t;
             }
@@ -256,8 +259,8 @@ namespace CKAN.Extensions
         /// <param name="pattern">Pattern to match</param>
         /// <returns>Sequence of Match objects</returns>
         public static IEnumerable<Match> WithMatches(this IEnumerable<string> source, Regex pattern)
-            => source.Select(val => pattern.TryMatch(val, out Match match) ? match : null)
-                     .Where(m => m != null);
+            => source.Select(val => pattern.TryMatch(val, out Match? match) ? match : null)
+                     .OfType<Match>();
 
     }
 
@@ -272,6 +275,9 @@ namespace CKAN.Extensions
             this.source = source;
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+            => GetEnumerator();
+
         public IEnumerator<T> GetEnumerator()
         {
             lock (gate)
@@ -280,32 +286,31 @@ namespace CKAN.Extensions
                 {
                     return cache.GetEnumerator();
                 }
-                else if (enumerator == null)
+                else
                 {
-                    enumerator = source.GetEnumerator();
+                    enumerator ??= source.GetEnumerator();
                 }
             }
             return GetMemoizingEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-            => GetEnumerator();
-
         private IEnumerator<T> GetMemoizingEnumerator()
         {
-            for (int index = 0; TryGetItem(index, out T item); ++index)
+            for (int index = 0; TryGetItem(index, out T? item); ++index)
             {
                 yield return item;
             }
         }
 
-        private bool TryGetItem(int index, out T item)
+        private bool TryGetItem(int index,
+                                out T item)
         {
             lock (gate)
             {
-                if (!IsItemInCache(index))
+                if (enumerator is not null && !IsItemInCache(index))
                 {
                     // The iteration may have completed while waiting for the lock
+                    #nullable disable
                     if (isCacheComplete)
                     {
                         item = default;
@@ -318,6 +323,7 @@ namespace CKAN.Extensions
                         enumerator.Dispose();
                         return false;
                     }
+                    #nullable enable
                     cache.Add(enumerator.Current);
                 }
                 item = cache[index];
@@ -328,10 +334,10 @@ namespace CKAN.Extensions
         private bool IsItemInCache(int index)
             => index < cache.Count;
 
-        private readonly IEnumerable<T> source;
-        private          IEnumerator<T> enumerator;
-        private readonly List<T>        cache = new List<T>();
-        private          bool           isCacheComplete;
-        private readonly object         gate = new object();
+        private readonly IEnumerable<T>  source;
+        private          IEnumerator<T>? enumerator;
+        private readonly List<T>         cache = new List<T>();
+        private          bool            isCacheComplete;
+        private readonly object          gate = new object();
     }
 }

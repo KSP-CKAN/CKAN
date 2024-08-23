@@ -57,12 +57,6 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void Void()
-        {
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(null));
-        }
-
-        [Test]
         public void DogeCoin()
         {
             // Test with a module that depends and conflicts with nothing.
@@ -190,7 +184,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""depends"": [ {
@@ -199,7 +195,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.1.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -216,7 +214,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""depends"": [ {
@@ -225,7 +225,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -242,7 +244,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -251,7 +255,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.1.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -268,7 +274,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -277,7 +285,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -294,7 +304,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""self-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -302,7 +314,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""self-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -322,7 +336,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""provides-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""provides"":   [ ""providee"" ],
@@ -331,7 +347,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""provides-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""provides"":   [ ""providee"" ],

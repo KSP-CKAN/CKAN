@@ -14,7 +14,7 @@ namespace CKAN.Versioning
         public GameVersionBound Lower { get; private set; }
         public GameVersionBound Upper { get; private set; }
 
-        public GameVersionRange(GameVersionBound lower, GameVersionBound upper)
+        public GameVersionRange(GameVersionBound? lower, GameVersionBound? upper)
         {
             Lower = lower ?? GameVersionBound.Unbounded;
             Upper = upper ?? GameVersionBound.Unbounded;
@@ -23,21 +23,16 @@ namespace CKAN.Versioning
         }
 
         public GameVersionRange(GameVersion lower, GameVersion upper)
-            : this(lower?.ToVersionRange().Lower, upper?.ToVersionRange().Upper) { }
+            : this(lower.ToVersionRange().Lower, upper.ToVersionRange().Upper) { }
 
         public override string ToString() => _string;
 
-        public GameVersionRange IntersectWith(GameVersionRange other)
+        public GameVersionRange? IntersectWith(GameVersionRange other)
         {
-            if (other is null)
-            {
-                throw new ArgumentNullException("other");
-            }
-
             var highestLow = GameVersionBound.Highest(Lower, other.Lower);
             var lowestHigh = GameVersionBound.Lowest(Upper, other.Upper);
-
-            return IsEmpty(highestLow, lowestHigh) ? null : new GameVersionRange(highestLow, lowestHigh);
+            return IsEmpty(highestLow, lowestHigh) ? null
+                                                   : new GameVersionRange(highestLow, lowestHigh);
         }
 
         // Same logic as above but without "new"
@@ -47,11 +42,6 @@ namespace CKAN.Versioning
 
         public bool IsSupersetOf(GameVersionRange other)
         {
-            if (other is null)
-            {
-                throw new ArgumentNullException("other");
-            }
-
             var lowerIsOkay = Lower.Value.IsAny
                 || (Lower.Value < other.Lower.Value)
                 || (Lower.Value == other.Lower.Value && (Lower.Inclusive || !other.Lower.Inclusive));
@@ -98,7 +88,7 @@ namespace CKAN.Versioning
             return sb.ToString();
         }
 
-        private static string SameVersionString(GameVersion v)
+        private static string? SameVersionString(GameVersion? v)
             => v == null ? "???"
              : v.IsAny   ? Properties.Resources.CkanModuleAllVersions
              :             v.ToString();
@@ -129,7 +119,7 @@ namespace CKAN.Versioning
 
     public sealed partial class GameVersionRange : IEquatable<GameVersionRange>
     {
-        public bool Equals(GameVersionRange other)
+        public bool Equals(GameVersionRange? other)
         {
             if (other is null)
             {
@@ -144,7 +134,7 @@ namespace CKAN.Versioning
             return Equals(Lower, other.Lower) && Equals(Upper, other.Upper);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -162,7 +152,7 @@ namespace CKAN.Versioning
         public override int GetHashCode()
             => (Lower, Upper).GetHashCode();
 
-        public static bool operator ==(GameVersionRange left, GameVersionRange right) => Equals(left, right);
-        public static bool operator !=(GameVersionRange left, GameVersionRange right) => !Equals(left, right);
+        public static bool operator ==(GameVersionRange? left, GameVersionRange? right) => Equals(left, right);
+        public static bool operator !=(GameVersionRange? left, GameVersionRange? right) => !Equals(left, right);
     }
 }

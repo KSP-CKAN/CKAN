@@ -66,7 +66,7 @@ namespace CKAN
 
         #region Constructors
 
-        public InstalledModule(GameInstance ksp, CkanModule module, IEnumerable<string> relative_files, bool autoInstalled)
+        public InstalledModule(GameInstance? ksp, CkanModule module, IEnumerable<string> relative_files, bool autoInstalled)
         {
             install_time = DateTime.Now;
             source_module = module;
@@ -89,13 +89,6 @@ namespace CKAN
             }
         }
 
-        // If we're being deserialised from our JSON file, we don't need to
-        // do any special construction.
-        [JsonConstructor]
-        private InstalledModule()
-        {
-        }
-
         #endregion
 
         #region Serialisation Fixes
@@ -103,10 +96,7 @@ namespace CKAN
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext context)
         {
-            if (installed_files == null)
-            {
-                installed_files = new Dictionary<string, InstalledModuleFile>();
-            }
+            installed_files ??= new Dictionary<string, InstalledModuleFile>();
             if (Platform.IsWindows)
             {
                 // We need case insensitive path matching on Windows

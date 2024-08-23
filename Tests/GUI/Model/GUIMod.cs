@@ -85,13 +85,17 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             using (var repo = new TemporaryRepository(
                 @"{
-                    ""identifier"":  ""OutOfOrderMod"",
-                    ""version"":     ""1.2.0"",
-                    ""ksp_version"": ""0.90"",
-                    ""download"":    ""http://www.ksp-ckan.space""
+                    ""spec_version"": 1,
+                    ""identifier"":   ""OutOfOrderMod"",
+                    ""author"":       ""OutOfOrderModder"",
+                    ""version"":      ""1.2.0"",
+                    ""ksp_version"":  ""0.90"",
+                    ""download"":     ""http://www.ksp-ckan.space""
                 }",
                 @"{
+                    ""spec_version"": 1,
                     ""identifier"":  ""OutOfOrderMod"",
+                    ""author"":       ""OutOfOrderModder"",
                     ""version"":     ""1.1.0"",
                     ""ksp_version"": ""1.4.2"",
                     ""download"":    ""http://www.ksp-ckan.space""

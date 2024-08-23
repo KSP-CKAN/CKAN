@@ -10,16 +10,16 @@ namespace CKAN
 {
     public class SuppressedCompatWarningIdentifiers
     {
-        public GameVersion GameVersionWhenWritten;
+        public GameVersion? GameVersionWhenWritten;
         public HashSet<string> Identifiers = new HashSet<string>();
 
-        public static SuppressedCompatWarningIdentifiers LoadFrom(GameVersion gameVer, string filename)
+        public static SuppressedCompatWarningIdentifiers LoadFrom(GameVersion? gameVer, string filename)
         {
             try
             {
                 var saved = JsonConvert.DeserializeObject<SuppressedCompatWarningIdentifiers>(File.ReadAllText(filename));
                 // Reset warnings if e.g. Steam auto-updates the game
-                if (saved.GameVersionWhenWritten == gameVer)
+                if (saved != null && saved.GameVersionWhenWritten == gameVer)
                 {
                     return saved;
                 }

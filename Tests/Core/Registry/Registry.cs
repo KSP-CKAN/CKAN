@@ -71,9 +71,11 @@ namespace Tests.Core.Registry
             // Arrange
             var user = new NullUser();
             using (var repo = new TemporaryRepository(@"{
-                ""identifier"": ""DLC-Depender"",
-                ""version"":    ""1.0.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""DLC-Depender"",
+                ""author"":       ""Modder"",
+                ""version"":      ""1.0.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [
                     { ""name"": ""MakingHistory-DLC"" }
                 ]
@@ -97,9 +99,11 @@ namespace Tests.Core.Registry
             // Arrange
             var user = new NullUser();
             using (var repo = new TemporaryRepository(@"{
-                ""identifier"": ""DLC-Depender"",
-                ""version"":    ""1.0.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""DLC-Depender"",
+                ""author"":       ""Modder"",
+                ""version"":      ""1.0.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [
                     { ""name"": ""MakingHistory-DLC"" }
                 ]
@@ -127,9 +131,11 @@ namespace Tests.Core.Registry
             // Arrange
             var user = new NullUser();
             using (var repo = new TemporaryRepository(@"{
-                ""identifier"": ""DLC-Depender"",
-                ""version"":    ""1.0.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""DLC-Depender"",
+                ""author"":       ""Modder"",
+                ""version"":      ""1.0.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [ {
                     ""name"": ""MakingHistory-DLC"",
                     ""version"": ""1.1.0""
@@ -158,9 +164,11 @@ namespace Tests.Core.Registry
             // Arrange
             var user = new NullUser();
             using (var repo = new TemporaryRepository(@"{
-                ""identifier"": ""DLC-Depender"",
-                ""version"":    ""1.0.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""DLC-Depender"",
+                ""author"":       ""Modder"",
+                ""version"":      ""1.0.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [ {
                     ""name"": ""MakingHistory-DLC"",
                     ""version"": ""1.1.0""
@@ -202,22 +210,28 @@ namespace Tests.Core.Registry
             // Arrange
             var user = new NullUser();
             using (var repo = new TemporaryRepository(@"{
-                ""identifier"":  ""TypicalMod"",
-                ""version"":     ""0.9.0"",
-                ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
-                ""ksp_version"": ""1.6.1""
+                ""spec_version"": 1,
+                ""identifier"":   ""TypicalMod"",
+                ""author"":       ""Modder"",
+                ""version"":      ""0.9.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""ksp_version"":  ""1.6.1""
             }",
             @"{
-                ""identifier"":  ""TypicalMod"",
-                ""version"":     ""1.0.0"",
-                ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
-                ""ksp_version"": ""1.7.3""
+                ""spec_version"": 1,
+                ""identifier"":   ""TypicalMod"",
+                ""author"":       ""Modder"",
+                ""version"":      ""1.0.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""ksp_version"":  ""1.7.3""
             }",
             @"{
-                ""identifier"":  ""TypicalMod"",
-                ""version"":     ""1.1.0"",
-                ""download"":    ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
-                ""ksp_version"": ""1.8.1""
+                ""spec_version"": 1,
+                ""identifier"":   ""TypicalMod"",
+                ""author"":       ""Modder"",
+                ""version"":      ""1.1.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""ksp_version"":  ""1.8.1""
             }"))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
@@ -283,6 +297,7 @@ namespace Tests.Core.Registry
             using (var repo = new TemporaryRepository(@"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""DependencyMod"",
+                    ""author"":       ""Modder"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.11.1"",
                     ""download"":     ""https://mymods/DM/1.0""
@@ -290,6 +305,7 @@ namespace Tests.Core.Registry
                 @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""DependencyMod"",
+                    ""author"":       ""Modder"",
                     ""version"":      ""2.0"",
                     ""ksp_version"":  ""1.11.1"",
                     ""download"":     ""https://mymods/DM/2.0""
@@ -297,6 +313,7 @@ namespace Tests.Core.Registry
                 @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""DependingMod"",
+                    ""author"":       ""Modder"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.11.1"",
                     ""download"":     ""https://mymods/DM/2.0"",
@@ -338,7 +355,9 @@ namespace Tests.Core.Registry
             TestCase(new string[]
                      {
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""download"": [
                                 ""https://archive.org/"",
@@ -355,7 +374,9 @@ namespace Tests.Core.Registry
             TestCase(new string[]
                      {
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""download"": [
                                 ""https://archive.org/"",
@@ -364,7 +385,9 @@ namespace Tests.Core.Registry
                             ]
                          }",
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""download"": [
                                 ""https://spacedock.info/"",
@@ -372,7 +395,9 @@ namespace Tests.Core.Registry
                             ]
                          }",
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModC"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""download"": [
                                 ""https://github.com/""
@@ -410,6 +435,7 @@ namespace Tests.Core.Registry
             var module = CkanModule.FromJson(@"{
                              ""spec_version"": ""v1.4"",
                              ""identifier"":   ""InstalledMod"",
+                             ""author"":       ""InstalledModder"",
                              ""version"":      ""1.0"",
                              ""download"":     ""https://github.com/""
                          }");
@@ -442,6 +468,7 @@ namespace Tests.Core.Registry
             var module = CkanModule.FromJson(@"{
                              ""spec_version"": ""v1.4"",
                              ""identifier"":   ""InstalledMod"",
+                             ""author"":       ""InstalledModder"",
                              ""version"":      ""1.0"",
                              ""download"":     ""https://github.com/""
                          }");
@@ -477,6 +504,7 @@ namespace Tests.Core.Registry
                 var module = CkanModule.FromJson(@"{
                                  ""spec_version"": ""v1.4"",
                                  ""identifier"":   ""InstalledMod"",
+                                 ""author"":       ""InstalledModder"",
                                  ""version"":      ""1.0"",
                                  ""download"":     ""https://github.com/""
                              }");
@@ -511,6 +539,7 @@ namespace Tests.Core.Registry
                 var module = CkanModule.FromJson(@"{
                                  ""spec_version"": ""v1.4"",
                                  ""identifier"":   ""InstalledMod"",
+                                 ""author"":       ""InstalledModder"",
                                  ""version"":      ""1.0"",
                                  ""download"":     ""https://github.com/""
                              }");
@@ -524,6 +553,7 @@ namespace Tests.Core.Registry
                         var module2 = CkanModule.FromJson(@"{
                                           ""spec_version"": ""v1.4"",
                                           ""identifier"":   ""InstalledMod2"",
+                                          ""author"":       ""InstalledModder"",
                                           ""version"":      ""1.0"",
                                           ""download"":     ""https://github.com/""
                                       }");
@@ -549,6 +579,7 @@ namespace Tests.Core.Registry
                 var module = CkanModule.FromJson(@"{
                                  ""spec_version"": ""v1.4"",
                                  ""identifier"":   ""InstalledMod"",
+                                 ""author"":       ""InstalledModder"",
                                  ""version"":      ""1.0"",
                                  ""download"":     ""https://github.com/""
                              }");
@@ -562,6 +593,7 @@ namespace Tests.Core.Registry
                         var module2 = CkanModule.FromJson(@"{
                                           ""spec_version"": ""v1.4"",
                                           ""identifier"":   ""InstalledMod2"",
+                                          ""author"":       ""InstalledModder"",
                                           ""version"":      ""1.0"",
                                           ""download"":     ""https://github.com/""
                                       }");

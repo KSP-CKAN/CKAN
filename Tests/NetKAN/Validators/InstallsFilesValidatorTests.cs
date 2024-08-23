@@ -26,6 +26,7 @@ namespace Tests.NetKAN.Validators
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
+            json["author"] = "AmazingModder";
             json["version"] = "1.0.0";
             json["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
 
@@ -53,6 +54,7 @@ namespace Tests.NetKAN.Validators
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
+            json["author"] = "AmazingModder";
             json["version"] = "1.0.0";
             json["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
 

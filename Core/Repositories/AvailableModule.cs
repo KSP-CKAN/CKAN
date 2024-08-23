@@ -26,12 +26,8 @@ namespace CKAN
         [JsonIgnore]
         private string identifier;
 
-        [JsonConstructor]
-        private AvailableModule()
-        {
-        }
-
         /// <param name="identifier">The module to keep track of</param>
+        [JsonConstructor]
         public AvailableModule(string identifier)
         {
             this.identifier = identifier;
@@ -49,7 +45,8 @@ namespace CKAN
         [OnDeserialized]
         internal void DeserialisationFixes(StreamingContext context)
         {
-            identifier = module_version.Values.LastOrDefault()?.identifier;
+            identifier = module_version.Values.Select(m => m.identifier)
+                                              .Last();
             Debug.Assert(module_version.Values.All(m => identifier.Equals(m.identifier)));
         }
 
@@ -103,11 +100,11 @@ namespace CKAN
         /// <param name="installed">Modules that are already installed</param>
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
-        public CkanModule Latest(
-            GameVersionCriteria     ksp_version  = null,
-            RelationshipDescriptor  relationship = null,
-            ICollection<CkanModule> installed    = null,
-            ICollection<CkanModule> toInstall    = null)
+        public CkanModule? Latest(
+            GameVersionCriteria?     ksp_version  = null,
+            RelationshipDescriptor?  relationship = null,
+            ICollection<CkanModule>? installed    = null,
+            ICollection<CkanModule>? toInstall    = null)
         {
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
@@ -150,7 +147,7 @@ namespace CKAN
                 foreach (RelationshipDescriptor rel in module.conflicts)
                 {
                     // If any of the conflicts are present, fail
-                    if (rel.MatchesAny(othersMinusSelf, null, null, out CkanModule matched))
+                    if (rel.MatchesAny(othersMinusSelf, null, null, out CkanModule? matched))
                     {
                         log.DebugFormat("Found conflict with {0}, rejecting {1}", matched, module);
                         return false;
@@ -204,8 +201,10 @@ namespace CKAN
             {
                 // Can't get later than Any, so no need for more complex logic
                 return realVersions?.LastOrDefault()
+                                   // This is needed for when we have no real versions loaded, such as tests
                                    ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
-                                                           .Max();
+                                                           .Max()
+                                   ?? module_version.Values.Last().LatestCompatibleGameVersion();
             }
             // Find the range with the highest upper bound
             var bestRange = ranges.Distinct()
@@ -213,15 +212,17 @@ namespace CKAN
                                                               ? r
                                                               : best);
             return realVersions?.LastOrDefault(v => bestRange.Contains(v))
+                               // This is needed for when we have no real versions loaded, such as tests
                                ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
-                                                       .Max();
+                                                       .Max()
+                               ?? module_version.Values.Last().LatestCompatibleGameVersion();
         }
 
         /// <summary>
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
-        public CkanModule ByVersion(ModuleVersion v)
-            => module_version.TryGetValue(v, out CkanModule module) ? module : null;
+        public CkanModule? ByVersion(ModuleVersion v)
+            => module_version.TryGetValue(v, out CkanModule? module) ? module : null;
 
         /// <summary>
         /// Some code may expect this to be sorted in descending order

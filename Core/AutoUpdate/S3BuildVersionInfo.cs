@@ -4,7 +4,7 @@ namespace CKAN
 {
     public class S3BuildVersionInfo
     {
-        public ModuleVersion version;
-        public string        changelog;
+        public ModuleVersion? version;
+        public string?        changelog;
     }
 }

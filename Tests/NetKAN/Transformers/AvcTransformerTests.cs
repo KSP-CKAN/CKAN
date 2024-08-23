@@ -42,6 +42,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -80,6 +81,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -184,6 +186,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -262,6 +265,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
             json["version"] = "9001";
@@ -293,6 +297,7 @@ namespace Tests.NetKAN.Transformers
             JObject json = new JObject();
             json["spec_version"]                = 1;
             json["identifier"]                  = "AwesomeMod";
+            json["author"]                      = "Phenomenal Author";
             json["$vref"]                       = "#/ckan/ksp-avc";
             json["download"]                    = "https://awesomemod.example/AwesomeMod.zip";
             json["version"]                     = "9001";

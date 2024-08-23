@@ -44,7 +44,7 @@ namespace CKAN
         /// ETag value of the URL if any, otherwise null, see
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag
         /// </returns>
-        public static string CurrentETag(Uri url)
+        public static string? CurrentETag(Uri url)
         {
             // HttpClient apparently is worse than what it was supposed to replace
             #pragma warning disable SYSLIB0014
@@ -54,7 +54,7 @@ namespace CKAN
             try
             {
                 HttpWebResponse resp = (HttpWebResponse)req.GetResponse();
-                string val = resp.Headers["ETag"]?.Replace("\"", "");
+                var val = resp.Headers["ETag"]?.Replace("\"", "");
                 resp.Close();
                 return val;
             }
@@ -74,27 +74,23 @@ namespace CKAN
         /// Throws a MissingCertificateException *and* prints a message to the
         /// console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
-        public static string Download(Uri url, out string etag, string filename = null, IUser user = null)
+        public static string Download(Uri url, out string? etag, string? filename = null, IUser? user = null)
             => Download(url.OriginalString, out etag, filename, user);
 
-        public static string Download(Uri url, string filename = null, IUser user = null)
+        public static string Download(Uri url, string? filename = null, IUser? user = null)
             => Download(url, out _, filename, user);
 
-        public static string Download(string url, string filename = null, IUser user = null)
+        public static string Download(string url, string? filename = null, IUser? user = null)
             => Download(url, out _, filename, user);
 
-        public static string Download(string url, out string etag, string filename = null, IUser user = null)
+        public static string Download(string url, out string? etag, string? filename = null, IUser? user = null)
         {
-            user = user ?? new NullUser();
+            user ??= new NullUser();
             user.RaiseMessage(Properties.Resources.NetDownloading, url);
             var FileTransaction = new TxFileManager();
 
             // Generate a temporary file if none is provided.
-            if (filename == null)
-            {
-
-                filename = FileTransaction.GetTempFileName();
-            }
+            filename ??= FileTransaction.GetTempFileName();
 
             log.DebugFormat("Downloading {0} to {1}", url, filename);
 
@@ -105,7 +101,7 @@ namespace CKAN
                 var agent = new RedirectingTimeoutWebClient();
                 #pragma warning restore SYSLIB0014
                 agent.DownloadFile(url, filename);
-                etag = agent.ResponseHeaders.Get("ETag")?.Replace("\"", "");
+                etag = agent.ResponseHeaders?.Get("ETag")?.Replace("\"", "");
             }
             catch (Exception exc)
             {
@@ -159,13 +155,13 @@ namespace CKAN
         /// <param name="mimeType">A mime type sent with the "Accept" header</param>
         /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
         /// <returns>The text content returned by the server</returns>
-        public static string DownloadText(Uri url, string authToken = "", string mimeType = null, int timeout = 100000)
+        public static string? DownloadText(Uri url, string? authToken = "", string? mimeType = null, int timeout = 100000)
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
             // This WebClient child class does some complicated stuff, let's keep using it for now
             #pragma warning disable SYSLIB0014
-            WebClient agent = new RedirectingTimeoutWebClient(timeout, mimeType);
+            WebClient agent = new RedirectingTimeoutWebClient(timeout, mimeType ?? "");
             #pragma warning restore SYSLIB0014
 
             // Check whether to use an auth token for this host
@@ -183,7 +179,7 @@ namespace CKAN
                 try
                 {
                     string content = agent.DownloadString(url.OriginalString);
-                    string header  = agent.ResponseHeaders.ToString();
+                    var header  = agent.ResponseHeaders?.ToString();
 
                     log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
 
@@ -201,14 +197,14 @@ namespace CKAN
             return null;
         }
 
-        public static Uri ResolveRedirect(Uri url)
+        public static Uri? ResolveRedirect(Uri url)
         {
             const int maxRedirects = 6;
             for (int redirects = 0; redirects <= maxRedirects; ++redirects)
             {
                 var rwClient = new RedirectWebClient();
                 using (rwClient.OpenRead(url)) { }
-                var location = rwClient.ResponseHeaders["Location"];
+                var location = rwClient.ResponseHeaders?["Location"];
                 if (location == null)
                 {
                     return url;
@@ -237,7 +233,7 @@ namespace CKAN
         /// <returns>
         /// <c>null</c> if the string is not a valid <see cref="Uri"/>, otherwise its normalized form.
         /// </returns>
-        public static string NormalizeUri(string uri)
+        public static string? NormalizeUri(string uri)
         {
             // Uri.EscapeUriString has been deprecated because its purpose was ambiguous.
             // Is it supposed to turn a "&" into part of the content of a form field,

@@ -567,6 +567,7 @@ namespace Tests.Data
                     ""name""     : ""kOS - Kerbal OS"",
                     ""identifier"" : ""kOS"",
                     ""abstract"" : ""A programming and automation environment for KSP craft."",
+                    ""author""   : ""erendrake"",
                     ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
                     ""license""  : ""GPL-3.0"",
                     ""version""  : ""0.14"",
@@ -597,6 +598,7 @@ namespace Tests.Data
                     ""name""     : ""kOS - Kerbal OS"",
                     ""identifier"" : ""kOS"",
                     ""abstract"" : ""A programming and automation environment for KSP craft."",
+                    ""author""   : ""erendrake"",
                     ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
                     ""download_hash"": {
                         ""sha1"": ""C5A224AC4397770C0B19B4A6417F6C5052191608"",
@@ -631,6 +633,7 @@ namespace Tests.Data
                     ""name""     : ""kOS - Kerbal OS"",
                     ""identifier"" : ""kOS"",
                     ""abstract"" : ""A programming and automation environment for KSP craft."",
+                    ""author""   : ""erendrake"",
                     ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
                     ""download_hash"": {
                         ""sha1"": ""C5A224AC4397770C0B19B4A6417F6C5052191608"",
@@ -664,6 +667,7 @@ namespace Tests.Data
                     ""name""     : ""kOS - Kerbal OS"",
                     ""identifier"" : ""kOS"",
                     ""abstract"" : ""A programming and automation environment for KSP craft."",
+                    ""author""   : ""erendrake"",
                     ""download"" : ""https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip"",
                     ""license""  : ""GPL-3.0"",
                     ""version""  : ""3:0.14"",
@@ -902,24 +906,21 @@ namespace Tests.Data
             List<string> provides = null,
             string identifier = null,
             ModuleVersion version = null)
-        {
-            var mod = new CkanModule
+            => new CkanModule(new ModuleVersion(1.ToString(CultureInfo.InvariantCulture)),
+                              identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture),
+                              Generator.Next().ToString(CultureInfo.InvariantCulture),
+                              Generator.Next().ToString(CultureInfo.InvariantCulture),
+                              "",
+                              new List<string> { Generator.Next().ToString(CultureInfo.InvariantCulture) },
+                              new List<License> { License.UnknownLicense },
+                              version ?? new ModuleVersion(Generator.Next().ToString(CultureInfo.InvariantCulture)),
+                              new List<Uri> { new Uri("http://github.com/") })
             {
-                name = Generator.Next().ToString(CultureInfo.InvariantCulture),
-                @abstract = Generator.Next().ToString(CultureInfo.InvariantCulture),
-                identifier = identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture),
-                spec_version = new ModuleVersion(1.ToString(CultureInfo.InvariantCulture)),
-                ksp_version = ksp_version ?? GameVersion.Parse("0." + Generator.Next()),
-                version = version ?? new ModuleVersion(Generator.Next().ToString(CultureInfo.InvariantCulture)),
-                license = new List<License> { License.UnknownLicense },
-                download = new List<Uri> { new Uri("http://github.com/") },
+                ksp_version = ksp_version,
+                conflicts   = conflicts,
+                depends     = depends,
+                suggests    = suggests,
+                provides    = provides,
             };
-            mod.ksp_version_max = mod.ksp_version_min = null;
-            mod.conflicts = conflicts;
-            mod.depends = depends;
-            mod.suggests = suggests;
-            mod.provides = provides;
-            return mod;
-        }
     }
 }

@@ -68,7 +68,9 @@ namespace Tests.Core.Net
             TestCase(new string[]
                      {
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ]
                          }",
@@ -79,21 +81,27 @@ namespace Tests.Core.Net
             TestCase(new string[]
                      {
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""license"": ""GPL-3.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ],
                             ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF""}
                          }",
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""license"": ""GPL-3.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ],
                             ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF""}
                          }",
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModC"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""license"": ""GPL-3.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ],
@@ -113,7 +121,7 @@ namespace Tests.Core.Net
         public void TargetFromModuleGroup_WithModules_ExpectedTarget(string[] moduleJsons, string[] preferredHosts, string[] correctURLs)
         {
             // Arrange
-            var group = moduleJsons.Select(j => CkanModule.FromJson(j))
+            var group = moduleJsons.Select(CkanModule.FromJson)
                                    .ToHashSet();
             var downloader = new NetAsyncModulesDownloader(new NullUser(), cache);
 

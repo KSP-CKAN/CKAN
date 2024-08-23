@@ -64,17 +64,6 @@ namespace Tests.Core.Versioning
         }
 
         [Test]
-        public void ParameterfulCtorThrowsOnNullParameter()
-        {
-            // Act
-            // ReSharper disable once ObjectCreationAsStatement
-            TestDelegate act = () => new GameVersionBound(null, false);
-
-            // Assert
-            Assert.That(act, Throws.Exception.InstanceOf<ArgumentNullException>());
-        }
-
-        [Test]
         public void ParameterfulCtorThrowsOnPartiallyDefinedParameter()
         {
             // Act

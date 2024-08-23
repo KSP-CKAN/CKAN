@@ -42,8 +42,8 @@ namespace CKAN
             cache = new NetFileCache(path);
         }
 
-        public event Action<CkanModule> ModStored;
-        public event Action<CkanModule> ModPurged;
+        public event Action<CkanModule>?  ModStored;
+        public event Action<CkanModule?>? ModPurged;
 
         // Simple passthrough wrappers
         public void Dispose()
@@ -62,7 +62,7 @@ namespace CKAN
         public bool IsCached(CkanModule m)
             => m.download?.Any(dlUri => cache.IsCached(dlUri))
                 ?? false;
-        public bool IsCached(CkanModule m, out string outFilename)
+        public bool IsCached(CkanModule m, out string? outFilename)
         {
             if (m.download != null)
             {
@@ -80,7 +80,7 @@ namespace CKAN
         public bool IsMaybeCachedZip(CkanModule m)
             => m.download?.Any(dlUri => cache.IsMaybeCachedZip(dlUri, m.release_date))
                 ?? false;
-        public string GetCachedFilename(CkanModule m)
+        public string? GetCachedFilename(CkanModule m)
             => m.download?.Select(dlUri => cache.GetCachedFilename(dlUri, m.release_date))
                           .FirstOrDefault(filename => filename != null);
         public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
@@ -96,13 +96,13 @@ namespace CKAN
             cache.CheckFreeSpace(bytesToStore);
         }
 
-        public string GetInProgressFileName(CkanModule m)
+        public string? GetInProgressFileName(CkanModule m)
             => m.download == null
                 ? null
                 : cache.GetInProgressFileName(m.download, m.StandardName());
 
-        private static string DescribeUncachedAvailability(CkanModule m, FileInfo fi)
-            => fi.Exists
+        private static string DescribeUncachedAvailability(CkanModule m, FileInfo? fi)
+            => (fi?.Exists ?? false)
                 ? string.Format(Properties.Resources.NetModuleCacheModuleResuming,
                     m.name, m.version,
                     string.Join(", ", ModuleInstaller.PrioritizedHosts(m.download)),
@@ -117,7 +117,9 @@ namespace CKAN
                 ? string.Format(Properties.Resources.NetModuleCacheMetapackage, m.name, m.version)
                 : IsMaybeCachedZip(m)
                     ? string.Format(Properties.Resources.NetModuleCacheModuleCached, m.name, m.version)
-                    : DescribeUncachedAvailability(m, new FileInfo(GetInProgressFileName(m)));
+                    : DescribeUncachedAvailability(m,
+                        GetInProgressFileName(m) is string s
+                            ? new FileInfo(s) : null);
 
         /// <summary>
         /// Calculate the SHA1 hash of a file
@@ -127,7 +129,7 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha1(string filePath, IProgress<int> progress, CancellationToken? cancelToken = default)
             => cache.GetFileHashSha1(filePath, progress, cancelToken);
 
         /// <summary>
@@ -138,7 +140,7 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha256(string filePath, IProgress<int> progress, CancellationToken? cancelToken = default)
             => cache.GetFileHashSha256(filePath, progress, cancelToken);
 
         /// <summary>
@@ -153,13 +155,13 @@ namespace CKAN
         /// <returns>
         /// Name of the new file in the cache
         /// </returns>
-        public string Store(CkanModule        module,
-                            string            path,
-                            IProgress<int>    progress,
-                            string            description = null,
-                            bool              move        = false,
-                            CancellationToken cancelToken = default,
-                            bool              validate    = true)
+        public string Store(CkanModule         module,
+                            string             path,
+                            IProgress<int>?    progress,
+                            string?            description = null,
+                            bool               move        = false,
+                            CancellationToken? cancelToken = default,
+                            bool               validate    = true)
         {
             if (validate)
             {
@@ -182,7 +184,7 @@ namespace CKAN
                         module, path, fi.Length, module.download_size));
                 }
 
-                cancelToken.ThrowIfCancellationRequested();
+                cancelToken?.ThrowIfCancellationRequested();
 
                 // Check valid CRC
                 if (!ZipValid(path, out string invalidReason, new Progress<int>(percent =>
@@ -193,7 +195,7 @@ namespace CKAN
                         module, path, invalidReason));
                 }
 
-                cancelToken.ThrowIfCancellationRequested();
+                cancelToken?.ThrowIfCancellationRequested();
 
                 // Some older metadata doesn't have hashes
                 if (module.download_hash != null)
@@ -226,10 +228,10 @@ namespace CKAN
                     }
                 }
 
-                cancelToken.ThrowIfCancellationRequested();
+                cancelToken?.ThrowIfCancellationRequested();
             }
             // If no exceptions, then everything is fine
-            var success = cache.Store(module.download[0], path, description ?? module.StandardName(), move);
+            var success = cache.Store(module.download?[0]!, path, description ?? module.StandardName(), move);
             // Make sure completion is signalled so progress bars go away
             progress?.Report(100);
             ModStored?.Invoke(module);
@@ -245,9 +247,9 @@ namespace CKAN
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
         /// </returns>
-        public static bool ZipValid(string         filename,
-                                    out string     invalidReason,
-                                    IProgress<int> progress)
+        public static bool ZipValid(string          filename,
+                                    out string      invalidReason,
+                                    IProgress<int>? progress)
         {
             try
             {
@@ -255,7 +257,7 @@ namespace CKAN
                 {
                     using (ZipFile zip = new ZipFile(filename))
                     {
-                        string zipErr = null;
+                        string? zipErr = null;
                         // Limit progress updates to 100 per ZIP file
                         long highestPercent = -1;
                         // Perform CRC and other checks
@@ -265,21 +267,24 @@ namespace CKAN
                                 // This delegate is called as TestArchive proceeds through its
                                 // steps, both routine and abnormal.
                                 // The second parameter is non-null if an error occurred.
-                                if (st != null && !st.EntryValid && !string.IsNullOrEmpty(msg))
+                                if (st != null)
                                 {
-                                    // Capture the error string so we can return it
-                                    zipErr = string.Format(
-                                        Properties.Resources.NetFileCacheZipError,
-                                        st.Operation, st.Entry?.Name, msg);
-                                }
-                                else if (st.Entry != null && progress != null)
-                                {
-                                    // Report progress
-                                    var percent = (int)(100 * st.Entry.ZipFileIndex / zip.Count);
-                                    if (percent > highestPercent)
+                                    if (!st.EntryValid && !string.IsNullOrEmpty(msg))
                                     {
-                                        progress.Report(percent);
-                                        highestPercent = percent;
+                                        // Capture the error string so we can return it
+                                        zipErr = string.Format(
+                                            Properties.Resources.NetFileCacheZipError,
+                                            st.Operation, st.Entry?.Name, msg);
+                                    }
+                                    else if (st.Entry != null && progress != null)
+                                    {
+                                        // Report progress
+                                        var percent = (int)(100 * st.Entry.ZipFileIndex / zip.Count);
+                                        if (percent > highestPercent)
+                                        {
+                                            progress.Report(percent);
+                                            highestPercent = percent;
+                                        }
                                     }
                                 }
                             }))

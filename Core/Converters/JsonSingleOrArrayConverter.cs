@@ -7,12 +7,12 @@ using Newtonsoft.Json.Linq;
 namespace CKAN
 {
     /// <summary>
-    /// With thanks to 
+    /// With thanks to
     /// https://stackoverflow.com/questions/18994685/how-to-handle-both-a-single-item-and-an-array-for-the-same-property-using-json-n
     /// </summary>
     public class JsonSingleOrArrayConverter<T> : JsonConverter
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             JToken token = JToken.Load(reader);
             if (token.Type == JTokenType.Array)
@@ -21,12 +21,12 @@ namespace CKAN
             }
 
             // If the object is null, we'll return null. Otherwise end up with a list of null.
-            return token.ToObject<T>() == null ? null : new List<T> { token.ToObject<T>() };
+            return token.ToObject<T>() == null ? null : new List<T?> { token.ToObject<T>() };
         }
 
         public override bool CanWrite => true;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             var list = value as List<T>;
             serializer.Serialize(writer, list?.Count == 1 ? list[0] : value);

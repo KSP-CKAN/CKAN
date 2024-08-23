@@ -4,6 +4,11 @@ namespace CKAN
 {
     public class ModuleTag
     {
+        public ModuleTag(string name)
+        {
+            Name = name;
+        }
+
         public string          Name;
         public HashSet<string> ModuleIdentifiers = new HashSet<string>();
 

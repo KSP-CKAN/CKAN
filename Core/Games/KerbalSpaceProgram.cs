@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 using log4net;
@@ -31,7 +32,7 @@ namespace CKAN.Games.KerbalSpaceProgram
         /// <returns>
         /// "/Applications/Kerbal Space Program" if it exists and we're on a Mac, else null
         /// </returns>
-        public DirectoryInfo MacPath()
+        public DirectoryInfo? MacPath()
         {
             if (Platform.IsMac)
             {
@@ -106,7 +107,7 @@ namespace CKAN.Games.KerbalSpaceProgram
             || path == ShipsSph(inst)  || path == ShipsThumbsSPH(inst)
             || path == ShipsScript(inst);
 
-        public bool AllowInstallationIn(string name, out string path)
+        public bool AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path)
             => allowedFolders.TryGetValue(name, out path);
 
         public void RebuildSubdirectories(string absGameRoot)
@@ -145,7 +146,7 @@ namespace CKAN.Games.KerbalSpaceProgram
                                          .Select(url => url.ToString()))
                          .ToArray();
 
-        public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
+        public string[] AdjustCommandLine(string[] args, GameVersion? installedVersion)
         {
             // -single-instance crashes KSP 1.8 to KSP 1.11 on Linux
             // https://issuetracker.unity3d.com/issues/linux-segmentation-fault-when-running-a-built-project-with-single-instance-argument
@@ -155,7 +156,10 @@ namespace CKAN.Games.KerbalSpaceProgram
                     new GameVersion(1, 8),
                     new GameVersion(1, 11)
                 );
-                args = filterCmdLineArgs(args, installedVersion, brokenVersionRange, "-single-instance");
+                if (installedVersion != null)
+                {
+                    args = filterCmdLineArgs(args, installedVersion, brokenVersionRange, "-single-instance");
+                }
             }
             return args;
         }
@@ -172,7 +176,7 @@ namespace CKAN.Games.KerbalSpaceProgram
             versions = null;
         }
 
-        private List<GameVersion> versions;
+        private List<GameVersion>? versions;
 
         private readonly object versionMutex = new object();
 
@@ -184,18 +188,15 @@ namespace CKAN.Games.KerbalSpaceProgram
                 {
                     lock (versionMutex)
                     {
-                        if (versions == null)
-                        {
-                            // There's a lot of duplicate real versions with different build IDs,
-                            // skip all those extra checks when we use these
-                            versions = ServiceLocator.Container
-                                                     .Resolve<IKspBuildMap>()
-                                                     .KnownVersions
-                                                     .Select(v => v.WithoutBuild)
-                                                     .Distinct()
-                                                     .OrderBy(v => v)
-                                                     .ToList();
-                        }
+                        // There's a lot of duplicate real versions with different build IDs,
+                        // skip all those extra checks when we use these
+                        versions ??= ServiceLocator.Container
+                                                 .Resolve<IKspBuildMap>()
+                                                 .KnownVersions
+                                                 .Select(v => v.WithoutBuild)
+                                                 .Distinct()
+                                                 .OrderBy(v => v)
+                                                 .ToList();
                     }
                 }
                 return versions;
@@ -203,28 +204,32 @@ namespace CKAN.Games.KerbalSpaceProgram
         }
 
         public GameVersion[] EmbeddedGameVersions
-            => JsonConvert.DeserializeObject<JBuilds>(
-                new StreamReader(Assembly.GetExecutingAssembly()
-                                         .GetManifestResourceStream("CKAN.builds-ksp.json"))
-                    .ReadToEnd())
-                .Builds
-                .Select(b => GameVersion.Parse(b.Value))
-                .ToArray();
+            => (Assembly.GetExecutingAssembly()
+                       .GetManifestResourceStream("CKAN.builds-ksp.json")
+                   is Stream s
+                   ? JsonConvert.DeserializeObject<JBuilds>(
+                         new StreamReader(s).ReadToEnd())
+                   : null)
+                ?.Builds
+                ?.Select(b => GameVersion.Parse(b.Value))
+                 .ToArray()
+                ?? new GameVersion[] { };
 
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<JBuilds>()
-                   .Builds
-                   .Select(b => GameVersion.Parse(b.Value))
-                   .ToArray();
+                   ?.Builds
+                   ?.Select(b => GameVersion.Parse(b.Value))
+                    .ToArray()
+                   ?? new GameVersion[] { };
 
-        public GameVersion DetectVersion(DirectoryInfo where)
+        public GameVersion? DetectVersion(DirectoryInfo where)
             => ServiceLocator.Container
                 .ResolveKeyed<IGameVersionProvider>(GameVersionSource.BuildId)
-                .TryGetVersion(where.FullName, out GameVersion verFromId)
+                .TryGetVersion(where.FullName, out GameVersion? verFromId)
                     ? verFromId
                     : ServiceLocator.Container
                         .ResolveKeyed<IGameVersionProvider>(GameVersionSource.Readme)
-                        .TryGetVersion(where.FullName, out GameVersion verFromReadme)
+                        .TryGetVersion(where.FullName, out GameVersion? verFromReadme)
                             ? verFromReadme
                             : null;
 

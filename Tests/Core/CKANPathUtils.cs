@@ -117,16 +117,6 @@ namespace Tests.Core
                 CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", "home/fionna/KSP");
             }, "Root not absolute");
 
-            Assert.Throws<PathErrorKraken>(delegate
-            {
-                CKANPathUtils.ToRelative(null, "/home/fionna/KSP");
-            }, "null path");
-
-            Assert.Throws<PathErrorKraken>(delegate
-            {
-                CKANPathUtils.ToRelative("/home/fionna/KSP/GameData/Cake", null);
-            }, "null root");
-
         }
 
         [Test]
@@ -185,16 +175,6 @@ namespace Tests.Core
             {
                 CKANPathUtils.ToAbsolute("GameData/Cake", "home/fionna/KSP");
             }, "Unrooted root");
-
-            Assert.Throws<PathErrorKraken>(delegate
-            {
-                CKANPathUtils.ToAbsolute(null, "/home/fionna/KSP");
-            }, "null path");
-
-            Assert.Throws<PathErrorKraken>(delegate
-            {
-                CKANPathUtils.ToAbsolute("/home/fionna/KSP/GameData/Cake", null);
-            }, "null root");
 
         }
 

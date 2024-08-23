@@ -86,12 +86,12 @@ namespace CKAN
             }
         }
 
-        private static void SetField(Type T, string fieldName, object value)
+        private static void SetField(Type T, string fieldName, object? value)
         {
             try
             {
                 T.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static)
-                    .SetValue(null, value);
+                    ?.SetValue(null, value);
             }
             catch
             {

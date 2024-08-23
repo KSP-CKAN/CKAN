@@ -514,19 +514,6 @@ namespace Tests.Core.Versioning
             Assert.That(result, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void IsSupersetOfThrowsOnNullParameter()
-        {
-            // Arrange
-            var sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
-
-            // Act
-            TestDelegate act = () => sut.IsSupersetOf(null);
-
-            // Assert
-            Assert.That(act, Throws.Exception);
-        }
-
         [TestCaseSource("EqualityCases")]
         public void EqualityWorksCorrectly(GameVersionRange vr1, GameVersionRange vr2, bool areEqual)
         {

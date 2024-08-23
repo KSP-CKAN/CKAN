@@ -77,6 +77,7 @@ namespace Tests.NetKAN.Services
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "DogeCoinFlag";
+            json["author"] = "DogeAuthor";
             json["version"] = "1.0.0";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 

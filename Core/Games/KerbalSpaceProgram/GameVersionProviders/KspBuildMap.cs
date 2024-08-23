@@ -23,7 +23,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
     {
         [JsonProperty("builds")]
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
-        public Dictionary<string, string> Builds { get; set; }
+        public Dictionary<string, string>? Builds { get; set; }
     }
 
     // ReSharper disable once ClassNeverInstantiated.Global
@@ -38,15 +38,16 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         private static readonly ILog Log = LogManager.GetLogger(typeof(KspBuildMap));
 
         private readonly object _buildMapLock = new object();
-        private JBuilds _jBuilds;
+        private JBuilds? _jBuilds;
 
-        public GameVersion this[string buildId]
+        public GameVersion? this[string buildId]
         {
             get
             {
                 EnsureBuildMap();
 
-                return _jBuilds.Builds.TryGetValue(buildId, out string version) ? GameVersion.Parse(version) : null;
+                return _jBuilds?.Builds != null && _jBuilds.Builds.TryGetValue(buildId, out string? version)
+                           ? GameVersion.Parse(version) : null;
             }
         }
 
@@ -55,9 +56,9 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             get
             {
                 EnsureBuildMap();
-                return _jBuilds.Builds
-                    .Select(b => GameVersion.Parse(b.Value))
-                    .ToList();
+                return _jBuilds?.Builds?.Select(b => GameVersion.Parse(b.Value))
+                                        .ToList()
+                               ?? new List<GameVersion>();
             }
         }
 
@@ -138,10 +139,10 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             {
                 Log.Debug("Getting remote build map");
                 var json = Net.DownloadText(BuildMapUri);
-                if (TrySetBuildMap(json))
+                if (json != null && TrySetBuildMap(json))
                 {
                     // Save to disk if parse succeeds
-                    new FileInfo(cachedBuildMapPath).Directory.Create();
+                    new FileInfo(cachedBuildMapPath).Directory?.Create();
                     File.WriteAllText(cachedBuildMapPath, json);
                     return true;
                 }
@@ -159,10 +160,9 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             try
             {
                 Log.Debug("Getting embedded build map");
-                var resourceStream = Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("CKAN.builds-ksp.json");
-
-                if (resourceStream != null)
+                if (Assembly.GetExecutingAssembly()
+                            .GetManifestResourceStream("CKAN.builds-ksp.json")
+                        is Stream resourceStream)
                 {
                     using (var reader = new StreamReader(resourceStream))
                     {

@@ -48,6 +48,12 @@ namespace CKAN
         #endif
         public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
+        #if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("windows6.1")]
+        public static readonly bool IsWindows61
+            = IsWindows && OperatingSystem.IsWindowsVersionAtLeast(6, 1);
+        #endif
+
         /// <summary>
         /// Are we on Mono?
         /// </summary>
@@ -99,13 +105,14 @@ namespace CKAN
             new Regex("^\\s*(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\s*\\(",
                       RegexOptions.Compiled);
 
-        public static readonly Version MonoVersion
+        public static readonly Version? MonoVersion
             = versionMatcher.TryMatch((string)Type.GetType("Mono.Runtime")
                                                   ?.GetMethod("GetDisplayName",
                                                               BindingFlags.NonPublic
                                                               | BindingFlags.Static)
-                                                  ?.Invoke(null, null),
-                                      out Match match)
+                                                  ?.Invoke(null, null)!,
+                                      out Match? match)
+              && match is not null
                 ? new Version(int.Parse(match.Groups["major"].Value),
                               int.Parse(match.Groups["minor"].Value),
                               int.Parse(match.Groups["patch"].Value))

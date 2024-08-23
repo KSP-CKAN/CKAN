@@ -23,6 +23,8 @@ namespace CKAN
 
             public abstract long CalculateSize();
             public abstract void DownloadWith(ResumingWebClient wc, Uri url);
+
+            public override string ToString() => string.Join(", ", urls);
         }
 
         public sealed class DownloadTargetFile : DownloadTarget
@@ -30,7 +32,7 @@ namespace CKAN
             public string filename { get; private set; }
 
             public DownloadTargetFile(List<Uri> urls,
-                                      string    filename = null,
+                                      string?   filename = null,
                                       long      size     = 0,
                                       string    mimeType = "")
                 : base(urls, size, mimeType)
@@ -38,10 +40,10 @@ namespace CKAN
                 this.filename = filename ?? Path.GetTempFileName();
             }
 
-            public DownloadTargetFile(Uri    url,
-                                      string filename = null,
-                                      long   size     = 0,
-                                      string mimeType = "")
+            public DownloadTargetFile(Uri     url,
+                                      string? filename = null,
+                                      long    size     = 0,
+                                      string  mimeType = "")
                 : this(new List<Uri> { url }, filename, size, mimeType)
             {
             }
@@ -56,6 +58,8 @@ namespace CKAN
             {
                 wc.DownloadFileAsyncWithResume(url, filename);
             }
+
+            public override string ToString() => $"{base.ToString()} => {filename}";
         }
 
         public sealed class DownloadTargetStream : DownloadTarget, IDisposable

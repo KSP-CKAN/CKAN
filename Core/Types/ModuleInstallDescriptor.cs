@@ -26,43 +26,43 @@ namespace CKAN
 
         // Either file, find, or find_regexp is required, we check this manually at deserialise.
         [JsonProperty("file", NullValueHandling = NullValueHandling.Ignore)]
-        public string file;
+        public string? file;
 
         [JsonProperty("find", NullValueHandling = NullValueHandling.Ignore)]
-        public string find;
+        public string? find;
 
         [JsonProperty("find_regexp", NullValueHandling = NullValueHandling.Ignore)]
-        public string find_regexp;
+        public string? find_regexp;
 
         [JsonProperty("find_matches_files", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool find_matches_files;
+        public bool find_matches_files = false;
 
         [JsonProperty("install_to", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue("GameData")]
-        public string install_to;
+        public string? install_to;
 
         [JsonProperty("as", NullValueHandling = NullValueHandling.Ignore)]
-        public string @as;
+        public string? @as;
 
         [JsonProperty("filter", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
-        public List<string> filter;
+        public List<string>? filter;
 
         [JsonProperty("filter_regexp", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
-        public List<string> filter_regexp;
+        public List<string>? filter_regexp;
 
         [JsonProperty("include_only", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
-        public List<string> include_only;
+        public List<string>? include_only;
 
         [JsonProperty("include_only_regexp", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
-        public List<string> include_only_regexp;
+        public List<string>? include_only_regexp;
 
         [JsonIgnore]
-        private Regex inst_pattern = null;
+        private Regex? inst_pattern = null;
 
         private static readonly Regex trailingSlashPattern = new Regex("/$",
             RegexOptions.Compiled);
@@ -111,21 +111,18 @@ namespace CKAN
         private ModuleInstallDescriptor()
         {
             install_to = typeof(ModuleInstallDescriptor).GetTypeInfo()
-                                                        .GetDeclaredField("install_to")
-                                                        .GetCustomAttribute<DefaultValueAttribute>()
-                                                        .Value
-                                                        .ToString();
+                                                        ?.GetDeclaredField("install_to")
+                                                        ?.GetCustomAttribute<DefaultValueAttribute>()
+                                                        ?.Value
+                                                        ?.ToString();
         }
 
         /// <summary>
         /// Returns a deep clone of our object. Implements ICloneable.
         /// </summary>
         public object Clone()
-        {
             // Deep clone our object by running it through a serialisation cycle.
-            string json = JsonConvert.SerializeObject(this, Formatting.None);
-            return JsonConvert.DeserializeObject<ModuleInstallDescriptor>(json);
-        }
+            => JsonConvert.DeserializeObject<ModuleInstallDescriptor>(JsonConvert.SerializeObject(this, Formatting.None))!;
 
         /// <summary>
         /// Compare two install stanzas
@@ -134,7 +131,7 @@ namespace CKAN
         /// <returns>
         /// True if they're equivalent, false if they're different.
         /// </returns>
-        public override bool Equals(object other)
+        public override bool Equals(object? other)
         {
             return Equals(other as ModuleInstallDescriptor);
         }
@@ -147,7 +144,7 @@ namespace CKAN
         /// True if they're equivalent, false if they're different.
         /// IEquatable<> uses this for more efficient comparisons.
         /// </returns>
-        public bool Equals(ModuleInstallDescriptor otherStanza)
+        public bool Equals(ModuleInstallDescriptor? otherStanza)
         {
             if (otherStanza == null)
             {
@@ -155,12 +152,12 @@ namespace CKAN
                 return false;
             }
 
-            if (CKANPathUtils.NormalizePath(file) != CKANPathUtils.NormalizePath(otherStanza.file))
+            if (CKANPathUtils.NormalizePath(file ?? "") != CKANPathUtils.NormalizePath(otherStanza.file ?? ""))
             {
                 return false;
             }
 
-            if (CKANPathUtils.NormalizePath(find) != CKANPathUtils.NormalizePath(otherStanza.find))
+            if (CKANPathUtils.NormalizePath(find ?? "") != CKANPathUtils.NormalizePath(otherStanza.find ?? ""))
             {
                 return false;
             }
@@ -170,7 +167,7 @@ namespace CKAN
                 return false;
             }
 
-            if (CKANPathUtils.NormalizePath(install_to) != CKANPathUtils.NormalizePath(otherStanza.install_to))
+            if (CKANPathUtils.NormalizePath(install_to ?? "") != CKANPathUtils.NormalizePath(otherStanza.install_to ?? ""))
             {
                 return false;
             }
@@ -185,7 +182,7 @@ namespace CKAN
                 return false;
             }
 
-            if (filter != null
+            if (filter != null && otherStanza.filter != null
                 && !filter.SequenceEqual(otherStanza.filter))
             {
                 return false;
@@ -196,7 +193,7 @@ namespace CKAN
                 return false;
             }
 
-            if (filter_regexp != null
+            if (filter_regexp != null && otherStanza.filter_regexp != null
                 && !filter_regexp.SequenceEqual(otherStanza.filter_regexp))
             {
                 return false;
@@ -212,7 +209,7 @@ namespace CKAN
                 return false;
             }
 
-            if (include_only != null
+            if (include_only != null && otherStanza.include_only != null
                 && !include_only.SequenceEqual(otherStanza.include_only))
             {
                 return false;
@@ -223,7 +220,7 @@ namespace CKAN
                 return false;
             }
 
-            if (include_only_regexp != null
+            if (include_only_regexp != null && otherStanza.include_only_regexp != null
                 && !include_only_regexp.SequenceEqual(otherStanza.include_only_regexp))
             {
                 return false;
@@ -270,7 +267,7 @@ namespace CKAN
 
         #endregion
 
-        private void EnsurePattern()
+        private Regex EnsurePattern()
         {
             if (inst_pattern == null)
             {
@@ -296,6 +293,7 @@ namespace CKAN
                     throw new Kraken(Properties.Resources.ModuleInstallDescriptorRequireFileFind);
                 }
             }
+            return inst_pattern;
         }
 
         /// <summary>
@@ -306,12 +304,12 @@ namespace CKAN
         /// </summary>
         private bool IsWanted(string path, int? matchWhere)
         {
-            EnsurePattern();
+            var pat = EnsurePattern();
 
             // Make sure our path always uses slashes we expect.
             string normalised_path = path.Replace('\\', '/');
 
-            var match = inst_pattern.Match(normalised_path);
+            var match = pat.Match(normalised_path);
             if (!match.Success)
             {
                 // Doesn't match our install pattern, ignore it
@@ -362,13 +360,13 @@ namespace CKAN
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
         /// <exception cref="BadInstallLocationKraken">Thrown when the installation path is not valid according to the spec.</exception>
-        public List<InstallableFile> FindInstallableFiles(ZipFile zipfile, GameInstance ksp)
+        public List<InstallableFile> FindInstallableFiles(ZipFile zipfile, GameInstance? ksp)
         {
-            string installDir;
+            string? installDir;
             var files = new List<InstallableFile>();
 
             // Normalize the path before doing everything else
-            string install_to = CKANPathUtils.NormalizePath(this.install_to);
+            string? install_to = CKANPathUtils.NormalizePath(this.install_to ?? "");
 
             // The installation path cannot contain updirs
             if (install_to.Contains("/../") || install_to.EndsWith("/.."))
@@ -385,8 +383,8 @@ namespace CKAN
                 || install_to.StartsWith($"{ksp.game.PrimaryModDirectoryRelative}/"))
             {
                 // The installation path can be either "GameData" or a sub-directory of "GameData"
-                string subDir = install_to.Substring(ksp.game.PrimaryModDirectoryRelative.Length);    // remove "GameData"
-                subDir = subDir.StartsWith("/") ? subDir.Substring(1) : subDir;    // remove a "/" at the beginning, if present
+                string subDir = install_to[ksp.game.PrimaryModDirectoryRelative.Length..];    // remove "GameData"
+                subDir = subDir.StartsWith("/") ? subDir[1..] : subDir;    // remove a "/" at the beginning, if present
 
                 // Add the extracted subdirectory to the path of KSP's GameData
                 installDir = CKANPathUtils.NormalizePath(ksp.game.PrimaryModDirectory(ksp) + "/" + subDir);
@@ -400,7 +398,7 @@ namespace CKAN
                         break;
 
                     default:
-                        if (ksp.game.AllowInstallationIn(install_to, out string path))
+                        if (ksp.game.AllowInstallationIn(install_to, out string? path))
                         {
                             installDir = ksp.ToAbsoluteGameDir(path);
                         }
@@ -413,12 +411,12 @@ namespace CKAN
                 }
             }
 
-            EnsurePattern();
+            var pat = EnsurePattern();
 
             // `find` is supposed to match the "topmost" folder. Find it.
             var shortestMatch = find == null ? null
                 : zipfile.Cast<ZipEntry>()
-                    .Select(entry => inst_pattern.Match(entry.Name.Replace('\\', '/')))
+                    .Select(entry => pat.Match(entry.Name.Replace('\\', '/')))
                     .Where(match => match.Success)
                     .DefaultIfEmpty()
                     .Min(match => match?.Index);
@@ -439,24 +437,21 @@ namespace CKAN
                 }
 
                 // Prepare our file info.
-                InstallableFile file_info = new InstallableFile
+                var file_info = new InstallableFile
                 {
-                    source = entry,
-                    makedir = false,
-                    destination = null
+                    source      = entry,
+                    makedir     = false,
+                    destination = "",
                 };
 
                 // If we have a place to install it, fill that in...
-                if (installDir != null)
+                if (installDir != null && ksp != null)
                 {
                     // Get the full name of the file.
                     // Update our file info with the install location
-                    file_info.destination = TransformOutputName(
-                        ksp.game, entryName, installDir, @as);
-                    file_info.makedir = AllowDirectoryCreation(
-                        ksp.game,
-                        ksp?.ToRelativeGameDir(file_info.destination)
-                            ?? file_info.destination);
+                    file_info.destination = TransformOutputName(ksp.game, entryName, installDir, @as);
+                    file_info.makedir     = AllowDirectoryCreation(ksp.game,
+                                                                   ksp.ToRelativeGameDir(file_info.destination));
                 }
 
                 files.Add(file_info);
@@ -474,10 +469,7 @@ namespace CKAN
         }
 
         private bool AllowDirectoryCreation(IGame game, string relativePath)
-        {
-            return game.CreateableDirs.Any(dir =>
-                relativePath == dir || relativePath.StartsWith($"{dir}/"));
-        }
+            => game.CreateableDirs.Any(dir => relativePath == dir || relativePath.StartsWith($"{dir}/"));
 
         /// <summary>
         /// Transforms the name of the output. This will strip the leading directories from the stanza file from
@@ -488,11 +480,10 @@ namespace CKAN
         /// <param name="outputName">The name of the file to transform</param>
         /// <param name="installDir">The installation dir where the file should end up with</param>
         /// <returns>The output name</returns>
-        internal string TransformOutputName(IGame game, string outputName, string installDir, string @as)
+        internal string TransformOutputName(IGame game, string outputName, string installDir, string? @as)
         {
-            string leadingPathToRemove = Path
-                .GetDirectoryName(ShortestMatchingPrefix(outputName))
-                .Replace('\\', '/');
+            var leadingPathToRemove = Path.GetDirectoryName(ShortestMatchingPrefix(outputName))
+                                          ?.Replace('\\', '/');
 
             if (!string.IsNullOrEmpty(leadingPathToRemove))
             {
@@ -512,7 +503,7 @@ namespace CKAN
             // Now outputName looks like PATH/what/ever/file.ext, where
             // PATH is the part that matched `file` or `find` or `find_regexp`
 
-            if (!string.IsNullOrWhiteSpace(@as))
+            if (@as != null && !string.IsNullOrWhiteSpace(@as))
             {
                 if (@as.Contains("/") || @as.Contains("\\"))
                 {
@@ -530,7 +521,7 @@ namespace CKAN
                     // If we try to install a folder with the same name as
                     // one of the reserved directories, strip it off.
                     // Delete reservedPrefix and one forward slash
-                    outputName = outputName.Substring(reservedPrefix.Length + 1);
+                    outputName = outputName[(reservedPrefix.Length + 1)..];
                 }
             }
 
@@ -547,14 +538,14 @@ namespace CKAN
 
         private string ShortestMatchingPrefix(string fullPath)
         {
-            EnsurePattern();
+            var pat = EnsurePattern();
 
             string shortest = fullPath;
-            for (string path = trailingSlashPattern.Replace(fullPath.Replace('\\', '/'), "");
-                    !string.IsNullOrEmpty(path);
-                    path = Path.GetDirectoryName(path).Replace('\\', '/'))
+            for (var path = trailingSlashPattern.Replace(fullPath.Replace('\\', '/'), "");
+                    path != null && !string.IsNullOrEmpty(path);
+                    path = Path.GetDirectoryName(path)?.Replace('\\', '/'))
             {
-                if (inst_pattern.IsMatch(path))
+                if (pat.IsMatch(path))
                 {
                     shortest = path;
                 }
@@ -574,7 +565,7 @@ namespace CKAN
                 // No delimiter, replace whole string
                 return replacement;
             }
-            return replacement + text.Substring(pos);
+            return replacement + text[pos..];
         }
 
         public string DescribeMatch()

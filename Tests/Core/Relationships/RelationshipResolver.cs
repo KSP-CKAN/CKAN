@@ -766,16 +766,20 @@ namespace Tests.Core.Relationships
         {
             // Arrange
             CkanModule depender = CkanModule.FromJson(@"{
-                ""identifier"": ""depender"",
-                ""version"":    ""1.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""depender"",
+                ""author"":       ""modder"",
+                ""version"":      ""1.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [ { ""name"": ""dependency"" } ]
             }");
 
             CkanModule olderDependency = CkanModule.FromJson(@"{
-                ""identifier"": ""dependency"",
-                ""version"":    ""1.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""dependency"",
+                ""author"":       ""modder"",
+                ""version"":      ""1.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [ {
                     ""name"":        ""depender"",
                     ""min_version"": ""1.0""
@@ -783,9 +787,11 @@ namespace Tests.Core.Relationships
             }");
 
             CkanModule newerDependency = CkanModule.FromJson(@"{
-                ""identifier"": ""dependency"",
-                ""version"":    ""2.0"",
-                ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
+                ""spec_version"": 1,
+                ""identifier"":   ""dependency"",
+                ""author"":       ""modder"",
+                ""version"":      ""2.0"",
+                ""download"":     ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [ {
                     ""name"":        ""depender"",
                     ""min_version"": ""2.0""
@@ -816,20 +822,26 @@ namespace Tests.Core.Relationships
         {
             // Arrange
             CkanModule depender = CkanModule.FromJson(@"{
+                ""spec_version"": 1,
                 ""identifier"": ""depender"",
+                ""author"":     ""dependerModder"",
                 ""version"":    ""1.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""depends"": [ { ""name"": ""dependency"" } ]
             }");
 
             CkanModule olderDependency = CkanModule.FromJson(@"{
+                ""spec_version"": 1,
                 ""identifier"": ""dependency"",
+                ""author"":     ""dependencyModder"",
                 ""version"":    ""1.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
             }");
 
             CkanModule newerDependency = CkanModule.FromJson(@"{
+                ""spec_version"": 1,
                 ""identifier"": ""dependency"",
+                ""author"":     ""dependencyModder"",
                 ""version"":    ""2.0"",
                 ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                 ""conflicts"": [ {
@@ -913,8 +925,8 @@ namespace Tests.Core.Relationships
                 var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
                 var reasons = relationship_resolver.ReasonsFor(suggested);
 
-                Assert.That(reasons[0], Is.AssignableTo<SelectionReason.Suggested>());
-                Assert.That(reasons[0].Parent, Is.EqualTo(mod));
+                Assert.IsTrue(reasons[0] is SelectionReason.Suggested sug
+                              && sug.Parent == mod);
             }
         }
 
@@ -950,12 +962,11 @@ namespace Tests.Core.Relationships
                 options.with_recommends = true;
                 var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
                 var reasons = relationship_resolver.ReasonsFor(recommendedA);
-                Assert.That(reasons[0], Is.AssignableTo<SelectionReason.Recommended>());
-                Assert.That(reasons[0].Parent, Is.EqualTo(suggested));
-
+                Assert.IsTrue(reasons[0] is SelectionReason.Recommended rec
+                              && rec.Parent.Equals(suggested));
                 reasons = relationship_resolver.ReasonsFor(recommendedB);
-                Assert.That(reasons[0], Is.AssignableTo<SelectionReason.Recommended>());
-                Assert.That(reasons[0].Parent, Is.EqualTo(suggested));
+                Assert.IsTrue(reasons[0] is SelectionReason.Recommended rec2
+                              && rec2.Parent.Equals(suggested));
             }
         }
 

@@ -10,10 +10,11 @@ namespace CKAN.Extensions
 
         public static string Localize(this Enum val)
             => val.GetType()
-                  .GetMember(val.ToString())
-                  .FirstOrDefault()?
-                  .GetCustomAttribute<DisplayAttribute>()
-                  .GetDescription();
+                  ?.GetMember(val.ToString())
+                  ?.First()
+                   .GetCustomAttribute<DisplayAttribute>()
+                  ?.GetDescription()
+                  ?? "";
 
     }
 }

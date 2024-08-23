@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 
@@ -29,7 +30,7 @@ namespace CKAN.Versioning
         private readonly int _patch;
         private readonly int _build;
 
-        private readonly string _string;
+        private readonly string? _string;
 
         /// <summary>
         /// Gets the value of the major component of the version number for the current <see cref="GameVersion"/>
@@ -102,7 +103,8 @@ namespace CKAN.Versioning
         /// <returns>
         /// True if null or Any, false otherwise
         /// </returns>
-        public static bool IsNullOrAny(GameVersion v) => v == null || v.IsAny;
+
+        public static bool IsNullOrAny([NotNullWhen(false)] GameVersion? v) => v == null || v.IsAny;
 
         /// <summary>
         /// Initialize a new instance of the <see cref="GameVersion"/> class with all components unspecified.
@@ -252,10 +254,10 @@ namespace CKAN.Versioning
         /// the returned string is "1.3.4.2".
         /// </para>
         /// <para>
-        /// If the current <see cref="GameVersion"/> is totally undefined the return value will <c>null</c>.
+        /// If the current <see cref="GameVersion"/> is totally undefined the return value will be <c>null</c>.
         /// </para>
         /// </returns>
-        public override string ToString() => _string;
+        public override string? ToString() => _string;
 
         /// <summary>
         /// Strip off the build number if it's defined
@@ -321,14 +323,14 @@ namespace CKAN.Versioning
         /// A <see cref="GameVersion"/> object that is equivalent to the version number specified in the
         /// <see cref="input"/> parameter.
         /// </returns>
-        public static GameVersion Parse(string input)
+        public static GameVersion Parse(string? input)
         {
             if (input is null)
             {
-                throw new ArgumentNullException("input");
+                throw new ArgumentNullException(nameof(input));
             }
 
-            if (TryParse(input, out GameVersion result))
+            if (TryParse(input, out GameVersion? result) && result is not null)
             {
                 return result;
             }
@@ -352,7 +354,8 @@ namespace CKAN.Versioning
         /// <returns>
         /// <c>true</c> if the <see cref="input"/> parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
-        public static bool TryParse(string input, out GameVersion result)
+        public static bool TryParse(string? input,
+                                    [NotNullWhen(returnValue: true)] out GameVersion? result)
         {
             result = null;
 
@@ -388,7 +391,7 @@ namespace CKAN.Versioning
                         return false;
                     }
 
-                    if (major < 0 || major == int.MaxValue)
+                    if (major is < 0 or int.MaxValue)
                     {
                         major = Undefined;
                     }
@@ -401,7 +404,7 @@ namespace CKAN.Versioning
                         return false;
                     }
 
-                    if (minor < 0 || minor == int.MaxValue)
+                    if (minor is < 0 or int.MaxValue)
                     {
                         minor = Undefined;
                     }
@@ -414,7 +417,7 @@ namespace CKAN.Versioning
                         return false;
                     }
 
-                    if (patch < 0 || patch == int.MaxValue)
+                    if (patch is < 0 or int.MaxValue)
                     {
                         patch = Undefined;
                     }
@@ -427,7 +430,7 @@ namespace CKAN.Versioning
                         return false;
                     }
 
-                    if (build < 0 || build == int.MaxValue)
+                    if (build is < 0 or int.MaxValue)
                     {
                         build = Undefined;
                     }
@@ -490,13 +493,12 @@ namespace CKAN.Versioning
         /// </summary>
         /// <returns>A complete GameVersion object</returns>
         /// <param name="user">A IUser instance, to raise the corresponding dialog.</param>
-        public GameVersion RaiseVersionSelectionDialog(IGame game, IUser user)
+        public GameVersion RaiseVersionSelectionDialog(IGame game, IUser? user)
         {
             if (IsFullyDefined && InBuildMap(game))
             {
                 // The specified version is complete and known :hooray:. Return this instance.
                 return this;
-
             }
             else if (!IsMajorDefined || !IsMinorDefined)
             {
@@ -553,9 +555,9 @@ namespace CKAN.Versioning
                     // Lucky, there's only one possible version. Happens f.e. if there's only one build per patch (especially the case for newer versions).
                     return possibleVersions.ElementAt(0);
                 }
-                else if (user.Headless)
+                else if (user == null || user.Headless)
                 {
-                    return possibleVersions.LastOrDefault();
+                    return possibleVersions.Last();
                 }
                 else
                 {
@@ -568,7 +570,6 @@ namespace CKAN.Versioning
                     {
                         throw new CancelledActionKraken();
                     }
-
                 }
             }
         }
@@ -588,8 +589,8 @@ namespace CKAN.Versioning
         /// <c>true</c> if every component of the current <see cref="GameVersion"/> matches the corresponding component
         /// of the <see cref="obj"/> parameter; otherwise, <c>false</c>.
         /// </returns>
-        public bool Equals(GameVersion obj)
-            => !(obj is null)
+        public bool Equals(GameVersion? obj)
+            => obj is not null
                 && (ReferenceEquals(obj, this)
                     || (_major == obj._major
                         && _minor == obj._minor
@@ -608,8 +609,8 @@ namespace CKAN.Versioning
         /// <see cref="GameVersion"/> objects and every component of the current <see cref="GameVersion"/> object
         /// matches the corresponding component of <see cref="obj"/>; otherwise, <c>false</c>.
         /// </returns>
-        public override bool Equals(object obj)
-            => !(obj is null)
+        public override bool Equals(object? obj)
+            => obj is not null
                 && (ReferenceEquals(obj, this)
                     || (obj is GameVersion gv && Equals(gv)));
 
@@ -630,7 +631,7 @@ namespace CKAN.Versioning
         /// <param name="v1">The first <see cref="GameVersion"/> object.</param>
         /// <param name="v2">The second <see cref="GameVersion"/> object.</param>
         /// <returns><c>true</c> if <see cref="v1"/> equals <see cref="v2"/>; otherwise, <c>false</c>.</returns>
-        public static bool operator ==(GameVersion v1, GameVersion v2)
+        public static bool operator ==(GameVersion? v1, GameVersion? v2)
             => Equals(v1, v2);
 
         /// <summary>
@@ -641,7 +642,7 @@ namespace CKAN.Versioning
         /// <returns>
         /// <c>true</c> if <see cref="v1"/> does not equal <see cref="v2"/>; otherwise, <c>false</c>.
         /// </returns>
-        public static bool operator !=(GameVersion v1, GameVersion v2)
+        public static bool operator !=(GameVersion? v1, GameVersion? v2)
             => !Equals(v1, v2);
     }
 
@@ -681,11 +682,11 @@ namespace CKAN.Versioning
         /// </item>
         /// </list>
         /// </returns>
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj is null)
             {
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException(nameof(obj));
             }
 
             var objGameVersion = obj as GameVersion;
@@ -734,11 +735,11 @@ namespace CKAN.Versioning
         /// </item>
         /// </list>
         /// </returns>
-        public int CompareTo(GameVersion other)
+        public int CompareTo(GameVersion? other)
         {
             if (other is null)
             {
-                throw new ArgumentNullException("other");
+                throw new ArgumentNullException(nameof(other));
             }
 
             if (Equals(this, other))
@@ -779,19 +780,7 @@ namespace CKAN.Versioning
         /// <c>true</c> if <see cref="left"/> is less than <see cref="right"/>; otherwise, <c>flase</c>.
         /// </returns>
         public static bool operator <(GameVersion left, GameVersion right)
-        {
-            if (left is null)
-            {
-                throw new ArgumentNullException("left");
-            }
-
-            if (right is null)
-            {
-                throw new ArgumentNullException("right");
-            }
-
-            return left.CompareTo(right) < 0;
-        }
+            => left.CompareTo(right) < 0;
 
         /// <summary>
         /// Determines whether the first specified <see cref="GameVersion"/> object is greater than the second
@@ -803,19 +792,7 @@ namespace CKAN.Versioning
         /// <c>true</c> if <see cref="left"/> is greater than <see cref="right"/>; otherwise, <c>flase</c>.
         /// </returns>
         public static bool operator >(GameVersion left, GameVersion right)
-        {
-            if (left is null)
-            {
-                throw new ArgumentNullException("left");
-            }
-
-            if (right is null)
-            {
-                throw new ArgumentNullException("right");
-            }
-
-            return left.CompareTo(right) > 0;
-        }
+            => left.CompareTo(right) > 0;
 
         /// <summary>
         /// Determines whether the first specified <see cref="GameVersion"/> object is less than or equal to the second
@@ -827,19 +804,7 @@ namespace CKAN.Versioning
         /// <c>true</c> if <see cref="left"/> is less than or equal to <see cref="right"/>; otherwise, <c>flase</c>.
         /// </returns>
         public static bool operator <=(GameVersion left, GameVersion right)
-        {
-            if (left is null)
-            {
-                throw new ArgumentNullException("left");
-            }
-
-            if (right is null)
-            {
-                throw new ArgumentNullException("right");
-            }
-
-            return left.CompareTo(right) <= 0;
-        }
+            => left.CompareTo(right) <= 0;
 
         /// <summary>
         /// Determines whether the first specified <see cref="GameVersion"/> object is greater than or equal to the
@@ -851,67 +816,12 @@ namespace CKAN.Versioning
         /// <c>true</c> if <see cref="left"/> is greater than or equal to <see cref="right"/>; otherwise, <c>flase</c>.
         /// </returns>
         public static bool operator >=(GameVersion left, GameVersion right)
-        {
-            if (left is null)
-            {
-                throw new ArgumentNullException("left");
-            }
-
-            if (right is null)
-            {
-                throw new ArgumentNullException("right");
-            }
-
-            return left.CompareTo(right) >= 0;
-        }
+            => left.CompareTo(right) >= 0;
     }
 
     public sealed partial class GameVersion
     {
-        public static GameVersion Min(params GameVersion[] versions)
-        {
-            if (versions == null)
-            {
-                throw new ArgumentNullException("versions");
-            }
-
-            if (!versions.Any())
-            {
-                throw new ArgumentException("Value cannot be empty.", "versions");
-            }
-
-            if (versions.Any(i => i == null))
-            {
-                throw new ArgumentException("Value cannot contain null.", "versions");
-            }
-
-            return versions.Min();
-        }
-
-        public static GameVersion Max(params GameVersion[] versions)
-        {
-            if (versions == null)
-            {
-                throw new ArgumentNullException("versions");
-            }
-
-            if (!versions.Any())
-            {
-                throw new ArgumentException("Value cannot be empty.", "versions");
-            }
-
-            if (versions.Any(i => i == null))
-            {
-                throw new ArgumentException("Value cannot contain null.", "versions");
-            }
-
-            return versions.Max();
-        }
-    }
-
-    public sealed partial class GameVersion
-    {
-        private static string DeriveString(int major, int minor, int patch, int build)
+        private static string? DeriveString(int major, int minor, int patch, int build)
         {
             var sb = new StringBuilder();
 
@@ -946,12 +856,12 @@ namespace CKAN.Versioning
 
     public sealed class GameVersionJsonConverter : JsonConverter
     {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteValue(value.ToString());
+            writer.WriteValue(value?.ToString());
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var value = reader.Value?.ToString();
 
@@ -959,9 +869,8 @@ namespace CKAN.Versioning
             {
                 case null:
                     return null;
-                default:
-                    GameVersion result;
 
+                default:
                     // For a little while, AVC files which didn't specify a full three-part
                     // version number could result in versions like `1.1.`, which cause our
                     // code to fail. Here we strip any trailing dot from the version number,
@@ -969,13 +878,13 @@ namespace CKAN.Versioning
 
                     value = Regex.Replace(value, @"\.$", "");
 
-                    if (GameVersion.TryParse(value, out result))
+                    if (GameVersion.TryParse(value, out GameVersion? result))
                     {
                         return result;
                     }
                     else
                     {
-                        throw new JsonException(string.Format("Could not parse KSP version: {0}", value));
+                        throw new JsonException(string.Format("Could not parse game version: {0}", value));
                     }
             }
         }

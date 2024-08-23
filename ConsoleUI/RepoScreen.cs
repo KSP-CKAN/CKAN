@@ -51,9 +51,9 @@ namespace CKAN.ConsoleUI {
             });
 
             // mainMenu = list of default options
-            if (defaultRepos.repositories != null && defaultRepos.repositories.Length > 0) {
+            if (defaultRepos?.repositories != null && defaultRepos?.repositories.Length > 0) {
                 List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>();
-                foreach (Repository r in defaultRepos.repositories) {
+                foreach (Repository r in defaultRepos?.repositories) {
                     // This variable will be remembered correctly in our lambdas later
                     Repository repo = r;
                     opts.Add(new ConsoleMenuOption(
@@ -153,7 +153,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected SortedDictionary<string, Repository> editList;
 
-        private RepositoryList defaultRepos;
+        private RepositoryList? defaultRepos;
 
         private int labelWidth => Math.Max(8, Math.Max(
             Properties.Resources.RepoNameLabel.Length,

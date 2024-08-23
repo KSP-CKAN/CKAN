@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Autofac;
@@ -18,38 +19,47 @@ namespace CKAN
         /// Initialize the Object
         /// </summary>
         /// <param name="json">JSON representation of release</param>
-        public GitHubReleaseCkanUpdate(GitHubReleaseInfo releaseJson = null)
+        public GitHubReleaseCkanUpdate(GitHubReleaseInfo? releaseJson = null)
         {
             if (releaseJson == null)
             {
                 var coreConfig = ServiceLocator.Container.Resolve<IConfiguration>();
-                var token = coreConfig.TryGetAuthToken(latestCKANReleaseApiUrl.Host, out string t)
+                var token = coreConfig.TryGetAuthToken(latestCKANReleaseApiUrl.Host, out string? t)
                     ? t : null;
-                releaseJson = JsonConvert.DeserializeObject<GitHubReleaseInfo>(
-                    Net.DownloadText(latestCKANReleaseApiUrl, token));
-                if (releaseJson == null)
-                {
-                    throw new Kraken(Properties.Resources.AutoUpdateNotFetched);
-                }
+                releaseJson = Net.DownloadText(latestCKANReleaseApiUrl, token) is string content
+                              ? JsonConvert.DeserializeObject<GitHubReleaseInfo>(content)
+                              : null;
+            }
+            if (releaseJson is null
+                || releaseJson.tag_name is null
+                || releaseJson.name is null
+                || releaseJson.body is null
+                || releaseJson.assets is null)
+            {
+                throw new Kraken(Properties.Resources.AutoUpdateNotFetched);
             }
 
             Version = new CkanModuleVersion(releaseJson.tag_name.ToString(),
                                             releaseJson.name.ToString());
             ReleaseNotes = ExtractReleaseNotes(releaseJson.body.ToString());
-            foreach (var asset in releaseJson.assets)
+
+            var releaseAsset = releaseJson.assets.First(asset => asset.browser_download_url
+                                                                      ?.ToString()
+                                                                       .EndsWith("ckan.exe")
+                                                                      ?? false);
+            var updaterAsset = releaseJson.assets.First(asset => asset.browser_download_url
+                                                                      ?.ToString()
+                                                                       .EndsWith("AutoUpdater.exe")
+                                                                      ?? false);
+            if (releaseAsset.browser_download_url is null
+                || updaterAsset.browser_download_url is null)
             {
-                string url = asset.browser_download_url.ToString();
-                if (url.EndsWith("ckan.exe"))
-                {
-                    ReleaseDownload = asset.browser_download_url;
-                    ReleaseSize     = asset.size;
-                }
-                else if (url.EndsWith("AutoUpdater.exe"))
-                {
-                    UpdaterDownload = asset.browser_download_url;
-                    UpdaterSize     = asset.size;
-                }
+                throw new Kraken(Properties.Resources.AutoUpdateNotFetched);
             }
+            ReleaseDownload = releaseAsset.browser_download_url;
+            ReleaseSize     = releaseAsset.size;
+            UpdaterDownload = updaterAsset.browser_download_url;
+            UpdaterSize     = updaterAsset.size;
         }
 
         public override IList<NetAsyncDownloader.DownloadTarget> Targets => new[]
@@ -59,6 +69,11 @@ namespace CKAN
             new NetAsyncDownloader.DownloadTargetFile(
                 ReleaseDownload, ckanFilename, ReleaseSize),
         };
+
+        private Uri  ReleaseDownload { get; set; }
+        private long ReleaseSize     { get; set; }
+        private Uri  UpdaterDownload { get; set; }
+        private long UpdaterSize     { get; set; }
 
         /// <summary>
         /// Extracts release notes from the body of text provided by the github API.

@@ -238,7 +238,9 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
@@ -248,12 +250,16 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": ""https://spacedock.info/""
                         }",
@@ -264,12 +270,16 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
@@ -279,27 +289,37 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://github.com/"", ""https://spacedock.info/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://curseforge.com/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModC"",
+                            ""author"": ""ModderC"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://archive.org/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModD"",
+                            ""author"": ""ModderD"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://drive.google.com/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModE"",
+                            ""author"": ""ModderE"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://archive.org/"", ""https://taniwha.org/"" ]
                         }",
@@ -334,6 +354,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""1.5"",
                          ""download"":        ""https://github.com/""
@@ -349,6 +370,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""3.0"",
                          ""download"":        ""https://github.com/""
@@ -363,6 +385,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""1.0"",
                          ""ksp_version_max"": ""1.9"",
@@ -378,6 +401,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""1.0"",
                          ""ksp_version_max"": ""1.9"",
@@ -393,6 +417,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":     1,
                          ""identifier"":       ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":          ""1.0"",
                          ""ksp_version_max"":  ""1.5"",
                          ""download"":         ""https://github.com/""
@@ -407,6 +432,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":     1,
                          ""identifier"":       ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":          ""1.0"",
                          ""ksp_version_max"":  ""1.5.0.0"",
                          ""download"":         ""https://github.com/""
@@ -443,6 +469,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.0"",
                              ""ksp_version"":  ""1.0"",
                              ""download"":     ""https://github.com/""
@@ -455,6 +482,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.0"",
                              ""ksp_version"":  ""1.0"",
                              ""download"":     ""https://github.com/""
@@ -462,6 +490,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.1"",
                              ""ksp_version"":  ""2.0"",
                              ""download"":     ""https://github.com/""
@@ -474,12 +503,14 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.0"",
                              ""download"":     ""https://github.com/""
                          }",
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.1"",
                              ""download"":     ""https://github.com/""
                          }",
@@ -491,6 +522,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"":   1,
                              ""identifier"":      ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":         ""1.0"",
                              ""ksp_version_max"": ""1.0"",
                              ""download"":        ""https://github.com/""
@@ -498,6 +530,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"":    1,
                              ""identifier"":      ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":         ""1.1"",
                              ""ksp_version_min"": ""2.0"",
                              ""download"":        ""https://github.com/""

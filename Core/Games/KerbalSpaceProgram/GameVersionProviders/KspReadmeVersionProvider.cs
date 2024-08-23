@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN.Versioning;
 
@@ -13,7 +14,8 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             RegexOptions.IgnoreCase | RegexOptions.Compiled
         );
 
-        public bool TryGetVersion(string directory, out GameVersion result)
+        public bool TryGetVersion(string directory,
+                                  [NotNullWhen(returnValue: true)] out GameVersion? result)
         {
             var readmePath = Path.Combine(directory, "readme.txt");
 

@@ -7,6 +7,6 @@ namespace CKAN
         Tar,
         TarGz,
         Unknown,
-        Zip
+        Zip,
     }
 }

@@ -1,9 +1,11 @@
-using CKAN.Configuration;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+using Newtonsoft.Json;
+using NUnit.Framework;
+
+using CKAN.Configuration;
 using Tests.Data;
 
 namespace Tests.Core.Configuration

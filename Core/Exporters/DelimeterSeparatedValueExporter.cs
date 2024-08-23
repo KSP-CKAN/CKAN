@@ -63,7 +63,7 @@ namespace CKAN.Exporters
                                      QuoteIfNecessary(mod.Module.name),
                                      QuoteIfNecessary(mod.Module.@abstract),
                                      QuoteIfNecessary(mod.Module.description),
-                                     QuoteIfNecessary(string.Join(";", mod.Module.author)),
+                                     QuoteIfNecessary(mod.Module.author == null ? "" : string.Join(";", mod.Module.author)),
                                      QuoteIfNecessary(mod.Module.kind),
                                      WriteUri(mod.Module.download?[0]),
                                      mod.Module.download_size,
@@ -82,45 +82,47 @@ namespace CKAN.Exporters
             }
         }
 
-        private string WriteUri(Uri uri)
+        private string WriteUri(Uri? uri)
             => uri != null
             ? QuoteIfNecessary(uri.ToString())
             : string.Empty;
 
-        private string WriteRepository(ResourcesDescriptor resources)
+        private string WriteRepository(ResourcesDescriptor? resources)
             => resources != null && resources.repository != null
                 ? QuoteIfNecessary(resources.repository.ToString())
                 : string.Empty;
 
-        private string WriteHomepage(ResourcesDescriptor resources)
+        private string WriteHomepage(ResourcesDescriptor? resources)
             => resources != null && resources.homepage != null
                 ? QuoteIfNecessary(resources.homepage.ToString())
                 : string.Empty;
 
-        private string WriteBugtracker(ResourcesDescriptor resources)
+        private string WriteBugtracker(ResourcesDescriptor? resources)
             => resources != null && resources.bugtracker != null
                 ? QuoteIfNecessary(resources.bugtracker.ToString())
                 : string.Empty;
 
-        private string WriteDiscussions(ResourcesDescriptor resources)
+        private string WriteDiscussions(ResourcesDescriptor? resources)
             => resources != null && resources.discussions != null
                 ? QuoteIfNecessary(resources.discussions.ToString())
                 : string.Empty;
 
-        private string WriteSpaceDock(ResourcesDescriptor resources)
+        private string WriteSpaceDock(ResourcesDescriptor? resources)
             => resources != null && resources.spacedock != null
                 ? QuoteIfNecessary(resources.spacedock.ToString())
                 : string.Empty;
 
-        private string WriteCurse(ResourcesDescriptor resources)
+        private string WriteCurse(ResourcesDescriptor? resources)
             => resources != null && resources.curse != null
                 ? QuoteIfNecessary(resources.curse.ToString())
                 : string.Empty;
 
-        private string QuoteIfNecessary(string value)
-            => value != null && value.IndexOf(_delimeter, StringComparison.Ordinal) >= 0
-                ? "\"" + value + "\""
-                : value;
+        private string QuoteIfNecessary(string? value)
+            => value == null
+                ? ""
+                : value.IndexOf(_delimeter, StringComparison.Ordinal) >= 0
+                    ? "\"" + value + "\""
+                    : value;
 
         public enum Delimeter
         {

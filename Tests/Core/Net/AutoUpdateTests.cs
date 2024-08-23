@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.IO;
 using System.Net;
 
@@ -74,12 +76,12 @@ namespace Tests.Core.Net.AutoUpdateTests
             // Assert
             Assert.AreEqual("v1.25.0", relInfo.tag_name);
             Assert.AreEqual("Wallops", relInfo.name);
-            Assert.AreEqual("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/ckan.exe",
-                            upd.ReleaseDownload.ToString());
-            Assert.AreEqual(6651392, upd.ReleaseSize);
-            Assert.AreEqual("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/AutoUpdater.exe",
-                            upd.UpdaterDownload.ToString());
-            Assert.AreEqual(414208, upd.UpdaterSize);
+            CollectionAssert.AreEqual(
+                new Uri[]
+                {
+                    new Uri("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/AutoUpdater.exe"),
+                    new Uri("https://github.com/KSP-CKAN/CKAN/releases/download/v1.25.0/ckan.exe"),
+                }, upd.Targets.SelectMany(t => t.urls));
             Assert.AreEqual("Greatest release notes of all time", upd.ReleaseNotes);
         }
 
@@ -92,14 +94,17 @@ namespace Tests.Core.Net.AutoUpdateTests
                     File.ReadAllText(TestData.DataDir("version.json"))));
 
             // Assert
+            CollectionAssert.AreEqual(
+                new []
+                {
+                    new Uri("https://ksp-ckan.s3-us-west-2.amazonaws.com/AutoUpdater.exe"),
+                    new Uri("https://ksp-ckan.s3-us-west-2.amazonaws.com/ckan.exe"),
+                }, upd.Targets.SelectMany(t => t.urls));
+
             Assert.AreEqual("v1.34.5.24015 aka dev",
                             upd.Version.ToString());
             Assert.AreEqual("### Internal\n\n- [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)",
                             upd.ReleaseNotes);
-            Assert.AreEqual("https://ksp-ckan.s3-us-west-2.amazonaws.com/ckan.exe",
-                            upd.ReleaseDownload.ToString());
-            Assert.AreEqual("https://ksp-ckan.s3-us-west-2.amazonaws.com/AutoUpdater.exe",
-                            upd.UpdaterDownload.ToString());
         }
 
     }

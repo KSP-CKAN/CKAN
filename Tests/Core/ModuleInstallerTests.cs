@@ -665,6 +665,7 @@ namespace Tests.Core
                 registry.RegisterModule(CkanModule.FromJson(@"{
                                             ""spec_version"": 1,
                                             ""identifier"":   ""otherMod"",
+                                            ""author"":       ""otherModder"",
                                             ""version"":      ""1.0"",
                                             ""download"":     ""https://github.com/""
                                         }"),
@@ -749,6 +750,7 @@ namespace Tests.Core
             {{
                 ""spec_version"": 1,
                 ""identifier"": ""AwesomeMod"",
+                ""author"": ""AwesomeModder"",
                 ""version"": ""1.0.0"",
                 ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
                 ""install"": [
@@ -791,6 +793,7 @@ namespace Tests.Core
                 {
                     ""spec_version"": ""v1.14"",
                     ""identifier"": ""AwesomeMod"",
+                    ""author"": ""AwesomeModder"",
                     ""version"": ""1.0.0"",
                     ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
                     ""install"": [
@@ -827,6 +830,7 @@ namespace Tests.Core
                 {
                     ""spec_version"": 1,
                     ""identifier"": ""AwesomeMod"",
+                    ""author"": ""AwesomeModder"",
                     ""version"": ""1.0.0"",
                     ""download"": ""https://awesomemod.example/AwesomeMod.zip""
                 }");
@@ -931,6 +935,7 @@ namespace Tests.Core
                 @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""replaced"",
+                    ""author"":       ""AwesomeModder"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.12"",
                     ""replaced_by"": {
@@ -941,6 +946,7 @@ namespace Tests.Core
                 @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""replacer"",
+                    ""author"": ""AwesomeModder"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.12"",
                     ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
@@ -998,6 +1004,7 @@ namespace Tests.Core
                 @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""replaced"",
+                    ""author"":       ""AwesomeModder"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.12"",
                     ""replaced_by"": {
@@ -1008,6 +1015,7 @@ namespace Tests.Core
                 @"{
                     ""spec_version"": ""v1.4"",
                     ""identifier"":   ""replacer"",
+                    ""author"":       ""AwesomeModder"",
                     ""version"":      ""1.0"",
                     ""ksp_version"":  ""1.12"",
                     ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
@@ -1064,6 +1072,7 @@ namespace Tests.Core
                          @"{
                             ""spec_version"": 1,
                             ""identifier"":   ""RemovingMod"",
+                            ""author"":       ""AwesomeModder"",
                             ""version"":      ""1.0"",
                             ""depends"": [
                                 { ""name"": ""AutoRemovableMod"" }
@@ -1076,6 +1085,7 @@ namespace Tests.Core
                          @"{
                             ""spec_version"": 1,
                             ""identifier"":   ""AutoRemovableMod"",
+                            ""author"":       ""AwesomeModder"",
                             ""version"":      ""1.0"",
                             ""download"":     ""https://github.com/""
                          }",
@@ -1138,6 +1148,7 @@ namespace Tests.Core
                          @"{
                             ""spec_version"": 1,
                             ""identifier"":   ""DogeCoinFlag"",
+                            ""author"":       ""AwesomeModder"",
                             ""version"":      ""1.0"",
                             ""depends"": [
                                 { ""name"": ""RemovableMod"" }
@@ -1147,6 +1158,7 @@ namespace Tests.Core
                          @"{
                             ""spec_version"": 1,
                             ""identifier"":   ""DogeCoinFlag"",
+                            ""author"":       ""AwesomeModder"",
                             ""version"":      ""2.0"",
                             ""download"":     ""https://awesomemod.example/AwesomeMod.zip"",
                          }",
@@ -1156,6 +1168,7 @@ namespace Tests.Core
                          @"{
                             ""spec_version"": 1,
                             ""identifier"":   ""RemovableMod"",
+                            ""author"":       ""AwesomeModder"",
                             ""version"":      ""1.0"",
                             ""download"":     ""https://github.com/""
                          }",
