@@ -19,7 +19,7 @@ namespace CKAN.CmdLine
 
         public int RunCommand(object raw_options)
         {
-            CommonOptions opts = raw_options as CommonOptions;
+            var opts = raw_options as CommonOptions;
             bool headless = opts?.Headless ?? false;
             // Print an intro if not in headless mode
             if (!headless)
@@ -43,8 +43,8 @@ namespace CKAN.CmdLine
                 try
                 {
                     // Get input
-                    string command = ReadLineWithCompletion(headless);
-                    if (command == null || command == exitCommand)
+                    var command = ReadLineWithCompletion(headless);
+                    if (command is null or exitCommand)
                     {
                         done = true;
                     }
@@ -91,7 +91,7 @@ namespace CKAN.CmdLine
         private static readonly Regex quotePattern = new Regex(
             @"(?<="")[^""]*(?="")|[^ ""]+|(?<= )$", RegexOptions.Compiled);
 
-        private static string ReadLineWithCompletion(bool headless)
+        private static string? ReadLineWithCompletion(bool headless)
         {
             try
             {
@@ -106,14 +106,14 @@ namespace CKAN.CmdLine
             }
         }
 
-        private string[] GetSuggestions(string text, int index)
+        private string[]? GetSuggestions(string text, int index)
         {
             string[]     pieces = ParseTextField(text);
             TypeInfo     ti     = typeof(Actions).GetTypeInfo();
             List<string> extras = new List<string> { exitCommand, "help" };
             foreach (string piece in pieces.Take(pieces.Length - 1))
             {
-                PropertyInfo pi = ti.DeclaredProperties
+                var pi = ti.DeclaredProperties
                     .FirstOrDefault(p => p?.GetCustomAttribute<VerbOptionAttribute>()?.LongName == piece);
                 if (pi == null)
                 {
@@ -124,8 +124,8 @@ namespace CKAN.CmdLine
                 extras.Clear();
             }
             var lastPiece = pieces.LastOrDefault() ?? "";
-            return lastPiece.StartsWith("--") ? GetLongOptions(ti, lastPiece.Substring(2))
-                 : lastPiece.StartsWith("-")  ? GetShortOptions(ti, lastPiece.Substring(1))
+            return lastPiece.StartsWith("--") ? GetLongOptions(ti, lastPiece[2..])
+                 : lastPiece.StartsWith("-")  ? GetShortOptions(ti, lastPiece[1..])
                  : HasVerbs(ti)               ? GetVerbs(ti, lastPiece, extras)
                  : WantsAvailIdentifiers(ti)  ? GetAvailIdentifiers(lastPiece)
                  : WantsInstIdentifiers(ti)   ? GetInstIdentifiers(lastPiece)
@@ -157,7 +157,7 @@ namespace CKAN.CmdLine
 
         private static IEnumerable<Type> AllBaseTypes(Type start)
         {
-            for (Type t = start; t != null; t = t.BaseType)
+            for (Type? t = start; t != null; t = t.BaseType)
             {
                 yield return t;
             }
@@ -170,7 +170,7 @@ namespace CKAN.CmdLine
         private static string[] GetVerbs(TypeInfo ti, string prefix, IEnumerable<string> extras)
             => ti.DeclaredProperties
                  .Select(p => p.GetCustomAttribute<VerbOptionAttribute>()?.LongName)
-                 .Where(v => v != null)
+                 .OfType<string>()
                  .Concat(extras)
                  .Where(v => v.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
                  .OrderBy(v => v)
@@ -204,7 +204,7 @@ namespace CKAN.CmdLine
             return registry.Installed(false, false)
                            .Keys
                            .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)
-                                           && !registry.GetInstalledVersion(ident).IsDLC)
+                                           && (!registry.GetInstalledVersion(ident)?.IsDLC ?? true))
                            .ToArray();
         }
 

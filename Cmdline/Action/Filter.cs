@@ -28,7 +28,9 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code
         /// </returns>
-        public int RunSubCommand(GameInstanceManager mgr, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager? mgr,
+                                 CommonOptions?       opts,
+                                 SubCommandOptions    unparsed)
         {
             string[] args = unparsed.options.ToArray();
             int exitCode = Exit.OK;
@@ -74,39 +76,43 @@ namespace CKAN.CmdLine
 
         private int ListFilters(FilterListOptions opts)
         {
-            int exitCode = opts.Handle(manager, user);
+            int exitCode = manager != null && user != null
+                               ? opts.Handle(manager, user)
+                               : Exit.ERROR;
             if (exitCode != Exit.OK)
             {
                 return exitCode;
             }
 
             var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            user.RaiseMessage(Properties.Resources.FilterListGlobalHeader);
+            user?.RaiseMessage(Properties.Resources.FilterListGlobalHeader);
             foreach (string filter in cfg.GlobalInstallFilters)
             {
-                user.RaiseMessage("\t- {0}", filter);
+                user?.RaiseMessage("\t- {0}", filter);
             }
-            user.RaiseMessage("");
+            user?.RaiseMessage("");
 
             var instance = MainClass.GetGameInstance(manager);
-            user.RaiseMessage(Properties.Resources.FilterListInstanceHeader);
+            user?.RaiseMessage(Properties.Resources.FilterListInstanceHeader);
             foreach (string filter in instance.InstallFilters)
             {
-                user.RaiseMessage("\t- {0}", filter);
+                user?.RaiseMessage("\t- {0}", filter);
             }
             return Exit.OK;
         }
 
         private int AddFilters(FilterAddOptions opts, string verb)
         {
-            if (opts.filters.Count < 1)
+            if (opts.filters?.Count < 1)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
-            int exitCode = opts.Handle(manager, user);
+            int exitCode = manager != null && user != null
+                               ? opts.Handle(manager, user)
+                               : Exit.ERROR;
             if (exitCode != Exit.OK)
             {
                 return exitCode;
@@ -116,20 +122,18 @@ namespace CKAN.CmdLine
             {
                 var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                 var duplicates = cfg.GlobalInstallFilters
-                    .Intersect(opts.filters)
+                    .Intersect(opts.filters ?? new List<string> { })
                     .ToArray();
                 if (duplicates.Length > 0)
                 {
-                    user.RaiseError(
-                        Properties.Resources.FilterAddGlobalDuplicateError,
-                        string.Join(", ", duplicates)
-                    );
+                    user?.RaiseError(Properties.Resources.FilterAddGlobalDuplicateError,
+                                     string.Join(", ", duplicates));
                     return Exit.BADOPT;
                 }
                 else
                 {
                     cfg.GlobalInstallFilters = cfg.GlobalInstallFilters
-                        .Concat(opts.filters)
+                        .Concat(opts.filters ?? new List<string> { })
                         .Distinct()
                         .ToArray();
                 }
@@ -138,20 +142,18 @@ namespace CKAN.CmdLine
             {
                 var instance = MainClass.GetGameInstance(manager);
                 var duplicates = instance.InstallFilters
-                    .Intersect(opts.filters)
+                    .Intersect(opts.filters ?? new List<string> { })
                     .ToArray();
                     if (duplicates.Length > 0)
                     {
-                        user.RaiseError(
-                            Properties.Resources.FilterAddInstanceDuplicateError,
-                            string.Join(", ", duplicates)
-                        );
+                        user?.RaiseError(Properties.Resources.FilterAddInstanceDuplicateError,
+                                         string.Join(", ", duplicates));
                         return Exit.BADOPT;
                     }
                     else
                     {
                         instance.InstallFilters = instance.InstallFilters
-                            .Concat(opts.filters)
+                            .Concat(opts.filters ?? new List<string> { })
                             .Distinct()
                             .ToArray();
                     }
@@ -161,14 +163,16 @@ namespace CKAN.CmdLine
 
         private int RemoveFilters(FilterRemoveOptions opts, string verb)
         {
-            if (opts.filters.Count < 1)
+            if (opts.filters?.Count < 1)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
-            int exitCode = opts.Handle(manager, user);
+            int exitCode = manager != null && user != null
+                               ? opts.Handle(manager, user)
+                               : Exit.ERROR;
             if (exitCode != Exit.OK)
             {
                 return exitCode;
@@ -177,43 +181,40 @@ namespace CKAN.CmdLine
             if (opts.global)
             {
                 var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                var notFound = opts.filters
+                var notFound = (opts.filters  ?? new List<string> { })
                     .Except(cfg.GlobalInstallFilters)
                     .ToArray();
                 if (notFound.Length > 0)
                 {
-                    user.RaiseError(
+                    user?.RaiseError(
                         Properties.Resources.FilterRemoveGlobalNotFoundError,
-                        string.Join(", ", notFound)
-                    );
+                        string.Join(", ", notFound));
                     return Exit.BADOPT;
                 }
                 else
                 {
                     cfg.GlobalInstallFilters = cfg.GlobalInstallFilters
-                        .Except(opts.filters)
+                        .Except(opts.filters ?? new List<string> { })
                         .ToArray();
                 }
             }
             else
             {
                 var instance = MainClass.GetGameInstance(manager);
-                var notFound = opts.filters
+                var notFound = (opts.filters ?? new List<string> { })
                     .Except(instance.InstallFilters)
                     .ToArray();
                 if (notFound.Length > 0)
                 {
-                    user.RaiseError(
-                        Properties.Resources.FilterRemoveInstanceNotFoundError,
-                        string.Join(", ", notFound)
-                    );
+                    user?.RaiseError(Properties.Resources.FilterRemoveInstanceNotFoundError,
+                                     string.Join(", ", notFound));
                     return Exit.BADOPT;
                 }
                 else
                 {
                     instance.InstallFilters = instance.InstallFilters
-                        .Except(opts.filters)
-                        .ToArray();
+                                                      .Except(opts.filters ?? new List<string> { })
+                                                      .ToArray();
                 }
             }
             return Exit.OK;
@@ -223,24 +224,24 @@ namespace CKAN.CmdLine
         {
             foreach (var h in FilterSubOptions.GetHelp(verb))
             {
-                user.RaiseError(h);
+                user?.RaiseError(h);
             }
         }
 
-        private GameInstanceManager manager;
-        private IUser               user;
+        private GameInstanceManager? manager;
+        private IUser?               user;
     }
 
     internal class FilterSubOptions : VerbCommandOptions
     {
         [VerbOption("list", HelpText = "List install filters")]
-        public FilterListOptions FilterListOptions { get; set; }
+        public FilterListOptions? FilterListOptions { get; set; }
 
         [VerbOption("add", HelpText = "Add install filters")]
-        public FilterAddOptions FilterAddOptions { get; set; }
+        public FilterAddOptions? FilterAddOptions { get; set; }
 
         [VerbOption("remove", HelpText = "Remove install filters")]
-        public FilterRemoveOptions FilterRemoveOptions { get; set; }
+        public FilterRemoveOptions? FilterRemoveOptions { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -293,7 +294,7 @@ namespace CKAN.CmdLine
         public bool global { get; set; }
 
         [ValueList(typeof(List<string>))]
-        public List<string> filters { get; set; }
+        public List<string>? filters { get; set; }
     }
 
     internal class FilterRemoveOptions : InstanceSpecificOptions
@@ -302,7 +303,7 @@ namespace CKAN.CmdLine
         public bool global { get; set; }
 
         [ValueList(typeof(List<string>))]
-        public List<string> filters { get; set; }
+        public List<string>? filters { get; set; }
     }
 
 }

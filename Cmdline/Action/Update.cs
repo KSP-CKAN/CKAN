@@ -5,7 +5,6 @@ using System.Linq;
 
 using CommandLine;
 
-using CKAN.Versioning;
 using CKAN.Games;
 
 namespace CKAN.CmdLine
@@ -46,7 +45,7 @@ namespace CKAN.CmdLine
                     if (game == null)
                     {
                         user.RaiseError(Properties.Resources.UpdateBadGame,
-                                        options.game,
+                                        options.game ?? "",
                                         string.Join(", ", KnownGames.AllGameShortNames()));
                         return Exit.BADOPT;
                     }
@@ -57,40 +56,40 @@ namespace CKAN.CmdLine
                                                            getUri(url)))
                                         .DefaultIfEmpty(Repository.DefaultGameRepo(game))
                                         .ToArray();
-                    List<CkanModule> availablePrior = null;
                     if (options.list_changes)
                     {
-                        availablePrior = repoData.GetAllAvailableModules(repos)
-                                                 .Select(am => am.Latest())
-                                                 .ToList();
-                    }
-                    UpdateRepositories(game, repos, options.force);
-                    if (options.list_changes)
-                    {
+                        var availablePrior = repoData.GetAllAvailableModules(repos)
+                                                     .Select(am => am.Latest())
+                                                     .OfType<CkanModule>()
+                                                     .ToList();
+                        UpdateRepositories(game, repos, options.force);
                         PrintChanges(availablePrior,
                                      repoData.GetAllAvailableModules(repos)
                                              .Select(am => am.Latest())
+                                             .OfType<CkanModule>()
                                              .ToList());
+                    }
+                    else
+                    {
+                        UpdateRepositories(game, repos, options.force);
                     }
                 }
                 else
                 {
                     var instance = MainClass.GetGameInstance(manager);
-                    Registry            registry         = null;
-                    List<CkanModule>    compatible_prior = null;
-                    GameVersionCriteria crit             = null;
                     if (options.list_changes)
                     {
                         // Get a list of compatible modules prior to the update.
-                        registry = RegistryManager.Instance(instance, repoData).registry;
-                        crit     = instance.VersionCriteria();
-                        compatible_prior = registry.CompatibleModules(crit).ToList();
-                    }
-                    UpdateRepositories(instance, options.force);
-                    if (options.list_changes)
-                    {
+                        var registry = RegistryManager.Instance(instance, repoData).registry;
+                        var crit     = instance.VersionCriteria();
+                        var compatible_prior = registry.CompatibleModules(crit).ToList();
+                        UpdateRepositories(instance, options.force);
                         PrintChanges(compatible_prior,
                                      registry.CompatibleModules(crit).ToList());
+                    }
+                    else
+                    {
+                        UpdateRepositories(instance, options.force);
                     }
                 }
             }
@@ -127,7 +126,7 @@ namespace CKAN.CmdLine
 
             // Print the changes.
             user.RaiseMessage(Properties.Resources.UpdateChangesSummary,
-                              added.Count(), removed.Count(), updated.Count());
+                              added.Count, removed.Count, updated.Count);
 
             if (added.Count > 0)
             {
@@ -225,10 +224,10 @@ namespace CKAN.CmdLine
 
         // Can't specify DefaultValue here because we want to fall back to instance-based updates when omitted
         [Option('g', "game", HelpText = "Game for which to update repositories")]
-        public string game { set; get; }
+        public string? game { set; get; }
 
         [OptionArray('u', "urls", HelpText = "URLs of repositories to update")]
-        public string[] repositoryURLs { get; set; }
+        public string[]? repositoryURLs { get; set; }
 
         [Option('f', "force", DefaultValue = false, HelpText = "Download and parse metadata even if it hasn't changed")]
         public bool force { get; set; }

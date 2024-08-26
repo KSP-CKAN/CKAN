@@ -7,7 +7,7 @@ using System;
 using System.Net;
 using System.Diagnostics;
 using System.Linq;
-#if NET5_0_OR_GREATER
+#if WINDOWS && NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
 
@@ -41,7 +41,10 @@ namespace CKAN.CmdLine
             }
 
             // Default to GUI if there are no command line args or if the only args are flags rather than commands.
-            if (args.All(a => a == "--verbose" || a == "--debug" || a == "--asroot" || a == "--show-console"))
+            if (args.All(a => a is "--verbose"
+                                or "--debug"
+                                or "--asroot"
+                                or "--show-console"))
             {
                 var guiCommand = args.ToList();
                 guiCommand.Insert(0, "gui");
@@ -77,7 +80,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        public static int Execute(GameInstanceManager manager, CommonOptions opts, string[] args)
+        public static int Execute(GameInstanceManager? manager, CommonOptions? opts, string[] args)
         {
             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
             // We shouldn't instantiate Options if it's a subcommand.
@@ -166,10 +169,10 @@ namespace CKAN.CmdLine
             return Exit.BADOPT;
         }
 
-        public static CKAN.GameInstance GetGameInstance(GameInstanceManager manager)
+        public static CKAN.GameInstance GetGameInstance(GameInstanceManager? manager)
         {
-            CKAN.GameInstance inst = manager.CurrentInstance
-                ?? manager.GetPreferredInstance();
+            var inst = manager?.CurrentInstance
+                              ?? manager?.GetPreferredInstance();
             #pragma warning disable IDE0270
             if (inst == null)
             {
@@ -323,7 +326,9 @@ namespace CKAN.CmdLine
         /// <param name="user"></param>
         /// <param name="next_command">Changes the output message if set.</param>
         /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
-        private static int Scan(CKAN.GameInstance inst, IUser user, string next_command = null)
+        private static int Scan(CKAN.GameInstance inst,
+                                IUser             user,
+                                string?           next_command = null)
         {
             try
             {
@@ -348,9 +353,9 @@ namespace CKAN.CmdLine
             }
         }
 
-        private static int Clean(NetModuleCache cache)
+        private static int Clean(NetModuleCache? cache)
         {
-            cache.RemoveAll();
+            cache?.RemoveAll();
             return Exit.OK;
         }
     }

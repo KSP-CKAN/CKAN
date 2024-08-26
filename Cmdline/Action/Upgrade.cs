@@ -40,10 +40,10 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                options.modules.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
+                options.modules?.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
             }
 
-            if (options.modules.Count == 0 && !options.upgrade_all)
+            if (options.modules?.Count == 0 && !options.upgrade_all)
             {
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("upgrade"))
@@ -53,7 +53,7 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!options.upgrade_all && options.modules[0] == "ckan" && AutoUpdate.CanUpdate)
+            if (!options.upgrade_all && options.modules?[0] == "ckan" && AutoUpdate.CanUpdate)
             {
                 if (options.dev_build && options.stable_release)
                 {
@@ -86,11 +86,14 @@ namespace CKAN.CmdLine
                     var latestVersion = update.Version;
                     var currentVersion = new ModuleVersion(Meta.GetVersion());
 
-                    if (!latestVersion.Equals(currentVersion))
+                    if (!currentVersion.Equals(latestVersion))
                     {
-                        user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable, latestVersion);
-                        var releaseNotes = update.ReleaseNotes;
-                        user.RaiseMessage(releaseNotes);
+                        user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable,
+                                          latestVersion?.ToString() ?? "");
+                        if (update.ReleaseNotes != null)
+                        {
+                            user.RaiseMessage(update.ReleaseNotes);
+                        }
                         user.RaiseMessage("");
                         user.RaiseMessage("");
 
@@ -126,15 +129,18 @@ namespace CKAN.CmdLine
                     {
                         user.RaiseMessage(Properties.Resources.UpgradeAllUpToDate);
                     }
-                    else
+                    else if (manager.Cache != null)
                     {
-                        UpgradeModules(manager, user, instance, to_upgrade);
+                        UpgradeModules(manager.Cache, user, instance, to_upgrade);
                     }
                 }
                 else
                 {
-                    Search.AdjustModulesCase(instance, registry, options.modules);
-                    UpgradeModules(manager, user, instance, options.modules);
+                    if (options.modules != null && manager.Cache != null)
+                    {
+                        Search.AdjustModulesCase(instance, registry, options.modules);
+                        UpgradeModules(manager.Cache, user, instance, options.modules);
+                    }
                 }
                 user.RaiseMessage("");
             }
@@ -157,8 +163,8 @@ namespace CKAN.CmdLine
             {
                 user.RaiseMessage(Properties.Resources.UpgradeDLC, kraken.module.name);
                 var res = kraken?.module?.resources;
-                var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
-                    .Where(u => u != null)
+                var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
+                    .OfType<Uri>()
                     .Aggregate("", (a, b) => $"{a}\r\n- {b}");
                 if (!string.IsNullOrEmpty(storePagesMsg))
                 {
@@ -177,14 +183,14 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="modules">List of modules to upgrade</param>
-        private void UpgradeModules(GameInstanceManager manager,
+        private void UpgradeModules(NetModuleCache      cache,
                                     IUser               user,
                                     CKAN.GameInstance   instance,
                                     List<CkanModule>    modules)
         {
             UpgradeModules(
-                manager, user, instance, repoData,
-                (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
+                cache, user, instance, repoData,
+                (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs) =>
                     installer.Upgrade(modules, downloader,
                                       ref possibleConfigOnlyDirs,
                                       regMgr, true, true, true),
@@ -198,14 +204,14 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
-        private void UpgradeModules(GameInstanceManager manager,
+        private void UpgradeModules(NetModuleCache      cache,
                                     IUser               user,
                                     CKAN.GameInstance   instance,
                                     List<string>        identsAndVersions)
         {
             UpgradeModules(
-                manager, user, instance, repoData,
-                (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs) =>
+                cache, user, instance, repoData,
+                (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs) =>
                 {
                     var crit     = instance.VersionCriteria();
                     var registry = regMgr.registry;
@@ -220,7 +226,7 @@ namespace CKAN.CmdLine
                                                                        () => registry.LatestAvailable(req, crit))
                                                                    ?? registry.GetInstalledVersion(req))
                                                     .Concat(heldIdents.Select(ident => registry.GetInstalledVersion(ident)))
-                                                    .Where(m => m != null)
+                                                    .OfType<CkanModule>()
                                                     .ToList();
                     // Modules allowed by THOSE modules' relationships
                     var upgradeable = registry
@@ -233,7 +239,7 @@ namespace CKAN.CmdLine
                     foreach (var request in identsAndVersions)
                     {
                         var module = CkanModule.FromIDandVersion(registry, request, crit)
-                                     ?? (upgradeable.TryGetValue(request, out CkanModule m)
+                                     ?? (upgradeable.TryGetValue(request, out CkanModule? m)
                                         ? m
                                         : null);
                         if (module == null)
@@ -257,11 +263,11 @@ namespace CKAN.CmdLine
             => UpTo(orig, orig.IndexOf(toFind));
 
         private static string UpTo(string orig, int pos)
-            => pos >= 0 && pos < orig.Length ? orig.Substring(0, pos)
+            => pos >= 0 && pos < orig.Length ? orig[..pos]
                                              : orig;
 
         // Action<ref T> isn't allowed
-        private delegate void AttemptUpgradeAction(ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string> possibleConfigOnlyDirs);
+        private delegate void AttemptUpgradeAction(ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs);
 
         /// <summary>
         /// The core of the module upgrading logic, with callbacks to
@@ -274,7 +280,7 @@ namespace CKAN.CmdLine
         /// <param name="instance">Game instance to use</param>
         /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
         /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
-        private void UpgradeModules(GameInstanceManager   manager,
+        private void UpgradeModules(NetModuleCache        cache,
                                     IUser                 user,
                                     CKAN.GameInstance     instance,
                                     RepositoryDataManager repoData,
@@ -282,10 +288,10 @@ namespace CKAN.CmdLine
                                     Action<CkanModule>    addUserChoiceCallback)
         {
             using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
-                var installer  = new ModuleInstaller(instance, manager.Cache, user);
-                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
+                var installer  = new ModuleInstaller(instance, cache, user);
+                var downloader = new NetAsyncModulesDownloader(user, cache);
                 var regMgr     = RegistryManager.Instance(instance, repoData);
-                HashSet<string> possibleConfigOnlyDirs = null;
+                HashSet<string>? possibleConfigOnlyDirs = null;
                 bool done = false;
                 while (!done)
                 {
@@ -321,7 +327,7 @@ namespace CKAN.CmdLine
     internal class UpgradeOptions : InstanceSpecificOptions
     {
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
-        public string ckan_file { get; set; }
+        public string? ckan_file { get; set; }
 
         [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
@@ -345,7 +351,7 @@ namespace CKAN.CmdLine
 
         [ValueList(typeof (List<string>))]
         [InstalledIdentifiers]
-        public List<string> modules { get; set; }
+        public List<string>? modules { get; set; }
     }
 
 }

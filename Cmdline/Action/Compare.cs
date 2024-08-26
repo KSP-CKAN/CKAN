@@ -65,8 +65,8 @@ namespace CKAN.CmdLine
         [Option("machine-readable", HelpText = "Output in a machine readable format: -1, 0 or 1")]
         public bool machine_readable { get; set;}
 
-        [ValueOption(0)] public string Left  { get; set; }
-        [ValueOption(1)] public string Right { get; set; }
+        [ValueOption(0)] public string? Left  { get; set; }
+        [ValueOption(1)] public string? Right { get; set; }
     }
 
 }

@@ -34,18 +34,23 @@ namespace CKAN.CmdLine
 
                 if (exportFileType == null)
                 {
-                    user.RaiseError(Properties.Resources.ListUnknownFormat, options.export);
+                    user.RaiseError(Properties.Resources.ListUnknownFormat,
+                                    options.export ?? "");
                 }
             }
 
-            if (!(options.porcelain) && exportFileType == null)
+            if (!options.porcelain && exportFileType == null)
             {
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameFound,
                                   instance.game.ShortName,
                                   Platform.FormatPath(instance.GameDir()));
-                user.RaiseMessage("");
-                user.RaiseMessage(Properties.Resources.ListGameVersion, instance.game.ShortName, instance.Version());
+                if (instance.Version() is GameVersion gv)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage(Properties.Resources.ListGameVersion,
+                                      instance.game.ShortName, gv);
+                }
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameModulesHeader);
                 user.RaiseMessage("");
@@ -82,9 +87,9 @@ namespace CKAN.CmdLine
                         {
                             // Check if upgrades are available, and show appropriately.
                             log.DebugFormat("Check if upgrades are available for {0}", mod.Key);
-                            CkanModule latest = registry.LatestAvailable(mod.Key, instance.VersionCriteria());
-                            CkanModule current = registry.GetInstalledVersion(mod.Key);
-                            InstalledModule inst = registry.InstalledModule(mod.Key);
+                            var latest = registry.LatestAvailable(mod.Key, instance.VersionCriteria());
+                            var current = registry.GetInstalledVersion(mod.Key);
+                            var inst = registry.InstalledModule(mod.Key);
 
                             if (latest == null)
                             {
@@ -95,11 +100,10 @@ namespace CKAN.CmdLine
                                 {
                                     log.DebugFormat(" {0} installed version not found in registry", mod.Key);
                                 }
-
                                 // Check if mod is replaceable
-                                if (current.replaced_by != null)
+                                else if (current.replaced_by != null)
                                 {
-                                    ModuleReplacement replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
+                                    var replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -114,9 +118,9 @@ namespace CKAN.CmdLine
                                 log.InfoFormat("Latest {0} is {1}", mod.Key, latest.version);
                                 bullet = (inst?.AutoInstalled ?? false) ? "+" : "-";
                                 // Check if mod is replaceable
-                                if (current.replaced_by != null)
+                                if (current?.replaced_by != null)
                                 {
-                                    ModuleReplacement replacement = registry.GetReplacement(latest.identifier, instance.VersionCriteria());
+                                    var replacement = registry.GetReplacement(latest.identifier, instance.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -158,11 +162,9 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static ExportFileType? GetExportFileType(string export)
+        private static ExportFileType? GetExportFileType(string? export)
         {
-            export = export.ToLowerInvariant();
-
-            switch (export)
+            switch (export?.ToLowerInvariant())
             {
                 case "text":     return ExportFileType.PlainText;
                 case "markdown": return ExportFileType.Markdown;
@@ -185,7 +187,7 @@ namespace CKAN.CmdLine
         public bool porcelain { get; set; }
 
         [Option("export", HelpText = "Export list of modules in specified format to stdout")]
-        public string export { get; set; }
+        public string? export { get; set; }
     }
 
 }

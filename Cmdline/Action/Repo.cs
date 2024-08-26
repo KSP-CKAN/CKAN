@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
-using Newtonsoft.Json;
 using CommandLine;
 using CommandLine.Text;
 using log4net;
@@ -12,22 +12,22 @@ namespace CKAN.CmdLine
     public class RepoSubOptions : VerbCommandOptions
     {
         [VerbOption("available", HelpText = "List (canonical) available repositories")]
-        public RepoAvailableOptions AvailableOptions { get; set; }
+        public RepoAvailableOptions? AvailableOptions { get; set; }
 
         [VerbOption("list",      HelpText = "List repositories")]
-        public RepoListOptions ListOptions { get; set; }
+        public RepoListOptions? ListOptions { get; set; }
 
         [VerbOption("add",       HelpText = "Add a repository")]
-        public RepoAddOptions AddOptions { get; set; }
+        public RepoAddOptions? AddOptions { get; set; }
 
         [VerbOption("priority",  HelpText = "Set repository priority")]
-        public RepoPriorityOptions PriorityOptions { get; set; }
+        public RepoPriorityOptions? PriorityOptions { get; set; }
 
         [VerbOption("forget",    HelpText = "Forget a repository")]
-        public RepoForgetOptions ForgetOptions { get; set; }
+        public RepoForgetOptions? ForgetOptions { get; set; }
 
         [VerbOption("default",   HelpText = "Set the default repository")]
-        public RepoDefaultOptions DefaultOptions { get; set; }
+        public RepoDefaultOptions? DefaultOptions { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -86,24 +86,24 @@ namespace CKAN.CmdLine
 
     public class RepoAddOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)] public string name { get; set; }
-        [ValueOption(1)] public string uri { get; set; }
+        [ValueOption(0)] public string? name { get; set; }
+        [ValueOption(1)] public string? uri { get; set; }
     }
 
     public class RepoPriorityOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)] public string name     { get; set; }
+        [ValueOption(0)] public string? name     { get; set; }
         [ValueOption(1)] public int    priority { get; set; }
     }
 
     public class RepoDefaultOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)] public string uri { get; set; }
+        [ValueOption(0)] public string? uri { get; set; }
     }
 
     public class RepoForgetOptions : InstanceSpecificOptions
     {
-        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(0)] public string? name { get; set; }
     }
 
     public class Repo : ISubCommand
@@ -114,7 +114,9 @@ namespace CKAN.CmdLine
         }
 
         // This is required by ISubCommand
-        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager? manager,
+                                 CommonOptions?       opts,
+                                 SubCommandOptions    unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -187,50 +189,39 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private RepositoryList FetchMasterRepositoryList(Uri master_uri = null)
-        {
-            if (master_uri == null)
-            {
-                master_uri = MainClass.GetGameInstance(Manager).game.RepositoryListURL;
-            }
-
-            string json = Net.DownloadText(master_uri);
-            return JsonConvert.DeserializeObject<RepositoryList>(json);
-        }
-
         private int AvailableRepositories()
         {
-            user.RaiseMessage(Properties.Resources.RepoAvailableHeader);
-            RepositoryList repositories;
+            user?.RaiseMessage(Properties.Resources.RepoAvailableHeader);
 
             try
             {
-                repositories = FetchMasterRepositoryList();
+                if (RepositoryList.DefaultRepositories(
+                        MainClass.GetGameInstance(Manager).game)
+                        is RepositoryList repoList)
+                {
+                    var maxNameLen = repoList.repositories
+                                             .Select(r => r.name.Length)
+                                             .Max();
+                    foreach (var repository in repoList.repositories)
+                    {
+                        user?.RaiseMessage("  {0}: {1}",
+                                           repository.name.PadRight(maxNameLen),
+                                           repository.uri);
+                    }
+                    return Exit.OK;
+                }
             }
             catch
             {
-                user.RaiseError(Properties.Resources.RepoAvailableFailed, MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
-                return Exit.ERROR;
+                user?.RaiseError(Properties.Resources.RepoAvailableFailed,
+                                 MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
             }
-
-            int maxNameLen = 0;
-            foreach (Repository repository in repositories.repositories)
-            {
-                maxNameLen = Math.Max(maxNameLen, repository.name.Length);
-            }
-
-            foreach (Repository repository in repositories.repositories)
-            {
-                user.RaiseMessage("  {0}: {1}", repository.name.PadRight(maxNameLen), repository.uri);
-            }
-
-            return Exit.OK;
+            return Exit.ERROR;
         }
 
         private int ListRepositories()
         {
             var repositories = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData).registry.Repositories;
-
             string priorityHeader = Properties.Resources.RepoListPriorityHeader;
             string nameHeader     = Properties.Resources.RepoListNameHeader;
             string urlHeader      = Properties.Resources.RepoListURLHeader;
@@ -247,20 +238,20 @@ namespace CKAN.CmdLine
 
             const string columnFormat = "{0}  {1}  {2}";
 
-            user.RaiseMessage(columnFormat,
-                              priorityHeader.PadRight(priorityWidth),
-                              nameHeader.PadRight(nameWidth),
-                              urlHeader.PadRight(urlWidth));
-            user.RaiseMessage(columnFormat,
-                              new string('-', priorityWidth),
-                              new string('-', nameWidth),
-                              new string('-', urlWidth));
+            user?.RaiseMessage(columnFormat,
+                               priorityHeader.PadRight(priorityWidth),
+                               nameHeader.PadRight(nameWidth),
+                               urlHeader.PadRight(urlWidth));
+            user?.RaiseMessage(columnFormat,
+                               new string('-', priorityWidth),
+                               new string('-', nameWidth),
+                               new string('-', urlWidth));
             foreach (Repository repository in repositories.Values.OrderBy(r => r.priority))
             {
-                user.RaiseMessage(columnFormat,
-                                  repository.priority.ToString().PadRight(priorityWidth),
-                                  repository.name.PadRight(nameWidth),
-                                  repository.uri);
+                user?.RaiseMessage(columnFormat,
+                                   repository.priority.ToString().PadRight(priorityWidth),
+                                   repository.name.PadRight(nameWidth),
+                                   repository.uri);
             }
             return Exit.OK;
         }
@@ -271,121 +262,126 @@ namespace CKAN.CmdLine
 
             if (options.name == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("add");
                 return Exit.BADOPT;
             }
 
             if (options.uri == null)
             {
-                RepositoryList repositoryList;
-
-                try
+                if (RepositoryList.DefaultRepositories(
+                        MainClass.GetGameInstance(Manager).game)
+                    is RepositoryList repoList)
                 {
-                    repositoryList = FetchMasterRepositoryList();
-                }
-                catch
-                {
-                    user.RaiseError(Properties.Resources.RepoAvailableFailed, Manager.CurrentInstance.game.RepositoryListURL.ToString());
-                    return Exit.ERROR;
-                }
-
-                foreach (Repository candidate in repositoryList.repositories)
-                {
-                    if (string.Equals(candidate.name, options.name, StringComparison.OrdinalIgnoreCase))
+                    foreach (var candidate in repoList.repositories)
                     {
-                        options.name = candidate.name;
-                        options.uri = candidate.uri.ToString();
+                        if (string.Equals(candidate.name, options.name, StringComparison.OrdinalIgnoreCase))
+                        {
+                            options.name = candidate.name;
+                            options.uri = candidate.uri.ToString();
+                        }
+                    }
+
+                    // Nothing found in the master list?
+                    if (options.uri == null)
+                    {
+                        user?.RaiseMessage(Properties.Resources.RepoAddNotFound,
+                                           options.name);
+                        return Exit.BADOPT;
                     }
                 }
 
-                // Nothing found in the master list?
-                if (options.uri == null)
+                }
+            if (options.uri != null)
+            {
+                log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
+                if (manager.registry.Repositories.ContainsKey(options.name))
                 {
-                    user.RaiseMessage(Properties.Resources.RepoAddNotFound, options.name);
+                    user?.RaiseMessage(Properties.Resources.RepoAddDuplicate,
+                                       options.name);
                     return Exit.BADOPT;
                 }
+                if (manager.registry.Repositories.Values.Any(r => r.uri.ToString() == options.uri))
+                {
+                    user?.RaiseMessage(Properties.Resources.RepoAddDuplicateURL,
+                                       options.uri);
+                    return Exit.BADOPT;
+                }
+
+                manager.registry.RepositoriesAdd(new Repository(options.name, options.uri,
+                                                                manager.registry.Repositories.Count));
+
+                user?.RaiseMessage(Properties.Resources.RepoAdded,
+                                   options.name,
+                                   options.uri);
+                manager.Save();
+
+                return Exit.OK;
             }
-
-            log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
-            var repositories = manager.registry.Repositories;
-
-            if (repositories.ContainsKey(options.name))
-            {
-                user.RaiseMessage(Properties.Resources.RepoAddDuplicate, options.name);
-                return Exit.BADOPT;
-            }
-            if (repositories.Values.Any(r => r.uri.ToString() == options.uri))
-            {
-                user.RaiseMessage(Properties.Resources.RepoAddDuplicateURL, options.uri);
-                return Exit.BADOPT;
-            }
-
-            manager.registry.RepositoriesAdd(new Repository(options.name, options.uri,
-                                                            manager.registry.Repositories.Count));
-
-            user.RaiseMessage(Properties.Resources.RepoAdded, options.name, options.uri);
-            manager.Save();
-
-            return Exit.OK;
+            return Exit.ERROR;
         }
 
         private int SetRepositoryPriority(RepoPriorityOptions options)
         {
             if (options.name == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("priority");
                 return Exit.BADOPT;
             }
             var manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
-            if (options.priority < 0 || options.priority >= manager.registry.Repositories.Count)
+            if (manager.registry.Repositories is ReadOnlyDictionary<string, Repository> repositories)
             {
-                user.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
-                    options.priority, manager.registry.Repositories.Count - 1);
-                return Exit.BADOPT;
-            }
-
-            if (manager.registry.Repositories.TryGetValue(options.name, out Repository repo))
-            {
-                if (options.priority != repo.priority)
+                if (options.priority < 0 || options.priority >= repositories.Count)
                 {
-                    var sortedRepos = manager.registry.Repositories.Values
-                        .OrderBy(r => r.priority)
-                        .ToList();
-                    // Shift other repos up or down by 1 to make room in the list
-                    if (options.priority < repo.priority)
-                    {
-                        for (int i = options.priority; i < repo.priority; ++i)
-                        {
-                            sortedRepos[i].priority = i + 1;
-                        }
-                    }
-                    else
-                    {
-                        for (int i = repo.priority + 1; i <= options.priority; ++i)
-                        {
-                            sortedRepos[i].priority = i - 1;
-                        }
-                    }
-                    // Move chosen repo into new spot and save
-                    repo.priority = options.priority;
-                    manager.Save();
+                    user?.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
+                                       options.priority,
+                                       repositories.Count - 1);
+                    return Exit.BADOPT;
                 }
-                return ListRepositories();
+
+                if (repositories.TryGetValue(options.name, out Repository? repo))
+                {
+                    if (options.priority != repo.priority)
+                    {
+                        var sortedRepos = repositories.Values
+                            .OrderBy(r => r.priority)
+                            .ToList();
+                        // Shift other repos up or down by 1 to make room in the list
+                        if (options.priority < repo.priority)
+                        {
+                            for (int i = options.priority; i < repo.priority; ++i)
+                            {
+                                sortedRepos[i].priority = i + 1;
+                            }
+                        }
+                        else
+                        {
+                            for (int i = repo.priority + 1; i <= options.priority; ++i)
+                            {
+                                sortedRepos[i].priority = i - 1;
+                            }
+                        }
+                        // Move chosen repo into new spot and save
+                        repo.priority = options.priority;
+                        manager.Save();
+                    }
+                    return ListRepositories();
+                }
+                else
+                {
+                    user?.RaiseMessage(Properties.Resources.RepoPriorityNotFound,
+                                       options.name);
+                }
             }
-            else
-            {
-                user.RaiseMessage(Properties.Resources.RepoPriorityNotFound, options.name);
-                return Exit.BADOPT;
-            }
+            return Exit.BADOPT;
         }
 
         private int ForgetRepository(RepoForgetOptions options)
         {
             if (options.name == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("forget");
                 return Exit.BADOPT;
             }
@@ -393,30 +389,35 @@ namespace CKAN.CmdLine
             RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
             log.DebugFormat("About to forget repository '{0}'", options.name);
 
-            var repos = manager.registry.Repositories;
-
-            string name = options.name;
-            if (!repos.ContainsKey(options.name))
+            if (manager.registry.Repositories is ReadOnlyDictionary<string, Repository> repos)
             {
-                name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
-                if (name == null)
+                var name = options.name;
+                if (!repos.ContainsKey(options.name))
                 {
-                    user.RaiseMessage(Properties.Resources.RepoForgetNotFound, options.name);
-                    return Exit.BADOPT;
+                    name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
+                    if (name == null)
+                    {
+                        user?.RaiseMessage(Properties.Resources.RepoForgetNotFound,
+                                           options.name);
+                        return Exit.BADOPT;
+                    }
+                    user?.RaiseMessage(Properties.Resources.RepoForgetRemoving,
+                                       name);
                 }
-                user.RaiseMessage(Properties.Resources.RepoForgetRemoving, name);
-            }
 
-            manager.registry.RepositoriesRemove(name);
-            var remaining = repos.Values.OrderBy(r => r.priority).ToArray();
-            for (int i = 0; i < remaining.Length; ++i)
-            {
-                remaining[i].priority = i;
-            }
-            user.RaiseMessage(Properties.Resources.RepoForgetRemoved, options.name);
-            manager.Save();
+                manager.registry.RepositoriesRemove(name);
+                var remaining = repos.Values.OrderBy(r => r.priority).ToArray();
+                for (int i = 0; i < remaining.Length; ++i)
+                {
+                    remaining[i].priority = i;
+                }
+                user?.RaiseMessage(Properties.Resources.RepoForgetRemoved,
+                                   options.name);
+                manager.Save();
 
-            return Exit.OK;
+                return Exit.OK;
+            }
+            return Exit.ERROR;
         }
 
         private int DefaultRepository(RepoDefaultOptions options)
@@ -426,40 +427,38 @@ namespace CKAN.CmdLine
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, uri);
             RegistryManager manager = RegistryManager.Instance(inst, repoData);
-            var repositories = manager.registry.Repositories;
-
-            if (repositories.ContainsKey(Repository.default_ckan_repo_name))
+            if (manager.registry.Repositories is ReadOnlyDictionary<string, Repository> repositories)
             {
-                manager.registry.RepositoriesRemove(Repository.default_ckan_repo_name);
+                if (repositories.ContainsKey(Repository.default_ckan_repo_name))
+                {
+                    manager.registry.RepositoriesRemove(Repository.default_ckan_repo_name);
+                }
+
+                manager.registry.RepositoriesAdd(
+                    new Repository(Repository.default_ckan_repo_name, uri, repositories.Count));
+
+                user?.RaiseMessage(Properties.Resources.RepoSet,
+                                   Repository.default_ckan_repo_name,
+                                   uri);
+                manager.Save();
+
+                return Exit.OK;
             }
-
-            manager.registry.RepositoriesAdd(
-                new Repository(Repository.default_ckan_repo_name, uri, repositories.Count));
-
-            user.RaiseMessage(Properties.Resources.RepoSet, Repository.default_ckan_repo_name, uri);
-            manager.Save();
-
-            return Exit.OK;
+            return Exit.ERROR;
         }
 
         private void PrintUsage(string verb)
         {
             foreach (var h in RepoSubOptions.GetHelp(verb))
             {
-                user.RaiseError(h);
+                user?.RaiseError(h);
             }
         }
 
-        private GameInstanceManager   Manager;
+        private          GameInstanceManager?  Manager;
         private readonly RepositoryDataManager repoData;
-        private IUser                 user;
+        private          IUser?                user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
     }
-
-    public struct RepositoryList
-    {
-        public Repository[] repositories;
-    }
-
 }
