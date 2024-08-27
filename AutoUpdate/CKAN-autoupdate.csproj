@@ -16,7 +16,9 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7</LangVersion>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
     <TargetFrameworks>net48;net7.0-windows</TargetFrameworks>
     <UseWindowsForms Condition=" '$(TargetFramework)' == 'net7.0-windows' ">true</UseWindowsForms>

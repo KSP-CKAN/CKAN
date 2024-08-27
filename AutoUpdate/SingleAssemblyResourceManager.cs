@@ -1,4 +1,3 @@
-using System.IO;
 using System.Globalization;
 using System.Resources;
 using System.Reflection;
@@ -14,16 +13,13 @@ namespace CKAN.AutoUpdateHelper
         {
         }
 
-        protected override ResourceSet InternalGetResourceSet(CultureInfo culture,
+        protected override ResourceSet? InternalGetResourceSet(CultureInfo culture,
             bool createIfNotExists, bool tryParents)
         {
-            if (!myResourceSets.TryGetValue(culture, out ResourceSet rs) && createIfNotExists)
+            if (!myResourceSets.TryGetValue(culture, out ResourceSet? rs) && createIfNotExists && MainAssembly != null)
             {
                 // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
-                if (neutralResourcesCulture == null)
-                {
-                    neutralResourcesCulture = GetNeutralResourcesLanguage(MainAssembly);
-                }
+                neutralResourcesCulture ??= GetNeutralResourcesLanguage(MainAssembly);
 
                 // If we're asking for the default language, then ask for the
                 // invariant (non-specific) resources.
@@ -33,7 +29,7 @@ namespace CKAN.AutoUpdateHelper
                 }
                 string resourceFileName = GetResourceFileName(culture);
 
-                Stream store = MainAssembly.GetManifestResourceStream(resourceFileName);
+                var store = MainAssembly.GetManifestResourceStream(resourceFileName);
 
                 // If we found the appropriate resources in the local assembly
                 if (store != null)
@@ -50,7 +46,7 @@ namespace CKAN.AutoUpdateHelper
             return rs;
         }
 
-        private CultureInfo neutralResourcesCulture;
+        private CultureInfo? neutralResourcesCulture;
         private readonly Dictionary<CultureInfo, ResourceSet> myResourceSets = new Dictionary<CultureInfo, ResourceSet>();
     }
 }
