@@ -12,11 +12,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Initialize the container
         /// </summary>
-        protected ScreenContainer()
+        protected ScreenContainer(ConsoleTheme theme)
         {
-            AddBinding(Keys.CtrlL, (object sender, ConsoleTheme theme) => {
+            this.theme = theme;
+            AddBinding(Keys.CtrlL, (object sender) => {
                 // Just redraw everything and keep running
-                DrawBackground(theme);
+                DrawBackground();
                 return true;
             });
         }
@@ -24,11 +25,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the contained screen objects and manage their interaction
         /// </summary>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Logic to drive the screen, default is normal user interaction</param>
-        public virtual void Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
+        public virtual void Run(Action? process = null)
         {
-            DrawBackground(theme);
+            DrawBackground();
 
             if (process == null) {
                 // This should be a simple default parameter, but C# has trouble
@@ -37,11 +37,11 @@ namespace CKAN.ConsoleUI.Toolkit {
             } else {
                 // Other classes can't call Draw directly, so do it for them once.
                 // Would be nice to make this cleaner somehow.
-                Draw(theme);
+                Draw();
             }
 
             // Run the actual logic for the container
-            process(theme);
+            process();
 
             ClearBackground();
         }
@@ -59,7 +59,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Delegate type for key bindings
         /// </summary>
-        public delegate bool KeyAction(object sender, ConsoleTheme theme);
+        public delegate bool KeyAction(object sender);
 
         /// <summary>
         /// Bind an action to a key
@@ -93,11 +93,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="key">User readable description of the key</param>
         /// <param name="descrip">Description of the action</param>
         /// <param name="displayIf">Function returning true to show the tip or false to hide it</param>
-        public void AddTip(string key, string descrip, Func<bool> displayIf = null)
+        public void AddTip(string key, string descrip, Func<bool>? displayIf = null)
         {
-            if (displayIf == null) {
-                displayIf = () => true;
-            }
+            displayIf ??= () => true;
             tips.Add(new ScreenTip(key, descrip, displayIf));
         }
 
@@ -106,7 +104,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Called once at the beginning and then again later if we need to reset the display.
         /// NOT called every tick, to reduce flickering.
         /// </summary>
-        protected virtual void DrawBackground(ConsoleTheme theme)  { }
+        protected virtual void DrawBackground()  { }
 
         /// <summary>
         /// Reset the display, called when closing it.
@@ -117,7 +115,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Draw all the contained ScreenObjects.
         /// Also places the cursor where it should be.
         /// </summary>
-        protected void Draw(ConsoleTheme theme)
+        protected void Draw()
         {
             lock (screenLock) {
                 Console.CursorVisible = false;
@@ -147,19 +145,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// then the bindings of the focused ScreenObject.
         /// Stops when 'done' is true.
         /// </summary>
-        protected void Interact(ConsoleTheme theme)
+        protected void Interact()
         {
             focusIndex = -1;
             Blur(null, true);
 
             do {
-                Draw(theme);
+                Draw();
                 ConsoleKeyInfo k = Console.ReadKey(true);
-                if (bindings.ContainsKey(k)) {
-                    done = !bindings[k](this, theme);
+                if (bindings.TryGetValue(k, out KeyAction? screenBinding)) {
+                    done = !screenBinding(this);
                 } else if (objects.Count > 0) {
-                    if (objects[focusIndex].Bindings.ContainsKey(k)) {
-                        done = !objects[focusIndex].Bindings[k](this, theme);
+                    if (objects[focusIndex].Bindings.TryGetValue(k, out KeyAction? objBinding)) {
+                        done = !objBinding(this);
                     } else {
                         objects[focusIndex].OnKeyPress(k);
                     }
@@ -175,7 +173,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// Currently focused ScreenObject
         /// </returns>
-        protected ScreenObject Focused()
+        protected ScreenObject? Focused()
             => focusIndex >= 0 && focusIndex < objects.Count
                 ? objects[focusIndex]
                 : null;
@@ -218,12 +216,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                         Console.ForegroundColor = theme.FooterKeyFg;
                         Console.Write(tipList[i].Key);
                         Console.ForegroundColor = theme.FooterDescriptionFg;
-                        string remainder = tipList[i].Key == tipList[i].Description.Substring(0, 1)
-                            ? tipList[i].Description.Substring(1)
+                        string remainder = tipList[i].Key == tipList[i].Description[..1]
+                            ? tipList[i].Description[1..]
                             : $" - {tipList[i].Description}";
                         int maxW = Console.WindowWidth - Console.CursorLeft - 1;
                         if (remainder.Length > maxW && maxW > 0) {
-                            Console.Write(remainder.Substring(0, maxW));
+                            Console.Write(remainder[..maxW]);
                         } else {
                             Console.Write(remainder);
                         }
@@ -235,7 +233,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.Write("".PadLeft(Console.WindowWidth - Console.CursorLeft - 1));
         }
 
-        private void Blur(ScreenObject source, bool forward)
+        private void Blur(ScreenObject? source, bool forward)
         {
             if (objects.Count > 0) {
                 int loops = 0;
@@ -251,10 +249,15 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
+        /// <summary>
+        /// The colors used to render the screen or dialog
+        /// </summary>
+        protected readonly ConsoleTheme theme;
+
         private bool done = false;
 
         private readonly List<ScreenObject> objects    = new List<ScreenObject>();
-        private int                focusIndex = 0;
+        private int                         focusIndex = 0;
 
         private readonly Dictionary<ConsoleKeyInfo, KeyAction> bindings   = new Dictionary<ConsoleKeyInfo, KeyAction>();
         private readonly List<ScreenTip>                       tips       = new List<ScreenTip>();
@@ -274,7 +277,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="key">Description of the keypress</param>
         /// <param name="descrip">Description of the bound action</param>
         /// <param name="dispIf">Function that returns true to display the tip or false to hide it</param>
-        public ScreenTip(string key, string descrip, Func<bool> dispIf = null)
+        public ScreenTip(string key, string descrip, Func<bool>? dispIf = null)
         {
             Key         = key;
             Description = descrip;

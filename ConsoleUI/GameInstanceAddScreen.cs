@@ -13,8 +13,10 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the Screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing the instances</param>
-        public GameInstanceAddScreen(GameInstanceManager mgr) : base(mgr)
+        public GameInstanceAddScreen(ConsoleTheme theme, GameInstanceManager mgr)
+            : base(theme, mgr)
         {
             AddObject(new ConsoleLabel(
                 labelWidth, pathRow + 1, -1,

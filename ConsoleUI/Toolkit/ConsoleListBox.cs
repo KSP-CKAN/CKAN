@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -30,7 +31,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 int dfltSortCol,
                 int initialSortCol = 0,
                 ListSortDirection initialSortDir = ListSortDirection.Ascending,
-                Func<RowT, string, bool> filt = null)
+                Func<RowT, string, bool>? filt = null)
             : base(l, t, r, b)
         {
             data              = dataList;
@@ -47,7 +48,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Fired when the user changes the selection with the arrow keys
         /// </summary>
-        public event Action SelectionChanged;
+        public event Action? SelectionChanged;
 
         /// <summary>
         /// Set which column to sort by
@@ -88,15 +89,15 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Currently selected row's object
         /// </summary>
-        public RowT Selection
-            => selectedRow >= 0 && selectedRow < (sortedFilteredData?.Count ?? 0)
+        public RowT? Selection
+            => selectedRow >= 0 && selectedRow < sortedFilteredData.Count
                 ? sortedFilteredData[selectedRow]
                 : default;
 
         /// <returns>
         /// Return the number of rows shown in the box
         /// </returns>
-        public int VisibleRowCount() => sortedFilteredData?.Count ?? 0;
+        public int VisibleRowCount() => sortedFilteredData.Count;
 
         /// <summary>
         /// Draw the list box
@@ -311,12 +312,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         public ConsolePopupMenu SortMenu()
         {
             if (sortMenu == null) {
-                List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>() {
+                var opts = new List<ConsoleMenuOption?>() {
                     new ConsoleMenuOption(
                         Properties.Resources.Ascending, "",
                         Properties.Resources.AscendingSortTip,
                         true,
-                        (ConsoleTheme theme) => {
+                        () => {
                             SortDirection = ListSortDirection.Ascending;
                             return true;
                         },
@@ -326,7 +327,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                         Properties.Resources.Descending, "",
                         Properties.Resources.DescendingSortTip,
                         true,
-                        (ConsoleTheme theme) => {
+                        () => {
                             SortDirection = ListSortDirection.Descending;
                             return true;
                         },
@@ -346,7 +347,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                             ? string.Format(Properties.Resources.ColumnNumberSortTip, i + 1)
                             : string.Format(Properties.Resources.ColumnNameSortTip, columns[i].Header),
                         true,
-                        (ConsoleTheme theme) => {
+                        () => {
                             SortColumnIndex = newIndex;
                             return true;
                         },
@@ -380,10 +381,11 @@ namespace CKAN.ConsoleUI.Toolkit {
                     w)
                 : FormatExactWidth(columns[colIndex].Header, w);
 
+        [MemberNotNull(nameof(sortedFilteredData))]
         private void filterAndSort()
         {
             // Keep the same row highlighted when the number of rows changes
-            RowT oldSelect = Selection;
+            var oldSelect = Selection;
 
             sortedFilteredData = string.IsNullOrEmpty(filterStr) || filterCheck == null
                 ? new List<RowT>(data)
@@ -402,9 +404,12 @@ namespace CKAN.ConsoleUI.Toolkit {
                     () => dfltCol(a, b)
                 ));
             }
-            int newSelRow = sortedFilteredData.IndexOf(oldSelect);
-            if (newSelRow >= 0) {
-                selectedRow = newSelRow;
+            if (oldSelect is RowT r)
+            {
+                int newSelRow = sortedFilteredData.IndexOf(r);
+                if (newSelRow >= 0) {
+                    selectedRow = newSelRow;
+                }
             }
         }
 
@@ -413,7 +418,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 ? col.Comparer
                     ?? ((a, b) => col.Renderer(a).Trim().CompareTo(col.Renderer(b).Trim()))
                 : col.Comparer != null
-                    ? (Comparison<RowT>)((RowT a, RowT b) => col.Comparer(b, a))
+                    ? ((RowT a, RowT b) => col.Comparer(b, a))
                     : ((RowT a, RowT b) => col.Renderer(b).Trim().CompareTo(col.Renderer(a).Trim()));
 
         // Sometimes type safety can be a minor hindrance;
@@ -427,8 +432,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private          List<RowT>                 sortedFilteredData;
         private          IList<RowT>                data;
         private readonly IList<ConsoleListBoxColumn<RowT>> columns;
-        private readonly Func<RowT, string, bool>   filterCheck;
-        private          ConsolePopupMenu           sortMenu;
+        private readonly Func<RowT, string, bool>?  filterCheck;
+        private          ConsolePopupMenu?          sortMenu;
 
         private readonly int               defaultSortColumn = 0;
         private          int               sortColIndex;
@@ -455,26 +460,35 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Initialize the column
         /// </summary>
-        public ConsoleListBoxColumn() { }
+        public ConsoleListBoxColumn(string             header,
+                                    Func<RowT, string> renderer,
+                                    Comparison<RowT>?  comparer,
+                                    int?               width)
+        {
+            Header   = header;
+            Renderer = renderer;
+            Comparer = comparer;
+            Width    = width;
+        }
 
         /// <summary>
         /// Text for the header row
         /// </summary>
-        public string             Header;
+        public readonly string             Header;
         /// <summary>
         /// Function to translate a row's object into text to display
         /// </summary>
-        public Func<RowT, string> Renderer;
+        public readonly Func<RowT, string> Renderer;
         /// <summary>
         /// Function to compare two rows for sorting purposes.
         /// If not defined, the string representation is used.
         /// </summary>
-        public Comparison<RowT>   Comparer;
+        public readonly Comparison<RowT>?  Comparer;
         /// <summary>
         /// Number of screen columns to use for this column.
         /// If null, take up remaining space left behind by other columns.
         /// </summary>
-        public int?               Width;
+        public readonly int?               Width;
     }
 
 }

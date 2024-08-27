@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using CKAN.ConsoleUI.Toolkit;
 using CKAN.Games;
 
 namespace CKAN.ConsoleUI {
@@ -12,10 +12,11 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Construct the screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
-        public RepoAddScreen(IGame game, SortedDictionary<string, Repository> reps)
-            : base(game, reps, "", "") { }
+        public RepoAddScreen(ConsoleTheme theme, IGame game, SortedDictionary<string, Repository> reps)
+            : base(theme, game, reps, "", "") { }
 
         /// <summary>
         /// Check whether the fields are valid

@@ -15,7 +15,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
-        public ModListHelpDialog() : base()
+        public ModListHelpDialog(ConsoleTheme theme) : base(theme)
         {
             SetDimensions(9, 3, -9, -3);
 

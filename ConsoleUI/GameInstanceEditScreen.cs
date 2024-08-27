@@ -15,11 +15,15 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the Screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing the instances</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="k">Instance to edit</param>
-        public GameInstanceEditScreen(GameInstanceManager mgr, RepositoryDataManager repoData, GameInstance k)
-            : base(mgr, k.Name, k.GameDir())
+        public GameInstanceEditScreen(ConsoleTheme theme,
+                                      GameInstanceManager   mgr,
+                                      RepositoryDataManager repoData,
+                                      GameInstance          k)
+            : base(theme, mgr, k.Name, k.GameDir())
         {
             ksp = k;
             try {
@@ -56,70 +60,84 @@ namespace CKAN.ConsoleUI {
                     3, repoListTop, -3, repoListBottom,
                     new List<Repository>(repoEditList.Values),
                     new List<ConsoleListBoxColumn<Repository>>() {
-                        new ConsoleListBoxColumn<Repository>() {
-                            Header   = Properties.Resources.InstanceEditRepoIndexHeader,
-                            Renderer = r => r.priority.ToString(),
-                            Width    = 7
-                        }, new ConsoleListBoxColumn<Repository>() {
-                            Header   = Properties.Resources.InstanceEditRepoNameHeader,
-                            Renderer = r => r.name,
-                            Width    = 16
-                        }, new ConsoleListBoxColumn<Repository>() {
-                            Header   = Properties.Resources.InstanceEditRepoURLHeader,
-                            Renderer = r => r.uri.ToString(),
-                            Width    = null
-                        }
+                        new ConsoleListBoxColumn<Repository>(
+                            Properties.Resources.InstanceEditRepoIndexHeader,
+                            r => r.priority.ToString(),
+                            null,
+                            7),
+                        new ConsoleListBoxColumn<Repository>(
+                            Properties.Resources.InstanceEditRepoNameHeader,
+                            r => r.name,
+                            null,
+                            16),
+                        new ConsoleListBoxColumn<Repository>(
+                            Properties.Resources.InstanceEditRepoURLHeader,
+                            r => r.uri.ToString(),
+                            null,
+                            null)
                     },
                     1, 0, ListSortDirection.Ascending
                 );
                 AddObject(repoList);
                 repoList.AddTip("A", Properties.Resources.Add);
-                repoList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
-                    LaunchSubScreen(theme, new RepoAddScreen(ksp.game, repoEditList));
+                repoList.AddBinding(Keys.A, (object sender) => {
+                    LaunchSubScreen(new RepoAddScreen(theme, ksp.game, repoEditList));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
                 repoList.AddTip("R", Properties.Resources.Remove);
-                repoList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
-                    int oldPrio = repoList.Selection.priority;
-                    repoEditList.Remove(repoList.Selection.name);
-                    // Reshuffle the priorities to fill
-                    foreach (Repository r in repoEditList.Values) {
-                        if (r.priority > oldPrio) {
-                            --r.priority;
+                repoList.AddBinding(Keys.R, (object sender) => {
+                    if (repoList.Selection is Repository repo)
+                    {
+                        int oldPrio = repo.priority;
+                        repoEditList.Remove(repo.name);
+                        // Reshuffle the priorities to fill
+                        foreach (Repository r in repoEditList.Values) {
+                            if (r.priority > oldPrio) {
+                                --r.priority;
+                            }
                         }
-                    }
-                    repoList.SetData(new List<Repository>(repoEditList.Values));
-                    return true;
-                });
-                repoList.AddTip("E", Properties.Resources.Edit);
-                repoList.AddBinding(Keys.E, (object sender, ConsoleTheme theme) => {
-                    LaunchSubScreen(theme, new RepoEditScreen(ksp.game, repoEditList, repoList.Selection));
-                    repoList.SetData(new List<Repository>(repoEditList.Values));
-                    return true;
-                });
-                repoList.AddTip("-", Properties.Resources.Up);
-                repoList.AddBinding(Keys.Minus, (object sender, ConsoleTheme theme) => {
-                    if (repoList.Selection.priority > 0) {
-                        Repository prev = SortedDictFind(repoEditList,
-                            r => r.priority == repoList.Selection.priority - 1);
-                        if (prev != null) {
-                            ++prev.priority;
-                        }
-                        --repoList.Selection.priority;
                         repoList.SetData(new List<Repository>(repoEditList.Values));
                     }
                     return true;
                 });
-                repoList.AddTip("+", Properties.Resources.Down);
-                repoList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
-                    Repository next = SortedDictFind(repoEditList,
-                        r => r.priority == repoList.Selection.priority + 1);
-                    if (next != null) {
-                        --next.priority;
+                repoList.AddTip("E", Properties.Resources.Edit);
+                repoList.AddBinding(Keys.E, (object sender) => {
+                    if (repoList.Selection is Repository repo)
+                    {
+                        LaunchSubScreen(new RepoEditScreen(theme, ksp.game, repoEditList, repo));
+                        repoList.SetData(new List<Repository>(repoEditList.Values));
                     }
-                    ++repoList.Selection.priority;
-                    repoList.SetData(new List<Repository>(repoEditList.Values));
+                    return true;
+                });
+                repoList.AddTip("-", Properties.Resources.Up);
+                repoList.AddBinding(Keys.Minus, (object sender) => {
+                    if (repoList.Selection is Repository repo)
+                    {
+                        if (repo.priority > 0) {
+                            var prev = SortedDictFind(repoEditList,
+                                r => r.priority == repo.priority - 1);
+                            if (prev != null) {
+                                ++prev.priority;
+                            }
+                            --repo.priority;
+                            repoList.SetData(new List<Repository>(repoEditList.Values));
+                        }
+                    }
+                    return true;
+                });
+                repoList.AddTip("+", Properties.Resources.Down);
+                repoList.AddBinding(Keys.Plus, (object sender) => {
+                    if (repoList.Selection is Repository repo)
+                    {
+                        var next = SortedDictFind(repoEditList,
+                            r => r.priority == repo.priority + 1);
+                        if (next != null) {
+                            --next.priority;
+                        }
+                        ++repo.priority;
+                        repoList.SetData(new List<Repository>(repoEditList.Values));
+                    }
                     return true;
                 });
 
@@ -127,22 +145,21 @@ namespace CKAN.ConsoleUI {
                     3, compatListTop, -3, compatListBottom,
                     compatEditList,
                     new List<ConsoleListBoxColumn<GameVersion>>() {
-                        new ConsoleListBoxColumn<GameVersion>() {
-                            Header   = Properties.Resources.InstanceEditCompatVersionHeader,
-                            Width    = 10,
-                            Renderer = v => v.ToString(),
-                            Comparer = (a, b) => a.CompareTo(b)
-                        }
+                        new ConsoleListBoxColumn<GameVersion>(
+                            Properties.Resources.InstanceEditCompatVersionHeader,
+                            v => v.ToString() ?? "",
+                            (a, b) => a.CompareTo(b),
+                            10)
                     },
                     0, 0, ListSortDirection.Descending
                 );
                 AddObject(compatList);
 
                 compatList.AddTip("A", Properties.Resources.Add);
-                compatList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
-                    CompatibleVersionDialog vd = new CompatibleVersionDialog(ksp.game);
-                    GameVersion newVersion = vd.Run(theme);
-                    DrawBackground(theme);
+                compatList.AddBinding(Keys.A, (object sender) => {
+                    CompatibleVersionDialog vd = new CompatibleVersionDialog(theme, ksp.game);
+                    var newVersion = vd.Run();
+                    DrawBackground();
                     if (newVersion != null && !compatEditList.Contains(newVersion)) {
                         compatEditList.Add(newVersion);
                         compatList.SetData(compatEditList);
@@ -150,9 +167,12 @@ namespace CKAN.ConsoleUI {
                     return true;
                 });
                 compatList.AddTip("R", Properties.Resources.Remove, () => compatList.Selection != null);
-                compatList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
-                    compatEditList.Remove(compatList.Selection);
-                    compatList.SetData(compatEditList);
+                compatList.AddBinding(Keys.R, (object sender) => {
+                    if (compatList.Selection is GameVersion gv)
+                    {
+                        compatEditList.Remove(gv);
+                        compatList.SetData(compatEditList);
+                    }
                     return true;
                 });
 
@@ -167,7 +187,7 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private static V SortedDictFind<K, V>(SortedDictionary<K, V> dict, Func<V, bool> pred)
+        private static V? SortedDictFind<K, V>(SortedDictionary<K, V> dict, Func<V, bool> pred) where K: class
         {
             foreach (var kvp in dict) {
                 if (pred(kvp.Value)) {
@@ -200,8 +220,8 @@ namespace CKAN.ConsoleUI {
         {
             if (repoEditList != null) {
                 // Copy the temp list of repositories to the registry
-                registry.RepositoriesSet(repoEditList);
-                regMgr.Save();
+                registry?.RepositoriesSet(repoEditList);
+                regMgr?.Save();
             }
             if (compatEditList != null) {
                 ksp.SetCompatibleVersions(compatEditList);
@@ -219,14 +239,14 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private readonly GameInstance    ksp;
-        private readonly RegistryManager regMgr;
-        private readonly Registry        registry;
+        private readonly GameInstance     ksp;
+        private readonly RegistryManager? regMgr;
+        private readonly Registry?        registry;
 
-        private readonly SortedDictionary<string, Repository> repoEditList;
-        private readonly ConsoleListBox<Repository>           repoList;
-        private readonly List<GameVersion>                    compatEditList;
-        private readonly ConsoleListBox<GameVersion>          compatList;
+        private readonly SortedDictionary<string, Repository>? repoEditList;
+        private readonly ConsoleListBox<Repository>?           repoList;
+        private readonly List<GameVersion>?                    compatEditList;
+        private readonly ConsoleListBox<GameVersion>?          compatList;
 
         private const int repoFrameTop      = pathRow           + 2;
         private const int repoListTop       = repoFrameTop      + 2;

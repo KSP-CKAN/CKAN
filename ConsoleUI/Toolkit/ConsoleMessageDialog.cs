@@ -11,13 +11,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Initialize a dialog
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="m">Message to show</param>
         /// <param name="btns">List of captions for buttons</param>
         /// <param name="hdr">Function to generate the header</param>
         /// <param name="ta">Alignment of the contents</param>
         /// <param name="vertOffset">Pass non-zero to move popup vertically</param>
-        public ConsoleMessageDialog(string m, List<string> btns, Func<string> hdr = null, TextAlign ta = TextAlign.Center, int vertOffset = 0)
-            : base()
+        public ConsoleMessageDialog(ConsoleTheme  theme,
+                                    string        m,
+                                    List<string>  btns,
+                                    Func<string>? hdr = null,
+                                    TextAlign     ta = TextAlign.Center,
+                                    int           vertOffset = 0)
+            : base(theme)
         {
             int maxLen = Formatting.MaxLineLength(m);
             int w      = Math.Max(minWidth, Math.Min(maxLen + 6, Console.WindowWidth - 4));
@@ -62,7 +68,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             SetDimensions(l, t, r, b);
             int btnRow = GetBottom() - 2;
 
-            ConsoleTextBox tb = new ConsoleTextBox(
+            var tb = new ConsoleTextBox(
                 GetLeft() + 2, GetTop() + 2, GetRight() - 2, GetBottom() - 2 - (btns.Count > 0 ? 2 : 0),
                 false,
                 ta,
@@ -77,7 +83,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             if (messageLines.Count > boxH) {
                 // Scroll
                 AddTip(Properties.Resources.CursorKeys, Properties.Resources.Scroll);
-                tb.AddScrollBindings(this);
+                tb.AddScrollBindings(this, theme);
             }
 
             int btnLeft = (Console.WindowWidth - btnW) / 2;
@@ -95,14 +101,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Show the dialog and handle its interaction
         /// </summary>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
         /// <returns>
         /// Index of button the user pressed
         /// </returns>
-        public new int Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
+        public new int Run(Action? process = null)
         {
-            base.Run(theme, process);
+            base.Run(process);
             return selectedButton;
         }
 

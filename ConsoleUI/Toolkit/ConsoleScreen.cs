@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -12,20 +13,22 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Initialize a screen.
         /// Sets up the F10 key binding for menus.
         /// </summary>
-        protected ConsoleScreen()
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
+        protected ConsoleScreen(ConsoleTheme theme)
+            : base(theme)
         {
             AddTip(
                 "F10", MenuTip(),
                 () => mainMenu != null
             );
-            AddBinding(new ConsoleKeyInfo[] {Keys.F10, Keys.Apps}, (object sender, ConsoleTheme theme) => {
+            AddBinding(new ConsoleKeyInfo[] {Keys.F10, Keys.Apps}, (object sender) => {
                 bool val = true;
                 if (mainMenu != null) {
-                    DrawSelectedHamburger(theme);
+                    DrawSelectedHamburger();
 
                     val = mainMenu.Run(theme, Console.WindowWidth - 1, 1);
 
-                    DrawBackground(theme);
+                    DrawBackground();
                 }
                 return val;
             });
@@ -34,44 +37,37 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Launch a screen and then clean up after it so we can continue using this screen.
         /// </summary>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="cs">Subscreen to launch</param>
         /// <param name="newProc">Function to drive the screen, default is normal interaction</param>
-        protected void LaunchSubScreen(ConsoleTheme theme, ConsoleScreen cs, Action<ConsoleTheme> newProc = null)
+        protected void LaunchSubScreen(ConsoleScreen cs, Action? newProc = null)
         {
-            cs.Run(theme, newProc);
-            DrawBackground(theme);
-            Draw(theme);
+            cs.Run(newProc);
+            DrawBackground();
+            Draw();
         }
 
         /// <summary>
         /// Function returning text to be shown at the left edge of the top header bar
         /// </summary>
         protected virtual string LeftHeader()
-        {
-            return "";
-        }
+            => "";
 
         /// <summary>
         /// Function returning text to be shown in the center of the top header bar
         /// </summary>
         protected virtual string CenterHeader()
-        {
-            return "";
-        }
+            => "";
 
         /// <summary>
         /// Function returning text to be shown to explain the F10 menu hotkey
         /// </summary>
         protected virtual string MenuTip()
-        {
-            return Properties.Resources.Menu;
-        }
+            => Properties.Resources.Menu;
 
         /// <summary>
         /// Menu to open for F10 from the hamburger icon of this screen
         /// </summary>
-        protected ConsolePopupMenu mainMenu = null;
+        protected ConsolePopupMenu? mainMenu = null;
 
         #region IUser
 
@@ -92,25 +88,25 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         public virtual bool RaiseYesNoDialog(string question)
         {
-            ConsoleMessageDialog d = new ConsoleMessageDialog(
+            var d = new ConsoleMessageDialog(
+                theme,
                 string.Join("", messagePieces) + question,
                 new List<string>() {
                     Properties.Resources.Yes,
                     Properties.Resources.No
-                }
-            );
-            d.AddBinding(Keys.Y, (object sender, ConsoleTheme theme) => {
+                });
+            d.AddBinding(Keys.Y, (object sender) => {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender, ConsoleTheme theme) => {
+            d.AddBinding(Keys.N, (object sender) => {
                 d.PressButton(1);
                 return false;
             });
             messagePieces.Clear();
-            bool val = d.Run(userTheme) == 0;
-            DrawBackground(userTheme);
-            Draw(userTheme);
+            bool val = d.Run() == 0;
+            DrawBackground();
+            Draw();
             return val;
         }
 
@@ -126,14 +122,16 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         public int RaiseSelectionDialog(string message, params object[] args)
         {
-            ConsoleMessageDialog d = new ConsoleMessageDialog(
+            var d = new ConsoleMessageDialog(
+                theme,
                 string.Join("", messagePieces) + message,
-                new List<string>(Array.ConvertAll(args, p => p.ToString()))
-            );
+                Array.ConvertAll(args, p => p.ToString())
+                     .OfType<string>()
+                     .ToList());
             messagePieces.Clear();
-            int val = d.Run(userTheme);
-            DrawBackground(userTheme);
-            Draw(userTheme);
+            int val = d.Run();
+            DrawBackground();
+            Draw();
             return val;
         }
 
@@ -145,14 +143,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="args">Values to be interpolated into the format string</param>
         public void RaiseError(string message, params object[] args)
         {
-            ConsoleMessageDialog d = new ConsoleMessageDialog(
+            var d = new ConsoleMessageDialog(
+                theme,
                 string.Join("", messagePieces) + string.Format(message, args),
-                new List<string>() { Properties.Resources.OK }
-            );
+                new List<string>() { Properties.Resources.OK });
             messagePieces.Clear();
-            d.Run(userTheme);
-            DrawBackground(userTheme);
-            Draw(userTheme);
+            d.Run();
+            DrawBackground();
+            Draw();
         }
 
         /// <summary>
@@ -164,7 +162,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void RaiseMessage(string message, params object[] args)
         {
             Message(message, args);
-            Draw(userTheme);
+            Draw();
         }
 
         /// <summary>
@@ -201,7 +199,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void RaiseProgress(string message, int percent)
         {
             Progress(message, percent);
-            Draw(userTheme);
+            Draw();
         }
 
         /// <summary>
@@ -216,7 +214,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                                         CkanModule.FmtSize(bytesPerSecond),
                                         CkanModule.FmtSize(bytesLeft));
             Progress(fullMsg, percent);
-            Draw(userTheme);
+            Draw();
         }
 
         /// <summary>
@@ -228,7 +226,7 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         #endregion IUser
 
-        private void DrawSelectedHamburger(ConsoleTheme theme)
+        private void DrawSelectedHamburger()
         {
             Console.SetCursorPosition(Console.WindowWidth - 3, 0);
             Console.BackgroundColor = theme.MenuSelectedBg;
@@ -239,10 +237,11 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Set the whole screen to dark blue and draw the top header bar
         /// </summary>
-        protected override void DrawBackground(ConsoleTheme theme)
+        // [MemberNotNull(nameof(userTheme))]
+        protected override void DrawBackground()
         {
             // Cheat because our IUser handlers need a theme
-            userTheme = theme;
+            // userTheme = theme;
 
             Console.BackgroundColor = theme.MainBg;
             Console.Clear();
@@ -271,7 +270,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         {
             // If the combined string is too long, shorten the center
             if (center.Length > width - left.Length - right.Length - 4) {
-                center = center.Substring(0, width - left.Length - right.Length - 4);
+                center = center[..(width - left.Length - right.Length - 4)];
             }
             // Start with the center centered on the screen
             int leftSideWidth = (width - center.Length) / 2;
@@ -284,7 +283,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             return left.PadRight(leftSideWidth) + center + right.PadLeft(rightSideWidth);
         }
 
-        private ConsoleTheme userTheme;
+        // private ConsoleTheme userTheme;
         private static readonly string hamburger = $" {Symbols.hamburger} ";
     }
 

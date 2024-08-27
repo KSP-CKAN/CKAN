@@ -15,9 +15,11 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="globalConfig">Object holding the global configuration</param>
         /// <param name="instance">The current instance</param>
-        public InstallFiltersScreen(IConfiguration globalConfig, GameInstance instance)
+        public InstallFiltersScreen(ConsoleTheme theme, IConfiguration globalConfig, GameInstance instance)
+            : base(theme)
         {
             this.globalConfig = globalConfig;
             this.instance     = instance;
@@ -25,18 +27,18 @@ namespace CKAN.ConsoleUI {
             instanceFilters = instance.InstallFilters.ToList();
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F2, (object sender) => {
                 Save();
                 // Close screen
                 return false;
             });
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 // Discard changes
                 return false;
             });
 
-            mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
+            mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption?>() {
                 new ConsoleMenuOption(Properties.Resources.FiltersAddMiniAVCMenu, "",
                     Properties.Resources.FiltersAddMiniAVCMenuTip,
                     true, AddMiniAVC),
@@ -48,22 +50,22 @@ namespace CKAN.ConsoleUI {
                 2, 2, -2, vMid - 1,
                 globalFilters,
                 new List<ConsoleListBoxColumn<string>>() {
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = Properties.Resources.FiltersGlobalHeader,
-                        Width    = null,
-                        Renderer = f => f,
-                    }
+                    new ConsoleListBoxColumn<string>(
+                        Properties.Resources.FiltersGlobalHeader,
+                        f => f,
+                        null,
+                        null)
                 },
                 0
             );
             AddObject(globalList);
             globalList.AddTip("A", Properties.Resources.Add);
-            globalList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+            globalList.AddBinding(Keys.A, (object sender) => {
                 AddFilter(theme, globalList, globalFilters);
                 return true;
             });
             globalList.AddTip("R", Properties.Resources.Remove);
-            globalList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
+            globalList.AddBinding(Keys.R, (object sender) => {
                 RemoveFilter(globalList, globalFilters);
                 return true;
             });
@@ -71,22 +73,22 @@ namespace CKAN.ConsoleUI {
                 2, vMid + 1, -2, -2,
                 instanceFilters,
                 new List<ConsoleListBoxColumn<string>>() {
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = Properties.Resources.FiltersInstanceHeader,
-                        Width    = null,
-                        Renderer = f => f,
-                    }
+                    new ConsoleListBoxColumn<string>(
+                        Properties.Resources.FiltersInstanceHeader,
+                        f => f,
+                        null,
+                        null)
                 },
                 0
             );
             AddObject(instanceList);
             instanceList.AddTip("A", Properties.Resources.Add);
-            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.A, (object sender) => {
                 AddFilter(theme, instanceList, instanceFilters);
                 return true;
             });
             instanceList.AddTip("R", Properties.Resources.Remove);
-            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
+            instanceList.AddBinding(Keys.R, (object sender) => {
                 RemoveFilter(instanceList, instanceFilters);
                 return true;
             });
@@ -96,19 +98,15 @@ namespace CKAN.ConsoleUI {
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
         protected override string LeftHeader()
-        {
-            return $"{Meta.GetProductName()} {Meta.GetVersion()}";
-        }
+            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
 
         /// <summary>
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-        {
-            return Properties.Resources.FiltersTitle;
-        }
+            => Properties.Resources.FiltersTitle;
 
-        private bool AddMiniAVC(ConsoleTheme theme)
+        private bool AddMiniAVC()
         {
             globalFilters = globalFilters
                 .Concat(miniAVC)
@@ -120,9 +118,9 @@ namespace CKAN.ConsoleUI {
 
         private void AddFilter(ConsoleTheme theme, ConsoleListBox<string> box, List<string> filters)
         {
-            string filter = new InstallFilterAddDialog().Run(theme);
-            DrawBackground(theme);
-            if (!string.IsNullOrEmpty(filter) && !filters.Contains(filter)) {
+            var filter = new InstallFilterAddDialog(theme).Run();
+            DrawBackground();
+            if (filter != null && !string.IsNullOrEmpty(filter) && !filters.Contains(filter)) {
                 filters.Add(filter);
                 box.SetData(filters);
             }
@@ -130,8 +128,11 @@ namespace CKAN.ConsoleUI {
 
         private void RemoveFilter(ConsoleListBox<string> box, List<string> filters)
         {
-            filters.Remove(box.Selection);
-            box.SetData(filters);
+            if (box.Selection is not null)
+            {
+                filters.Remove(box.Selection);
+                box.SetData(filters);
+            }
         }
 
         private void Save()

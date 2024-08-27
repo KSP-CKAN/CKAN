@@ -28,7 +28,7 @@ namespace CKAN.ConsoleUI {
         public bool Run(ConsoleTheme theme)
         {
             // If there's a default instance, try to get the lock for it.
-            GameInstance ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
+            GameInstance? ksp = manager.CurrentInstance ?? manager.GetPreferredInstance();
             if (ksp != null
                 && !GameInstanceListScreen.TryGetInstance(theme, ksp, repoData,
                                                           (ConsoleTheme th) => Draw(th, false),

@@ -16,7 +16,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="lf">Function returning the text to show in the label</param>
         /// <param name="bgFunc">Function returning the background color for the label</param>
         /// <param name="fgFunc">Function returning the foreground color for the label</param>
-        public ConsoleLabel(int l, int t, int r, Func<string> lf, Func<ConsoleTheme, ConsoleColor> bgFunc = null, Func<ConsoleTheme, ConsoleColor> fgFunc = null)
+        public ConsoleLabel(int l,
+                            int t,
+                            int r,
+                            Func<string> lf,
+                            Func<ConsoleTheme, ConsoleColor>? bgFunc = null,
+                            Func<ConsoleTheme, ConsoleColor>? fgFunc = null)
             : base(l, t, r, t)
         {
             labelFunc  = lf;
@@ -48,8 +53,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         public override bool Focusable() { return false; }
 
         private readonly Func<string>       labelFunc;
-        private readonly Func<ConsoleTheme, ConsoleColor> getBgColor;
-        private readonly Func<ConsoleTheme, ConsoleColor> getFgColor;
+        private readonly Func<ConsoleTheme, ConsoleColor>? getBgColor;
+        private readonly Func<ConsoleTheme, ConsoleColor>? getFgColor;
     }
 
 }

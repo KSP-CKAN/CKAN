@@ -31,7 +31,7 @@ namespace CKAN.ConsoleUI
         /// <returns>
         /// Process exit status
         /// </returns>
-        public static int Main_(GameInstanceManager manager, string themeName, bool debug = false)
+        public static int Main_(GameInstanceManager? manager, string? themeName, bool debug = false)
         {
             Logging.Initialize();
 

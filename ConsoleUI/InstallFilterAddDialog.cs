@@ -12,7 +12,8 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the popup
         /// </summary>
-        public InstallFilterAddDialog() : base()
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
+        public InstallFilterAddDialog(ConsoleTheme theme) : base(theme)
         {
             int l = GetLeft(),
                 r = GetRight();
@@ -27,13 +28,13 @@ namespace CKAN.ConsoleUI {
             };
             AddObject(manualEntry);
             manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.FilterAddAcceptTip);
-            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            manualEntry.AddBinding(Keys.Enter, (object sender) => {
                 choice = manualEntry.Value;
                 return false;
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 choice = null;
                 return false;
             });
@@ -45,17 +46,16 @@ namespace CKAN.ConsoleUI {
         /// Display the dialog and handle its interaction
         /// </summary>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <returns>
         /// User input
         /// </returns>
-        public new string Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
+        public new string? Run(Action? process = null)
         {
-            base.Run(theme, process);
+            base.Run(process);
             return choice;
         }
 
         private readonly ConsoleField manualEntry;
-        private          string       choice;
+        private          string?      choice;
     }
 }

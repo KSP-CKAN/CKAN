@@ -11,7 +11,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Initialize the dialog.
         /// By default sets size and position to middle 50%.
         /// </summary>
-        protected ConsoleDialog()
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
+        protected ConsoleDialog(ConsoleTheme theme)
+            : base(theme)
         {
             left   =     Console.WindowWidth  / 4;
             top    =     Console.WindowHeight / 4;
@@ -63,19 +65,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
-        protected int GetLeft()   { return Formatting.ConvertCoord(left,   Console.WindowWidth);  }
+        protected int GetLeft() => Formatting.ConvertCoord(left,   Console.WindowWidth);
         /// <returns>
         /// Y coordinate of top edge of dialog
         /// </returns>
-        protected int GetTop()    { return Formatting.ConvertCoord(top,    Console.WindowHeight); }
+        protected int GetTop() => Formatting.ConvertCoord(top,    Console.WindowHeight);
         /// <returns>
         /// X coordinate of right edge of dialog
         /// </returns>
-        protected int GetRight()  { return Formatting.ConvertCoord(right,  Console.WindowWidth);  }
+        protected int GetRight() => Formatting.ConvertCoord(right,  Console.WindowWidth);
         /// <returns>
         /// Y coordinate of bottom edge of dialog
         /// </returns>
-        protected int GetBottom() { return Formatting.ConvertCoord(bottom, Console.WindowHeight); }
+        protected int GetBottom() => Formatting.ConvertCoord(bottom, Console.WindowHeight);
 
         /// <summary>
         /// Set position of dialog
@@ -95,7 +97,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Draw the outline of the dialog and clear the footer
         /// </summary>
-        protected override void DrawBackground(ConsoleTheme theme)
+        protected override void DrawBackground()
         {
             int w = GetRight() - GetLeft() + 1;
             string fullHorizLineDouble = new string(Symbols.horizLineDouble, w - 2);

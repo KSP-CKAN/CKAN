@@ -23,8 +23,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 int l, int t, int r, int b,
                 bool autoScroll = true,
                 TextAlign ta = TextAlign.Left,
-                Func<ConsoleTheme, ConsoleColor> bgFunc = null,
-                Func<ConsoleTheme, ConsoleColor> fgFunc = null)
+                Func<ConsoleTheme, ConsoleColor>? bgFunc = null,
+                Func<ConsoleTheme, ConsoleColor>? fgFunc = null)
             : base(l, t, r, b)
         {
             scrollToBottom = autoScroll;
@@ -175,62 +175,63 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Set up key bindings to scroll the box in a given screen container
         /// </summary>
         /// <param name="cont">Container within which to create the bindings</param>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="drawMore">If true, force a redraw of the text box after scrolling, otherwise rely on the main event loop to do it</param>
-        public void AddScrollBindings(ScreenContainer cont, bool drawMore = false)
+        public void AddScrollBindings(ScreenContainer cont, ConsoleTheme theme, bool drawMore = false)
         {
             if (drawMore) {
-                cont.AddBinding(Keys.Home,      (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.Home,      (object sender) => {
                     ScrollToTop();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.End,       (object sender) => {
                     ScrollToBottom();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageUp,    (object sender) => {
                     ScrollUp();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageDown,  (object sender) => {
                     ScrollDown();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.UpArrow,   (object sender) => {
                     ScrollUp(1);
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.DownArrow, (object sender) => {
                     ScrollDown(1);
                     Draw(theme, false);
                     return true;
                 });
             } else {
-                cont.AddBinding(Keys.Home,      (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.Home,      (object sender) => {
                     ScrollToTop();
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.End,       (object sender) => {
                     ScrollToBottom();
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageUp,    (object sender) => {
                     ScrollUp();
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.PageDown,  (object sender) => {
                     ScrollDown();
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.UpArrow,   (object sender) => {
                     ScrollUp(1);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender, ConsoleTheme theme) => {
+                cont.AddBinding(Keys.DownArrow, (object sender) => {
                     ScrollDown(1);
                     return true;
                 });
@@ -249,8 +250,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         private readonly TextAlign    align;
         private readonly SynchronizedCollection<string> lines = new SynchronizedCollection<string>();
         private readonly SynchronizedCollection<string> displayLines = new SynchronizedCollection<string>();
-        private readonly Func<ConsoleTheme, ConsoleColor> getBgColor;
-        private readonly Func<ConsoleTheme, ConsoleColor> getFgColor;
+        private readonly Func<ConsoleTheme, ConsoleColor>? getBgColor;
+        private readonly Func<ConsoleTheme, ConsoleColor>? getFgColor;
     }
 
     /// <summary>

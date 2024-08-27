@@ -20,12 +20,13 @@ namespace CKAN.ConsoleUI {
                                                    GameInstance gameInst)
         {
             var cfmsd = new ConsoleFileMultiSelectDialog(
+                theme,
                 Properties.Resources.CkanFileSelectTitle,
                 FindDownloadsPath(gameInst),
                 "*.ckan",
                 Properties.Resources.CkanFileSelectHeader,
                 Properties.Resources.CkanFileSelectHeader);
-            return cfmsd.Run(theme)
+            return cfmsd.Run()
                         .Select(f => CkanModule.FromFile(f.FullName))
                         .ToArray();
         }

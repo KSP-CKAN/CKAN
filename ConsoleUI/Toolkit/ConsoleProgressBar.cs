@@ -49,13 +49,13 @@ namespace CKAN.ConsoleUI.Toolkit {
             if (highlightWidth > 0) {
                 Console.BackgroundColor = theme.ProgressBarHighlightBg;
                 Console.ForegroundColor = theme.ProgressBarHighlightFg;
-                Console.Write(caption.Substring(0, highlightWidth));
+                Console.Write(caption[..highlightWidth]);
             }
 
             // Draw the non highlighted part
             Console.BackgroundColor = theme.ProgressBarBg;
             Console.ForegroundColor = theme.ProgressBarFg;
-            Console.Write(caption.Substring(highlightWidth));
+            Console.Write(caption[highlightWidth..]);
         }
 
         /// <summary>

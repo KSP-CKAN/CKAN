@@ -17,10 +17,12 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen.
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager object for getting hte Instances</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="first">If true, this is the first screen after the splash, so Ctrl+Q exits, else Esc exits</param>
-        public GameInstanceListScreen(GameInstanceManager mgr, RepositoryDataManager repoData, bool first = false)
+        public GameInstanceListScreen(ConsoleTheme theme, GameInstanceManager mgr, RepositoryDataManager repoData, bool first = false)
+            : base(theme)
         {
             manager = mgr;
 
@@ -33,108 +35,121 @@ namespace CKAN.ConsoleUI {
                 1, 4, -1, -2,
                 manager.Instances.Values,
                 new List<ConsoleListBoxColumn<GameInstance>>() {
-                    new ConsoleListBoxColumn<GameInstance>() {
-                        Header   = Properties.Resources.InstanceListDefaultHeader,
-                        Width    = 7,
-                        Renderer = StatusSymbol
-                    }, new ConsoleListBoxColumn<GameInstance>() {
-                        Header   = Properties.Resources.InstanceListNameHeader,
-                        Width    = 20,
-                        Renderer = k => k.Name
-                    }, new ConsoleListBoxColumn<GameInstance>() {
-                        Header   = Properties.Resources.InstanceListGameHeader,
-                        Width    = 5,
-                        Renderer = k => k.game.ShortName
-                    }, new ConsoleListBoxColumn<GameInstance>() {
-                        Header   = Properties.Resources.InstanceListVersionHeader,
-                        Width    = 12,
-                        Renderer = k => k.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
-                        Comparer = (a, b) => a.Version()?.CompareTo(b.Version() ?? GameVersion.Any) ?? 1
-                    }, new ConsoleListBoxColumn<GameInstance>() {
-                        Header   = Properties.Resources.InstanceListPathHeader,
-                        Width    = null,
-                        Renderer = k => k.GameDir()
-                    }
+                    new ConsoleListBoxColumn<GameInstance>(
+                        Properties.Resources.InstanceListDefaultHeader,
+                        StatusSymbol,
+                        null,
+                        7),
+                    new ConsoleListBoxColumn<GameInstance>(
+                        Properties.Resources.InstanceListNameHeader,
+                        k => k.Name,
+                        null,
+                        20),
+                    new ConsoleListBoxColumn<GameInstance>(
+                        Properties.Resources.InstanceListGameHeader,
+                        k => k.game.ShortName,
+                        null,
+                        5),
+                    new ConsoleListBoxColumn<GameInstance>(
+                        Properties.Resources.InstanceListVersionHeader,
+                        k => k.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
+                        (a, b) => a.Version()?.CompareTo(b.Version() ?? GameVersion.Any) ?? 1,
+                        12),
+                    new ConsoleListBoxColumn<GameInstance>(
+                        Properties.Resources.InstanceListPathHeader,
+                        k => k.GameDir(),
+                        null,
+                        null)
                 },
                 1, 0, ListSortDirection.Descending
             );
 
             if (first) {
                 AddTip($"{Properties.Resources.Ctrl}+Q", Properties.Resources.Quit);
-                AddBinding(Keys.AltX,  (object sender, ConsoleTheme theme) => false);
-                AddBinding(Keys.CtrlQ, (object sender, ConsoleTheme theme) => false);
+                AddBinding(Keys.AltX,  (object sender) => false);
+                AddBinding(Keys.CtrlQ, (object sender) => false);
             } else {
                 AddTip(Properties.Resources.Esc, Properties.Resources.Quit);
-                AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
+                AddBinding(Keys.Escape, (object sender) => false);
             }
 
             AddTip(Properties.Resources.Enter, Properties.Resources.Select);
-            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Enter, (object sender) => {
+                if (instanceList.Selection is GameInstance inst)
+                {
+                    var d = new ConsoleMessageDialog(theme, string.Format(Properties.Resources.InstanceListLoadingInstance,
+                                                                   inst.Name),
+                                                     new List<string>());
 
-                ConsoleMessageDialog d = new ConsoleMessageDialog(
-                    string.Format(Properties.Resources.InstanceListLoadingInstance, instanceList.Selection.Name),
-                    new List<string>()
-                );
-
-                if (TryGetInstance(theme, instanceList.Selection, repoData,
-                                   (ConsoleTheme th) => { d.Run(th, (ConsoleTheme thm) => {}); },
-                                   null)) {
-                    try {
-                        manager.SetCurrentInstance(instanceList.Selection.Name);
-                    } catch (Exception ex) {
-                        // This can throw if the previous current instance had an error,
-                        // since it gets destructed when it's replaced.
-                        RaiseError(ex.Message);
+                    if (TryGetInstance(theme, inst, repoData,
+                                       (ConsoleTheme th) => { d.Run(() => {}); },
+                                       null)) {
+                        try {
+                            manager.SetCurrentInstance(inst.Name);
+                        } catch (Exception ex) {
+                            // This can throw if the previous current instance had an error,
+                            // since it gets destructed when it's replaced.
+                            RaiseError(ex.Message);
+                        }
+                        return false;
+                    } else {
+                        return true;
                     }
-                    return false;
-                } else {
-                    return true;
                 }
+                return true;
             });
 
             instanceList.AddTip("A", Properties.Resources.Add);
-            instanceList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
-                LaunchSubScreen(theme, new GameInstanceAddScreen(manager));
+            instanceList.AddBinding(Keys.A, (object sender) => {
+                LaunchSubScreen(new GameInstanceAddScreen(theme, manager));
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
             instanceList.AddTip("R", Properties.Resources.Remove);
-            instanceList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
-                manager.RemoveInstance(instanceList.Selection.Name);
-                instanceList.SetData(manager.Instances.Values);
+            instanceList.AddBinding(Keys.R, (object sender) => {
+                if (instanceList.Selection is GameInstance inst)
+                {
+                    manager.RemoveInstance(inst.Name);
+                    instanceList.SetData(manager.Instances.Values);
+                }
                 return true;
             });
             instanceList.AddTip("E", Properties.Resources.Edit);
-            instanceList.AddBinding(Keys.E, (object sender, ConsoleTheme theme) => {
-
-                ConsoleMessageDialog d = new ConsoleMessageDialog(
-                    string.Format(Properties.Resources.InstanceListLoadingInstance, instanceList.Selection.Name),
-                    new List<string>()
-                );
-                TryGetInstance(theme, instanceList.Selection, repoData,
-                               (ConsoleTheme th) => { d.Run(theme, (ConsoleTheme thm) => {}); },
-                               null);
-                // Still launch the screen even if the load fails,
-                // because you need to be able to fix the name/path.
-                LaunchSubScreen(theme, new GameInstanceEditScreen(manager, repoData, instanceList.Selection));
-
+            instanceList.AddBinding(Keys.E, (object sender) => {
+                if (instanceList.Selection is GameInstance inst)
+                {
+                    var d = new ConsoleMessageDialog(
+                        theme,
+                        string.Format(Properties.Resources.InstanceListLoadingInstance, inst.Name),
+                        new List<string>());
+                    TryGetInstance(theme, inst, repoData,
+                                   (ConsoleTheme th) => { d.Run(() => {}); },
+                                   null);
+                    // Still launch the screen even if the load fails,
+                    // because you need to be able to fix the name/path.
+                    LaunchSubScreen(new GameInstanceEditScreen(theme, manager, repoData, instanceList.Selection));
+                }
                 return true;
             });
 
             instanceList.AddTip("D", Properties.Resources.InstanceListDefaultToggle);
-            instanceList.AddBinding(Keys.D, (object sender, ConsoleTheme theme) => {
-                string name = instanceList.Selection.Name;
-                if (name == manager.AutoStartInstance) {
-                    manager.ClearAutoStart();
-                } else {
-                    try {
-                        manager.SetAutoStart(name);
-                    } catch (NotKSPDirKraken k) {
-                        ConsoleMessageDialog errd = new ConsoleMessageDialog(
-                            string.Format(Properties.Resources.InstanceListLoadingError, k.path, k.Message),
-                            new List<string>() { Properties.Resources.OK }
-                        );
-                        errd.Run(theme);
+            instanceList.AddBinding(Keys.D, (object sender) => {
+                if (instanceList.Selection is GameInstance inst)
+                {
+                    string name = inst.Name;
+                    if (name == manager.AutoStartInstance) {
+                        manager.ClearAutoStart();
+                    } else {
+                        try {
+                            manager.SetAutoStart(name);
+                        } catch (NotKSPDirKraken k) {
+                            var errd = new ConsoleMessageDialog(
+                                theme,
+                                string.Format(Properties.Resources.InstanceListLoadingError, k.path, k.Message),
+                                new List<string>() { Properties.Resources.OK }
+                            );
+                            errd.Run();
+                        }
                     }
                 }
                 return true;
@@ -148,25 +163,19 @@ namespace CKAN.ConsoleUI {
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
         protected override string LeftHeader()
-        {
-            return $"{Meta.GetProductName()} {Meta.GetVersion()}";
-        }
+            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
 
         /// <summary>
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-        {
-            return Properties.Resources.InstanceListTitle;
-        }
+            => Properties.Resources.InstanceListTitle;
 
         /// <summary>
         /// Label the menu as Sort
         /// </summary>
         protected override string MenuTip()
-        {
-            return Properties.Resources.Sort;
-        }
+            => Properties.Resources.Sort;
 
         /// <summary>
         /// Try to load the registry of an instance
@@ -183,7 +192,7 @@ namespace CKAN.ConsoleUI {
                                           GameInstance          ksp,
                                           RepositoryDataManager repoData,
                                           Action<ConsoleTheme>  render,
-                                          IProgress<int>        progress)
+                                          IProgress<int>?       progress)
         {
             bool retry;
             do {
@@ -201,13 +210,14 @@ namespace CKAN.ConsoleUI {
                 } catch (RegistryInUseKraken k) {
 
                     ConsoleMessageDialog md = new ConsoleMessageDialog(
+                        theme,
                         k.ToString(),
                         new List<string>() {
                             Properties.Resources.Cancel,
                             Properties.Resources.Force
                         }
                     );
-                    if (md.Run(theme) == 1) {
+                    if (md.Run() == 1) {
                         // Delete it
                         File.Delete(k.lockfilePath);
                         retry = true;
@@ -219,21 +229,23 @@ namespace CKAN.ConsoleUI {
                 } catch (NotKSPDirKraken k) {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
+                        theme,
                         string.Format(Properties.Resources.InstanceListLoadingError, ksp.GameDir(), k.Message),
                         new List<string>() { Properties.Resources.OK }
                     );
-                    errd.Run(theme);
+                    errd.Run();
                     return false;
 
                 } catch (Exception e) {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
+                        theme,
                         string.Format(Properties.Resources.InstanceListLoadingError,
                                       Platform.FormatPath(Path.Combine(ksp.CkanDir(), "registry.json")),
                                       e.ToString()),
                         new List<string>() { Properties.Resources.OK }
                     );
-                    errd.Run(theme);
+                    errd.Run();
                     return false;
 
                 }

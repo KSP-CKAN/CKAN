@@ -17,9 +17,9 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen.
         /// </summary>
-        public AuthTokenScreen() : base()
+        public AuthTokenScreen(ConsoleTheme theme) : base(theme)
         {
-            mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption>() {
+            mainMenu = new ConsolePopupMenu(new List<ConsoleMenuOption?>() {
                 new ConsoleMenuOption(Properties.Resources.AuthTokenListGitHubLink, "",
                     Properties.Resources.AuthTokenListGitHubLinkTip,
                     true, openGitHubURL)
@@ -34,20 +34,16 @@ namespace CKAN.ConsoleUI {
                 1, 4, -1, -2,
                 new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()),
                 new List<ConsoleListBoxColumn<string>>() {
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = Properties.Resources.AuthTokenListHostHeader,
-                        Width    = 20,
-                        Renderer = (string s) => s
-                    },
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = Properties.Resources.AuthTokenListTokenHeader,
-                        Width    = null,
-                        Renderer = (string s) => {
-                            return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out string token)
+                    new ConsoleListBoxColumn<string>(
+                        Properties.Resources.AuthTokenListHostHeader,
+                        (string s) => s, null, 20),
+                    new ConsoleListBoxColumn<string>(
+                        Properties.Resources.AuthTokenListTokenHeader,
+                        (string s) => {
+                            return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out string? token)
                                 ? token
                                 : Properties.Resources.AuthTokenListMissingToken;
-                        }
-                    }
+                        }, null, null),
                 },
                 0, 0, ListSortDirection.Descending
             );
@@ -61,19 +57,19 @@ namespace CKAN.ConsoleUI {
             ));
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Back);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => false);
+            AddBinding(Keys.Escape, (object sender) => false);
 
             tokenList.AddTip("A", Properties.Resources.Add);
-            tokenList.AddBinding(Keys.A, (object sender, ConsoleTheme theme) => {
-                AuthTokenAddDialog ad = new AuthTokenAddDialog();
-                ad.Run(theme);
-                DrawBackground(theme);
+            tokenList.AddBinding(Keys.A, (object sender) => {
+                var ad = new AuthTokenAddDialog(theme);
+                ad.Run();
+                DrawBackground();
                 tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
                 return true;
             });
 
             tokenList.AddTip("R", Properties.Resources.Remove, () => tokenList.Selection != null);
-            tokenList.AddBinding(Keys.R, (object sender, ConsoleTheme theme) => {
+            tokenList.AddBinding(Keys.R, (object sender) => {
                 if (tokenList.Selection != null) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(tokenList.Selection, null);
                     tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));
@@ -86,19 +82,15 @@ namespace CKAN.ConsoleUI {
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
         protected override string LeftHeader()
-        {
-            return $"{Meta.GetProductName()} {Meta.GetVersion()}";
-        }
+            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
 
         /// <summary>
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-        {
-            return Properties.Resources.AuthTokenListTitle;
-        }
+            => Properties.Resources.AuthTokenListTitle;
 
-        private bool openGitHubURL(ConsoleTheme theme)
+        private bool openGitHubURL()
         {
             ModInfoScreen.LaunchURL(theme, githubTokenURL);
             return true;

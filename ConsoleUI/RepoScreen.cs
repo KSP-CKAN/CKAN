@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using CKAN.ConsoleUI.Toolkit;
 using CKAN.Games;
 
@@ -14,14 +14,15 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Construct the screens
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
         /// <param name="initName">Initial value of the Name field</param>
         /// <param name="initUrl">Iniital value of the URL field</param>
-        protected RepoScreen(IGame game, SortedDictionary<string, Repository> reps, string initName, string initUrl) : base()
+        protected RepoScreen(ConsoleTheme theme, IGame game, SortedDictionary<string, Repository> reps, string initName, string initUrl)
+            : base(theme)
         {
             editList = reps;
-            defaultRepos = RepositoryList.DefaultRepositories(game);
 
             name = new ConsoleField(labelWidth, nameRow, -1, initName) {
                 GhostText = () => Properties.Resources.RepoNameGhostText
@@ -36,7 +37,7 @@ namespace CKAN.ConsoleUI {
             AddObject(url);
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F2, (object sender) => {
                 if (Valid()) {
                     Save();
                     return false;
@@ -46,46 +47,40 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
-                return false;
-            });
+            AddBinding(Keys.Escape, (object sender) => false);
 
             // mainMenu = list of default options
-            if (defaultRepos?.repositories != null && defaultRepos?.repositories.Length > 0) {
-                List<ConsoleMenuOption> opts = new List<ConsoleMenuOption>();
-                foreach (Repository r in defaultRepos?.repositories) {
-                    // This variable will be remembered correctly in our lambdas later
-                    Repository repo = r;
-                    opts.Add(new ConsoleMenuOption(
-                        repo.name, "", string.Format(Properties.Resources.RepoImportTip, repo.name),
-                        true, (ConsoleTheme theme) => {
-                            name.Value    = repo.name;
-                            name.Position = name.Value.Length;
-                            url.Value     = repo.uri.ToString();
-                            url.Position  = url.Value.Length;
-                            return true;
-                        }
-                    ));
-                }
-                mainMenu = new ConsolePopupMenu(opts);
-            }
+            mainMenu = (RepositoryList.DefaultRepositories(game) is RepositoryList repoList)
+                           ? new ConsolePopupMenu(
+                                 repoList.repositories
+                                         .Select(r => new ConsoleMenuOption(r.name,
+                                                                            "",
+                                                                            string.Format(Properties.Resources.RepoImportTip,
+                                                                                          r.name),
+                                                                            true,
+                                                                            () => {
+                                                                                name.Value    = r.name;
+                                                                                name.Position = name.Value.Length;
+                                                                                url.Value     = r.uri.ToString();
+                                                                                url.Position  = url.Value.Length;
+                                                                                return true;
+                                                                            }))
+                                         .OfType<ConsoleMenuOption?>()
+                                         .ToList())
+                           : null;
         }
 
         /// <summary>
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
         protected override string LeftHeader()
-        {
-            return $"{Meta.GetProductName()} {Meta.GetVersion()}";
-        }
+            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
 
         /// <summary>
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-        {
-            return Properties.Resources.RepoTitle;
-        }
+            => Properties.Resources.RepoTitle;
 
         /// <summary>
         /// Report whether the fields are Valid
@@ -153,12 +148,9 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected SortedDictionary<string, Repository> editList;
 
-        private RepositoryList? defaultRepos;
-
         private int labelWidth => Math.Max(8, Math.Max(
             Properties.Resources.RepoNameLabel.Length,
-            Properties.Resources.RepoURLLabel.Length
-        ));
+            Properties.Resources.RepoURLLabel.Length));
         private const int nameRow    = 3;
         private const int urlRow     = 5;
     }

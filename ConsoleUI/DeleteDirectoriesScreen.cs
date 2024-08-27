@@ -14,10 +14,13 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="inst">Game instance</param>
         /// <param name="possibleConfigOnlyDirs">Deletable stuff the user should see</param>
-        public DeleteDirectoriesScreen(GameInstance    inst,
+        public DeleteDirectoriesScreen(ConsoleTheme    theme,
+                                       GameInstance    inst,
                                        HashSet<string> possibleConfigOnlyDirs)
+            : base(theme)
         {
             instance = inst;
             toDelete = possibleConfigOnlyDirs.ToHashSet();
@@ -32,29 +35,37 @@ namespace CKAN.ConsoleUI {
                 1, 6, listWidth - 1, -2,
                 possibleConfigOnlyDirs.OrderBy(d => d).ToList(),
                 new List<ConsoleListBoxColumn<string>>() {
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = "",
-                        Width    = 1,
-                        Renderer = s => toDelete.Contains(s) ? Symbols.checkmark : "",
-                    },
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = Properties.Resources.DeleteDirectoriesFoldersHeader,
-                        Width    = null,
+                    new ConsoleListBoxColumn<string>(
+                        "",
+                        s => toDelete.Contains(s) ? Symbols.checkmark : "",
+                        null,
+                        1),
+                    new ConsoleListBoxColumn<string>(
+                        Properties.Resources.DeleteDirectoriesFoldersHeader,
                         // The data model holds absolute paths, but the UI shows relative
-                        Renderer = p => Platform.FormatPath(instance.ToRelativeGameDir(p)),
-                    },
+                        p => Platform.FormatPath(instance.ToRelativeGameDir(p)),
+                        null,
+                        null),
                 },
                 0, -1);
             directories.AddTip("D", Properties.Resources.DeleteDirectoriesDeleteDirTip,
-                               () => !toDelete.Contains(directories.Selection));
-            directories.AddBinding(Keys.D, (object sender, ConsoleTheme theme) => {
-                toDelete.Add(directories.Selection);
+                               () => directories.Selection is not null
+                                     && !toDelete.Contains(directories.Selection));
+            directories.AddBinding(Keys.D, (object sender) => {
+                if (directories.Selection is not null)
+                {
+                    toDelete.Add(directories.Selection);
+                }
                 return true;
             });
             directories.AddTip("K", Properties.Resources.DeleteDirectoriesKeepDirTip,
-                               () => toDelete.Contains(directories.Selection));
-            directories.AddBinding(Keys.K, (object sender, ConsoleTheme theme) => {
-                toDelete.Remove(directories.Selection);
+                               () => directories.Selection is not null
+                                     && toDelete.Contains(directories.Selection));
+            directories.AddBinding(Keys.K, (object sender) => {
+                if (directories.Selection is not null)
+                {
+                    toDelete.Remove(directories.Selection);
+                }
                 return true;
             });
             directories.SelectionChanged += PopulateFiles;
@@ -64,11 +75,13 @@ namespace CKAN.ConsoleUI {
                 listWidth + 1, 6, -1, -2,
                 new List<string>() { "" },
                 new List<ConsoleListBoxColumn<string>>() {
-                    new ConsoleListBoxColumn<string>() {
-                        Header   = Properties.Resources.DeleteDirectoriesFilesHeader,
-                        Width    = null,
-                        Renderer = p => Platform.FormatPath(CKANPathUtils.ToRelative(p, directories.Selection)),
-                    },
+                    new ConsoleListBoxColumn<string>(
+                        Properties.Resources.DeleteDirectoriesFilesHeader,
+                        p => directories.Selection is null
+                            ? ""
+                            : Platform.FormatPath(CKANPathUtils.ToRelative(p, directories.Selection)),
+                        null,
+                        null),
                 },
                 0, -1);
             AddObject(files);
@@ -77,10 +90,10 @@ namespace CKAN.ConsoleUI {
                    Properties.Resources.DeleteDirectoriesCancelTip);
             AddBinding(Keys.Escape,
                        // Discard changes
-                       (object sender, ConsoleTheme theme) => false);
+                       (object sender) => false);
 
             AddTip("F9", Properties.Resources.DeleteDirectoriesApplyTip);
-            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F9, (object sender) => {
                 foreach (var d in toDelete) {
                     try {
                         Directory.Delete(d, true);
@@ -96,11 +109,13 @@ namespace CKAN.ConsoleUI {
         private void PopulateFiles()
         {
             files.SetData(
-                Directory.EnumerateFileSystemEntries(directories.Selection,
-                                                     "*",
-                                                     SearchOption.AllDirectories)
-                         .OrderBy(f => f)
-                         .ToList(),
+                directories.Selection is null
+                    ? new List<string>()
+                    : Directory.EnumerateFileSystemEntries(directories.Selection,
+                                                           "*",
+                                                           SearchOption.AllDirectories)
+                               .OrderBy(f => f)
+                               .ToList(),
                 true);
         }
 

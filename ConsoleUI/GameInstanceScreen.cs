@@ -13,15 +13,16 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing the instances, needed for saving changes</param>
         /// <param name="initName">Initial value of name field</param>
         /// <param name="initPath">Initial value of path field</param>
-        protected GameInstanceScreen(GameInstanceManager mgr, string initName = "", string initPath = "") : base()
+        protected GameInstanceScreen(ConsoleTheme theme, GameInstanceManager mgr, string initName = "", string initPath = "") : base(theme)
         {
             manager = mgr;
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F2, (object sender) => {
                 if (Valid()) {
                     Save();
                     // Close screen
@@ -33,7 +34,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 // Discard changes
                 return false;
             });
@@ -55,9 +56,7 @@ namespace CKAN.ConsoleUI {
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
         protected override string LeftHeader()
-        {
-            return $"{Meta.GetProductName()} {Meta.GetVersion()}";
-        }
+            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
 
         /// <summary>
         /// Return whether the fields currently are valid.
