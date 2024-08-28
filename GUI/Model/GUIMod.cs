@@ -19,20 +19,20 @@ namespace CKAN.GUI
     #endif
     public sealed class GUIMod : INotifyPropertyChanged
     {
-        private CkanModule      Mod                 { get; set; }
-        public  CkanModule      LatestCompatibleMod { get; private set; }
-        public  CkanModule      LatestAvailableMod  { get; private set; }
-        public  InstalledModule InstalledMod        { get; private set; }
+        private CkanModule       Mod                 { get; set; }
+        public  CkanModule?      LatestCompatibleMod { get; private set; }
+        public  CkanModule?      LatestAvailableMod  { get; private set; }
+        public  InstalledModule? InstalledMod        { get; private set; }
 
-        private GameInstance        currentInstance => Main.Instance?.CurrentInstance;
-        private GameInstanceManager manager         => Main.Instance?.Manager;
+        private GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
+        private GameInstanceManager? manager         => Main.Instance?.Manager;
 
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,
         /// null otherwise.
         /// Used for generating this mod's part of the change set.
         /// </summary>
-        public CkanModule SelectedMod
+        public CkanModule? SelectedMod
         {
             get => selectedMod;
             set
@@ -44,14 +44,14 @@ namespace CKAN.GUI
                 }
             }
         }
-        private CkanModule selectedMod = null;
+        private CkanModule? selectedMod = null;
 
         /// <summary>
         /// Notify listeners when certain properties change.
         /// Currently used to tell MainAllModVersions to update its checkboxes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string name = null)
+        public event PropertyChangedEventHandler? PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
@@ -64,7 +64,7 @@ namespace CKAN.GUI
         public bool IsIncompatible { get; private set; }
         public bool IsAutodetected { get; private set; }
         public List<string> Authors => Mod.author ?? new List<string>();
-        public string InstalledVersion { get; private set; }
+        public string? InstalledVersion { get; private set; }
         public DateTime? InstallDate { get; private set; }
         public string LatestVersion { get; private set; }
         public string DownloadSize { get; private set; }
@@ -75,8 +75,8 @@ namespace CKAN.GUI
         // These indicate the maximum game version that the maximum available
         // version of this mod can handle. The "Long" version also indicates
         // to the user if a mod upgrade would be required. (#1270)
-        public GameVersion GameCompatibilityVersion { get; private set; }
-        public string GameCompatibility
+        public GameVersion? GameCompatibilityVersion { get; private set; }
+        public string? GameCompatibility
             => GameCompatibilityVersion == null ? Properties.Resources.GUIModUnknown
                : GameCompatibilityVersion.IsAny ? GameVersion.AnyString
                : GameCompatibilityVersion.ToString();
@@ -108,7 +108,7 @@ namespace CKAN.GUI
             => !IsIncompatible || IsInstalled;
 
         public string Version
-            => IsInstalled ? InstalledVersion : LatestVersion;
+            => InstalledVersion ?? LatestVersion;
 
         /// <summary>
         /// Initialize a GUIMod based on an InstalledModule
@@ -156,8 +156,68 @@ namespace CKAN.GUI
                       bool? incompatible,
                       bool  hideEpochs,
                       bool  hideV)
-            : this(mod.identifier, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
         {
+            Identifier     = mod.identifier;
+            IsAutodetected = registry.IsAutodetected(Identifier);
+            DownloadCount  = repoDataMgr.GetDownloadCount(registry.Repositories.Values, Identifier);
+            if (IsAutodetected)
+            {
+                IsInstalled = true;
+            }
+
+            ModuleVersion? latest_version = null;
+            if (incompatible != true)
+            {
+                try
+                {
+                    LatestCompatibleMod = registry.LatestAvailable(Identifier, current_game_version);
+                    latest_version = LatestCompatibleMod?.version;
+                }
+                catch (ModuleNotFoundKraken)
+                {
+                    if (!incompatible.HasValue)
+                    {
+                        incompatible = true;
+                    }
+                }
+            }
+
+            IsIncompatible = incompatible ?? LatestCompatibleMod == null;
+
+            // Let's try to find the compatibility for this mod. If it's not in the registry at
+            // all (because it's a DarkKAN mod) then this might fail.
+
+            try
+            {
+                LatestAvailableMod = registry.LatestAvailable(Identifier, null);
+            }
+            catch
+            { }
+
+            // If there's known information for this mod in any form, calculate the highest compatible
+            // game version.
+            if (LatestAvailableMod != null)
+            {
+                GameCompatibilityVersion = registry.LatestCompatibleGameVersion(
+                    currentInstance?.game.KnownVersions ?? new List<GameVersion>() {},
+                    Identifier);
+            }
+
+            if (latest_version != null)
+            {
+                LatestVersion = latest_version.ToString(hideEpochs, hideV);
+            }
+            else if (LatestAvailableMod != null)
+            {
+                LatestVersion = LatestAvailableMod.version.ToString(hideEpochs, hideV);
+            }
+            else
+            {
+                LatestVersion = "-";
+            }
+
+            SearchableIdentifier = CkanModule.nonAlphaNums.Replace(Identifier, "");
+
             Mod           = mod;
 
             Name          = mod.name.Trim();
@@ -189,83 +249,6 @@ namespace CKAN.GUI
             }
 
             UpdateIsCached();
-        }
-
-        /// <summary>
-        /// Initialize a GUIMod based on just an identifier
-        /// </summary>
-        /// <param name="identifier">The id of the module to represent</param>
-        /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="current_game_version">Current game version</param>
-        /// <param name="incompatible">If true, mark this module as incompatible</param>
-        private GUIMod(string                identifier,
-                       RepositoryDataManager repoDataMgr,
-                       IRegistryQuerier      registry,
-                       GameVersionCriteria   current_game_version,
-                       bool? incompatible,
-                       bool  hideEpochs,
-                       bool  hideV)
-        {
-            Identifier     = identifier;
-            IsAutodetected = registry.IsAutodetected(identifier);
-            DownloadCount  = repoDataMgr.GetDownloadCount(registry.Repositories.Values, identifier);
-            if (IsAutodetected)
-            {
-                IsInstalled = true;
-            }
-
-            ModuleVersion latest_version = null;
-            if (incompatible != true)
-            {
-                try
-                {
-                    LatestCompatibleMod = registry.LatestAvailable(identifier, current_game_version);
-                    latest_version = LatestCompatibleMod?.version;
-                }
-                catch (ModuleNotFoundKraken)
-                {
-                    if (!incompatible.HasValue)
-                    {
-                        incompatible = true;
-                    }
-                }
-            }
-
-            IsIncompatible = incompatible ?? LatestCompatibleMod == null;
-
-            // Let's try to find the compatibility for this mod. If it's not in the registry at
-            // all (because it's a DarkKAN mod) then this might fail.
-
-            try
-            {
-                LatestAvailableMod = registry.LatestAvailable(identifier, null);
-            }
-            catch
-            { }
-
-            // If there's known information for this mod in any form, calculate the highest compatible
-            // KSP.
-            if (LatestAvailableMod != null)
-            {
-                GameCompatibilityVersion = registry.LatestCompatibleGameVersion(
-                    currentInstance?.game.KnownVersions ?? new List<GameVersion>() {},
-                    identifier);
-            }
-
-            if (latest_version != null)
-            {
-                LatestVersion = latest_version.ToString(hideEpochs, hideV);
-            }
-            else if (LatestAvailableMod != null)
-            {
-                LatestVersion = LatestAvailableMod.version.ToString(hideEpochs, hideV);
-            }
-            else
-            {
-                LatestVersion = "-";
-            }
-
-            SearchableIdentifier = CkanModule.nonAlphaNums.Replace(Identifier, "");
         }
 
         /// <summary>
@@ -315,7 +298,9 @@ namespace CKAN.GUI
                        // Both null
                        ?? true))
             {
-                if (InstalledMod != null && SelectedMod == LatestAvailableMod)
+                if (InstalledMod != null
+                    && SelectedMod != null
+                    && SelectedMod == LatestAvailableMod)
                 {
                     yield return new ModUpgrade(Mod,
                                                 GUIModChangeType.Update,
@@ -326,7 +311,7 @@ namespace CKAN.GUI
                 {
                     if (InstalledMod != null)
                     {
-                        yield return new ModChange(InstalledMod.Module, GUIModChangeType.Remove);
+                        yield return new ModChange(InstalledMod.Module!, GUIModChangeType.Remove);
                     }
                     if (SelectedMod != null)
                     {
@@ -334,7 +319,7 @@ namespace CKAN.GUI
                     }
                 }
             }
-            else if (upgradeChecked)
+            else if (upgradeChecked && SelectedMod != null)
             {
                 // Reinstall
                 yield return new ModUpgrade(Mod,
@@ -346,7 +331,8 @@ namespace CKAN.GUI
 
         public void SetAutoInstallChecked(DataGridViewRow row, DataGridViewColumn col, bool? set_value_to = null)
         {
-            if (row.Cells[col.Index] is DataGridViewCheckBoxCell auto_cell)
+            if (row.Cells[col.Index] is DataGridViewCheckBoxCell auto_cell
+                && InstalledMod != null)
             {
                 var old_value = (bool) auto_cell.Value;
 
@@ -361,9 +347,9 @@ namespace CKAN.GUI
             }
         }
 
-        private bool Equals(GUIMod other) => Equals(Identifier, other.Identifier);
+        private bool Equals(GUIMod? other) => Equals(Identifier, other?.Identifier);
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {

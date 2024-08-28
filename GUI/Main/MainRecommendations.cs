@@ -24,52 +24,56 @@ namespace CKAN.GUI
             StatusLabel.ToolTipText = StatusLabel.Text = message;
         }
 
-        private void auditRecommendationsMenuItem_Click(object sender, EventArgs e)
+        private void auditRecommendationsMenuItem_Click(object? sender, EventArgs? e)
         {
-            // Run in a background task so GUI thread can react to user
-            Task.Factory.StartNew(() => AuditRecommendations(
-                RegistryManager.Instance(CurrentInstance, repoData).registry,
-                CurrentInstance.VersionCriteria()
-            ));
+            if (CurrentInstance != null)
+            {
+                // Run in a background task so GUI thread can react to user
+                Task.Factory.StartNew(() => AuditRecommendations(
+                    RegistryManager.Instance(CurrentInstance, repoData).registry,
+                    CurrentInstance.VersionCriteria()));
+            }
         }
 
         [ForbidGUICalls]
-        private void AuditRecommendations(IRegistryQuerier registry, GameVersionCriteria versionCriteria)
+        private void AuditRecommendations(Registry registry, GameVersionCriteria versionCriteria)
         {
-            var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
-            if (installer.FindRecommendations(
-                registry.InstalledModules.Select(im => im.Module).ToHashSet(),
-                new List<CkanModule>(),
-                registry as Registry,
-                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
-                out Dictionary<CkanModule, List<string>> suggestions,
-                out Dictionary<CkanModule, HashSet<string>> supporters
-            ))
+            if (CurrentInstance != null && Manager.Cache != null)
             {
-                tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                ChooseRecommendedMods.LoadRecommendations(
-                    registry, new List<CkanModule>(), new HashSet<CkanModule>(),
-                    versionCriteria, Manager.Cache,
-                    CurrentInstance.game,
-                    ManageMods.mainModList.ModuleLabels
-                                          .LabelsFor(CurrentInstance.Name)
-                                          .ToList(),
-                    configuration,
-                    recommendations, suggestions, supporters);
-                var result = ChooseRecommendedMods.Wait();
-                tabController.HideTab("ChooseRecommendedModsTabPage");
-                if (result != null && result.Any())
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
+                if (installer.FindRecommendations(
+                    registry.InstalledModules.Select(im => im.Module).ToHashSet(),
+                    new List<CkanModule>(),
+                    registry,
+                    out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                    out Dictionary<CkanModule, List<string>> suggestions,
+                    out Dictionary<CkanModule, HashSet<string>> supporters))
                 {
-                    Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                        new InstallArgument(
-                            result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
-                                  .ToList(),
-                            RelationshipResolverOptions.DependsOnlyOpts()));
+                    tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                    ChooseRecommendedMods.LoadRecommendations(
+                        registry, new List<CkanModule>(), new HashSet<CkanModule>(),
+                        versionCriteria, Manager.Cache,
+                        CurrentInstance.game,
+                        ModuleLabelList.ModuleLabels
+                                       .LabelsFor(CurrentInstance.Name)
+                                       .ToList(),
+                        configuration,
+                        recommendations, suggestions, supporters);
+                    var result = ChooseRecommendedMods.Wait();
+                    tabController.HideTab("ChooseRecommendedModsTabPage");
+                    if (result != null && result.Any())
+                    {
+                        Wait.StartWaiting(InstallMods, PostInstallMods, true,
+                            new InstallArgument(
+                                result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
+                                      .ToList(),
+                                RelationshipResolverOptions.DependsOnlyOpts()));
+                    }
                 }
-            }
-            else
-            {
-                currentUser.RaiseError(Properties.Resources.MainRecommendationsNoneFound);
+                else
+                {
+                    currentUser.RaiseError(Properties.Resources.MainRecommendationsNoneFound);
+                }
             }
         }
     }

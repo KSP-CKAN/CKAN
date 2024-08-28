@@ -83,7 +83,7 @@ namespace CKAN.GUI
             IsUserRequested = Reasons.All(r => r is SelectionReason.UserRequested);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -100,7 +100,7 @@ namespace CKAN.GUI
                 return false;
             }
 
-            return (obj as ModChange).Mod.Equals(Mod);
+            return (obj as ModChange)?.Mod.Equals(Mod) ?? false;
         }
 
         private static readonly int maxEnumVal = Enum.GetValues(typeof(GUIModChangeType)).Cast<int>().Max();
@@ -114,8 +114,8 @@ namespace CKAN.GUI
         public override string ToString()
             => $"{ChangeType.Localize()} {Mod} ({Description})";
 
-        public virtual string NameAndStatus
-            => Main.Instance.Manager.Cache.DescribeAvailability(Mod);
+        public virtual string? NameAndStatus
+            => Main.Instance?.Manager?.Cache?.DescribeAvailability(Mod);
 
         private string DescribeGroup(IEnumerable<SelectionReason> reasons)
             => reasons.First().DescribeWith(reasons.Skip(1));
@@ -145,8 +145,8 @@ namespace CKAN.GUI
             this.userReinstall = userReinstall;
         }
 
-        public override string NameAndStatus
-            => Main.Instance.Manager.Cache.DescribeAvailability(targetMod);
+        public override string? NameAndStatus
+            => Main.Instance?.Manager?.Cache?.DescribeAvailability(targetMod);
 
         public override string Description
             => IsReinstall

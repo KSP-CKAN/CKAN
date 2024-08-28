@@ -23,14 +23,14 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
-        public GUIMod SelectedModule
+        public GUIMod? SelectedModule
         {
             set
             {
                 if (value != selectedModule)
                 {
                     selectedModule = value;
-                    Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(selectedModule.ToModule()));
+                    Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(selectedModule?.ToModule()));
                 }
             }
             get => selectedModule;
@@ -45,43 +45,42 @@ namespace CKAN.GUI
             }
         }
 
-        public event Action<GUIMod> OnDownloadClick;
+        public event Action<GUIMod>? OnDownloadClick;
 
-        private GUIMod              selectedModule;
-        private CkanModule          currentModContentsModule;
-        private GameInstanceManager manager => Main.Instance.Manager;
+        private GUIMod?              selectedModule;
+        private CkanModule?          currentModContentsModule;
+        private GameInstanceManager? manager => Main.Instance?.Manager;
 
-        private void ContentsPreviewTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void ContentsPreviewTree_NodeMouseDoubleClick(object? sender, TreeNodeMouseClickEventArgs? e)
         {
-            OpenFileBrowser(e.Node);
-        }
-
-        private void ContentsDownloadButton_Click(object sender, EventArgs e)
-        {
-            OnDownloadClick?.Invoke(SelectedModule);
-        }
-
-        private void ContentsOpenButton_Click(object sender, EventArgs e)
-        {
-            Utilities.ProcessStartURL(manager.Cache.GetCachedFilename(SelectedModule.ToModule()));
-        }
-
-        private void _UpdateModContentsTree(CkanModule module, bool force = false)
-        {
-            ContentsPreviewTree.BackColor = SystemColors.Window;
-            ContentsPreviewTree.LineColor = SystemColors.WindowText;
-
-            if (Equals(module, currentModContentsModule) && !force)
+            if (e != null)
             {
-                return;
+                Utilities.OpenFileBrowser(e.Node.Name);
             }
-            else
+        }
+
+        private void ContentsDownloadButton_Click(object? sender, EventArgs? e)
+        {
+            if (SelectedModule != null)
             {
-                currentModContentsModule = module;
+                OnDownloadClick?.Invoke(SelectedModule);
             }
-            if (module.IsMetapackage)
+        }
+
+        private void ContentsOpenButton_Click(object? sender, EventArgs? e)
+        {
+            if (SelectedModule != null
+                && manager?.Cache?.GetCachedFilename(SelectedModule.ToModule()) is string s)
             {
-                NotCachedLabel.Text = Properties.Resources.ModInfoNoDownload;
+                Utilities.ProcessStartURL(s);
+            }
+        }
+
+        private void _UpdateModContentsTree(CkanModule? module, bool force = false)
+        {
+            if (module == null)
+            {
+                NotCachedLabel.Text = "";
                 ContentsPreviewTree.Enabled = false;
                 ContentsDownloadButton.Enabled = false;
                 ContentsOpenButton.Enabled = false;
@@ -89,54 +88,79 @@ namespace CKAN.GUI
             }
             else
             {
-                ContentsPreviewTree.Enabled = true;
-                ContentsPreviewTree.Nodes.Clear();
-                var rootNode = ContentsPreviewTree.Nodes.Add("", module.ToString(), "folderZip", "folderZip");
-                if (!manager.Cache.IsMaybeCachedZip(module))
+                ContentsPreviewTree.BackColor = SystemColors.Window;
+                ContentsPreviewTree.LineColor = SystemColors.WindowText;
+
+                if (Equals(module, currentModContentsModule) && !force)
                 {
-                    NotCachedLabel.Text = Properties.Resources.ModInfoNotCached;
-                    ContentsDownloadButton.Enabled = true;
-                    ContentsOpenButton.Enabled = false;
-                    ContentsPreviewTree.Enabled = false;
+                    return;
                 }
                 else
                 {
-                    rootNode.Text = Path.GetFileName(
-                        manager.Cache.GetCachedFilename(module));
-                    NotCachedLabel.Text = Properties.Resources.ModInfoCached;
+                    currentModContentsModule = module;
+                }
+                if (module.IsMetapackage)
+                {
+                    NotCachedLabel.Text = Properties.Resources.ModInfoNoDownload;
+                    ContentsPreviewTree.Enabled = false;
                     ContentsDownloadButton.Enabled = false;
-                    ContentsOpenButton.Enabled = true;
+                    ContentsOpenButton.Enabled = false;
+                    ContentsPreviewTree.Nodes.Clear();
+                }
+                else
+                {
                     ContentsPreviewTree.Enabled = true;
-
-                    UseWaitCursor = true;
-                    Task.Factory.StartNew(() =>
+                    ContentsPreviewTree.Nodes.Clear();
+                    var rootNode = ContentsPreviewTree.Nodes.Add("", module.ToString(), "folderZip", "folderZip");
+                    if (!manager?.Cache?.IsMaybeCachedZip(module) ?? false)
                     {
-                        var paths = new ModuleInstaller(
-                                manager.CurrentInstance,
-                                manager.Cache,
-                                Main.Instance.currentUser)
-                            .GetModuleContentsList(module)
-                            // Load fully in bg
-                            .ToArray();
-                        // Stop if user switched to another mod
-                        if (rootNode.TreeView != null)
+                        NotCachedLabel.Text = Properties.Resources.ModInfoNotCached;
+                        ContentsDownloadButton.Enabled = true;
+                        ContentsOpenButton.Enabled = false;
+                        ContentsPreviewTree.Enabled = false;
+                    }
+                    else if (manager != null
+                             && manager?.CurrentInstance != null
+                             && manager?.Cache != null
+                             && Main.Instance?.currentUser != null)
+                    {
+                        rootNode.Text = Path.GetFileName(
+                            manager.Cache.GetCachedFilename(module));
+                        NotCachedLabel.Text = Properties.Resources.ModInfoCached;
+                        ContentsDownloadButton.Enabled = false;
+                        ContentsOpenButton.Enabled = true;
+                        ContentsPreviewTree.Enabled = true;
+
+                        UseWaitCursor = true;
+                        Task.Factory.StartNew(() =>
                         {
-                            Util.Invoke(this, () =>
+                            var paths = new ModuleInstaller(
+                                    manager.CurrentInstance,
+                                    manager.Cache,
+                                    Main.Instance.currentUser)
+                                .GetModuleContentsList(module)
+                                // Load fully in bg
+                                .ToArray();
+                            // Stop if user switched to another mod
+                            if (rootNode.TreeView != null)
                             {
-                                ContentsPreviewTree.BeginUpdate();
-                                foreach (string path in paths)
+                                Util.Invoke(this, () =>
                                 {
-                                    AddContentPieces(
-                                        rootNode,
-                                        path.Split(new char[] {'/'}));
-                                }
-                                rootNode.ExpandAll();
-                                rootNode.EnsureVisible();
-                                ContentsPreviewTree.EndUpdate();
-                                UseWaitCursor = false;
-                            });
-                        }
-                    });
+                                    ContentsPreviewTree.BeginUpdate();
+                                    foreach (string path in paths)
+                                    {
+                                        AddContentPieces(
+                                            rootNode,
+                                            path.Split(new char[] {'/'}));
+                                    }
+                                    rootNode.ExpandAll();
+                                    rootNode.EnsureVisible();
+                                    ContentsPreviewTree.EndUpdate();
+                                    UseWaitCursor = false;
+                                });
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -160,30 +184,5 @@ namespace CKAN.GUI
             }
         }
 
-        /// <summary>
-        /// Opens the folder of the double-clicked node
-        /// in the file browser of the user's system
-        /// </summary>
-        /// <param name="node">A node of the ContentsPreviewTree</param>
-        private void OpenFileBrowser(TreeNode node)
-        {
-            string location = manager.CurrentInstance.ToAbsoluteGameDir(node.Name);
-
-            if (File.Exists(location))
-            {
-                // We need the Folder of the file
-                // Otherwise the OS would try to open the file in its default application
-                location = Path.GetDirectoryName(location);
-            }
-
-            if (!Directory.Exists(location))
-            {
-                // User either selected the parent node
-                // or clicked on the tree node of a cached, but not installed mod
-                return;
-            }
-
-            Utilities.ProcessStartURL(location);
-        }
     }
 }

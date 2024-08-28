@@ -151,36 +151,34 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.ManageInstances);
         }
 
-        private static string FormatVersion(GameVersion v)
+        private static string FormatVersion(GameVersion? v)
             => v == null
                 ? Properties.Resources.CompatibleGameVersionsDialogNone
                 // The BUILD component is not useful visually
-                : new GameVersion(v.Major, v.Minor, v.Patch).ToString();
+                : new GameVersion(v.Major, v.Minor, v.Patch).ToString() ?? "";
 
-        private void AddToCKANMenuItem_Click(object sender, EventArgs e)
+        private void AddToCKANMenuItem_Click(object? sender, EventArgs? e)
         {
-            if (instanceDialog.ShowDialog(this) != DialogResult.OK
-                    || !File.Exists(instanceDialog.FileName))
-            {
-                return;
-            }
-
-            var path = Path.GetDirectoryName(instanceDialog.FileName);
             try
             {
-                var instanceName = Path.GetFileName(path);
-                if (string.IsNullOrWhiteSpace(instanceName))
+                if (instanceDialog.ShowDialog(this) == DialogResult.OK
+                    && File.Exists(instanceDialog.FileName)
+                    && Path.GetDirectoryName(instanceDialog.FileName) is string path)
                 {
-                    instanceName = path;
+                    var instanceName = Path.GetFileName(path);
+                    if (string.IsNullOrWhiteSpace(instanceName))
+                    {
+                        instanceName = path;
+                    }
+                    instanceName = manager.GetNextValidInstanceName(instanceName);
+                    manager.AddInstance(path, instanceName, user);
+                    UpdateInstancesList();
                 }
-                instanceName = manager.GetNextValidInstanceName(instanceName);
-                manager.AddInstance(path, instanceName, user);
-                UpdateInstancesList();
             }
             catch (NotKSPDirKraken k)
             {
                 user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
-                    new object[] { k.path });
+                                k.path);
             }
             catch (Exception exc)
             {
@@ -188,7 +186,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ImportFromSteamMenuItem_Click(object sender, EventArgs e)
+        private void ImportFromSteamMenuItem_Click(object? sender, EventArgs? e)
         {
             var currentDirs = manager.Instances.Values
                                                 .Select(inst => inst.GameDir())
@@ -202,7 +200,7 @@ namespace CKAN.GUI
             UpdateInstancesList();
         }
 
-        private void CloneGameInstanceMenuItem_Click(object sender, EventArgs e)
+        private void CloneGameInstanceMenuItem_Click(object? sender, EventArgs? e)
         {
             var old_instance = manager.CurrentInstance;
 
@@ -216,7 +214,7 @@ namespace CKAN.GUI
             UpdateInstancesList();
         }
 
-        private void SelectButton_Click(object sender, EventArgs e)
+        private void SelectButton_Click(object? sender, EventArgs? e)
         {
             UseSelectedInstance();
         }
@@ -244,7 +242,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void SetAsDefaultCheckbox_Click(object sender, EventArgs e)
+        private void SetAsDefaultCheckbox_Click(object? sender, EventArgs? e)
         {
             if (SetAsDefaultCheckbox.Checked)
             {
@@ -268,7 +266,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void GameInstancesListView_SelectedIndexChanged(object sender, EventArgs e)
+        private void GameInstancesListView_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             UpdateButtonState();
 
@@ -297,9 +295,9 @@ namespace CKAN.GUI
             }
         }
 
-        private void GameInstancesListView_KeyDown(object sender, KeyEventArgs e)
+        private void GameInstancesListView_KeyDown(object? sender, KeyEventArgs? e)
         {
-            switch (e.KeyCode)
+            switch (e?.KeyCode)
             {
                 case Keys.Apps:
                     InstanceListContextMenuStrip.Show(Cursor.Position);
@@ -308,7 +306,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void OpenDirectoryMenuItem_Click(object sender, EventArgs e)
+        private void OpenDirectoryMenuItem_Click(object? sender, EventArgs? e)
         {
             string path = manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();
 
@@ -321,7 +319,7 @@ namespace CKAN.GUI
             Utilities.ProcessStartURL(path);
         }
 
-        private void RenameButton_Click(object sender, EventArgs e)
+        private void RenameButton_Click(object? sender, EventArgs? e)
         {
             var instance = (string)GameInstancesListView.SelectedItems[0].Tag;
 
@@ -337,9 +335,12 @@ namespace CKAN.GUI
             UpdateInstancesList();
         }
 
-        private void Forget_Click(object sender, EventArgs e)
+        private void Forget_Click(object? sender, EventArgs? e)
         {
-            foreach (var instance in GameInstancesListView.SelectedItems.OfType<ListViewItem>().Select(item => item.Tag as string))
+            foreach (var instance in GameInstancesListView.SelectedItems
+                                                          .OfType<ListViewItem>()
+                                                          .Select(item => item.Tag as string)
+                                                          .OfType<string>())
             {
                 manager.RemoveInstance(instance);
                 UpdateInstancesList();
@@ -367,9 +368,9 @@ namespace CKAN.GUI
             Multiselect      = false,
         };
 
-        private void InstanceFileOK(object sender, CancelEventArgs e)
+        private void InstanceFileOK(object? sender, CancelEventArgs? e)
         {
-            if (sender is OpenFileDialog dlg)
+            if (e != null && sender is OpenFileDialog dlg)
             {
                 // OpenFileDialog always shows shortcuts (!!!!!),
                 // so we have to re-enforce the filter ourselves

@@ -32,12 +32,12 @@ namespace CKAN.GUI
         /// Event fired when a search needs to be executed.
         /// Upstream source event is passed along.
         /// </summary>
-        public event EventHandler ApplySearch;
+        public event Action<object?, EventArgs>? ApplySearch;
 
         /// <summary>
         /// Event fired when user wants to switch focus away from this control.
         /// </summary>
-        public event Action SurrenderFocus;
+        public event Action? SurrenderFocus;
 
         public void SetFocus()
         {
@@ -46,12 +46,10 @@ namespace CKAN.GUI
 
         public ModSearch CurrentSearch()
             => CurrentSearch(
-                Main.Instance.ManageMods.mainModList
-                                        .ModuleLabels
-                                        .LabelsFor(Main.Instance.CurrentInstance.Name)
-                                        .ToList());
+                ModuleLabelList.ModuleLabels.LabelsFor(Main.Instance?.CurrentInstance?.Name ?? "")
+                                            .ToList());
 
-        private ModSearch CurrentSearch(List<ModuleLabel> knownLabels)
+        private ModSearch CurrentSearch(List<ModuleLabel>? knownLabels)
             => new ModSearch(
                 FilterByNameTextBox.Text,
                 FilterByAuthorTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
@@ -65,8 +63,8 @@ namespace CKAN.GUI
                 FilterBySupportsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByTagsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByLabelsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(ln => knownLabels.FirstOrDefault(lb => lb.Name == ln))
-                                          .Where(lb => lb != null)
+                                          .Select(ln => knownLabels?.FirstOrDefault(lb => lb.Name == ln))
+                                          .OfType<ModuleLabel>()
                                           .ToList(),
                 CompatibleToggle.Value,
                 InstalledToggle.Value,
@@ -75,7 +73,7 @@ namespace CKAN.GUI
                 UpgradeableToggle.Value,
                 ReplaceableToggle.Value);
 
-        public void PopulateSearch(ModSearch search)
+        public void PopulateSearch(ModSearch? search)
         {
             FilterByNameTextBox.Text        = search?.Name
                                               ?? "";
@@ -150,12 +148,12 @@ namespace CKAN.GUI
             SurrenderFocus?.Invoke();
         }
 
-        private void FilterTextBox_TextChanged(object sender, EventArgs e)
+        private void FilterTextBox_TextChanged(object? sender, EventArgs e)
         {
             ApplySearch?.Invoke(sender, e);
         }
 
-        private void FilterTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void FilterTextBox_KeyDown(object? sender, KeyEventArgs e)
         {
             // Switch focus from filters to mod list on enter, down, or pgdn
             switch (e.KeyCode)
@@ -178,7 +176,7 @@ namespace CKAN.GUI
 
         private void TriStateChanged(bool? val)
         {
-            ApplySearch?.Invoke(null, null);
+            ApplySearch?.Invoke(null, new EventArgs());
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)

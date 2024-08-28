@@ -24,22 +24,21 @@ namespace CKAN.GUI
             Relationships.ModuleDoubleClicked += mod => ModuleDoubleClicked?.Invoke(mod);
         }
 
-        public GUIMod SelectedModule
+        public GUIMod? SelectedModule
         {
             set
             {
-                var module = value?.ToModule();
                 if (value != selectedModule)
                 {
                     selectedModule = value;
-                    if (module == null)
+                    if (value == null)
                     {
                         ModInfoTabControl.Enabled = false;
                     }
-                    else
+                    else if (manager?.CurrentInstance?.VersionCriteria() is GameVersionCriteria crit)
                     {
                         ModInfoTabControl.Enabled = true;
-                        UpdateHeaderInfo(value, manager.CurrentInstance.VersionCriteria());
+                        UpdateHeaderInfo(value, crit);
                         LoadTab(value);
                     }
                 }
@@ -53,9 +52,9 @@ namespace CKAN.GUI
             Contents.RefreshModContentsTree();
         }
 
-        public event Action<GUIMod>            OnDownloadClick;
-        public event Action<SavedSearch, bool> OnChangeFilter;
-        public event Action<CkanModule>        ModuleDoubleClicked;
+        public event Action<GUIMod>?            OnDownloadClick;
+        public event Action<SavedSearch, bool>? OnChangeFilter;
+        public event Action<CkanModule>?        ModuleDoubleClicked;
 
         protected override void OnResize(EventArgs e)
         {
@@ -63,13 +62,14 @@ namespace CKAN.GUI
             ModInfoTable.RowStyles[1].Height = ModInfoTable.Padding.Vertical
                                                + ModInfoTable.Margin.Vertical
                                                + tagsLabelsLinkList.TagsHeight;
-            if (!string.IsNullOrEmpty(MetadataModuleDescriptionTextBox?.Text))
+            if (MetadataModuleDescriptionTextBox != null
+                && !string.IsNullOrEmpty(MetadataModuleDescriptionTextBox.Text))
             {
                 MetadataModuleDescriptionTextBox.Height = DescriptionHeight;
             }
         }
 
-        private GUIMod selectedModule;
+        private GUIMod? selectedModule;
 
         private void LoadTab(GUIMod gm)
         {
@@ -99,12 +99,15 @@ namespace CKAN.GUI
         }
 
         // When switching tabs ensure that the resulting tab is updated.
-        private void ModInfoTabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void ModInfoTabControl_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            LoadTab(SelectedModule);
+            if (SelectedModule != null)
+            {
+                LoadTab(SelectedModule);
+            }
         }
 
-        private GameInstanceManager manager => Main.Instance.Manager;
+        private static GameInstanceManager? manager => Main.Instance?.Manager;
 
         private int TextBoxStringHeight(TextBox tb)
             => tb.Padding.Vertical + tb.Margin.Vertical
@@ -140,27 +143,29 @@ namespace CKAN.GUI
             });
         }
 
-        private ModuleLabelList ModuleLabels => Main.Instance.ManageMods.mainModList.ModuleLabels;
+        private static ModuleLabelList ModuleLabels => ModuleLabelList.ModuleLabels;
 
         private void UpdateTagsAndLabels(CkanModule mod)
         {
-            var registry = RegistryManager.Instance(
-                manager.CurrentInstance, ServiceLocator.Container.Resolve<RepositoryDataManager>()
-            ).registry;
-            tagsLabelsLinkList.UpdateTagsAndLabels(
-                registry?.Tags
-                        .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
-                        .OrderBy(t => t.Key)
-                        .Select(t => t.Value),
-                ModuleLabels?.LabelsFor(manager.CurrentInstance.Name)
-                             .Where(l => l.ContainsModule(Main.Instance.CurrentInstance.game, mod.identifier))
-                             .OrderBy(l => l.Name));
-            Util.Invoke(tagsLabelsLinkList, () =>
+            if (manager?.CurrentInstance is GameInstance inst)
             {
-                ModInfoTable.RowStyles[1].Height = ModInfoTable.Padding.Vertical
-                                                   + ModInfoTable.Margin.Vertical
-                                                   + tagsLabelsLinkList.TagsHeight;
-            });
+                var registry = RegistryManager.Instance(inst, ServiceLocator.Container.Resolve<RepositoryDataManager>())
+                                              .registry;
+                tagsLabelsLinkList.UpdateTagsAndLabels(
+                    registry?.Tags
+                             .Where(t => t.Value.ModuleIdentifiers.Contains(mod.identifier))
+                             .OrderBy(t => t.Key)
+                             .Select(t => t.Value),
+                    ModuleLabels?.LabelsFor(inst.Name)
+                                 .Where(l => l.ContainsModule(inst.game, mod.identifier))
+                                 .OrderBy(l => l.Name));
+                Util.Invoke(tagsLabelsLinkList, () =>
+                {
+                    ModInfoTable.RowStyles[1].Height = ModInfoTable.Padding.Vertical
+                                                       + ModInfoTable.Margin.Vertical
+                                                       + tagsLabelsLinkList.TagsHeight;
+                });
+            }
         }
 
 

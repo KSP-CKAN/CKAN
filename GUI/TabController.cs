@@ -90,7 +90,7 @@ namespace CKAN.GUI
             });
         }
 
-        private void OnDeselect(object sender, TabControlCancelEventArgs args)
+        private void OnDeselect(object? sender, TabControlCancelEventArgs args)
         {
             if (m_TabLock)
             {

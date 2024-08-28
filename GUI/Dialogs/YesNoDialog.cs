@@ -23,7 +23,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public DialogResult ShowYesNoDialog(Form parentForm, string text, string yesText = null, string noText = null)
+        public DialogResult ShowYesNoDialog(Form parentForm, string text, string? yesText = null, string? noText = null)
         {
             task = new TaskCompletionSource<Tuple<DialogResult, bool>>();
 
@@ -37,7 +37,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public Tuple<DialogResult, bool> ShowSuppressableYesNoDialog(Form parentForm, string text, string suppressText, string yesText = null, string noText = null)
+        public Tuple<DialogResult, bool> ShowSuppressableYesNoDialog(Form parentForm, string text, string suppressText, string? yesText = null, string? noText = null)
         {
             task = new TaskCompletionSource<Tuple<DialogResult, bool>>();
 
@@ -50,7 +50,7 @@ namespace CKAN.GUI
             return task.Task.Result;
         }
 
-        private void Setup(string text, string yesText, string noText)
+        private void Setup(string text, string? yesText, string? noText)
         {
             var height = Util.StringHeight(CreateGraphics(), text, DescriptionLabel.Font, ClientSize.Width - 25) + (2 * 54);
             DescriptionLabel.Text = text;
@@ -70,7 +70,7 @@ namespace CKAN.GUI
             ActiveControl = YesButton;
         }
 
-        private void SetupSuppressable(string text, string yesText, string noText, string suppressText)
+        private void SetupSuppressable(string text, string? yesText, string? noText, string suppressText)
         {
             Setup(text, yesText, noText);
             SuppressCheckbox.Checked = false;
@@ -84,7 +84,7 @@ namespace CKAN.GUI
         }
 
         private const int maxHeight = 600;
-        private TaskCompletionSource<Tuple<DialogResult, bool>> task;
+        private TaskCompletionSource<Tuple<DialogResult, bool>>? task;
         private readonly string defaultYes;
         private readonly string defaultNo;
     }

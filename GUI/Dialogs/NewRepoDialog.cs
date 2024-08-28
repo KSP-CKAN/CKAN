@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -12,8 +13,9 @@ namespace CKAN.GUI
     #endif
     public partial class NewRepoDialog : Form
     {
-        public NewRepoDialog()
+        public NewRepoDialog(Repository[] repos)
         {
+            this.repos = repos;
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
         }
@@ -21,46 +23,25 @@ namespace CKAN.GUI
         public Repository Selection
             => new Repository(RepoNameTextBox.Text, RepoUrlTextBox.Text);
 
-        private void NewRepoDialog_Load(object sender, EventArgs e)
+        private void NewRepoDialog_Load(object? sender, EventArgs? e)
         {
-            RepositoryList repositories;
-
-            try
-            {
-                repositories = Main.Instance.FetchMasterRepositoryList();
-            }
-            catch
-            {
-                ReposListBox.Items.Add(Properties.Resources.NewRepoDialogFailed);
-                return;
-            }
-
             ReposListBox.Items.Clear();
-
-            if (repositories.repositories == null)
-            {
-                ReposListBox.Items.Add(Properties.Resources.NewRepoDialogFailed);
-                return;
-            }
-
-            ReposListBox.Items.AddRange(repositories.repositories.Select(r =>
-                new ListViewItem(new string[] { r.name, r.uri.ToString() })
-                {
-                    Tag = r
-                }
-            ).ToArray());
+            ReposListBox.Items.AddRange(
+                repos.Select(r => new ListViewItem(r.name, r.uri.ToString())
+                                  {
+                                      Tag = r
+                                  })
+                     .ToArray());
         }
 
-        private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ReposListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            if (ReposListBox.SelectedItems.Count == 0)
+            if (ReposListBox.SelectedItems.Count > 0
+                && ReposListBox.SelectedItems[0].Tag is Repository r)
             {
-                return;
+                RepoNameTextBox.Text = r.name;
+                RepoUrlTextBox.Text = r.uri.ToString();
             }
-
-            Repository r = ReposListBox.SelectedItems[0].Tag as Repository;
-            RepoNameTextBox.Text = r.name;
-            RepoUrlTextBox.Text = r.uri.ToString();
         }
 
         private void ReposListBox_DoubleClick(object sender, EventArgs r)
@@ -74,10 +55,12 @@ namespace CKAN.GUI
             Close();
         }
 
-        private void RepoUrlTextBox_TextChanged(object sender, EventArgs e)
+        private void RepoUrlTextBox_TextChanged(object? sender, EventArgs? e)
         {
             RepoOK.Enabled = RepoNameTextBox.Text.Length > 0
                 && RepoUrlTextBox.Text.Length > 0;
         }
+
+        private readonly Repository[] repos;
     }
 }

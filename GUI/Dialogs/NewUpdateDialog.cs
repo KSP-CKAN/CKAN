@@ -9,11 +9,11 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="version">Version number of new release</param>
         /// <param name="releaseNotes">Markdown formatted description of the new release</param>
-        public NewUpdateDialog(string version, string releaseNotes)
+        public NewUpdateDialog(string version, string? releaseNotes)
         {
             InitializeComponent();
             VersionLabel.Text = version;
-            ReleaseNotesTextbox.Text = releaseNotes.Trim();
+            ReleaseNotesTextbox.Text = releaseNotes?.Trim() ?? "";
         }
     }
 }

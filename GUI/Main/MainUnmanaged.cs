@@ -7,11 +7,14 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void viewUnmanagedFilesStripMenuItem_Click(object sender, EventArgs e)
+        private void viewUnmanagedFilesStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            UnmanagedFiles.LoadFiles(Manager.CurrentInstance, repoData, currentUser);
-            tabController.ShowTab("UnmanagedFilesTabPage", 2);
-            DisableMainWindow();
+            if (Manager.CurrentInstance != null)
+            {
+                UnmanagedFiles.LoadFiles(Manager.CurrentInstance, repoData, currentUser);
+                tabController.ShowTab("UnmanagedFilesTabPage", 2);
+                DisableMainWindow();
+            }
         }
 
         private void UnmanagedFiles_Done()

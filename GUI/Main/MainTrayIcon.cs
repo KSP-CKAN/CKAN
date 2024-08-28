@@ -13,29 +13,27 @@ namespace CKAN.GUI
     {
         #region Tray Behaviour
 
-        private bool enableTrayIcon;
-        private bool minimizeToTray;
-
         public void CheckTrayState()
         {
-            enableTrayIcon = configuration.EnableTrayIcon;
-            minimizeToTray = configuration.MinimizeToTray;
-            pauseToolStripMenuItem.Enabled = ServiceLocator.Container.Resolve<IConfiguration>().RefreshRate != 0;
-            pauseToolStripMenuItem.Text = configuration.RefreshPaused
-                ? Properties.Resources.MainTrayIconResume
-                : Properties.Resources.MainTrayIconPause;
-            UpdateTrayState();
+            if (configuration != null)
+            {
+                pauseToolStripMenuItem.Enabled = ServiceLocator.Container.Resolve<IConfiguration>().RefreshRate != 0;
+                pauseToolStripMenuItem.Text = configuration.RefreshPaused
+                    ? Properties.Resources.MainTrayIconResume
+                    : Properties.Resources.MainTrayIconPause;
+                UpdateTrayState();
+            }
         }
 
         private void UpdateTrayState()
         {
-            if (enableTrayIcon)
+            if (configuration != null && configuration.EnableTrayIcon)
             {
                 minimizeNotifyIcon.Visible = true;
 
                 if (WindowState == FormWindowState.Minimized)
                 {
-                    if (minimizeToTray)
+                    if (configuration.MinimizeToTray)
                     {
                         // Remove our taskbar entry
                         Hide();
@@ -75,7 +73,7 @@ namespace CKAN.GUI
         public void OpenWindow()
         {
             Show();
-            WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
+            WindowState = configuration?.IsWindowMaximised ?? false ? FormWindowState.Maximized : FormWindowState.Normal;
         }
 
         private void minimizeNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -83,59 +81,64 @@ namespace CKAN.GUI
             OpenWindow();
         }
 
-        private void updatesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void updatesToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             OpenWindow();
             ManageMods.MarkAllUpdates();
         }
 
-        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        private void refreshToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             UpdateRepo();
         }
 
-        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        private void pauseToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            configuration.RefreshPaused = !configuration.RefreshPaused;
-            if (configuration.RefreshPaused)
+            if (configuration != null)
             {
-                refreshTimer.Stop();
-                pauseToolStripMenuItem.Text = Properties.Resources.MainTrayIconResume;
-            }
-            else
-            {
-                refreshTimer.Start();
-                pauseToolStripMenuItem.Text = Properties.Resources.MainTrayIconPause;
+                configuration.RefreshPaused = !configuration.RefreshPaused;
+                if (configuration.RefreshPaused)
+                {
+                    refreshTimer?.Stop();
+                    pauseToolStripMenuItem.Text = Properties.Resources.MainTrayIconResume;
+                }
+                else
+                {
+                    refreshTimer?.Start();
+                    pauseToolStripMenuItem.Text = Properties.Resources.MainTrayIconPause;
+                }
             }
         }
 
-        private void openCKANToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openCKANToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             OpenWindow();
         }
 
-        private void cKANSettingsToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void cKANSettingsToolStripMenuItem1_Click(object? sender, EventArgs? e)
         {
             OpenWindow();
-            new SettingsDialog(ServiceLocator.Container.Resolve<IConfiguration>(),
-                               configuration,
-                               RegistryManager.Instance(CurrentInstance, repoData),
-                               updater,
-                               currentUser)
-                .ShowDialog(this);
+            if (configuration != null && CurrentInstance != null)
+            {
+                new SettingsDialog(ServiceLocator.Container.Resolve<IConfiguration>(),
+                                   configuration,
+                                   RegistryManager.Instance(CurrentInstance, repoData),
+                                   updater,
+                                   currentUser)
+                    .ShowDialog(this);
+            }
         }
 
-        private void minimizedContextMenuStrip_Opening(object sender, CancelEventArgs e)
+        private void minimizedContextMenuStrip_Opening(object? sender, CancelEventArgs? e)
         {
             // The menu location can be partly off-screen by default.
             // Fix it.
             minimizedContextMenuStrip.Location = Util.ClampedLocation(
                 minimizedContextMenuStrip.Location,
-                minimizedContextMenuStrip.Size
-            );
+                minimizedContextMenuStrip.Size);
         }
 
-        private void minimizeNotifyIcon_BalloonTipClicked(object sender, EventArgs e)
+        private void minimizeNotifyIcon_BalloonTipClicked(object? sender, EventArgs? e)
         {
             // Unminimize
             OpenWindow();

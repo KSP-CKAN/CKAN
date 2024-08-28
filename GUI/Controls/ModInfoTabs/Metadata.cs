@@ -93,7 +93,7 @@ namespace CKAN.GUI
             });
         }
 
-        public event Action<SavedSearch, bool> OnChangeFilter;
+        public event Action<SavedSearch, bool>? OnChangeFilter;
 
         private void UpdateAuthorLinks(List<string> authors)
         {
@@ -120,36 +120,43 @@ namespace CKAN.GUI
             return link;
         }
 
-        private void OnAuthorClick(object sender, LinkLabelLinkClickedEventArgs e)
+        private void OnAuthorClick(object? sender, LinkLabelLinkClickedEventArgs? e)
         {
-            var link   = sender as LinkLabel;
-            var author = link.Text;
-            var merge  = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            OnChangeFilter?.Invoke(
-                new SavedSearch()
-                {
-                    Name   = string.Format(Properties.Resources.AuthorSearchName, author),
-                    Values = new List<string>()
-                    {
-                        ModSearch.FromAuthors(Enumerable.Repeat(author, 1)).Combined
-                    },
-                },
-                merge);
-        }
-
-        private void LinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Util.HandleLinkClicked((sender as LinkLabel).Text, e);
-        }
-
-        private void LinkLabel_KeyDown(object sender, KeyEventArgs e)
-        {
-            switch (e.KeyCode)
+            if (sender is LinkLabel link
+                && link.Text is string author)
             {
-                case Keys.Apps:
-                    Util.LinkContextMenu((sender as LinkLabel).Text);
-                    e.Handled = true;
-                    break;
+                var merge  = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+                OnChangeFilter?.Invoke(
+                    new SavedSearch()
+                    {
+                        Name   = string.Format(Properties.Resources.AuthorSearchName, author),
+                        Values = Enumerable.Repeat(ModSearch.FromAuthors(Enumerable.Repeat(author, 1)).Combined, 1)
+                                           .OfType<string>()
+                                           .ToList(),
+                    },
+                    merge);
+            }
+        }
+
+        private void LinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs? e)
+        {
+            if (sender is LinkLabel lbl)
+            {
+                Util.HandleLinkClicked(lbl.Text, e);
+            }
+        }
+
+        private void LinkLabel_KeyDown(object? sender, KeyEventArgs? e)
+        {
+            if (sender is LinkLabel lbl)
+            {
+                switch (e?.KeyCode)
+                {
+                    case Keys.Apps:
+                        Util.LinkContextMenu(lbl.Text);
+                        e.Handled = true;
+                        break;
+                }
             }
         }
 
@@ -189,7 +196,7 @@ namespace CKAN.GUI
                 - MetadataTable.Margin.Horizontal
                 - (int)MetadataTable.ColumnStyles[0].Width;
 
-        private void AddResourceLink(string label, Uri link)
+        private void AddResourceLink(string label, Uri? link)
         {
             const int vPadding = 5;
             if (link != null)

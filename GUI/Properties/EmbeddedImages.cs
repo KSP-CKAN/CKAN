@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -15,9 +16,11 @@ namespace CKAN.GUI
     #endif
     public static class EmbeddedImages
     {
-        public static readonly Icon AppIcon = new Icon(
-                Assembly.GetExecutingAssembly()
-                        .GetManifestResourceStream($"CKAN.ckan.ico"));
+        public static readonly Icon? AppIcon = Assembly.GetExecutingAssembly()
+                                                       .GetManifestResourceStream($"CKAN.ckan.ico")
+                                                   is Stream s
+                                                       ? new Icon(s)
+                                                       : null;
 
         public static Bitmap alert                => get("alert");
         public static Bitmap apply                => get("apply");
@@ -53,23 +56,29 @@ namespace CKAN.GUI
         public static Bitmap update               => get("update");
 
         private static Bitmap get(string what)
-            => cache.TryGetValue(what, out Bitmap bmp)
+            => cache.TryGetValue(what, out Bitmap? bmp)
                 ? bmp
                 : add(what);
 
         private static Bitmap load(string what)
-            => new Bitmap(
-                Assembly.GetExecutingAssembly()
-                        .GetManifestResourceStream($"CKAN.GUI.Resources.{what}.png"));
+            => Assembly.GetExecutingAssembly()
+                        .GetManifestResourceStream($"CKAN.GUI.Resources.{what}.png")
+                   is Stream s
+                       ? new Bitmap(s)
+                       : EmptyBitmap;
 
         private static Bitmap add(string what)
         {
-            var newBmp = load(what);
-            cache.Add(what, newBmp);
-            return newBmp;
+            if (load(what) is Bitmap newBmp)
+            {
+                cache.Add(what, newBmp);
+                return newBmp;
+            }
+            return EmptyBitmap;
         }
 
         private static readonly Dictionary<string, Bitmap> cache =
             new Dictionary<string, Bitmap>();
+        private static readonly Bitmap EmptyBitmap = new Bitmap(1, 1);
     }
 }

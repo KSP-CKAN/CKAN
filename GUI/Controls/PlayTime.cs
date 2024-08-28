@@ -44,7 +44,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Invoked when the user clicks OK
         /// </summary>
-        public event Action Done;
+        public event Action? Done;
 
         /// <summary>
         /// Open the user guide when the user presses F1
@@ -72,12 +72,12 @@ namespace CKAN.GUI
             ShowTotal();
         }
 
-        private void OKButton_Click(object sender, EventArgs e)
+        private void OKButton_Click(object? sender, EventArgs? e)
         {
             Done?.Invoke();
         }
 
-        private List<PlayTimeRow> rows;
+        private List<PlayTimeRow>? rows;
     }
 
     /// <summary>
@@ -92,7 +92,7 @@ namespace CKAN.GUI
         public PlayTimeRow(string name, GameInstance instance)
         {
             Name     = name;
-            PlayTime = instance.playTime;
+            PlayTime = instance.playTime ?? new TimeLog();
             path     = TimeLog.GetPath(instance.CkanDir());
         }
 

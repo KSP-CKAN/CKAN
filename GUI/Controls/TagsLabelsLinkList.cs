@@ -18,8 +18,8 @@ namespace CKAN.GUI
     public partial class TagsLabelsLinkList : FlowLayoutPanel
     {
         [ForbidGUICalls]
-        public void UpdateTagsAndLabels(IEnumerable<ModuleTag>   tags,
-                                        IEnumerable<ModuleLabel> labels)
+        public void UpdateTagsAndLabels(IEnumerable<ModuleTag>?   tags,
+                                        IEnumerable<ModuleLabel>? labels)
         {
             Util.Invoke(this, () =>
             {
@@ -61,12 +61,12 @@ namespace CKAN.GUI
             }
         }
 
-        public event Action<ModuleTag,   bool> TagClicked;
-        public event Action<ModuleLabel, bool> LabelClicked;
+        public event Action<ModuleTag,   bool>? TagClicked;
+        public event Action<ModuleLabel, bool>? LabelClicked;
 
         private string tagToolTip = Properties.Resources.FilterLinkToolTip;
 
-        private static int LinkLabelBottom(LinkLabel lbl)
+        private static int LinkLabelBottom(LinkLabel? lbl)
             => lbl == null ? 0
                            : lbl.Bottom + lbl.Margin.Bottom + lbl.Padding.Bottom;
 
@@ -93,18 +93,20 @@ namespace CKAN.GUI
             return link;
         }
 
-        private void TagLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void TagLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs? e)
         {
-            var link = sender as LinkLabel;
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            TagClicked?.Invoke(link.Tag as ModuleTag, merge);
+            if (sender is LinkLabel link && link.Tag is ModuleTag t)
+            {
+                TagClicked?.Invoke(t, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+            }
         }
 
-        private void LabelLinkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void LabelLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs? e)
         {
-            var link = sender as LinkLabel;
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            LabelClicked?.Invoke(link.Tag as ModuleLabel, merge);
+            if (sender is LinkLabel link && link.Tag is ModuleLabel l)
+            {
+                LabelClicked?.Invoke(l, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+            }
         }
 
         private readonly ToolTip ToolTip = new ToolTip()

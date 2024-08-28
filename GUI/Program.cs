@@ -21,7 +21,7 @@ namespace CKAN.GUI
             Main_(args);
         }
 
-        public static void Main_(string[] args, GameInstanceManager manager = null, bool showConsole = false)
+        public static void Main_(string[] args, GameInstanceManager? manager = null, bool showConsole = false)
         {
             Logging.Initialize();
 
@@ -49,11 +49,13 @@ namespace CKAN.GUI
 
         public static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs e)
         {
-            var exception = e.ExceptionObject;
-
-            // Provide a stack backtrace, so our users and non-debugging devs can
-            // see what's gone wrong.
-            CKAN.GUI.Main.Instance.ErrorDialog("Unhandled exception:\r\n{0} ", exception.ToString());
+            if (e.ExceptionObject is Exception exception)
+            {
+                // Provide a stack backtrace, so our users and non-debugging devs can
+                // see what's gone wrong.
+                CKAN.GUI.Main.Instance?.ErrorDialog("Unhandled exception:\r\n{0} ",
+                                                    exception.ToString());
+            }
         }
     }
 }

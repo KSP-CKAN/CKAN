@@ -13,14 +13,25 @@ namespace CKAN.GUI
     [JsonConverter(typeof(ModuleIdentifiersRenamedConverter))]
     public class ModuleLabel
     {
+        [JsonConstructor]
+        public ModuleLabel()
+        {
+            Name = "";
+        }
+
+        public ModuleLabel(string name)
+        {
+            Name = name;
+        }
+
         [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
         public string  Name;
 
         [JsonProperty("color", NullValueHandling = NullValueHandling.Ignore)]
-        public Color   Color;
+        public Color?  Color;
 
         [JsonProperty("instance_name", NullValueHandling = NullValueHandling.Ignore)]
-        public string  InstanceName;
+        public string? InstanceName;
 
         [JsonProperty("hide", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
@@ -57,7 +68,7 @@ namespace CKAN.GUI
         /// <param name="game">Game to check</param>
         /// <returns>Number of modules</returns>
         public int ModuleCount(IGame game)
-            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers)
+            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string>? identifiers)
                 ? identifiers.Count
                 : 0;
 
@@ -68,7 +79,7 @@ namespace CKAN.GUI
         /// <param name="identifier">The identifier to check</param>
         /// <returns>true if this label applies to this identifier, false otherwise</returns>
         public bool ContainsModule(IGame game, string identifier)
-            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers)
+            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string>? identifiers)
                && identifiers.Contains(identifier);
 
         /// <summary>
@@ -82,7 +93,7 @@ namespace CKAN.GUI
             => InstanceName == null || InstanceName == instanceName;
 
         public IEnumerable<string> IdentifiersFor(IGame game)
-            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> idents)
+            => ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string>? idents)
                 ? idents
                 : Enumerable.Empty<string>();
 
@@ -92,7 +103,7 @@ namespace CKAN.GUI
         /// <param name="identifier">The identifier of the module to add</param>
         public void Add(IGame game, string identifier)
         {
-            if (ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers))
+            if (ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string>? identifiers))
             {
                 identifiers.Add(identifier);
             }
@@ -108,7 +119,7 @@ namespace CKAN.GUI
         /// <param name="identifier">The identifier of the module to remove</param>
         public void Remove(IGame game, string identifier)
         {
-            if (ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string> identifiers))
+            if (ModuleIdentifiers.TryGetValue(game.ShortName, out HashSet<string>? identifiers))
             {
                 identifiers.Remove(identifier);
                 if (identifiers.Count < 1)

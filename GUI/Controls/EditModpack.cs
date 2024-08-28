@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 
@@ -53,7 +53,8 @@ namespace CKAN.GUI
                 AbstractTextBox.Text   = module.@abstract;
                 AuthorTextBox.Text     = string.Join(", ", module.author);
                 VersionTextBox.Text    = module.version.ToString();
-                var options = new string[] { "" }.Concat(Main.Instance.CurrentInstance.game.KnownVersions
+                var options = new string[] { "" }.Concat(
+                    Main.Instance?.CurrentInstance?.game.KnownVersions
                     .SelectMany(v => new GameVersion[] {
                             new GameVersion(v.Major, v.Minor, v.Patch),
                             new GameVersion(v.Major, v.Minor)
@@ -61,18 +62,18 @@ namespace CKAN.GUI
                     .Distinct()
                     .OrderByDescending(v => v)
                     .Select(v => v.ToString())
-                );
+                    ?? Enumerable.Empty<string>());
                 GameVersionMinComboBox.DataSource = options.ToArray();
                 GameVersionMinComboBox.Text = (module.ksp_version_min ?? module.ksp_version)?.ToString();
                 GameVersionMaxComboBox.DataSource = options.ToArray();
                 GameVersionMaxComboBox.Text = (module.ksp_version_max ?? module.ksp_version)?.ToString();
                 LicenseComboBox.DataSource = License.valid_licenses.OrderBy(l => l).ToArray();
                 LicenseComboBox.Text = module.license?.FirstOrDefault()?.ToString();
-                LoadRelationships(registry);
+                LoadRelationships(module, registry);
             });
         }
 
-        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
+        public event Action<ListView.SelectedListViewItemCollection>? OnSelectedItemsChanged;
 
         [ForbidGUICalls]
         public bool Wait(IUser user)
@@ -87,20 +88,11 @@ namespace CKAN.GUI
             return task.Task.Result;
         }
 
-        private void LoadRelationships(IRegistryQuerier registry)
+        private void LoadRelationships(CkanModule module, IRegistryQuerier registry)
         {
-            if (module.depends == null)
-            {
-                module.depends = new List<RelationshipDescriptor>();
-            }
-            if (module.recommends == null)
-            {
-                module.recommends = new List<RelationshipDescriptor>();
-            }
-            if (module.suggests == null)
-            {
-                module.suggests = new List<RelationshipDescriptor>();
-            }
+            module.depends ??= new List<RelationshipDescriptor>();
+            module.recommends ??= new List<RelationshipDescriptor>();
+            module.suggests ??= new List<RelationshipDescriptor>();
 
             ignored.Clear();
             // Find installed modules that aren't in the module's relationships
@@ -147,7 +139,7 @@ namespace CKAN.GUI
             {
                 RelationshipsListView.Items.AddRange(relationships
                     .OrderBy(r => (r as ModuleRelationshipDescriptor)?.name)
-                    .Select(r => new ListViewItem(new string[]
+                    .Select(r => new ListViewItem(new string?[]
                         {
                             (r as ModuleRelationshipDescriptor)?.name,
                             (r as ModuleRelationshipDescriptor)?.version?.ToString(),
@@ -163,7 +155,8 @@ namespace CKAN.GUI
             }
         }
 
-        private bool TryFieldsToModule(out string error, out Control badField)
+        private bool TryFieldsToModule([NotNullWhen(false)] out string? error,
+                                       [NotNullWhen(false)] out Control? badField)
         {
             if (!Identifier.ValidIdentifierPattern.IsMatch(IdentifierTextBox.Text))
             {
@@ -193,25 +186,28 @@ namespace CKAN.GUI
 
             error = null;
             badField = null;
-            module.identifier = IdentifierTextBox.Text;
-            module.name       = NameTextBox.Text;
-            module.@abstract  = AbstractTextBox.Text;
-            module.author     = AuthorTextBox.Text
-                .Split(',').Select(a => a.Trim()).ToList();
-            module.version    = new ModuleVersion(VersionTextBox.Text);
-            module.license    = new List<License>() { new License(LicenseComboBox.Text) };
-            module.ksp_version_min = string.IsNullOrEmpty(GameVersionMinComboBox.Text)
-                ? null
-                : GameVersion.Parse(GameVersionMinComboBox.Text);
-            module.ksp_version_max = string.IsNullOrEmpty(GameVersionMaxComboBox.Text)
-                ? null
-                : GameVersion.Parse(GameVersionMaxComboBox.Text);
+            if (module != null)
+            {
+                module.identifier = IdentifierTextBox.Text;
+                module.name       = NameTextBox.Text;
+                module.@abstract  = AbstractTextBox.Text;
+                module.author     = AuthorTextBox.Text
+                    .Split(',').Select(a => a.Trim()).ToList();
+                module.version    = new ModuleVersion(VersionTextBox.Text);
+                module.license    = new List<License>() { new License(LicenseComboBox.Text) };
+                module.ksp_version_min = string.IsNullOrEmpty(GameVersionMinComboBox.Text)
+                    ? null
+                    : GameVersion.Parse(GameVersionMinComboBox.Text);
+                module.ksp_version_max = string.IsNullOrEmpty(GameVersionMaxComboBox.Text)
+                    ? null
+                    : GameVersion.Parse(GameVersionMaxComboBox.Text);
+            }
             return true;
         }
 
-        private void RelationshipsListView_KeyDown(object sender, KeyEventArgs e)
+        private void RelationshipsListView_KeyDown(object? sender, KeyEventArgs? e)
         {
-            switch (e.KeyCode)
+            switch (e?.KeyCode)
             {
                 // Select all on ctrl-A
                 case Keys.A:
@@ -234,7 +230,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void RelationshipsListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void RelationshipsListView_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs? e)
         {
             OnSelectedItemsChanged?.Invoke(RelationshipsListView.SelectedItems);
             var kinds = RelationshipsListView.SelectedItems.Cast<ListViewItem>()
@@ -274,27 +270,36 @@ namespace CKAN.GUI
             }
         }
 
-        private void DependsRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void DependsRadioButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            MoveItemsTo(RelationshipsListView.SelectedItems.Cast<ListViewItem>(), DependsGroup, module.depends);
-            RelationshipsListView.Focus();
+            if (module?.depends != null)
+            {
+                MoveItemsTo(RelationshipsListView.SelectedItems.OfType<ListViewItem>(), DependsGroup, module.depends);
+                RelationshipsListView.Focus();
+            }
         }
 
-        private void RecommendsRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void RecommendsRadioButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            MoveItemsTo(RelationshipsListView.SelectedItems.Cast<ListViewItem>(), RecommendationsGroup, module.recommends);
-            RelationshipsListView.Focus();
+            if (module?.recommends != null)
+            {
+                MoveItemsTo(RelationshipsListView.SelectedItems.OfType<ListViewItem>(), RecommendationsGroup, module.recommends);
+                RelationshipsListView.Focus();
+            }
         }
 
-        private void SuggestsRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void SuggestsRadioButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            MoveItemsTo(RelationshipsListView.SelectedItems.Cast<ListViewItem>(), SuggestionsGroup, module.suggests);
-            RelationshipsListView.Focus();
+            if (module?.suggests != null)
+            {
+                MoveItemsTo(RelationshipsListView.SelectedItems.OfType<ListViewItem>(), SuggestionsGroup, module.suggests);
+                RelationshipsListView.Focus();
+            }
         }
 
-        private void IgnoreRadioButton_CheckedChanged(object sender, EventArgs e)
+        private void IgnoreRadioButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            MoveItemsTo(RelationshipsListView.SelectedItems.Cast<ListViewItem>(), IgnoredGroup, ignored);
+            MoveItemsTo(RelationshipsListView.SelectedItems.OfType<ListViewItem>(), IgnoredGroup, ignored);
             RelationshipsListView.Focus();
         }
 
@@ -302,44 +307,46 @@ namespace CKAN.GUI
         {
             foreach (ListViewItem lvi in items.Where(lvi => lvi.Group != group))
             {
-                // UI
-                var rel = lvi.Tag as RelationshipDescriptor;
-                var fromRel = GroupToRelationships[lvi.Group];
-                fromRel.Remove(rel);
-                relationships.Add(rel);
-                // Model
-                lvi.Group = group;
+                if (lvi.Tag is RelationshipDescriptor rel)
+                {
+                    // UI
+                    var fromRel = GroupToRelationships[lvi.Group];
+                    fromRel.Remove(rel);
+                    relationships.Add(rel);
+                    // Model
+                    lvi.Group = group;
+                }
             }
         }
 
-        private void CancelExportButton_Click(object sender, EventArgs e)
+        private void CancelExportButton_Click(object? sender, EventArgs? e)
         {
             task?.SetResult(false);
         }
 
-        private void ExportModpackButton_Click(object sender, EventArgs e)
+        private void ExportModpackButton_Click(object? sender, EventArgs? e)
         {
-            if (!TryFieldsToModule(out string error, out Control badField))
+            if (!TryFieldsToModule(out string? error, out Control? badField))
             {
                 badField.Focus();
-                user.RaiseError(error);
+                user?.RaiseError(error);
             }
-            else if (TrySavePrompt(modpackExportOptions, out string filename))
+            else if (module != null && TrySavePrompt(modpackExportOptions, out string? filename))
             {
-                if (module.depends.Count == 0)
+                if (module.depends?.Count == 0)
                 {
                     module.depends = null;
                 }
-                if (module.recommends.Count == 0)
+                if (module.recommends?.Count == 0)
                 {
                     module.recommends = null;
                 }
-                if (module.suggests.Count == 0)
+                if (module.suggests?.Count == 0)
                 {
                     module.suggests = null;
                 }
                 CkanModule.ToFile(ApplyCheckboxes(module), filename);
-                OpenFileBrowser(filename);
+                Utilities.OpenFileBrowser(filename);
                 task?.SetResult(true);
             }
         }
@@ -360,7 +367,7 @@ namespace CKAN.GUI
                 // in case the user changes the checkbox after cancelling out of the
                 // save popup. So we create a new CkanModule instead.
                 var newMod = CkanModule.FromJson(CkanModule.ToJson(input));
-                foreach (var rels in new List<List<RelationshipDescriptor>>()
+                foreach (var rels in new List<List<RelationshipDescriptor>?>()
                     {
                         newMod.depends,
                         newMod.recommends,
@@ -390,29 +397,19 @@ namespace CKAN.GUI
             else
             {
                 var newMod = CkanModule.FromJson(CkanModule.ToJson(input));
-                foreach (var rel in newMod.depends)
+                if (newMod.depends != null)
                 {
-                    rel.suppress_recommendations = true;
+                    foreach (var rel in newMod.depends)
+                    {
+                        rel.suppress_recommendations = true;
+                    }
                 }
                 return newMod;
             }
         }
 
-        private void OpenFileBrowser(string location)
-        {
-            if (File.Exists(location))
-            {
-                // We need the folder of the file
-                // Otherwise the OS would try to open the file in its default application
-                location = Path.GetDirectoryName(location);
-            }
-            if (Directory.Exists(location))
-            {
-                Utilities.ProcessStartURL(location);
-            }
-        }
-
-        private bool TrySavePrompt(List<ExportOption> exportOptions, out string filename)
+        private bool TrySavePrompt(List<ExportOption>              exportOptions,
+                                   [NotNullWhen(true)] out string? filename)
         {
             var dlg = new SaveFileDialog()
             {
@@ -436,9 +433,9 @@ namespace CKAN.GUI
             new ExportOption(ExportFileType.Ckan, Properties.Resources.MainModPack, "ckan"),
         };
 
-        private CkanModule                   module;
-        private IUser                        user;
-        private TaskCompletionSource<bool>   task;
+        private CkanModule?                  module;
+        private IUser?                       user;
+        private TaskCompletionSource<bool>?  task;
         private readonly List<RelationshipDescriptor> ignored = new List<RelationshipDescriptor>();
         private readonly Dictionary<ListViewGroup, List<RelationshipDescriptor>> GroupToRelationships =
             new Dictionary<ListViewGroup, List<RelationshipDescriptor>>();

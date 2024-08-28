@@ -18,35 +18,44 @@ namespace CKAN.GUI
         /// <summary>
         /// Exports installed mods to a .ckan file.
         /// </summary>
-        private void exportModPackToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exportModPackToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            // Background thread so GUI thread can work with the controls
-            Task.Factory.StartNew(() =>
+            if (CurrentInstance != null)
             {
-                currentUser.RaiseMessage("");
-                tabController.ShowTab("EditModpackTabPage", 2);
-                DisableMainWindow();
-                var mgr = RegistryManager.Instance(CurrentInstance, repoData);
-                EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
-                // This will block till the user is done
-                EditModpack.Wait(currentUser);
-                tabController.ShowTab("ManageModsTabPage");
-                tabController.HideTab("EditModpackTabPage");
-                EnableMainWindow();
-            });
+                // Background thread so GUI thread can work with the controls
+                Task.Factory.StartNew(() =>
+                {
+                    currentUser.RaiseMessage("");
+                    tabController.ShowTab("EditModpackTabPage", 2);
+                    DisableMainWindow();
+                    var mgr = RegistryManager.Instance(CurrentInstance, repoData);
+                    EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
+                    // This will block till the user is done
+                    EditModpack.Wait(currentUser);
+                    tabController.ShowTab("ManageModsTabPage");
+                    tabController.HideTab("EditModpackTabPage");
+                    EnableMainWindow();
+                });
+            }
         }
 
         private void EditModpack_OnSelectedItemsChanged(ListView.SelectedListViewItemCollection items)
         {
-            var first = items.Cast<ListViewItem>().FirstOrDefault()?.Tag as ModuleRelationshipDescriptor;
-            var ident = first?.name;
-            if (!string.IsNullOrEmpty(ident) && ManageMods.mainModList.full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow row))
+            if (items.OfType<ListViewItem>()
+                             .FirstOrDefault()
+                             ?.Tag
+                     is ModuleRelationshipDescriptor first)
             {
-                ActiveModInfo = row.Tag as GUIMod;
-            }
-            else
-            {
-                ActiveModInfo = null;
+                var ident = first.name;
+                if (!string.IsNullOrEmpty(ident)
+                    && ManageMods.mainModList.full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow? row))
+                {
+                    ActiveModInfo = row.Tag as GUIMod;
+                }
+                else
+                {
+                    ActiveModInfo = null;
+                }
             }
         }
 
@@ -62,21 +71,24 @@ namespace CKAN.GUI
         /// <summary>
         /// Exports installed mods to a non-.ckan file.
         /// </summary>
-        private void exportModListToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exportModListToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            var dlg = new SaveFileDialog()
+            if (CurrentInstance != null)
             {
-                Filter = string.Join("|", specialExportOptions.Select(i => i.ToString()).ToArray()),
-                Title  = Properties.Resources.ExportInstalledModsDialogTitle
-            };
-            if (dlg.ShowDialog(this) == DialogResult.OK)
-            {
-                var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
-                using (var stream = new FileStream(dlg.FileName, fileMode))
+                var dlg = new SaveFileDialog()
                 {
-                    new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(
-                        RegistryManager.Instance(CurrentInstance, repoData).registry,
-                        stream);
+                    Filter = string.Join("|", specialExportOptions.Select(i => i.ToString()).ToArray()),
+                    Title  = Properties.Resources.ExportInstalledModsDialogTitle
+                };
+                if (dlg.ShowDialog(this) == DialogResult.OK)
+                {
+                    var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
+                    using (var stream = new FileStream(dlg.FileName, fileMode))
+                    {
+                        new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(
+                            RegistryManager.Instance(CurrentInstance, repoData).registry,
+                            stream);
+                    }
                 }
             }
         }

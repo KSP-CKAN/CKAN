@@ -9,14 +9,17 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void UpdateChangesDialog(List<ModChange> changeset, Dictionary<CkanModule, string> conflicts)
+        private void UpdateChangesDialog(List<ModChange> changeset, Dictionary<CkanModule, string>? conflicts)
         {
-            Changeset.LoadChangeset(
-                changeset,
-                ManageMods.mainModList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                    .Where(l => l.AlertOnInstall)
-                    .ToList(),
-                conflicts);
+            if (CurrentInstance != null)
+            {
+                Changeset.LoadChangeset(
+                    changeset,
+                    ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                        .Where(l => l.AlertOnInstall)
+                        .ToList(),
+                    conflicts);
+            }
         }
 
         private void Changeset_OnSelectedItemsChanged(CkanModule item)

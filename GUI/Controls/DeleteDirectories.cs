@@ -7,6 +7,7 @@ using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN.GUI.Attributes;
 
@@ -59,7 +60,7 @@ namespace CKAN.GUI
         /// true if user chose to delete, false otherwise
         /// </returns>
         [ForbidGUICalls]
-        public bool Wait(out HashSet<string> toDelete)
+        public bool Wait([NotNullWhen(true)] out HashSet<string>? toDelete)
         {
             if (Platform.IsMono)
             {
@@ -76,10 +77,11 @@ namespace CKAN.GUI
             // This will block until one of the buttons calls SetResult
             if (task.Task.Result)
             {
-                toDelete = DirectoriesListView.CheckedItems.Cast<ListViewItem>()
-                    .Select(lvi => lvi.Tag as string)
-                    .Where(s => !string.IsNullOrEmpty(s))
-                    .ToHashSet();
+                toDelete = DirectoriesListView.CheckedItems
+                                              .OfType<ListViewItem>()
+                                              .Select(lvi => lvi.Tag as string)
+                                              .OfType<string>()
+                                              .ToHashSet();
                 return true;
             }
             else
@@ -103,16 +105,17 @@ namespace CKAN.GUI
             evt.Handled = Util.TryOpenWebPage(HelpURLs.DeleteDirectories);
         }
 
-        private void DirectoriesListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void DirectoriesListView_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs? e)
         {
             ContentsListView.Items.Clear();
             ContentsListView.Items.AddRange(
                 DirectoriesListView.SelectedItems.Cast<ListViewItem>()
-                    .SelectMany(lvi => Directory.EnumerateFileSystemEntries(
-                            lvi.Tag as string,
-                            "*",
-                            SearchOption.AllDirectories)
-                        .Select(f => new ListViewItem(Platform.FormatPath(CKANPathUtils.ToRelative(f, lvi.Tag as string)))))
+                    .SelectMany(lvi => lvi.Tag is string s
+                                           ? Directory.EnumerateFileSystemEntries(s,
+                                                                                  "*",
+                                                                                  SearchOption.AllDirectories)
+                                                      .Select(f => new ListViewItem(Platform.FormatPath(CKANPathUtils.ToRelative(f, s))))
+                                           : Enumerable.Empty<ListViewItem>())
                     .ToArray());
             if (DirectoriesListView.SelectedItems.Count == 0)
             {
@@ -125,25 +128,28 @@ namespace CKAN.GUI
             OpenDirectoryButton.Enabled = DirectoriesListView.SelectedItems.Count > 0;
         }
 
-        private void OpenDirectoryButton_Click(object sender, EventArgs e)
+        private void OpenDirectoryButton_Click(object? sender, EventArgs? e)
         {
-            foreach (ListViewItem lvi in DirectoriesListView.SelectedItems)
+            foreach (var url in DirectoriesListView.SelectedItems
+                                                   .OfType<ListViewItem>()
+                                                   .Select(lvi => lvi.Tag)
+                                                   .OfType<string>())
             {
-                Utilities.ProcessStartURL(lvi.Tag as string);
+                Utilities.ProcessStartURL(url);
             }
         }
 
-        private void DeleteButton_Click(object sender, EventArgs e)
+        private void DeleteButton_Click(object? sender, EventArgs? e)
         {
             task?.SetResult(true);
         }
 
-        private void KeepAllButton_Click(object sender, EventArgs e)
+        private void KeepAllButton_Click(object? sender, EventArgs? e)
         {
             task?.SetResult(false);
         }
 
-        private TaskCompletionSource<bool> task = null;
-        private GameInstance instance = null;
+        private TaskCompletionSource<bool>? task     = null;
+        private GameInstance?               instance = null;
     }
 }

@@ -71,7 +71,7 @@ namespace CKAN.GUI
         /// DOES NOT ACTUALLY CHECK IF IT EXISTS, just the format.
         /// </summary>
         public static bool CheckURLValid(string source)
-            => Uri.TryCreate(source, UriKind.Absolute, out Uri uri_result)
+            => Uri.TryCreate(source, UriKind.Absolute, out Uri? uri_result)
                 && (uri_result.Scheme == Uri.UriSchemeHttp
                  || uri_result.Scheme == Uri.UriSchemeHttps);
 
@@ -93,13 +93,10 @@ namespace CKAN.GUI
         /// Tries to open an url using the default application.
         /// If it fails, it tries again by prepending each prefix before the url before it gives up.
         /// </summary>
-        public static bool TryOpenWebPage(string url, IEnumerable<string> prefixes = null)
+        public static bool TryOpenWebPage(string url, IEnumerable<string>? prefixes = null)
         {
             // Default prefixes to try if not provided
-            if (prefixes == null)
-            {
-                prefixes = new string[] { "https://", "http://" };
-            }
+            prefixes ??= new string[] { "https://", "http://" };
 
             foreach (string fullUrl in new string[] { url }
                 .Concat(prefixes.Select(p => p + url).Where(CheckURLValid)))
@@ -119,9 +116,9 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="url">The link's URL</param>
         /// <param name="e">The click event</param>
-        public static void HandleLinkClicked(string url, LinkLabelLinkClickedEventArgs e)
+        public static void HandleLinkClicked(string url, LinkLabelLinkClickedEventArgs? e)
         {
-            switch (e.Button)
+            switch (e?.Button)
             {
                 case MouseButtons.Left:
                     OpenLinkFromLinkLabel(url);
@@ -159,7 +156,7 @@ namespace CKAN.GUI
         /// <returns>
         /// The first screen that overlaps the box if any, otherwise null
         /// </returns>
-        public static Screen FindScreen(Point location, Size size)
+        public static Screen? FindScreen(Point location, Size size)
         {
             var rect = new Rectangle(location, size);
             return Screen.AllScreens.FirstOrDefault(sc => sc.WorkingArea.IntersectsWith(rect));
@@ -174,7 +171,7 @@ namespace CKAN.GUI
         /// Original location if already fully on-screen, otherwise
         /// a position representing sliding it onto the screen
         /// </returns>
-        public static Point ClampedLocation(Point location, Size size, Screen screen = null)
+        public static Point ClampedLocation(Point location, Size size, Screen? screen = null)
         {
             if (screen == null)
             {
@@ -221,7 +218,7 @@ namespace CKAN.GUI
         /// Original location if already fully on-screen plus margins, otherwise
         /// a position representing sliding it onto the screen
         /// </returns>
-        public static Point ClampedLocationWithMargins(Point location, Size size, Size topLeftMargin, Size bottomRightMargin, Screen screen = null)
+        public static Point ClampedLocationWithMargins(Point location, Size size, Size topLeftMargin, Size bottomRightMargin, Screen? screen = null)
         {
             // Imagine drawing a larger box around the window, the size of the desired margin.
             // We pass that box to ClampedLocation to make sure it fits on screen,
@@ -247,15 +244,15 @@ namespace CKAN.GUI
         /// <typeparam name="EventT">Event type handled</typeparam>
         /// <returns>A new event handler that wraps the given functions using the timer</returns>
         public static EventHandler<EventT> Debounce<EventT>(
-            EventHandler<EventT>       startFunc,
-            Func<object, EventT, bool> immediateFunc,
-            Func<object, EventT, bool> abortFunc,
-            EventHandler<EventT>       doneFunc,
+            EventHandler<EventT>        startFunc,
+            Func<object?, EventT, bool> immediateFunc,
+            Func<object?, EventT, bool> abortFunc,
+            EventHandler<EventT?>        doneFunc,
             int timeoutMs = 500)
         {
             // Store the most recent event we received
-            object receivedFrom = null;
-            EventT received     = default;
+            object? receivedFrom = null;
+            EventT? received     = default;
 
             // Set up the timer that will track the delay
             Timer timer = new Timer() { Interval = timeoutMs };
@@ -265,7 +262,7 @@ namespace CKAN.GUI
                 doneFunc(receivedFrom, received);
             };
 
-            return (object sender, EventT evt) =>
+            return (object? sender, EventT evt) =>
             {
                 if (!abortFunc(sender, evt))
                 {

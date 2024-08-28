@@ -50,7 +50,7 @@ namespace CKAN.GUI
                 var userChangeSet = new List<ModChange>();
                 foreach (var module in modules)
                 {
-                    InstalledModule installed = registry.InstalledModule(module.identifier);
+                    var installed = registry.InstalledModule(module.identifier);
                     if (installed != null)
                     {
                         // Already installed, remove it first
@@ -76,257 +76,262 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private void InstallMods(object sender, DoWorkEventArgs e)
+        private void InstallMods(object? sender, DoWorkEventArgs? e)
         {
             bool canceled = false;
-            (List<ModChange> changes, RelationshipResolverOptions options) = (InstallArgument)e.Argument;
-
-            var registry_manager = RegistryManager.Instance(Manager.CurrentInstance, repoData);
-            var registry = registry_manager.registry;
-            var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
-            // Avoid accumulating multiple event handlers
-            installer.onReportModInstalled -= OnModInstalled;
-            installer.onReportModInstalled += OnModInstalled;
-
-            // this will be the final list of mods we want to install
-            var toInstall   = new List<CkanModule>();
-            var toUninstall = new HashSet<CkanModule>();
-            var toUpgrade   = new HashSet<CkanModule>();
-
-            // Check whether we need an explicit Remove call for auto-removals.
-            // If there's an Upgrade or a user-initiated Remove, they'll take care of it.
-            var needRemoveForAuto = changes.All(ch => ch.ChangeType == GUIModChangeType.Install
-                                                      || ch.IsAutoRemoval);
-
-            // First compose sets of what the user wants installed, upgraded, and removed.
-            foreach (ModChange change in changes)
+            if (CurrentInstance != null
+                && Manager.Cache != null
+                && e?.Argument is (List<ModChange> changes, RelationshipResolverOptions options))
             {
-                switch (change.ChangeType)
+                var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
+                var registry = registry_manager.registry;
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
+                // Avoid accumulating multiple event handlers
+                installer.onReportModInstalled -= OnModInstalled;
+                installer.onReportModInstalled += OnModInstalled;
+
+                // this will be the final list of mods we want to install
+                var toInstall   = new List<CkanModule>();
+                var toUninstall = new HashSet<CkanModule>();
+                var toUpgrade   = new HashSet<CkanModule>();
+
+                // Check whether we need an explicit Remove call for auto-removals.
+                // If there's an Upgrade or a user-initiated Remove, they'll take care of it.
+                var needRemoveForAuto = changes.All(ch => ch.ChangeType == GUIModChangeType.Install
+                                                          || ch.IsAutoRemoval);
+
+                // First compose sets of what the user wants installed, upgraded, and removed.
+                foreach (ModChange change in changes)
                 {
-                    case GUIModChangeType.Remove:
-                        // Let Upgrade and Remove handle auto-removals to avoid cascade-removal of depending mods.
-                        // Unless auto-removal is the ONLY thing in the changeset, in which case
-                        // filtering these out would give us a completely empty changeset.
-                        if (needRemoveForAuto || !change.IsAutoRemoval)
-                        {
-                            toUninstall.Add(change.Mod);
-                        }
-                        break;
-                    case GUIModChangeType.Update:
-                        toUpgrade.Add(change is ModUpgrade mu ? mu.targetMod
-                                                              : change.Mod);
-                        break;
-                    case GUIModChangeType.Install:
-                        toInstall.Add(change.Mod);
-                        break;
-                    case GUIModChangeType.Replace:
-                        ModuleReplacement repl = registry.GetReplacement(change.Mod, CurrentInstance.VersionCriteria());
-                        if (repl != null)
-                        {
-                            toUninstall.Add(repl.ToReplace);
-                            if (!toInstall.Contains(repl.ReplaceWith))
+                    switch (change.ChangeType)
+                    {
+                        case GUIModChangeType.Remove:
+                            // Let Upgrade and Remove handle auto-removals to avoid cascade-removal of depending mods.
+                            // Unless auto-removal is the ONLY thing in the changeset, in which case
+                            // filtering these out would give us a completely empty changeset.
+                            if (needRemoveForAuto || !change.IsAutoRemoval)
                             {
-                                toInstall.Add(repl.ReplaceWith);
+                                toUninstall.Add(change.Mod);
                             }
-                        }
-                        break;
-                }
-            }
-
-            Util.Invoke(this, () => UseWaitCursor = true);
-            try
-            {
-                // Prompt for recommendations and suggestions, if any
-                if (installer.FindRecommendations(
-                    changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
-                           .Select(ch => ch.Mod)
-                           .ToHashSet(),
-                    toInstall,
-                    registry,
-                    out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
-                    out Dictionary<CkanModule, List<string>> suggestions,
-                    out Dictionary<CkanModule, HashSet<string>> supporters))
-                {
-                    tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
-                    ChooseRecommendedMods.LoadRecommendations(
-                        registry, toInstall, toUninstall,
-                        CurrentInstance.VersionCriteria(), Manager.Cache,
-                        CurrentInstance.game,
-                        ManageMods.mainModList.ModuleLabels
-                                              .LabelsFor(CurrentInstance.Name)
-                                              .ToList(),
-                        configuration,
-                        recommendations, suggestions, supporters);
-                    tabController.SetTabLock(true);
-                    Util.Invoke(this, () => UseWaitCursor = false);
-                    var result = ChooseRecommendedMods.Wait();
-                    tabController.SetTabLock(false);
-                    tabController.HideTab("ChooseRecommendedModsTabPage");
-                    if (result == null)
-                    {
-                        e.Result = new InstallResult(false, changes);
-                        throw new CancelledActionKraken();
-                    }
-                    else
-                    {
-                        toInstall = toInstall.Concat(result).Distinct().ToList();
+                            break;
+                        case GUIModChangeType.Update:
+                            toUpgrade.Add(change is ModUpgrade mu ? mu.targetMod
+                                                                  : change.Mod);
+                            break;
+                        case GUIModChangeType.Install:
+                            toInstall.Add(change.Mod);
+                            break;
+                        case GUIModChangeType.Replace:
+                            var repl = registry.GetReplacement(change.Mod, CurrentInstance.VersionCriteria());
+                            if (repl != null)
+                            {
+                                toUninstall.Add(repl.ToReplace);
+                                if (!toInstall.Contains(repl.ReplaceWith))
+                                {
+                                    toInstall.Add(repl.ReplaceWith);
+                                }
+                            }
+                            break;
                     }
                 }
-            }
-            finally
-            {
-                // Make sure the progress tab always shows up with a normal cursor even if an exception is thrown
-                Util.Invoke(this, () => UseWaitCursor = false);
-                ShowWaitDialog();
-            }
 
-            // Now let's make all our changes.
-            Util.Invoke(this, () =>
-            {
-                // Need to be on the GUI thread to get the translated string
-                tabController.RenameTab("WaitTabPage", Properties.Resources.MainInstallWaitTitle);
-            });
-            tabController.SetTabLock(true);
-
-            IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
-            downloader.Progress      += Wait.SetModuleProgress;
-            downloader.AllComplete   += Wait.DownloadsComplete;
-            downloader.StoreProgress += (module, remaining, total) =>
-                Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
-                    remaining, total);
-
-            Wait.OnCancel += () =>
-            {
-                canceled = true;
-                downloader.CancelDownload();
-            };
-
-            HashSet<string> possibleConfigOnlyDirs = null;
-
-            // Treat whole changeset as atomic
-            using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
-            {
-                // Checks if all actions were successful
-                // Uninstall/installs/upgrades until every list is empty
-                // If the queue is NOT empty, resolvedAllProvidedMods is false until the action is done
-                for (bool resolvedAllProvidedMods = false; !resolvedAllProvidedMods;)
+                Util.Invoke(this, () => UseWaitCursor = true);
+                try
                 {
-                    try
+                    // Prompt for recommendations and suggestions, if any
+                    if (installer.FindRecommendations(
+                        changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
+                               .Select(ch => ch.Mod)
+                               .ToHashSet(),
+                        toInstall,
+                        registry,
+                        out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                        out Dictionary<CkanModule, List<string>> suggestions,
+                        out Dictionary<CkanModule, HashSet<string>> supporters))
                     {
-                        e.Result = new InstallResult(false, changes);
-                        if (!canceled && toUninstall.Count > 0)
-                        {
-                            installer.UninstallList(toUninstall.Select(m => m.identifier),
-                                ref possibleConfigOnlyDirs, registry_manager, false, toInstall);
-                            toUninstall.Clear();
-                        }
-                        if (!canceled && toInstall.Count > 0)
-                        {
-                            installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
-                            toInstall.Clear();
-                        }
-                        if (!canceled && toUpgrade.Count > 0)
-                        {
-                            installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
-                            toUpgrade.Clear();
-                        }
-                        if (canceled)
-                        {
-                            e.Result = new InstallResult(false, changes);
-                            throw new CancelledActionKraken();
-                        }
-                        resolvedAllProvidedMods = true;
-                    }
-                    catch (ModuleDownloadErrorsKraken k)
-                    {
-                        // Get full changeset (toInstall only includes user's selections, not dependencies)
-                        var crit = CurrentInstance.VersionCriteria();
-                        var fullChangeset = new RelationshipResolver(
-                            toInstall.Concat(toUpgrade), toUninstall, options, registry, crit
-                        ).ModList().ToList();
-                        DownloadsFailedDialog dfd = null;
-                        Util.Invoke(this, () =>
-                        {
-                            dfd = new DownloadsFailedDialog(
-                                Properties.Resources.ModDownloadsFailedMessage,
-                                Properties.Resources.ModDownloadsFailedColHdr,
-                                Properties.Resources.ModDownloadsFailedAbortBtn,
-                                k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                    fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
-                                    kvp.Value)),
-                                (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
-                             dfd.ShowDialog(this);
-                        });
-                        var skip  = dfd.Wait()?.Select(m => m as CkanModule).ToArray();
-                        var abort = dfd.Abort;
-                        dfd.Dispose();
-                        if (abort)
-                        {
-                            canceled = true;
-                            e.Result = new InstallResult(false, changes);
-                            throw new CancelledActionKraken();
-                        }
-
-                        if (skip.Length > 0)
-                        {
-                            // Remove mods from changeset that user chose to skip
-                            // and any mods depending on them
-                            var dependers = registry.FindReverseDependencies(
-                                skip.Select(s => s.identifier).ToList(),
-                                fullChangeset,
-                                // Consider virtual dependencies satisfied so user can make a new choice if they skip
-                                rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
-                                .ToHashSet();
-                            toInstall.RemoveAll(m => dependers.Contains(m.identifier));
-                        }
-
-                        // Now we loop back around again
-                    }
-                    catch (TooManyModsProvideKraken k)
-                    {
-                        // Prompt user to choose which mod to use
-                        tabController.ShowTab("ChooseProvidedModsTabPage", 3);
-                        Util.Invoke(this, () => StatusProgress.Visible = false);
-                        var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
-                        ChooseProvidedMods.LoadProviders(
-                            k.Message,
-                            k.modules.OrderByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
-                                                                                       m.identifier)
-                                                             ?? 0)
-                                     .ThenByDescending(m => m.identifier == k.requested)
-                                     .ThenBy(m => m.name)
-                                     .ToList(),
-                            Manager.Cache);
+                        tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                        ChooseRecommendedMods.LoadRecommendations(
+                            registry, toInstall, toUninstall,
+                            CurrentInstance.VersionCriteria(), Manager.Cache,
+                            CurrentInstance.game,
+                            ModuleLabelList.ModuleLabels
+                                           .LabelsFor(CurrentInstance.Name)
+                                           .ToList(),
+                            configuration,
+                            recommendations, suggestions, supporters);
                         tabController.SetTabLock(true);
-                        CkanModule chosen = ChooseProvidedMods.Wait();
-                        // Close the selection prompt
+                        Util.Invoke(this, () => UseWaitCursor = false);
+                        var result = ChooseRecommendedMods.Wait();
                         tabController.SetTabLock(false);
-                        tabController.HideTab("ChooseProvidedModsTabPage");
-                        if (chosen != null)
+                        tabController.HideTab("ChooseRecommendedModsTabPage");
+                        if (result == null)
                         {
-                            // User picked a mod, queue it up for installation
-                            toInstall.Add(chosen);
-                            // DON'T return so we can loop around and try the above InstallList call again
-                            tabController.ShowTab("WaitTabPage");
-                            Util.Invoke(this, () => StatusProgress.Visible = true);
+                            e.Result = new InstallResult(false, changes);
+                            throw new CancelledActionKraken();
                         }
                         else
                         {
-                            e.Result = new InstallResult(false, changes);
-                            throw new CancelledActionKraken();
+                            toInstall = toInstall.Concat(result).Distinct().ToList();
                         }
                     }
                 }
-                transaction.Complete();
+                finally
+                {
+                    // Make sure the progress tab always shows up with a normal cursor even if an exception is thrown
+                    Util.Invoke(this, () => UseWaitCursor = false);
+                    ShowWaitDialog();
+                }
+
+                // Now let's make all our changes.
+                Util.Invoke(this, () =>
+                {
+                    // Need to be on the GUI thread to get the translated string
+                    tabController.RenameTab("WaitTabPage", Properties.Resources.MainInstallWaitTitle);
+                });
+                tabController.SetTabLock(true);
+
+                IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+                downloader.Progress      += Wait.SetModuleProgress;
+                downloader.AllComplete   += Wait.DownloadsComplete;
+                downloader.StoreProgress += (module, remaining, total) =>
+                    Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
+                        remaining, total);
+
+                Wait.OnCancel += () =>
+                {
+                    canceled = true;
+                    downloader.CancelDownload();
+                };
+
+                HashSet<string>? possibleConfigOnlyDirs = null;
+
+                // Treat whole changeset as atomic
+                using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
+                {
+                    // Checks if all actions were successful
+                    // Uninstall/installs/upgrades until every list is empty
+                    // If the queue is NOT empty, resolvedAllProvidedMods is false until the action is done
+                    for (bool resolvedAllProvidedMods = false; !resolvedAllProvidedMods;)
+                    {
+                        try
+                        {
+                            e.Result = new InstallResult(false, changes);
+                            if (!canceled && toUninstall.Count > 0)
+                            {
+                                installer.UninstallList(toUninstall.Select(m => m.identifier),
+                                    ref possibleConfigOnlyDirs, registry_manager, false, toInstall);
+                                toUninstall.Clear();
+                            }
+                            if (!canceled && toInstall.Count > 0)
+                            {
+                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
+                                toInstall.Clear();
+                            }
+                            if (!canceled && toUpgrade.Count > 0)
+                            {
+                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
+                                toUpgrade.Clear();
+                            }
+                            if (canceled)
+                            {
+                                e.Result = new InstallResult(false, changes);
+                                throw new CancelledActionKraken();
+                            }
+                            resolvedAllProvidedMods = true;
+                        }
+                        catch (ModuleDownloadErrorsKraken k)
+                        {
+                            // Get full changeset (toInstall only includes user's selections, not dependencies)
+                            var crit = CurrentInstance.VersionCriteria();
+                            var fullChangeset = new RelationshipResolver(
+                                toInstall.Concat(toUpgrade), toUninstall, options, registry, crit
+                            ).ModList().ToList();
+                            DownloadsFailedDialog? dfd = null;
+                            Util.Invoke(this, () =>
+                            {
+                                dfd = new DownloadsFailedDialog(
+                                    Properties.Resources.ModDownloadsFailedMessage,
+                                    Properties.Resources.ModDownloadsFailedColHdr,
+                                    Properties.Resources.ModDownloadsFailedAbortBtn,
+                                    k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
+                                        fullChangeset.Where(m => m.download == kvp.Key.download).ToArray(),
+                                        kvp.Value)),
+                                    (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
+                                 dfd.ShowDialog(this);
+                            });
+                            var skip  = dfd?.Wait()?.Select(m => m as CkanModule)
+                                                    .OfType<CkanModule>()
+                                                    .ToArray();
+                            var abort = dfd?.Abort;
+                            dfd?.Dispose();
+                            if (abort ?? false)
+                            {
+                                canceled = true;
+                                e.Result = new InstallResult(false, changes);
+                                throw new CancelledActionKraken();
+                            }
+
+                            if (skip != null && skip.Length > 0)
+                            {
+                                // Remove mods from changeset that user chose to skip
+                                // and any mods depending on them
+                                var dependers = registry.FindReverseDependencies(
+                                    skip.Select(s => s.identifier).ToList(),
+                                    fullChangeset,
+                                    // Consider virtual dependencies satisfied so user can make a new choice if they skip
+                                    rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
+                                    .ToHashSet();
+                                toInstall.RemoveAll(m => dependers.Contains(m.identifier));
+                            }
+
+                            // Now we loop back around again
+                        }
+                        catch (TooManyModsProvideKraken k)
+                        {
+                            // Prompt user to choose which mod to use
+                            tabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                            Util.Invoke(this, () => StatusProgress.Visible = false);
+                            var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
+                            ChooseProvidedMods.LoadProviders(
+                                k.Message,
+                                k.modules.OrderByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
+                                                                                           m.identifier)
+                                                                 ?? 0)
+                                         .ThenByDescending(m => m.identifier == k.requested)
+                                         .ThenBy(m => m.name)
+                                         .ToList(),
+                                Manager.Cache);
+                            tabController.SetTabLock(true);
+                            var chosen = ChooseProvidedMods.Wait();
+                            // Close the selection prompt
+                            tabController.SetTabLock(false);
+                            tabController.HideTab("ChooseProvidedModsTabPage");
+                            if (chosen != null)
+                            {
+                                // User picked a mod, queue it up for installation
+                                toInstall.Add(chosen);
+                                // DON'T return so we can loop around and try the above InstallList call again
+                                tabController.ShowTab("WaitTabPage");
+                                Util.Invoke(this, () => StatusProgress.Visible = true);
+                            }
+                            else
+                            {
+                                e.Result = new InstallResult(false, changes);
+                                throw new CancelledActionKraken();
+                            }
+                        }
+                    }
+                    transaction.Complete();
+                }
+                HandlePossibleConfigOnlyDirs(registry, possibleConfigOnlyDirs);
+                e.Result = new InstallResult(true, changes);
             }
-            HandlePossibleConfigOnlyDirs(registry, possibleConfigOnlyDirs);
-            e.Result = new InstallResult(true, changes);
         }
 
         [ForbidGUICalls]
-        private void HandlePossibleConfigOnlyDirs(Registry registry, HashSet<string> possibleConfigOnlyDirs)
+        private void HandlePossibleConfigOnlyDirs(Registry registry, HashSet<string>? possibleConfigOnlyDirs)
         {
-            if (possibleConfigOnlyDirs != null)
+            if (CurrentInstance != null && possibleConfigOnlyDirs != null)
             {
                 // Check again for registered files, since we may
                 // just have installed or upgraded some
@@ -344,7 +349,7 @@ namespace CKAN.GUI
                     DeleteDirectories.LoadDirs(CurrentInstance, possibleConfigOnlyDirs);
 
                     // Wait here for the GUI process to finish dealing with the user
-                    if (DeleteDirectories.Wait(out HashSet<string> toDelete))
+                    if (DeleteDirectories.Wait(out HashSet<string>? toDelete))
                     {
                         foreach (string dir in toDelete)
                         {
@@ -373,9 +378,9 @@ namespace CKAN.GUI
             LabelsAfterInstall(mod);
         }
 
-        private void PostInstallMods(object sender, RunWorkerCompletedEventArgs e)
+        private void PostInstallMods(object? sender, RunWorkerCompletedEventArgs? e)
         {
-            if (e.Error != null)
+            if (e?.Error != null)
             {
                 switch (e.Error)
                 {
@@ -388,7 +393,8 @@ namespace CKAN.GUI
                         break;
 
                     case BadMetadataKraken exc:
-                        currentUser.RaiseMessage(Properties.Resources.MainInstallBadMetadata, exc.module, exc.Message);
+                        currentUser.RaiseMessage(Properties.Resources.MainInstallBadMetadata,
+                                                 exc.module?.ToString() ?? "", exc.Message);
                         break;
 
                     case NotEnoughSpaceKraken exc:
@@ -400,16 +406,14 @@ namespace CKAN.GUI
                         {
                             currentUser.RaiseMessage(
                                 Properties.Resources.MainInstallFileExists,
-                                exc.filename, exc.installingModule, exc.owningModule,
-                                Meta.GetVersion()
-                            );
+                                exc.filename, exc.installingModule?.ToString() ?? "", exc.owningModule,
+                                Meta.GetVersion());
                         }
                         else
                         {
                             currentUser.RaiseMessage(
                                 Properties.Resources.MainInstallUnownedFileExists,
-                                exc.installingModule, exc.filename
-                            );
+                                exc.installingModule?.ToString() ?? "", exc.filename);
                         }
                         currentUser.RaiseMessage(Properties.Resources.MainInstallGameDataReverted);
                         break;
@@ -431,9 +435,10 @@ namespace CKAN.GUI
                     case DownloadThrottledKraken exc:
                         string msg = exc.ToString();
                         currentUser.RaiseMessage(msg);
-                        if (YesNoDialog(string.Format(Properties.Resources.MainInstallOpenSettingsPrompt, msg),
-                            Properties.Resources.MainInstallOpenSettings,
-                            Properties.Resources.MainInstallNo))
+                        if (configuration != null && CurrentInstance != null
+                            && YesNoDialog(string.Format(Properties.Resources.MainInstallOpenSettingsPrompt, msg),
+                                Properties.Resources.MainInstallOpenSettings,
+                                Properties.Resources.MainInstallNo))
                         {
                             // Launch the URL describing this host's throttling practices, if any
                             if (exc.infoUrl != null)
@@ -490,10 +495,9 @@ namespace CKAN.GUI
                                Properties.Resources.MainInstallKnownError,
                                Properties.Resources.MainInstallFailed);
             }
-            else
+            // The Result property throws if InstallMods threw (!!!)
+            else if (e?.Result is (bool success, List<ModChange> changes))
             {
-                // The Result property throws if InstallMods threw (!!!)
-                (bool success, List<ModChange> changes) = (InstallResult)e.Result;
                 currentUser.RaiseMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods
                 RefreshModList(false);

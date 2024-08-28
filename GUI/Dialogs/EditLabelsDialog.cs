@@ -6,6 +6,7 @@ using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.GUI
 {
@@ -40,30 +41,27 @@ namespace CKAN.GUI
         {
             LabelSelectionTree.BeginUpdate();
             LabelSelectionTree.Nodes.Clear();
-            var groups = labels.Labels
-                .GroupBy(l => l.InstanceName)
-                .OrderBy(g => g.Key == null)
-                .ThenBy(g => g.Key);
-            foreach (var group in groups)
-            {
-                string groupName = string.IsNullOrEmpty(group.Key)
-                    ? Properties.Resources.ModuleLabelListGlobal
-                    : group.Key;
-                LabelSelectionTree.Nodes.Add(new TreeNode(
-                    groupName,
-                    group.Select(mlbl => new TreeNode(mlbl.Name)
-                        {
-                            // Windows's TreeView has a bug where the node's visual
-                            // width is based on the owning TreeView.Font rather
-                            // than TreeNode.Font, so to ensure there's enough space,
-                            // we have to make the default bold and then override it
-                            // for non-bold nodes.
-                            NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
-                            Tag      = mlbl
-                        })
-                        .ToArray()
-                ));
-            }
+            LabelSelectionTree.Nodes.AddRange(
+                labels.Labels
+                      .GroupBy(l => l.InstanceName)
+                      .OrderBy(g => g.Key == null)
+                      .ThenBy(g => g.Key)
+                      .Select(g => new TreeNode(
+                                       g.Key == null || string.IsNullOrEmpty(g.Key)
+                                           ? Properties.Resources.ModuleLabelListGlobal
+                                           : g.Key,
+                                       g.Select(mlbl => new TreeNode(mlbl.Name)
+                                           {
+                                               // Windows's TreeView has a bug where the node's visual
+                                               // width is based on the owning TreeView.Font rather
+                                               // than TreeNode.Font, so to ensure there's enough space,
+                                               // we have to make the default bold and then override it
+                                               // for non-bold nodes.
+                                               NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
+                                               Tag      = mlbl,
+                                           })
+                                        .ToArray()))
+                      .ToArray());
             EnableDisableUpDownButtons();
             if (currentlyEditing != null)
             {
@@ -94,39 +92,45 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.Labels);
         }
 
-        private void LabelSelectionTree_BeforeSelect(object sender, TreeViewCancelEventArgs e)
+        private void LabelSelectionTree_BeforeSelect(object? sender, TreeViewCancelEventArgs? e)
         {
-            if (e.Node == null)
+            if (e != null)
             {
-                e.Cancel = false;
-            }
-            else if (e.Node.Tag == null)
-            {
-                e.Cancel = true;
-            }
-            else if (!TryCloseEdit())
-            {
-                e.Cancel = true;
-            }
-            else
-            {
-                StartEdit(e.Node.Tag as ModuleLabel);
-                e.Cancel = false;
+                if (e.Node == null)
+                {
+                    e.Cancel = false;
+                }
+                else if (e.Node.Tag == null)
+                {
+                    e.Cancel = true;
+                }
+                else if (!TryCloseEdit())
+                {
+                    e.Cancel = true;
+                }
+                else if (e.Node.Tag is ModuleLabel l)
+                {
+                    StartEdit(l);
+                    e.Cancel = false;
+                }
             }
         }
 
-        private void LabelSelectionTree_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        private void LabelSelectionTree_BeforeCollapse(object? sender, TreeViewCancelEventArgs? e)
         {
-            e.Cancel = true;
+            if (e != null)
+            {
+                e.Cancel = true;
+            }
         }
 
-        private void CreateButton_Click(object sender, EventArgs e)
+        private void CreateButton_Click(object? sender, EventArgs? e)
         {
             LabelSelectionTree.SelectedNode = null;
-            StartEdit(new ModuleLabel());
+            StartEdit(new ModuleLabel(""));
         }
 
-        private void ColorButton_Click(object sender, EventArgs e)
+        private void ColorButton_Click(object? sender, EventArgs? e)
         {
             var dlg = new ColorDialog()
             {
@@ -142,7 +146,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void SaveButton_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object? sender, EventArgs? e)
         {
             if (TrySave(out string errMsg))
             {
@@ -154,23 +158,21 @@ namespace CKAN.GUI
             }
         }
 
-        private void CancelEditButton_Click(object sender, EventArgs e)
+        private void CancelEditButton_Click(object? sender, EventArgs? e)
         {
             EditDetailsPanel.Visible = false;
             currentlyEditing = null;
             LabelSelectionTree.SelectedNode = null;
         }
 
-        private void DeleteButton_Click(object sender, EventArgs e)
+        private void DeleteButton_Click(object? sender, EventArgs? e)
         {
-            if (currentlyEditing != null && Main.Instance.YesNoDialog(
-                string.Format(
-                    Properties.Resources.EditLabelsDialogConfirmDelete,
-                    currentlyEditing.Name
-                ),
-                Properties.Resources.EditLabelsDialogDelete,
-                Properties.Resources.EditLabelsDialogCancel
-            ))
+            if (currentlyEditing != null
+                && (Main.Instance?.YesNoDialog(
+                    string.Format(Properties.Resources.EditLabelsDialogConfirmDelete,
+                                  currentlyEditing.Name),
+                    Properties.Resources.EditLabelsDialogDelete,
+                    Properties.Resources.EditLabelsDialogCancel) ?? false))
             {
                 labels.Labels = labels.Labels
                     .Except(new ModuleLabel[] { currentlyEditing })
@@ -181,7 +183,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void CloseButton_Click(object sender, EventArgs e)
+        private void CloseButton_Click(object? sender, EventArgs? e)
         {
             if (TryCloseEdit())
             {
@@ -194,7 +196,7 @@ namespace CKAN.GUI
             currentlyEditing = lbl;
 
             NameTextBox.Text                     = lbl.Name;
-            ColorButton.BackColor                = lbl.Color;
+            ColorButton.BackColor                = lbl.Color ?? Color.Transparent;
             InstanceNameComboBox.SelectedItem    = lbl.InstanceName;
             HideFromOtherFiltersCheckBox.Checked = lbl.Hide;
             NotifyOnChangesCheckBox.Checked      = lbl.NotifyOnChange;
@@ -228,7 +230,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void MoveUpButton_Click(object sender, EventArgs e)
+        private void MoveUpButton_Click(object? sender, EventArgs? e)
         {
             if (currentlyEditing != null)
             {
@@ -248,7 +250,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void MoveDownButton_Click(object sender, EventArgs e)
+        private void MoveDownButton_Click(object? sender, EventArgs? e)
         {
             if (currentlyEditing != null)
             {
@@ -272,11 +274,10 @@ namespace CKAN.GUI
         {
             if (HasChanges())
             {
-                if (Main.Instance.YesNoDialog(
+                if (Main.Instance?.YesNoDialog(
                     Properties.Resources.EditLabelsDialogSavePrompt,
                     Properties.Resources.EditLabelsDialogSave,
-                    Properties.Resources.EditLabelsDialogDiscard
-                ))
+                    Properties.Resources.EditLabelsDialogDiscard) ?? true)
                 {
                     if (!TrySave(out string errMsg))
                     {
@@ -295,7 +296,8 @@ namespace CKAN.GUI
                 currentlyEditing.Name         = NameTextBox.Text;
                 currentlyEditing.Color        = ColorButton.BackColor;
                 currentlyEditing.InstanceName =
-                    string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem?.ToString())
+                    InstanceNameComboBox.SelectedItem == null
+                    || string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem.ToString())
                         ? null
                         : InstanceNameComboBox.SelectedItem.ToString();
                 currentlyEditing.Hide            = HideFromOtherFiltersCheckBox.Checked;
@@ -321,6 +323,7 @@ namespace CKAN.GUI
             return false;
         }
 
+        [MemberNotNullWhen(true, nameof(currentlyEditing))]
         private bool EditingValid(out string errMsg)
         {
             if (currentlyEditing == null)
@@ -333,9 +336,10 @@ namespace CKAN.GUI
                 errMsg = Properties.Resources.EditLabelsDialogNameRequired;
                 return false;
             }
-            var newInst = string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem?.ToString())
-                ? null
-                : InstanceNameComboBox.SelectedItem.ToString();
+            var newInst = InstanceNameComboBox.SelectedItem == null
+                          || string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem.ToString())
+                              ? null
+                              : InstanceNameComboBox.SelectedItem.ToString();
             var found = labels.Labels.FirstOrDefault(l =>
                    l              != currentlyEditing
                 && l.Name         == NameTextBox.Text
@@ -358,9 +362,10 @@ namespace CKAN.GUI
 
         private bool HasChanges()
         {
-            var newInst = string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem?.ToString())
-                ? null
-                : InstanceNameComboBox.SelectedItem.ToString();
+            var newInst = InstanceNameComboBox.SelectedItem == null
+                          || string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem.ToString())
+                              ? null
+                              : InstanceNameComboBox.SelectedItem.ToString();
             return EditDetailsPanel.Visible && currentlyEditing != null
                 && (   currentlyEditing.Name            != NameTextBox.Text
                     || currentlyEditing.Color           != ColorButton.BackColor
@@ -374,7 +379,7 @@ namespace CKAN.GUI
                 );
         }
 
-        private ModuleLabel     currentlyEditing;
+        private          ModuleLabel?    currentlyEditing;
 
         private readonly IUser           user;
         private readonly ModuleLabelList labels;

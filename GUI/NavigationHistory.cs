@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.GUI
 {
@@ -8,7 +8,7 @@ namespace CKAN.GUI
     /// Generic class for keeping a browser-like navigation history.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class NavigationHistory<T>
+    public class NavigationHistory<T> where T: notnull
     {
         private readonly List<T> m_navigationHistory;
         private int m_currentIndex;
@@ -24,7 +24,7 @@ namespace CKAN.GUI
 
         public delegate void HistoryChangeHandler();
 
-        public event HistoryChangeHandler OnHistoryChange;
+        public event HistoryChangeHandler? OnHistoryChange;
 
         public void InvokeOnHistoryChange()
         {
@@ -92,48 +92,29 @@ namespace CKAN.GUI
             InvokeOnHistoryChange();
         }
 
-        /// <summary>
-        /// Moves backward by one item in the navigation history, and returns
-        /// the item at that spot.
-        /// </summary>
-        public T NavigateBackward()
+        public bool TryGoBackward([NotNullWhen(true)] out T? newCurrentItem)
         {
-            if (IsReadOnly)
+            if (!IsReadOnly && CanNavigateBackward)
             {
-                return default;
+                newCurrentItem = m_navigationHistory[--m_currentIndex];
+                InvokeOnHistoryChange();
+                return true;
             }
-
-            if (!CanNavigateBackward)
-            {
-                throw new InvalidOperationException("Cannot navigate backward in history!");
-            }
-
-            m_currentIndex--;
-            InvokeOnHistoryChange();
-
-            return m_navigationHistory[m_currentIndex];
+            newCurrentItem = default;
+            return false;
         }
 
-        /// <summary>
-        /// Moves forward by one item in the navigation history, and returns
-        /// the item at that spot.
-        /// </summary>
-        public T NavigateForward()
+        public bool TryGoForward([NotNullWhen(true)] out T? newCurrentItem)
         {
-            if (IsReadOnly)
+            if (!IsReadOnly && CanNavigateForward)
             {
-                return default;
+                newCurrentItem = m_navigationHistory[++m_currentIndex];
+                InvokeOnHistoryChange();
+                return true;
             }
-
-            if (!CanNavigateForward)
-            {
-                throw new InvalidOperationException("Cannot navigate forward in history!");
-            }
-
-            m_currentIndex++;
-            InvokeOnHistoryChange();
-
-            return m_navigationHistory[m_currentIndex];
+            newCurrentItem = default;
+            return false;
         }
+
     }
 }

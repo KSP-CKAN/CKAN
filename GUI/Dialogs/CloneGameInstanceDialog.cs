@@ -10,8 +10,6 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
-using CKAN.Games;
-
 namespace CKAN.GUI
 {
     /// <summary>
@@ -26,7 +24,7 @@ namespace CKAN.GUI
         private readonly GameInstanceManager manager;
         private readonly IUser               user;
 
-        public CloneGameInstanceDialog(GameInstanceManager manager, IUser user, string selectedInstanceName = null)
+        public CloneGameInstanceDialog(GameInstanceManager manager, IUser user, string? selectedInstanceName = null)
             : base()
         {
             this.manager = manager;
@@ -53,18 +51,18 @@ namespace CKAN.GUI
 
         #region clone
 
-        private void comboBoxKnownInstance_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxKnownInstance_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            string sel = comboBoxKnownInstance.SelectedItem as string;
-            textBoxClonePath.Text = string.IsNullOrEmpty(sel)
-                ? ""
-                : Platform.FormatPath(manager.Instances[sel].GameDir());
+            textBoxClonePath.Text = comboBoxKnownInstance.SelectedItem is string sel
+                                    && string.IsNullOrEmpty(sel)
+                ? Platform.FormatPath(manager.Instances[sel].GameDir())
+                : "";
         }
 
         /// <summary>
         /// Open an file dialog to search for a game instance, like in <code>ManageGameInstancesDialog</code>.
         /// </summary>
-        private void buttonInstancePathSelection_Click(object sender, EventArgs e)
+        private void buttonInstancePathSelection_Click(object? sender, EventArgs? e)
         {
             // Create a new FileDialog object
             OpenFileDialog instanceDialog = new OpenFileDialog()
@@ -93,7 +91,7 @@ namespace CKAN.GUI
         /// User is done. Start cloning or faking, depending on the clicked radio button.
         /// Close the window if everything went right.
         /// </summary>
-        private async void buttonOK_Click(object sender, EventArgs e)
+        private async void buttonOK_Click(object? sender, EventArgs? e)
         {
             string existingPath = textBoxClonePath.Text;
             string newName = textBoxNewName.Text;
@@ -123,10 +121,11 @@ namespace CKAN.GUI
 
             try
             {
-                if (!manager.Instances.TryGetValue(comboBoxKnownInstance.SelectedItem as string, out GameInstance instanceToClone)
-                    || existingPath != Platform.FormatPath(instanceToClone.GameDir()))
+                if (comboBoxKnownInstance.SelectedItem is string s
+                    && (!manager.Instances.TryGetValue(s, out GameInstance? instanceToClone)
+                        || existingPath != Platform.FormatPath(instanceToClone.GameDir())))
                 {
-                    IGame sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
+                    var sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
                     if (sourceGame == null)
                     {
                         // User cancelled, let them try again
@@ -135,18 +134,18 @@ namespace CKAN.GUI
                     }
                     instanceToClone = new GameInstance(
                         sourceGame, existingPath, "irrelevant", user);
+                    await Task.Run(() =>
+                    {
+                        if (instanceToClone.Valid)
+                        {
+                            manager.CloneInstance(instanceToClone, newName, newPath, checkBoxShareStock.Checked);
+                        }
+                        else
+                        {
+                            throw new NotKSPDirKraken(instanceToClone.GameDir());
+                        }
+                    });
                 }
-                await Task.Run(() =>
-                {
-                    if (instanceToClone.Valid)
-                    {
-                        manager.CloneInstance(instanceToClone, newName, newPath, checkBoxShareStock.Checked);
-                    }
-                    else
-                    {
-                        throw new NotKSPDirKraken(instanceToClone.GameDir());
-                    }
-                });
             }
             catch (InstanceNameTakenKraken)
             {
@@ -164,7 +163,7 @@ namespace CKAN.GUI
             catch (PathErrorKraken kraken)
             {
                 user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty,
-                                Platform.FormatPath(kraken.path)));
+                                Platform.FormatPath(kraken?.path ?? "")));
                 reactivateDialog();
                 return;
             }
@@ -197,7 +196,7 @@ namespace CKAN.GUI
             Close();
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void buttonCancel_Click(object? sender, EventArgs? e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
@@ -217,7 +216,7 @@ namespace CKAN.GUI
             progressBar.Hide();
         }
 
-        private void buttonPathBrowser_Click(object sender, EventArgs e)
+        private void buttonPathBrowser_Click(object? sender, EventArgs? e)
         {
             if (folderBrowserDialogNewPath.ShowDialog(this).Equals(DialogResult.OK))
             {

@@ -25,7 +25,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="sender">The control sending the event</param>
         /// <param name="e">The event arguments</param>
-        private void HintClearIcon_Click(object sender, EventArgs e)
+        private void HintClearIcon_Click(object? sender, EventArgs? e)
         {
             Text = "";
         }
@@ -35,7 +35,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="sender">The control sending the event</param>
         /// <param name="e">The event arguments</param>
-        private void HintTextBox_TextChanged(object sender, EventArgs e)
+        private void HintTextBox_TextChanged(object? sender, EventArgs? e)
         {
             ClearIcon.Visible = (TextLength > 0) && !ReadOnly;
         }
@@ -45,7 +45,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="sender">The control sending the event</param>
         /// <param name="e">The event arguments</param>
-        private void HintTextBox_SizeChanged(object sender, EventArgs e)
+        private void HintTextBox_SizeChanged(object? sender, EventArgs? e)
         {
             if (ClearIcon.Image != null)
             {

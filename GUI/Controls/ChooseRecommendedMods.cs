@@ -32,7 +32,7 @@ namespace CKAN.GUI
                                         NetModuleCache      cache,
                                         IGame               game,
                                         List<ModuleLabel>   labels,
-                                        GUIConfiguration    config,
+                                        GUIConfiguration?   config,
                                         Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                         Dictionary<CkanModule, List<string>>              suggestions,
                                         Dictionary<CkanModule, HashSet<string>>           supporters)
@@ -44,7 +44,7 @@ namespace CKAN.GUI
             this.config      = config;
             Util.Invoke(this, () =>
             {
-                AlwaysUncheckAllButton.Checked = config.SuppressRecommendations;
+                AlwaysUncheckAllButton.Checked = config?.SuppressRecommendations ?? false;
                 RecommendedModsListView.BeginUpdate();
                 RecommendedModsListView.ItemChecked -= RecommendedModsListView_ItemChecked;
                 RecommendedModsListView.Items.AddRange(
@@ -64,23 +64,23 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public HashSet<CkanModule> Wait()
+        public HashSet<CkanModule>? Wait()
         {
             if (Platform.IsMono)
             {
                 // Workaround: make sure the ListView headers are drawn
                 Util.Invoke(this, () => RecommendedModsListView.EndUpdate());
             }
-            task = new TaskCompletionSource<HashSet<CkanModule>>();
+            task = new TaskCompletionSource<HashSet<CkanModule>?>();
             return task.Task.Result;
         }
 
         public ListView.SelectedListViewItemCollection SelectedItems
             => RecommendedModsListView.SelectedItems;
 
-        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
+        public event Action<ListView.SelectedListViewItemCollection>? OnSelectedItemsChanged;
 
-        public event Action<string> OnConflictFound;
+        public event Action<string>? OnConflictFound;
 
         protected override void OnResize(EventArgs e)
         {
@@ -88,7 +88,7 @@ namespace CKAN.GUI
             RecommendedModsListView_ColumnWidthChanged(null, null);
         }
 
-        private void RecommendedModsListView_ColumnWidthChanged(object sender, ColumnWidthChangedEventArgs args)
+        private void RecommendedModsListView_ColumnWidthChanged(object? sender, ColumnWidthChangedEventArgs? args)
         {
             if (args?.ColumnIndex != DescriptionHeader.Index)
             {
@@ -108,17 +108,17 @@ namespace CKAN.GUI
             }
         }
 
-        private void RecommendedModsListView_SelectedIndexChanged(object sender, EventArgs e)
+        private void RecommendedModsListView_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             OnSelectedItemsChanged?.Invoke(RecommendedModsListView.SelectedItems);
         }
 
-        private void RecommendedModsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
+        private void RecommendedModsListView_ItemChecked(object? sender, ItemCheckedEventArgs? e)
         {
-            var module = e.Item.Tag as CkanModule;
+            var module = e?.Item.Tag as CkanModule;
             if (module?.IsDLC ?? false)
             {
-                if (e.Item.Checked)
+                if (e != null && e.Item.Checked)
                 {
                     e.Item.Checked = false;
                 }
@@ -132,42 +132,46 @@ namespace CKAN.GUI
 
         private void MarkConflicts()
         {
-            try
+            if (registry != null && versionCrit != null)
             {
-                var resolver = new RelationshipResolver(
-                    RecommendedModsListView.CheckedItems
-                                           .Cast<ListViewItem>()
-                                           .Select(item => item.Tag as CkanModule)
-                                           .Concat(toInstall)
-                                           .Distinct(),
-                    toUninstall,
-                    RelationshipResolverOptions.ConflictsOpts(), registry, versionCrit);
-                var conflicts = resolver.ConflictList;
-                foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
-                    // Apparently ListView handes AddRange by:
-                    //   1. Expanding the Items list to the new size by filling it with nulls
-                    //   2. One by one, replace each null with a real item and call _ItemChecked
-                    // ... so the Items list can contain null!!
-                    .Where(it => it != null))
+                try
                 {
-                    item.BackColor = conflicts.ContainsKey(item.Tag as CkanModule)
-                        ? Color.LightCoral
-                        : Color.Empty;
+                    var resolver = new RelationshipResolver(
+                        RecommendedModsListView.CheckedItems
+                                               .OfType<ListViewItem>()
+                                               .Select(item => item.Tag as CkanModule)
+                                               .OfType<CkanModule>()
+                                               .Concat(toInstall)
+                                               .Distinct(),
+                        toUninstall,
+                        RelationshipResolverOptions.ConflictsOpts(), registry, versionCrit);
+                    var conflicts = resolver.ConflictList;
+                    foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
+                        // Apparently ListView handes AddRange by:
+                        //   1. Expanding the Items list to the new size by filling it with nulls
+                        //   2. One by one, replace each null with a real item and call _ItemChecked
+                        // ... so the Items list can contain null!!
+                        .OfType<ListViewItem>())
+                    {
+                        item.BackColor = item.Tag is CkanModule m && conflicts.ContainsKey(m)
+                            ? Color.LightCoral
+                            : Color.Empty;
+                    }
+                    RecommendedModsContinueButton.Enabled = !conflicts.Any();
+                    OnConflictFound?.Invoke(string.Join("; ", resolver.ConflictDescriptions));
                 }
-                RecommendedModsContinueButton.Enabled = !conflicts.Any();
-                OnConflictFound?.Invoke(string.Join("; ", resolver.ConflictDescriptions));
-            }
-            catch (DependencyNotSatisfiedKraken k)
-            {
-                var row = RecommendedModsListView.Items
-                                                 .Cast<ListViewItem>()
-                                                 .FirstOrDefault(it => (it?.Tag as CkanModule) == k.parent);
-                if (row != null)
+                catch (DependencyNotSatisfiedKraken k)
                 {
-                    row.BackColor = Color.LightCoral;
+                    var row = RecommendedModsListView.Items
+                                                     .Cast<ListViewItem>()
+                                                     .FirstOrDefault(it => (it?.Tag as CkanModule) == k.parent);
+                    if (row != null)
+                    {
+                        row.BackColor = Color.LightCoral;
+                    }
+                    RecommendedModsContinueButton.Enabled = false;
+                    OnConflictFound?.Invoke(k.Message);
                 }
-                RecommendedModsContinueButton.Enabled = false;
-                OnConflictFound?.Invoke(k.Message);
             }
         }
 
@@ -182,7 +186,7 @@ namespace CKAN.GUI
                                                            kvp.Key,
                                                            string.Join(", ", kvp.Value.Item2),
                                                            RecommendationsGroup,
-                                                           !config.SuppressRecommendations
+                                                           (!config?.SuppressRecommendations ?? true)
                                                                && kvp.Value.Item1
                                                                && !uncheckLabels.Any(mlbl =>
                                                                    mlbl.ContainsModule(game, kvp.Key.identifier))))
@@ -217,14 +221,14 @@ namespace CKAN.GUI
                 Group   = group
             };
 
-        private void UncheckAllButton_Click(object sender, EventArgs e)
+        private void UncheckAllButton_Click(object? sender, EventArgs? e)
         {
             CheckUncheckRows(RecommendedModsListView.Items, false);
         }
 
-        private void AlwaysUncheckAllButton_CheckedChanged(object sender, EventArgs e)
+        private void AlwaysUncheckAllButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            if (config.SuppressRecommendations != AlwaysUncheckAllButton.Checked)
+            if (config != null && config.SuppressRecommendations != AlwaysUncheckAllButton.Checked)
             {
                 config.SuppressRecommendations = AlwaysUncheckAllButton.Checked;
                 config.Save();
@@ -235,12 +239,12 @@ namespace CKAN.GUI
             }
         }
 
-        private void CheckAllButton_Click(object sender, EventArgs e)
+        private void CheckAllButton_Click(object? sender, EventArgs? e)
         {
             CheckUncheckRows(RecommendedModsListView.Items, true);
         }
 
-        private void CheckRecommendationsButton_Click(object sender, EventArgs e)
+        private void CheckRecommendationsButton_Click(object? sender, EventArgs? e)
         {
             CheckUncheckRows(RecommendationsGroup.Items, true);
         }
@@ -273,29 +277,30 @@ namespace CKAN.GUI
                                                                      .Any(lvi => !lvi.Checked);
         }
 
-        private void RecommendedModsCancelButton_Click(object sender, EventArgs e)
+        private void RecommendedModsCancelButton_Click(object? sender, EventArgs? e)
         {
             task?.SetResult(null);
             RecommendedModsListView.Items.Clear();
             RecommendedModsListView.ItemChecked -= RecommendedModsListView_ItemChecked;
         }
 
-        private void RecommendedModsContinueButton_Click(object sender, EventArgs e)
+        private void RecommendedModsContinueButton_Click(object? sender, EventArgs? e)
         {
             task?.SetResult(RecommendedModsListView.CheckedItems
-                                                   .Cast<ListViewItem>()
+                                                   .OfType<ListViewItem>()
                                                    .Select(item => item.Tag as CkanModule)
+                                                   .OfType<CkanModule>()
                                                    .ToHashSet());
             RecommendedModsListView.Items.Clear();
             RecommendedModsListView.ItemChecked -= RecommendedModsListView_ItemChecked;
         }
 
-        private IRegistryQuerier    registry;
-        private List<CkanModule>    toInstall;
-        private HashSet<CkanModule> toUninstall;
-        private GameVersionCriteria versionCrit;
-        private GUIConfiguration    config;
+        private IRegistryQuerier?    registry;
+        private List<CkanModule>     toInstall = new List<CkanModule>();
+        private HashSet<CkanModule>  toUninstall = new HashSet<CkanModule>();
+        private GameVersionCriteria? versionCrit;
+        private GUIConfiguration?    config;
 
-        private TaskCompletionSource<HashSet<CkanModule>> task;
+        private TaskCompletionSource<HashSet<CkanModule>?>? task;
     }
 }
