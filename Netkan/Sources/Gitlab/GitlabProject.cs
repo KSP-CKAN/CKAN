@@ -8,18 +8,18 @@ namespace CKAN.NetKAN.Sources.Gitlab
     public sealed class GitlabProject
     {
         [JsonProperty("name")]
-        public readonly string Name;
+        public readonly string? Name;
 
         [JsonProperty("description")]
-        public readonly string Description;
+        public readonly string? Description;
 
         [JsonProperty("web_url")]
-        public readonly string WebURL;
+        public readonly string? WebURL;
 
         [JsonProperty("issues_enabled")]
         public readonly bool IssuesEnabled;
 
         [JsonProperty("readme_url")]
-        public readonly string ReadMeURL;
+        public readonly string? ReadMeURL;
     }
 }

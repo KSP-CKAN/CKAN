@@ -16,21 +16,26 @@ namespace CKAN.NetKAN.Processors
 {
     public class Inflator
     {
-        public Inflator(string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease, IGame game)
+        public Inflator(string? cacheDir,
+                        bool    overwriteCache,
+                        string? githubToken,
+                        string? gitlabToken,
+                        bool    prerelease,
+                        IGame   game)
         {
             log.Debug("Initializing inflator");
-            cache = FindCache(
-                ServiceLocator.Container.Resolve<IConfiguration>(),
-                cacheDir);
+            cache = FindCache(ServiceLocator.Container.Resolve<IConfiguration>(),
+                              cacheDir);
 
             IModuleService moduleService = new ModuleService(game);
             IFileService   fileService   = new FileService(cache);
             http          = new CachingHttpService(cache, overwriteCache);
             ckanValidator = new CkanValidator(http, moduleService, game);
-            transformer   = new NetkanTransformer(http, fileService, moduleService, githubToken, gitlabToken, prerelease, game, netkanValidator);
+            transformer   = new NetkanTransformer(http, fileService, moduleService,
+                                                  githubToken, gitlabToken, prerelease, game, netkanValidator);
         }
 
-        internal IEnumerable<Metadata> Inflate(string filename, Metadata[] netkans, TransformOptions opts)
+        internal IEnumerable<Metadata> Inflate(string filename, Metadata[] netkans, TransformOptions? opts)
         {
             log.DebugFormat("Inflating {0}", filename);
             try
@@ -81,7 +86,7 @@ namespace CKAN.NetKAN.Processors
             ckanValidator.Validate(ckan);
         }
 
-        private static NetFileCache FindCache(IConfiguration cfg, string cacheDir)
+        private static NetFileCache FindCache(IConfiguration cfg, string? cacheDir)
         {
             if (cacheDir != null)
             {
@@ -93,7 +98,7 @@ namespace CKAN.NetKAN.Processors
             {
                 log.InfoFormat("Using main CKAN meta-cache at {0}", cfg.DownloadCacheDir);
                 // Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(null, cfg.DownloadCacheDir);
+                return new NetFileCache(null, cfg.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
             }
             catch
             {

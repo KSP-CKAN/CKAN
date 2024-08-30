@@ -10,13 +10,13 @@ namespace CKAN.NetKAN.Sources.Github
             RegexOptions.Compiled
         );
 
-        public string Account { get; private set; }
-        public string Project { get; private set; }
-        public string Repository { get; private set; }
-        public Regex Filter { get; private set; }
-        public Regex VersionFromAsset { get; private set; }
-        public bool UseSourceArchive { get; private set; }
-        public bool UsePrerelease { get; private set; }
+        public string Account          { get; private set; }
+        public string Project          { get; private set; }
+        public string Repository       { get; private set; }
+        public Regex? Filter           { get; private set; }
+        public Regex? VersionFromAsset { get; private set; }
+        public bool   UseSourceArchive { get; private set; }
+        public bool   UsePrerelease    { get; private set; }
 
         public GithubRef(string remoteRefToken, bool useSourceArchive, bool usePrerelease)
             : this(new RemoteRef(remoteRefToken), useSourceArchive, usePrerelease) { }
@@ -24,21 +24,21 @@ namespace CKAN.NetKAN.Sources.Github
         public GithubRef(RemoteRef remoteRef, bool useSourceArchive, bool usePrerelease)
             : base(remoteRef)
         {
-            var match = Pattern.Match(remoteRef.Id);
-
-            if (match.Success)
+            if (remoteRef.Id != null
+                && Pattern.Match(remoteRef.Id) is Match match
+                && match.Success)
             {
                 Account = match.Groups["account"].Value;
                 Project = match.Groups["project"].Value;
                 Repository = string.Format("{0}/{1}", Account, Project);
 
-                Filter = match.Groups["filter"].Success ?
-                    new Regex(match.Groups["filter"].Value, RegexOptions.Compiled) :
-                    Constants.DefaultAssetMatchPattern;
+                Filter = match.Groups["filter"].Success
+                    ? new Regex(match.Groups["filter"].Value, RegexOptions.Compiled)
+                    : Constants.DefaultAssetMatchPattern;
 
-                VersionFromAsset = match.Groups["versionFromAsset"].Success ?
-                    new Regex(match.Groups["versionFromAsset"].Value, RegexOptions.Compiled) :
-                    null;
+                VersionFromAsset = match.Groups["versionFromAsset"].Success
+                    ? new Regex(match.Groups["versionFromAsset"].Value, RegexOptions.Compiled)
+                    : null;
 
                 UseSourceArchive = useSourceArchive;
                 UsePrerelease = usePrerelease;

@@ -20,17 +20,17 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "avc-kref";
         private readonly IHttpService httpSvc;
-        private readonly IGithubApi   githubSrc;
+        private readonly IGithubApi?  githubSrc;
 
-        public AvcKrefTransformer(IHttpService http, IGithubApi github)
+        public AvcKrefTransformer(IHttpService http, IGithubApi? github)
         {
             httpSvc   = http;
             githubSrc = github;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (metadata.Kref?.Source == "ksp-avc")
+            if (metadata.Kref?.Source == "ksp-avc" && metadata.Kref.Id != null)
             {
                 var json = metadata.Json();
 
@@ -38,30 +38,31 @@ namespace CKAN.NetKAN.Transformers
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var url = new Uri(metadata.Kref.Id);
-                AvcVersion remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(
-                    githubSrc?.DownloadText(url)
-                        ?? httpSvc.DownloadText(Net.GetRawUri(url))
-                );
-
-                json.SafeAdd("name",     remoteAvc.Name);
-                json.Remove("$kref");
-                json.SafeAdd("download", remoteAvc.Download);
-
-                // Set .resources.repository based on GITHUB properties
-                if (remoteAvc.Github?.Username != null && remoteAvc.Github?.Repository != null)
+                if ((githubSrc?.DownloadText(url)
+                             ?? httpSvc.DownloadText(Net.GetRawUri(url)))
+                         is string contents
+                    && JsonConvert.DeserializeObject<AvcVersion>(contents)
+                        is AvcVersion remoteAvc)
                 {
-                    // Make sure resources exist.
-                    if (json["resources"] == null)
+                    json.SafeAdd("name",     remoteAvc.Name);
+                    json.Remove("$kref");
+                    json.SafeAdd("download", remoteAvc.Download);
+
+                    // Set .resources.repository based on GITHUB properties
+                    if (remoteAvc.Github?.Username != null && remoteAvc.Github?.Repository != null)
                     {
-                        json["resources"] = new JObject();
+                        // Make sure resources exist.
+                        if (json["resources"] == null)
+                        {
+                            json["resources"] = new JObject();
+                        }
+
+                        var resourcesJson = (JObject?)json["resources"];
+                        resourcesJson?.SafeAdd("repository", $"https://github.com/{remoteAvc.Github.Username}/{remoteAvc.Github.Repository}");
                     }
-
-                    var resourcesJson = (JObject)json["resources"];
-                    resourcesJson.SafeAdd("repository", $"https://github.com/{remoteAvc.Github.Username}/{remoteAvc.Github.Repository}");
+                    // Use standard KSP-AVC logic to set version and the ksp_version_* properties
+                    AvcTransformer.ApplyVersions(json, remoteAvc);
                 }
-
-                // Use standard KSP-AVC logic to set version and the ksp_version_* properties
-                AvcTransformer.ApplyVersions(json, remoteAvc);
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+
 using log4net;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
@@ -27,7 +28,7 @@ namespace CKAN.NetKAN.Services
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleService));
 
-        public AvcVersion GetInternalAvc(CkanModule module, string zipFilePath, string internalFilePath = null)
+        public AvcVersion? GetInternalAvc(CkanModule module, string zipFilePath, string? internalFilePath = null)
         {
             using (var zipfile = new ZipFile(zipFilePath))
             {
@@ -44,7 +45,7 @@ namespace CKAN.NetKAN.Services
         /// <param name="zipPath">Where the ZIP file is</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        public JObject GetInternalCkan(CkanModule module, string zipPath, GameInstance inst)
+        public JObject? GetInternalCkan(CkanModule module, string zipPath, GameInstance inst)
             => GetInternalCkan(module, new ZipFile(zipPath), inst);
 
         /// <summary>
@@ -56,7 +57,7 @@ namespace CKAN.NetKAN.Services
         /// <param name="zip">The ZipFile to search</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        private JObject GetInternalCkan(CkanModule module, ZipFile zip, GameInstance inst)
+        private JObject? GetInternalCkan(CkanModule module, ZipFile zip, GameInstance inst)
             => (module.install != null
                     // Find embedded .ckan files that would be included in the install
                     ? GetFilesBySuffix(module, zip, ".ckan", inst)
@@ -120,17 +121,20 @@ namespace CKAN.NetKAN.Services
         /// <param name="ver">The single game version</param>
         /// <param name="minVer">The minimum game version</param>
         /// <param name="maxVer">The maximum game version</param>
-        public static void ApplyVersions(JObject json, GameVersion ver, GameVersion minVer, GameVersion maxVer)
+        public static void ApplyVersions(JObject     json,
+                                         GameVersion? ver,
+                                         GameVersion? minVer,
+                                         GameVersion? maxVer)
         {
             // Get the minimum and maximum game versions that already exist in the metadata.
             // Use specific game version if min/max don't exist.
-            var existingMinStr = (string)json["ksp_version_min"] ?? (string)json["ksp_version"];
-            var existingMaxStr = (string)json["ksp_version_max"] ?? (string)json["ksp_version"];
+            var existingMinStr = json.Value<string>("ksp_version_min") ?? json.Value<string>("ksp_version");
+            var existingMaxStr = json.Value<string>("ksp_version_max") ?? json.Value<string>("ksp_version");
 
             var existingMin = existingMinStr == null ? null : GameVersion.Parse(existingMinStr);
             var existingMax = existingMaxStr == null ? null : GameVersion.Parse(existingMaxStr);
 
-            GameVersion avcMin, avcMax;
+            GameVersion? avcMin, avcMax;
             if (minVer == null && maxVer == null)
             {
                 // Use specific game version if min/max don't exist
@@ -144,8 +148,8 @@ namespace CKAN.NetKAN.Services
 
             // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
             // AVC file.
-            var gameVerMins  = new List<GameVersion>();
-            var gameVerMaxes = new List<GameVersion>();
+            var gameVerMins  = new List<GameVersion?>();
+            var gameVerMaxes = new List<GameVersion?>();
 
             if (!GameVersion.IsNullOrAny(existingMin))
             {
@@ -216,7 +220,7 @@ namespace CKAN.NetKAN.Services
         /// Return a parsed JObject from a stream.
         /// Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118
         /// </summary>
-        private static JObject DeserializeFromStream(Stream stream)
+        private static JObject? DeserializeFromStream(Stream stream)
         {
             using (var sr = new StreamReader(stream))
             {
@@ -239,7 +243,9 @@ namespace CKAN.NetKAN.Services
         /// Tuple consisting of the chosen file's entry in the archive plus a boolean
         /// indicating whether it's a file would be extracted to disk at installation
         /// </returns>
-        public Tuple<ZipEntry, bool> FindInternalAvc(CkanModule module, ZipFile zipfile, string internalFilePath)
+        public Tuple<ZipEntry, bool>? FindInternalAvc(CkanModule module,
+                                                      ZipFile    zipfile,
+                                                      string?    internalFilePath)
         {
             Log.DebugFormat("Finding AVC .version file for {0}", module);
 
@@ -274,7 +280,7 @@ namespace CKAN.NetKAN.Services
             if (!string.IsNullOrWhiteSpace(internalFilePath))
             {
                 Regex internalRE = new Regex(internalFilePath, RegexOptions.Compiled);
-                ZipEntry avcEntry = files
+                var avcEntry = files
                     .FirstOrDefault(f => f.Name == internalFilePath || internalRE.IsMatch(f.Name));
                 if (avcEntry == null)
                 {
@@ -300,7 +306,7 @@ namespace CKAN.NetKAN.Services
         /// <summary>
         /// Returns an AVC object for the given file in the archive, if any.
         /// </summary>
-        public static AvcVersion GetInternalAvc(ZipFile zipfile, ZipEntry avcEntry)
+        public static AvcVersion? GetInternalAvc(ZipFile zipfile, ZipEntry? avcEntry)
         {
             if (avcEntry == null)
             {
@@ -324,8 +330,7 @@ namespace CKAN.NetKAN.Services
                     throw new Kraken(string.Format(
                         "Error parsing version file {0}: {1}",
                         avcEntry.Name,
-                        exc.Message
-                    ));
+                        exc.Message));
                 }
             }
         }
@@ -337,10 +342,13 @@ namespace CKAN.NetKAN.Services
             Error = (sender, e) => e.ErrorContext.Handled = true
         };
 
-        public SpaceWarpInfo ParseSpaceWarpJson(string json)
-            => JsonConvert.DeserializeObject<SpaceWarpInfo>(json, ignoreJsonErrors);
+        public SpaceWarpInfo? ParseSpaceWarpJson(string? json)
+            => json == null ? null : JsonConvert.DeserializeObject<SpaceWarpInfo>(json, ignoreJsonErrors);
 
-        public SpaceWarpInfo GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string internalFilePath = null)
+        public SpaceWarpInfo? GetSpaceWarpInfo(CkanModule   module,
+                                               ZipFile      zip,
+                                               GameInstance inst,
+                                               string?      internalFilePath = null)
             => (string.IsNullOrWhiteSpace(internalFilePath)
                     ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, inst)
                     : ModuleInstaller.FindInstallableFiles(module, zip, inst)

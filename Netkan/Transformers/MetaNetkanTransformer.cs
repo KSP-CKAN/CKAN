@@ -22,19 +22,19 @@ namespace CKAN.NetKAN.Transformers
         private const string KrefSource = "netkan";
 
         private readonly IHttpService _http;
-        private readonly IGithubApi   _github;
+        private readonly IGithubApi?  _github;
 
         public string Name => "metanetkan";
 
-        public MetaNetkanTransformer(IHttpService http, IGithubApi github)
+        public MetaNetkanTransformer(IHttpService http, IGithubApi? github)
         {
             _http   = http;
             _github = github;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == KrefSource)
+            if (metadata.Kref != null && metadata.Kref.Source == KrefSource && metadata.Kref.Id != null)
             {
                 var json = metadata.Json();
 
@@ -47,47 +47,46 @@ namespace CKAN.NetKAN.Transformers
                     json["resources"] = new JObject();
                 }
 
-                var resourcesJson = (JObject)json["resources"];
-                resourcesJson.SafeAdd("metanetkan", metadata.Kref.Id);
+                var resourcesJson = json["resources"] as JObject;
+                resourcesJson?.SafeAdd("metanetkan", metadata.Kref.Id);
 
                 var uri = new Uri(metadata.Kref.Id);
-                var targetFileText = _github?.DownloadText(uri)
-                    ?? _http.DownloadText(Net.GetRawUri(uri));
-
-                Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
-
-                var targetJsons = YamlExtensions.Parse(targetFileText)
-                                                .Select(ymap => ymap.ToJObject())
-                                                .ToArray();
-
-                foreach (var targetJson in targetJsons)
+                if ((_github?.DownloadText(uri)
+                    ?? _http.DownloadText(Net.GetRawUri(uri))) is string targetFileText)
                 {
-                    var targetMetadata =  new Metadata(targetJson);
-                    if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")
+                    Log.DebugFormat("Target netkan:{0}{1}", Environment.NewLine, targetFileText);
+                    var targetJsons = YamlExtensions.Parse(targetFileText)
+                                                    .Select(ymap => ymap.ToJObject())
+                                                    .ToArray();
+                    foreach (var targetJson in targetJsons)
                     {
-                        if (targetJson["$kref"] != null)
+                        var targetMetadata =  new Metadata(targetJson);
+                        if (targetMetadata.Kref == null || targetMetadata.Kref.Source != "netkan")
                         {
-                            json["$kref"] = targetJson["$kref"];
+                            if (targetJson["$kref"] != null)
+                            {
+                                json["$kref"] = targetJson["$kref"];
+                            }
+                            else
+                            {
+                                json.Remove("$kref");
+                            }
+
+                            json.SafeMerge("resources", targetJson["resources"]);
+
+                            foreach (var property in targetJson.Properties())
+                            {
+                                json.SafeAdd(property.Name, property.Value);
+                            }
+
+                            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+                            yield return new Metadata(json);
                         }
                         else
                         {
-                            json.Remove("$kref");
+                            throw new Kraken("The target of a metanetkan may not also be a metanetkan.");
                         }
-
-                        json.SafeMerge("resources", targetJson["resources"]);
-
-                        foreach (var property in targetJson.Properties())
-                        {
-                            json.SafeAdd(property.Name, property.Value);
-                        }
-
-                        Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                        yield return new Metadata(json);
-                    }
-                    else
-                    {
-                        throw new Kraken("The target of a metanetkan may not also be a metanetkan.");
                     }
                 }
             }

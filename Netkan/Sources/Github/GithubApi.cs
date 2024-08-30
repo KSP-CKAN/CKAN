@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ namespace CKAN.NetKAN.Sources.Github
         private static readonly Uri ApiBase = new Uri("https://api.github.com/");
 
         private readonly IHttpService _http;
-        private readonly string       _oauthToken;
+        private readonly string?      _oauthToken;
 
         private const string rawMediaType = "application/vnd.github.v3.raw";
 
@@ -38,28 +39,23 @@ namespace CKAN.NetKAN.Sources.Github
         };
 
         // https://raw.githubusercontent.com/<OWNER>/<REPO>/<BRANCH>/<PATH>
-        private static readonly Regex githubUserContentUrlRegex = new Regex(
-            @"^/(?<owner>[^/]+)/(?<repo>[^/]+)/(?<branch>[^/]+)/(?<path>.+)$",
-            RegexOptions.Compiled
-        );
+        private static readonly Regex githubUserContentUrlRegex =
+            new Regex(@"^/(?<owner>[^/]+)/(?<repo>[^/]+)/(?<branch>[^/]+)/(?<path>.+)$",
+                      RegexOptions.Compiled);
 
-        public GithubApi(IHttpService http, string oauthToken = null)
+        public GithubApi(IHttpService http, string? oauthToken = null)
         {
             _http       = http;
             _oauthToken = oauthToken;
         }
 
-        public GithubRepo GetRepo(GithubRef reference)
-        {
-            return JsonConvert.DeserializeObject<GithubRepo>(
-                Call($"repos/{reference.Repository}")
-            );
-        }
+        public GithubRepo? GetRepo(GithubRef reference)
+            => Call($"repos/{reference.Repository}") is string s
+                   ? JsonConvert.DeserializeObject<GithubRepo>(s)
+                   : null;
 
-        public GithubRelease GetLatestRelease(GithubRef reference)
-        {
-            return GetAllReleases(reference).FirstOrDefault();
-        }
+        public GithubRelease? GetLatestRelease(GithubRef reference)
+            => GetAllReleases(reference).FirstOrDefault();
 
         public IEnumerable<GithubRelease> GetAllReleases(GithubRef reference)
         {
@@ -67,6 +63,10 @@ namespace CKAN.NetKAN.Sources.Github
             for (int page = 1; true; ++page)
             {
                 var json = Call($"repos/{reference.Repository}/releases?per_page={perPage}&page={page}");
+                if (json == null)
+                {
+                    break;
+                }
                 Log.Debug("Parsing JSON...");
                 var jsonReleases = JArray.Parse(json);
                 if (jsonReleases.Count < 1)
@@ -81,6 +81,7 @@ namespace CKAN.NetKAN.Sources.Github
                         // out on pre-releases.
                         ghRel.PreRelease == reference.UsePrerelease
                         // Skip releases without assets
+                        && ghRel.Assets != null
                         && ghRel.Assets.Any())
                     // Insurance against GitHub returning them in the wrong order
                     .OrderByDescending(ghRel => ghRel.PublishedAt)
@@ -94,11 +95,10 @@ namespace CKAN.NetKAN.Sources.Github
         }
 
         public List<GithubUser> getOrgMembers(GithubUser organization)
-        {
-            return JsonConvert.DeserializeObject<List<GithubUser>>(
-                Call($"orgs/{organization.Login}/public_members")
-            );
-        }
+            => (Call($"orgs/{organization.Login}/public_members") is string s
+                    ? JsonConvert.DeserializeObject<List<GithubUser>>(s)
+                    : null)
+               ?? new List<GithubUser>();
 
         /// <summary>
         /// Download a URL via the GitHubAPI.
@@ -108,15 +108,17 @@ namespace CKAN.NetKAN.Sources.Github
         /// <returns>
         /// null if the URL isn't on GitHub, otherwise the contents of the download
         /// </returns>
-        public string DownloadText(Uri url)
+        public string? DownloadText(Uri url)
         {
-            if (TryGetGitHubPath(url, out string ghOwner, out string ghRepo, out string ghBranch, out string ghPath))
+            if (TryGetGitHubPath(url, out string? ghOwner,
+                                      out string? ghRepo,
+                                      out string? ghBranch,
+                                      out string? ghPath))
             {
                 Log.Info("Found GitHub URL, retrieving with API");
                 return Call(
                     $"repos/{ghOwner}/{ghRepo}/contents/{ghPath}?ref={ghBranch}",
-                    rawMediaType
-                );
+                    rawMediaType);
             }
             else
             {
@@ -125,7 +127,11 @@ namespace CKAN.NetKAN.Sources.Github
             }
         }
 
-        private bool TryGetGitHubPath(Uri url, out string owner, out string repo, out string branch, out string path)
+        private static bool TryGetGitHubPath(Uri url,
+                                             [NotNullWhen(true)] out string? owner,
+                                             [NotNullWhen(true)] out string? repo,
+                                             [NotNullWhen(true)] out string? branch,
+                                             [NotNullWhen(true)] out string? path)
         {
             switch (url.Host)
             {
@@ -161,7 +167,7 @@ namespace CKAN.NetKAN.Sources.Github
             return false;
         }
 
-        private string Call(string path, string mimeType = null)
+        private string? Call(string path, string? mimeType = null)
         {
             var url = new Uri(ApiBase, path);
             Log.DebugFormat("Calling {0}", url);
@@ -172,7 +178,8 @@ namespace CKAN.NetKAN.Sources.Github
             }
             catch (WebException k)
             {
-                if (((HttpWebResponse)k.Response).StatusCode == HttpStatusCode.Forbidden && k.Response.Headers["X-RateLimit-Remaining"] == "0")
+                if (((HttpWebResponse?)k.Response)?.StatusCode == HttpStatusCode.Forbidden
+                    && k.Response.Headers["X-RateLimit-Remaining"] == "0")
                 {
                     throw new Kraken($"GitHub API rate limit exceeded: {path}");
                 }

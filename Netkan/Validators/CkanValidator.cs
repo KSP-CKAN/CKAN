@@ -10,7 +10,9 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly List<IValidator> _validators;
 
-        public CkanValidator(IHttpService downloader, IModuleService moduleService, IGame game)
+        public CkanValidator(IHttpService downloader,
+                             IModuleService moduleService,
+                             IGame game)
         {
             _validators = new List<IValidator>
             {

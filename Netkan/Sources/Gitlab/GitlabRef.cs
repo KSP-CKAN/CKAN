@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Sources.Gitlab
         public GitlabRef(RemoteRef reference)
             : base(reference)
         {
-            var match = Pattern.Match(reference.Id);
+            var match = Pattern.Match(reference.Id ?? "");
             if (match.Success)
             {
                 Account = match.Groups["account"].Value;

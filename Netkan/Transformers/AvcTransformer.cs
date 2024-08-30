@@ -25,12 +25,15 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
-        private readonly IGithubApi     _github;
+        private readonly IGithubApi?    _github;
         private readonly VrefValidator  _vrefValidator;
 
         public string Name => "avc";
 
-        public AvcTransformer(IHttpService http, IModuleService moduleService, IGithubApi github, IGame game)
+        public AvcTransformer(IHttpService   http,
+                              IModuleService moduleService,
+                              IGithubApi?    github,
+                              IGame          game)
         {
             _http          = http;
             _moduleService = moduleService;
@@ -38,7 +41,7 @@ namespace CKAN.NetKAN.Transformers
             _vrefValidator = new VrefValidator(_http, _moduleService, game);
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             _vrefValidator.Validate(metadata);
 
@@ -64,18 +67,18 @@ namespace CKAN.NetKAN.Transformers
                 }
 
                 var file = _http.DownloadModule(metadata);
-                var avc = _moduleService.GetInternalAvc(mod, file, metadata.Vref.Id);
-
-                if (avc != null)
+                if (file != null
+                    && _moduleService.GetInternalAvc(mod, file, metadata.Vref.Id) is AvcVersion avc)
                 {
                     Log.Info("Found internal AVC version file");
 
-                    var resourcesJson = (JObject)json["resources"];
+                    var resourcesJson = (JObject?)json["resources"];
                     var remoteUri = resourcesJson?["remote-avc"] != null
-                        ? new Uri((string)resourcesJson["remote-avc"])
-                        : GetRemoteAvcUri(avc);
+                        && (string?)resourcesJson["remote-avc"] is string s
+                            ? new Uri(s)
+                            : GetRemoteAvcUri(avc);
 
-                    if (remoteUri != null)
+                    if (remoteUri != null && avc.version != null)
                     {
                         if (resourcesJson == null)
                         {
@@ -85,11 +88,10 @@ namespace CKAN.NetKAN.Transformers
 
                         try
                         {
-                            var remoteJson = _github?.DownloadText(remoteUri)
-                                ?? _http.DownloadText(remoteUri);
-                            var remoteAvc = JsonConvert.DeserializeObject<AvcVersion>(remoteJson);
-
-                            if (avc.version.CompareTo(remoteAvc.version) == 0)
+                            if ((_github?.DownloadText(remoteUri)
+                                ?? _http.DownloadText(remoteUri)) is string remoteJson
+                                && JsonConvert.DeserializeObject<AvcVersion>(remoteJson) is AvcVersion remoteAvc
+                                && avc.version.CompareTo(remoteAvc.version) == 0)
                             {
                                 // Local AVC and Remote AVC describe the same version, prefer
                                 Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferentially.");
@@ -142,7 +144,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private static Uri GetRemoteAvcUri(AvcVersion avc)
+        private static Uri? GetRemoteAvcUri(AvcVersion avc)
         {
             if (!Uri.IsWellFormedUriString(avc.Url, UriKind.Absolute))
             {

@@ -25,9 +25,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
             _http = http;
         }
 
-        public SpacedockMod GetMod(int modId)
+        public SpacedockMod? GetMod(int modId)
         {
-            string json;
+            string? json;
             try
             {
                 json = Call("/mod/" + modId);
@@ -49,10 +49,15 @@ namespace CKAN.NetKAN.Sources.Spacedock
                 }
             }
 
+            if (json == null)
+            {
+                throw new Kraken("Got nothing from SpaceDock!");
+            }
+
             // Check if the mod has been removed from SD.
             var error = JsonConvert.DeserializeObject<SpacedockError>(json);
 
-            if (error.error)
+            if (error?.error ?? false)
             {
                 var errorMessage = $"Could not get the mod from SpaceDock, reason: {error.reason}";
                 throw new Kraken(errorMessage);
@@ -61,7 +66,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
             return SpacedockMod.FromJson(json);
         }
 
-        private string Call(string path)
+        private string? Call(string path)
         {
             // TODO: There's got to be a better way than using regexps.
             // new Uri (spacedock_api, path) doesn't work, it only uses the *base* of the first arg,

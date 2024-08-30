@@ -23,20 +23,11 @@ namespace CKAN.NetKAN
 {
     public static class Program
     {
-        private const int ExitOk = 0;
-        private const int ExitBadOpt = 1;
-        private const int ExitError = 2;
-
-        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
-
-        private static CmdLineOptions Options { get; set; }
-
         public static int Main(string[] args)
         {
+            var Options = ProcessArgs(args);
             try
             {
-                ProcessArgs(args);
-
                 // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
                 // This is on by default in .NET 4.6, but not in 4.5.
                 ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
@@ -50,6 +41,10 @@ namespace CKAN.NetKAN
                 }
 
                 var game = KnownGames.GameByShortName(Options.Game);
+                if (game == null)
+                {
+                    return ExitBadOpt;
+                }
 
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {
@@ -60,27 +55,26 @@ namespace CKAN.NetKAN
                         Options.GitHubToken,
                         Options.GitLabToken,
                         Options.PreRelease,
-                        game
-                    );
+                        game);
                     inf.ValidateCkan(ckan);
                     Console.WriteLine(QueueHandler.serializeCkan(
                         PropertySortTransformer.SortProperties(ckan)));
                     return ExitOk;
                 }
 
-                if (!string.IsNullOrEmpty(Options.Queues))
+                if (Options.Queues != null && !string.IsNullOrEmpty(Options.Queues))
                 {
                     var queues = Options.Queues.Split(new char[] { ',' }, 2);
                     var qh = new QueueHandler(
                         queues[0],
                         queues[1],
                         Options.CacheDir,
+                        Options.OutputDir,
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
                         Options.PreRelease,
-                        game
-                    );
+                        game);
                     qh.Process();
                     return ExitOk;
                 }
@@ -89,7 +83,7 @@ namespace CKAN.NetKAN
                 {
                     Log.InfoFormat("Transforming {0}", Options.File);
 
-                    var netkans = ReadNetkans();
+                    var netkans = ReadNetkans(Options);
                     Log.Info("Finished reading input");
 
                     var inf = new Inflator(
@@ -112,7 +106,7 @@ namespace CKAN.NetKAN
                         .ToArray();
                     foreach (Metadata ckan in ckans)
                     {
-                        WriteCkan(ckan.Json());
+                        WriteCkan(Options.OutputDir, ckan.Json());
                     }
                 }
                 else
@@ -140,29 +134,26 @@ namespace CKAN.NetKAN
             return ExitOk;
         }
 
-        private static int? ParseReleases(string val)
-        {
-            return val == "all" ? (int?)null : int.Parse(val);
-        }
+        private static int? ParseReleases(string? val)
+            => val == null  ? 1
+             : val == "all" ? null
+             : int.Parse(val);
 
-        private static int? ParseSkipReleases(string val)
-        {
-            return string.IsNullOrWhiteSpace(val) ? (int?)null : int.Parse(val);
-        }
+        private static int? ParseSkipReleases(string? val)
+            => string.IsNullOrWhiteSpace(val) ? null : int.Parse(val);
 
-        private static ModuleVersion ParseHighestVersion(string val)
-        {
-            return val == null ? null : new ModuleVersion(val);
-        }
+        private static ModuleVersion? ParseHighestVersion(string? val)
+            => val == null ? null
+                           : new ModuleVersion(val);
 
-        private static void ProcessArgs(string[] args)
+        private static CmdLineOptions ProcessArgs(string[] args)
         {
             if (args.Any(i => i == "--debugger"))
             {
                 Debugger.Launch();
             }
 
-            Options = new CmdLineOptions();
+            var Options = new CmdLineOptions();
             Parser.Default.ParseArgumentsStrict(args, Options);
 
             Logging.Initialize();
@@ -176,11 +167,12 @@ namespace CKAN.NetKAN
             {
                 Net.UserAgentString = Options.NetUserAgent;
             }
+            return Options;
         }
 
-        private static Metadata[] ReadNetkans()
+        private static Metadata[] ReadNetkans(CmdLineOptions Options)
         {
-            if (!Options.File.EndsWith(".netkan"))
+            if (!Options.File?.EndsWith(".netkan") ?? false)
             {
                 Log.WarnFormat("Input is not a .netkan file");
             }
@@ -189,22 +181,25 @@ namespace CKAN.NetKAN
                                             .ToArray();
         }
 
-        private static YamlMappingNode[] ArgContents(string arg)
-            => Uri.IsWellFormedUriString(arg, UriKind.Absolute)
-                ? YamlExtensions.Parse(Net.DownloadText(new Uri(arg)))
-                : YamlExtensions.Parse(File.OpenText(arg));
+        private static YamlMappingNode[] ArgContents(string? arg)
+            => arg == null
+                ? Array.Empty<YamlMappingNode>()
+                : Uri.IsWellFormedUriString(arg, UriKind.Absolute)
+                   && Net.DownloadText(new Uri(arg)) is string s
+                    ? YamlExtensions.Parse(s)
+                    : YamlExtensions.Parse(File.OpenText(arg));
 
-        internal static string CkanFileName(JObject json)
+        internal static string CkanFileName(string? dirPath, JObject json)
             => Path.Combine(
-                Options.OutputDir,
+                dirPath ?? ".",
                 string.Format(
                     "{0}-{1}.ckan",
-                    (string)json["identifier"],
-                    ((string)json["version"]).Replace(':', '-')));
+                    (string?)json["identifier"] ?? "",
+                    ((string?)json["version"])?.Replace(':', '-') ?? ""));
 
-        private static void WriteCkan(JObject json)
+        private static void WriteCkan(string? outputDir, JObject json)
         {
-            var finalPath = CkanFileName(json);
+            var finalPath = CkanFileName(outputDir, json);
 
             var sb = new StringBuilder();
             var sw = new StringWriter(sb);
@@ -224,5 +219,10 @@ namespace CKAN.NetKAN
             Log.InfoFormat("Transformation written to {0}", finalPath);
         }
 
+        private const int ExitOk = 0;
+        private const int ExitBadOpt = 1;
+        private const int ExitError = 2;
+
+        private static readonly ILog Log = LogManager.GetLogger(typeof(Program));
     }
 }

@@ -170,7 +170,7 @@ namespace CKAN.NetKAN
             while (!valid)
             {
                 // Wait for input from the command line.
-                string input = Console.In.ReadLine();
+                var input = Console.In.ReadLine();
 
                 if (input == null)
                 {
@@ -190,7 +190,7 @@ namespace CKAN.NetKAN
                 }
 
                 // Check for cancellation characters.
-                if (input == "c" || input == "n")
+                if (input is "c" or "n")
                 {
                     RaiseMessage("Selection cancelled.");
 
@@ -250,8 +250,9 @@ namespace CKAN.NetKAN
             {
                 log.ErrorFormat(
                     message.Replace("\r\n", "%0A"),
-                    args.Select(a => a.ToString().Replace("\r\n", "%0A")).ToArray()
-                );
+                    args.OfType<string>()
+                        .Select(a => a.ToString().Replace("\r\n", "%0A"))
+                        .ToArray());
             }
             else
             {

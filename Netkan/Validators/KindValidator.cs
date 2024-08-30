@@ -8,12 +8,14 @@ namespace CKAN.NetKAN.Validators
         public void Validate(Metadata metadata)
         {
             var json = metadata.Json();
-            var kind = json["kind"];
-            if (metadata.SpecVersion < v1p6 && (string)kind == "metapackage")
+            var kind = json.Value<string>("kind");
+            if (metadata.SpecVersion != null
+                && metadata.SpecVersion < v1p6 && kind == "metapackage")
             {
                 throw new Kraken($"spec_version 1.6+ required for kind 'metpackage'");
             }
-            if (metadata.SpecVersion < v1p28 && (string)kind == "dlc")
+            if (metadata.SpecVersion != null
+                && metadata.SpecVersion < v1p28 && kind == "dlc")
             {
                 throw new Kraken($"spec_version 1.28+ required for kind 'dlc'");
             }

@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "http";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "http")
             {

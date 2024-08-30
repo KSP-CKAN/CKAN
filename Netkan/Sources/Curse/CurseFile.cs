@@ -10,20 +10,20 @@ namespace CKAN.NetKAN.Sources.Curse
     public class CurseFile
     {
         [JsonConverter(typeof(JsonConvertGameVersion))]
-        [JsonProperty] public GameVersion version;
+        [JsonProperty] public GameVersion? version;
 
         [JsonConverter(typeof(JsonConvertGameVersion))]
-        [JsonProperty] public GameVersion[] versions;
+        [JsonProperty] public GameVersion[]? versions;
 
         [JsonProperty] public string name = "";
-        [JsonProperty] public string type;
+        [JsonProperty] public string? type;
         [JsonProperty] public int id;
         [JsonProperty] public DateTime uploaded_at;
-        [JsonProperty] public string url;
+        [JsonProperty] public string? url;
 
-        private string _downloadUrl;
-        private string _filename;
-        private string _fileVersion;
+        private string? _downloadUrl;
+        private string? _filename;
+        private string? _fileVersion;
         public  string ModPageUrl = "";
 
         /// <summary>
@@ -34,14 +34,10 @@ namespace CKAN.NetKAN.Sources.Curse
         /// </returns>
         public string GetDownloadUrl()
         {
-            if (string.IsNullOrWhiteSpace(_downloadUrl))
+            _downloadUrl ??= Net.ResolveRedirect(new Uri(url + "/file"))?.ToString();
+            if (_downloadUrl == null)
             {
-                var resolved = Net.ResolveRedirect(new Uri(url + "/file"));
-                if (resolved == null)
-                {
-                    throw new Kraken($"Too many redirects resolving: {url}/file");
-                }
-                _downloadUrl = resolved.ToString();
+                throw new Kraken($"Too many redirects resolving: {url}/file");
             }
             return _downloadUrl;
         }
@@ -59,9 +55,7 @@ namespace CKAN.NetKAN.Sources.Curse
         /// </summary>
         /// <returns>The Curse Id version</returns>
         public string GetCurseIdVersion()
-        {
-            return "0curse" + id;
-        }
+            => "0curse" + id;
 
         /// <summary>
         /// Returns the filename of the file
@@ -114,14 +108,16 @@ namespace CKAN.NetKAN.Sources.Curse
         /// </summary>
         internal class JsonConvertGameVersion : JsonConverter
         {
-            public override object ReadJson(
-                JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
-            )
+            public override object? ReadJson(JsonReader     reader,
+                                             Type           objectType,
+                                             object?        existingValue,
+                                             JsonSerializer serializer)
             {
                 if (reader.TokenType == JsonToken.StartArray)
                 {
                     return JArray.Load(reader)
                         .Values<string>()
+                        .OfType<string>()
                         .Select(v => GameVersion.Parse(Regex.Replace(v, @"-.*$", "")))
                         .ToArray();
                 }
@@ -132,12 +128,12 @@ namespace CKAN.NetKAN.Sources.Curse
                         return null;
                     }
 
-                    string raw_version = reader.Value.ToString();
-                    return GameVersion.Parse(Regex.Replace(raw_version, @"-.*$", ""));
+                    var raw_version = reader.Value?.ToString();
+                    return GameVersion.Parse(Regex.Replace(raw_version ?? "", @"-.*$", ""));
                 }
             }
 
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
             {
                 throw new NotImplementedException();
             }

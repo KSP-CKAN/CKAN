@@ -7,13 +7,13 @@ namespace CKAN.NetKAN.Sources.Jenkins
     public class JenkinsBuild
     {
         [JsonProperty("url")]
-        public string Url;
+        public string? Url;
 
         [JsonProperty("result")]
-        public string Result;
+        public string? Result;
 
         [JsonProperty("artifacts")]
-        public JenkinsArtifact[] Artifacts;
+        public JenkinsArtifact[]? Artifacts;
 
         /// <summary>
         /// Milliseconds since 1970-01-01
@@ -22,25 +22,23 @@ namespace CKAN.NetKAN.Sources.Jenkins
         [JsonConverter(typeof(UnixDateTimeMillisecondsConverter))]
         public DateTime? Timestamp;
     }
-    
+
     /// <summary>
     /// UnixDateTimeConverter / 1000
     /// https://github.com/JamesNK/Newtonsoft.Json/blob/master/Src/Newtonsoft.Json/Converters/UnixDateTimeConverter.cs
     /// </summary>
     public class UnixDateTimeMillisecondsConverter : DateTimeConverterBase
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return UnixEpoch.AddMilliseconds((long)reader.Value);
-        }
-        
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+            => reader.Value is double d
+                ? UnixEpoch.AddMilliseconds(d)
+                : null;
+
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             if (value is DateTime dateTime)
             {
-                writer.WriteValue((long)(
-                    dateTime.ToUniversalTime() - UnixEpoch
-                ).TotalMilliseconds);
+                writer.WriteValue((long)(dateTime.ToUniversalTime() - UnixEpoch).TotalMilliseconds);
             }
         }
 

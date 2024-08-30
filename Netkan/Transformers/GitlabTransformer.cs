@@ -24,7 +24,7 @@ namespace CKAN.NetKAN.Transformers
         {
             if (api == null)
             {
-                throw new ArgumentNullException("api");
+                throw new ArgumentNullException(nameof(api));
             }
             this.api = api;
         }
@@ -41,16 +41,20 @@ namespace CKAN.NetKAN.Transformers
         /// <param name="metadata">Input netkan</param>
         /// <param name="opts">Inflation options from command line</param>
         /// <returns></returns>
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             if (metadata.Kref?.Source == Name)
             {
                 var reference = new GitlabRef(metadata.Kref);
                 var project   = api.GetProject(reference);
+                if (project == null)
+                {
+                    throw new Kraken("Failed to retrieve project info from GitLab!");
+                }
                 var releases  = api.GetAllReleases(reference)
-                    .Skip(opts.SkipReleases ?? 0)
-                    .Take(opts.Releases     ?? 1)
-                    .ToArray();
+                                   .Skip(opts?.SkipReleases ?? 0)
+                                   .Take(opts?.Releases     ?? 1)
+                                   .ToArray();
                 if (releases.Length < 1)
                 {
                     log.WarnFormat("No releases found for {0}", reference);
@@ -66,7 +70,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(JObject json, GitlabProject project, GitlabRelease release)
+        private static Metadata TransformOne(JObject json, GitlabProject project, GitlabRelease release)
         {
             var opts = (json["x_netkan_gitlab"] as JObject)?.ToObject<GitlabOptions>()
                 ?? new GitlabOptions();
@@ -77,19 +81,19 @@ namespace CKAN.NetKAN.Transformers
 
             json.SafeAdd("name",     project.Name);
             json.SafeAdd("abstract", project.Description);
-            json.SafeAdd("author",   release.Author.Name);
+            json.SafeAdd("author",   release.Author?.Name);
             json.SafeAdd("version",  release.TagName);
-            json.SafeMerge("resources", JObject.FromObject(new Dictionary<string, string>()
+            json.SafeMerge("resources", JObject.FromObject(new Dictionary<string, string?>()
             {
                 { "repository", project.WebURL },
                 { "bugtracker", project.IssuesEnabled ? $"{project.WebURL}/-/issues" : null },
                 { "manual",     project.ReadMeURL },
             }));
             json.SafeAdd("download",
-                release.Assets.Sources
-                    .Where(src => src.Format == "zip")
-                    .Select(src => src.URL)
-                    .FirstOrDefault());
+                release.Assets?.Sources
+                               .Where(src => src.Format == "zip")
+                               .Select(src => src.URL)
+                               .FirstOrDefault());
             json.SafeAdd(Metadata.UpdatedPropertyName, release.ReleasedAt);
 
             json.Remove("$kref");

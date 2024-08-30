@@ -21,12 +21,14 @@ namespace CKAN.NetKAN.Sources.Avc
             return true;
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-            JsonSerializer serializer)
+        public override object? ReadJson(JsonReader      reader,
+                                         Type?           objectType,
+                                         object?         existingValue,
+                                         JsonSerializer? serializer)
         {
-            string major = null;
-            string minor = null;
-            string patch = null;
+            string? major = null;
+            string? minor = null;
+            string? patch = null;
 
             var token = JToken.Load(reader);
             Log.DebugFormat("Read Token: {0}, {1}", new object[] {token.Type, token.ToString()});
@@ -51,9 +53,9 @@ namespace CKAN.NetKAN.Sources.Avc
                     }
                     break;
                 case JTokenType.Object:
-                    major = (string) token["MAJOR"];
-                    minor = (string) token["MINOR"];
-                    patch = (string) token["PATCH"];
+                    major = token.Value<string>("MAJOR");
+                    minor = token.Value<string>("MINOR");
+                    patch = token.Value<string>("PATCH");
                     break;
                 default:
                     throw new InvalidCastException("Trying to convert non-JSON object to Version object");
@@ -86,7 +88,7 @@ namespace CKAN.NetKAN.Sources.Avc
 
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
@@ -105,13 +107,13 @@ namespace CKAN.NetKAN.Sources.Avc
             return true;
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue,
             JsonSerializer serializer)
         {
             var major = "0";
             var minor = "0";
             var patch = "0";
-            string build = null;
+            string? build = null;
 
             var token = JToken.Load(reader);
             Log.DebugFormat("Read Token: {0}, {1}", new object[] {token.Type, token.ToString()});
@@ -142,10 +144,10 @@ namespace CKAN.NetKAN.Sources.Avc
 
                     break;
                 case JTokenType.Object:
-                    major = (string) token["MAJOR"];
-                    minor = (string) token["MINOR"];
-                    patch = (string) token["PATCH"];
-                    build = (string) token["BUILD"];
+                    major = token.Value<string>("MAJOR") ?? major;
+                    minor = token.Value<string>("MINOR") ?? minor;
+                    patch = token.Value<string>("PATCH") ?? patch;
+                    build = token.Value<string>("BUILD") ?? build;
                     break;
                 default:
                     throw new InvalidCastException("Trying to convert non-JSON object to Version object");
@@ -153,7 +155,7 @@ namespace CKAN.NetKAN.Sources.Avc
 
             var components = new List<string>() { major, minor, patch };
 
-            if (!string.IsNullOrWhiteSpace(build))
+            if (build != null && !string.IsNullOrWhiteSpace(build))
             {
                 components.Add(build);
             }
@@ -167,7 +169,7 @@ namespace CKAN.NetKAN.Sources.Avc
 
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

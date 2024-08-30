@@ -108,6 +108,8 @@ namespace Tests.NetKAN.Validators
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(false);
 

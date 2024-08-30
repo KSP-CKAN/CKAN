@@ -5,9 +5,9 @@ namespace CKAN.NetKAN.Sources.Jenkins
     public class JenkinsArtifact
     {
         [JsonProperty("fileName")]
-        public string FileName;
+        public string? FileName;
 
         [JsonProperty("relativePath")]
-        public string RelativePath;
+        public string? RelativePath;
     }
 }

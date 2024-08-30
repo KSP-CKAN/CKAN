@@ -15,11 +15,11 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "forced_v";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             var json = metadata.Json();
 
-            if (json.TryGetValue("x_netkan_force_v", out JToken forceV) && (bool)forceV)
+            if (json.TryGetValue("x_netkan_force_v", out JToken? forceV) && (bool)forceV)
             {
                 Log.InfoFormat("Executing forced-v transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
@@ -27,13 +27,12 @@ namespace CKAN.NetKAN.Transformers
                 // Force a 'v' in front of the version string if it's not there
                 // already.
 
-                var version = (string)json.GetValue("version");
-
-                if (!version.StartsWith("v"))
+                var version = (string?)json.GetValue("version");
+                if (version != null && !version.StartsWith("v"))
                 {
                     Log.InfoFormat("Force-adding 'v' to start of {0}", version);
                     version = "v"
-                        + (version.StartsWith("V") ? version.Substring(1) : version);
+                        + (version.StartsWith("V") ? version[1..] : version);
                     json["version"] = version;
                 }
 

@@ -12,7 +12,8 @@ namespace CKAN.NetKAN.Validators
             var json = metadata.Json();
             if (json.ContainsKey("download"))
             {
-                if (metadata.SpecVersion < v1p34 && json["download"] is JArray)
+                if (metadata.SpecVersion != null
+                    && metadata.SpecVersion < v1p34 && json["download"] is JArray)
                 {
                     throw new Kraken(ErrorMessage);
                 }

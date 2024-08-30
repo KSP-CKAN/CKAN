@@ -34,8 +34,12 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
@@ -73,8 +77,12 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
@@ -225,8 +233,12 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
@@ -257,8 +269,12 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
@@ -286,11 +302,15 @@ namespace Tests.NetKAN.Transformers
             // Arrange
             var mHttp          = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new AvcVersion()
-                {
-                    version = new ModuleVersion("1.2.3")
-                });
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(new AvcVersion()
+                          {
+                              version = new ModuleVersion("1.2.3")
+                          });
 
             ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 

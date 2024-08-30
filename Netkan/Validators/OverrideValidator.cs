@@ -12,7 +12,7 @@ namespace CKAN.NetKAN.Validators
             var overrides = json["x_netkan_override"];
             if (overrides != null)
             {
-                if (!(overrides is JArray))
+                if (overrides is not JArray)
                 {
                     throw new Kraken("Netkan overrides require an array");
                 }

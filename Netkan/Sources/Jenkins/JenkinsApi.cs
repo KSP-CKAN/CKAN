@@ -16,54 +16,43 @@ namespace CKAN.NetKAN.Sources.Jenkins
             _http = http;
         }
 
-        public JenkinsBuild GetLatestBuild(JenkinsRef reference, JenkinsOptions options)
+        public JenkinsBuild? GetLatestBuild(JenkinsRef reference, JenkinsOptions? options)
         {
-            if (options == null)
-            {
-                options = new JenkinsOptions();
-            }
-            string url = Regex.Replace(reference.BaseUri.ToString(), @"/$", "");
+            options ??= new JenkinsOptions();
+            string url = Regex.Replace(reference.BaseUri?.ToString() ?? "", @"/$", "");
             return Call<JenkinsBuild>(
-                $"{url}/{BuildTypeToProperty[options.BuildType]}/api/json"
-            );
+                $"{url}/{BuildTypeToProperty[options.BuildType]}/api/json");
         }
 
-        public IEnumerable<JenkinsBuild> GetAllBuilds(JenkinsRef reference, JenkinsOptions options)
+        public IEnumerable<JenkinsBuild> GetAllBuilds(JenkinsRef reference, JenkinsOptions? options)
         {
-            if (options == null)
-            {
-                options = new JenkinsOptions();
-            }
-            string url = Regex.Replace(reference.BaseUri.ToString(), @"/$", "");
-            JObject job = Call<JObject>($"{url}/api/json");
-            JArray builds = (JArray)job["builds"];
-            BuildTypeToResult.TryGetValue(options.BuildType, out string resultVal);
-            foreach (JObject buildEntry in builds.Cast<JObject>())
+            options ??= new JenkinsOptions();
+            string url = Regex.Replace(reference.BaseUri?.ToString() ?? "", @"/$", "");
+            var job = Call<JObject>($"{url}/api/json");
+            var builds = (JArray?)job?["builds"];
+            BuildTypeToResult.TryGetValue(options.BuildType, out string? resultVal);
+            foreach (JObject buildEntry in builds?.OfType<JObject>() ?? Enumerable.Empty<JObject>())
             {
                 Log.Info($"Processing {buildEntry["url"]}");
-                JenkinsBuild build = Call<JenkinsBuild>($"{buildEntry["url"]}api/json");
+                var build = Call<JenkinsBuild>($"{buildEntry["url"]}api/json");
                 // Make sure build status matches options.BuildType
-                if (resultVal == null || build.Result == resultVal)
+                if (build != null && (resultVal == null || build.Result == resultVal))
                 {
                     yield return build;
                 }
             }
         }
 
-        private T Call<T>(string url)
-        {
-            return Call<T>(new Uri(url));
-        }
+        private T? Call<T>(string url)
+            => Call<T>(new Uri(url));
 
-        private T Call<T>(Uri url)
-        {
-            return JsonConvert.DeserializeObject<T>(Call(url));
-        }
+        private T? Call<T>(Uri url)
+            => Call(url) is string s
+                ? JsonConvert.DeserializeObject<T>(s)
+                : default;
 
-        private string Call(Uri url)
-        {
-            return _http.DownloadText(url);
-        }
+        private string? Call(Uri url)
+            => _http.DownloadText(url);
 
         private static readonly Dictionary<string, string> BuildTypeToProperty = new Dictionary<string, string>()
         {

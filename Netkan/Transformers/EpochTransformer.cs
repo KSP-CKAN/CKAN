@@ -16,13 +16,13 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "epoch";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             Log.Debug("Fixing version strings (if required)...");
 
             var json = metadata.Json();
 
-            if (json.TryGetValue("x_netkan_epoch", out JToken epoch))
+            if (json.TryGetValue("x_netkan_epoch", out JToken? epoch))
             {
                 Log.InfoFormat("Executing epoch transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
@@ -43,14 +43,14 @@ namespace CKAN.NetKAN.Transformers
                 }
             }
 
-            if (json.TryGetValue("x_netkan_allow_out_of_order", out JToken allowOOO) && (bool)allowOOO)
+            if (json.TryGetValue("x_netkan_allow_out_of_order", out JToken? allowOOO) && (bool)allowOOO)
             {
                 Log.Debug("Out of order versions enabled in netkan, skipping OOO check");
             }
-            else if (opts.HighestVersion != null)
+            else if (opts?.HighestVersion != null && (string?)json["version"] is string v)
             {
                 // Ensure we are greater or equal to the previous max
-                ModuleVersion startV = new ModuleVersion((string)json["version"]);
+                ModuleVersion startV = new ModuleVersion(v);
                 ModuleVersion currentV = startV;
                 while (currentV < opts.HighestVersion)
                 {

@@ -26,10 +26,8 @@ namespace CKAN.NetKAN.Validators
         public void Validate(Metadata metadata)
         {
             var mod = CkanModule.FromJson(metadata.Json().ToString());
-            if (!mod.IsDLC)
+            if (!mod.IsDLC && _http.DownloadModule(metadata) is string file)
             {
-                var file = _http.DownloadModule(metadata);
-
                 // Make sure this would actually generate an install.
                 if (!_moduleService.HasInstallableFiles(mod, file))
                 {
@@ -73,8 +71,7 @@ namespace CKAN.NetKAN.Validators
                 if (mod.install != null)
                 {
                     var unmatchedIncludeOnlys = mod.install
-                        .Where(stanza => stanza.include_only != null)
-                        .SelectMany(stanza => stanza.include_only)
+                        .SelectMany(stanza => stanza.include_only ?? Enumerable.Empty<string>())
                         .Distinct()
                         .Where(incl => !allFiles.Any(f => f.Contains(incl)))
                         .ToList();

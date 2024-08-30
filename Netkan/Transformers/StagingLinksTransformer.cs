@@ -12,9 +12,9 @@ namespace CKAN.NetKAN.Transformers
     {
         public string Name => "staging_links";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (opts.Staged && opts.StagingReasons.Count > 0)
+            if (opts != null && opts.Staged && opts.StagingReasons.Count > 0)
             {
                 var table = LinkTable(metadata);
                 if (!string.IsNullOrEmpty(table))
@@ -28,9 +28,9 @@ namespace CKAN.NetKAN.Transformers
             yield return metadata;
         }
 
-        private string LinkTable(Metadata metadata)
+        private static string LinkTable(Metadata metadata)
         {
-            var resourcesJson = (JObject)metadata?.Json()?["resources"];
+            var resourcesJson = (JObject?)metadata.Json()?["resources"];
             if (resourcesJson == null)
             {
                 // No resources, no links to append

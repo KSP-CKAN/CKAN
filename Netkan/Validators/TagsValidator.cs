@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Validators
             Log.Debug("Validating that metadata has tags");
 
             JObject json = metadata.Json();
-            JArray tags = !json.ContainsKey("tags") ? null : (JArray)json["tags"];
+            var tags = !json.ContainsKey("tags") ? null : (JArray?)json["tags"];
             if (tags == null || tags.Count < 1)
             {
                 Log.Warn("Tags not found, see https://github.com/KSP-CKAN/CKAN/wiki/Suggested-Tags");

@@ -8,7 +8,8 @@ namespace CKAN.NetKAN.Validators
         public void Validate(Metadata metadata)
         {
             var json = metadata.Json();
-            if (metadata.SpecVersion < v1p16 && json.ContainsKey("ksp_version_strict"))
+            if (metadata.SpecVersion != null
+                && metadata.SpecVersion < v1p16 && json.ContainsKey("ksp_version_strict"))
             {
                 throw new Kraken("spec_version v1.16+ required for 'ksp_version_strict'");
             }

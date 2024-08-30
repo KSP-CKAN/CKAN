@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Curse;
-using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -27,9 +26,9 @@ namespace CKAN.NetKAN.Transformers
             _api      = api;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "curse")
+            if (metadata.Kref != null && metadata.Kref.Source == "curse" && metadata.Kref.Id != null)
             {
                 var json = metadata.Json();
 
@@ -38,14 +37,21 @@ namespace CKAN.NetKAN.Transformers
 
                 // Look up our mod on Curse by its Id.
                 var curseMod = _api.GetMod(metadata.Kref.Id);
-                var versions = curseMod.All();
-                if (opts.SkipReleases.HasValue)
+                if (curseMod == null)
                 {
-                    versions = versions.Skip(opts.SkipReleases.Value);
+                    throw new Kraken("Failed to get mod from Curse!");
                 }
-                if (opts.Releases.HasValue)
+                var versions = curseMod.All();
+                if (opts != null)
                 {
-                    versions = versions.Take(opts.Releases.Value);
+                    if (opts.SkipReleases != null)
+                    {
+                        versions = versions.Skip(opts.SkipReleases.Value);
+                    }
+                    if (opts.Releases != null)
+                    {
+                        versions = versions.Take(opts.Releases.Value);
+                    }
                 }
                 bool returnedAny = false;
                 foreach (CurseFile f in versions)
@@ -65,25 +71,25 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(JObject json, CurseMod curseMod, CurseFile latestVersion)
+        private static Metadata TransformOne(JObject json, CurseMod curseMod, CurseFile latestVersion)
         {
             Log.InfoFormat("Found Curse mod: {0} {1}", curseMod.GetName(), latestVersion.GetFileVersion());
 
             // Only pre-fill version info if there's none already. GH #199
             if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
             {
-                GameVersion minVer = latestVersion.versions.Min();
-                GameVersion maxVer = latestVersion.versions.Max();
+                var minVer = latestVersion.versions?.Min();
+                var maxVer = latestVersion.versions?.Max();
                 if (minVer == maxVer)
                 {
                     Log.DebugFormat("Writing ksp_version from Curse: {0}", latestVersion.version);
-                    json["ksp_version"] = latestVersion.version.ToString();
+                    json["ksp_version"] = latestVersion.version?.ToString();
                 }
                 else
                 {
                     Log.DebugFormat("Writing ksp_version_min,_max from Curse: {0}, {1}", minVer, maxVer);
-                    json["ksp_version_min"] = minVer.ToString();
-                    json["ksp_version_max"] = maxVer.ToString();
+                    json["ksp_version_min"] = minVer?.ToString();
+                    json["ksp_version_max"] = maxVer?.ToString();
                 }
             }
 
@@ -91,7 +97,7 @@ namespace CKAN.NetKAN.Transformers
             var useFilenameVersion = false;
             var useCurseIdVersion = false;
 
-            var curseMetadata = (JObject) json["x_netkan_curse"];
+            var curseMetadata = (JObject?)json["x_netkan_curse"];
             if (curseMetadata != null)
             {
                 var useDownloadNameVersionMetadata = (bool?)curseMetadata["use_download_name_version"];
@@ -168,7 +174,7 @@ namespace CKAN.NetKAN.Transformers
             // "zlib/libpng License"                                      - Becomes "Zlib"
             // "Custom License"                                           - Becomes "unknown"
 
-            var curseLicense = curseMod.license.Trim();
+            var curseLicense = curseMod.license?.Trim();
 
             switch (curseLicense)
             {
@@ -246,15 +252,15 @@ namespace CKAN.NetKAN.Transformers
                 json["resources"] = new JObject();
             }
 
-            var resourcesJson = (JObject)json["resources"];
+            var resourcesJson = (JObject?)json["resources"];
 
             //resourcesJson.SafeAdd("homepage", Normalize(curseMod.website));
             //resourcesJson.SafeAdd("repository", Normalize(curseMod.source_code));
-            resourcesJson.SafeAdd("curse", curseMod.GetProjectUrl());
+            resourcesJson?.SafeAdd("curse", curseMod.GetProjectUrl());
 
             if (curseMod.thumbnail != null)
             {
-                resourcesJson.SafeAdd("x_screenshot", Normalize(new Uri(curseMod.thumbnail)));
+                resourcesJson?.SafeAdd("x_screenshot", Normalize(new Uri(curseMod.thumbnail)));
             }
 
             Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
@@ -262,7 +268,7 @@ namespace CKAN.NetKAN.Transformers
             return new Metadata(json);
         }
 
-        private static string Normalize(Uri uri)
+        private static string? Normalize(Uri uri)
             => Net.NormalizeUri(uri.ToString());
     }
 }

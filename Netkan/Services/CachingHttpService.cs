@@ -22,11 +22,17 @@ namespace CKAN.NetKAN.Services
             _overwriteCache = overwrite;
         }
 
-        public string DownloadModule(Metadata metadata)
+        public string? DownloadModule(Metadata metadata)
         {
+            if (metadata.Download == null)
+            {
+                return null;
+            }
             try
             {
-                return DownloadPackage(metadata.Download, metadata.Identifier, metadata.RemoteTimestamp);
+                return DownloadPackage(metadata.Download,
+                                       metadata.Identifier,
+                                       metadata.RemoteTimestamp);
             }
             catch (Exception)
             {
@@ -38,12 +44,18 @@ namespace CKAN.NetKAN.Services
                 else
                 {
                     log.InfoFormat("Trying fallback URL: {0}", fallback);
-                    return DownloadPackage(fallback, metadata.Identifier, metadata.RemoteTimestamp, metadata.Download);
+                    return DownloadPackage(fallback,
+                                           metadata.Identifier,
+                                           metadata.RemoteTimestamp,
+                                           metadata.Download);
                 }
             }
         }
 
-        private string DownloadPackage(Uri url, string identifier, DateTime? updated, Uri primaryUrl = null)
+        private string DownloadPackage(Uri       url,
+                                       string    identifier,
+                                       DateTime? updated,
+                                       Uri?      primaryUrl = null)
         {
             if (primaryUrl == null)
             {
@@ -60,7 +72,7 @@ namespace CKAN.NetKAN.Services
 
             var cachedFile = _cache.GetCachedFilename(primaryUrl, updated);
 
-            if (!string.IsNullOrWhiteSpace(cachedFile))
+            if (cachedFile != null && !string.IsNullOrWhiteSpace(cachedFile))
             {
                 return cachedFile;
             }
@@ -85,28 +97,25 @@ namespace CKAN.NetKAN.Services
                         extension = "tar.gz";
                         break;
                     case FileType.Zip:
-                        extension = "zip";
-                        string invalidReason;
-                        if (!NetModuleCache.ZipValid(downloadedFile, out invalidReason, null))
+                        if (!NetModuleCache.ZipValid(downloadedFile, out string? invalidReason, null))
                         {
                             log.Debug($"{url} is not a valid ZIP file: {invalidReason}");
                             File.Delete(downloadedFile);
                             throw new Kraken($"{url} is not a valid ZIP file: {invalidReason}");
                         }
+                        extension = "zip";
                         break;
                     default:
                         extension = "ckan-package";
                         break;
                 }
 
+                var destName = $"netkan-{identifier}.{extension}";
+
                 try
                 {
-                    return _cache.Store(
-                        primaryUrl,
-                        downloadedFile,
-                        $"netkan-{identifier}.{extension}",
-                        move: true
-                    );
+                    return _cache.Store(primaryUrl, downloadedFile,
+                                        destName, move: true);
                 }
                 catch (IOException exc)
                 {
@@ -118,18 +127,18 @@ namespace CKAN.NetKAN.Services
             }
         }
 
-        public string DownloadText(Uri url)
+        public string? DownloadText(Uri url)
         {
-            return TryGetCached(url, () => Net.DownloadText(url, timeout:10000));
+            return TryGetCached(url, () => Net.DownloadText(url, timeout: 10000));
         }
-        public string DownloadText(Uri url, string authToken, string mimeType = null)
+        public string? DownloadText(Uri url, string? authToken, string? mimeType = null)
         {
             return TryGetCached(url, () => Net.DownloadText(url, authToken, mimeType, 10000));
         }
 
-        private string TryGetCached(Uri url, Func<string> uncached)
+        private string? TryGetCached(Uri url, Func<string?> uncached)
         {
-            if (_stringCache.TryGetValue(url, out StringCacheEntry entry))
+            if (_stringCache.TryGetValue(url, out StringCacheEntry? entry))
             {
                 if (DateTime.Now - entry.Timestamp < stringCacheLifetime)
                 {
@@ -142,12 +151,11 @@ namespace CKAN.NetKAN.Services
                     _stringCache.Remove(url);
                 }
             }
-            string val = uncached();
-            _stringCache.Add(url, new StringCacheEntry()
+            var val = uncached();
+            if (val is not null)
             {
-                Value     = val,
-                Timestamp = DateTime.Now
-            });
+                _stringCache.Add(url, new StringCacheEntry(val, DateTime.Now));
+            }
             return val;
         }
 
@@ -162,6 +170,12 @@ namespace CKAN.NetKAN.Services
 
     public class StringCacheEntry
     {
+        public StringCacheEntry(string val, DateTime stamp)
+        {
+            Value     = val;
+            Timestamp = stamp;
+        }
+
         public string   Value;
         public DateTime Timestamp;
     }

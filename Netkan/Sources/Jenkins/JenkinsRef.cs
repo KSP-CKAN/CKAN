@@ -11,9 +11,9 @@ namespace CKAN.NetKAN.Sources.Jenkins
         public JenkinsRef(RemoteRef remoteRef)
             : base(remoteRef)
         {
-            BaseUri = new Uri(remoteRef.Id);
+            BaseUri = remoteRef.Id != null ? new Uri(remoteRef.Id) : null;
         }
 
-        public readonly Uri BaseUri;
+        public readonly Uri? BaseUri;
     }
 }

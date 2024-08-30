@@ -40,8 +40,8 @@ namespace CKAN.NetKAN.Validators
                 {
                     bool hasAvcVref = (metadata.Vref?.Source == "ksp-avc");
 
-                    string avcPath     = null;
-                    bool   installable = false;
+                    string? avcPath     = null;
+                    bool    installable = false;
                     try
                     {
                         using (var zipfile = new ZipFile(zipFilePath))

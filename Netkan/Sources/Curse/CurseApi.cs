@@ -24,9 +24,9 @@ namespace CKAN.NetKAN.Sources.Curse
             _http = http;
         }
 
-        public CurseMod GetMod(string nameOrId)
+        public CurseMod? GetMod(string nameOrId)
         {
-            string json;
+            string? json = null;
             try
             {
                 json = Call(nameOrId);
@@ -34,18 +34,25 @@ namespace CKAN.NetKAN.Sources.Curse
             catch (WebException e)
             {
                 // CurseForge returns a valid json with an error message in some cases.
-                json = new StreamReader(e.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
+                if (e.Response != null)
+                {
+                    json = new StreamReader(e.Response.GetResponseStream(), Encoding.UTF8).ReadToEnd();
+                }
+            }
+            if (json == null)
+            {
+                throw new Kraken("Got nothing from Curse!");
             }
             // Check if the mod has been removed from Curse and if it corresponds to a KSP mod.
             var error = JsonConvert.DeserializeObject<CurseError>(json);
-            if (!string.IsNullOrWhiteSpace(error?.error))
+            if (error != null && !string.IsNullOrWhiteSpace(error.error))
             {
                 throw new Kraken($"Could not get the mod from Curse, reason: {error.message}.");
             }
             return CurseMod.FromJson(json);
         }
 
-        private string Call(string nameOrId)
+        private string? Call(string nameOrId)
         {
             // If it's numeric, use the old URL format,
             // otherwise use the new.

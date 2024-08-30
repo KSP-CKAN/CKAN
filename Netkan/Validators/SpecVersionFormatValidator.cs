@@ -8,16 +8,15 @@ namespace CKAN.NetKAN.Validators
         public void Validate(Metadata metadata)
         {
             var json = metadata.Json();
-            if (json["spec_version"] == null
-                || !specVersionFormat.IsMatch((string)json["spec_version"]))
+            if (json?.Value<string>("spec_version") is not string s
+                || !specVersionFormat.IsMatch(s))
             {
                 throw new Kraken("spec version must be 1 or in the 'vX.X' format");
             }
         }
 
-        private static readonly Regex specVersionFormat = new Regex(
-            @"^1$|^v\d\.\d\d?$",
-            RegexOptions.Compiled
-        );
+        private static readonly Regex specVersionFormat =
+            new Regex(@"^1$|^v\d\.\d\d?$",
+                      RegexOptions.Compiled);
     }
 }

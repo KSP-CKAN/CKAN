@@ -20,8 +20,8 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         public string Name => "spec_version";
 
-        public IEnumerable<Metadata> Transform(Metadata         metadata,
-                                               TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata          metadata,
+                                               TransformOptions? opts)
         {
             var json       = metadata.Json();
             var minVersion = MinimumSpecVersion(json);
@@ -50,23 +50,23 @@ namespace CKAN.NetKAN.Transformers
              : HasLicense(json, "MPL-2.0") ? v1p30
 
              : (json["install"] as JArray)?.OfType<JObject>().Any(stanza =>
-                 ((string)stanza["install_to"]).StartsWith("Ships/Script")
-                 || ((string)stanza["install_to"] == "Ships" && (
+                 (((string?)stanza["install_to"])?.StartsWith("Ships/Script") ?? false)
+                 || ((string?)stanza["install_to"] == "Ships" && (
                      // find: .../Script, install_to: Ships
-                     ((string)stanza["find"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
+                     ((string?)stanza["find"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
                      // file: .../Script, install_to: Ships
-                     || ((string)stanza["file"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
+                     || ((string?)stanza["file"])?.Split(new char[] {'/'})?.LastOrDefault() == "Script"
                      // install_to: Ships, as: Script
-                     || (((string)stanza["as"])?.EndsWith("Script") ?? false)))) ?? false ? v1p29
+                     || (((string?)stanza["as"])?.EndsWith("Script") ?? false)))) ?? false ? v1p29
 
-             : (string)json["kind"] == "dlc" ? v1p28
+             : (string?)json["kind"] == "dlc" ? v1p28
 
              : json.ContainsKey("replaced_by") ? v1p26
 
              : AllRelationships(json).Any(rel => rel.ContainsKey("any_of")) ? v1p26
 
              : (json["install"] as JArray)?.OfType<JObject>()
-                                           .Any(stanza => (string)stanza["install_to"] == "Missions") ?? false ? v1p25
+                                           .Any(stanza => (string?)stanza["install_to"] == "Missions") ?? false ? v1p25
 
              : (json["install"] as JArray)?.OfType<JObject>()
                                            .Any(stanza => stanza.ContainsKey("include_only")
@@ -80,16 +80,16 @@ namespace CKAN.NetKAN.Transformers
              : json.ContainsKey("ksp_version_strict") ? v1p16
 
              : (json["install"] as JArray)?.OfType<JObject>()
-                                           .Any(stanza => ((string)stanza["install_to"]).StartsWith("Ships/@thumbs")) ?? false ? v1p16
+                                           .Any(stanza => ((string?)stanza["install_to"] ?? "").StartsWith("Ships/@thumbs")) ?? false ? v1p16
 
              : (json["install"] as JArray)?.OfType<JObject>()
                                            .Any(stanza => stanza.ContainsKey("find_matches_files")) ?? false ? v1p16
 
              : (json["install"] as JArray)?.OfType<JObject>()
-                                           .Any(stanza => (string)stanza["install_to"] == "Scenarios") ?? false ? v1p14
+                                           .Any(stanza => (string?)stanza["install_to"] == "Scenarios") ?? false ? v1p14
 
              : (json["install"] as JArray)?.OfType<JObject>()
-                                           .Any(stanza => ((string)stanza["install_to"]).StartsWith("Ships/")) ?? false ? v1p12
+                                           .Any(stanza => ((string?)stanza["install_to"] ?? "").StartsWith("Ships/")) ?? false ? v1p12
 
              : (json["install"] as JArray)?.OfType<JObject>()
                                            .Any(stanza => stanza.ContainsKey("find_regexp")
@@ -97,7 +97,7 @@ namespace CKAN.NetKAN.Transformers
 
              : json["license"] is JArray ? v1p8
 
-             : (string)json["kind"] == "metapackage" ? v1p6
+             : (string?)json["kind"] == "metapackage" ? v1p6
 
              : (json["install"] as JArray)?.OfType<JObject>()
                                            .Any(stanza => stanza.ContainsKey("find")) ?? false ? v1p4
@@ -107,14 +107,14 @@ namespace CKAN.NetKAN.Transformers
              : json.ContainsKey("supports") ? v1p2
 
              : (json["install"] as JArray)?.OfType<JObject>()
-                                           .Any(stanza => ((string)stanza["install_to"]).StartsWith("GameData/")) ?? false ? v1p2
+                                           .Any(stanza => ((string?)stanza["install_to"] ?? "").StartsWith("GameData/")) ?? false ? v1p2
 
              : v1p0;
 
         private static bool HasLicense(JObject json,
                                        string  name)
             => json["license"] is JArray array ?  array.Contains(name)
-             : json["license"] is JToken token && ((string)token) == name;
+             : json["license"] is JToken token && ((string?)token) == name;
 
         private static IEnumerable<JObject> AllRelationships(JObject json)
             => relProps.SelectMany(p => json[p] is JArray array ? array.OfType<JObject>()

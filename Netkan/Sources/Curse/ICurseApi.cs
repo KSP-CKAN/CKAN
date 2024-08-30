@@ -5,6 +5,6 @@ namespace CKAN.NetKAN.Sources.Curse
         /// <summary>
         /// Given a mod name or id, returns a CurseMod with its metadata from the network
         /// </summary>
-        CurseMod GetMod(string nameOrId);
+        CurseMod? GetMod(string nameOrId);
     }
 }

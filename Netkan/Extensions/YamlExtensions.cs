@@ -19,6 +19,7 @@ namespace CKAN.NetKAN.Extensions
             var stream = new YamlStream();
             stream.Load(input);
             return stream.Documents.Select(doc => doc?.RootNode as YamlMappingNode)
+                                   .OfType<YamlMappingNode>()
                                    .ToArray();
         }
 
@@ -34,17 +35,20 @@ namespace CKAN.NetKAN.Extensions
             var jobj = new JObject();
             foreach (var kvp in yaml)
             {
-                switch (kvp.Value.NodeType)
+                if ((string?)kvp.Key is string k)
                 {
-                    case YamlNodeType.Mapping:
-                        jobj.Add((string)kvp.Key, (kvp.Value as YamlMappingNode).ToJObject());
-                        break;
-                    case YamlNodeType.Sequence:
-                        jobj.Add((string)kvp.Key, (kvp.Value as YamlSequenceNode).ToJarray());
-                        break;
-                    case YamlNodeType.Scalar:
-                        jobj.Add((string)kvp.Key, (kvp.Value as YamlScalarNode).ToJValue());
-                        break;
+                    switch (kvp.Value)
+                    {
+                        case YamlMappingNode obj:
+                            jobj.Add(k, obj.ToJObject());
+                            break;
+                        case YamlSequenceNode array:
+                            jobj.Add(k, array.ToJarray());
+                            break;
+                        case YamlScalarNode scalar:
+                            jobj.Add(k, scalar.ToJValue());
+                            break;
+                    }
                 }
             }
             return jobj;
@@ -55,16 +59,16 @@ namespace CKAN.NetKAN.Extensions
             var jarr = new JArray();
             foreach (var elt in yaml)
             {
-                switch (elt.NodeType)
+                switch (elt)
                 {
-                    case YamlNodeType.Mapping:
-                        jarr.Add((elt as YamlMappingNode).ToJObject());
+                    case YamlMappingNode obj:
+                        jarr.Add(obj.ToJObject());
                         break;
-                    case YamlNodeType.Sequence:
-                        jarr.Add((elt as YamlSequenceNode).ToJarray());
+                    case YamlSequenceNode array:
+                        jarr.Add(array.ToJarray());
                         break;
-                    case YamlNodeType.Scalar:
-                        jarr.Add((elt as YamlScalarNode).ToJValue());
+                    case YamlScalarNode scalar:
+                        jarr.Add(scalar.ToJValue());
                         break;
                 }
             }
