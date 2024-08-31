@@ -1522,7 +1522,13 @@ namespace CKAN.GUI
                 }
                 else if (timeSinceUpdate < RepositoryDataManager.TimeTillVeryStale)
                 {
-                    RefreshToolButton.Image = EmbeddedImages.refreshStale;
+                    // Gradually turn the dot from yellow to red as the user ignores it longer and longer
+                    RefreshToolButton.Image = Util.LerpBitmaps(
+                        EmbeddedImages.refreshStale,
+                        EmbeddedImages.refreshVeryStale,
+                        (float)((timeSinceUpdate - RepositoryDataManager.TimeTillStale).TotalSeconds
+                                / (RepositoryDataManager.TimeTillVeryStale
+                                   - RepositoryDataManager.TimeTillStale).TotalSeconds));
                     RefreshToolButton.ToolTipText = string.Format(Properties.Resources.ManageModsRefreshStaleToolTip,
                                                                   Math.Round(timeSinceUpdate.TotalDays));
                 }

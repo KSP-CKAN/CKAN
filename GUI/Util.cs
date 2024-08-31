@@ -294,14 +294,41 @@ namespace CKAN.GUI
                          c2.MultiplyBy(1f - alpha));
 
         private static Color MultiplyBy(this Color c, float f)
-            => Color.FromArgb((int)(f * c.R),
+            => Color.FromArgb((int)(f * c.A),
+                              (int)(f * c.R),
                               (int)(f * c.G),
                               (int)(f * c.B));
 
         private static Color AddColors(Color a, Color b)
-            => Color.FromArgb(a.R + b.R,
+            => Color.FromArgb(a.A + b.A,
+                              a.R + b.R,
                               a.G + b.G,
                               a.B + b.B);
+
+        public static Bitmap LerpBitmaps(Bitmap a, Bitmap b, float amount)
+        {
+            if (amount <= 0)
+            {
+                return a;
+            }
+            if (amount >= 1)
+            {
+                return b;
+            }
+            var c = new Bitmap(a);
+            for (int y = 0; y < c.Height; ++y)
+            {
+                for (int x = 0; x < c.Width; ++x)
+                {
+                    // Note a and b are swapped because our blend function pretends 'amount'
+                    // is the first argument's alpha channel, so 0 -> third param by itself
+                    c.SetPixel(x, y, AlphaBlendWith(b.GetPixel(x, y),
+                                                    amount,
+                                                    a.GetPixel(x, y)));
+                }
+            }
+            return c;
+        }
 
         /// <summary>
         /// Simple syntactic sugar around Graphics.MeasureString
