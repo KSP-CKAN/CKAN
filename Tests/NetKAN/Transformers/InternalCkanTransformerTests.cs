@@ -52,7 +52,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["foo"], Is.EqualTo("bar"),
+            Assert.That((string?)transformedJson["foo"], Is.EqualTo("bar"),
                 "InternalCkanTransformer should add properties from the internal ckan that don't exist on the original."
             );
         }
@@ -93,7 +93,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["foo"], Is.EqualTo("baz"),
+            Assert.That((string?)transformedJson["foo"], Is.EqualTo("baz"),
                 "InternalCkanTransformer should not override existing properties."
             );
         }

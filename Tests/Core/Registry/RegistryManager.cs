@@ -46,7 +46,7 @@ namespace Tests.Core.Registry
         /// </summary>
         private bool TestLock(string path)
         {
-            FileStream lockfileStream = null;
+            FileStream? lockfileStream = null;
 
             try
             {

@@ -17,10 +17,10 @@ namespace Tests.Core
 {
     [TestFixture] public class GameInstanceManagerTests
     {
-        private DisposableKSP tidy;
         private const string nameInReg = "testing";
-        private FakeConfiguration cfg;
-        private GameInstanceManager manager;
+        private DisposableKSP?       tidy;
+        private FakeConfiguration?   cfg;
+        private GameInstanceManager? manager;
 
         [SetUp]
         public void SetUp()
@@ -33,76 +33,76 @@ namespace Tests.Core
         [TearDown]
         public void TearDown()
         {
-            manager.Dispose();
-            tidy.Dispose();
-            cfg.Dispose();
+            manager?.Dispose();
+            tidy?.Dispose();
+            cfg?.Dispose();
         }
 
         [Test]
         public void HasInstance_ReturnsFalseIfNoInstanceByThatName()
         {
             const string anyNameNotInReg = "Games";
-            Assert.That(manager.HasInstance(anyNameNotInReg), Is.EqualTo(false));
+            Assert.That(manager?.HasInstance(anyNameNotInReg), Is.EqualTo(false));
         }
 
         [Test]
         public void HasInstance_ReturnsTrueIfInstanceByThatName()
         {
-            Assert.That(manager.HasInstance(nameInReg), Is.EqualTo(true));
+            Assert.That(manager?.HasInstance(nameInReg), Is.EqualTo(true));
         }
 
         [Test]
         public void SetAutoStart_ValidName_SetsAutoStart()
         {
-            Assert.That(manager.AutoStartInstance, Is.EqualTo(null));
+            Assert.That(manager?.AutoStartInstance, Is.EqualTo(null));
 
-            manager.SetAutoStart(nameInReg);
-            Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));
+            manager?.SetAutoStart(nameInReg);
+            Assert.That(manager?.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
         [Test]
         public void SetAutoStart_InvalidName_DoesNotChangeAutoStart()
         {
-            manager.SetAutoStart(nameInReg);
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetAutoStart("invalid"));
-            Assert.That(manager.AutoStartInstance, Is.EqualTo(nameInReg));
+            manager?.SetAutoStart(nameInReg);
+            Assert.Throws<InvalidKSPInstanceKraken>(() => manager?.SetAutoStart("invalid"));
+            Assert.That(manager?.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
         [Test]
         public void RemoveInstance_HasInstanceReturnsFalse()
         {
-            manager.RemoveInstance(nameInReg);
-            Assert.False(manager.HasInstance(nameInReg));
+            manager?.RemoveInstance(nameInReg);
+            Assert.False(manager?.HasInstance(nameInReg));
         }
 
         [Test]
         public void RenameInstance_HasInstanceOriginalName_ReturnsFalse()
         {
-            manager.RenameInstance(nameInReg,"newname");
-            Assert.False(manager.HasInstance(nameInReg));
+            manager?.RenameInstance(nameInReg,"newname");
+            Assert.False(manager?.HasInstance(nameInReg));
         }
 
         [Test]
         public void RenameInstance_HasInstanceNewName()
         {
             const string newname = "newname";
-            manager.RenameInstance(nameInReg, newname);
-            Assert.True(manager.HasInstance(newname));
+            manager?.RenameInstance(nameInReg, newname);
+            Assert.True(manager?.HasInstance(newname));
         }
 
         [Test]
         public void ClearAutoStart_UpdatesValueInWin32Reg()
         {
 
-            Assert.That(cfg.AutoStartInstance, Is.Null.Or.Empty);
+            Assert.That(cfg?.AutoStartInstance, Is.Null.Or.Empty);
 
         }
 
         [Test]
         public void GetNextValidInstanceName_ManagerDoesNotHaveResult()
         {
-            var name = manager.GetNextValidInstanceName(nameInReg);
-            Assert.That(manager.HasInstance(name),Is.False);
+            var name = manager?.GetNextValidInstanceName(nameInReg)!;
+            Assert.That(manager?.HasInstance(name), Is.False);
 
         }
 
@@ -113,9 +113,9 @@ namespace Tests.Core
             {
                 const string newInstance = "tidy2";
                 tidy2.KSP.Name = newInstance;
-                Assert.IsFalse(manager.HasInstance(newInstance));
-                manager.AddInstance(tidy2.KSP);
-                Assert.IsTrue(manager.HasInstance(newInstance));
+                Assert.IsFalse(manager?.HasInstance(newInstance));
+                manager?.AddInstance(tidy2.KSP);
+                Assert.IsTrue(manager?.HasInstance(newInstance));
             }
         }
 
@@ -129,8 +129,8 @@ namespace Tests.Core
             GameInstance badKSP = new GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
 
             Assert.Throws<NotKSPDirKraken>(() =>
-                manager.CloneInstance(badKSP, badName, tempdir));
-            Assert.IsFalse(manager.HasInstance(badName));
+                manager?.CloneInstance(badKSP, badName, tempdir));
+            Assert.IsFalse(manager?.HasInstance(badName));
 
             // Tidy up
             Directory.Delete(tempdir, true);
@@ -146,8 +146,8 @@ namespace Tests.Core
                 File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
                 Assert.Throws<PathErrorKraken>(() =>
-                    manager.CloneInstance(KSP.KSP, instanceName, tempdir));
-                Assert.IsFalse(manager.HasInstance(instanceName));
+                    manager?.CloneInstance(KSP.KSP, instanceName, tempdir));
+                Assert.IsFalse(manager?.HasInstance(instanceName));
 
                 // Tidy up.
                 Directory.Delete(tempdir, true);
@@ -162,8 +162,8 @@ namespace Tests.Core
                 string instanceName = "newInstance";
                 string tempdir = TestData.NewTempDir();
 
-                manager.CloneInstance(KSP.KSP, instanceName, tempdir);
-                Assert.IsTrue(manager.HasInstance(instanceName));
+                manager?.CloneInstance(KSP.KSP, instanceName, tempdir);
+                Assert.IsTrue(manager?.HasInstance(instanceName));
 
                 // Tidy up.
                 Directory.Delete(tempdir, true);
@@ -180,8 +180,8 @@ namespace Tests.Core
             GameVersion version = GameVersion.Parse("1.1.99");
 
             Assert.Throws<BadGameVersionKraken>(() =>
-                manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
-            Assert.IsFalse(manager.HasInstance(name));
+                manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
+            Assert.IsFalse(manager?.HasInstance(name));
 
             // Tidy up.
             Directory.Delete(tempdir, true);
@@ -204,8 +204,8 @@ namespace Tests.Core
                 };
 
             Assert.Throws<WrongGameVersionKraken>(() =>
-                manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs));
-            Assert.IsFalse(manager.HasInstance(name));
+                manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs));
+            Assert.IsFalse(manager?.HasInstance(name));
 
             // Tidy up.
             Directory.Delete(tempdir, true);
@@ -220,8 +220,8 @@ namespace Tests.Core
             File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
             Assert.Throws<BadInstallLocationKraken>(() =>
-                manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
-            Assert.IsFalse(manager.HasInstance(name));
+                manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
+            Assert.IsFalse(manager?.HasInstance(name));
 
             // Tidy up.
             Directory.Delete(tempdir, true);
@@ -241,14 +241,14 @@ namespace Tests.Core
                     { new BreakingGroundDlcDetector(), bgVersion }
                 };
 
-            manager.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
+            manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
             GameInstance newKSP = new GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
             MakingHistoryDlcDetector mhDetector = new MakingHistoryDlcDetector();
             BreakingGroundDlcDetector bgDetector = new BreakingGroundDlcDetector();
 
-            Assert.IsTrue(manager.HasInstance(name));
-            Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string _, out UnmanagedModuleVersion detectedMhVersion));
-            Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string _, out UnmanagedModuleVersion detectedBgVersion));
+            Assert.IsTrue(manager?.HasInstance(name));
+            Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedMhVersion));
+            Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedBgVersion));
             Assert.IsTrue(detectedMhVersion == new UnmanagedModuleVersion(mhVersion.ToString()));
             Assert.IsTrue(detectedBgVersion == new UnmanagedModuleVersion(bgVersion.ToString()));
 
@@ -262,7 +262,7 @@ namespace Tests.Core
         [Test]
         public void GetPreferredInstance_WithAutoStart_ReturnsAutoStart()
         {
-            Assert.That(manager.GetPreferredInstance(),Is.EqualTo(tidy.KSP));
+            Assert.That(manager?.GetPreferredInstance(),Is.EqualTo(tidy?.KSP));
         }
 
         [Test]
@@ -270,7 +270,7 @@ namespace Tests.Core
         {
             using (var tidy2 = new DisposableKSP())
             {
-                cfg.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir(), "KSP"));
+                cfg?.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir(), "KSP"));
                 // Make a new manager with the updated config
                 var multiMgr = new GameInstanceManager(new NullUser(), cfg);
                 multiMgr.ClearAutoStart();
@@ -282,20 +282,20 @@ namespace Tests.Core
         [Test]
         public void GetPreferredInstance_OnlyOneAvailable_ReturnsAvailable()
         {
-            manager.ClearAutoStart();
-            Assert.That(manager.GetPreferredInstance(), Is.EqualTo(tidy.KSP));
+            manager?.ClearAutoStart();
+            Assert.That(manager?.GetPreferredInstance(), Is.EqualTo(tidy?.KSP));
         }
 
         [Test]
         public void SetCurrentInstance_NameNotInRepo_Throws()
         {
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager.SetCurrentInstance("invalid"));
+            Assert.Throws<InvalidKSPInstanceKraken>(() => manager?.SetCurrentInstance("invalid"));
         }
 
         [Test] //37a33
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            using (var config = new FakeConfiguration(tidy.KSP, "invalid"))
+            using (var config = new FakeConfiguration(tidy?.KSP!, "invalid"))
             {
                 Assert.DoesNotThrow(() => new GameInstanceManager(new NullUser(), config));
             }
@@ -309,10 +309,9 @@ namespace Tests.Core
             return new FakeConfiguration(
                 new List<Tuple<string, string, string>>
                 {
-                    new Tuple<string, string, string>(name, tidy.KSP.GameDir(), "KSP")
+                    new Tuple<string, string, string>(name, tidy?.KSP?.GameDir()!, "KSP")
                 },
-                null
-            );
+                null);
         }
     }
 }

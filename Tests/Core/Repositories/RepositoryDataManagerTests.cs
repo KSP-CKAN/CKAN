@@ -25,7 +25,7 @@ namespace Tests.Core.Repositories
                 // Act
                 var versions = repoData.Manager.GetAvailableModules(Enumerable.Repeat(testRepo, 1),
                                                                     "FerramAerospaceResearch")
-                                               .Select(am => am.Latest(crit).version.ToString())
+                                               .Select(am => am.Latest(crit)?.version.ToString())
                                                .ToArray();
 
                 // Assert
@@ -47,7 +47,7 @@ namespace Tests.Core.Repositories
                 // Act
                 var versions = repoData.Manager.GetAvailableModules(Enumerable.Repeat(testRepo, 1),
                                                                     "FerramAerospaceResearch")
-                                               .Select(am => am.Latest(crit).version.ToString())
+                                               .Select(am => am.Latest(crit)?.version.ToString())
                                                .ToArray();
 
                 // Assert

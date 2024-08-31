@@ -13,9 +13,9 @@ namespace Tests.Core
     [TestFixture]
     public class GameInstanceTests
     {
-        private GameInstance ksp;
-        private string ksp_dir;
-        private IUser nullUser;
+        private GameInstance? ksp;
+        private string?       ksp_dir;
+        private IUser?        nullUser;
 
         [SetUp]
         public void Setup()
@@ -37,7 +37,10 @@ namespace Tests.Core
                 RegistryManager.DisposeInstance(ksp);
             }
 
-            Directory.Delete(ksp_dir, true);
+            if (ksp_dir != null)
+            {
+                Directory.Delete(ksp_dir, true);
+            }
         }
 
         [Test]
@@ -49,10 +52,10 @@ namespace Tests.Core
             Assert.IsTrue(game.GameInFolder(new DirectoryInfo(TestData.good_ksp_dir())));
 
             // As should our copied folder.
-            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp_dir)));
+            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp_dir!)));
 
             // And the one from our KSP instance.
-            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp.GameDir())));
+            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp?.GameDir()!)));
 
             // All these ones should be bad.
             foreach (string dir in TestData.bad_ksp_dirs())
@@ -65,13 +68,12 @@ namespace Tests.Core
         public void Tutorial()
         {
             //Use Uri to avoid issues with windows vs linux line separators.
-            var canonicalPath = new Uri(Path.Combine(ksp_dir, "saves", "training")).LocalPath;
+            var canonicalPath = new Uri(Path.Combine(ksp_dir!, "saves", "training")).LocalPath;
             var game = new KerbalSpaceProgram();
-            Assert.IsTrue(game.AllowInstallationIn("Tutorial", out string dest));
+            Assert.IsTrue(game.AllowInstallationIn("Tutorial", out string? dest));
             Assert.AreEqual(
-                new DirectoryInfo(ksp.ToAbsoluteGameDir(dest)),
-                new DirectoryInfo(canonicalPath)
-            );
+                new DirectoryInfo(ksp?.ToAbsoluteGameDir(dest ?? "")!),
+                new DirectoryInfo(canonicalPath));
         }
 
         [Test]
@@ -79,21 +81,18 @@ namespace Tests.Core
         {
             Assert.AreEqual(
                 CKANPathUtils.NormalizePath(
-                    Path.Combine(ksp_dir, "GameData/HydrazinePrincess")
-                ),
-                ksp.ToAbsoluteGameDir("GameData/HydrazinePrincess")
-            );
+                    Path.Combine(ksp_dir!, "GameData/HydrazinePrincess")),
+                ksp?.ToAbsoluteGameDir("GameData/HydrazinePrincess"));
         }
 
         [Test]
         public void ToRelative()
         {
-            string absolute = Path.Combine(ksp_dir, "GameData/HydrazinePrincess");
+            string absolute = Path.Combine(ksp_dir!, "GameData/HydrazinePrincess");
 
             Assert.AreEqual(
                 "GameData/HydrazinePrincess",
-                ksp.ToRelativeGameDir(absolute)
-            );
+                ksp?.ToRelativeGameDir(absolute));
         }
 
         [Test]

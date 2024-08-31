@@ -13,7 +13,7 @@ namespace Tests.GUI
     [TestFixture]
     public class GuiConfigurationTests
     {
-        private string tempDir;
+        private string? tempDir;
 
         [OneTimeSetUp]
         public void Setup()
@@ -24,13 +24,16 @@ namespace Tests.GUI
         [OneTimeTearDown]
         public void TearDown()
         {
-            Directory.Delete(tempDir, true);
+            if (tempDir != null)
+            {
+                Directory.Delete(tempDir, true);
+            }
         }
 
         [Test]
         public void LoadOrCreateConfiguration_MalformedXMLFile_ThrowsKraken()
         {
-            string tempFile = Path.Combine(tempDir, "invalid.xml");
+            string tempFile = Path.Combine(tempDir!, "invalid.xml");
 
             using (var stream = new StreamWriter(tempFile))
             {
@@ -43,7 +46,7 @@ namespace Tests.GUI
         [Test]
         public void LoadOrCreateConfiguration_CorrectConfigurationFile_Loaded()
         {
-            string tempFile = Path.Combine(tempDir, "valid.xml");
+            string tempFile = Path.Combine(tempDir!, "valid.xml");
 
             using (var stream = new StreamWriter(tempFile))
             {

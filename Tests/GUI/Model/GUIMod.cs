@@ -38,7 +38,7 @@ namespace Tests.GUI
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("kOS", "0.14");
 
-                var mod = new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                var mod = new GUIMod(ckan_mod!, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
                                      null, false, false);
                 Assert.True(mod.SelectedMod == mod.InstalledMod?.Module);
             }
@@ -63,7 +63,7 @@ namespace Tests.GUI
                 {
                     var registry = new Registry(repoData.Manager, repo.repo);
 
-                    registry.RegisterModule(old_version, new List<string>(), null, false);
+                    registry.RegisterModule(old_version, new List<string>(), tidy.KSP, false);
                     var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP,
                                                                       new HashSet<string>());
 
@@ -104,15 +104,15 @@ namespace Tests.GUI
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
 
-                CkanModule mainVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.2.0");
-                CkanModule prevVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.1.0");
+                var mainVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.2.0");
+                var prevVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.1.0");
 
                 // Act
-                GUIMod m = new GUIMod(mainVersion, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
+                GUIMod m = new GUIMod(mainVersion!, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
                                       null, false, false);
 
                 // Assert
-                Assert.AreEqual("1.4.2", m.GameCompatibilityVersion.ToString());
+                Assert.AreEqual("1.4.2", m.GameCompatibilityVersion?.ToString());
             }
         }
 

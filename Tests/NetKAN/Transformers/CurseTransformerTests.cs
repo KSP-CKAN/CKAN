@@ -35,9 +35,9 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.AreEqual(null, (string)transformedJson["ksp_version"]);
-            Assert.AreEqual(null, (string)transformedJson["ksp_version_max"]);
-            Assert.AreEqual("0.23.5", (string)transformedJson["ksp_version_min"]);
+            Assert.AreEqual(null, (string?)transformedJson["ksp_version"]);
+            Assert.AreEqual(null, (string?)transformedJson["ksp_version_max"]);
+            Assert.AreEqual("0.23.5", (string?)transformedJson["ksp_version_min"]);
         }
 
         private static CurseMod MakeTestMod()

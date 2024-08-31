@@ -49,7 +49,7 @@ namespace Tests.GUI
 
                 var item = new ModList();
                 Assert.That(item.IsVisible(
-                    new GUIMod(ckan_mod, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                    new GUIMod(ckan_mod!, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
                                null, false, false),
                     manager.CurrentInstance.Name,
                     manager.CurrentInstance.game,
@@ -150,20 +150,20 @@ namespace Tests.GUI
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
                 // A module with a ksp_version of "any" to repro our issue
-                var anyVersionModule = registry.GetModuleByVersion("DogeCoinFlag", "1.01");
+                var anyVersionModule = registry.GetModuleByVersion("DogeCoinFlag", "1.01")!;
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");
                 var modList = new ModList();
                 var listGui = new DataGridView();
-                var installer = new ModuleInstaller(instance.KSP, manager.Cache, manager.User);
-                var downloader = new NetAsyncModulesDownloader(user, manager.Cache);
+                var installer = new ModuleInstaller(instance.KSP, manager.Cache!, manager.User);
+                var downloader = new NetAsyncModulesDownloader(user, manager.Cache!);
 
                 // Act
 
                 // Install module and set it as pre-installed
-                manager.Cache.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<int>(percent => {}));
+                manager.Cache?.Store(TestData.DogeCoinFlag_101_module(), TestData.DogeCoinFlagZip(), new Progress<int>(percent => {}));
                 registry.RegisterModule(anyVersionModule, new List<string>(), instance.KSP, false);
 
-                HashSet<string> possibleConfigOnlyDirs = null;
+                HashSet<string>? possibleConfigOnlyDirs = null;
                 installer.InstallList(
                     new List<CkanModule> { anyVersionModule },
                     new RelationshipResolverOptions(),
@@ -188,7 +188,7 @@ namespace Tests.GUI
                 Assert.IsNotNull(modList);
 
                 var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
-                    .Select(mod => new GUIMod(mod.Latest(), repoData.Manager, registry, instance.KSP.VersionCriteria(),
+                    .Select(mod => new GUIMod(mod.Latest()!, repoData.Manager, registry, instance.KSP.VersionCriteria(),
                                               null, false, false))
                     .ToList();
 

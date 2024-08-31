@@ -38,30 +38,30 @@ namespace Tests.NetKAN.Extensions
             YamlMappingNode yaml = YamlExtensions.Parse(input).First();
 
             // Assert
-            Assert.AreEqual("v1.4",                               (string)yaml["spec_version"]);
-            Assert.AreEqual("Astrogator",                         (string)yaml["identifier"]);
-            Assert.AreEqual("#/ckan/github/HebaruSan/Astrogator", (string)yaml["$kref"]);
-            Assert.AreEqual("#/ckan/ksp-avc",                     (string)yaml["$vref"]);
-            Assert.AreEqual("GPL-3.0",                            (string)yaml["license"]);
+            Assert.AreEqual("v1.4",                               (string?)yaml["spec_version"]);
+            Assert.AreEqual("Astrogator",                         (string?)yaml["identifier"]);
+            Assert.AreEqual("#/ckan/github/HebaruSan/Astrogator", (string?)yaml["$kref"]);
+            Assert.AreEqual("#/ckan/ksp-avc",                     (string?)yaml["$vref"]);
+            Assert.AreEqual("GPL-3.0",                            (string?)yaml["license"]);
 
             CollectionAssert.AreEqual(
                 new string[] { "plugin", "information", "control" },
-                (yaml["tags"] as YamlSequenceNode).Children.Select(yn => (string)yn)
+                (yaml["tags"] as YamlSequenceNode)?.Children.Select(yn => (string?)yn)
             );
             Assert.AreEqual(
                 "https://forum.kerbalspaceprogram.com/index.php?/topic/155998-*",
-                (string)yaml["resources"]["homepage"]
+                (string?)yaml["resources"]["homepage"]
             );
             Assert.AreEqual(
                 "https://github.com/HebaruSan/Astrogator/issues",
-                (string)yaml["resources"]["bugtracker"]
+                (string?)yaml["resources"]["bugtracker"]
             );
             Assert.AreEqual(
                 "https://github.com/HebaruSan/Astrogator",
-                (string)yaml["resources"]["repository"]
+                (string?)yaml["resources"]["repository"]
             );
-            Assert.AreEqual("ModuleManager",   (string)yaml["recommends"][0]["name"]);
-            Assert.AreEqual("LoadingTipsPlus", (string)yaml["recommends"][1]["name"]);
+            Assert.AreEqual("ModuleManager",   (string?)yaml["recommends"][0]["name"]);
+            Assert.AreEqual("LoadingTipsPlus", (string?)yaml["recommends"][1]["name"]);
         }
 
         [Test]
@@ -111,30 +111,30 @@ namespace Tests.NetKAN.Extensions
             JObject json = yaml.ToJObject();
 
             // Assert
-            Assert.AreEqual("v1.4",                               (string)json["spec_version"]);
-            Assert.AreEqual("Astrogator",                         (string)json["identifier"]);
-            Assert.AreEqual("#/ckan/github/HebaruSan/Astrogator", (string)json["$kref"]);
-            Assert.AreEqual("#/ckan/ksp-avc",                     (string)json["$vref"]);
-            Assert.AreEqual("GPL-3.0",                            (string)json["license"]);
+            Assert.AreEqual("v1.4",                               (string?)json["spec_version"]);
+            Assert.AreEqual("Astrogator",                         (string?)json["identifier"]);
+            Assert.AreEqual("#/ckan/github/HebaruSan/Astrogator", (string?)json["$kref"]);
+            Assert.AreEqual("#/ckan/ksp-avc",                     (string?)json["$vref"]);
+            Assert.AreEqual("GPL-3.0",                            (string?)json["license"]);
 
             CollectionAssert.AreEqual(
                 new string[] { "plugin", "information", "control" },
-                (json["tags"] as JArray).Select(elt => (string)elt)
+                (json["tags"] as JArray)?.Select(elt => (string?)elt)
             );
             Assert.AreEqual(
                 "https://forum.kerbalspaceprogram.com/index.php?/topic/155998-*",
-                (string)json["resources"]["homepage"]
+                (string?)json["resources"]?["homepage"]
             );
             Assert.AreEqual(
                 "https://github.com/HebaruSan/Astrogator/issues",
-                (string)json["resources"]["bugtracker"]
+                (string?)json["resources"]?["bugtracker"]
             );
             Assert.AreEqual(
                 "https://github.com/HebaruSan/Astrogator",
-                (string)json["resources"]["repository"]
+                (string?)json["resources"]?["repository"]
             );
-            Assert.AreEqual("ModuleManager",   (string)json["recommends"][0]["name"]);
-            Assert.AreEqual("LoadingTipsPlus", (string)json["recommends"][1]["name"]);
+            Assert.AreEqual("ModuleManager",   (string?)json["recommends"]?[0]?["name"]);
+            Assert.AreEqual("LoadingTipsPlus", (string?)json["recommends"]?[1]?["name"]);
         }
     }
 }

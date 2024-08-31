@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
@@ -89,7 +91,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["foo"], Is.EqualTo("bar"),
+            Assert.That((string?)transformedJson["foo"], Is.EqualTo("bar"),
                 "MetaNetkanTransformer add properties from target netkan that do not already exist."
             );
         }
@@ -119,7 +121,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["foo"], Is.EqualTo("baz"),
+            Assert.That((string?)transformedJson["foo"], Is.EqualTo("baz"),
                 "MetaNetkanTransformer should not override existing properties."
             );
         }

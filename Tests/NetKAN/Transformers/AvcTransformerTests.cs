@@ -55,10 +55,10 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("1.0.0"),
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("1.0.0"),
                 "AvcTransformer should add the version specified in the AVC version file."
             );
-            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo("1.0.4"),
+            Assert.That((string?)transformedJson["ksp_version"], Is.EqualTo("1.0.4"),
                 "AvcTransformer should add the game version specified in the AVC version file."
             );
         }
@@ -98,10 +98,10 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["ksp_version_min"], Is.EqualTo("0.90"),
+            Assert.That((string?)transformedJson["ksp_version_min"], Is.EqualTo("0.90"),
                 "AvcTransformer should add the KSP min version specified in the AVC version file."
             );
-            Assert.That((string)transformedJson["ksp_version_max"], Is.EqualTo("1.0.3"),
+            Assert.That((string?)transformedJson["ksp_version_max"], Is.EqualTo("1.0.3"),
                 "AvcTransformer should add the KSP min version specified in the AVC version file."
             );
             Assert.That(transformedJson["ksp_version"], Is.Null,
@@ -247,15 +247,15 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo(expectedKsp),
+            Assert.That((string?)transformedJson["ksp_version"], Is.EqualTo(expectedKsp),
                 "AvcTransformer should calculate ksp_version correctly"
             );
 
-            Assert.That((string)transformedJson["ksp_version_min"], Is.EqualTo(expectedKspMin),
+            Assert.That((string?)transformedJson["ksp_version_min"], Is.EqualTo(expectedKspMin),
                 "AvcTransformer should calculate ksp_version_min correctly"
             );
 
-            Assert.That((string)transformedJson["ksp_version_max"], Is.EqualTo(expectedKspMax),
+            Assert.That((string?)transformedJson["ksp_version_max"], Is.EqualTo(expectedKspMax),
                 "AvcTransformer should calculate ksp_version_max correctly"
             );
         }
@@ -291,7 +291,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("9001"),
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("9001"),
                 "AvcTransformer should not override an existing version."
             );
         }
@@ -328,7 +328,7 @@ namespace Tests.NetKAN.Transformers
             JObject  transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("1.2.3"),
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("1.2.3"),
                 "AvcTransformer should override an existing version when x_netkan_trust_version_file is true."
             );
         }

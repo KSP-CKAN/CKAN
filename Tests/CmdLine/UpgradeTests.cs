@@ -77,10 +77,10 @@ namespace Tests.CmdLine
                 var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);
-                var fromModule = regMgr.registry.GetModuleByVersion(identifier, fromVersion);
-                var toModule   = regMgr.registry.GetModuleByVersion(identifier, toVersion);
+                var fromModule = regMgr.registry.GetModuleByVersion(identifier, fromVersion)!;
+                var toModule   = regMgr.registry.GetModuleByVersion(identifier, toVersion)!;
                 regMgr.registry.RegisterModule(fromModule, new List<string>(), inst.KSP, false);
-                manager.Cache.Store(toModule, TestData.DogeCoinFlagZip(), null);
+                manager.Cache?.Store(toModule, TestData.DogeCoinFlagZip(), null);
                 var opts = new UpgradeOptions()
                 {
                     modules = new List<string> { $"{identifier}={toVersion}" },
@@ -632,7 +632,7 @@ namespace Tests.CmdLine
                 // Pre-store mods that might be installed
                 foreach (var toModule in addlModules.Select(CkanModule.FromJson))
                 {
-                    manager.Cache.Store(toModule, TestData.DogeCoinFlagZip(), null);
+                    manager.Cache?.Store(toModule, TestData.DogeCoinFlagZip(), null);
                 }
                 // Simulate passing `--all`
                 var opts = upgradeIdentifiers != null
@@ -652,10 +652,10 @@ namespace Tests.CmdLine
 
                 // Assert
                 CollectionAssert.AreEqual(versionsAfter,
-                                          instMods.Select(m => regMgr.registry
-                                                                     .GetInstalledVersion(m.identifier)
-                                                                     .version
-                                                                     .ToString())
+                                          instMods.Select(m => regMgr?.registry
+                                                                      .GetInstalledVersion(m.identifier)
+                                                                     ?.version
+                                                                      .ToString())
                                                   .ToArray(),
                                           description);
 

@@ -74,8 +74,8 @@ namespace Tests.Core.Net.AutoUpdateTests
             var upd     = new GitHubReleaseCkanUpdate(relInfo);
 
             // Assert
-            Assert.AreEqual("v1.25.0", relInfo.tag_name);
-            Assert.AreEqual("Wallops", relInfo.name);
+            Assert.AreEqual("v1.25.0", relInfo?.tag_name);
+            Assert.AreEqual("Wallops", relInfo?.name);
             CollectionAssert.AreEqual(
                 new Uri[]
                 {
@@ -102,7 +102,7 @@ namespace Tests.Core.Net.AutoUpdateTests
                 }, upd.Targets.SelectMany(t => t.urls));
 
             Assert.AreEqual("v1.34.5.24015 aka dev",
-                            upd.Version.ToString());
+                            upd.Version?.ToString());
             Assert.AreEqual("### Internal\n\n- [Policy] Fix #3518 rewrite de-indexing policy (#3993 by: JonnyOThan; reviewed: HebaruSan)",
                             upd.ReleaseNotes);
         }

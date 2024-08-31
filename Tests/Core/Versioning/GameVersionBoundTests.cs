@@ -100,7 +100,7 @@ namespace Tests.Core.Versioning
             // Act
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
             var genericEquals = new GameVersionBound().Equals(null);
-            var nonGenericEquals = new GameVersionBound().Equals((object)null);
+            var nonGenericEquals = new GameVersionBound().Equals((object?)null);
             var equalsOperatorNullLeft = null == new GameVersionBound();
             var equalsOperatorNullRight = new GameVersionBound() == null;
             var notEqualsOperatorNullLeft = null != new GameVersionBound();

@@ -52,16 +52,16 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["download_hash"]["sha1"], Is.EqualTo(downloadHashSha1),
+            Assert.That((string?)transformedJson["download_hash"]?["sha1"], Is.EqualTo(downloadHashSha1),
                 "DownloadAttributeTransformer should add a 'sha1' property withing 'download_hash' equal to the sha1 of the file."
             );
-            Assert.That((string)transformedJson["download_hash"]["sha256"], Is.EqualTo(downloadHashSha256),
+            Assert.That((string?)transformedJson["download_hash"]?["sha256"], Is.EqualTo(downloadHashSha256),
                 "DownloadAttributeTransformer should add a 'sha256' property withing 'download_hash' equal to the sha256 of the file."
             );
-            Assert.That((long)transformedJson["download_size"], Is.EqualTo(downloadSize),
+            Assert.That((long?)transformedJson["download_size"], Is.EqualTo(downloadSize),
                 "DownloadAttributeTransformer should add a download_size property equal to the size of the file in bytes."
             );
-            Assert.That((string)transformedJson["download_content_type"], Is.EqualTo(downloadMimetype),
+            Assert.That((string?)transformedJson["download_content_type"], Is.EqualTo(downloadMimetype),
                 "DownloadAttributeTransformer should add a download_content_type property equal to the Mimetype of the file."
             );
         }
@@ -74,7 +74,7 @@ namespace Tests.NetKAN.Transformers
             var mFileService = new Mock<IFileService>();
 
             mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
-                .Returns((string)null);
+                .Returns((string?)null);
 
             var sut = new DownloadAttributeTransformer(mHttp.Object, mFileService.Object);
 

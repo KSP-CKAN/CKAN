@@ -18,7 +18,7 @@ namespace Tests.Data
             //    But this makes updates hard.
             // 4. A better, but much harder solution, is to not require harded files on disk for any of our tests, but that's
             //    a lot of work.
-            => Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location).FullName,
+            => Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName,
                             "../../../../../../Tests/Data");
 
         public static string DataDir(string file)
@@ -339,7 +339,7 @@ namespace Tests.Data
             CkanModule doge = DogeCoinFlag_101_module();
 
             // Hand hack in the 'find' directive.
-            doge.install[0].file = null;
+            doge.install![0].file = null;
             doge.install[0].find = "DogeCoinFlag";
 
             return doge;
@@ -353,7 +353,7 @@ namespace Tests.Data
         {
             CkanModule doge = DogeCoinFlag_101_module();
 
-            doge.install[0].filter = null;
+            doge.install![0].filter = null;
             doge.install[0].filter_regexp = null;
             doge.install[0].include_only = new List<string> { "dogecoin.png" };
             doge.install[0].include_only_regexp = new List<string> { "\\.bak$" };
@@ -899,13 +899,13 @@ namespace Tests.Data
         }
 
         public CkanModule GeneratorRandomModule(
-            GameVersion ksp_version = null,
-            List<RelationshipDescriptor> conflicts = null,
-            List<RelationshipDescriptor> depends = null,
-            List<RelationshipDescriptor> suggests = null,
-            List<string> provides = null,
-            string identifier = null,
-            ModuleVersion version = null)
+            GameVersion?                  ksp_version = null,
+            List<RelationshipDescriptor>? conflicts   = null,
+            List<RelationshipDescriptor>? depends     = null,
+            List<RelationshipDescriptor>? suggests    = null,
+            List<string>?                 provides    = null,
+            string?                       identifier  = null,
+            ModuleVersion?                version     = null)
             => new CkanModule(new ModuleVersion(1.ToString(CultureInfo.InvariantCulture)),
                               identifier ?? Generator.Next().ToString(CultureInfo.InvariantCulture),
                               Generator.Next().ToString(CultureInfo.InvariantCulture),

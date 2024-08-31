@@ -48,7 +48,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("1.2.3"));
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("1.2.3"));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("1.2.3"));
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("1.2.3"));
         }
 
         [Test]
@@ -93,7 +93,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("FOO-1.2.3-BAR"));
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("FOO-1.2.3-BAR"));
         }
 
         [Test]

@@ -61,8 +61,6 @@ namespace Tests.Data
                     throw new AssertionException(_failureMessage, ex);
                 }
             }
-
-            KSP = null;
         }
     }
 }

@@ -64,7 +64,10 @@ namespace Tests.NetKAN.Validators
                                 ]")));
         }
 
-        private void TryModule(string json, string removeProperty = null, string addProperty = null, JToken addPropertyValue = null)
+        private void TryModule(string json,
+                               string? removeProperty   = null,
+                               string? addProperty      = null,
+                               JToken? addPropertyValue = null)
         {
             // Arrange
             var jObj = JObject.Parse(json);

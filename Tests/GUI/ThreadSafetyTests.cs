@@ -22,7 +22,7 @@ namespace Tests.GUI
         public void GUIAssemblyModule_MethodsWithForbidGUICalls_DontCallGUI()
         {
             // Arrange / Act
-            var mainModule = ModuleDefinition.ReadModule(Assembly.GetAssembly(typeof(CKAN.GUI.Main))
+            var mainModule = ModuleDefinition.ReadModule(Assembly.GetAssembly(typeof(CKAN.GUI.Main))!
                                                                  .Location);
             var allMethods = mainModule.Types
                                        .SelectMany(t => GetAllNestedTypes(t))
@@ -50,6 +50,7 @@ namespace Tests.GUI
 
         private IEnumerable<MethodCall> FindStartedTasks(MethodDefinition md)
             => StartNewCalls(md).Select(FindStartNewArgument)
+                                .OfType<MethodDefinition>()
                                 .Select(taskArg => new MethodCall() { md, taskArg });
 
         private IEnumerable<Instruction> StartNewCalls(MethodDefinition md)
@@ -71,7 +72,7 @@ namespace Tests.GUI
         // 2. newobj a System.Action to hold it
         // 3. callvirt StartNew
         // ... so find the operand of the ldftn most immediately preceding the call
-        private MethodDefinition FindStartNewArgument(Instruction instr)
+        private MethodDefinition? FindStartNewArgument(Instruction instr)
             => instr.OpCode.Name == "ldftn" ? instr.Operand as MethodDefinition
                                             : FindStartNewArgument(instr.Previous);
 
@@ -112,10 +113,11 @@ namespace Tests.GUI
                       .Where(instr => callOpCodes.Contains(instr.OpCode.Name))
                       .Select(instr => instr.Operand as MethodDefinition
                                        ?? GetSetterDef(instr.Operand as MethodReference))
+                      .OfType<MethodDefinition>()
                       .Where(calledMeth => calledMeth?.Body != null);
 
         // Property setters are virtual and have references instead of definitions
-        private MethodDefinition GetSetterDef(MethodReference mr)
+        private MethodDefinition? GetSetterDef(MethodReference? mr)
             => (mr?.Name.StartsWith("set_") ?? false) ? mr.Resolve()
                                                       : null;
 
@@ -139,7 +141,7 @@ namespace Tests.GUI
                 || (t.BaseType != null && unsafeType(t.BaseType.Resolve()));
 
         private static readonly Type   forbidAttrib      = typeof(ForbidGUICallsAttribute);
-        private static readonly string winformsNamespace = typeof(Control).Namespace;
+        private static readonly string winformsNamespace = typeof(Control).Namespace!;
 
         private static readonly HashSet<string> callOpCodes = new HashSet<string>
         {

@@ -18,7 +18,7 @@ namespace Tests.NetKAN.Extensions
             sut.SafeAdd("foo", "bar");
 
             // Assert
-            Assert.That((string)sut["foo"], Is.EqualTo("bar"),
+            Assert.That((string?)sut["foo"], Is.EqualTo("bar"),
                 "SafeAdd() should add property if it doesn't exist."
             );
         }
@@ -34,7 +34,7 @@ namespace Tests.NetKAN.Extensions
             sut.SafeAdd("foo", "baz");
 
             // Assert
-            Assert.That((string)sut["foo"], Is.EqualTo("bar"),
+            Assert.That((string?)sut["foo"], Is.EqualTo("bar"),
                 "SafeAdd() should not add property if it already exists."
             );
         }
@@ -50,7 +50,7 @@ namespace Tests.NetKAN.Extensions
             sut.SafeAdd("foo", null as JToken);
 
             // Assert
-            Assert.That((string)sut["foo"], Is.EqualTo("bar"),
+            Assert.That((string?)sut["foo"], Is.EqualTo("bar"),
                 "SafeAdd() should not add property if value is null."
             );
         }
@@ -63,7 +63,7 @@ namespace Tests.NetKAN.Extensions
             var sut = new JObject();
 
             // Act
-            sut.SafeAdd("foo", (string)null);
+            sut.SafeAdd("foo", (string?)null);
 
             // Assert
             Assert.That(sut.Properties().Any(i => i.Name == "foo"), Is.False,

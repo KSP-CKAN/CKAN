@@ -13,10 +13,10 @@ namespace Tests.Core
     [TestFixture]
     public class Cache
     {
-        private string cache_dir;
+        private string? cache_dir;
 
-        private NetFileCache   cache;
-        private NetModuleCache module_cache;
+        private NetFileCache?   cache;
+        private NetModuleCache? module_cache;
 
         [SetUp]
         public void MakeCache()
@@ -30,11 +30,14 @@ namespace Tests.Core
         [TearDown]
         public void RemoveCache()
         {
-            cache.Dispose();
+            cache?.Dispose();
             cache = null;
-            module_cache.Dispose();
+            module_cache?.Dispose();
             module_cache = null;
-            Directory.Delete(cache_dir, true);
+            if (cache_dir != null)
+            {
+                Directory.Delete(cache_dir, true);
+            }
         }
 
         [Test]
@@ -51,30 +54,32 @@ namespace Tests.Core
             string file = TestData.DogeCoinFlagZip();
 
             // Our URL shouldn't be cached to begin with.
-            Assert.IsFalse(cache.IsCached(url));
+            Assert.IsFalse(cache?.IsCached(url));
 
             // Store our file.
-            cache.Store(url, file);
+            cache?.Store(url, file);
 
             // Now it should be cached.
-            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsTrue(cache?.IsCached(url));
 
             // Check contents match.
-            string cached_file = cache.GetCachedFilename(url);
+            var cached_file = cache?.GetCachedFilename(url);
             FileAssert.AreEqual(file, cached_file);
         }
 
-        [Test, TestCase("cheesy.zip","cheesy.zip"), TestCase("Foo-1-2.3","Foo-1-2.3"),
-            TestCase("Foo-1-2-3","Foo-1-2-3"), TestCase("Foo-..-etc-passwd","Foo-..-etc-passwd")]
+        [Test, TestCase("cheesy.zip","cheesy.zip"),
+               TestCase("Foo-1-2.3","Foo-1-2.3"),
+               TestCase("Foo-1-2-3","Foo-1-2-3"),
+               TestCase("Foo-..-etc-passwd","Foo-..-etc-passwd")]
         public void NamingHints(string hint, string appendage)
         {
             Uri url = new Uri("http://example.com/");
             string file = TestData.DogeCoinFlagZip();
 
-            Assert.IsFalse(cache.IsCached(url));
-            cache.Store(url, file, hint);
+            Assert.IsFalse(cache?.IsCached(url));
+            cache?.Store(url, file, hint);
 
-            StringAssert.EndsWith(appendage, cache.GetCachedFilename(url));
+            StringAssert.EndsWith(appendage, cache?.GetCachedFilename(url));
         }
 
         [Test]
@@ -83,13 +88,13 @@ namespace Tests.Core
             Uri url = new Uri("http://example.com/");
             string file = TestData.DogeCoinFlagZip();
 
-            Assert.IsFalse(cache.IsCached(url));
-            cache.Store(url, file);
-            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsFalse(cache?.IsCached(url));
+            cache?.Store(url, file);
+            Assert.IsTrue(cache?.IsCached(url));
 
-            cache.Remove(url);
+            cache?.Remove(url);
 
-            Assert.IsFalse(cache.IsCached(url));
+            Assert.IsFalse(cache?.IsCached(url));
         }
 
         [Test]
@@ -113,14 +118,14 @@ namespace Tests.Core
             // Try to store a nonexistent zip into a NetModuleCache
             // and expect an FileNotFoundKraken
             Assert.Throws<FileNotFoundKraken>(() =>
-                module_cache.Store(
+                module_cache?.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
                     "/DoesNotExist.zip", new Progress<int>(percent => {})));
 
             // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
             // and expect an InvalidModuleFileKraken
             Assert.Throws<InvalidModuleFileKraken>(() =>
-                module_cache.Store(
+                module_cache?.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
                     TestData.DogeCoinFlagZipLZMA, new Progress<int>(percent => {})));
 
@@ -128,7 +133,7 @@ namespace Tests.Core
             // using the WRONG metadata (file size and hashes)
             // and expect an InvalidModuleFileKraken
             Assert.Throws<InvalidModuleFileKraken>(() =>
-                module_cache.Store(
+                module_cache?.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
                     TestData.DogeCoinFlagZip(), new Progress<int>(percent => {})));
         }
@@ -140,19 +145,19 @@ namespace Tests.Core
             // the most recent file we store for any given URL.
 
             Uri url = new Uri("http://Double.Rainbow.What.Does.It.Mean/");
-            Assert.IsFalse(cache.IsCached(url));
+            Assert.IsFalse(cache?.IsCached(url));
 
             string file1 = TestData.DogeCoinFlagZip();
             string file2 = TestData.ModuleManagerZip();
 
-            cache.Store(url, file1);
-            FileAssert.AreEqual(file1, cache.GetCachedFilename(url));
+            cache?.Store(url, file1);
+            FileAssert.AreEqual(file1, cache?.GetCachedFilename(url));
 
-            cache.Store(url, file2);
-            FileAssert.AreEqual(file2, cache.GetCachedFilename(url));
+            cache?.Store(url, file2);
+            FileAssert.AreEqual(file2, cache?.GetCachedFilename(url));
 
-            cache.Store(url, file1);
-            FileAssert.AreEqual(file1, cache.GetCachedFilename(url));
+            cache?.Store(url, file1);
+            FileAssert.AreEqual(file1, cache?.GetCachedFilename(url));
         }
 
         [Test]
@@ -161,21 +166,22 @@ namespace Tests.Core
             // We could use any URL, but this one is awesome. <3
             Uri url = new Uri("http://kitte.nz/");
 
-            Assert.IsFalse(cache.IsCached(url));
+            Assert.IsFalse(cache?.IsCached(url));
 
             // Store a bad zip.
-            cache.Store(url, TestData.DogeCoinFlagZipCorrupt());
+            cache?.Store(url, TestData.DogeCoinFlagZipCorrupt());
 
             // Make sure it's stored
-            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsTrue(cache?.IsCached(url));
             // Make sure it's not valid as a zip
-            Assert.IsFalse(NetModuleCache.ZipValid(cache.GetCachedFilename(url), out _, null));
+            Assert.IsFalse(NetModuleCache.ZipValid(cache?.GetCachedFilename(url) ?? "",
+                                                   out _, null));
 
             // Store a good zip.
-            cache.Store(url, TestData.DogeCoinFlagZip());
+            cache?.Store(url, TestData.DogeCoinFlagZip());
 
             // Make sure it's stored, and valid.
-            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsTrue(cache?.IsCached(url));
         }
 
         [Test]
@@ -209,7 +215,7 @@ namespace Tests.Core
         public void ZipValid_ContainsFilenameWithUnicodeChars_Valid()
         {
             bool valid = false;
-            string reason = null;
+            string? reason = null;
 
             Assert.DoesNotThrow(() =>
                 valid = NetModuleCache.ZipValid(TestData.ZipWithUnicodeChars, out reason, null));
@@ -225,11 +231,11 @@ namespace Tests.Core
 
             // Act
             Uri url = new Uri("http://kitte.nz/");
-            cache.Store(url, TestData.DogeCoinFlagZip());
-            cache.EnforceSizeLimit(fileSize + 100, registry);
+            cache?.Store(url, TestData.DogeCoinFlagZip());
+            cache?.EnforceSizeLimit(fileSize + 100, registry);
 
             // Assert
-            Assert.IsTrue(cache.IsCached(url));
+            Assert.IsTrue(cache?.IsCached(url));
         }
 
         [Test]
@@ -241,11 +247,11 @@ namespace Tests.Core
 
             // Act
             Uri url = new Uri("http://kitte.nz/");
-            cache.Store(url, TestData.DogeCoinFlagZip());
-            cache.EnforceSizeLimit(fileSize - 100, registry);
+            cache?.Store(url, TestData.DogeCoinFlagZip());
+            cache?.EnforceSizeLimit(fileSize - 100, registry);
 
             // Assert
-            Assert.IsFalse(cache.IsCached(url));
+            Assert.IsFalse(cache?.IsCached(url));
         }
 
     }

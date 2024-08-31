@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
+
 using NUnit.Framework;
 using Newtonsoft.Json.Linq;
 using Moq;
+
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
@@ -45,14 +47,14 @@ namespace Tests.NetKAN.Transformers
                 .Returns(remoteAvc);
 
             // Act
-            Metadata m = null;
+            Metadata? m = null;
             Assert.DoesNotThrow(() => m = TryKref(mHttp.Object, $"#/ckan/ksp-avc/{remoteUrl}"));
 
             // Assert
-            var json = m.Json();
-            Assert.AreEqual(version,     (string)json["version"]);
-            Assert.AreEqual(GameVersion, (string)json["ksp_version"]);
-            Assert.AreEqual(download,    (string)json["download"]);
+            var json = m?.Json();
+            Assert.AreEqual(version,     (string?)json?["version"]);
+            Assert.AreEqual(GameVersion, (string?)json?["ksp_version"]);
+            Assert.AreEqual(download,    (string?)json?["download"]);
         }
 
         private Metadata TryKref(IHttpService http, string kref)

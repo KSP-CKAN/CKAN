@@ -26,7 +26,7 @@ namespace Tests.Core.Configuration
         /// </summary>
         /// <param name="instances">List of name/path pairs for the instances</param>
         /// <param name="auto_start_instance">The auto start instance to use</param>
-        public FakeConfiguration(List<Tuple<string, string, string>> instances, string auto_start_instance)
+        public FakeConfiguration(List<Tuple<string, string, string>> instances, string? auto_start_instance)
         {
             Instances         = instances;
             AutoStartInstance = auto_start_instance;
@@ -40,11 +40,11 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// Build map for the fake registry
         /// </summary>
-        public JBuilds                     BuildMap         { get; set; }
+        public JBuilds?                    BuildMap         { get; set; }
         /// <summary>
         /// Path to download cache folder for the fake registry
         /// </summary>
-        public string                      DownloadCacheDir { get; set; }
+        public string?                     DownloadCacheDir { get; set; }
         /// <summary>
         /// Maximum number of bytes of downloads to retain on disk
         /// </summary>
@@ -60,12 +60,12 @@ namespace Tests.Core.Configuration
         public int InstanceCount => Instances.Count;
 
         // In the Win32Registry it is not possible to get null in autostart.
-        private string _AutoStartInstance;
+        private string? _AutoStartInstance;
 
         /// <summary>
         /// The auto start instance for the fake registry
         /// </summary>
-        public string AutoStartInstance
+        public string? AutoStartInstance
         {
             get => _AutoStartInstance ?? string.Empty;
             #pragma warning disable IDE0027
@@ -107,7 +107,7 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// The build map of the fake registry
         /// </summary>
-        public JBuilds GetKSPBuilds() => BuildMap;
+        public JBuilds? GetKSPBuilds() => BuildMap;
 
         /// <summary>
         /// Set the build map for the fake registry
@@ -123,7 +123,7 @@ namespace Tests.Core.Configuration
             throw new NotImplementedException();
         }
 
-        public void SetAuthToken(string host, string token)
+        public void SetAuthToken(string host, string? token)
         {
             throw new NotImplementedException();
         }
@@ -133,8 +133,8 @@ namespace Tests.Core.Configuration
             throw new NotImplementedException();
         }
 
-        private string _Language;
-        public string Language
+        private string? _Language;
+        public string? Language
         {
             get => _Language;
 
@@ -149,13 +149,16 @@ namespace Tests.Core.Configuration
 
         public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
 
-        public string[] PreferredHosts { get; set; } = Array.Empty<string>();
+        public string?[] PreferredHosts { get; set; } = Array.Empty<string>();
 
         public bool? DevBuilds { get; set; }
 
         public void Dispose()
         {
-            Directory.Delete(DownloadCacheDir, true);
+            if (DownloadCacheDir != null)
+            {
+                Directory.Delete(DownloadCacheDir, true);
+            }
         }
     }
 }

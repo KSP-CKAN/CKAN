@@ -18,10 +18,10 @@ namespace Tests.NetKAN
         {
             JObject metadata = JObject.Parse(TestData.DogeCoinFlag_101());
 
-            Assert.AreEqual("1.01", (string)metadata["version"], "Original version as expected");
+            Assert.AreEqual("1.01", (string?)metadata["version"], "Original version as expected");
 
             metadata = new EpochTransformer().Transform(new Metadata(metadata), opts).First().Json();
-            Assert.AreEqual("1.01", (string)metadata["version"], "Version unharmed without x_netkan_force_v");
+            Assert.AreEqual("1.01", (string?)metadata["version"], "Version unharmed without x_netkan_force_v");
         }
 
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01""}", "1.01", "1.01")]
@@ -35,11 +35,11 @@ namespace Tests.NetKAN
         {
             JObject metadata = JObject.Parse(json);
 
-            Assert.AreEqual(orig_version, (string)metadata["version"], "JSON parsed as expected");
+            Assert.AreEqual(orig_version, (string?)metadata["version"], "JSON parsed as expected");
 
             metadata = new ForcedVTransformer().Transform(new Metadata(metadata), opts).First().Json();
 
-            Assert.AreEqual(new_version, (string)metadata["version"], "Output string as expected");
+            Assert.AreEqual(new_version, (string?)metadata["version"], "Output string as expected");
         }
 
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01""}", "1.01", "1.01")]
@@ -50,9 +50,9 @@ namespace Tests.NetKAN
         public void ApplyEpochNumber(string json, string orig_version, string new_version)
         {
             JObject metadata = JObject.Parse(json);
-            Assert.AreEqual(orig_version, (string)metadata["version"], "JSON parsed as expected");
+            Assert.AreEqual(orig_version, (string?)metadata["version"], "JSON parsed as expected");
             metadata = new EpochTransformer().Transform(new Metadata(metadata), opts).First().Json();
-            Assert.AreEqual(new_version, (string)metadata["version"], "Output string as expected");
+            Assert.AreEqual(new_version, (string?)metadata["version"], "Output string as expected");
         }
 
         [TestCase(@"{""spec_version"": 1, ""version"" : ""1.01""}", false)]

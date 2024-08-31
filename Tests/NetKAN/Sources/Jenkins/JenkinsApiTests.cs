@@ -23,9 +23,12 @@ namespace Tests.NetKAN.Sources.Jenkins
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
-            _cache.Dispose();
+            _cache?.Dispose();
             _cache = null;
-            Directory.Delete(_cachePath, recursive: true);
+            if (_cachePath != null)
+            {
+                Directory.Delete(_cachePath, recursive: true);
+            }
         }
 
 
@@ -35,20 +38,19 @@ namespace Tests.NetKAN.Sources.Jenkins
         public void GetLatestBuild_ModuleManager_Works()
         {
             // Arrange
-            IJenkinsApi sut = new JenkinsApi(new CachingHttpService(_cache));
+            IJenkinsApi sut = new JenkinsApi(new CachingHttpService(_cache!));
 
             // Act
-            JenkinsBuild build = sut.GetLatestBuild(
+            var build = sut.GetLatestBuild(
                 new JenkinsRef("#/ckan/jenkins/https://ksp.sarbian.com/jenkins/job/ModuleManager/"),
-                new JenkinsOptions()
-            );
+                new JenkinsOptions());
 
             // Assert
-            Assert.IsNotNull(build.Url);
-            Assert.IsNotNull(build.Artifacts);
+            Assert.IsNotNull(build?.Url);
+            Assert.IsNotNull(build?.Artifacts);
         }
 
-        private string       _cachePath;
-        private NetFileCache _cache;
+        private string?       _cachePath;
+        private NetFileCache? _cache;
     }
 }

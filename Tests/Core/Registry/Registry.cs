@@ -15,7 +15,7 @@ namespace Tests.Core.Registry
     [TestFixture]
     public class RegistryTests
     {
-        private string repoDataDir;
+        private string? repoDataDir;
 
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
         private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
@@ -29,7 +29,10 @@ namespace Tests.Core.Registry
         [TearDown]
         public void TearDown()
         {
-            Directory.Delete(repoDataDir, true);
+            if (repoDataDir != null)
+            {
+                Directory.Delete(repoDataDir, true);
+            }
         }
 
         [Test]
@@ -52,7 +55,7 @@ namespace Tests.Core.Registry
                 var module = registry.GetModuleByVersion(identifier, "0.14");
 
                 // Make sure it's there for 0.24.2
-                Assert.AreEqual(module.ToString(), registry.LatestAvailable(identifier, v0_24_2).ToString());
+                Assert.AreEqual(module?.ToString(), registry.LatestAvailable(identifier, v0_24_2)?.ToString());
 
                 // But not for 0.25.0
                 Assert.IsNull(registry.LatestAvailable(identifier, v0_25_0));
@@ -86,7 +89,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsFalse(avail.Contains(DLCDepender));
@@ -118,7 +121,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsTrue(avail.Contains(DLCDepender));
@@ -151,7 +154,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsTrue(avail.Contains(DLCDepender));
@@ -184,24 +187,11 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                List<CkanModule> avail = registry.CompatibleModules(v0_24_2).ToList();
+                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsFalse(avail.Contains(DLCDepender));
             }
-        }
-
-        [Test]
-        public void SetDLCs_NullVersion_DoesNotThrow()
-        {
-            var registry = CKAN.Registry.Empty();
-            Assert.DoesNotThrow(() =>
-            {
-                registry.SetDlcs(new Dictionary<string, ModuleVersion>
-                {
-                    { "MissingVersion", null },
-                });
-            }, "Missing readme.txt in a DLC shouldn't trigger an exception");
         }
 
         [Test]
@@ -242,7 +232,7 @@ namespace Tests.Core.Registry
 
                 // Act
                 GameVersionCriteria v173 = new GameVersionCriteria(GameVersion.Parse("1.7.3"));
-                List<CkanModule> compat = registry.CompatibleModules(v173).ToList();
+                var compat = registry.CompatibleModules(v173).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsFalse(compat.Contains(modFor161));
@@ -270,13 +260,13 @@ namespace Tests.Core.Registry
                 var mod = registry.GetModuleByVersion("AutoDetectedMod", "1.0");
 
                 GameInstance gameInst = gameInstWrapper.KSP;
-                gameInst.SetCompatibleVersions(new List<GameVersion> { mod.ksp_version });
+                gameInst.SetCompatibleVersions(new List<GameVersion> { mod?.ksp_version! });
                 registry.SetDlls(new Dictionary<string, string>()
                 {
                     {
-                        mod.identifier,
+                        mod!.identifier,
                         gameInst.ToRelativeGameDir(Path.Combine(gameInst.GameDir(),
-                                                                "GameData", $"{mod.identifier}.dll"))
+                                                                "GameData", $"{mod!.identifier}.dll"))
                     }
                 });
 
@@ -327,17 +317,17 @@ namespace Tests.Core.Registry
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                CkanModule olderDepMod = registry.GetModuleByVersion("DependencyMod", "1.0");
-                CkanModule newerDepMod = registry.GetModuleByVersion("DependencyMod", "2.0");
-                CkanModule dependingMod = registry.GetModuleByVersion("DependingMod", "1.0");
+                var olderDepMod = registry.GetModuleByVersion("DependencyMod", "1.0");
+                var newerDepMod = registry.GetModuleByVersion("DependencyMod", "2.0");
+                var dependingMod = registry.GetModuleByVersion("DependingMod", "1.0");
 
                 GameInstance gameInst = gameInstWrapper.KSP;
-                registry.RegisterModule(olderDepMod,  new List<string>(), gameInst, false);
-                registry.RegisterModule(dependingMod, new List<string>(), gameInst, false);
-                GameVersionCriteria crit = new GameVersionCriteria(olderDepMod.ksp_version);
+                registry.RegisterModule(olderDepMod!,  new List<string>(), gameInst, false);
+                registry.RegisterModule(dependingMod!, new List<string>(), gameInst, false);
+                GameVersionCriteria crit = new GameVersionCriteria(olderDepMod?.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(olderDepMod.identifier, gameInst, out _,
+                bool has = registry.HasUpdate(olderDepMod?.identifier!, gameInst, out _,
                                               registry.InstalledModules
                                                       .Select(im => im.Module)
                                                       .ToList());
