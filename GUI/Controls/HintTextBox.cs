@@ -1,6 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -8,6 +11,9 @@ namespace CKAN.GUI
     /// A textbox which shows a "clear text" icon on the right side
     /// whenever data is present.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class HintTextBox : TextBox
     {
 

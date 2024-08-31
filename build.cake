@@ -153,7 +153,7 @@ Task("Build")
             DotNetBuild(solution, new DotNetBuildSettings
             {
                 Configuration = "NoGUI",
-                Framework     = "net7.0",
+                Framework     = "net8.0",
             });
         }
     });
@@ -363,7 +363,7 @@ Task("Test-UnitTests+Only")
         DotNetTest(solution, new DotNetTestSettings
         {
             Configuration    = "NoGUI",
-            Framework        = "net7.0",
+            Framework        = "net8.0",
             NoRestore        = true,
             NoBuild          = true,
             NoLogo           = true,

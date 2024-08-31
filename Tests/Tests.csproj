@@ -21,9 +21,9 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>IDE1006,NU1701</NoWarn>
-    <TargetFrameworks>net48;net7.0;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;net8.0;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
-    <DefaultItemExcludes Condition=" '$(TargetFramework)' == 'net7.0' ">$(DefaultItemExcludes);AutoUpdate\**;GUI\**</DefaultItemExcludes>
+    <DefaultItemExcludes Condition=" '$(TargetFramework)' == 'net8.0' ">$(DefaultItemExcludes);AutoUpdate\**;GUI\**</DefaultItemExcludes>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Mono.Cecil" Version="0.11.5" />
@@ -68,13 +68,13 @@
       <Name>CKAN-ConsoleUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\GUI\CKAN-GUI.csproj"
-                      Condition=" '$(TargetFramework)' != 'net7.0' ">
+                      Condition=" '$(TargetFramework)' != 'net8.0' ">
       <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\AutoUpdate\CKAN-autoupdate.csproj"
-                      Condition=" '$(TargetFramework)' != 'net7.0' ">
+                      Condition=" '$(TargetFramework)' != 'net8.0' ">
       <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
       <Project>{E5B1C768-349E-4DAF-A134-56E4ECF1EEEF}</Project>
       <Name>CKAN-AutoUpdateHelper</Name>

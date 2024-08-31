@@ -202,16 +202,19 @@ namespace CKAN.GUI
 
         private void CloneGameInstanceMenuItem_Click(object? sender, EventArgs? e)
         {
-            var old_instance = manager.CurrentInstance;
-
-            var result = new CloneGameInstanceDialog(manager, user, (string)GameInstancesListView.SelectedItems[0].Tag).ShowDialog(this);
-            if (result == DialogResult.OK && !Equals(old_instance, manager.CurrentInstance))
+            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
             {
-                DialogResult = DialogResult.OK;
-                Close();
-            }
+                var old_instance = manager.CurrentInstance;
 
-            UpdateInstancesList();
+                var result = new CloneGameInstanceDialog(manager, user, instName).ShowDialog(this);
+                if (result == DialogResult.OK && !Equals(old_instance, manager.CurrentInstance))
+                {
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+
+                UpdateInstancesList();
+            }
         }
 
         private void SelectButton_Click(object? sender, EventArgs? e)
@@ -268,15 +271,17 @@ namespace CKAN.GUI
 
         private void GameInstancesListView_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            UpdateButtonState();
-
-            if (GameInstancesListView.SelectedItems.Count == 0)
+            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
             {
-                return;
-            }
+                UpdateButtonState();
 
-            string instName = (string)GameInstancesListView.SelectedItems[0].Tag;
-            SetAsDefaultCheckbox.Checked = manager.AutoStartInstance?.Equals(instName) ?? false;
+                if (GameInstancesListView.SelectedItems.Count == 0)
+                {
+                    return;
+                }
+
+                SetAsDefaultCheckbox.Checked = manager.AutoStartInstance?.Equals(instName) ?? false;
+            }
         }
 
         private void GameInstancesListView_DoubleClick(object sender, EventArgs r)
@@ -308,31 +313,35 @@ namespace CKAN.GUI
 
         private void OpenDirectoryMenuItem_Click(object? sender, EventArgs? e)
         {
-            string path = manager.Instances[(string) GameInstancesListView.SelectedItems[0].Tag].GameDir();
-
-            if (!Directory.Exists(path))
+            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
             {
-                user.RaiseError(Properties.Resources.ManageGameInstancesDirectoryDeleted, path);
-                return;
-            }
+                string path = manager.Instances[instName].GameDir();
 
-            Utilities.ProcessStartURL(path);
+                if (!Directory.Exists(path))
+                {
+                    user.RaiseError(Properties.Resources.ManageGameInstancesDirectoryDeleted, path);
+                    return;
+                }
+
+                Utilities.ProcessStartURL(path);
+            }
         }
 
         private void RenameButton_Click(object? sender, EventArgs? e)
         {
-            var instance = (string)GameInstancesListView.SelectedItems[0].Tag;
-
-            // show the dialog, and only continue if the user selected "OK"
-            var renameInstanceDialog = new RenameInstanceDialog();
-            if (renameInstanceDialog.ShowRenameInstanceDialog(instance) != DialogResult.OK)
+            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
             {
-                return;
-            }
+                // show the dialog, and only continue if the user selected "OK"
+                var renameInstanceDialog = new RenameInstanceDialog();
+                if (renameInstanceDialog.ShowRenameInstanceDialog(instName) != DialogResult.OK)
+                {
+                    return;
+                }
 
-            // proceed with instance rename
-            manager.RenameInstance(instance, renameInstanceDialog.GetResult());
-            UpdateInstancesList();
+                // proceed with instance rename
+                manager.RenameInstance(instName, renameInstanceDialog.GetResult());
+                UpdateInstancesList();
+            }
         }
 
         private void Forget_Click(object? sender, EventArgs? e)
@@ -349,9 +358,12 @@ namespace CKAN.GUI
 
         private void UpdateButtonState()
         {
-            RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
-            ForgetButton.Enabled = HasSelections && (string)GameInstancesListView.SelectedItems[0].Tag != manager.CurrentInstance?.Name;
-            ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
+            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
+            {
+                RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
+                ForgetButton.Enabled = HasSelections && instName != manager.CurrentInstance?.Name;
+                ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
+            }
         }
 
         private readonly GameInstanceManager manager;

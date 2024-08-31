@@ -648,7 +648,7 @@ namespace CKAN.GUI
 
         private void LanguageSelectionComboBox_SelectionChanged(object? sender, EventArgs? e)
         {
-            coreConfig.Language = LanguageSelectionComboBox.SelectedItem.ToString();
+            coreConfig.Language = LanguageSelectionComboBox.SelectedItem?.ToString();
         }
 
         private void AutoSortUpdateCheckBox_CheckedChanged(object? sender, EventArgs? e)

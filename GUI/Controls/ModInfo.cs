@@ -73,7 +73,7 @@ namespace CKAN.GUI
 
         private void LoadTab(GUIMod gm)
         {
-            switch (ModInfoTabControl.SelectedTab.Name)
+            switch (ModInfoTabControl.SelectedTab?.Name)
             {
                 case "MetadataTabPage":
                     Metadata.UpdateModInfo(gm);

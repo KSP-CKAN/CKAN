@@ -133,25 +133,27 @@ namespace CKAN.GUI
             evt.Handled = Util.TryOpenWebPage(HelpURLs.ModPacks);
         }
 
-        private void AddGroup(List<RelationshipDescriptor> relationships, ListViewGroup group, IRegistryQuerier registry)
+        private void AddGroup(List<RelationshipDescriptor> relationships,
+                              ListViewGroup                group,
+                              IRegistryQuerier             registry)
         {
             if (relationships != null)
             {
-                RelationshipsListView.Items.AddRange(relationships
-                    .OrderBy(r => (r as ModuleRelationshipDescriptor)?.name)
-                    .Select(r => new ListViewItem(new string?[]
-                        {
-                            (r as ModuleRelationshipDescriptor)?.name,
-                            (r as ModuleRelationshipDescriptor)?.version?.ToString(),
-                            registry.InstalledModules.First(
-                                im => im.identifier == (r as ModuleRelationshipDescriptor)?.name
-                            )?.Module.@abstract
-                        })
-                        {
-                            Tag   = r,
-                            Group = group,
-                        })
-                    .ToArray());
+                RelationshipsListView.Items.AddRange(
+                    relationships.OfType<ModuleRelationshipDescriptor>()
+                                 .OrderBy(r => r.name)
+                                 .Select(r => new ListViewItem(new string[]
+                                     {
+                                         r.name,
+                                         r.version?.ToString() ?? "",
+                                         registry.InstalledModules.FirstOrDefault(im => im.identifier == r.name)?.Module.@abstract ?? ""
+                                     })
+                                     {
+                                        Tag   = r,
+                                        Group = group,
+                                     })
+                                 .OfType<ListViewItem>()
+                                 .ToArray());
             }
         }
 
@@ -235,6 +237,7 @@ namespace CKAN.GUI
             OnSelectedItemsChanged?.Invoke(RelationshipsListView.SelectedItems);
             var kinds = RelationshipsListView.SelectedItems.Cast<ListViewItem>()
                 .Select(lvi => lvi.Group)
+                .OfType<ListViewGroup>()
                 .Distinct()
                 .ToList();
             if (kinds.Count == 1)
@@ -305,12 +308,13 @@ namespace CKAN.GUI
 
         private void MoveItemsTo(IEnumerable<ListViewItem> items, ListViewGroup group, List<RelationshipDescriptor> relationships)
         {
-            foreach (ListViewItem lvi in items.Where(lvi => lvi.Group != group))
+            foreach (ListViewItem lvi in items)
             {
-                if (lvi.Tag is RelationshipDescriptor rel)
+                if (lvi.Tag is RelationshipDescriptor rel
+                    && lvi.Group is ListViewGroup grp)
                 {
                     // UI
-                    var fromRel = GroupToRelationships[lvi.Group];
+                    var fromRel = GroupToRelationships[grp];
                     fromRel.Remove(rel);
                     relationships.Add(rel);
                     // Model

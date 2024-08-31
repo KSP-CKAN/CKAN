@@ -219,6 +219,9 @@ namespace CKAN.GUI
         private static readonly ILog log = LogManager.GetLogger(typeof(UnmanagedFiles));
     }
 
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     internal class DirsFirstSorter : IComparer, IComparer<TreeNode>
     {
         public int Compare(object? a, object? b)

@@ -1,5 +1,8 @@
 using System.Windows.Forms;
 using System.Drawing;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -8,6 +11,9 @@ namespace CKAN.GUI
     /// one on the right side and one on the left.
     /// Intended to allow autosizing of Buttons.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public class LeftRightRowPanel : TableLayoutPanel
     {
         /// <summary>

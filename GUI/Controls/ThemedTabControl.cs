@@ -38,10 +38,11 @@ namespace CKAN.GUI
                 var textRect = e.Bounds;
 
                 // Image
-                var imageIndex = !string.IsNullOrEmpty(tabPage.ImageKey)
-                    ? ImageList.Images.IndexOfKey(tabPage.ImageKey)
-                    : tabPage.ImageIndex;
-                if (imageIndex > -1)
+                if (ImageList != null
+                    && (!string.IsNullOrEmpty(tabPage.ImageKey)
+                            ? ImageList.Images.IndexOfKey(tabPage.ImageKey)
+                            : tabPage.ImageIndex) is int imageIndex
+                    && imageIndex > -1)
                 {
                     var image = ImageList.Images[imageIndex];
                     var offsetY = (e.Bounds.Height - image.Height) / 2;
