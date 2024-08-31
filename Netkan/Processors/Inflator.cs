@@ -30,7 +30,7 @@ namespace CKAN.NetKAN.Processors
             IModuleService moduleService = new ModuleService(game);
             IFileService   fileService   = new FileService(cache);
             http          = new CachingHttpService(cache, overwriteCache);
-            ckanValidator = new CkanValidator(http, moduleService, game);
+            ckanValidator = new CkanValidator(http, moduleService, game, githubToken);
             transformer   = new NetkanTransformer(http, fileService, moduleService,
                                                   githubToken, gitlabToken, prerelease, game, netkanValidator);
         }

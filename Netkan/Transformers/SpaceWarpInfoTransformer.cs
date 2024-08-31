@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
@@ -36,7 +35,7 @@ namespace CKAN.NetKAN.Transformers
                 CkanModule    mod    = CkanModule.FromJson(moduleJson.ToString());
                 GameInstance  inst   = new GameInstance(game, "/", "dummy", new NullUser());
                 ZipFile       zip    = new ZipFile(httpSvc.DownloadModule(metadata));
-                var swinfo = modSvc.GetSpaceWarpInfo(mod, zip, inst, metadata.Vref.Id);
+                var swinfo = modSvc.GetInternalSpaceWarpInfo(mod, zip, inst, metadata.Vref.Id);
                 if (swinfo != null)
                 {
                     log.Info("Found swinfo.json file");
@@ -82,26 +81,6 @@ namespace CKAN.NetKAN.Transformers
                                                                        maxVer?.WithoutBuild);
                         ModuleService.ApplyVersions(json, null, minVer?.WithoutBuild,
                                                                 maxVer?.WithoutBuild);
-                    }
-                    var moduleDeps = (mod.depends?.OfType<ModuleRelationshipDescriptor>()
-                                                  .Select(r => r.name)
-                                      ?? Enumerable.Empty<string>())
-                                      .ToHashSet();
-                    var missingDeps = (swinfo.dependencies
-                                             ?.Select(dep => dep.id)
-                                              .OfType<string>()
-                                              .Where(depId => !moduleDeps.Contains(
-                                                  // Remove up to last period
-                                                  Identifier.Sanitize(
-                                                      depId[(depId.LastIndexOf('.') + 1)..], ""),
-                                                  // Case insensitive
-                                                  StringComparer.InvariantCultureIgnoreCase))
-                                             ?? Enumerable.Empty<string>())
-                                              .ToList();
-                    if (missingDeps.Any())
-                    {
-                        log.WarnFormat("Dependencies from swinfo.json missing from module: {0}",
-                                       string.Join(", ", missingDeps));
                     }
                     log.DebugFormat("Transformed metadata:{0}{1}",
                                     Environment.NewLine, json);

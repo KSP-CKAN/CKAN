@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.NetKAN.Sources.SpaceWarp;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Services
 {
@@ -21,7 +22,8 @@ namespace CKAN.NetKAN.Services
         IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst);
 
         SpaceWarpInfo? ParseSpaceWarpJson(string? json);
-        SpaceWarpInfo? GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string? internalFilePath = null);
+        SpaceWarpInfo? GetInternalSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, string? internalFilePath = null);
+        SpaceWarpInfo? GetSpaceWarpInfo(CkanModule module, ZipFile zip, GameInstance inst, IGithubApi githubApi, IHttpService httpSvc, string? internalFilePath = null);
 
         IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip, GameInstance inst);
         IEnumerable<string> FileDestinations(CkanModule module, string filePath);

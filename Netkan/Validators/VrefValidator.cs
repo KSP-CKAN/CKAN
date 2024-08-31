@@ -85,7 +85,7 @@ namespace CKAN.NetKAN.Validators
                     GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
                     using (var zipfile = new ZipFile(zipFilePath))
                     {
-                        bool hasSWInfo = _moduleService.GetSpaceWarpInfo(mod, zipfile, inst) != null;
+                        bool hasSWInfo = _moduleService.GetInternalSpaceWarpInfo(mod, zipfile, inst) != null;
                         if (hasSWVref && !hasSWInfo)
                         {
                             Log.Warn("$vref is space-warp, swinfo.json file missing");

@@ -14,6 +14,7 @@ using CKAN.Versioning;
 using CKAN.NetKAN.Sources.Avc;
 using CKAN.NetKAN.Sources.SpaceWarp;
 using CKAN.Games;
+using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Services
 {
@@ -345,17 +346,39 @@ namespace CKAN.NetKAN.Services
         public SpaceWarpInfo? ParseSpaceWarpJson(string? json)
             => json == null ? null : JsonConvert.DeserializeObject<SpaceWarpInfo>(json, ignoreJsonErrors);
 
-        public SpaceWarpInfo? GetSpaceWarpInfo(CkanModule   module,
+        public SpaceWarpInfo? GetInternalSpaceWarpInfo(CkanModule   module,
                                                ZipFile      zip,
                                                GameInstance inst,
                                                string?      internalFilePath = null)
+            => GetInternalSpaceWarpInfos(module, zip, inst, internalFilePath).FirstOrDefault();
+
+        private IEnumerable<SpaceWarpInfo> GetInternalSpaceWarpInfos(CkanModule   module,
+                                                                     ZipFile      zip,
+                                                                     GameInstance inst,
+                                                                     string?      internalFilePath = null)
             => (string.IsNullOrWhiteSpace(internalFilePath)
                     ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, inst)
                     : ModuleInstaller.FindInstallableFiles(module, zip, inst)
-                        .Where(instF => instF.source.Name == internalFilePath))
+                                     .Where(instF => instF.source.Name == internalFilePath))
                 .Select(instF => instF.source)
-                .Select(entry => ParseSpaceWarpJson(
-                    new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
-                .FirstOrDefault();
+                .Select(entry => ParseSpaceWarpJson(new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
+                .OfType<SpaceWarpInfo>();
+
+        public SpaceWarpInfo? GetSpaceWarpInfo(CkanModule   module,
+                                               ZipFile      zip,
+                                               GameInstance inst,
+                                               IGithubApi   githubApi,
+                                               IHttpService httpSvc,
+                                               string?      internalFilePath = null)
+            => GetInternalSpaceWarpInfos(module, zip, inst, internalFilePath)
+               .Select(swinfo => swinfo.version_check != null
+                                 && Uri.IsWellFormedUriString(swinfo.version_check.OriginalString, UriKind.Absolute)
+                                 && ParseSpaceWarpJson(githubApi?.DownloadText(swinfo.version_check)
+                                                                ?? httpSvc.DownloadText(swinfo.version_check))
+                                    is SpaceWarpInfo remoteSwinfo
+                                 && remoteSwinfo.version == swinfo.version
+                                     ? remoteSwinfo
+                                     : swinfo)
+               .FirstOrDefault();
     }
 }

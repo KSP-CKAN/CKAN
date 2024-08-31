@@ -2,6 +2,7 @@ using System.Collections.Generic;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Sources.Github;
 using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
@@ -10,10 +11,11 @@ namespace CKAN.NetKAN.Validators
     {
         private readonly List<IValidator> _validators;
 
-        public CkanValidator(IHttpService downloader,
+        public CkanValidator(IHttpService   downloader,
                              IModuleService moduleService,
-                             IGame game)
-        {
+                             IGame          game,
+                             string?        githubToken)        {
+            var ghApi = new GithubApi(downloader, githubToken);
             _validators = new List<IValidator>
             {
                 new IsCkanModuleValidator(),
@@ -32,6 +34,7 @@ namespace CKAN.NetKAN.Validators
                 new ModuleManagerDependsValidator(downloader, moduleService, game),
                 new PluginsValidator(downloader, moduleService, game),
                 new CraftsInShipsValidator(downloader, moduleService, game),
+                new SpaceWarpInfoValidator(downloader, ghApi, moduleService, game),
             };
         }
 
