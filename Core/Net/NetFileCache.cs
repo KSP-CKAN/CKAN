@@ -134,8 +134,15 @@ namespace CKAN
         /// </summary>
         private void OnCacheChanged(object source, FileSystemEventArgs e)
         {
-            log.Debug("File system watcher event fired");
+            log.DebugFormat("File system watcher event {0} fired for {1}",
+                            e.ChangeType.ToString(),
+                            e.FullPath);
             OnCacheChanged();
+            if (e.ChangeType == WatcherChangeTypes.Deleted)
+            {
+                log.DebugFormat("Purging hashes reactively: {0}", e.FullPath);
+                PurgeHashes(null, e.FullPath);
+            }
         }
 
         /// <summary>
@@ -231,10 +238,7 @@ namespace CKAN
                     // Local file too old, delete it
                     log.Debug("Found stale file, deleting it");
                     File.Delete(file);
-                    File.Delete($"{file}.sha1");
-                    File.Delete($"{file}.sha256");
-                    sha1Cache.Remove(file);
-                    sha256Cache.Remove(file);
+                    PurgeHashes(null, file);
                 }
             }
             else
@@ -411,7 +415,7 @@ namespace CKAN
 
             TxFileManager tx_file = new TxFileManager();
 
-            // Make sure we clear our cache entry first.
+            // Clear our cache entry first
             Remove(url);
 
             string hash = CreateURLHash(url);
@@ -420,7 +424,7 @@ namespace CKAN
 
             Debug.Assert(
                 Regex.IsMatch(description, "^[A-Za-z0-9_.-]*$"),
-                "description isn't as filesystem safe as we thought... (#1266)");
+                $"description {description} isn't as filesystem safe as we thought... (#1266)");
 
             string fullName = string.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
@@ -467,13 +471,20 @@ namespace CKAN
             return false;
         }
 
-        private void PurgeHashes(TxFileManager tx_file, string file)
+        private void PurgeHashes(TxFileManager? tx_file, string file)
         {
-            tx_file.Delete($"{file}.sha1");
-            tx_file.Delete($"{file}.sha256");
+            try
+            {
+                sha1Cache.Remove(file);
+                sha256Cache.Remove(file);
 
-            sha1Cache.Remove(file);
-            sha256Cache.Remove(file);
+                tx_file ??= new TxFileManager();
+                tx_file.Delete($"{file}.sha1");
+                tx_file.Delete($"{file}.sha256");
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>

@@ -34,6 +34,7 @@ namespace Tests.NetKAN.Services
         }
 
         [Test]
+        [Category("Cache")]
         public void GetsFileSizeCorrectly()
         {
             // Arrange
@@ -49,6 +50,7 @@ namespace Tests.NetKAN.Services
         }
 
         [Test]
+        [Category("Cache")]
         public void GetsFileHashSha1Correctly()
         {
             // Arrange
@@ -64,6 +66,7 @@ namespace Tests.NetKAN.Services
         }
 
         [Test]
+        [Category("Cache")]
         public void GetsFileHashSha256Correctly()
         {
             // Arrange

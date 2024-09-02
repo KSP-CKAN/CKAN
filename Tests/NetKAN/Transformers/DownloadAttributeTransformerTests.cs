@@ -14,6 +14,7 @@ namespace Tests.NetKAN.Transformers
         private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         [Test]
+        [Category("Cache")]
         public void AddsDownloadAttributes()
         {
             // Arrange
