@@ -186,8 +186,10 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private static JToken? GetAuthors(SpacedockMod mod)
-            => JObjectExtensions.FromMessyList(mod.author,
-                                               mod.shared_authors?.Select(i => i.Username));
+            => Enumerable.Repeat(mod.author, 1)
+                         .Concat(mod.shared_authors?.Select(i => i.Username)
+                                                   ?? Enumerable.Empty<string>())
+                         .ToJValueOrJArray();
 
         private static readonly Regex githubUrlPathPattern =
             new Regex("^/(?<owner>[^/]+)/(?<repo>[^/]+)",

@@ -81,13 +81,11 @@ namespace CKAN.NetKAN.Extensions
             }
         }
 
-        public static JToken? FromMessyList<T>(T? first, IEnumerable<T?>? rest) where T: notnull
+        public static JToken? ToJValueOrJArray<T>(this IEnumerable<T?> source) where T: notnull
         {
-            var items = (rest ?? Enumerable.Empty<T?>())
-                            .Append(first)
-                            .OfType<T>()
-                            .Distinct()
-                            .ToList();
+            var items = source.OfType<T>()
+                              .Distinct()
+                              .ToList();
             return items.Count switch
             {
                 0 => null,

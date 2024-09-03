@@ -234,21 +234,22 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private JToken? GetAuthors(GithubRepo repo, GithubRelease release)
-            => JObjectExtensions.FromMessyList(
-                   release.Author,
-                   repo.TraverseNodes(r => r.ParentRepo == null
-                                               ? null
-                                               : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}",
-                                                              false, _matchPreleases)))
-                       .Reverse()
-                       .SelectMany(r => r.Owner?.Type switch
-                                        {
-                                            userType => Enumerable.Repeat(r.Owner.Login, 1),
-                                            orgType  => _api.getOrgMembers(r.Owner)
-                                                            .Select(u => u.Login),
-                                            _        => Enumerable.Empty<string>()
-                                        }));
+        private JToken? GetAuthors(GithubRepo    repo,
+                                   GithubRelease release)
+            => repo.TraverseNodes(r => r.ParentRepo == null
+                                           ? null
+                                           : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}",
+                                                          false, _matchPreleases)))
+                   .Reverse()
+                   .SelectMany(r => r.Owner?.Type switch
+                                    {
+                                        userType => Enumerable.Repeat(r.Owner.Login, 1),
+                                        orgType  => _api.getOrgMembers(r.Owner)
+                                                        .Select(u => u.Login),
+                                        _        => Enumerable.Empty<string>()
+                                    })
+                   .Append(release.Author)
+                   .ToJValueOrJArray();
 
         private const string userType = "User";
         private const string orgType  = "Organization";
