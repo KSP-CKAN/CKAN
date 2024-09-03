@@ -23,7 +23,7 @@ RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-o
 
 # Install the necessary pieces of Mono
 RUN apt-get install -y --no-install-recommends \
-    mono-runtime ca-certificates-mono libmono-microsoft-csharp4.0-cil libmono-system-data4.0-cil libmono-system-runtime-serialization4.0-cil libmono-system-transactions4.0-cil libmono-system-net-http-webrequest4.0-cil
+    mono-runtime ca-certificates-mono libmono-microsoft-csharp4.0-cil libmono-system-data4.0-cil libmono-system-runtime-serialization4.0-cil libmono-system-transactions4.0-cil libmono-system-net-http-webrequest4.0-cil libmono-system-servicemodel4.0a-cil
 
 # Isolate Python build stuff in a separate container
 FROM base AS build
