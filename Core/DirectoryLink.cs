@@ -52,7 +52,7 @@ namespace CKAN
             return false;
         }
 
-        public static bool TryGetTarget(string link, out string target)
+        public static bool TryGetTarget(string link, out string? target)
         {
             target = null;
             var fi = new DirectoryInfo(link);
@@ -132,7 +132,7 @@ namespace CKAN
                                                    uint                  IoControlCode,
                                                    ref ReparseDataBuffer InBuffer,
                                                    int                   nInBufferSize,
-                                                   byte[]                OutBuffer,
+                                                   byte[]?               OutBuffer,
                                                    int                   nOutBufferSize,
                                                    out int               pBytesReturned,
                                                    IntPtr                Overlapped);
@@ -140,7 +140,7 @@ namespace CKAN
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern bool DeviceIoControl(SafeFileHandle        hDevice,
                                                    uint                  IoControlCode,
-                                                   byte[]                InBuffer,
+                                                   byte[]?               InBuffer,
                                                    int                   nInBufferSize,
                                                    out ReparseDataBuffer OutBuffer,
                                                    int                   nOutBufferSize,

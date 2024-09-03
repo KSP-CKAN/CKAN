@@ -34,65 +34,67 @@ namespace CKAN.GUI
 
         private void LoadAssembly(string dll)
         {
-            Assembly assembly;
-
             try
             {
-                assembly = Assembly.UnsafeLoadFrom(dll);
+                if (Assembly.UnsafeLoadFrom(dll) is Assembly assembly)
+                {
+                    try
+                    {
+                        log.InfoFormat("Loaded assembly - \"{0}\"", dll);
+
+                        var typeName = string.Format("{0}.{0}",
+                                                     Path.GetFileNameWithoutExtension(dll));
+
+                        if (assembly.GetType(typeName) is Type type
+                            && Activator.CreateInstance(type) is IGUIPlugin pluginInstance)
+                        {
+                            foreach (var loadedPlugin in m_ActivePlugins)
+                            {
+                                if (loadedPlugin.GetName() == pluginInstance.GetName())
+                                {
+                                    if (loadedPlugin.GetVersion().IsLessThan(pluginInstance.GetVersion()))
+                                    {
+                                        DeactivatePlugin(loadedPlugin);
+                                        m_DormantPlugins.Remove(loadedPlugin);
+                                    }
+                                    else
+                                    {
+                                        return;
+                                    }
+                                }
+                            }
+
+                            foreach (var loadedPlugin in m_DormantPlugins)
+                            {
+                                if (loadedPlugin.GetName() == pluginInstance.GetName())
+                                {
+                                    if (loadedPlugin.GetVersion().IsLessThan(pluginInstance.GetVersion()))
+                                    {
+                                        m_DormantPlugins.Remove(loadedPlugin);
+                                    }
+                                    else
+                                    {
+                                        return;
+                                    }
+                                }
+                            }
+
+                            m_DormantPlugins.Add(pluginInstance);
+                            log.WarnFormat("Successfully instantiated type \"{0}\" from {1}.dll",
+                                           assembly.FullName, assembly.FullName);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        log.WarnFormat("Failed to instantiate type \"{0}\" from {1} - {2}.dll",
+                                       assembly.FullName, assembly.FullName, ex.Message);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                log.WarnFormat("Failed to load assembly \"{0}\" - {1}", dll, ex.Message);
-                return;
-            }
-
-            log.InfoFormat("Loaded assembly - \"{0}\"", dll);
-
-            try
-            {
-                var typeName = Path.GetFileNameWithoutExtension(dll);
-                typeName = string.Format("{0}.{1}", typeName, typeName);
-
-                Type type = assembly.GetType(typeName);
-                IGUIPlugin pluginInstance = (IGUIPlugin)Activator.CreateInstance(type);
-
-                foreach (var loadedPlugin in m_ActivePlugins)
-                {
-                    if (loadedPlugin.GetName() == pluginInstance.GetName())
-                    {
-                        if (loadedPlugin.GetVersion().IsLessThan(pluginInstance.GetVersion()))
-                        {
-                            DeactivatePlugin(loadedPlugin);
-                            m_DormantPlugins.Remove(loadedPlugin);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                }
-
-                foreach (var loadedPlugin in m_DormantPlugins)
-                {
-                    if (loadedPlugin.GetName() == pluginInstance.GetName())
-                    {
-                        if (loadedPlugin.GetVersion().IsLessThan(pluginInstance.GetVersion()))
-                        {
-                            m_DormantPlugins.Remove(loadedPlugin);
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                }
-
-                m_DormantPlugins.Add(pluginInstance);
-                log.WarnFormat("Successfully instantiated type \"{0}\" from {1}.dll", assembly.FullName, assembly.FullName);
-            }
-            catch (Exception ex)
-            {
-                log.WarnFormat("Failed to instantiate type \"{0}\" from {1} - {2}.dll", assembly.FullName, assembly.FullName, ex.Message);
+                log.WarnFormat("Failed to load assembly \"{0}\" - {1}",
+                               dll, ex.Message);
             }
         }
 
@@ -184,7 +186,7 @@ namespace CKAN.GUI
         public List<IGUIPlugin> DormantPlugins
             => m_DormantPlugins.ToList();
 
-        private readonly HashSet<IGUIPlugin> m_ActivePlugins = new HashSet<IGUIPlugin>();
+        private readonly HashSet<IGUIPlugin> m_ActivePlugins  = new HashSet<IGUIPlugin>();
         private readonly HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();
 
     }

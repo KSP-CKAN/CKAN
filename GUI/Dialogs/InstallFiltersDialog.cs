@@ -38,7 +38,7 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.Filters);
         }
 
-        private void InstallFiltersDialog_Load(object sender, EventArgs e)
+        private void InstallFiltersDialog_Load(object? sender, EventArgs? e)
         {
             GlobalFiltersTextBox.Text = string.Join(Environment.NewLine, globalConfig.GlobalInstallFilters);
             InstanceFiltersTextBox.Text = string.Join(Environment.NewLine, instance.InstallFilters);
@@ -46,13 +46,13 @@ namespace CKAN.GUI
             InstanceFiltersTextBox.DeselectAll();
         }
 
-        private void InstallFiltersDialog_Closing(object sender, CancelEventArgs e)
+        private void InstallFiltersDialog_Closing(object? sender, CancelEventArgs? e)
         {
             globalConfig.GlobalInstallFilters = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             instance.InstallFilters = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private void AddMiniAVCButton_Click(object sender, EventArgs e)
+        private void AddMiniAVCButton_Click(object? sender, EventArgs? e)
         {
             GlobalFiltersTextBox.Text = string.Join(Environment.NewLine,
                 GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries)

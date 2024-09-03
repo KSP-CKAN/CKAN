@@ -30,7 +30,7 @@ namespace CKAN.GUI
         {
             if (Platform.IsUnix)
             {
-                string XDGDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
+                var XDGDataHome = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
                 if (XDGDataHome != null)
                 {
                     ApplicationsPath = Path.Combine(XDGDataHome, "applications");
@@ -45,7 +45,7 @@ namespace CKAN.GUI
             }
         }
 
-        public static void RegisterURLHandler(GUIConfiguration config, IUser user)
+        public static void RegisterURLHandler(GUIConfiguration? config, IUser? user)
         {
             try
             {
@@ -61,15 +61,17 @@ namespace CKAN.GUI
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        if (config.URLHandlerNoNag)
+                        if (config == null || config.URLHandlerNoNag)
                         {
                             return;
                         }
 
-                        if (user.RaiseYesNoDialog(Properties.Resources.URLHandlersPrompt))
+                        if (Assembly.GetEntryAssembly() is Assembly ass
+                            && user != null
+                            && user.RaiseYesNoDialog(Properties.Resources.URLHandlersPrompt))
                         {
                             // we need elevation to write to the registry
-                            Process.Start(new ProcessStartInfo(Assembly.GetEntryAssembly().Location)
+                            Process.Start(new ProcessStartInfo(ass.Location)
                             {
                                 // trigger a UAC prompt (if UAC is enabled)
                                 Verb      = "runas",
@@ -104,18 +106,18 @@ namespace CKAN.GUI
         private static void RegisterURLHandler_Win32()
         {
             log.InfoFormat("Adding URL handler to registry");
-            string      urlCmd  = $"{Assembly.GetExecutingAssembly().Location} gui %1";
-            RegistryKey root    = Microsoft.Win32.Registry.ClassesRoot;
-            RegistryKey ckanKey = root.OpenSubKey("ckan");
+            string      urlCmd = $"{Assembly.GetExecutingAssembly().Location} gui %1";
+            RegistryKey root   = Microsoft.Win32.Registry.ClassesRoot;
+            var ckanKey = root.OpenSubKey("ckan");
             if (ckanKey != null)
             {
                 try
                 {
-                    string path = ckanKey.OpenSubKey("shell")
-                        .OpenSubKey("open")
-                        .OpenSubKey("command")
-                        .GetValue("")
-                        .ToString();
+                    var path = ckanKey?.OpenSubKey("shell")
+                                      ?.OpenSubKey("open")
+                                      ?.OpenSubKey("command")
+                                      ?.GetValue("")
+                                      ?.ToString();
 
                     if (path == urlCmd)
                     {

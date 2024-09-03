@@ -23,16 +23,14 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "netkan";
 
-        public NetkanTransformer(
-            IHttpService http,
-            IFileService fileService,
-            IModuleService moduleService,
-            string githubToken,
-            string gitlabToken,
-            bool prerelease,
-            IGame game,
-            IValidator validator
-        )
+        public NetkanTransformer(IHttpService   http,
+                                 IFileService   fileService,
+                                 IModuleService moduleService,
+                                 string?        githubToken,
+                                 string?        gitlabToken,
+                                 bool           prerelease,
+                                 IGame          game,
+                                 IValidator     validator)
         {
             _validator = validator;
             var ghApi = new GithubApi(http, githubToken);
@@ -57,7 +55,8 @@ namespace CKAN.NetKAN.Transformers
                 new EpochTransformer(),
                 // This is the "default" VersionedOverrideTransformer for compatibility with overrides that don't
                 // specify a before or after property.
-                new VersionedOverrideTransformer(before: new string[] { null }, after: new string[] { null }),
+                new VersionedOverrideTransformer(before: new string?[] { null },
+                                                 after:  new string?[] { null }),
                 new DownloadAttributeTransformer(http, fileService),
                 new InstallSizeTransformer(http, moduleService, game),
                 new StagingLinksTransformer(),
@@ -68,7 +67,7 @@ namespace CKAN.NetKAN.Transformers
             });
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             Metadata[] modules = new Metadata[] { metadata };
             foreach (ITransformer tr in _transformers)

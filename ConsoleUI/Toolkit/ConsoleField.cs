@@ -45,7 +45,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Event to notify that the text has changed
         /// </summary>
-        public event ChangeListener OnChange;
+        public event ChangeListener? OnChange;
         private void Changed()
         {
             OnChange?.Invoke(this, Value);
@@ -89,7 +89,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 Console.ForegroundColor = focused
                     ? theme.FieldFocusedFg
                     : theme.FieldBlurredFg;
-                Console.Write(FormatExactWidth(Value.Substring(leftPos), w));
+                Console.Write(FormatExactWidth(Value[leftPos..], w));
             }
         }
 
@@ -110,11 +110,11 @@ namespace CKAN.ConsoleUI.Toolkit {
                     if (!k.Modifiers.HasFlag(ConsoleModifiers.Control)) {
                         if (Position > 0) {
                             --Position;
-                            Value = Value.Substring(0, Position) + Value.Substring(Position + 1);
+                            Value = Value[..Position] + Value[(Position + 1)..];
                             Changed();
                         }
                     } else if (!string.IsNullOrEmpty(Value)) {
-                        Value    = Value.Substring(Position);
+                        Value    = Value[Position..];
                         Position = 0;
                         Changed();
                     }
@@ -122,8 +122,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 case ConsoleKey.Delete:
                     if (Position < Value.Length) {
                         Value = k.Modifiers.HasFlag(ConsoleModifiers.Control)
-                            ? Value.Substring(0, Position)
-                            : Value.Substring(0, Position) + Value.Substring(Position + 1);
+                            ? Value[..Position]
+                            : Value[..Position] + Value[(Position + 1)..];
                         Changed();
                     }
                     break;
@@ -155,7 +155,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 default:
                     if (!char.IsControl(k.KeyChar)) {
                         if (Position < Value.Length) {
-                            Value = Value.Substring(0, Position) + k.KeyChar + Value.Substring(Position);
+                            Value = Value[..Position] + k.KeyChar + Value[Position..];
                         } else {
                             Value += k.KeyChar;
                         }

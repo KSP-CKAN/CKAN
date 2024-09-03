@@ -80,10 +80,9 @@ namespace CKAN
         {
             get
             {
-                if (latestCompatible == null)
-                {
-                    latestCompatible = Compatible.Values.Select(avail => avail.Latest(CompatibleVersions)).ToList();
-                }
+                latestCompatible ??= Compatible.Values.Select(avail => avail.Latest(CompatibleVersions))
+                                                      .OfType<CkanModule>()
+                                                      .ToList();
                 return latestCompatible;
             }
         }
@@ -97,10 +96,9 @@ namespace CKAN
         {
             get
             {
-                if (latestIncompatible == null)
-                {
-                    latestIncompatible = Incompatible.Values.Select(avail => avail.Latest(null)).ToList();
-                }
+                latestIncompatible ??= Incompatible.Values.Select(avail => avail.Latest(null))
+                                                          .OfType<CkanModule>()
+                                                          .ToList();
                 return latestIncompatible;
             }
         }
@@ -109,8 +107,8 @@ namespace CKAN
         private readonly HashSet<string> dlls;
         private readonly IDictionary<string, ModuleVersion> dlc;
 
-        private List<CkanModule> latestCompatible;
-        private List<CkanModule> latestIncompatible;
+        private List<CkanModule>? latestCompatible;
+        private List<CkanModule>? latestIncompatible;
 
         /// <summary>
         /// Filter the provides mapping by compatibility
@@ -261,7 +259,7 @@ namespace CKAN
             => rel is ModuleRelationshipDescriptor modRel
                 ? Enumerable.Repeat(modRel.name, 1)
                 : rel is AnyOfRelationshipDescriptor anyRel
-                    ? anyRel.any_of.SelectMany(RelationshipIdentifiers)
+                    ? (anyRel.any_of?.SelectMany(RelationshipIdentifiers) ?? Enumerable.Empty<string>())
                     : Enumerable.Empty<string>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CompatibilitySorter));

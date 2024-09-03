@@ -24,9 +24,9 @@ namespace CKAN.GUI
             ActiveControl = AddSearch();
         }
 
-        public event Action                  SurrenderFocus;
-        public event Action<List<ModSearch>> ApplySearches;
-        public event Action<string>          ShowError;
+        public event Action?                    SurrenderFocus;
+        public event Action<List<ModSearch?>?>? ApplySearches;
+        public event Action<string>?            ShowError;
 
         public void Clear()
         {
@@ -62,7 +62,7 @@ namespace CKAN.GUI
         {
             while (editors.Count > searches.Count && editors.Count > 1)
             {
-                RemoveSearch(editors[editors.Count - 1]);
+                RemoveSearch(editors[^1]);
             }
             if (searches.Count < 1)
             {
@@ -95,7 +95,7 @@ namespace CKAN.GUI
             Apply();
         }
 
-        private void AddSearchButton_Click(object sender, EventArgs e)
+        private void AddSearchButton_Click(object? sender, EventArgs? e)
         {
             AddSearch().Focus();
             AddSearchButton.Enabled = false;
@@ -128,7 +128,7 @@ namespace CKAN.GUI
             ResumeLayout(false);
             PerformLayout();
 
-            AddSearchButton.Top = editors[editors.Count - 1].Top;
+            AddSearchButton.Top = editors[^1].Top;
 
             return ctl;
         }
@@ -151,13 +151,13 @@ namespace CKAN.GUI
                 // Make sure the top label is always visible
                 editors[0].ShowLabel = true;
 
-                AddSearchButton.Top = editors[editors.Count - 1].Top;
+                AddSearchButton.Top = editors[^1].Top;
 
                 Height = editors.Sum(ems => ems.Height);
             }
         }
 
-        private void EditModSearch_ApplySearch(EditModSearch source, ModSearch what)
+        private void EditModSearch_ApplySearch(EditModSearch source, ModSearch? what)
         {
             if (what == null && editors.Count > 1)
             {
@@ -169,7 +169,6 @@ namespace CKAN.GUI
         private void Apply()
         {
             var searches = editors.Select(ems => ems.Search)
-                                  .Where(s => s != null)
                                   .ToList();
             ApplySearches?.Invoke(searches.Count == 0 ? null : searches);
             AddSearchButton.Enabled = editors.Count == searches.Count;

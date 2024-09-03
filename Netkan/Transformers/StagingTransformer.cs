@@ -15,14 +15,14 @@ namespace CKAN.NetKAN.Transformers
         public StagingTransformer(IGame game)
         {
             this.game      = game;
-            currentRelease = game.KnownVersions.Max().ToVersionRange();
+            currentRelease = game.KnownVersions.Max()?.ToVersionRange();
         }
 
         public string Name => "staging";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (VersionsNeedManualReview(metadata, out string reason))
+            if (opts != null && VersionsNeedManualReview(metadata, out string reason))
             {
                 Log.DebugFormat("Enabling staging, reason: {0}", reason);
                 opts.StagingReasons.Add(reason);
@@ -37,9 +37,9 @@ namespace CKAN.NetKAN.Transformers
             JObject json = metadata.Json();
             var minStr = json["ksp_version_min"] ?? json["ksp_version"];
             var maxStr = json["ksp_version_max"] ?? json["ksp_version"];
-            var minVer = minStr == null ? GameVersion.Any : GameVersion.Parse((string)minStr);
-            var maxVer = maxStr == null ? GameVersion.Any : GameVersion.Parse((string)maxStr);
-            if (currentRelease.IntersectWith(new GameVersionRange(minVer, maxVer)) == null)
+            var minVer = minStr == null ? GameVersion.Any : GameVersion.Parse((string?)minStr);
+            var maxVer = maxStr == null ? GameVersion.Any : GameVersion.Parse((string?)maxStr);
+            if (currentRelease != null && currentRelease.IntersectWith(new GameVersionRange(minVer, maxVer)) == null)
             {
                 reason = $"Hard-coded game versions not compatible with current release: {GameVersionRange.VersionSpan(game, minVer, maxVer)}\r\nPlease check that they match the forum thread.";
                 return true;
@@ -52,8 +52,8 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private readonly GameVersionRange currentRelease;
-        private readonly IGame            game;
+        private readonly GameVersionRange? currentRelease;
+        private readonly IGame             game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(StagingTransformer));
     }

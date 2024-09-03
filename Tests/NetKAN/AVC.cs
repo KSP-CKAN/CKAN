@@ -17,9 +17,9 @@ namespace Tests.NetKAN
 
             var avc = JsonConvert.DeserializeObject<AvcVersion>(json);
 
-            Assert.AreEqual("0.24.2", avc.ksp_version.ToString());
-            Assert.AreEqual("0.24.0", avc.ksp_version_min.ToString());
-            Assert.AreEqual("0.24.2", avc.ksp_version_max.ToString());
+            Assert.AreEqual("0.24.2", avc?.ksp_version?.ToString());
+            Assert.AreEqual("0.24.0", avc?.ksp_version_min?.ToString());
+            Assert.AreEqual("0.24.2", avc?.ksp_version_max?.ToString());
         }
 
         [Test]
@@ -29,9 +29,9 @@ namespace Tests.NetKAN
 
             var avc = JsonConvert.DeserializeObject<AvcVersion>(json);
 
-            Assert.AreEqual("0.24.2", avc.ksp_version.ToString());
-            Assert.AreEqual("0.24.0", avc.ksp_version_min.ToString());
-            Assert.AreEqual("1.0.0", avc.ksp_version_max.ToString());
+            Assert.AreEqual("0.24.2", avc?.ksp_version?.ToString());
+            Assert.AreEqual("0.24.0", avc?.ksp_version_min?.ToString());
+            Assert.AreEqual("1.0.0",  avc?.ksp_version_max?.ToString());
         }
 
         [Test]
@@ -40,7 +40,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":-1, ""MINOR"":-1, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null)!;
             Assert.That(!result.IsMajorDefined);
         }
 
@@ -50,7 +50,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":-1, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null)!;
             Assert.That(result, Is.EqualTo(GameVersion.Parse("1")));
         }
 
@@ -60,7 +60,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":5, ""PATCH"":-1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (GameVersion)converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null)!;
             Assert.That(result, Is.EqualTo(GameVersion.Parse("1.5")));
         }
 
@@ -70,7 +70,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToGameVersion();
             string json = @"{}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null)!;
             Assert.That(!result.IsMajorDefined);
         }
 
@@ -80,7 +80,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (GameVersion) converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null)!;
             Assert.That(result, Is.EqualTo(GameVersion.Parse("1")));
         }
 
@@ -90,7 +90,7 @@ namespace Tests.NetKAN
             var converter = new JsonAvcToGameVersion();
             string json = @"{""MAJOR"":1, ""MINOR"":5}";
             var reader = new JsonTextReader(new StringReader(json));
-            var result = (GameVersion)converter.ReadJson(reader, null, null, null);
+            var result = (GameVersion)converter.ReadJson(reader, null, null, null)!;
             Assert.That(result, Is.EqualTo(GameVersion.Parse("1.5")));
         }
 

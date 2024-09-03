@@ -30,7 +30,11 @@ namespace CKAN.GUI
 
             try
             {
-                XSetClassHint(DisplayHandle, GetWindow(handle), classHints);
+                if (DisplayHandle is IntPtr disp
+                    && GetWindow(handle) is IntPtr pt)
+                {
+                    XSetClassHint(disp, pt, classHints);
+                }
             }
             catch (DllNotFoundException)
             {
@@ -44,31 +48,24 @@ namespace CKAN.GUI
 
         private static readonly Assembly MonoWinformsAssembly = Assembly.Load("System.Windows.Forms");
 
-        private static readonly Type Hwnd = MonoWinformsAssembly
-            .GetType("System.Windows.Forms.Hwnd");
+        private static readonly Type? Hwnd = MonoWinformsAssembly.GetType("System.Windows.Forms.Hwnd");
 
-        private static IntPtr DisplayHandle
-            => (IntPtr)MonoWinformsAssembly
-                .GetType("System.Windows.Forms.XplatUIX11")
-                .GetField("DisplayHandle",
-                          BindingFlags.NonPublic | BindingFlags.Static)
-                .GetValue(null);
+        private static IntPtr? DisplayHandle
+            => (IntPtr?)MonoWinformsAssembly.GetType("System.Windows.Forms.XplatUIX11")
+                                            ?.GetField("DisplayHandle",
+                                                       BindingFlags.NonPublic | BindingFlags.Static)
+                                            ?.GetValue(null);
 
-        private static IntPtr GetWindow(IntPtr handle)
-        {
-            return (IntPtr)Hwnd.GetField(
-                "whole_window",
-                BindingFlags.NonPublic | BindingFlags.Instance
-            ).GetValue(GetHwnd(handle));
-        }
+        private static IntPtr? GetWindow(IntPtr handle)
+            => Hwnd?.GetField("whole_window",
+                              BindingFlags.NonPublic | BindingFlags.Instance)
+                   ?.GetValue(GetHwnd(handle))
+                   as IntPtr?;
 
-        private static object GetHwnd(IntPtr handle)
-        {
-            return Hwnd.GetMethod(
-                "ObjectFromHandle",
-                BindingFlags.Public | BindingFlags.Static
-            ).Invoke(null, new object[] { handle });
-        }
+        private static object? GetHwnd(IntPtr handle)
+            => Hwnd?.GetMethod("ObjectFromHandle",
+                               BindingFlags.Public | BindingFlags.Static)
+                   ?.Invoke(null, new object[] { handle });
 
         [DllImport("libX11", EntryPoint = "XSetClassHint", CharSet = CharSet.Ansi)]
         private static extern int XSetClassHint(IntPtr display, IntPtr window, IntPtr classHint);

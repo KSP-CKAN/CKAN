@@ -16,25 +16,25 @@ namespace CKAN.CmdLine
     internal class InstanceSubOptions : VerbCommandOptions
     {
         [VerbOption("list",    HelpText = "List game instances")]
-        public CommonOptions  ListOptions    { get; set; }
+        public CommonOptions?  ListOptions    { get; set; }
 
         [VerbOption("add",     HelpText = "Add a game instance")]
-        public AddOptions     AddOptions     { get; set; }
+        public AddOptions?     AddOptions     { get; set; }
 
         [VerbOption("clone",   HelpText = "Clone an existing game instance")]
-        public CloneOptions   CloneOptions   { get; set; }
+        public CloneOptions?   CloneOptions   { get; set; }
 
         [VerbOption("rename",  HelpText = "Rename a game instance")]
-        public RenameOptions  RenameOptions  { get; set; }
+        public RenameOptions?  RenameOptions  { get; set; }
 
         [VerbOption("forget",  HelpText = "Forget a game instance")]
-        public ForgetOptions  ForgetOptions  { get; set; }
+        public ForgetOptions?  ForgetOptions  { get; set; }
 
         [VerbOption("default", HelpText = "Set the default game instance")]
-        public DefaultOptions DefaultOptions { get; set; }
+        public DefaultOptions? DefaultOptions { get; set; }
 
         [VerbOption("fake",    HelpText = "Fake a game instance")]
-        public FakeOptions    FakeOptions    { get; set; }
+        public FakeOptions?    FakeOptions    { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -99,8 +99,8 @@ namespace CKAN.CmdLine
 
     internal class AddOptions : CommonOptions
     {
-        [ValueOption(0)] public string name { get; set; }
-        [ValueOption(1)] public string path { get; set; }
+        [ValueOption(0)] public string? name { get; set; }
+        [ValueOption(1)] public string? path { get; set; }
     }
 
     internal class CloneOptions : CommonOptions
@@ -108,43 +108,43 @@ namespace CKAN.CmdLine
         [Option("share-stock", DefaultValue = false, HelpText = "Use junction points (Windows) or symbolic links (Unix) for stock dirs instead of copying")]
         public bool shareStock { get; set; }
 
-        [ValueOption(0)] public string nameOrPath { get; set; }
-        [ValueOption(1)] public string new_name { get; set; }
-        [ValueOption(2)] public string new_path { get; set; }
+        [ValueOption(0)] public string? nameOrPath { get; set; }
+        [ValueOption(1)] public string? new_name { get; set; }
+        [ValueOption(2)] public string? new_path { get; set; }
     }
 
     internal class RenameOptions : CommonOptions
     {
         [GameInstances]
-        [ValueOption(0)] public string old_name { get; set; }
-        [ValueOption(1)] public string new_name { get; set; }
+        [ValueOption(0)] public string? old_name { get; set; }
+        [ValueOption(1)] public string? new_name { get; set; }
     }
 
     internal class ForgetOptions : CommonOptions
     {
         [GameInstances]
-        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(0)] public string? name { get; set; }
     }
 
     internal class DefaultOptions : CommonOptions
     {
         [GameInstances]
-        [ValueOption(0)] public string name { get; set; }
+        [ValueOption(0)] public string? name { get; set; }
     }
 
     internal class FakeOptions : CommonOptions
     {
-        [ValueOption(0)] public string name { get; set; }
-        [ValueOption(1)] public string path { get; set; }
-        [ValueOption(2)] public string version { get; set; }
+        [ValueOption(0)] public string? name { get; set; }
+        [ValueOption(1)] public string? path { get; set; }
+        [ValueOption(2)] public string? version { get; set; }
 
         [Option("game", DefaultValue = "KSP", HelpText = "The game of the instance to be faked, either KSP or KSP2")]
-        public string gameId { get; set; }
+        public string? gameId { get; set; }
 
         [Option("MakingHistory", DefaultValue = "none", HelpText = "The version of the Making History DLC to be faked.")]
-        public string makingHistoryVersion { get; set; }
+        public string? makingHistoryVersion { get; set; }
         [Option("BreakingGround", DefaultValue = "none", HelpText = "The version of the Breaking Ground DLC to be faked.")]
-        public string breakingGroundVersion { get; set; }
+        public string? breakingGroundVersion { get; set; }
 
         [Option("set-default", DefaultValue = false, HelpText = "Set the new instance as the default one.")]
         public bool setDefault { get; set; }
@@ -156,7 +156,9 @@ namespace CKAN.CmdLine
         protected static readonly ILog log = LogManager.GetLogger(typeof(GameInstance));
 
         // This is required by ISubCommand
-        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager? manager,
+                                 CommonOptions?       opts,
+                                 SubCommandOptions    unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -235,14 +237,14 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private IUser               user    { get; set; }
-        private GameInstanceManager Manager { get; set; }
+        private IUser?               user    { get; set; }
+        private GameInstanceManager? Manager { get; set; }
 
         #region option functions
 
         private int ListInstalls()
         {
-            var output = Manager.Instances
+            var output = Manager?.Instances
                 .OrderByDescending(i => i.Value.Name == Manager.AutoStartInstance)
                 .ThenByDescending(i => i.Value.Version() ?? GameVersion.Any)
                 .ThenBy(i => i.Key)
@@ -257,70 +259,74 @@ namespace CKAN.CmdLine
                 })
                 .ToList();
 
-            string nameHeader    = Properties.Resources.InstanceListNameHeader;
-            string versionHeader = Properties.Resources.InstanceListVersionHeader;
-            string defaultHeader = Properties.Resources.InstanceListDefaultHeader;
-            string pathHeader    = Properties.Resources.InstanceListPathHeader;
-
-            var nameWidth    = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
-            var versionWidth = Enumerable.Repeat(versionHeader, 1).Concat(output.Select(i => i.Version)).Max(i => i.Length);
-            var defaultWidth = Enumerable.Repeat(defaultHeader, 1).Concat(output.Select(i => i.Default)).Max(i => i.Length);
-            var pathWidth    = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
-
-            const string columnFormat = "{0}  {1}  {2}  {3}";
-
-            user.RaiseMessage(columnFormat,
-                nameHeader.PadRight(nameWidth),
-                versionHeader.PadRight(versionWidth),
-                defaultHeader.PadRight(defaultWidth),
-                pathHeader.PadRight(pathWidth)
-            );
-
-            user.RaiseMessage(columnFormat,
-                new string('-', nameWidth),
-                new string('-', versionWidth),
-                new string('-', defaultWidth),
-                new string('-', pathWidth)
-            );
-
-            foreach (var line in output)
+            if (output != null)
             {
-                user.RaiseMessage(columnFormat,
-                    line.Name.PadRight(nameWidth),
-                    line.Version.PadRight(versionWidth),
-                    line.Default.PadRight(defaultWidth),
-                    line.Path.PadRight(pathWidth)
-                );
-            }
+                string nameHeader    = Properties.Resources.InstanceListNameHeader;
+                string versionHeader = Properties.Resources.InstanceListVersionHeader;
+                string defaultHeader = Properties.Resources.InstanceListDefaultHeader;
+                string pathHeader    = Properties.Resources.InstanceListPathHeader;
 
-            return Exit.OK;
+                var nameWidth    = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
+                var versionWidth = Enumerable.Repeat(versionHeader, 1).Concat(output.Select(i => i.Version)).Max(i => i.Length);
+                var defaultWidth = Enumerable.Repeat(defaultHeader, 1).Concat(output.Select(i => i.Default)).Max(i => i.Length);
+                var pathWidth    = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
+
+                const string columnFormat = "{0}  {1}  {2}  {3}";
+
+                user?.RaiseMessage(columnFormat,
+                                   nameHeader.PadRight(nameWidth),
+                                   versionHeader.PadRight(versionWidth),
+                                   defaultHeader.PadRight(defaultWidth),
+                                   pathHeader.PadRight(pathWidth));
+
+                user?.RaiseMessage(columnFormat,
+                                   new string('-', nameWidth),
+                                   new string('-', versionWidth),
+                                   new string('-', defaultWidth),
+                                   new string('-', pathWidth));
+
+                foreach (var line in output)
+                {
+                    user?.RaiseMessage(columnFormat,
+                                       line.Name.PadRight(nameWidth),
+                                       line.Version.PadRight(versionWidth),
+                                       line.Default.PadRight(defaultWidth),
+                                       line.Path.PadRight(pathWidth));
+                }
+
+                return Exit.OK;
+            }
+            return Exit.ERROR;
         }
 
         private int AddInstall(AddOptions options)
         {
             if (options.name == null || options.path == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("add");
                 return Exit.BADOPT;
             }
 
-            if (Manager.HasInstance(options.name))
+            if (Manager?.HasInstance(options.name) ?? false)
             {
-                user.RaiseMessage(Properties.Resources.InstanceAddDuplicate, options.name);
+                user?.RaiseMessage(Properties.Resources.InstanceAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
 
             try
             {
-                string path = options.path;
-                Manager.AddInstance(path, options.name, user);
-                user.RaiseMessage(Properties.Resources.InstanceAdded, options.name, options.path);
+                if (user != null)
+                {
+                    string path = options.path;
+                    Manager?.AddInstance(path, options.name, user);
+                    user.RaiseMessage(Properties.Resources.InstanceAdded, options.name, options.path);
+                }
                 return Exit.OK;
             }
             catch (NotKSPDirKraken ex)
             {
-                user.RaiseMessage(Properties.Resources.InstanceNotInstance, ex.path);
+                user?.RaiseMessage(Properties.Resources.InstanceNotInstance, ex.path);
                 return Exit.BADOPT;
             }
         }
@@ -329,7 +335,7 @@ namespace CKAN.CmdLine
         {
             if (options.nameOrPath == null || options.new_name == null || options.new_path == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("clone");
                 return Exit.BADOPT;
             }
@@ -345,7 +351,7 @@ namespace CKAN.CmdLine
             try
             {
                 // Try instanceNameOrPath as name and search the registry for it.
-                if (Manager.HasInstance(instanceNameOrPath))
+                if (Manager?.HasInstance(instanceNameOrPath) ?? false)
                 {
                     CKAN.GameInstance[] listOfInstances = Manager.Instances.Values.ToArray();
                     foreach (CKAN.GameInstance instance in listOfInstances)
@@ -360,7 +366,7 @@ namespace CKAN.CmdLine
                 }
                 // Try to use instanceNameOrPath as a path and create a new game instance.
                 // If it's valid, go on.
-                else if (Manager.InstanceAt(instanceNameOrPath) is CKAN.GameInstance instance && instance.Valid)
+                else if (Manager?.InstanceAt(instanceNameOrPath) is CKAN.GameInstance instance && instance.Valid)
                 {
                     Manager.CloneInstance(instance, newName, newPath, options.shareStock);
                 }
@@ -398,13 +404,13 @@ namespace CKAN.CmdLine
             }
             catch (NoGameInstanceKraken)
             {
-                user.RaiseError(Properties.Resources.InstanceCloneNotFound, instanceNameOrPath);
+                user?.RaiseError(Properties.Resources.InstanceCloneNotFound, instanceNameOrPath);
                 ListInstalls();
                 return Exit.ERROR;
             }
             catch (InstanceNameTakenKraken kraken)
             {
-                user.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
+                user?.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
                 return Exit.BADOPT;
             }
 
@@ -417,7 +423,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseMessage(Properties.Resources.InstanceCloneFailed);
+                user?.RaiseMessage(Properties.Resources.InstanceCloneFailed);
                 return Exit.ERROR;
             }
         }
@@ -426,20 +432,20 @@ namespace CKAN.CmdLine
         {
             if (options.old_name == null || options.new_name == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("rename");
                 return Exit.BADOPT;
             }
 
-            if (!Manager.HasInstance(options.old_name))
+            if (!Manager?.HasInstance(options.old_name) ?? false)
             {
-                user.RaiseMessage(Properties.Resources.InstanceNotFound, options.old_name);
+                user?.RaiseMessage(Properties.Resources.InstanceNotFound, options.old_name);
                 return Exit.BADOPT;
             }
 
-            Manager.RenameInstance(options.old_name, options.new_name);
+            Manager?.RenameInstance(options.old_name, options.new_name);
 
-            user.RaiseMessage(Properties.Resources.InstanceRenamed, options.old_name, options.new_name);
+            user?.RaiseMessage(Properties.Resources.InstanceRenamed, options.old_name, options.new_name);
             return Exit.OK;
         }
 
@@ -447,94 +453,77 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("forget");
                 return Exit.BADOPT;
             }
 
-            if (!Manager.HasInstance(options.name))
+            if (!Manager?.HasInstance(options.name) ?? false)
             {
-                user.RaiseMessage(Properties.Resources.InstanceNotFound, options.name);
+                user?.RaiseMessage(Properties.Resources.InstanceNotFound, options.name);
                 return Exit.BADOPT;
             }
 
-            Manager.RemoveInstance(options.name);
+            Manager?.RemoveInstance(options.name);
 
-            user.RaiseMessage(Properties.Resources.InstanceForgot, options.name);
+            user?.RaiseMessage(Properties.Resources.InstanceForgot, options.name);
             return Exit.OK;
         }
 
         private int SetDefaultInstall(DefaultOptions options)
         {
-            string name = options.name;
-
-            if (name == null)
+            var name = options.name;
+            // Oh right, this is that one that didn't work AT ALL at one point
+            if (name == null && Manager != null && user != null)
             {
                 // No input argument from the user. Present a list of the possible instances.
-                string message = $"default <name> - {Properties.Resources.InstanceDefaultArgumentMissing}";
-
-                // Check if there is a default instance.
-                string defaultInstance = Manager.Configuration.AutoStartInstance;
-                int defaultInstancePresent = 0;
-
-                if (!string.IsNullOrWhiteSpace(defaultInstance))
-                {
-                    defaultInstancePresent = 1;
-                }
-
-                object[] keys = new object[Manager.Instances.Count + defaultInstancePresent];
-
-                // Populate the list of instances.
-                for (int i = 0; i < Manager.Instances.Count; i++)
-                {
-                    var instance = Manager.Instances.ElementAt(i);
-
-                    keys[i + defaultInstancePresent] = string.Format("\"{0}\" - {1}", instance.Key, instance.Value.GameDir());
-                }
-
-                // Mark the default instance for the user.
-                if (!string.IsNullOrWhiteSpace(defaultInstance))
-                {
-                    keys[0] = Manager.Instances.IndexOfKey(defaultInstance);
-                }
-
-                int result;
 
                 try
                 {
-                    result = user.RaiseSelectionDialog(message, keys);
+                    // If there is a default instance, its index is passed first
+                    var defaultInstance = Manager.Configuration.AutoStartInstance;
+                    int result = user.RaiseSelectionDialog(
+                                     $"default <name> - {Properties.Resources.InstanceDefaultArgumentMissing}",
+                                     (defaultInstance == null || string.IsNullOrWhiteSpace(defaultInstance)
+                                         ? Enumerable.Empty<object>()
+                                         : Enumerable.Repeat((object)Manager.Instances.IndexOfKey(defaultInstance), 1))
+                                         .Concat(Manager.Instances.Select(kvp => string.Format("\"{0}\" - {1}",
+                                                                                               kvp.Key, kvp.Value.GameDir())))
+                                         .ToArray());
+                    if (result < 0)
+                    {
+                        return Exit.BADOPT;
+                    }
+                    name = Manager.Instances.ElementAt(result).Key;
                 }
                 catch (Kraken)
                 {
                     return Exit.BADOPT;
                 }
+            }
 
-                if (result < 0)
+            if (name != null)
+            {
+                if (!Manager?.Instances.ContainsKey(name) ?? false)
                 {
+                    user?.RaiseMessage(Properties.Resources.InstanceNotFound, name);
                     return Exit.BADOPT;
                 }
 
-                name = Manager.Instances.ElementAt(result).Key;
-            }
+                try
+                {
+                    Manager?.SetAutoStart(name);
+                }
+                catch (NotKSPDirKraken k)
+                {
+                    user?.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
+                    return Exit.BADOPT;
+                }
 
-            if (!Manager.Instances.ContainsKey(name))
-            {
-                user.RaiseMessage(Properties.Resources.InstanceNotFound, name);
-                return Exit.BADOPT;
+                user?.RaiseMessage(Properties.Resources.InstanceDefaultSet, name);
+                return Exit.OK;
             }
-
-            try
-            {
-                Manager.SetAutoStart(name);
-            }
-            catch (NotKSPDirKraken k)
-            {
-                user.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
-                return Exit.BADOPT;
-            }
-
-            user.RaiseMessage(Properties.Resources.InstanceDefaultSet, name);
-            return Exit.OK;
+            return Exit.BADOPT;
         }
 
         /// <summary>
@@ -552,14 +541,14 @@ namespace CKAN.CmdLine
             int badArgument()
             {
                 log.Debug("Instance faking failed: bad argument(s). See console output for details.");
-                user.RaiseMessage(Properties.Resources.InstanceFakeBadArguments);
+                user?.RaiseMessage(Properties.Resources.InstanceFakeBadArguments);
                 return Exit.BADOPT;
             }
 
 
             if (options.name == null || options.path == null || options.version == null)
             {
-                user.RaiseError(Properties.Resources.ArgumentMissing);
+                user?.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("fake");
                 return Exit.BADOPT;
             }
@@ -568,38 +557,38 @@ namespace CKAN.CmdLine
             // Parse all options
             string installName = options.name;
             string path = options.path;
-            GameVersion version;
+            GameVersion? version;
             bool setDefault = options.setDefault;
-            IGame game = KnownGames.GameByShortName(options.gameId);
+            var game = KnownGames.GameByShortName(options.gameId ?? "");
             if (game == null)
             {
-                user.RaiseMessage(Properties.Resources.InstanceFakeBadGame, options.gameId);
+                user?.RaiseMessage(Properties.Resources.InstanceFakeBadGame, options.gameId ?? "");
                 return badArgument();
             }
 
             // options.<DLC>Version is "none" if the DLC should not be simulated.
-            Dictionary<DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<DLC.IDlcDetector, GameVersion>();
+            var dlcs = new Dictionary<DLC.IDlcDetector, GameVersion>();
             if (options.makingHistoryVersion != null && options.makingHistoryVersion.ToLower() != "none")
             {
-                if (GameVersion.TryParse(options.makingHistoryVersion, out GameVersion ver))
+                if (GameVersion.TryParse(options.makingHistoryVersion, out GameVersion? ver))
                 {
                     dlcs.Add(new MakingHistoryDlcDetector(), ver);
                 }
                 else
                 {
-                    user.RaiseError(Properties.Resources.InstanceFakeMakingHistory);
+                    user?.RaiseError(Properties.Resources.InstanceFakeMakingHistory);
                     return badArgument();
                 }
             }
             if (options.breakingGroundVersion != null && options.breakingGroundVersion.ToLower() != "none")
             {
-                if (GameVersion.TryParse(options.breakingGroundVersion, out GameVersion ver))
+                if (GameVersion.TryParse(options.breakingGroundVersion, out GameVersion? ver))
                 {
                     dlcs.Add(new BreakingGroundDlcDetector(), ver);
                 }
                 else
                 {
-                    user.RaiseError(Properties.Resources.InstanceFakeBreakingGround);
+                    user?.RaiseError(Properties.Resources.InstanceFakeBreakingGround);
                     return badArgument();
                 }
             }
@@ -612,7 +601,7 @@ namespace CKAN.CmdLine
             catch (FormatException)
             {
                 // Thrown if there is anything besides numbers and points in the version string or a different syntactic error.
-                user.RaiseError(Properties.Resources.InstanceFakeVersion);
+                user?.RaiseError(Properties.Resources.InstanceFakeVersion);
                 return badArgument();
             }
 
@@ -623,44 +612,49 @@ namespace CKAN.CmdLine
             }
             catch (BadGameVersionKraken)
             {
-                user.RaiseError(Properties.Resources.InstanceFakeBadGameVersion);
+                user?.RaiseError(Properties.Resources.InstanceFakeBadGameVersion);
                 return badArgument();
             }
             catch (CancelledActionKraken)
             {
-                user.RaiseError(Properties.Resources.InstanceFakeCancelled);
+                user?.RaiseError(Properties.Resources.InstanceFakeCancelled);
                 return error();
             }
 
-            user.RaiseMessage(Properties.Resources.InstanceFakeCreating,
-                installName, path, version.ToString());
+            if (version == null)
+            {
+                return error();
+            }
+
+            user?.RaiseMessage(Properties.Resources.InstanceFakeCreating,
+                               installName, path, version.ToString() ?? "");
             log.Debug("Faking instance...");
 
             try
             {
                 // Pass all arguments to CKAN.GameInstanceManager.FakeInstance() and create a new one.
-                Manager.FakeInstance(game, installName, path, version, dlcs);
+                Manager?.FakeInstance(game, installName, path, version, dlcs);
                 if (setDefault)
                 {
-                    user.RaiseMessage(Properties.Resources.InstanceFakeDefault);
-                    Manager.SetAutoStart(installName);
+                    user?.RaiseMessage(Properties.Resources.InstanceFakeDefault);
+                    Manager?.SetAutoStart(installName);
                 }
             }
             catch (InstanceNameTakenKraken kraken)
             {
-                user.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
+                user?.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
                 return badArgument();
             }
             catch (BadInstallLocationKraken kraken)
             {
                 // The folder exists and is not empty.
-                user.RaiseError("{0}", kraken.Message);
+                user?.RaiseError("{0}", kraken.Message);
                 return badArgument();
             }
             catch (WrongGameVersionKraken kraken)
             {
                 // Thrown because the specified game instance is too old for one of the selected DLCs.
-                user.RaiseError("{0}", kraken.Message);
+                user?.RaiseError("{0}", kraken.Message);
                 return badArgument();
             }
             catch (NotKSPDirKraken kraken)
@@ -668,7 +662,7 @@ namespace CKAN.CmdLine
                 // Something went wrong adding the new instance to the registry,
                 // most likely because the newly created directory is somehow not valid.
                 log.Error(kraken);
-                user.RaiseError("{0}", kraken.Message);
+                user?.RaiseError("{0}", kraken.Message);
                 return error();
             }
             catch (InvalidKSPInstanceKraken)
@@ -680,14 +674,14 @@ namespace CKAN.CmdLine
 
             // Test if the instance was added to the registry.
             // No need to test if valid, because this is done in AddInstance().
-            if (Manager.HasInstance(installName))
+            if (Manager?.HasInstance(installName) ?? false)
             {
-                user.RaiseMessage(Properties.Resources.InstanceFakeDone);
+                user?.RaiseMessage(Properties.Resources.InstanceFakeDone);
                 return Exit.OK;
             }
             else
             {
-                user.RaiseError(Properties.Resources.InstanceFakeFailed);
+                user?.RaiseError(Properties.Resources.InstanceFakeFailed);
                 return error();
             }
         }
@@ -697,7 +691,7 @@ namespace CKAN.CmdLine
         {
             foreach (var h in InstanceSubOptions.GetHelp(verb))
             {
-                user.RaiseError(h);
+                user?.RaiseError(h);
             }
         }
 

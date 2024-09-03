@@ -50,7 +50,7 @@ namespace CKAN
         /// <param name="existingValue">Not used</param>
         /// <param name="serializer">Generates output objects from tokens</param>
         /// <returns>Dictionary of type matching the property where this converter was used, containing game-specific keys and values</returns>
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var token = JToken.Load(reader);
             if (token.Type == JTokenType.Object)
@@ -58,16 +58,17 @@ namespace CKAN
                 return token.ToObject(objectType);
             }
             var valueType = objectType.GetGenericArguments()[1];
-            var obj = (IDictionary)Activator.CreateInstance(objectType);
-            if (!IsTokenEmpty(token))
+            if (Activator.CreateInstance(objectType) is IDictionary obj
+                && !IsTokenEmpty(token))
             {
                 foreach (var gameName in KnownGames.AllGameShortNames())
                 {
                     // Make a new copy of the value for each game
                     obj.Add(gameName, token.ToObject(valueType));
                 }
+                return obj;
             }
-            return obj;
+            return null;
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace CKAN
         /// <param name="writer">The object writing JSON to disk</param>
         /// <param name="value">A value to be written for this class</param>
         /// <param name="serializer">Generates output objects from tokens</param>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

@@ -1,8 +1,10 @@
 using System;
 using System.IO;
+
+using NUnit.Framework;
+
 using CKAN;
 using CKAN.NetKAN.Services;
-using NUnit.Framework;
 using Tests.Data;
 
 namespace Tests.NetKAN.Services
@@ -23,16 +25,20 @@ namespace Tests.NetKAN.Services
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
-            _cache.Dispose();
+            _cache?.Dispose();
             _cache = null;
-            Directory.Delete(_cachePath, true);
+            if (_cachePath != null)
+            {
+                Directory.Delete(_cachePath, true);
+            }
         }
 
         [Test]
+        [Category("Cache")]
         public void GetsFileSizeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetSizeBytes(TestData.DogeCoinFlagZip());
@@ -44,10 +50,11 @@ namespace Tests.NetKAN.Services
         }
 
         [Test]
+        [Category("Cache")]
         public void GetsFileHashSha1Correctly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetFileHashSha1(TestData.DogeCoinFlagZip());
@@ -59,10 +66,11 @@ namespace Tests.NetKAN.Services
         }
 
         [Test]
+        [Category("Cache")]
         public void GetsFileHashSha256Correctly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetFileHashSha256(TestData.DogeCoinFlagZip());
@@ -77,7 +85,7 @@ namespace Tests.NetKAN.Services
         public void GetsAsciiMimeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_ascii.txt"));
@@ -92,7 +100,7 @@ namespace Tests.NetKAN.Services
         public void GetsGzipMimeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_gzip.gz"));
@@ -107,7 +115,7 @@ namespace Tests.NetKAN.Services
         public void GetsTarMimeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_tar.tar"));
@@ -122,7 +130,7 @@ namespace Tests.NetKAN.Services
         public void GetsTarGzMimeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_targz.tar.gz"));
@@ -137,7 +145,7 @@ namespace Tests.NetKAN.Services
         public void GetsZipMimeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
 
             // Act
             var result = sut.GetMimetype(TestData.DogeCoinFlagZip());
@@ -152,7 +160,7 @@ namespace Tests.NetKAN.Services
         public void GetsUnknownMimeCorrectly()
         {
             // Arrange
-            var sut = new FileService(_cache);
+            var sut = new FileService(_cache!);
             string random_bin = TestData.DataDir("FileIdentifier/random.bin");
             Assert.IsTrue(File.Exists(random_bin));
 
@@ -165,7 +173,7 @@ namespace Tests.NetKAN.Services
             );
         }
 
-        private string       _cachePath;
-        private NetFileCache _cache;
+        private string?       _cachePath;
+        private NetFileCache? _cache;
     }
 }

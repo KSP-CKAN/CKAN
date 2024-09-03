@@ -15,7 +15,7 @@ namespace CKAN
         /// </summary>
         /// <param name="percentProgress">The upstream progress object expecting percentages</param>
         /// <param name="sizes">Sequence of sizes of files in our group</param>
-        public ProgressScalePercentsByFileSizes(IProgress<int> percentProgress,
+        public ProgressScalePercentsByFileSizes(IProgress<int>?   percentProgress,
                                                 IEnumerable<long> sizes)
         {
             this.percentProgress = percentProgress;
@@ -59,12 +59,12 @@ namespace CKAN
             }
         }
 
-        private readonly IProgress<int> percentProgress;
-        private readonly long[]         sizes;
-        private readonly long           totalSize;
-        private          long           doneSize     = 0;
-        private          int            currentIndex = 0;
-        private          int            basePercent  = 0;
-        private          int            lastPercent  = -1;
+        private readonly IProgress<int>? percentProgress;
+        private readonly long[]          sizes;
+        private readonly long            totalSize;
+        private          long            doneSize     = 0;
+        private          int             currentIndex = 0;
+        private          int             basePercent  = 0;
+        private          int             lastPercent  = -1;
     }
 }

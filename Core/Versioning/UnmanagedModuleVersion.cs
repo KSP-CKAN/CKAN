@@ -10,7 +10,7 @@ namespace CKAN.Versioning
         public bool IsUnknownVersion { get; }
 
         // HACK: Hardcoding a value of "0" for autodetected DLLs preserves previous behavior.
-        public UnmanagedModuleVersion(string version) : base(version ?? "0")
+        public UnmanagedModuleVersion(string? version) : base(version ?? "0")
         {
             IsUnknownVersion = version == null;
             _string = version == null

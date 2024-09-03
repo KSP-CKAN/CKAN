@@ -1,9 +1,11 @@
-using CKAN.Configuration;
-using Newtonsoft.Json;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+
+using Newtonsoft.Json;
+using NUnit.Framework;
+
+using CKAN.Configuration;
 using Tests.Data;
 
 namespace Tests.Core.Configuration
@@ -60,7 +62,7 @@ namespace Tests.Core.Configuration
                 "host3"
             }, reg.GetAuthTokenHosts());
 
-            Assert.IsTrue(reg.TryGetAuthToken("host1", out string token));
+            Assert.IsTrue(reg.TryGetAuthToken("host1", out string? token));
             Assert.AreEqual("token1", token);
             Assert.IsTrue(reg.TryGetAuthToken("host2", out token));
             Assert.AreEqual("token2", token);
@@ -137,7 +139,7 @@ namespace Tests.Core.Configuration
                 "host3"
             }, reg.GetAuthTokenHosts());
 
-            Assert.IsTrue(reg.TryGetAuthToken("host1", out string token));
+            Assert.IsTrue(reg.TryGetAuthToken("host1", out string? token));
             Assert.AreEqual("token1", token);
             Assert.IsTrue(reg.TryGetAuthToken("host2", out token));
             Assert.AreEqual("token2", token);
@@ -337,7 +339,7 @@ namespace Tests.Core.Configuration
             CollectionAssert.Contains(reg.GetAuthTokenHosts(), "test_host1");
             CollectionAssert.Contains(reg.GetAuthTokenHosts(), "test_host2");
 
-            Assert.IsTrue(reg.TryGetAuthToken("test_host1", out string token));
+            Assert.IsTrue(reg.TryGetAuthToken("test_host1", out string? token));
             Assert.AreEqual("hunter2", token);
             Assert.IsTrue(reg.TryGetAuthToken("test_host2", out token));
             Assert.AreEqual("asdf", token);

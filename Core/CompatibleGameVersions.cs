@@ -7,7 +7,7 @@ namespace CKAN
     [JsonConverter(typeof(CompatibleGameVersionsConverter))]
     public class CompatibleGameVersions
     {
-        public string GameVersionWhenWritten { get; set; }
+        public string? GameVersionWhenWritten { get; set; }
 
         public List<string> Versions { get; set; } = new List<string>();
     }

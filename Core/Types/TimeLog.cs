@@ -15,7 +15,7 @@ namespace CKAN
         public static string GetPath(string dir)
             => Path.Combine(dir, filename);
 
-        public static TimeLog Load(string path)
+        public static TimeLog? Load(string path)
         {
             try
             {

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using CommandLine;
 using log4net;
@@ -23,10 +22,10 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                options.modules.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
+                options.modules?.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
             }
 
-            if (options.modules.Count == 0 && ! options.replace_all)
+            if (options.modules?.Count == 0 && ! options.replace_all)
             {
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("replace"))
@@ -58,7 +57,7 @@ namespace CKAN.CmdLine
                 {
                     ModuleVersion current_version = mod.Value;
 
-                    if ((current_version is ProvidesModuleVersion) || (current_version is UnmanagedModuleVersion))
+                    if (current_version is ProvidesModuleVersion or UnmanagedModuleVersion)
                     {
                         continue;
                     }
@@ -69,7 +68,7 @@ namespace CKAN.CmdLine
                             log.DebugFormat("Testing {0} {1} for possible replacement", mod.Key, mod.Value);
                             // Check if replacement is available
 
-                            ModuleReplacement replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
+                            var replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
                             if (replacement != null)
                             {
                                 // Replaceable
@@ -87,21 +86,21 @@ namespace CKAN.CmdLine
                     }
                 }
             }
-            else
+            else if (options.modules != null)
             {
                 foreach (string mod in options.modules)
                 {
                     try
                     {
                         log.DebugFormat("Checking that {0} is installed", mod);
-                        CkanModule modToReplace = registry.GetInstalledVersion(mod);
+                        var modToReplace = registry.GetInstalledVersion(mod);
                         if (modToReplace != null)
                         {
                             log.DebugFormat("Testing {0} {1} for possible replacement", modToReplace.identifier, modToReplace.version);
                             try
                             {
                                 // Check if replacement is available
-                                ModuleReplacement replacement = registry.GetReplacement(modToReplace.identifier, instance.VersionCriteria());
+                                var replacement = registry.GetReplacement(modToReplace.identifier, instance.VersionCriteria());
                                 if (replacement != null)
                                 {
                                     // Replaceable
@@ -124,7 +123,7 @@ namespace CKAN.CmdLine
                             catch (ModuleNotFoundKraken)
                             {
                                 log.InfoFormat("{0} is installed, but its replacement {1} is not in the registry",
-                                    mod, modToReplace.replaced_by.name);
+                                    mod, modToReplace.replaced_by?.name ?? "");
                             }
                         }
                     }
@@ -134,7 +133,7 @@ namespace CKAN.CmdLine
                     }
                 }
             }
-            if (to_replace.Count() != 0)
+            if (to_replace.Count != 0 && manager.Cache != null)
             {
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.Replacing);
@@ -154,17 +153,16 @@ namespace CKAN.CmdLine
                     return Exit.ERROR;
                 }
 
-                // TODO: These instances all need to go.
                 try
                 {
-                    HashSet<string> possibleConfigOnlyDirs = null;
+                    HashSet<string>? possibleConfigOnlyDirs = null;
                     new ModuleInstaller(instance, manager.Cache, user).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(user, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
                     user.RaiseMessage("");
                 }
                 catch (DependencyNotSatisfiedKraken ex)
                 {
                     user.RaiseMessage(Properties.Resources.ReplaceDependencyNotSatisfied,
-                        ex.parent, ex.module, ex.version, instance.game.ShortName);
+                        ex.parent, ex.module, ex.version ?? "", instance.game.ShortName);
                 }
             }
             else
@@ -186,7 +184,7 @@ namespace CKAN.CmdLine
     internal class ReplaceOptions : InstanceSpecificOptions
     {
         [Option('c', "ckanfile", HelpText = "Local CKAN file to process")]
-        public string ckan_file { get; set; }
+        public string? ckan_file { get; set; }
 
         [Option("no-recommends", HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
@@ -203,10 +201,9 @@ namespace CKAN.CmdLine
         [Option("all", HelpText = "Replace all available replaced modules")]
         public bool replace_all { get; set; }
 
-        // TODO: How do we provide helptext on this?
-        [ValueList(typeof (List<string>))]
+        [ValueList(typeof(List<string>))]
         [InstalledIdentifiers]
-        public List<string> modules { get; set; }
+        public List<string>? modules { get; set; }
     }
 
 }

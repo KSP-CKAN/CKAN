@@ -39,8 +39,6 @@ namespace CKAN.CmdLine
             if (options.regex)
             {
                 log.Debug("Attempting Regex");
-                // Parse every "module" as a grumpy regex
-                var justins = options.modules.Select(s => new Regex(s));
 
                 // Modules that have been selected by one regex
                 List<string> selectedModules = new List<string>();
@@ -50,7 +48,9 @@ namespace CKAN.CmdLine
                 // if it matches, select for removal
                 foreach (string mod in regMgr.registry.InstalledModules.Select(mod => mod.identifier))
                 {
-                    if (justins.Any(re => re.IsMatch(mod)))
+                    // Parse every "module" as a grumpy regex
+                    if (options.modules?.Select(s => new Regex(s))
+                                        .Any(re => re.IsMatch(mod)) ?? false)
                     {
                         selectedModules.Add(mod);
                     }
@@ -65,18 +65,20 @@ namespace CKAN.CmdLine
             {
                 log.Debug("Removing all mods");
                 // Add the list of installed modules to the list that should be uninstalled
-                options.modules.AddRange(
+                options.modules?.AddRange(
                     regMgr.registry.InstalledModules
                         .Where(mod => !mod.Module.IsDLC)
                         .Select(mod => mod.identifier)
                 );
             }
 
-            if (options.modules != null && options.modules.Count > 0)
+            if (options.modules != null
+                && options.modules.Count > 0
+                && manager.Cache != null)
             {
                 try
                 {
-                    HashSet<string> possibleConfigOnlyDirs = null;
+                    HashSet<string>? possibleConfigOnlyDirs = null;
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
                     Search.AdjustModulesCase(instance, regMgr.registry, options.modules);
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
@@ -91,8 +93,8 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage(Properties.Resources.RemoveDLC, kraken.module.name);
                     var res = kraken?.module?.resources;
-                    var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
-                        .Where(u => u != null)
+                    var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
+                        .OfType<Uri>()
                         .Aggregate("", (a, b) => $"{a}\r\n- {b}");
                     if (!string.IsNullOrEmpty(storePagesMsg))
                     {
@@ -133,7 +135,7 @@ namespace CKAN.CmdLine
 
         [ValueList(typeof(List<string>))]
         [InstalledIdentifiers]
-        public List<string> modules { get; set; }
+        public List<string>? modules { get; set; }
 
         [Option("all", DefaultValue = false, HelpText = "Remove all installed mods.")]
         public bool rmall { get; set; }

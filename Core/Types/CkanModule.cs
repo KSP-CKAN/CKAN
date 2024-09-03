@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 using log4net;
@@ -14,36 +14,13 @@ using Newtonsoft.Json;
 
 using CKAN.Versioning;
 using CKAN.Games;
+
 #if NETSTANDARD2_0
 using CKAN.Extensions;
 #endif
 
 namespace CKAN
 {
-    public class ModuleReplacement
-    {
-        public CkanModule ToReplace;
-        public CkanModule ReplaceWith;
-    }
-
-    public class DownloadHashesDescriptor
-    {
-        [JsonProperty("sha1")]
-        public string sha1;
-
-        [JsonProperty("sha256")]
-        public string sha256;
-    }
-
-    public class NameComparer : IEqualityComparer<CkanModule>
-    {
-        public bool Equals(CkanModule x, CkanModule y)
-            => x.identifier.Equals(y.identifier);
-
-        public int GetHashCode(CkanModule obj)
-            => obj.identifier.GetHashCode();
-    }
-
     /// <summary>
     ///     Describes a CKAN module (ie, what's in the CKAN.schema file).
     /// </summary>
@@ -58,45 +35,6 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof (CkanModule));
 
-        private static readonly Dictionary<string, string[]> required_fields =
-            new Dictionary<string, string[]>()
-            {
-                {
-                    "package", new string[]
-                    {
-                        "spec_version",
-                        "name",
-                        "abstract",
-                        "identifier",
-                        "download",
-                        "license",
-                        "version"
-                    }
-                },
-                {
-                    "metapackage", new string[]
-                    {
-                        "spec_version",
-                        "name",
-                        "abstract",
-                        "identifier",
-                        "license",
-                        "version"
-                    }
-                },
-                {
-                    "dlc", new string[]
-                    {
-                        "spec_version",
-                        "name",
-                        "abstract",
-                        "identifier",
-                        "license",
-                        "version"
-                    }
-                },
-            };
-
         // identifier, license, and version are always required, so we know
         // what we've got.
 
@@ -104,45 +42,45 @@ namespace CKAN
         public string @abstract;
 
         [JsonProperty("description", Order = 6, NullValueHandling = NullValueHandling.Ignore)]
-        public string description;
+        public string? description;
 
         // Package type: in spec v1.6 can be either "package" or "metapackage"
         // In spec v1.28, "dlc"
         [JsonProperty("kind", Order = 31, NullValueHandling = NullValueHandling.Ignore)]
-        public string kind;
+        public string? kind;
 
         [JsonProperty("author", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
         public List<string> author;
 
         [JsonProperty("comment", Order = 2, NullValueHandling = NullValueHandling.Ignore)]
-        public string comment;
+        public string? comment;
 
         [JsonProperty("conflicts", Order = 23, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
-        public List<RelationshipDescriptor> conflicts;
+        public List<RelationshipDescriptor>? conflicts;
 
         [JsonProperty("depends", Order = 19, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
-        public List<RelationshipDescriptor> depends;
+        public List<RelationshipDescriptor>? depends;
 
         [JsonProperty("replaced_by", NullValueHandling = NullValueHandling.Ignore)]
-        public ModuleRelationshipDescriptor replaced_by;
+        public ModuleRelationshipDescriptor? replaced_by;
 
         [JsonProperty("download", Order = 25, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<Uri>))]
-        public List<Uri> download;
+        public List<Uri>? download;
 
         [JsonProperty("download_size", Order = 26, DefaultValueHandling = DefaultValueHandling.Ignore)]
         [DefaultValue(0)]
         public long download_size;
 
         [JsonProperty("download_hash", Order = 27, NullValueHandling = NullValueHandling.Ignore)]
-        public DownloadHashesDescriptor download_hash;
+        public DownloadHashesDescriptor? download_hash;
 
         [JsonProperty("download_content_type", Order = 28, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue("application/zip")]
-        public string download_content_type;
+        public string? download_content_type;
 
         [JsonProperty("install_size", Order = 29, DefaultValueHandling = DefaultValueHandling.Ignore)]
         [DefaultValue(0)]
@@ -152,17 +90,17 @@ namespace CKAN
         public string identifier;
 
         [JsonProperty("ksp_version", Order = 9, NullValueHandling = NullValueHandling.Ignore)]
-        public GameVersion ksp_version;
+        public GameVersion? ksp_version;
 
         [JsonProperty("ksp_version_max", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
-        public GameVersion ksp_version_max;
+        public GameVersion? ksp_version_max;
 
         [JsonProperty("ksp_version_min", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
-        public GameVersion ksp_version_min;
+        public GameVersion? ksp_version_min;
 
         [JsonProperty("ksp_version_strict", Order = 12, DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         [DefaultValue(false)]
-        public bool ksp_version_strict = false;
+        public bool? ksp_version_strict = false;
 
         [JsonProperty("license", Order = 13)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
@@ -172,34 +110,34 @@ namespace CKAN
         public string name;
 
         [JsonProperty("provides", Order = 18, NullValueHandling = NullValueHandling.Ignore)]
-        public List<string> provides;
+        public List<string>? provides;
 
         [JsonProperty("recommends", Order = 20, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
-        public List<RelationshipDescriptor> recommends;
+        public List<RelationshipDescriptor>? recommends;
 
         [JsonProperty("release_status", Order = 14, NullValueHandling = NullValueHandling.Ignore)]
-        public ReleaseStatus release_status;
+        public ReleaseStatus? release_status;
 
         [JsonProperty("resources", Order = 15, NullValueHandling = NullValueHandling.Ignore)]
-        public ResourcesDescriptor resources;
+        public ResourcesDescriptor? resources;
 
         [JsonProperty("suggests", Order = 21, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
-        public List<RelationshipDescriptor> suggests;
+        public List<RelationshipDescriptor>? suggests;
 
         [JsonProperty("version", Order = 8, Required = Required.Always)]
         public ModuleVersion version;
 
         [JsonProperty("supports", Order = 22, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonRelationshipConverter))]
-        public List<RelationshipDescriptor> supports;
+        public List<RelationshipDescriptor>? supports;
 
         [JsonProperty("install", Order = 24, NullValueHandling = NullValueHandling.Ignore)]
-        public ModuleInstallDescriptor[] install;
+        public ModuleInstallDescriptor[]? install;
 
         [JsonProperty("localizations", Order = 17, NullValueHandling = NullValueHandling.Ignore)]
-        public string[] localizations;
+        public string[]? localizations;
 
         // Used to see if we're compatible with a given game/KSP version or not.
         private readonly IGameComparator _comparator;
@@ -226,6 +164,7 @@ namespace CKAN
                 return specVersion;
             }
             #pragma warning disable IDE0027
+            [MemberNotNull(nameof(specVersion))]
             set
             {
                 specVersion = value ?? new ModuleVersion("1");
@@ -234,7 +173,7 @@ namespace CKAN
         }
 
         [JsonProperty("tags", Order = 16, NullValueHandling = NullValueHandling.Ignore)]
-        public HashSet<string> Tags;
+        public HashSet<string>? Tags;
 
         [JsonProperty("release_date", Order = 30, NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? release_date;
@@ -277,23 +216,6 @@ namespace CKAN
         #region Constructors
 
         /// <summary>
-        /// To be used by test cases and cascaded json deserialisation only,
-        /// and even then I'm not sure this is a great idea.
-        /// </summary>
-        [JsonConstructor]
-        internal CkanModule()
-        {
-            // We don't have this passed in, so we'll ask the service locator
-            // directly. Yuck.
-            _comparator = ServiceLocator.Container.Resolve<IGameComparator>();
-            download_content_type = typeof(CkanModule).GetTypeInfo()
-                                                      .GetDeclaredField("download_content_type")
-                                                      .GetCustomAttribute<DefaultValueAttribute>()
-                                                      .Value
-                                                      .ToString();
-        }
-
-        /// <summary>
         /// Initialize a CkanModule
         /// </summary>
         /// <param name="spec_version">The version of the spec obeyed by this module</param>
@@ -307,19 +229,22 @@ namespace CKAN
         /// <param name="download">Where to download this module</param>
         /// <param name="kind">package, metapackage, or dlc</param>
         /// <param name="comparator">Object used for checking compatibility of this module</param>
+        [JsonConstructor]
         public CkanModule(
-            ModuleVersion spec_version,
-            string        identifier,
-            string        name,
-            string        @abstract,
-            string        description,
-            List<string>  author,
-            List<License> license,
-            ModuleVersion version,
-            Uri           download,
-            string        kind = null,
-            IGameComparator comparator = null
-        )
+            ModuleVersion    spec_version,
+            string           identifier,
+            string           name,
+            string           @abstract,
+            string?          description,
+            [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
+            List<string>     author,
+            [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
+            List<License>    license,
+            ModuleVersion    version,
+            [JsonConverter(typeof(JsonSingleOrArrayConverter<Uri>))]
+            List<Uri>?       download,
+            string?          kind = null,
+            IGameComparator? comparator = null)
         {
             this.spec_version = spec_version;
             this.identifier   = identifier;
@@ -329,7 +254,7 @@ namespace CKAN
             this.author       = author;
             this.license      = license;
             this.version      = version;
-            this.download     = new List<Uri> { download };
+            this.download     = download;
             this.kind         = kind;
             _comparator  = comparator ?? ServiceLocator.Container.Resolve<IGameComparator>();
             CheckHealth();
@@ -339,7 +264,7 @@ namespace CKAN
         /// <summary>
         /// Inflates a CKAN object from a JSON string.
         /// </summary>
-        public CkanModule(string json, IGameComparator comparator = null)
+        public CkanModule(string json, IGameComparator? comparator = null)
         {
             try
             {
@@ -363,58 +288,94 @@ namespace CKAN
         /// <summary>
         /// Throw an exception if there's anything wrong with this module
         /// </summary>
+        [MemberNotNull(nameof(specVersion), nameof(identifier), nameof(name),
+                       nameof(@abstract),   nameof(author),     nameof(license),
+                       nameof(version))]
         private void CheckHealth()
         {
+            // Check everything in the spec is defined.
+            if (spec_version == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "spec_version"));
+            }
             if (!IsSpecSupported())
             {
                 throw new UnsupportedKraken(string.Format(
                     Properties.Resources.CkanModuleUnsupportedSpec, this, spec_version));
             }
-
-            // Check everything in the spec is defined.
-            foreach (string field in required_fields[kind ?? "package"])
+            if (identifier == null)
             {
-                object value = null;
-                if (GetType().GetField(field) != null)
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "identifier"));
+            }
+            if (name == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "name"));
+            }
+            if (@abstract == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "abstract"));
+            }
+            if (license == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "license"));
+            }
+            if (version == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "version"));
+            }
+            if (author == null)
+            {
+                if (spec_version < v1p28)
                 {
-                    value = typeof(CkanModule).GetField(field).GetValue(this);
+                    // Some very old modules in the test data lack authors
+                    author = new List<string> { "" };
                 }
                 else
                 {
-                    // uh, maybe it is not a field, but a property?
-                    value = typeof(CkanModule).GetProperty(field).GetValue(this, null);
-                }
-
-                if (value == null)
-                {
-                    throw new BadMetadataKraken(null, string.Format(
-                        Properties.Resources.CkanModuleMissingRequired, identifier, field));
+                    throw new BadMetadataKraken(null,
+                                                string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                              identifier, "author"));
                 }
             }
+            if (kind is null or "package" && download == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "download"));
+            }
         }
+
+        private static readonly ModuleVersion v1p28 = new ModuleVersion("v1.28");
 
         /// <summary>
         /// Calculate the mod properties used for searching via Regex.
         /// </summary>
+        [MemberNotNull(nameof(SearchableIdentifier)),
+         MemberNotNull(nameof(SearchableName)),
+         MemberNotNull(nameof(SearchableAbstract)),
+         MemberNotNull(nameof(SearchableDescription)),
+         MemberNotNull(nameof(SearchableAuthors))]
         private void CalculateSearchables()
         {
             SearchableIdentifier  = identifier  == null ? string.Empty : nonAlphaNums.Replace(identifier, "");
             SearchableName        = name        == null ? string.Empty : nonAlphaNums.Replace(name, "");
             SearchableAbstract    = @abstract   == null ? string.Empty : nonAlphaNums.Replace(@abstract, "");
             SearchableDescription = description == null ? string.Empty : nonAlphaNums.Replace(description, "");
-            SearchableAuthors = new List<string>();
-
-            if (author == null)
-            {
-                SearchableAuthors.Add(string.Empty);
-            }
-            else
-            {
-                foreach (string auth in author)
-                {
-                    SearchableAuthors.Add(nonAlphaNums.Replace(auth, ""));
-                }
-            }
+            SearchableAuthors     = author?.Select(auth => nonAlphaNums.Replace(auth, ""))
+                                           .ToList()
+                                          ?? new List<string> { string.Empty };
         }
 
         public string serialise()
@@ -433,9 +394,9 @@ namespace CKAN
                 throw new InvalidModuleAttributesException(Properties.Resources.CkanModuleKspVersionMixed, this);
             }
 
-            license = license ?? new List<License> { License.UnknownLicense };
-            @abstract = @abstract ?? string.Empty;
-            name = name ?? string.Empty;
+            license   ??= new List<License> { License.UnknownLicense };
+            @abstract ??= string.Empty;
+            name      ??= string.Empty;
 
             CalculateSearchables();
         }
@@ -449,9 +410,10 @@ namespace CKAN
         /// <param name="ksp_version">The current KSP version criteria to consider</param>
         /// <returns>A CkanModule</returns>
         /// <exception cref="ModuleNotFoundKraken">Thrown if no matching module could be found</exception>
-        public static CkanModule FromIDandVersion(IRegistryQuerier registry, string mod, GameVersionCriteria ksp_version)
+        public static CkanModule? FromIDandVersion(IRegistryQuerier     registry,
+                                                   string               mod,
+                                                   GameVersionCriteria? ksp_version)
         {
-            CkanModule module;
 
             Match match = idAndVersionMatcher.Match(mod);
 
@@ -460,7 +422,7 @@ namespace CKAN
                 string ident   = match.Groups["mod"].Value;
                 string version = match.Groups["version"].Value;
 
-                module = registry.GetModuleByVersion(ident, version);
+                var module = registry.GetModuleByVersion(ident, version);
 
                 if (module == null
                         || (ksp_version != null && !module.IsCompatible(ksp_version)))
@@ -578,23 +540,23 @@ namespace CKAN
 
         public bool IsDLC => kind == "dlc";
 
-        protected bool Equals(CkanModule other)
-            => string.Equals(identifier, other.identifier) && version.Equals(other.version);
+        protected bool Equals(CkanModule? other)
+            => string.Equals(identifier, other?.identifier) && version.Equals(other?.version);
 
-        public override bool Equals(object obj)
-            => !(obj is null)
+        public override bool Equals(object? obj)
+            => obj is not null
                 && (ReferenceEquals(this, obj)
                     || (obj.GetType() == GetType() && Equals((CkanModule)obj)));
 
         public bool MetadataEquals(CkanModule other)
         {
             if ((install == null) != (other.install == null)
-                    || (install != null
+                    || (install != null && other.install != null
                         && install.Length != other.install.Length))
             {
                 return false;
             }
-            else if (install != null)
+            else if (install != null && other.install != null)
             {
                 for (int i = 0; i < install.Length; i++)
                 {
@@ -644,7 +606,7 @@ namespace CKAN
             return true;
         }
 
-        private static bool RelationshipsAreEquivalent(List<RelationshipDescriptor> a, List<RelationshipDescriptor> b)
+        private static bool RelationshipsAreEquivalent(List<RelationshipDescriptor>? a, List<RelationshipDescriptor>? b)
         {
             if (a == b)
             {
@@ -686,7 +648,7 @@ namespace CKAN
         public override int GetHashCode()
             => (identifier, version).GetHashCode();
 
-        bool IEquatable<CkanModule>.Equals(CkanModule other)
+        bool IEquatable<CkanModule>.Equals(CkanModule? other)
             => Equals(other);
 
         /// <summary>
@@ -698,8 +660,17 @@ namespace CKAN
         /// <summary>
         /// Returns true if we support the CKAN spec used by this module.
         /// </summary>
+        [MemberNotNull(nameof(specVersion), nameof(spec_version))]
         private bool IsSpecSupported()
-            => IsSpecSupported(spec_version);
+        {
+            if (specVersion == null || spec_version == null)
+            {
+                throw new BadMetadataKraken(null,
+                                            string.Format(Properties.Resources.CkanModuleMissingRequired,
+                                                          identifier, "specVersion"));
+            }
+            return IsSpecSupported(spec_version);
+        }
 
         /// <summary>
         ///     Returns a standardised name for this module, in the form
@@ -723,28 +694,15 @@ namespace CKAN
             => string.Format("{0} {1}", identifier, version);
 
         public string DescribeInstallStanzas(IGame game)
-        {
-            List<string> descriptions = new List<string>();
-            if (install != null)
-            {
-                foreach (ModuleInstallDescriptor mid in install)
-                {
-                    descriptions.Add(mid.DescribeMatch());
-                }
-            }
-            else
-            {
-                descriptions.Add(ModuleInstallDescriptor.DefaultInstallStanza(game, identifier).DescribeMatch());
-            }
-            return string.Join(", ", descriptions);
-        }
+            => install == null ? ModuleInstallDescriptor.DefaultInstallStanza(game, identifier).DescribeMatch()
+                               : string.Join(", ", install.Select(mid => mid.DescribeMatch()));
 
         /// <summary>
         /// Return an archive.org URL for this download, or null if it's not there.
         /// The filenames look a lot like the filenames in Net.Cache, but don't be fooled!
         /// Here it's the first 8 characters of the SHA1 of the DOWNLOADED FILE, not the URL!
         /// </summary>
-        public Uri InternetArchiveDownload
+        public Uri? InternetArchiveDownload
             => !license.Any(l => l.Redistributable)
                 ? null
                 : InternetArchiveURL(
@@ -759,12 +717,12 @@ namespace CKAN
 
         private static string Truncate(string s, int len)
             => s.Length <= len ? s
-                               : s.Substring(0, len);
+                               : s[..len];
 
-        private static Uri InternetArchiveURL(string bucket, string sha1)
+        private static Uri? InternetArchiveURL(string bucket, string? sha1)
             => string.IsNullOrEmpty(sha1)
                 ? null
-                : new Uri($"https://archive.org/download/{bucket}/{sha1.Substring(0, 8)}-{bucket}.zip");
+                : new Uri($"https://archive.org/download/{bucket}/{sha1?[..8]}-{bucket}.zip");
 
         // InternetArchive says:
         // Bucket names should be valid archive identifiers;
@@ -820,11 +778,14 @@ namespace CKAN
                 var origin = searching.First();
                 searching.Remove(origin);
                 var neighbors = origin.download
-                    .SelectMany(dlUri => unsearched.Where(other => other.download.Contains(dlUri)))
-                    .ToHashSet();
-                unsearched.ExceptWith(neighbors);
-                searching.AddRange(neighbors);
-                found.UnionWith(neighbors);
+                    ?.SelectMany(dlUri => unsearched.Where(other => other.download != null && other.download.Contains(dlUri)))
+                     .ToHashSet();
+                if (neighbors is not null)
+                {
+                    unsearched.ExceptWith(neighbors);
+                    searching.AddRange(neighbors);
+                    found.UnionWith(neighbors);
+                }
             }
             return found;
         }
@@ -838,24 +799,25 @@ namespace CKAN
         /// <param name="maxMod">Return parameter for the highest mod  version</param>
         /// <param name="minGame">Return parameter for the lowest  game version</param>
         /// <param name="maxGame">Return parameter for the highest game version</param>
-        public static void GetMinMaxVersions(IEnumerable<CkanModule> modVersions,
-                out ModuleVersion minMod,  out ModuleVersion maxMod,
-                out GameVersion   minGame, out GameVersion   maxGame)
+        public static void GetMinMaxVersions(
+                IEnumerable<CkanModule?> modVersions,
+                out ModuleVersion? minMod,  out ModuleVersion? maxMod,
+                out GameVersion?   minGame, out GameVersion?   maxGame)
         {
             minMod  = maxMod  = null;
             minGame = maxGame = null;
-            foreach (CkanModule rel in modVersions.Where(v => v != null))
+            foreach (var mod in modVersions.OfType<CkanModule>())
             {
-                if (minMod == null || minMod > rel.version)
+                if (minMod == null || minMod > mod.version)
                 {
-                    minMod = rel.version;
+                    minMod = mod.version;
                 }
-                if (maxMod == null || maxMod < rel.version)
+                if (maxMod == null || maxMod < mod.version)
                 {
-                    maxMod = rel.version;
+                    maxMod = mod.version;
                 }
-                GameVersion relMin = rel.EarliestCompatibleGameVersion();
-                GameVersion relMax = rel.LatestCompatibleGameVersion();
+                GameVersion relMin = mod.EarliestCompatibleGameVersion();
+                GameVersion relMax = mod.LatestCompatibleGameVersion();
                 if (minGame == null || (!minGame.IsAny && (minGame > relMin || relMin.IsAny)))
                 {
                     minGame = relMin;
@@ -868,28 +830,4 @@ namespace CKAN
         }
     }
 
-    public class InvalidModuleAttributesException : Exception
-    {
-        private readonly CkanModule module;
-        private readonly string why;
-
-        public InvalidModuleAttributesException(string why, CkanModule module = null)
-            : base(why)
-        {
-            this.why = why;
-            this.module = module;
-        }
-
-        public override string ToString()
-        {
-            string modname = "unknown";
-
-            if (module != null)
-            {
-                modname = module.identifier;
-            }
-
-            return string.Format("[InvalidModuleAttributesException] {0} in {1}", why, modname);
-        }
-    }
 }

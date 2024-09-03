@@ -44,11 +44,12 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.PreferredHosts);
         }
 
-        private void PreferredHostsDialog_Load(object sender, EventArgs e)
+        private void PreferredHostsDialog_Load(object? sender, EventArgs? e)
         {
-            AvailableHostsListBox.Items.AddRange(allHosts
-                .Except(config.PreferredHosts)
-                .ToArray());
+            AvailableHostsListBox.Items.AddRange(
+                allHosts.Except(config.PreferredHosts)
+                        .OfType<string>()
+                        .ToArray());
             PreferredHostsListBox.Items.AddRange(config.PreferredHosts
                 .Select(host => host ?? placeholder)
                 .ToArray());
@@ -56,39 +57,40 @@ namespace CKAN.GUI
             PreferredHostsListBox_SelectedIndexChanged(null, null);
         }
 
-        private void PreferredHostsDialog_Closing(object sender, CancelEventArgs e)
+        private void PreferredHostsDialog_Closing(object? sender, CancelEventArgs? e)
         {
-            config.PreferredHosts = PreferredHostsListBox.Items.Cast<string>()
-                .Select(h => h == placeholder ? null : h)
-                .ToArray();
+            config.PreferredHosts = PreferredHostsListBox.Items
+                                                         .OfType<string>()
+                                                         .Select(h => h == placeholder ? null : h)
+                                                         .ToArray();
         }
 
-        private void AvailableHostsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void AvailableHostsListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             MoveRightButton.Enabled = AvailableHostsListBox.SelectedIndex > -1;
         }
 
-        private void PreferredHostsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void PreferredHostsListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             var haveSelection      = PreferredHostsListBox.SelectedIndex > -1;
             MoveLeftButton.Enabled = haveSelection
-                                     && (string)PreferredHostsListBox.SelectedItem != placeholder;
+                                     && (PreferredHostsListBox.SelectedItem as string) != placeholder;
             MoveUpButton.Enabled   = PreferredHostsListBox.SelectedIndex > 0;
             MoveDownButton.Enabled = haveSelection
                                      && PreferredHostsListBox.SelectedIndex < PreferredHostsListBox.Items.Count - 1;
         }
 
-        private void AvailableHostsListBox_DoubleClick(object sender, EventArgs e)
+        private void AvailableHostsListBox_DoubleClick(object? sender, EventArgs? e)
         {
             MoveRightButton_Click(null, null);
         }
 
-        private void PreferredHostsListBox_DoubleClick(object sender, EventArgs e)
+        private void PreferredHostsListBox_DoubleClick(object? sender, EventArgs? e)
         {
             MoveLeftButton_Click(null, null);
         }
 
-        private void MoveRightButton_Click(object sender, EventArgs e)
+        private void MoveRightButton_Click(object? sender, EventArgs? e)
         {
             if (AvailableHostsListBox.SelectedIndex > -1)
             {
@@ -97,10 +99,12 @@ namespace CKAN.GUI
                     PreferredHostsListBox.Items.Add(placeholder);
                 }
                 var fromWhere = AvailableHostsListBox.SelectedIndex;
-                var selected = AvailableHostsListBox.SelectedItem;
-                var toWhere = PreferredHostsListBox.Items.IndexOf(placeholder);
-                AvailableHostsListBox.Items.Remove(selected);
-                PreferredHostsListBox.Items.Insert(toWhere, selected);
+                if (AvailableHostsListBox.SelectedItem is object selected)
+                {
+                    var toWhere = PreferredHostsListBox.Items.IndexOf(placeholder);
+                    AvailableHostsListBox.Items.Remove(selected);
+                    PreferredHostsListBox.Items.Insert(toWhere, selected);
+                }
                 // Preserve selection on same line
                 if (AvailableHostsListBox.Items.Count > 0)
                 {
@@ -116,13 +120,13 @@ namespace CKAN.GUI
             }
         }
 
-        private void MoveLeftButton_Click(object sender, EventArgs e)
+        private void MoveLeftButton_Click(object? sender, EventArgs? e)
         {
             if (PreferredHostsListBox.SelectedIndex > -1)
             {
                 var fromWhere = PreferredHostsListBox.SelectedIndex;
-                var selected  = (string)PreferredHostsListBox.SelectedItem;
-                if (selected != placeholder)
+                var selected  = PreferredHostsListBox.SelectedItem as string;
+                if (selected != placeholder && selected != null)
                 {
                     PreferredHostsListBox.Items.Remove(selected);
                     // Regenerate the list to put the item back in the original order
@@ -145,7 +149,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void MoveUpButton_Click(object sender, EventArgs e)
+        private void MoveUpButton_Click(object? sender, EventArgs? e)
         {
             if (PreferredHostsListBox.SelectedIndex > 0)
             {
@@ -156,7 +160,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void MoveDownButton_Click(object sender, EventArgs e)
+        private void MoveDownButton_Click(object? sender, EventArgs? e)
         {
             if (PreferredHostsListBox.SelectedIndex > -1
                 && PreferredHostsListBox.SelectedIndex < PreferredHostsListBox.Items.Count - 1)

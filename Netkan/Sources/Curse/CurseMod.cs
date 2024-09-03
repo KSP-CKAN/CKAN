@@ -8,38 +8,35 @@ namespace CKAN.NetKAN.Sources.Curse
 {
     internal class CurseMod
     {
-        [JsonProperty] public string license;
-        [JsonProperty] public string title;
-        [JsonProperty] public string description;
-        [JsonProperty] public List<CurseFile> files;
-        [JsonProperty] public string thumbnail;
+        [JsonProperty] public string? license;
+        [JsonProperty] public string? title;
+        [JsonProperty] public string? description;
+        [JsonProperty] public List<CurseFile>? files;
+        [JsonProperty] public string? thumbnail;
         [JsonProperty] public int id;
-        [JsonProperty] public string game;
-        [JsonProperty] public List<CurseModMember> members;
+        [JsonProperty] public string? game;
+        [JsonProperty] public List<CurseModMember>? members;
 
-        public string[] authors => members.Select(m => m.username).ToArray();
+        public string[] authors => members?.Select(m => m.username)
+                                           .OfType<string>()
+                                           .ToArray()
+                                          ?? Array.Empty<string>();
 
-        private string _pageUrl;
-        private string _name;
+        private string? _pageUrl;
+        private string? _name;
 
-        public CurseFile Latest()
-        {
-            return files.First();
-        }
+        public CurseFile? Latest()
+            => files?.First();
 
         public IEnumerable<CurseFile> All()
-        {
-            return files;
-        }
+            => files ?? Enumerable.Empty<CurseFile>();
 
         /// <summary>
         /// Returns the static Url of the project
         /// </summary>
         /// <returns>The home</returns>
         public string GetProjectUrl()
-        {
-            return "https://kerbal.curseforge.com/projects/" + id;
-        }
+            => "https://kerbal.curseforge.com/projects/" + id;
 
         /// <summary>
         /// Returns the direct path to the mod's current home on Curse
@@ -70,7 +67,7 @@ namespace CKAN.NetKAN.Sources.Curse
             {
                 // Matches the longest sequence of letters and spaces ending in two letters from the beggining of the string
                 // This is to filter out version information
-                Match match = Regex.Match(title, "^([A-Za-z ]*[A-Za-z][A-Za-z])");
+                Match match = Regex.Match(title ?? "", "^([A-Za-z ]*[A-Za-z][A-Za-z])");
                 if (match.Groups.Count > 1)
                 {
                     _name = match.Groups[1].Value;
@@ -88,12 +85,12 @@ namespace CKAN.NetKAN.Sources.Curse
             return string.Format("{0}", title);
         }
 
-        public static CurseMod FromJson(string json)
+        public static CurseMod? FromJson(string json)
         {
-            CurseMod mod = JsonConvert.DeserializeObject<CurseMod>(json);
+            var mod = JsonConvert.DeserializeObject<CurseMod>(json);
             if (mod != null)
             {
-                foreach (CurseFile file in mod.files)
+                foreach (CurseFile file in mod.All())
                 {
                     file.ModPageUrl = mod.GetPageUrl();
                 }
@@ -104,9 +101,7 @@ namespace CKAN.NetKAN.Sources.Curse
 
     internal class CurseModMember
     {
-
-        [JsonProperty] public string title;
-        [JsonProperty] public string username;
-
+        [JsonProperty] public string? title;
+        [JsonProperty] public string? username;
     }
 }

@@ -98,7 +98,7 @@ namespace Tests.Core.Versioning
                     new GameVersionBound(new GameVersion(1, 2, 3, 4), true)
                 ),
             },
-            new object[]
+            new object?[]
             {
                 new GameVersionRange(
                     new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
@@ -110,7 +110,7 @@ namespace Tests.Core.Versioning
                 ),
                 null
             },
-            new object[]
+            new object?[]
             {
                 new GameVersionRange(
                     new GameVersionBound(new GameVersion(1, 2, 3, 4), false),
@@ -137,7 +137,7 @@ namespace Tests.Core.Versioning
                     new GameVersionBound(new GameVersion(1, 0, 5, 0), false)
                 ),
             },
-            new object[]
+            new object?[]
             {
                 new GameVersionRange(
                     new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
@@ -164,7 +164,7 @@ namespace Tests.Core.Versioning
                     new GameVersionBound(new GameVersion(1, 0, 4, 1234), true)
                 ),
             },
-            new object[]
+            new object?[]
             {
                 new GameVersionRange(
                     new GameVersionBound(new GameVersion(1, 0, 4, 1235), true),
@@ -251,7 +251,7 @@ namespace Tests.Core.Versioning
                     new GameVersionBound(new GameVersion(1, 2, 0, 0), false)
                 ),
             },
-            new object[]
+            new object?[]
             {
                 new GameVersionRange(
                     new GameVersionBound(new GameVersion(1, 1, 0, 0), true),
@@ -263,7 +263,7 @@ namespace Tests.Core.Versioning
                 ),
                 null
             },
-            new object[]
+            new object?[]
             {
                 new GameVersionRange(
                     new GameVersionBound(new GameVersion(1, 0, 0, 0), true),
@@ -514,19 +514,6 @@ namespace Tests.Core.Versioning
             Assert.That(result, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void IsSupersetOfThrowsOnNullParameter()
-        {
-            // Arrange
-            var sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
-
-            // Act
-            TestDelegate act = () => sut.IsSupersetOf(null);
-
-            // Assert
-            Assert.That(act, Throws.Exception);
-        }
-
         [TestCaseSource("EqualityCases")]
         public void EqualityWorksCorrectly(GameVersionRange vr1, GameVersionRange vr2, bool areEqual)
         {
@@ -551,12 +538,12 @@ namespace Tests.Core.Versioning
         public void NullEqualityWorksCorrectly()
         {
             // Arrange
-            var sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
+            GameVersionRange sut = new GameVersionRange(new GameVersionBound(), new GameVersionBound());
 
             // Act
             // ReSharper disable ConditionIsAlwaysTrueOrFalse
             var genericEquals = sut.Equals(null);
-            var nonGenericEquals = sut.Equals((object)null);
+            var nonGenericEquals = sut!.Equals((object?)null);
             var equalsOperatorNullLeft = null == sut;
             var equalsOperatorNullRight = sut == null;
             var notEqualsOperatorNullLeft = null != sut;

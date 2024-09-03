@@ -1,6 +1,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 
@@ -21,32 +22,35 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             "buildID64.txt", "buildID.txt"
         };
 
-        public bool TryGetVersion(string directory, out GameVersion result)
+        public bool TryGetVersion(string directory,
+                                  [NotNullWhen(returnValue: true)] out GameVersion? result)
         {
             var foundVersions = buildIDfilenames
                 .Select(filename => TryGetVersionFromFile(Path.Combine(directory, filename),
-                                                          out GameVersion v)
+                                                          out GameVersion? v)
                                         ? v : null)
-                .Where(v => v != null)
+                .OfType<GameVersion>()
                 .Distinct()
-                .ToList();
+                .ToArray();
 
-            if (foundVersions.Count < 1)
+            if (foundVersions.Length > 0)
             {
-                result = default;
-                return false;
+                if (foundVersions.Length > 1)
+                {
+                    Log.WarnFormat("Found different KSP versions in {0}: {1}",
+                                   string.Join(" and ", buildIDfilenames),
+                                   string.Join<GameVersion>(", ", foundVersions));
+                }
+                result = foundVersions.Max() ?? foundVersions.First();
+                return true;
             }
-            if (foundVersions.Count > 1)
-            {
-                Log.WarnFormat("Found different KSP versions in {0}: {1}",
-                               string.Join(" and ", buildIDfilenames),
-                               string.Join(", ", foundVersions));
-            }
-            result = foundVersions.Max();
-            return true;
+
+            result = default;
+            return false;
         }
 
-        private bool TryGetVersionFromFile(string file, out GameVersion result)
+        private bool TryGetVersionFromFile(string file,
+                                           [NotNullWhen(returnValue: true)] out GameVersion? result)
         {
             if (File.Exists(file))
             {

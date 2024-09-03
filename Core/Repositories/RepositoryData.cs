@@ -20,16 +20,16 @@ using CKAN.Extensions;
 
 namespace CKAN
 {
-    using ArchiveEntry = Tuple<CkanModule,
-                               SortedDictionary<string, int>,
-                               GameVersion[],
-                               Repository[],
+    using ArchiveEntry = Tuple<CkanModule?,
+                               SortedDictionary<string, int>?,
+                               GameVersion[]?,
+                               Repository[]?,
                                long>;
 
     using ArchiveList = Tuple<List<CkanModule>,
-                              SortedDictionary<string, int>,
-                              GameVersion[],
-                              Repository[],
+                              SortedDictionary<string, int>?,
+                              GameVersion[]?,
+                              Repository[]?,
                               bool>;
 
     /// <summary>
@@ -42,27 +42,27 @@ namespace CKAN
         /// </summary>
         [JsonProperty("available_modules", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonParallelDictionaryConverter<AvailableModule>))]
-        public readonly Dictionary<string, AvailableModule> AvailableModules;
+        public readonly Dictionary<string, AvailableModule>? AvailableModules;
 
         /// <summary>
         /// The download counts from this repository's download_counts.json
         /// </summary>
         [JsonProperty("download_counts", NullValueHandling = NullValueHandling.Ignore)]
-        public readonly SortedDictionary<string, int> DownloadCounts;
+        public readonly SortedDictionary<string, int>? DownloadCounts;
 
         /// <summary>
         /// The game versions from this repository's builds.json
         /// Currently not used, maybe in the future
         /// </summary>
         [JsonProperty("known_game_versions", NullValueHandling = NullValueHandling.Ignore)]
-        public readonly GameVersion[] KnownGameVersions;
+        public readonly GameVersion[]? KnownGameVersions;
 
         /// <summary>
         /// The other repositories listed in this repo's repositories.json
         /// Currently not used, maybe in the future
         /// </summary>
         [JsonProperty("repositories", NullValueHandling = NullValueHandling.Ignore)]
-        public readonly Repository[] Repositories;
+        public readonly Repository[]? Repositories;
 
         /// <summary>
         /// true if any module we found requires a newer client version, false otherwise
@@ -88,12 +88,13 @@ namespace CKAN
         /// <param name="counts">Download counts from this repo</param>
         /// <param name="versions">Game versions in this repo</param>
         /// <param name="repos">Contents of repositories.json in this repo</param>
-        public RepositoryData(IEnumerable<CkanModule>       modules,
-                              SortedDictionary<string, int> counts,
-                              IEnumerable<GameVersion>      versions,
-                              IEnumerable<Repository>       repos,
-                              bool                          unsupportedSpec)
-            : this(modules?.GroupBy(m => m.identifier)
+        public RepositoryData(IEnumerable<CkanModule>?       modules,
+                              SortedDictionary<string, int>? counts,
+                              IEnumerable<GameVersion>?      versions,
+                              IEnumerable<Repository>?       repos,
+                              bool                           unsupportedSpec)
+            : this((modules ?? Enumerable.Empty<CkanModule>())
+                           .GroupBy(m => m.identifier)
                            .ToDictionary(grp => grp.Key,
                                          grp => new AvailableModule(grp.Key, grp)),
                    counts ?? new SortedDictionary<string, int>(),
@@ -134,7 +135,7 @@ namespace CKAN
         /// <param name="path">Filename of the JSON file to load</param>
         /// <param name="progress">Progress notifier to receive updates of percent completion of this file</param>
         /// <returns>A repo data object or null if loading fails</returns>
-        public static RepositoryData FromJson(string path, IProgress<int> progress)
+        public static RepositoryData? FromJson(string path, IProgress<int>? progress)
         {
             try
             {
@@ -216,16 +217,16 @@ namespace CKAN
             using (var gzipStream     = new GZipInputStream(progressStream))
             using (var tarStream      = new TarInputStream(gzipStream, Encoding.UTF8))
             {
-                (List<CkanModule>              modules,
-                 SortedDictionary<string, int> counts,
-                 GameVersion[]                 versions,
-                 Repository[]                  repos,
-                 bool                          unsupSpec) = AggregateArchiveEntries(archiveEntriesFromTar(tarStream, game));
+                (List<CkanModule>               modules,
+                 SortedDictionary<string, int>? counts,
+                 GameVersion[]?                 versions,
+                 Repository[]?                  repos,
+                 bool                           unsupSpec) = AggregateArchiveEntries(archiveEntriesFromTar(tarStream, game));
                 return new RepositoryData(modules, counts, versions, repos, unsupSpec);
             }
         }
 
-        private static ParallelQuery<ArchiveEntry> archiveEntriesFromTar(TarInputStream tarStream, IGame game)
+        private static ParallelQuery<ArchiveEntry?> archiveEntriesFromTar(TarInputStream tarStream, IGame game)
             => Partitioner.Create(getTarEntries(tarStream))
                           .AsParallel()
                           .Select(tuple => getArchiveEntry(tuple.Item1.Name,
@@ -233,19 +234,19 @@ namespace CKAN
                                                            game,
                                                            tarStream.Position));
 
-        private static IEnumerable<Tuple<TarEntry, string>> getTarEntries(TarInputStream tarStream)
+        private static IEnumerable<Tuple<TarEntry, string?>> getTarEntries(TarInputStream tarStream)
         {
             TarEntry entry;
             while ((entry = tarStream.GetNextEntry()) != null)
             {
                 if (!entry.Name.EndsWith(".frozen"))
                 {
-                    yield return new Tuple<TarEntry, string>(entry, tarStreamString(tarStream, entry));
+                    yield return new Tuple<TarEntry, string?>(entry, tarStreamString(tarStream, entry));
                 }
             }
         }
 
-        private static string tarStreamString(TarInputStream stream, TarEntry entry)
+        private static string? tarStreamString(TarInputStream stream, TarEntry entry)
         {
             // Read each file into a buffer.
             int buffer_size;
@@ -282,17 +283,17 @@ namespace CKAN
             using (var progressStream = new ReadProgressStream(inputStream, progress))
             using (var zipfile = new ZipFile(progressStream))
             {
-                (List<CkanModule>              modules,
-                 SortedDictionary<string, int> counts,
-                 GameVersion[]                 versions,
-                 Repository[]                  repos,
-                 bool                          unsupSpec) = AggregateArchiveEntries(archiveEntriesFromZip(zipfile, game));
+                (List<CkanModule>               modules,
+                 SortedDictionary<string, int>? counts,
+                 GameVersion[]?                 versions,
+                 Repository[]?                  repos,
+                 bool                           unsupSpec) = AggregateArchiveEntries(archiveEntriesFromZip(zipfile, game));
                 zipfile.Close();
                 return new RepositoryData(modules, counts, versions, repos, unsupSpec);
             }
         }
 
-        private static ParallelQuery<ArchiveEntry> archiveEntriesFromZip(ZipFile zipfile, IGame game)
+        private static ParallelQuery<ArchiveEntry?> archiveEntriesFromZip(ZipFile zipfile, IGame game)
             => zipfile.Cast<ZipEntry>()
                       .ToArray()
                       .AsParallel()
@@ -302,7 +303,7 @@ namespace CKAN
                                            game,
                                            entry.Offset));
 
-        private static ArchiveList AggregateArchiveEntries(ParallelQuery<ArchiveEntry> entries)
+        private static ArchiveList AggregateArchiveEntries(ParallelQuery<ArchiveEntry?> entries)
             => entries.Aggregate(new ArchiveList(new List<CkanModule>(), null, null, null, false),
                                  (subtotal, item) =>
                                     item == null
@@ -326,38 +327,39 @@ namespace CKAN
                                                         total.Item5 || subtotal.Item5),
                                  total => total);
 
-        private static ArchiveEntry getArchiveEntry(string       filename,
-                                                    Func<string> getContents,
-                                                    IGame        game,
-                                                    long         position)
+        private static ArchiveEntry? getArchiveEntry(string        filename,
+                                                     Func<string?> getContents,
+                                                     IGame         game,
+                                                     long          position)
             => filename.EndsWith(".ckan")
-                ? new ArchiveEntry(ProcessRegistryMetadataFromJSON(getContents(), filename),
+                ? new ArchiveEntry(ProcessRegistryMetadataFromJSON(getContents() ?? "", filename),
                                    null,
                                    null,
                                    null,
                                    position)
             : filename.EndsWith("download_counts.json")
                 ? new ArchiveEntry(null,
-                                   JsonConvert.DeserializeObject<SortedDictionary<string, int>>(getContents()),
+                                   JsonConvert.DeserializeObject<SortedDictionary<string, int>>(getContents() ?? ""),
                                    null,
                                    null,
                                    position)
             : filename.EndsWith("builds.json")
                 ? new ArchiveEntry(null,
                                    null,
-                                   game.ParseBuildsJson(JToken.Parse(getContents())),
+                                   game.ParseBuildsJson(JToken.Parse(getContents() ?? "")),
                                    null,
                                    position)
             : filename.EndsWith("repositories.json")
                 ? new ArchiveEntry(null,
                                    null,
                                    null,
-                                   JObject.Parse(getContents())["repositories"]
-                                          .ToObject<Repository[]>(),
+                                   JObject.Parse(getContents() ?? "")
+                                          ?["repositories"]
+                                          ?.ToObject<Repository[]>(),
                                    position)
             : null;
 
-        private static CkanModule ProcessRegistryMetadataFromJSON(string metadata, string filename)
+        private static CkanModule? ProcessRegistryMetadataFromJSON(string metadata, string filename)
         {
             try
             {
@@ -369,7 +371,7 @@ namespace CKAN
                 }
                 return module;
             }
-            catch (Exception exception)
+            catch (Exception? exception)
             {
                 // Alas, we can get exceptions which *wrap* our exceptions,
                 // because json.net seems to enjoy wrapping rather than propagating.
@@ -380,7 +382,7 @@ namespace CKAN
 
                 while (exception != null)
                 {
-                    if (exception is UnsupportedKraken || exception is BadMetadataKraken)
+                    if (exception is UnsupportedKraken or BadMetadataKraken)
                     {
                         // Either of these can be caused by data meant for future
                         // clients, so they're not really warnings, they're just

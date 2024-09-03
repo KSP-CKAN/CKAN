@@ -12,7 +12,7 @@ namespace CKAN.NetKAN.Model
         private readonly string _string;
 
         public string Source { get; private set; }
-        public string Id { get; private set; }
+        public string? Id   { get; private set; }
 
         public RemoteRef(string remoteRefToken)
             : this(ParseArguments(remoteRefToken)) { }
@@ -25,15 +25,12 @@ namespace CKAN.NetKAN.Model
             Source = arguments.Source;
             Id = arguments.Id;
 
-            _string = Id == null
-                ? $"#/ckan/{Source}"
-                : $"#/ckan/{Source}/{Id}";
+            _string = Id == null ? $"#/ckan/{Source}"
+                                 : $"#/ckan/{Source}/{Id}";
         }
 
         public override string ToString()
-        {
-            return _string;
-        }
+            => _string;
 
         private static Arguments ParseArguments(string refToken)
         {
@@ -51,13 +48,13 @@ namespace CKAN.NetKAN.Model
 
         private sealed class Arguments
         {
-            public string Source { get; private set; }
-            public string Id { get; private set; }
+            public string  Source { get; private set; }
+            public string? Id     { get; private set; }
 
-            public Arguments(string source, string id)
+            public Arguments(string source, string? id)
             {
                 Source = source;
-                Id = id;
+                Id     = id;
             }
         }
     }

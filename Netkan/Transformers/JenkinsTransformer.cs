@@ -21,9 +21,9 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "jenkins";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "jenkins")
+            if (metadata.Kref != null && metadata.Kref.Source == "jenkins" && opts != null)
             {
                 var json = metadata.Json();
 
@@ -61,13 +61,17 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(Metadata metadata, JObject json, JenkinsBuild build, JenkinsOptions options)
+        private Metadata TransformOne(Metadata       metadata,
+                                      JObject        json,
+                                      JenkinsBuild   build,
+                                      JenkinsOptions options)
         {
-            JenkinsArtifact[] artifacts = build.Artifacts
-                .Where(a => options.AssetMatchPattern.IsMatch(a.FileName))
-                .ToArray();
+            var artifacts = build.Artifacts
+                ?.Where(a => a.FileName != null
+                             && options.AssetMatchPattern.IsMatch(a.FileName))
+                 .ToArray();
 
-            switch (artifacts.Length)
+            switch (artifacts?.Length)
             {
                 case 1:
                     JenkinsArtifact artifact = artifacts.Single();
@@ -90,8 +94,8 @@ namespace CKAN.NetKAN.Transformers
                         json["resources"] = new JObject();
                     }
 
-                    var resourcesJson = (JObject)json["resources"];
-                    resourcesJson.SafeAdd("ci", metadata.Kref.Id);
+                    var resourcesJson = (JObject?)json["resources"];
+                    resourcesJson?.SafeAdd("ci", metadata.Kref?.Id);
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 

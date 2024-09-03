@@ -29,7 +29,7 @@ namespace CKAN.NetKAN.Transformers
             _fileService = fileService;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             if (metadata.Download != null)
             {
@@ -38,16 +38,15 @@ namespace CKAN.NetKAN.Transformers
                 Log.Debug("Executing Download attribute transformation");
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                string file = _http.DownloadModule(metadata);
+                var file = _http.DownloadModule(metadata);
 
                 if (file != null)
                 {
                     Log.Debug("Calculating download size...");
                     json["download_size"] = _fileService.GetSizeBytes(file);
 
-                    json["download_hash"] = new JObject();
+                    var download_hashJson = new JObject();
 
-                    var download_hashJson = (JObject)json["download_hash"];
                     // Older clients will complain if download_hash is set without sha1
                     if (metadata.SpecVersion == null || metadata.SpecVersion <= v1p34)
                     {
@@ -56,6 +55,7 @@ namespace CKAN.NetKAN.Transformers
                     }
                     Log.Debug("Calculating download SHA256...");
                     download_hashJson.SafeAdd("sha256", _fileService.GetFileHashSha256(file));
+                    json["download_hash"] = download_hashJson;
 
                     Log.Debug("Calculating download MIME type...");
                     json["download_content_type"] = _fileService.GetMimetype(file);

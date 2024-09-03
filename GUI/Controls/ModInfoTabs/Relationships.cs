@@ -59,7 +59,7 @@ namespace CKAN.GUI
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
 
-        public GUIMod SelectedModule
+        public GUIMod? SelectedModule
         {
             set
             {
@@ -70,21 +70,24 @@ namespace CKAN.GUI
                         ReverseRelationshipsCheckbox.CheckState = CheckState.Unchecked;
                     }
                     selectedModule = value;
-                    UpdateModDependencyGraph(selectedModule.ToModule());
+                    UpdateModDependencyGraph(selectedModule?.ToModule());
                 }
             }
             get => selectedModule;
         }
 
-        public event Action<CkanModule> ModuleDoubleClicked;
+        public event Action<CkanModule>? ModuleDoubleClicked;
 
-        private void UpdateModDependencyGraph(CkanModule module)
+        private void UpdateModDependencyGraph(CkanModule? module)
         {
-            Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
+            if (module != null)
+            {
+                Util.Invoke(DependsGraphTree, () => _UpdateModDependencyGraph(module));
+            }
         }
 
-        private GUIMod                selectedModule;
-        private GameInstanceManager   manager => Main.Instance.Manager;
+        private GUIMod?                        selectedModule;
+        private GameInstanceManager?           manager => Main.Instance?.Manager;
         private readonly RepositoryDataManager repoData;
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -110,7 +113,7 @@ namespace CKAN.GUI
             return false;
         }
 
-        private void ReverseRelationshipsCheckbox_Click(object sender, EventArgs e)
+        private void ReverseRelationshipsCheckbox_Click(object? sender, EventArgs? e)
         {
             ReverseRelationshipsCheckbox.CheckState =
                 ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
@@ -122,56 +125,61 @@ namespace CKAN.GUI
                     : CheckState.Unchecked;
         }
 
-        private void ReverseRelationshipsCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void ReverseRelationshipsCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
-            UpdateModDependencyGraph(SelectedModule.ToModule());
+            UpdateModDependencyGraph(SelectedModule?.ToModule());
         }
 
         private void _UpdateModDependencyGraph(CkanModule module)
         {
-            DependsGraphTree.BeginUpdate();
-            DependsGraphTree.BackColor = SystemColors.Window;
-            DependsGraphTree.LineColor = SystemColors.WindowText;
-            DependsGraphTree.Nodes.Clear();
-            IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
-            TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
+            if (manager?.CurrentInstance != null)
             {
-                Name = module.identifier,
-                Tag  = module
-            };
-            DependsGraphTree.Nodes.Add(root);
-            AddChildren(registry, root);
-            root.Expand();
-            // Expand virtual depends nodes
-            foreach (var node in root.Nodes.OfType<TreeNode>()
-                                           .Where(nd => nd.Nodes.Count > 0
-                                                        && nd.ImageIndex == (int)RelationshipType.Depends + 1))
-            {
-                node.Expand();
+                DependsGraphTree.BeginUpdate();
+                DependsGraphTree.BackColor = SystemColors.Window;
+                DependsGraphTree.LineColor = SystemColors.WindowText;
+                DependsGraphTree.Nodes.Clear();
+                IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
+                TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
+                {
+                    Name = module.identifier,
+                    Tag  = module
+                };
+                DependsGraphTree.Nodes.Add(root);
+                AddChildren(registry, root);
+                root.Expand();
+                // Expand virtual depends nodes
+                foreach (var node in root.Nodes.OfType<TreeNode>()
+                                               .Where(nd => nd.Nodes.Count > 0
+                                                            && nd.ImageIndex == (int)RelationshipType.Depends + 1))
+                {
+                    node.Expand();
+                }
+                DependsGraphTree.EndUpdate();
             }
-            DependsGraphTree.EndUpdate();
         }
 
-        private void BeforeExpand(object sender, TreeViewCancelEventArgs args)
+        private void BeforeExpand(object? sender, TreeViewCancelEventArgs? args)
         {
-            IRegistryQuerier registry      = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
-            TreeNode         node          = args.Node;
-            const int        modsPerUpdate = 10;
-
-            // Load in groups to reduce flickering
-            UseWaitCursor = true;
-            int lastStart = Math.Max(0, node.Nodes.Count - modsPerUpdate);
-            for (int start = 0; start <= lastStart; start += modsPerUpdate)
+            if (manager?.CurrentInstance != null && args?.Node is TreeNode node)
             {
-                // Copy start's value to a variable that won't change as we loop
-                int threadStart = start;
-                int nodesLeft   = node.Nodes.Count - start;
-                Task.Factory.StartNew(() =>
-                    ExpandOnePage(
-                        registry, node, threadStart,
-                        // If next page is small (last), add it to this one,
-                        // so the final page will be slower rather than faster
-                        nodesLeft >= 2 * modsPerUpdate ? modsPerUpdate : nodesLeft));
+                IRegistryQuerier registry      = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
+                const int        modsPerUpdate = 10;
+
+                // Load in groups to reduce flickering
+                UseWaitCursor = true;
+                int lastStart = Math.Max(0, node.Nodes.Count - modsPerUpdate);
+                for (int start = 0; start <= lastStart; start += modsPerUpdate)
+                {
+                    // Copy start's value to a variable that won't change as we loop
+                    int threadStart = start;
+                    int nodesLeft   = node.Nodes.Count - start;
+                    Task.Factory.StartNew(() =>
+                        ExpandOnePage(
+                            registry, node, threadStart,
+                            // If next page is small (last), add it to this one,
+                            // so the final page will be slower rather than faster
+                            nodesLeft >= 2 * modsPerUpdate ? modsPerUpdate : nodesLeft));
+                }
             }
         }
 
@@ -231,18 +239,17 @@ namespace CKAN.GUI
 
         // Load one layer of grandchildren on demand
         private IEnumerable<TreeNode> GetChildren(IRegistryQuerier registry, TreeNode node)
-        {
-            var crit = manager.CurrentInstance.VersionCriteria();
             // Skip children of nodes from circular dependencies
             // Tag is null for non-indexed nodes
-            return !ImMyOwnGrandpa(node) && node.Tag is CkanModule module
-                ? ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
-                    ? ForwardRelationships(registry, module, crit)
-                    : ReverseRelationships(registry, module, crit)
-                : Enumerable.Empty<TreeNode>();
-        }
+            => !ImMyOwnGrandpa(node)
+               && node.Tag is CkanModule module
+               && manager?.CurrentInstance?.VersionCriteria() is GameVersionCriteria crit
+                   ? ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
+                       ? ForwardRelationships(registry, module, crit)
+                       : ReverseRelationships(registry, module, crit)
+                   : Enumerable.Empty<TreeNode>();
 
-        private IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule module, RelationshipType which)
+        private static IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule module, RelationshipType which)
         {
             switch (which)
             {
@@ -277,10 +284,10 @@ namespace CKAN.GUI
                         // Then give up and note the name without a module
                         ?? nonindexedNode(dependency, relationship))));
 
-        private TreeNode findDependencyShallow(IRegistryQuerier       registry,
-                                               RelationshipDescriptor relDescr,
-                                               RelationshipType       relationship,
-                                               GameVersionCriteria    crit)
+        private TreeNode? findDependencyShallow(IRegistryQuerier       registry,
+                                                RelationshipDescriptor relDescr,
+                                                RelationshipType       relationship,
+                                                GameVersionCriteria?   crit)
         {
             var childNodes = relDescr.LatestAvailableWithProvides(
                                           registry, crit,
@@ -294,7 +301,7 @@ namespace CKAN.GUI
                                     registry.InstalledDlls.ToHashSet(),
                                     // Maybe it's a DLC?
                                     registry.InstalledDlc,
-                                    out CkanModule matched))
+                                    out CkanModule? matched))
             {
                 if (matched == null)
                 {
@@ -331,7 +338,7 @@ namespace CKAN.GUI
             else
             {
                 // Several found or not same id, return a "provides" node
-                return providesNode(relDescr.ToString(), relationship,
+                return providesNode(relDescr.ToString() ?? "", relationship,
                                     childNodes.ToArray());
             }
         }
@@ -372,12 +379,13 @@ namespace CKAN.GUI
                                      CkanModule             module,
                                      RelationshipType       relationship,
                                      RelationshipDescriptor relDescr,
-                                     GameVersionCriteria    crit)
+                                     GameVersionCriteria?   crit)
         {
             int icon = (int)relationship + 1;
             bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
             bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, crit);
-            string suffix = compatible ? ""
+            string suffix = compatible || manager?.CurrentInstance == null
+                ? ""
                 : $" ({registry.CompatibleGameVersions(manager.CurrentInstance.game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
             {
@@ -395,7 +403,7 @@ namespace CKAN.GUI
         }
 
         private TreeNode nonModuleNode(RelationshipDescriptor relDescr,
-                                       ModuleVersion          version,
+                                       ModuleVersion?         version,
                                        RelationshipType       relationship)
         {
             int icon = (int)relationship + 1;

@@ -25,7 +25,7 @@ namespace CKAN.GUI
         public bool RepositoryRemoved { get; private set; } = false;
         public bool RepositoryMoved   { get; private set; } = false;
 
-        private GameInstanceManager manager => Main.Instance.Manager;
+        private static GameInstanceManager? manager => Main.Instance?.Manager;
 
         private readonly IConfiguration   coreConfig;
         private readonly GUIConfiguration guiConfig;
@@ -54,7 +54,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void SettingsDialog_Load(object sender, EventArgs e)
+        private void SettingsDialog_Load(object? sender, EventArgs? e)
         {
             UpdateDialog();
         }
@@ -78,7 +78,10 @@ namespace CKAN.GUI
 
             UpdateRefreshRate();
 
-            UpdateCacheInfo(coreConfig.DownloadCacheDir);
+            if (coreConfig.DownloadCacheDir != null)
+            {
+                UpdateCacheInfo(coreConfig.DownloadCacheDir);
+            }
         }
 
         private void UpdateAutoUpdate()
@@ -88,9 +91,9 @@ namespace CKAN.GUI
             {
                 var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false)
                                            .Version;
-                LatestVersionLabel.Text = latestVersion.ToString();
+                LatestVersionLabel.Text = latestVersion?.ToString() ?? "";
                 // Allow downgrading in case they want to stop using dev builds
-                InstallUpdateButton.Enabled = !latestVersion.Equals(new ModuleVersion(Meta.GetVersion()));
+                InstallUpdateButton.Enabled = !latestVersion?.Equals(new ModuleVersion(Meta.GetVersion())) ?? false;
             }
             catch
             {
@@ -105,7 +108,8 @@ namespace CKAN.GUI
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             if (CachePath.Text != coreConfig.DownloadCacheDir
-                && !manager.TrySetupCache(CachePath.Text, out string failReason))
+                && manager != null
+                && !manager.TrySetupCache(CachePath.Text, out string? failReason))
             {
                 user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                 e.Cancel = true;
@@ -118,11 +122,14 @@ namespace CKAN.GUI
 
         private void UpdateRefreshRate()
         {
-            int rate = coreConfig.RefreshRate;
-            RefreshTextBox.Text = rate.ToString();
-            PauseRefreshCheckBox.Enabled = rate != 0;
-            Main.Instance.pauseToolStripMenuItem.Enabled = coreConfig.RefreshRate != 0;
-            Main.Instance.UpdateRefreshTimer();
+            if (Main.Instance != null)
+            {
+                int rate = coreConfig.RefreshRate;
+                RefreshTextBox.Text = rate.ToString();
+                PauseRefreshCheckBox.Enabled = rate != 0;
+                Main.Instance.pauseToolStripMenuItem.Enabled = coreConfig.RefreshRate != 0;
+                Main.Instance.UpdateRefreshTimer();
+            }
         }
 
         private void RefreshReposListBox(bool saveChanges = true)
@@ -161,7 +168,6 @@ namespace CKAN.GUI
         private void UpdateLanguageSelectionComboBox()
         {
             LanguageSelectionComboBox.Items.Clear();
-
             LanguageSelectionComboBox.Items.AddRange(Utilities.AvailableLanguages);
             // If the current language is supported by CKAN, set is as selected.
             // Else display a blank field.
@@ -212,12 +218,12 @@ namespace CKAN.GUI
             });
         }
 
-        private void CachePath_TextChanged(object sender, EventArgs e)
+        private void CachePath_TextChanged(object? sender, EventArgs? e)
         {
             UpdateCacheInfo(CachePath.Text);
         }
 
-        private void CacheLimit_TextChanged(object sender, EventArgs e)
+        private void CacheLimit_TextChanged(object? sender, EventArgs? e)
         {
             if (string.IsNullOrEmpty(CacheLimit.Text))
             {
@@ -239,82 +245,88 @@ namespace CKAN.GUI
             }
         }
 
-        private void ChangeCacheButton_Click(object sender, EventArgs e)
+        private void ChangeCacheButton_Click(object? sender, EventArgs? e)
         {
-            FolderBrowserDialog cacheChooser = new FolderBrowserDialog()
+            var cacheChooser = new FolderBrowserDialog()
             {
                 Description         = Properties.Resources.SettingsDialogCacheDescrip,
                 RootFolder          = Environment.SpecialFolder.MyComputer,
-                SelectedPath        = coreConfig.DownloadCacheDir,
+                SelectedPath        = coreConfig.DownloadCacheDir
+                                      ?? JsonConfiguration.DefaultDownloadCacheDir,
                 ShowNewFolderButton = true
             };
-            DialogResult result = cacheChooser.ShowDialog(this);
-            if (result == DialogResult.OK)
+            if (cacheChooser.ShowDialog(this) == DialogResult.OK)
             {
                 UpdateCacheInfo(cacheChooser.SelectedPath);
             }
         }
 
-        private void PurgeToLimitMenuItem_Click(object sender, EventArgs e)
+        private void PurgeToLimitMenuItem_Click(object? sender, EventArgs? e)
         {
             // Purge old downloads if we're over the limit
-            if (coreConfig.CacheSizeLimit.HasValue)
+            if (coreConfig.CacheSizeLimit.HasValue && manager != null && coreConfig.DownloadCacheDir != null)
             {
                 // Switch main cache since user seems committed to this path
                 if (CachePath.Text != coreConfig.DownloadCacheDir
-                    && !manager.TrySetupCache(CachePath.Text, out string failReason))
+                    && !manager.TrySetupCache(CachePath.Text, out string? failReason))
                 {
                     user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
                     return;
                 }
 
-                manager.Cache.EnforceSizeLimit(
+                manager.Cache?.EnforceSizeLimit(
                     coreConfig.CacheSizeLimit.Value,
                     regMgr.registry);
                 UpdateCacheInfo(coreConfig.DownloadCacheDir);
             }
         }
 
-        private void PurgeAllMenuItem_Click(object sender, EventArgs e)
+        private void PurgeAllMenuItem_Click(object? sender, EventArgs? e)
         {
-            // Switch main cache since user seems committed to this path
-            if (CachePath.Text != coreConfig.DownloadCacheDir
-                && !manager.TrySetupCache(CachePath.Text, out string failReason))
+            if (manager?.Cache != null)
             {
-                user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
-                return;
-            }
+                // Switch main cache since user seems committed to this path
+                if (CachePath.Text != coreConfig.DownloadCacheDir
+                    && !manager.TrySetupCache(CachePath.Text, out string? failReason))
+                {
+                    user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                    return;
+                }
 
-            manager.Cache.GetSizeInfo(
-                out int cacheFileCount, out long cacheSize, out _);
+                manager.Cache.GetSizeInfo(
+                    out int cacheFileCount, out long cacheSize, out _);
 
-            YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-            string confirmationText = string.Format(
-                Properties.Resources.SettingsDialogDeleteConfirm,
-                cacheFileCount,
-                CkanModule.FmtSize(cacheSize));
+                YesNoDialog deleteConfirmationDialog = new YesNoDialog();
+                string confirmationText = string.Format(
+                    Properties.Resources.SettingsDialogDeleteConfirm,
+                    cacheFileCount,
+                    CkanModule.FmtSize(cacheSize));
 
-            if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
-            {
-                // Tell the cache object to nuke itself
-                manager.Cache.RemoveAll();
+                if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
+                {
+                    // Tell the cache object to nuke itself
+                    manager.Cache.RemoveAll();
 
-                UpdateCacheInfo(coreConfig.DownloadCacheDir);
+                    if (coreConfig.DownloadCacheDir != null)
+                    {
+                        UpdateCacheInfo(coreConfig.DownloadCacheDir);
+                    }
+                }
             }
         }
 
-        private void ResetCacheButton_Click(object sender, EventArgs e)
+        private void ResetCacheButton_Click(object? sender, EventArgs? e)
         {
             // Reset to default cache path
             UpdateCacheInfo(JsonConfiguration.DefaultDownloadCacheDir);
         }
 
-        private void OpenCacheButton_Click(object sender, EventArgs e)
+        private void OpenCacheButton_Click(object? sender, EventArgs? e)
         {
-            Utilities.ProcessStartURL(coreConfig.DownloadCacheDir);
+            Utilities.ProcessStartURL(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
         }
 
-        private void ReposListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ReposListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             EnableDisableRepoButtons();
         }
@@ -334,20 +346,16 @@ namespace CKAN.GUI
                 && ReposListBox.SelectedIndices[0] >= 0;
         }
 
-        private void DeleteRepoButton_Click(object sender, EventArgs e)
+        private void DeleteRepoButton_Click(object? sender, EventArgs? e)
         {
-            if (ReposListBox.SelectedItems.Count == 0)
-            {
-                return;
-            }
-
-            var repo = ReposListBox.SelectedItems[0].Tag as Repository;
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-            if (deleteConfirmationDialog.ShowYesNoDialog(this,
-                string.Format(Properties.Resources.SettingsDialogRepoDeleteConfirm,
-                              repo.name),
-                Properties.Resources.SettingsDialogRepoDeleteDelete,
-                Properties.Resources.SettingsDialogRepoDeleteCancel)
+            if (ReposListBox.SelectedItems.Count > 0
+                && ReposListBox.SelectedItems[0].Tag is Repository repo
+                && deleteConfirmationDialog.ShowYesNoDialog(this,
+                    string.Format(Properties.Resources.SettingsDialogRepoDeleteConfirm,
+                                  repo.name),
+                    Properties.Resources.SettingsDialogRepoDeleteDelete,
+                    Properties.Resources.SettingsDialogRepoDeleteCancel)
                     == DialogResult.Yes)
             {
                 var registry = regMgr.registry;
@@ -358,74 +366,77 @@ namespace CKAN.GUI
             }
         }
 
-        private void NewRepoButton_Click(object sender, EventArgs e)
+        private void NewRepoButton_Click(object? sender, EventArgs? e)
         {
-            var dialog = new NewRepoDialog();
-            if (dialog.ShowDialog(this) == DialogResult.OK)
+            if (manager?.CurrentInstance != null
+                && RepositoryList.DefaultRepositories(manager.CurrentInstance.game)?.repositories
+                   is Repository[] repos)
             {
-                var repo = dialog.Selection;
-                var registry = regMgr.registry;
-                if (registry.Repositories.Values.Any(other => other.uri == repo.uri))
+                var dialog = new NewRepoDialog(repos);
+                if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
-                    user.RaiseError(Properties.Resources.SettingsDialogRepoAddDuplicateURL, repo.uri);
-                    return;
-                }
-                if (registry.Repositories.TryGetValue(repo.name, out Repository existing))
-                {
-                    repo.priority = existing.priority;
-                    registry.RepositoriesRemove(repo.name);
-                }
-                else
-                {
-                    repo.priority = registry.Repositories.Count;
-                }
-                registry.RepositoriesAdd(repo);
-                RepositoryAdded = true;
+                    var repo = dialog.Selection;
+                    var registry = regMgr.registry;
+                    if (registry.Repositories.Values.Any(other => other.uri == repo.uri))
+                    {
+                        user.RaiseError(Properties.Resources.SettingsDialogRepoAddDuplicateURL, repo.uri);
+                        return;
+                    }
+                    if (registry.Repositories.TryGetValue(repo.name, out Repository? existing))
+                    {
+                        repo.priority = existing.priority;
+                        registry.RepositoriesRemove(repo.name);
+                    }
+                    else
+                    {
+                        repo.priority = registry.Repositories.Count;
+                    }
+                    registry.RepositoriesAdd(repo);
+                    RepositoryAdded = true;
 
+                    RefreshReposListBox();
+                }
+            }
+        }
+
+        private void UpRepoButton_Click(object? sender, EventArgs? e)
+        {
+            if (ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] != 0
+                && ReposListBox.SelectedItems[0].Tag is Repository selected)
+            {
+                var prev = ReposListBox.Items.OfType<ListViewItem>()
+                                             .Select(item => item.Tag as Repository)
+                                             .OfType<Repository>()
+                                             .FirstOrDefault(r => r.priority == selected.priority - 1);
+                --selected.priority;
+                RepositoryMoved = true;
+                if (prev != null)
+                {
+                    ++prev.priority;
+                }
                 RefreshReposListBox();
             }
         }
 
-        private void UpRepoButton_Click(object sender, EventArgs e)
+        private void DownRepoButton_Click(object? sender, EventArgs? e)
         {
-            if (ReposListBox.SelectedIndices.Count == 0
-                || ReposListBox.SelectedIndices[0] == 0)
+            if (ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] != ReposListBox.Items.Count - 1
+                && ReposListBox.SelectedItems[0].Tag is Repository selected)
             {
-                return;
+                var next     = ReposListBox.Items.Cast<ListViewItem>()
+                                                 .Select(item => item.Tag as Repository)
+                                                 .OfType<Repository>()
+                                                 .FirstOrDefault(r => r.priority == selected.priority + 1);
+                ++selected.priority;
+                RepositoryMoved = true;
+                if (next != null)
+                {
+                    --next.priority;
+                }
+                RefreshReposListBox();
             }
-
-            var selected = ReposListBox.SelectedItems[0].Tag as Repository;
-            var prev     = ReposListBox.Items.Cast<ListViewItem>()
-                                             .Select(item => item.Tag as Repository)
-                                             .FirstOrDefault(r => r.priority == selected.priority - 1);
-            --selected.priority;
-            RepositoryMoved = true;
-            if (prev != null)
-            {
-                ++prev.priority;
-            }
-            RefreshReposListBox();
-        }
-
-        private void DownRepoButton_Click(object sender, EventArgs e)
-        {
-            if (ReposListBox.SelectedIndices.Count == 0
-                || ReposListBox.SelectedIndices[0] == ReposListBox.Items.Count - 1)
-            {
-                return;
-            }
-
-            var selected = ReposListBox.SelectedItems[0].Tag as Repository;
-            var next     = ReposListBox.Items.Cast<ListViewItem>()
-                                             .Select(item => item.Tag as Repository)
-                                             .FirstOrDefault(r => r.priority == selected.priority + 1);
-            ++selected.priority;
-            RepositoryMoved = true;
-            if (next != null)
-            {
-                --next.priority;
-            }
-            RefreshReposListBox();
         }
 
         private void RefreshAuthTokensListBox()
@@ -433,7 +444,7 @@ namespace CKAN.GUI
             AuthTokensListBox.Items.Clear();
             foreach (string host in coreConfig.GetAuthTokenHosts())
             {
-                if (coreConfig.TryGetAuthToken(host, out string token))
+                if (coreConfig.TryGetAuthToken(host, out string? token))
                 {
                     AuthTokensListBox.Items.Add(new ListViewItem(
                         new string[] { host, token })
@@ -444,12 +455,12 @@ namespace CKAN.GUI
             }
         }
 
-        private void AuthTokensListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void AuthTokensListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             DeleteAuthTokenButton.Enabled = AuthTokensListBox.SelectedItems.Count > 0;
         }
 
-        private void NewAuthTokenButton_Click(object sender, EventArgs e)
+        private void NewAuthTokenButton_Click(object? sender, EventArgs? e)
         {
             // Inspired by https://stackoverflow.com/a/17546909/2422988
             Form newAuthTokenPopup = new Form()
@@ -560,20 +571,22 @@ namespace CKAN.GUI
             return true;
         }
 
-        private void DeleteAuthTokenButton_Click(object sender, EventArgs e)
+        private void DeleteAuthTokenButton_Click(object? sender, EventArgs? e)
         {
             if (AuthTokensListBox.SelectedItems.Count > 0)
             {
-                string item = AuthTokensListBox.SelectedItems[0].Tag as string;
-                string host = item?.Split('|')[0].Trim();
-
-                coreConfig.SetAuthToken(host, null);
-                RefreshAuthTokensListBox();
-                DeleteAuthTokenButton.Enabled = false;
+                var item = AuthTokensListBox.SelectedItems[0].Tag as string;
+                var host = item?.Split('|')[0].Trim();
+                if (host != null)
+                {
+                    coreConfig.SetAuthToken(host, null);
+                    RefreshAuthTokensListBox();
+                    DeleteAuthTokenButton.Enabled = false;
+                }
             }
         }
 
-        private void CheckForUpdatesButton_Click(object sender, EventArgs e)
+        private void CheckForUpdatesButton_Click(object? sender, EventArgs? e)
         {
             try
             {
@@ -585,9 +598,9 @@ namespace CKAN.GUI
             }
         }
 
-        private void InstallUpdateButton_Click(object sender, EventArgs e)
+        private void InstallUpdateButton_Click(object? sender, EventArgs? e)
         {
-            if (Main.Instance.CheckForCKANUpdate())
+            if (Main.Instance?.CheckForCKANUpdate() ?? false)
             {
                 Hide();
                 Main.Instance.UpdateCKAN();
@@ -598,28 +611,28 @@ namespace CKAN.GUI
             }
         }
 
-        private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.CheckForUpdatesOnLaunch = CheckUpdateOnLaunchCheckbox.Checked;
         }
 
-        private void DevBuildsCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void DevBuildsCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
             coreConfig.DevBuilds = DevBuildsCheckbox.Checked;
             UpdateAutoUpdate();
         }
 
-        private void RefreshOnStartupCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void RefreshOnStartupCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
         }
 
-        private void HideEpochsCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void HideEpochsCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.HideEpochs = HideEpochsCheckbox.Checked;
         }
 
-        private void HideVCheckbox_CheckedChanged(object sender, EventArgs e)
+        private void HideVCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.HideV = HideVCheckbox.Checked;
         }
@@ -633,29 +646,29 @@ namespace CKAN.GUI
             }
         }
 
-        private void LanguageSelectionComboBox_SelectionChanged(object sender, EventArgs e)
+        private void LanguageSelectionComboBox_SelectionChanged(object? sender, EventArgs? e)
         {
-            coreConfig.Language = LanguageSelectionComboBox.SelectedItem.ToString();
+            coreConfig.Language = LanguageSelectionComboBox.SelectedItem?.ToString();
         }
 
-        private void AutoSortUpdateCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void AutoSortUpdateCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.AutoSortByUpdate = AutoSortUpdateCheckBox.Checked;
         }
 
-        private void EnableTrayIconCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void EnableTrayIconCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             MinimizeToTrayCheckBox.Enabled = guiConfig.EnableTrayIcon = EnableTrayIconCheckBox.Checked;
-            Main.Instance.CheckTrayState();
+            Main.Instance?.CheckTrayState();
         }
 
-        private void MinimizeToTrayCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void MinimizeToTrayCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.MinimizeToTray = MinimizeToTrayCheckBox.Checked;
-            Main.Instance.CheckTrayState();
+            Main.Instance?.CheckTrayState();
         }
 
-        private void RefreshTextBox_TextChanged(object sender, EventArgs e)
+        private void RefreshTextBox_TextChanged(object? sender, EventArgs? e)
         {
             coreConfig.RefreshRate = string.IsNullOrEmpty(RefreshTextBox.Text) ? 0 : int.Parse(RefreshTextBox.Text);
             UpdateRefreshRate();
@@ -669,17 +682,17 @@ namespace CKAN.GUI
             }
         }
 
-        private void PauseRefreshCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void PauseRefreshCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.RefreshPaused = PauseRefreshCheckBox.Checked;
 
             if (guiConfig.RefreshPaused)
             {
-                Main.Instance.refreshTimer.Stop();
+                Main.Instance?.refreshTimer?.Stop();
             }
             else
             {
-                Main.Instance.refreshTimer.Start();
+                Main.Instance?.refreshTimer?.Start();
             }
         }
     }

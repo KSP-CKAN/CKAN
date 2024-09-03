@@ -1,5 +1,6 @@
 using System;
 using Newtonsoft.Json;
+
 using log4net;
 
 namespace CKAN
@@ -12,10 +13,10 @@ namespace CKAN
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(JsonIgnoreBadUrlConverter));
 
-        public override object ReadJson(
-            JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(
+            JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            string value = reader.Value?.ToString();
+            var value = reader.Value?.ToString();
 
             if (value == null)
             {
@@ -47,7 +48,7 @@ namespace CKAN
         /// </summary>
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

@@ -37,7 +37,7 @@ namespace Tests.NetKAN.Validators
             // Act / Assert
             var exception = Assert.Throws<Kraken>(() =>
                 validator.Validate(new Metadata(jobj)));
-            Assert.AreEqual(DownloadArrayValidator.ErrorMessage, exception.Message);
+            Assert.AreEqual(DownloadArrayValidator.ErrorMessage, exception?.Message);
         }
 
         [Test]

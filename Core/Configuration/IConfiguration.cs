@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.Configuration
 {
     public interface IConfiguration
     {
-        string AutoStartInstance { get; set; }
+        string? AutoStartInstance { get; set; }
 
         /// <summary>
         /// Get and set the path to the download cache
         /// </summary>
-        string DownloadCacheDir { get; set; }
+        string? DownloadCacheDir { get; set; }
 
         /// <summary>
         /// Get and set the maximum number of bytes allowed in the cache.
@@ -24,7 +25,7 @@ namespace CKAN.Configuration
         /// </summary>
         int RefreshRate { get; set; }
 
-        string Language { get; set; }
+        string? Language { get; set; }
 
         /// <summary>
         /// Get the hosts that have auth tokens stored in the registry
@@ -42,14 +43,15 @@ namespace CKAN.Configuration
         /// <returns>
         /// True if found, false otherwise
         /// </returns>
-        bool TryGetAuthToken(string host, out string token);
+        bool TryGetAuthToken(string host,
+                             [NotNullWhen(returnValue: true)] out string? token);
 
         /// <summary>
         /// Set an auth token in the registry
         /// </summary>
         /// <param name="host">Host for which to set the token</param>
         /// <param name="token">Token to set, or null to delete</param>
-        void SetAuthToken(string host, string token);
+        void SetAuthToken(string host, string? token);
 
         void SetRegistryToInstances(SortedList<string, GameInstance> instances);
         IEnumerable<Tuple<string, string, string>> GetInstances();
@@ -63,7 +65,7 @@ namespace CKAN.Configuration
         /// List of hosts in order of priority when there are multiple URLs to choose from.
         /// The first null value represents where all other hosts should go.
         /// </summary>
-        string[] PreferredHosts { get; set; }
+        string?[] PreferredHosts { get; set; }
 
         /// <summary>
         /// true if user wants to use nightly builds from S3, false to use releases from GitHub

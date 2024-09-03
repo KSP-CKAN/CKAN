@@ -5,6 +5,6 @@ namespace CKAN.NetKAN.Sources.Spacedock
         /// <summary>
         /// Given a mod Id, returns a SDMod with its metadata from the network.
         /// </summary>
-        SpacedockMod GetMod(int modId);
+        SpacedockMod? GetMod(int modId);
     }
 }

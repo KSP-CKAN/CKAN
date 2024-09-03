@@ -30,7 +30,7 @@ namespace CKAN.NetKAN.Transformers
             _githubApi = githubApi;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "spacedock")
             {
@@ -41,25 +41,31 @@ namespace CKAN.NetKAN.Transformers
 
                 // Look up our mod on SD by its Id.
                 var sdMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
-                var versions = sdMod.All();
-                if (opts.SkipReleases.HasValue)
+                var versions = sdMod?.All();
+                if (sdMod != null && versions != null)
                 {
-                    versions = versions.Skip(opts.SkipReleases.Value);
-                }
-                if (opts.Releases.HasValue)
-                {
-                    versions = versions.Take(opts.Releases.Value);
-                }
-                bool returnedAny = false;
-                foreach (SDVersion vers in versions)
-                {
-                    returnedAny = true;
-                    yield return TransformOne(metadata, metadata.Json(), sdMod, vers);
-                }
-                if (!returnedAny)
-                {
-                    Log.WarnFormat("No releases found for {0}", sdMod.ToString());
-                    yield return metadata;
+                    if (opts != null)
+                    {
+                        if (opts.SkipReleases != null)
+                        {
+                            versions = versions.Skip(opts.SkipReleases.Value);
+                        }
+                        if (opts.Releases != null)
+                        {
+                            versions = versions.Take(opts.Releases.Value);
+                        }
+                    }
+                    bool returnedAny = false;
+                    foreach (SDVersion vers in versions)
+                    {
+                        returnedAny = true;
+                        yield return TransformOne(metadata, metadata.Json(), sdMod, vers);
+                    }
+                    if (!returnedAny)
+                    {
+                        Log.WarnFormat("No releases found for {0}", sdMod?.ToString());
+                        yield return metadata;
+                    }
                 }
             }
             else
@@ -76,26 +82,17 @@ namespace CKAN.NetKAN.Transformers
             if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
             {
                 Log.DebugFormat("Writing ksp_version from SpaceDock: {0}", latestVersion.KSP_version);
-                json["ksp_version"] = latestVersion.KSP_version.WithoutBuild.ToString();
+                json["ksp_version"] = latestVersion.KSP_version?.WithoutBuild.ToString();
             }
 
             json.SafeAdd("name", sdMod.name);
             json.SafeAdd("abstract", sdMod.short_description);
-            json.SafeAdd("version", latestVersion.friendly_version.ToString());
+            json.SafeAdd("version", latestVersion.friendly_version?.ToString());
             json.Remove("$kref");
-            json.SafeAdd("download", latestVersion.download_path.OriginalString);
+            json.SafeAdd("download", latestVersion.download_path?.OriginalString);
             json.SafeAdd(Metadata.UpdatedPropertyName, latestVersion.created);
 
-            var authors = GetAuthors(sdMod);
-
-            if (authors.Count == 1)
-            {
-                json.SafeAdd("author", sdMod.author);
-            }
-            else if (authors.Count > 1)
-            {
-                json.SafeAdd("author", new JArray(authors));
-            }
+            json.SafeAdd("author", () => GetAuthors(sdMod));
 
             // SD provides users with the following default selection of licenses. Let's convert them to CKAN
             // compatible license strings if possible.
@@ -106,7 +103,7 @@ namespace CKAN.NetKAN.Transformers
             // "GPLv3" - Becomes "GPL-3.0"
             // "LGPL" - Specific version is indeterminate
 
-            var sdLicense = sdMod.license.Trim().Replace(' ', '-');
+            var sdLicense = sdMod.license?.Trim().Replace(' ', '-');
 
             switch (sdLicense)
             {
@@ -127,8 +124,8 @@ namespace CKAN.NetKAN.Transformers
                 json["resources"] = new JObject();
             }
 
-            var resourcesJson = (JObject)json["resources"];
-            resourcesJson.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
+            var resourcesJson = (JObject?)json["resources"];
+            resourcesJson?.SafeAdd("spacedock", sdMod.GetPageUrl().OriginalString);
             TryAddResourceURL(metadata.Identifier, resourcesJson, "homepage",   sdMod.website);
 
             if (sdMod.background != null)
@@ -136,7 +133,7 @@ namespace CKAN.NetKAN.Transformers
                 TryAddResourceURL(metadata.Identifier, resourcesJson, "x_screenshot", sdMod.background.ToString());
             }
 
-            if (!string.IsNullOrEmpty(sdMod.source_code))
+            if (resourcesJson != null && !string.IsNullOrEmpty(sdMod.source_code))
             {
                 try
                 {
@@ -144,14 +141,14 @@ namespace CKAN.NetKAN.Transformers
                     if (uri.Host == "github.com")
                     {
                         var match = githubUrlPathPattern.Match(uri.AbsolutePath);
-                        if (match.Success)
+                        if (match.Success
+                            && _githubApi.GetRepo(new GithubRef(
+                                string.Format("#/ckan/github/{0}/{1}",
+                                              match.Groups["owner"].Value,
+                                              match.Groups["repo"].Value),
+                                false, false))
+                            is GithubRepo repoInfo)
                         {
-                            var owner = match.Groups["owner"].Value;
-                            var repo  = match.Groups["repo"].Value;
-                            var repoInfo = _githubApi.GetRepo(new GithubRef(
-                                $"#/ckan/github/{owner}/{repo}", false, false
-                            ));
-
                             GithubTransformer.SetRepoResources(repoInfo, resourcesJson);
                             if (repoInfo.Archived)
                             {
@@ -172,14 +169,14 @@ namespace CKAN.NetKAN.Transformers
             return new Metadata(json);
         }
 
-        private void TryAddResourceURL(string identifier, JObject resources, string key, string rawURL)
+        private static void TryAddResourceURL(string identifier, JObject? resources, string key, string? rawURL)
         {
-            if (!string.IsNullOrEmpty(rawURL))
+            if (rawURL != null && !string.IsNullOrEmpty(rawURL))
             {
-                string normalized = Net.NormalizeUri(rawURL);
+                var normalized = Net.NormalizeUri(rawURL);
                 if (!string.IsNullOrEmpty(normalized))
                 {
-                    resources.SafeAdd(key, normalized);
+                    resources?.SafeAdd(key, normalized);
                 }
                 else
                 {
@@ -188,22 +185,13 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private static List<string> GetAuthors(SpacedockMod mod)
-        {
-            var result = new List<string> { mod.author };
+        private static JToken? GetAuthors(SpacedockMod mod)
+            => JObjectExtensions.FromMessyList(mod.author,
+                                               mod.shared_authors?.Select(i => i.Username));
 
-            if (mod.shared_authors != null)
-            {
-                result.AddRange(mod.shared_authors.Select(i => i.Username).Distinct());
-            }
-
-            return result;
-        }
-
-        private static readonly Regex githubUrlPathPattern = new Regex(
-            "^/(?<owner>[^/]+)/(?<repo>[^/]+)",
-            RegexOptions.Compiled
-        );
+        private static readonly Regex githubUrlPathPattern =
+            new Regex("^/(?<owner>[^/]+)/(?<repo>[^/]+)",
+                      RegexOptions.Compiled);
 
     }
 }

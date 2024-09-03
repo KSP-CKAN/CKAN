@@ -73,7 +73,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public object[] Wait() => task.Task.Result;
+        public object[]? Wait() => task.Task.Result;
 
         /// <summary>
         /// True if user clicked the abort button, false otherwise
@@ -108,7 +108,7 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.DownloadsFailed);
         }
 
-        private void DownloadsGrid_SelectionChanged(object sender, EventArgs e)
+        private void DownloadsGrid_SelectionChanged(object? sender, EventArgs? e)
         {
             // Don't clutter the screen with a highlight we don't use
             DownloadsGrid.ClearSelection();
@@ -152,14 +152,14 @@ namespace CKAN.GUI
             }
         }
 
-        private void RetryButton_Click(object sender, EventArgs e)
+        private void RetryButton_Click(object? sender, EventArgs? e)
         {
             Abort = false;
             task.SetResult(Skip);
             Close();
         }
 
-        private void AbortButton_Click(object sender, EventArgs e)
+        private void AbortButton_Click(object? sender, EventArgs? e)
         {
             Abort = true;
             task.SetResult(null);
@@ -168,7 +168,7 @@ namespace CKAN.GUI
 
         private readonly List<DownloadRow> rows;
         private readonly Func<object, object, bool> rowsLinked;
-        private readonly TaskCompletionSource<object[]> task = new TaskCompletionSource<object[]>();
+        private readonly TaskCompletionSource<object[]?> task = new TaskCompletionSource<object[]?>();
     }
 
     /// <summary>

@@ -28,7 +28,7 @@ namespace CKAN
     {
         public IUser User { get; set; }
 
-        public event Action<CkanModule> onReportModInstalled = null;
+        public event Action<CkanModule>? onReportModInstalled = null;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
@@ -62,7 +62,7 @@ namespace CKAN
         {
             log.Info("Downloading " + filename);
 
-            string tmp_file = Net.Download(module.download
+            string tmp_file = Net.Download((module.download ?? Enumerable.Empty<Uri>())
                 .OrderBy(u => u,
                          new PreferredHostUriComparer(
                              ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
@@ -78,7 +78,7 @@ namespace CKAN
         /// If no filename is provided, the module's standard name will be used.
         /// Checks the CKAN cache first.
         /// </summary>
-        public string CachedOrDownload(CkanModule module, string filename = null)
+        public string CachedOrDownload(CkanModule module, string? filename = null)
             => CachedOrDownload(module, Cache, filename);
 
         /// <summary>
@@ -88,14 +88,11 @@ namespace CKAN
         /// If no filename is provided, the module's standard name will be used.
         /// Chcecks provided cache first.
         /// </summary>
-        public static string CachedOrDownload(CkanModule module, NetModuleCache cache, string filename = null)
+        public static string CachedOrDownload(CkanModule module, NetModuleCache cache, string? filename = null)
         {
-            if (filename == null)
-            {
-                filename = CkanModule.StandardName(module.identifier, module.version);
-            }
+            filename ??= CkanModule.StandardName(module.identifier, module.version);
 
-            string full_path = cache.GetCachedFilename(module);
+            var full_path = cache.GetCachedFilename(module);
             if (full_path == null)
             {
                 return Download(module, filename, cache);
@@ -133,8 +130,8 @@ namespace CKAN
         public void InstallList(ICollection<CkanModule>     modules,
                                 RelationshipResolverOptions options,
                                 RegistryManager             registry_manager,
-                                ref HashSet<string>         possibleConfigOnlyDirs,
-                                IDownloader                 downloader = null,
+                                ref HashSet<string>?        possibleConfigOnlyDirs,
+                                IDownloader?                downloader = null,
                                 bool                        ConfirmPrompt = true)
         {
             // TODO: Break this up into smaller pieces! It's huge!
@@ -152,6 +149,7 @@ namespace CKAN
             // Make sure we have enough space to install this stuff
             CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
                                          modsToInstall.Select(m => m.install_size)
+                                                      .OfType<long>()
                                                       .Sum(),
                                          Properties.Resources.NotEnoughSpaceToInstall);
 
@@ -177,10 +175,7 @@ namespace CKAN
 
             if (downloads.Count > 0)
             {
-                if (downloader == null)
-                {
-                    downloader = new NetAsyncModulesDownloader(User, Cache);
-                }
+                downloader ??= new NetAsyncModulesDownloader(User, Cache);
                 downloader.DownloadModules(downloads);
             }
 
@@ -188,13 +183,14 @@ namespace CKAN
             // now that the downloads have been stored to the cache
             CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
                                          modsToInstall.Select(m => m.install_size)
+                                                      .OfType<long>()
                                                       .Sum(),
                                          Properties.Resources.NotEnoughSpaceToInstall);
 
             // We're about to install all our mods; so begin our transaction.
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                CkanModule installing = null;
+                CkanModule? installing = null;
                 var progress = new ProgressScalePercentsByFileSizes(
                     new Progress<int>(p => User.RaiseProgress(
                                                string.Format(Properties.Resources.ModuleInstallerInstallingMod,
@@ -211,7 +207,7 @@ namespace CKAN
                             registry_manager.registry,
                             ref possibleConfigOnlyDirs,
                             progress);
-                    progress.NextFile();
+                    progress?.NextFile();
                 }
 
                 User.RaiseProgress(Properties.Resources.ModuleInstallerUpdatingRegistry, 90);
@@ -238,18 +234,18 @@ namespace CKAN
         ///
         /// TODO: The name of this and InstallModule() need to be made more distinctive.
         /// </summary>
-        private void Install(CkanModule          module,
-                             bool                autoInstalled,
-                             Registry            registry,
-                             ref HashSet<string> possibleConfigOnlyDirs,
-                             IProgress<int>      progress,
-                             string              filename = null)
+        private void Install(CkanModule           module,
+                             bool                 autoInstalled,
+                             Registry             registry,
+                             ref HashSet<string>? possibleConfigOnlyDirs,
+                             IProgress<int>?      progress,
+                             string?              filename = null)
         {
             CheckKindInstallationKraken(module);
             var version = registry.InstalledVersion(module.identifier);
 
             // TODO: This really should be handled by higher-up code.
-            if (version != null && !(version is UnmanagedModuleVersion))
+            if (version is not null and not UnmanagedModuleVersion)
             {
                 User.RaiseMessage(Properties.Resources.ModuleInstallerAlreadyInstalled,
                                   module.identifier, version);
@@ -257,7 +253,7 @@ namespace CKAN
             }
 
             // Find ZIP in the cache if we don't already have it.
-            filename = filename ?? Cache.GetCachedFilename(module);
+            filename ??= Cache.GetCachedFilename(module);
 
             // If we *still* don't have a file, then kraken bitterly.
             if (filename == null)
@@ -312,11 +308,11 @@ namespace CKAN
         /// Propagates a CancelledActionKraken if the user decides not to overwite unowned files.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
-        private List<string> InstallModule(CkanModule          module,
-                                           string              zip_filename,
-                                           Registry            registry,
-                                           ref HashSet<string> possibleConfigOnlyDirs,
-                                           IProgress<int>      moduleProgress)
+        private List<string> InstallModule(CkanModule           module,
+                                           string               zip_filename,
+                                           Registry             registry,
+                                           ref HashSet<string>? possibleConfigOnlyDirs,
+                                           IProgress<int>?      moduleProgress)
         {
             CheckKindInstallationKraken(module);
             var createdPaths = new List<string>();
@@ -328,7 +324,8 @@ namespace CKAN
                     .ToHashSet();
                 var files = FindInstallableFiles(module, zipfile, instance)
                     .Where(instF => !filters.Any(filt =>
-                                        instF.destination.Contains(filt))
+                                        instF.destination != null
+                                        && instF.destination.Contains(filt))
                                     // Skip the file if it's a ckan file, these should never be copied to GameData
                                     && !instF.source.Name.EndsWith(
                                         ".ckan", StringComparison.InvariantCultureIgnoreCase))
@@ -337,7 +334,7 @@ namespace CKAN
                 try
                 {
                     var dll = registry.DllPath(module.identifier);
-                    if (!string.IsNullOrEmpty(dll))
+                    if (dll is not null && !string.IsNullOrEmpty(dll))
                     {
                         // Find where we're installing identifier.optionalversion.dll
                         // (file name might not be an exact match with manually installed)
@@ -585,7 +582,7 @@ namespace CKAN
         /// </summary>
         public IEnumerable<string> GetModuleContentsList(CkanModule module)
         {
-            string filename = Cache.GetCachedFilename(module);
+            var filename = Cache.GetCachedFilename(module);
 
             if (filename == null)
             {
@@ -614,11 +611,11 @@ namespace CKAN
         /// Path of file or directory that was created.
         /// May differ from the input fullPath!
         /// </returns>
-        internal static string CopyZipEntry(ZipFile         zipfile,
-                                            ZipEntry        entry,
-                                            string          fullPath,
-                                            bool            makeDirs,
-                                            IProgress<long> progress)
+        internal static string? CopyZipEntry(ZipFile          zipfile,
+                                             ZipEntry         entry,
+                                             string           fullPath,
+                                             bool             makeDirs,
+                                             IProgress<long>? progress)
         {
             var file_transaction = new TxFileManager();
 
@@ -632,9 +629,9 @@ namespace CKAN
                 }
 
                 // Windows silently trims trailing spaces, get the path it will actually use
-                fullPath = CKANPathUtils.NormalizePath(
-                               Path.GetDirectoryName(
-                                   Path.Combine(fullPath, "DUMMY")));
+                fullPath = Path.GetDirectoryName(Path.Combine(fullPath, "DUMMY")) is string p
+                    ? CKANPathUtils.NormalizePath(p)
+                    : fullPath;
 
                 log.DebugFormat("Making directory '{0}'", fullPath);
                 file_transaction.CreateDirectory(fullPath);
@@ -644,11 +641,10 @@ namespace CKAN
                 log.DebugFormat("Writing file '{0}'", fullPath);
 
                 // ZIP format does not require directory entries
-                if (makeDirs)
+                if (makeDirs && Path.GetDirectoryName(fullPath) is string d)
                 {
-                    string directory = Path.GetDirectoryName(fullPath);
-                    log.DebugFormat("Making parent directory '{0}'", directory);
-                    file_transaction.CreateDirectory(directory);
+                    log.DebugFormat("Making parent directory '{0}'", d);
+                    file_transaction.CreateDirectory(d);
                 }
 
                 // We don't allow for the overwriting of files. See #208.
@@ -704,9 +700,11 @@ namespace CKAN
         /// This *DOES* save the registry.
         /// Preferred over Uninstall.
         /// </summary>
-        public void UninstallList(
-            IEnumerable<string> mods, ref HashSet<string> possibleConfigOnlyDirs,
-            RegistryManager registry_manager, bool ConfirmPrompt = true, List<CkanModule> installing = null)
+        public void UninstallList(IEnumerable<string>  mods,
+                                  ref HashSet<string>? possibleConfigOnlyDirs,
+                                  RegistryManager      registry_manager,
+                                  bool                 ConfirmPrompt = true,
+                                  List<CkanModule>?    installing    = null)
         {
             mods = mods.Memoize();
             // Pre-check, have they even asked for things which are installed?
@@ -718,6 +716,7 @@ namespace CKAN
 
             var instDlc = mods
                 .Select(ident => registry_manager.registry.InstalledModule(ident))
+                .OfType<InstalledModule>()
                 .FirstOrDefault(m => m.Module.IsDLC);
             if (instDlc != null)
             {
@@ -751,9 +750,9 @@ namespace CKAN
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToRemove);
             User.RaiseMessage("");
 
-            foreach (string mod in goners)
+            foreach (var module in goners.Select(m => registry_manager.registry.InstalledModule(m))
+                                         .OfType<InstalledModule>())
             {
-                InstalledModule module = registry_manager.registry.InstalledModule(mod);
                 User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
             }
 
@@ -793,7 +792,9 @@ namespace CKAN
         /// </summary>
         /// <param name="identifier">Identifier of module to uninstall</param>
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
-        private void Uninstall(string identifier, ref HashSet<string> possibleConfigOnlyDirs, Registry registry)
+        private void Uninstall(string               identifier,
+                               ref HashSet<string>? possibleConfigOnlyDirs,
+                               Registry             registry)
         {
             var file_transaction = new TxFileManager();
 
@@ -833,7 +834,10 @@ namespace CKAN
                             // Helps clean up directories when modules are uninstalled out of dependency order
                             // Since we check for directory contents when deleting, this should purge empty
                             // dirs, making less ModuleManager headaches for people.
-                            directoriesToDelete.Add(Path.GetDirectoryName(absPath));
+                            if (Path.GetDirectoryName(absPath) is string p)
+                            {
+                                directoriesToDelete.Add(p);
+                            }
 
                             log.DebugFormat("Removing {0}", relPath);
                             file_transaction.Delete(absPath);
@@ -952,10 +956,7 @@ namespace CKAN
                         log.DebugFormat("Directory {0} contains only non-registered files, ask user about it later: {1}",
                                         directory,
                                         string.Join(", ", notRemovable));
-                        if (possibleConfigOnlyDirs == null)
-                        {
-                            possibleConfigOnlyDirs = new HashSet<string>(Platform.PathComparer);
-                        }
+                        possibleConfigOnlyDirs ??= new HashSet<string>(Platform.PathComparer);
                         possibleConfigOnlyDirs.Add(directory);
                     }
                 }
@@ -986,15 +987,15 @@ namespace CKAN
                               // Also skip owned by this module since it's already deregistered
                               && !alreadyRemoving.Contains(f)
                               // Must have a removable dir name somewhere in path AFTER main dir
-                              && f.Substring(relRoot.Length)
+                              && f[relRoot.Length..]
                                   .Split('/')
                                   .Where(piece => !string.IsNullOrEmpty(piece))
                                   .Any(piece => game.AutoRemovableDirs.Contains(piece)))
                 .ToDictionary(grp => grp.Key,
                               grp => grp.OrderByDescending(f => f.Length)
                                         .ToArray());
-            removable    = contents.TryGetValue(true,  out string[] val1) ? val1 : Array.Empty<string>();
-            notRemovable = contents.TryGetValue(false, out string[] val2) ? val2 : Array.Empty<string>();
+            removable    = contents.TryGetValue(true,  out string[]? val1) ? val1 : Array.Empty<string>();
+            notRemovable = contents.TryGetValue(false, out string[]? val2) ? val2 : Array.Empty<string>();
             log.DebugFormat("Got removable: {0}",    string.Join(", ", removable));
             log.DebugFormat("Got notRemovable: {0}", string.Join(", ", notRemovable));
         }
@@ -1005,11 +1006,6 @@ namespace CKAN
         /// <param name="directories">The collection of directory path strings to examine</param>
         public HashSet<string> AddParentDirectories(HashSet<string> directories)
         {
-            if (directories == null || directories.Count == 0)
-            {
-                return new HashSet<string>(Platform.PathComparer);
-            }
-
             var gameDir = CKANPathUtils.NormalizePath(instance.GameDir());
             return directories
                 .Where(dir => !string.IsNullOrWhiteSpace(dir))
@@ -1069,7 +1065,12 @@ namespace CKAN
         /// <param name="add">Modules to add</param>
         /// <param name="remove">Modules to remove</param>
         /// <param name="newModulesAreAutoInstalled">true if newly installed modules should be marked auto-installed, false otherwise</param>
-        private void AddRemove(ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, IEnumerable<CkanModule> add, IEnumerable<InstalledModule> remove, bool enforceConsistency, bool newModulesAreAutoInstalled)
+        private void AddRemove(ref HashSet<string>?         possibleConfigOnlyDirs,
+                               RegistryManager              registry_manager,
+                               IEnumerable<CkanModule>      add,
+                               IEnumerable<InstalledModule> remove,
+                               bool                         enforceConsistency,
+                               bool                         newModulesAreAutoInstalled)
         {
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
@@ -1078,8 +1079,7 @@ namespace CKAN
             {
                 remove = remove.Memoize();
                 add    = add.Memoize();
-                int totSteps = (remove?.Count() ?? 0)
-                             + (add?.Count()    ?? 0);
+                int totSteps = remove.Count() + add.Count();
                 int step = 0;
                 foreach (InstalledModule instMod in remove)
                 {
@@ -1124,7 +1124,7 @@ namespace CKAN
         /// </summary>
         public void Upgrade(IEnumerable<CkanModule> modules,
                             IDownloader             netAsyncDownloader,
-                            ref HashSet<string>     possibleConfigOnlyDirs,
+                            ref HashSet<string>?    possibleConfigOnlyDirs,
                             RegistryManager         registry_manager,
                             bool                    enforceConsistency   = true,
                             bool                    resolveRelationships = false,
@@ -1137,7 +1137,8 @@ namespace CKAN
             {
                 var resolver = new RelationshipResolver(
                     modules,
-                    modules.Select(m => registry.InstalledModule(m.identifier)?.Module).Where(m => m != null),
+                    modules.Select(m => registry.InstalledModule(m.identifier)?.Module)
+                           .OfType<CkanModule>(),
                     RelationshipResolverOptions.DependsOnlyOpts(),
                     registry,
                     instance.VersionCriteria()
@@ -1157,13 +1158,14 @@ namespace CKAN
             // Let's discover what we need to do with each module!
             foreach (CkanModule module in modules)
             {
-                InstalledModule installed_mod = registry.InstalledModule(module.identifier);
+                var installed_mod = registry.InstalledModule(module.identifier);
 
                 if (installed_mod == null)
                 {
-                    if (!Cache.IsMaybeCachedZip(module))
+                    if (!Cache.IsMaybeCachedZip(module)
+                        && Cache.GetInProgressFileName(module) is string p)
                     {
-                        var inProgressFile = new FileInfo(Cache.GetInProgressFileName(module));
+                        var inProgressFile = new FileInfo(p);
                         if (inProgressFile.Exists)
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
@@ -1203,9 +1205,10 @@ namespace CKAN
                     }
                     else
                     {
-                        if (!Cache.IsMaybeCachedZip(module))
+                        if (!Cache.IsMaybeCachedZip(module)
+                            && Cache.GetInProgressFileName(module) is string p)
                         {
-                            var inProgressFile = new FileInfo(Cache.GetInProgressFileName(module));
+                            var inProgressFile = new FileInfo(p);
                             if (inProgressFile.Exists)
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
@@ -1273,7 +1276,12 @@ namespace CKAN
         /// </summary>
         /// <exception cref="DependencyNotSatisfiedKraken">Thrown if a dependency for a replacing module couldn't be satisfied.</exception>
         /// <exception cref="ModuleNotFoundKraken">Thrown if a module that should be replaced is not installed.</exception>
-        public void Replace(IEnumerable<ModuleReplacement> replacements, RelationshipResolverOptions options, IDownloader netAsyncDownloader, ref HashSet<string> possibleConfigOnlyDirs, RegistryManager registry_manager, bool enforceConsistency = true)
+        public void Replace(IEnumerable<ModuleReplacement> replacements,
+                            RelationshipResolverOptions    options,
+                            IDownloader                    netAsyncDownloader,
+                            ref HashSet<string>?           possibleConfigOnlyDirs,
+                            RegistryManager                registry_manager,
+                            bool                           enforceConsistency = true)
         {
             replacements = replacements.Memoize();
             log.Debug("Using Replace method");
@@ -1296,11 +1304,11 @@ namespace CKAN
             foreach (ModuleReplacement repl in replacements)
             {
                 string ident = repl.ToReplace.identifier;
-                InstalledModule installedMod = registry_manager.registry.InstalledModule(ident);
+                var installedMod = registry_manager.registry.InstalledModule(ident);
 
                 if (installedMod == null)
                 {
-                    log.DebugFormat("Wait, {0} is not actually installed?", installedMod.identifier);
+                    log.WarnFormat("Wait, {0} is not actually installed?", ident);
                     //Maybe ModuleNotInstalled ?
                     if (registry_manager.registry.IsAutodetected(ident))
                     {
@@ -1320,7 +1328,7 @@ namespace CKAN
 
                     log.DebugFormat("Ok, we are removing {0}", repl.ToReplace.identifier);
                     //Check whether our Replacement target is already installed
-                    InstalledModule installed_replacement = registry_manager.registry.InstalledModule(repl.ReplaceWith.identifier);
+                    var installed_replacement = registry_manager.registry.InstalledModule(repl.ReplaceWith.identifier);
 
                     // If replacement is not installed, we've already added it to modsToInstall above
                     if (installed_replacement != null)
@@ -1364,10 +1372,11 @@ namespace CKAN
 
         #endregion
 
-        public static IEnumerable<string> PrioritizedHosts(IEnumerable<Uri> urls)
-            => urls.OrderBy(u => u, new PreferredHostUriComparer(ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
-                   .Select(dl => dl.Host)
-                   .Distinct();
+        public static IEnumerable<string> PrioritizedHosts(IEnumerable<Uri>? urls)
+            => urls?.OrderBy(u => u, new PreferredHostUriComparer(ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
+                    .Select(dl => dl.Host)
+                    .Distinct()
+                   ?? Enumerable.Empty<string>();
 
         #region Recommendations
 
@@ -1398,7 +1407,7 @@ namespace CKAN
 
             var checkedRecs = resolver.Recommendations(recommenders)
                                       .Where(m => resolver.ReasonsFor(m)
-                                                          .Any(r => (r as SelectionReason.Recommended)?.ProvidesIndex == 0))
+                                                          .Any(r => r is SelectionReason.Recommended { ProvidesIndex: 0 }))
                                       .ToHashSet();
             var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), null,
                                                        RelationshipResolverOptions.ConflictsOpts(),
@@ -1412,17 +1421,21 @@ namespace CKAN
                                                     m => new Tuple<bool, List<string>>(
                                                              checkedRecs.Contains(m),
                                                              resolver.ReasonsFor(m)
-                                                                     .Where(r => r is SelectionReason.Recommended rec
-                                                                                 && recommenders.Contains(rec.Parent))
-                                                                     .Select(r => r.Parent.identifier)
+                                                                     .OfType<SelectionReason.Recommended>()
+                                                                     .Where(r => recommenders.Contains(r.Parent))
+                                                                     .Select(r => r.Parent)
+                                                                     .OfType<CkanModule>()
+                                                                     .Select(m => m.identifier)
                                                                      .ToList()));
             suggestions = resolver.Suggestions(recommenders,
                                                recommendations.Keys.ToList())
                                   .ToDictionary(m => m,
                                                 m => resolver.ReasonsFor(m)
-                                                             .Where(r => r is SelectionReason.Suggested sug
-                                                                         && recommenders.Contains(sug.Parent))
-                                                             .Select(r => r.Parent.identifier)
+                                                             .OfType<SelectionReason.Suggested>()
+                                                             .Where(r => recommenders.Contains(r.Parent))
+                                                             .Select(r => r.Parent)
+                                                             .OfType<CkanModule>()
+                                                             .Select(m => m.identifier)
                                                              .ToList());
 
             var opts = RelationshipResolverOptions.DependsOnlyOpts();
@@ -1457,7 +1470,7 @@ namespace CKAN
             try
             {
                 var installed = toInstall.Select(m => registry.InstalledModule(m.identifier)?.Module)
-                                         .Where(m => m != null);
+                                         .OfType<CkanModule>();
                 var resolver = new RelationshipResolver(toInstall, installed, opts, registry, crit);
 
                 var resolverModList = resolver.ModList(false).ToList();
@@ -1515,7 +1528,7 @@ namespace CKAN
             foreach (var fi in files.Distinct())
             {
                 if (index.TryGetValue(Cache.GetFileHashSha256(fi.FullName, progress),
-                                      out List<CkanModule> modules)
+                                      out List<CkanModule>? modules)
                     // The progress bar will jump back and "redo" the same span
                     // for non-matched files, but that's... OK?
                     || index.TryGetValue(Cache.GetFileHashSha1(fi.FullName, progress),
@@ -1578,20 +1591,20 @@ namespace CKAN
                                                                    deletable.Count));
 
             // Store once per "primary" URL since each has its own URL hash
-            var cachedGroups = matched.SelectMany(kvp => kvp.Value.DistinctBy(m => m.download.First())
+            var cachedGroups = matched.SelectMany(kvp => kvp.Value.DistinctBy(m => m.download?.First())
                                                                   .Select(m => (File:   kvp.Key,
                                                                                 Module: m)))
                                       .GroupBy(tuple => Cache.IsMaybeCachedZip(tuple.Module))
                                       .ToDictionary(grp => grp.Key,
                                                     grp => grp.ToArray());
-            if (cachedGroups.TryGetValue(true, out (FileInfo File, CkanModule Module)[] alreadyStored))
+            if (cachedGroups.TryGetValue(true, out (FileInfo File, CkanModule Module)[]? alreadyStored))
             {
                 // Notify about files that are already cached
                 user.RaiseMessage(" ");
                 user.RaiseMessage(Properties.Resources.ModuleInstallerImportAlreadyCached,
                                   string.Join(", ", alreadyStored.Select(tuple => $"{tuple.Module} ({tuple.File.Name})")));
             }
-            if (cachedGroups.TryGetValue(false, out (FileInfo File, CkanModule Module)[] toStore))
+            if (cachedGroups.TryGetValue(false, out (FileInfo File, CkanModule Module)[]? toStore))
             {
                 // Store any new files
                 user.RaiseMessage(" ");

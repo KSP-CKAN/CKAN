@@ -3,9 +3,15 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class GameCommandLineOptionsDialog : Form
     {
         public GameCommandLineOptionsDialog()
@@ -42,9 +48,10 @@ namespace CKAN.GUI
             CmdLineGrid.BeginEdit(false);
         }
 
-        public List<string> Results => rows.Select(row => row.CmdLine)
-                                           .Where(str => !string.IsNullOrEmpty(str))
-                                           .ToList();
+        public List<string> Results => rows?.Select(row => row.CmdLine)
+                                            .Where(str => !string.IsNullOrEmpty(str))
+                                            .ToList()
+                                           ?? new List<string>();
 
         private void CmdLineGrid_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
@@ -61,16 +68,17 @@ namespace CKAN.GUI
         private void CmdLineGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             // You can't delete the last row
-            if (rows.Count == 1)
+            if (rows?.Count == 1)
             {
                 e.Cancel = true;
             }
         }
 
-        private void ResetToDefaultsButton_Click(object sender, EventArgs e)
+        private void ResetToDefaultsButton_Click(object? sender, EventArgs? e)
         {
-            rows = defaults.Select(cmdLine => new CmdLineRow(cmdLine))
-                           .ToList();
+            rows = defaults?.Select(cmdLine => new CmdLineRow(cmdLine))
+                            .ToList()
+                           ?? new List<CmdLineRow>();
             CmdLineGrid.DataSource = new BindingList<CmdLineRow>(rows)
                                      {
                                          AllowEdit   = true,
@@ -78,14 +86,14 @@ namespace CKAN.GUI
                                      };
         }
 
-        private void AddButton_Click(object sender, EventArgs e)
+        private void AddButton_Click(object? sender, EventArgs? e)
         {
             (CmdLineGrid.DataSource as BindingList<CmdLineRow>)?.AddNew();
             CmdLineGrid.CurrentCell = CmdLineGrid.Rows[CmdLineGrid.RowCount - 1].Cells[0];
             CmdLineGrid.BeginEdit(false);
         }
 
-        private void AcceptChangesButton_Click(object sender, EventArgs e)
+        private void AcceptChangesButton_Click(object? sender, EventArgs? e)
         {
             if (Results.Count < 1)
             {
@@ -94,8 +102,8 @@ namespace CKAN.GUI
             }
         }
 
-        private string[]         defaults;
-        private List<CmdLineRow> rows;
+        private string[]?         defaults;
+        private List<CmdLineRow>? rows;
     }
 
     public class CmdLineRow

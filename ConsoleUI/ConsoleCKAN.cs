@@ -17,9 +17,9 @@ namespace CKAN.ConsoleUI {
         /// Starts with a splash screen, then instance selection if no default,
         /// then list of mods.
         /// </summary>
-        public ConsoleCKAN(GameInstanceManager mgr, string themeName, bool debug)
+        public ConsoleCKAN(GameInstanceManager? mgr, string? themeName, bool debug)
         {
-            if (ConsoleTheme.Themes.TryGetValue(themeName ?? "default", out ConsoleTheme theme))
+            if (ConsoleTheme.Themes.TryGetValue(themeName ?? "default", out ConsoleTheme? theme))
             {
                 var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                 // GameInstanceManager only uses its IUser object to construct game instance objects,
@@ -35,19 +35,19 @@ namespace CKAN.ConsoleUI {
                     if (manager.CurrentInstance == null) {
                         if (manager.Instances.Count == 0) {
                             // No instances, add one
-                            new GameInstanceAddScreen(manager).Run(theme);
+                            new GameInstanceAddScreen(theme, manager).Run();
                             // Set instance to current if they added one
                             manager.GetPreferredInstance();
                         } else {
                             // Multiple instances, no default, pick one
-                            new GameInstanceListScreen(manager, repoData).Run(theme);
+                            new GameInstanceListScreen(theme, manager, repoData).Run();
                         }
                     }
                     if (manager.CurrentInstance != null) {
-                        new ModListScreen(manager, repoData,
+                        new ModListScreen(theme, manager, repoData,
                                           RegistryManager.Instance(manager.CurrentInstance, repoData),
                                           manager.CurrentInstance.game,
-                                          debug, theme).Run(theme);
+                                          debug).Run();
                     }
 
                     new ExitScreen().Run(theme);

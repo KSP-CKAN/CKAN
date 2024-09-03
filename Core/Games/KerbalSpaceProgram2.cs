@@ -4,6 +4,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
@@ -30,7 +31,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
         /// <returns>
         /// "/Applications/Kerbal Space Program" if it exists and we're on a Mac, else null
         /// </returns>
-        public DirectoryInfo MacPath()
+        public DirectoryInfo? MacPath()
         {
             if (Platform.IsMac)
             {
@@ -86,7 +87,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             => path == inst.GameDir() || path == inst.CkanDir()
                 || path == PrimaryModDirectory(inst);
 
-        public bool AllowInstallationIn(string name, out string path)
+        public bool AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path)
             => allowedFolders.TryGetValue(name, out path);
 
         public void RebuildSubdirectories(string absGameRoot)
@@ -111,7 +112,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
                                          .Select(url => url.ToString()))
                          .ToArray();
 
-        public string[] AdjustCommandLine(string[] args, GameVersion installedVersion)
+        public string[] AdjustCommandLine(string[] args, GameVersion? installedVersion)
             => args;
 
         public IDlcDetector[] DlcDetectors => Array.Empty<IDlcDetector>();
@@ -121,22 +122,29 @@ namespace CKAN.Games.KerbalSpaceProgram2
         private static readonly string cachedBuildMapPath =
             Path.Combine(CKANPathUtils.AppDataPath, "builds-ksp2.json");
 
-        private List<GameVersion> versions = JsonConvert.DeserializeObject<List<GameVersion>>(
-            File.Exists(cachedBuildMapPath)
-                ? File.ReadAllText(cachedBuildMapPath)
-                : new StreamReader(Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("CKAN.builds-ksp2.json"))
-                        .ReadToEnd());
+        private List<GameVersion> versions =
+            JsonConvert.DeserializeObject<List<GameVersion>>(
+                File.Exists(cachedBuildMapPath)
+                    ? File.ReadAllText(cachedBuildMapPath)
+                    : Assembly.GetExecutingAssembly()
+                              .GetManifestResourceStream("CKAN.builds-ksp2.json")
+                          is Stream s
+                        ? new StreamReader(s).ReadToEnd()
+                        : "")
+            ?? new List<GameVersion>();
 
         public void RefreshVersions()
         {
             try
             {
-                var json = Net.DownloadText(BuildMapUri);
-                versions = JsonConvert.DeserializeObject<List<GameVersion>>(json);
-                // Save to disk if download and parse succeeds
-                new FileInfo(cachedBuildMapPath).Directory.Create();
-                File.WriteAllText(cachedBuildMapPath, json);
+                if (Net.DownloadText(BuildMapUri) is string json)
+                {
+                    versions = JsonConvert.DeserializeObject<List<GameVersion>>(json) ?? versions;
+
+                    // Save to disk if download and parse succeeds
+                    new FileInfo(cachedBuildMapPath).Directory?.Create();
+                    File.WriteAllText(cachedBuildMapPath, json);
+                }
             }
             catch (Exception e)
             {
@@ -148,13 +156,16 @@ namespace CKAN.Games.KerbalSpaceProgram2
         public List<GameVersion> KnownVersions => versions;
 
         public GameVersion[] EmbeddedGameVersions
-            => JsonConvert.DeserializeObject<GameVersion[]>(
-                new StreamReader(Assembly.GetExecutingAssembly()
-                                         .GetManifestResourceStream("CKAN.builds-ksp2.json"))
-                    .ReadToEnd());
+            => (Assembly.GetExecutingAssembly()
+                        .GetManifestResourceStream("CKAN.builds-ksp2.json")
+                is Stream s
+                    ? JsonConvert.DeserializeObject<GameVersion[]>(new StreamReader(s).ReadToEnd())
+                    : null)
+                ?? new GameVersion[] { };
 
         public GameVersion[] ParseBuildsJson(JToken json)
-            => json.ToObject<GameVersion[]>();
+            => json.ToObject<GameVersion[]>()
+                ?? new GameVersion[] { };
 
         public GameVersion DetectVersion(DirectoryInfo where)
             => VersionFromAssembly(Path.Combine(where.FullName,
@@ -166,7 +177,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
                 // Fall back to the most recent version
                 ?? KnownVersions.Last();
 
-        private static GameVersion VersionFromAssembly(string assemblyPath)
+        private static GameVersion? VersionFromAssembly(string assemblyPath)
             => File.Exists(assemblyPath)
                 && GameVersion.TryParse(
                     AssemblyDefinition.ReadAssembly(assemblyPath)
@@ -178,16 +189,16 @@ namespace CKAN.Games.KerbalSpaceProgram2
                                       .Select(f => (string)f.Constant)
                                       .Select(ver => string.Join(".", ver.Split('.').Take(4)))
                                       .FirstOrDefault(),
-                    out GameVersion v)
+                    out GameVersion? v)
                         ? v
                         : null;
 
-        private static GameVersion VersionFromExecutable(string exePath)
+        private static GameVersion? VersionFromExecutable(string exePath)
             => File.Exists(exePath)
                 && GameVersion.TryParse(FileVersionInfo.GetVersionInfo(exePath).ProductVersion
                                         // Fake instances have an EXE containing just the version string
                                         ?? File.ReadAllText(exePath),
-                                        out GameVersion v)
+                                        out GameVersion? v)
                     ? v
                     : null;
 

@@ -65,7 +65,7 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.CompatibleGameVersions);
         }
 
-        private void CompatibleGameVersionsDialog_Shown(object sender, EventArgs e)
+        private void CompatibleGameVersionsDialog_Shown(object? sender, EventArgs? e)
         {
             if (_inst.CompatibleVersionsAreFromDifferentGameVersion)
             {
@@ -94,7 +94,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void AddVersionToListButton_Click(object sender, EventArgs e)
+        private void AddVersionToListButton_Click(object? sender, EventArgs? e)
         {
             if (AddVersionToListTextBox.Text.Length == 0)
             {
@@ -122,7 +122,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ClearSelectionButton_Click(object sender, EventArgs e)
+        private void ClearSelectionButton_Click(object? sender, EventArgs? e)
         {
             foreach (int index in SelectedVersionsCheckedListBox.CheckedIndices)
             {
@@ -130,13 +130,13 @@ namespace CKAN.GUI
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
+        private void CancelButton_Click(object? sender, EventArgs? e)
         {
             DialogResult = DialogResult.Cancel;
             Close();
         }
 
-        private void SaveButton_Click(object sender, EventArgs e)
+        private void SaveButton_Click(object? sender, EventArgs? e)
         {
             _inst.SetCompatibleVersions(SelectedVersionsCheckedListBox.CheckedItems
                                                                       .Cast<GameVersion>()

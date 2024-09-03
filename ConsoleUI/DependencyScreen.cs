@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN.Versioning;
 #if NETFRAMEWORK
@@ -20,12 +21,13 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the screen
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing instances</param>
         /// <param name="reg">Registry of the current instance for finding mods</param>
         /// <param name="cp">Plan of mods to add and remove</param>
         /// <param name="rej">Mods that the user saw and did not select, in this pass or a previous pass</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public DependencyScreen(GameInstanceManager mgr, Registry reg, ChangePlan cp, HashSet<string> rej, bool dbg) : base()
+        public DependencyScreen(ConsoleTheme theme, GameInstanceManager mgr, Registry reg, ChangePlan cp, HashSet<string> rej, bool dbg) : base(theme)
         {
             debug    = dbg;
             manager  = mgr;
@@ -36,45 +38,48 @@ namespace CKAN.ConsoleUI {
             AddObject(new ConsoleLabel(1, 2, -1,
                                        () => Properties.Resources.RecommendationsLabel));
 
-            generateList(new ModuleInstaller(manager.CurrentInstance, manager.Cache, this),
-                         plan.Install
-                             .Concat(ReplacementModules(plan.Replace,
-                                                        manager.CurrentInstance.VersionCriteria()))
-                             .ToHashSet());
+            if (manager.CurrentInstance != null && manager.Cache != null)
+            {
+                generateList(new ModuleInstaller(manager.CurrentInstance, manager.Cache, this),
+                             plan.Install
+                                 .Concat(ReplacementModules(plan.Replace,
+                                                            manager.CurrentInstance.VersionCriteria()))
+                                 .ToHashSet());
+            }
 
             dependencyList = new ConsoleListBox<Dependency>(
                 1, 4, -1, -2,
                 new List<Dependency>(dependencies.Values),
                 new List<ConsoleListBoxColumn<Dependency>>() {
-                    new ConsoleListBoxColumn<Dependency>() {
-                        Header   = Properties.Resources.RecommendationsInstallHeader,
-                        Width    = 7,
-                        Renderer = (Dependency d) => StatusSymbol(d.module),
-                    },
-                    new ConsoleListBoxColumn<Dependency>() {
-                        Header   = Properties.Resources.RecommendationsNameHeader,
-                        Width    = null,
-                        Renderer = (Dependency d) => d.module.ToString(),
-                    },
-                    new ConsoleListBoxColumn<Dependency>() {
-                        Header   = Properties.Resources.RecommendationsSourcesHeader,
-                        Width    = 42,
-                        Renderer = (Dependency d) => string.Join(", ", d.dependents),
-                    }
+                    new ConsoleListBoxColumn<Dependency>(
+                        Properties.Resources.RecommendationsInstallHeader,
+                        (Dependency d) => StatusSymbol(d.module),
+                        null,
+                        7),
+                    new ConsoleListBoxColumn<Dependency>(
+                        Properties.Resources.RecommendationsNameHeader,
+                        (Dependency d) => d.module.ToString(),
+                        null,
+                        null),
+                    new ConsoleListBoxColumn<Dependency>(
+                        Properties.Resources.RecommendationsSourcesHeader,
+                        (Dependency d) => string.Join(", ", d.dependents),
+                        null,
+                        42)
                 },
                 1, 0, ListSortDirection.Descending
             );
             dependencyList.AddTip("+", Properties.Resources.Toggle);
-            dependencyList.AddBinding(Keys.Plus, (object sender, ConsoleTheme theme) => {
-                var mod = dependencyList.Selection.module;
-                if (accepted.Contains(mod) || TryWithoutConflicts(accepted.Append(mod))) {
+            dependencyList.AddBinding(Keys.Plus, (object sender) => {
+                if (dependencyList.Selection?.module is CkanModule mod
+                    && (accepted.Contains(mod) || TryWithoutConflicts(accepted.Append(mod)))) {
                     ChangePlan.toggleContains(accepted, mod);
                 }
                 return true;
             });
 
             dependencyList.AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
-            dependencyList.AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
+            dependencyList.AddBinding(Keys.CtrlA, (object sender) => {
                 if (TryWithoutConflicts(dependencies.Keys)) {
                     foreach (var kvp in dependencies) {
                         if (!accepted.Contains(kvp.Key)) {
@@ -86,15 +91,15 @@ namespace CKAN.ConsoleUI {
             });
 
             dependencyList.AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => accepted.Count > 0);
-            dependencyList.AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
+            dependencyList.AddBinding(Keys.CtrlD, (object sender) => {
                 accepted.Clear();
                 return true;
             });
 
             dependencyList.AddTip(Properties.Resources.Enter, Properties.Resources.Details);
-            dependencyList.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            dependencyList.AddBinding(Keys.Enter, (object sender) => {
                 if (dependencyList.Selection != null) {
-                    LaunchSubScreen(theme, new ModInfoScreen(manager, reg, plan,
+                    LaunchSubScreen(new ModInfoScreen(theme, manager, reg, plan,
                                                              dependencyList.Selection.module,
                                                              debug));
                 }
@@ -104,14 +109,14 @@ namespace CKAN.ConsoleUI {
             AddObject(dependencyList);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 // Add everything to rejected
                 rejected.UnionWith(dependencies.Keys.Select(m => m.identifier));
                 return false;
             });
 
             AddTip("F9", Properties.Resources.Accept);
-            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F9, (object sender) => {
                 if (TryWithoutConflicts(accepted)) {
                     plan.Install.UnionWith(accepted);
                     // Add the rest to rejected
@@ -143,28 +148,25 @@ namespace CKAN.ConsoleUI {
         private void generateList(ModuleInstaller installer, HashSet<CkanModule> inst)
         {
             if (installer.FindRecommendations(
-                inst, new List<CkanModule>(inst), registry as Registry,
+                inst, new List<CkanModule>(inst), registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                 out Dictionary<CkanModule, List<string>> suggestions,
                 out Dictionary<CkanModule, HashSet<string>> supporters
             )) {
                 foreach ((CkanModule mod, Tuple<bool, List<string>> checkedAndDependents) in recommendations) {
-                    dependencies.Add(mod, new Dependency() {
-                        module     = mod,
-                        dependents = checkedAndDependents.Item2.OrderBy(d => d).ToList()
-                    });
+                    dependencies.Add(mod, new Dependency(
+                        mod,
+                        checkedAndDependents.Item2.OrderBy(d => d).ToList()));
                 }
                 foreach ((CkanModule mod, List<string> dependents) in suggestions) {
-                    dependencies.Add(mod, new Dependency() {
-                        module     = mod,
-                        dependents = dependents.OrderBy(d => d).ToList()
-                    });
+                    dependencies.Add(mod, new Dependency(
+                        mod,
+                        dependents.OrderBy(d => d).ToList()));
                 }
                 foreach ((CkanModule mod, HashSet<string> dependents) in supporters) {
-                    dependencies.Add(mod, new Dependency() {
-                        module     = mod,
-                        dependents = dependents.OrderBy(d => d).ToList()
-                    });
+                    dependencies.Add(mod, new Dependency(
+                        mod,
+                        dependents.OrderBy(d => d).ToList()));
                 }
                 // Check the default checkboxes
                 accepted.UnionWith(recommendations.Where(kvp => kvp.Value.Item1)
@@ -175,7 +177,7 @@ namespace CKAN.ConsoleUI {
         private IEnumerable<CkanModule> ReplacementModules(IEnumerable<string> replaced_identifiers,
                                                            GameVersionCriteria crit)
             => replaced_identifiers.Select(replaced => registry.GetReplacement(replaced, crit))
-                                   .Where(repl => repl != null)
+                                   .OfType<ModuleReplacement>()
                                    .Select(repl => repl.ReplaceWith);
 
         private string StatusSymbol(CkanModule mod)
@@ -184,7 +186,7 @@ namespace CKAN.ConsoleUI {
 
         private bool TryWithoutConflicts(IEnumerable<CkanModule> toAdd)
         {
-            if (HasConflicts(toAdd, out List<string> conflictDescriptions)) {
+            if (HasConflicts(toAdd, out List<string>? conflictDescriptions)) {
                 RaiseError("{0}", string.Join(Environment.NewLine,
                                               conflictDescriptions));
                 return false;
@@ -192,30 +194,36 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private bool HasConflicts(IEnumerable<CkanModule> toAdd,
-                                  out List<string>        descriptions)
+        private bool HasConflicts(IEnumerable<CkanModule>               toAdd,
+                                  [NotNullWhen(true)] out List<string>? descriptions)
         {
-            try
+            if (manager.CurrentInstance != null)
             {
-                var resolver = new RelationshipResolver(
-                    plan.Install.Concat(toAdd).Distinct(),
-                    plan.Remove.Select(ident => registry.InstalledModule(ident)?.Module),
-                    RelationshipResolverOptions.ConflictsOpts(), registry,
-                    manager.CurrentInstance.VersionCriteria());
-                descriptions = resolver.ConflictDescriptions.ToList();
-                return descriptions.Count > 0;
+                try
+                {
+                    var resolver = new RelationshipResolver(
+                        plan.Install.Concat(toAdd).Distinct(),
+                        plan.Remove.Select(ident => registry.InstalledModule(ident)?.Module)
+                                   .OfType<CkanModule>(),
+                        RelationshipResolverOptions.ConflictsOpts(), registry,
+                        manager.CurrentInstance.VersionCriteria());
+                    descriptions = resolver.ConflictDescriptions.ToList();
+                    return descriptions.Count > 0;
+                }
+                catch (DependencyNotSatisfiedKraken k)
+                {
+                    descriptions = new List<string>() { k.Message };
+                    return true;
+                }
             }
-            catch (DependencyNotSatisfiedKraken k)
-            {
-                descriptions = new List<string>() { k.Message };
-                return true;
-            }
+            descriptions = null;
+            return false;
         }
 
         private readonly HashSet<CkanModule> accepted = new HashSet<CkanModule>();
         private readonly HashSet<string>     rejected;
 
-        private readonly IRegistryQuerier    registry;
+        private readonly Registry            registry;
         private readonly GameInstanceManager manager;
         private readonly ChangePlan          plan;
         private readonly bool                debug;
@@ -233,6 +241,17 @@ namespace CKAN.ConsoleUI {
     public class Dependency {
 
         /// <summary>
+        /// Initialize a dependency
+        /// </summary>
+        /// <param name="m">The mod</param>
+        /// <param name="d">Mods that recommend or suggest m</param>
+        public Dependency(CkanModule m, List<string> d)
+        {
+            module     = m;
+            dependents = d;
+        }
+
+        /// <summary>
         /// The mod
         /// </summary>
         public CkanModule module;
@@ -240,7 +259,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// List of mods that recommended or suggested this mod
         /// </summary>
-        public List<string> dependents = new List<string>();
+        public readonly List<string> dependents;
     }
 
 }

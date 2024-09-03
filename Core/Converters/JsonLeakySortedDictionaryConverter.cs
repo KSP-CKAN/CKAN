@@ -14,18 +14,20 @@ namespace CKAN
     /// Removes CkanModule objects from AvailableModule.module_version
     /// if License throws BadMetadataKraken.
     /// </summary>
-    public class JsonLeakySortedDictionaryConverter<K, V> : JsonConverter
+    public class JsonLeakySortedDictionaryConverter<K, V> : JsonConverter where K: class where V: class
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             var dict = new SortedDictionary<K, V>();
             foreach (var kvp in JObject.Load(reader))
             {
                 try
                 {
-                    dict.Add(
-                        (K)Activator.CreateInstance(typeof(K), kvp.Key),
-                        kvp.Value.ToObject<V>());
+                    if (Activator.CreateInstance(typeof(K), kvp.Key) is K k
+                        && kvp.Value?.ToObject<V>() is V v)
+                    {
+                        dict.Add(k, v);
+                    }
                 }
                 catch (Exception exc)
                 {
@@ -40,7 +42,7 @@ namespace CKAN
         /// </summary>
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

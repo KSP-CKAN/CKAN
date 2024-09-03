@@ -46,7 +46,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.AreEqual(expected, (string)transformedJson["version"]);
+            Assert.AreEqual(expected, (string?)transformedJson["version"]);
         }
     }
 }

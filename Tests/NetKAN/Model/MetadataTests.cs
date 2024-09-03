@@ -71,7 +71,7 @@ namespace Tests.NetKAN.Model
 
             // Act / Assert
             var exception = Assert.Throws<Kraken>(() => Metadata.Merge(modules));
-            StringAssert.Contains("does not match download from", exception.Message);
+            StringAssert.Contains("does not match download from", exception?.Message);
         }
 
         [Test,

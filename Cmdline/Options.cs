@@ -35,6 +35,10 @@ namespace CKAN.CmdLine
                     throw new BadCommandKraken();
                 }
             );
+            // These are just here so the compiler knows they're never null,
+            // the above callback should always set them
+            action  ??= "";
+            options ??= new object();
         }
     }
 
@@ -44,80 +48,80 @@ namespace CKAN.CmdLine
     {
         #if NETFRAMEWORK || WINDOWS
         [VerbOption("gui", HelpText = "Start the CKAN GUI")]
-        public GuiOptions GuiOptions { get; set; }
+        public GuiOptions? GuiOptions { get; set; }
         #endif
 
         [VerbOption("consoleui", HelpText = "Start the CKAN console UI")]
-        public ConsoleUIOptions ConsoleUIOptions { get; set; }
+        public ConsoleUIOptions? ConsoleUIOptions { get; set; }
 
         [VerbOption("prompt", HelpText = "Run CKAN prompt for executing multiple commands in a row")]
-        public CommonOptions PromptOptions { get; set; }
+        public CommonOptions? PromptOptions { get; set; }
 
         [VerbOption("search", HelpText = "Search for mods")]
-        public SearchOptions SearchOptions { get; set; }
+        public SearchOptions? SearchOptions { get; set; }
 
         [VerbOption("upgrade", HelpText = "Upgrade an installed mod")]
-        public UpgradeOptions Upgrade { get; set; }
+        public UpgradeOptions? Upgrade { get; set; }
 
         [VerbOption("update", HelpText = "Update list of available mods")]
-        public UpdateOptions Update { get; set; }
+        public UpdateOptions? Update { get; set; }
 
         [VerbOption("available", HelpText = "List available mods")]
-        public AvailableOptions Available { get; set; }
+        public AvailableOptions? Available { get; set; }
 
         [VerbOption("install", HelpText = "Install a mod")]
-        public InstallOptions Install { get; set; }
+        public InstallOptions? Install { get; set; }
 
         [VerbOption("remove", HelpText = "Remove an installed mod")]
-        public RemoveOptions Remove { get; set; }
+        public RemoveOptions? Remove { get; set; }
 
         [VerbOption("import", HelpText = "Import manually downloaded mods")]
-        public ImportOptions Import { get; set; }
+        public ImportOptions? Import { get; set; }
 
         [VerbOption("scan", HelpText = "Scan for manually installed mods")]
-        public ScanOptions Scan { get; set; }
+        public ScanOptions? Scan { get; set; }
 
         [VerbOption("list", HelpText = "List installed modules")]
-        public ListOptions List { get; set; }
+        public ListOptions? List { get; set; }
 
         [VerbOption("show", HelpText = "Show information about a mod")]
-        public ShowOptions Show { get; set; }
+        public ShowOptions? Show { get; set; }
 
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
-        public CleanOptions Clean { get; set; }
+        public CleanOptions? Clean { get; set; }
 
         [VerbOption("repair", HelpText = "Attempt various automatic repairs")]
-        public RepairSubOptions Repair { get; set; }
+        public RepairSubOptions? Repair { get; set; }
 
         [VerbOption("replace", HelpText = "Replace list of replaceable mods")]
-        public ReplaceOptions Replace { get; set; }
+        public ReplaceOptions? Replace { get; set; }
 
         [VerbOption("repo", HelpText = "Manage CKAN repositories")]
-        public RepoSubOptions Repo { get; set; }
+        public RepoSubOptions? Repo { get; set; }
 
         [VerbOption("mark", HelpText = "Edit flags on modules")]
-        public MarkSubOptions Mark { get; set; }
+        public MarkSubOptions? Mark { get; set; }
 
         [VerbOption("instance", HelpText = "Manage game instances")]
-        public InstanceSubOptions Instance { get; set; }
+        public InstanceSubOptions? Instance { get; set; }
 
         [VerbOption("authtoken", HelpText = "Manage authentication tokens")]
-        public AuthTokenSubOptions AuthToken { get; set; }
+        public AuthTokenSubOptions? AuthToken { get; set; }
 
         [VerbOption("cache", HelpText = "Manage download cache path")]
-        public CacheSubOptions Cache { get; set; }
+        public CacheSubOptions? Cache { get; set; }
 
         [VerbOption("compat", HelpText = "Manage game version compatibility")]
-        public CompatSubOptions Compat { get; set; }
+        public CompatSubOptions? Compat { get; set; }
 
         [VerbOption("compare", HelpText = "Compare version strings")]
-        public CompareOptions Compare { get; set; }
+        public CompareOptions? Compare { get; set; }
 
         [VerbOption("version", HelpText = "Show the version of the CKAN client being used")]
-        public VersionOptions Version { get; set; }
+        public VersionOptions? Version { get; set; }
 
         [VerbOption("filter", HelpText = "View or edit installation filters")]
-        public FilterSubOptions Filter { get; set; }
+        public FilterSubOptions? Filter { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -140,7 +144,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                string descr = GetDescription(typeof(Action), verb);
+                var descr = GetDescription(typeof(Action), verb);
                 if (!string.IsNullOrEmpty(descr))
                 {
                     yield return $"ckan {verb} - {descr}";
@@ -191,14 +195,15 @@ namespace CKAN.CmdLine
 
     public abstract class VerbCommandOptions
     {
-        protected string GetDescription(string verb)
+        protected string? GetDescription(string verb)
             => GetDescription(GetType(), verb);
 
-        protected static string GetDescription(Type t, string verb)
+        protected static string? GetDescription(Type t, string verb)
             => t.GetProperties()
-                .Select(property => (BaseOptionAttribute)Attribute.GetCustomAttribute(
-                    property, typeof(BaseOptionAttribute), false))
-                .FirstOrDefault(attrib => attrib?.LongName == verb)
+                .Select(property => (BaseOptionAttribute?)
+                                    Attribute.GetCustomAttribute(property, typeof(BaseOptionAttribute), false))
+                .OfType<BaseOptionAttribute>()
+                .FirstOrDefault(attrib => attrib.LongName == verb)
                 ?.HelpText;
     }
 
@@ -216,7 +221,7 @@ namespace CKAN.CmdLine
         public bool Debugger { get; set; }
 
         [Option("net-useragent", HelpText = "Set the default user-agent string for HTTP requests")]
-        public string NetUserAgent { get; set; }
+        public string? NetUserAgent { get; set; }
 
         [Option("headless", DefaultValue = false, HelpText = "Set to disable all prompts")]
         public bool Headless { get; set; }
@@ -288,14 +293,14 @@ namespace CKAN.CmdLine
         /// This is mainly to ensure that --headless carries through for prompt.
         /// </summary>
         /// <param name="otherOpts">Options object to merge into this one</param>
-        public void Merge(CommonOptions otherOpts)
+        public void Merge(CommonOptions? otherOpts)
         {
             if (otherOpts != null)
             {
                 Verbose      = Verbose      || otherOpts.Verbose;
                 Debug        = Debug        || otherOpts.Debug;
                 Debugger     = Debugger     || otherOpts.Debugger;
-                NetUserAgent = NetUserAgent ?? otherOpts.NetUserAgent;
+                NetUserAgent ??= otherOpts.NetUserAgent;
                 Headless     = Headless     || otherOpts.Headless;
                 AsRoot       = AsRoot       || otherOpts.AsRoot;
             }
@@ -318,10 +323,10 @@ namespace CKAN.CmdLine
     public class InstanceSpecificOptions : CommonOptions
     {
         [Option("instance", HelpText = "Game instance to use")]
-        public string Instance { get; set; }
+        public string? Instance { get; set; }
 
         [Option("gamedir", HelpText = "Game dir to use")]
-        public string Gamedir { get; set; }
+        public string? Gamedir { get; set; }
 
         public override int Handle(GameInstanceManager manager, IUser user)
         {
@@ -337,12 +342,12 @@ namespace CKAN.CmdLine
 
                 try
                 {
-                    if (!string.IsNullOrEmpty(Instance))
+                    if (Instance != null && !string.IsNullOrEmpty(Instance))
                     {
                         // Set a game directory by its alias.
                         manager.SetCurrentInstance(Instance);
                     }
-                    else if (!string.IsNullOrEmpty(Gamedir))
+                    else if (Gamedir != null && !string.IsNullOrEmpty(Gamedir))
                     {
                         // Set a game directory by its path
                         manager.SetCurrentInstanceByPath(Gamedir);
@@ -372,7 +377,7 @@ namespace CKAN.CmdLine
         [ValueList(typeof(List<string>))]
         public List<string> options { get; set; }
 
-        public SubCommandOptions() { }
+        // public SubCommandOptions() { }
 
         public SubCommandOptions(string[] args)
         {
@@ -399,7 +404,7 @@ namespace CKAN.CmdLine
     internal class ConsoleUIOptions : InstanceSpecificOptions
     {
         [Option("theme", HelpText = "Name of color scheme to use, falls back to environment variable CKAN_CONSOLEUI_THEME")]
-        public string Theme { get; set; }
+        public string? Theme { get; set; }
     }
 
     [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = false)]

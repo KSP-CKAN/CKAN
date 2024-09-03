@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Sources.Gitlab
         /// </summary>
         /// <param name="reference">Specification of which project to retrieve</param>
         /// <returns>A project object</returns>
-        GitlabProject GetProject(GitlabRef reference);
+        GitlabProject? GetProject(GitlabRef reference);
 
         /// <summary>
         /// Retrieve info about a GitLab project's releases from the API

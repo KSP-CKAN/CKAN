@@ -17,11 +17,11 @@ namespace CKAN.GUI
             StartPosition = FormStartPosition.CenterScreen;
         }
 
-        private PluginController pluginController => Main.Instance.pluginController;
+        private PluginController? pluginController => Main.Instance?.pluginController;
 
         private readonly OpenFileDialog m_AddNewPluginDialog = new OpenFileDialog();
 
-        private void PluginsDialog_Load(object sender, EventArgs e)
+        private void PluginsDialog_Load(object? sender, EventArgs? e)
         {
             DeactivateButton.Enabled = false;
             ReloadPluginButton.Enabled = false;
@@ -37,96 +37,92 @@ namespace CKAN.GUI
 
         private void RefreshActivePlugins()
         {
-            var activePlugins = pluginController.ActivePlugins;
-
-            ActivePluginsListBox.Items.Clear();
-            foreach (var plugin in activePlugins)
+            if (pluginController != null)
             {
-                ActivePluginsListBox.Items.Add(plugin);
+                var activePlugins = pluginController.ActivePlugins;
+                ActivePluginsListBox.Items.Clear();
+                foreach (var plugin in activePlugins)
+                {
+                    ActivePluginsListBox.Items.Add(plugin);
+                }
             }
         }
 
         private void RefreshDormantPlugins()
         {
-            var dormantPlugins = pluginController.DormantPlugins;
-
-            DormantPluginsListBox.Items.Clear();
-            foreach (var plugin in dormantPlugins)
+            if (pluginController != null)
             {
-                DormantPluginsListBox.Items.Add(plugin);
+                var dormantPlugins = pluginController.DormantPlugins;
+                DormantPluginsListBox.Items.Clear();
+                foreach (var plugin in dormantPlugins)
+                {
+                    DormantPluginsListBox.Items.Add(plugin);
+                }
             }
         }
 
-        private void ActivePluginsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void ActivePluginsListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             bool state = ActivePluginsListBox.SelectedItem != null;
             DeactivateButton.Enabled = state;
             ReloadPluginButton.Enabled = state;
         }
 
-        private void DeactivateButton_Click(object sender, EventArgs e)
+        private void DeactivateButton_Click(object? sender, EventArgs? e)
         {
-            if (ActivePluginsListBox.SelectedItem == null)
+            if (pluginController != null && ActivePluginsListBox.SelectedItem != null)
             {
-                return;
+                var plugin = (IGUIPlugin) ActivePluginsListBox.SelectedItem;
+                pluginController.DeactivatePlugin(plugin);
+                RefreshActivePlugins();
+                RefreshDormantPlugins();
             }
-
-            var plugin = (IGUIPlugin) ActivePluginsListBox.SelectedItem;
-            pluginController.DeactivatePlugin(plugin);
-            RefreshActivePlugins();
-            RefreshDormantPlugins();
         }
 
-        private void ReloadPluginButton_Click(object sender, EventArgs e)
+        private void ReloadPluginButton_Click(object? sender, EventArgs? e)
         {
-            if (ActivePluginsListBox.SelectedItem == null)
+            if (pluginController != null && ActivePluginsListBox.SelectedItem != null)
             {
-                return;
+                var plugin = (IGUIPlugin)ActivePluginsListBox.SelectedItem;
+                pluginController.DeactivatePlugin(plugin);
+                pluginController.ActivatePlugin(plugin);
+                RefreshActivePlugins();
+                RefreshDormantPlugins();
             }
-
-            var plugin = (IGUIPlugin)ActivePluginsListBox.SelectedItem;
-            pluginController.DeactivatePlugin(plugin);
-            pluginController.ActivatePlugin(plugin);
-            RefreshActivePlugins();
-            RefreshDormantPlugins();
         }
 
-        private void DormantPluginsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void DormantPluginsListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             bool state = DormantPluginsListBox.SelectedItem != null;
             ActivatePluginButton.Enabled = state;
             UnloadPluginButton.Enabled = state;
         }
 
-        private void ActivatePluginButton_Click(object sender, EventArgs e)
+        private void ActivatePluginButton_Click(object? sender, EventArgs? e)
         {
-            if (DormantPluginsListBox.SelectedItem == null)
+            if (pluginController != null && DormantPluginsListBox.SelectedItem != null)
             {
-                return;
+                var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
+                pluginController.ActivatePlugin(plugin);
+                RefreshActivePlugins();
+                RefreshDormantPlugins();
             }
-
-            var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
-            pluginController.ActivatePlugin(plugin);
-            RefreshActivePlugins();
-            RefreshDormantPlugins();
         }
 
-        private void UnloadPluginButton_Click(object sender, EventArgs e)
+        private void UnloadPluginButton_Click(object? sender, EventArgs? e)
         {
-            if (DormantPluginsListBox.SelectedItem == null)
+            if (pluginController != null && DormantPluginsListBox.SelectedItem != null)
             {
-                return;
+                var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
+                pluginController.UnloadPlugin(plugin);
+                RefreshActivePlugins();
+                RefreshDormantPlugins();
             }
-
-            var plugin = (IGUIPlugin)DormantPluginsListBox.SelectedItem;
-            pluginController.UnloadPlugin(plugin);
-            RefreshActivePlugins();
-            RefreshDormantPlugins();
         }
 
-        private void AddNewPluginButton_Click(object sender, EventArgs e)
+        private void AddNewPluginButton_Click(object? sender, EventArgs? e)
         {
-            if (m_AddNewPluginDialog.ShowDialog(this) == DialogResult.OK)
+            if (pluginController != null && m_AddNewPluginDialog.ShowDialog(this) == DialogResult.OK)
             {
                 var path = m_AddNewPluginDialog.FileName;
                 pluginController.AddNewAssemblyToPluginsPath(path);

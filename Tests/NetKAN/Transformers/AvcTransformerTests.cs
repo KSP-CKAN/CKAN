@@ -34,14 +34,19 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -50,10 +55,10 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("1.0.0"),
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("1.0.0"),
                 "AvcTransformer should add the version specified in the AVC version file."
             );
-            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo("1.0.4"),
+            Assert.That((string?)transformedJson["ksp_version"], Is.EqualTo("1.0.4"),
                 "AvcTransformer should add the game version specified in the AVC version file."
             );
         }
@@ -72,14 +77,19 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -88,10 +98,10 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["ksp_version_min"], Is.EqualTo("0.90"),
+            Assert.That((string?)transformedJson["ksp_version_min"], Is.EqualTo("0.90"),
                 "AvcTransformer should add the KSP min version specified in the AVC version file."
             );
-            Assert.That((string)transformedJson["ksp_version_max"], Is.EqualTo("1.0.3"),
+            Assert.That((string?)transformedJson["ksp_version_max"], Is.EqualTo("1.0.3"),
                 "AvcTransformer should add the KSP min version specified in the AVC version file."
             );
             Assert.That(transformedJson["ksp_version"], Is.Null,
@@ -184,6 +194,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -222,8 +233,12 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
@@ -232,15 +247,15 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["ksp_version"], Is.EqualTo(expectedKsp),
+            Assert.That((string?)transformedJson["ksp_version"], Is.EqualTo(expectedKsp),
                 "AvcTransformer should calculate ksp_version correctly"
             );
 
-            Assert.That((string)transformedJson["ksp_version_min"], Is.EqualTo(expectedKspMin),
+            Assert.That((string?)transformedJson["ksp_version_min"], Is.EqualTo(expectedKspMin),
                 "AvcTransformer should calculate ksp_version_min correctly"
             );
 
-            Assert.That((string)transformedJson["ksp_version_max"], Is.EqualTo(expectedKspMax),
+            Assert.That((string?)transformedJson["ksp_version_max"], Is.EqualTo(expectedKspMax),
                 "AvcTransformer should calculate ksp_version_max correctly"
             );
         }
@@ -254,14 +269,19 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(avcVersion);
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(avcVersion);
 
             var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AwesomeMod";
+            json["author"] = "Phenomenal Author";
             json["$vref"] = "#/ckan/ksp-avc";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
             json["version"] = "9001";
@@ -271,7 +291,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("9001"),
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("9001"),
                 "AvcTransformer should not override an existing version."
             );
         }
@@ -282,17 +302,22 @@ namespace Tests.NetKAN.Transformers
             // Arrange
             var mHttp          = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
-            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new AvcVersion()
-                {
-                    version = new ModuleVersion("1.2.3")
-                });
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
+            mModuleService.Setup(i => i.GetInternalAvc(It.IsAny<CkanModule>(),
+                                                       It.IsAny<string>(),
+                                                       It.IsAny<string>()))
+                          .Returns(new AvcVersion()
+                          {
+                              version = new ModuleVersion("1.2.3")
+                          });
 
             ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null, game);
 
             JObject json = new JObject();
             json["spec_version"]                = 1;
             json["identifier"]                  = "AwesomeMod";
+            json["author"]                      = "Phenomenal Author";
             json["$vref"]                       = "#/ckan/ksp-avc";
             json["download"]                    = "https://awesomemod.example/AwesomeMod.zip";
             json["version"]                     = "9001";
@@ -303,7 +328,7 @@ namespace Tests.NetKAN.Transformers
             JObject  transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["version"], Is.EqualTo("1.2.3"),
+            Assert.That((string?)transformedJson["version"], Is.EqualTo("1.2.3"),
                 "AvcTransformer should override an existing version when x_netkan_trust_version_file is true."
             );
         }

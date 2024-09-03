@@ -16,7 +16,8 @@ namespace Tests.NetKAN.Transformers
     {
         private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
-        private Mock<IGithubApi> apiMockUp;
+        private Mock<IGithubApi>? apiMockUp;
+
         [OneTimeSetUp]
         public void setupApiMockup()
         {
@@ -107,7 +108,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
             json["identifier"] = "ExampleProject1";
 
-            var sut = new GithubTransformer(apiMockUp.Object, false);
+            var sut = new GithubTransformer(apiMockUp!.Object, false);
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();
@@ -116,7 +117,7 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual(
                 "https://github.com/ExampleAccount/ExampleProject",
-                (string)transformedJson["resources"]["repository"]
+                (string?)transformedJson["resources"]?["repository"]
             );
         }
 
@@ -173,7 +174,7 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual(
                 "https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip",
-                (string)transformedJson["download"]
+                (string?)transformedJson["download"]
             );
         }
 
@@ -186,7 +187,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
             json["identifier"] = "ExampleProject3";
 
-            var sut = new GithubTransformer(apiMockUp.Object, false);
+            var sut = new GithubTransformer(apiMockUp!.Object, false);
 
             // Act
             var results = sut.Transform(
@@ -198,20 +199,20 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual(
                 "http://github.example/download/1.0",
-                (string)transformedJsons[0]["download"]
+                (string?)transformedJsons[0]["download"]
             );
             Assert.AreEqual(
                 "http://github.example/download/1.1",
-                (string)transformedJsons[1]["download"]
+                (string?)transformedJsons[1]["download"]
             );
 
             Assert.AreEqual(
                 "1.0",
-                (string)transformedJsons[0]["x_netkan_version_pieces"]["tag"]
+                (string?)transformedJsons[0]["x_netkan_version_pieces"]?["tag"]
             );
             Assert.AreEqual(
                 "1.1",
-                (string)transformedJsons[1]["x_netkan_version_pieces"]["tag"]
+                (string?)transformedJsons[1]["x_netkan_version_pieces"]?["tag"]
             );
         }
 
@@ -224,7 +225,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject/version_from_asset/^.+_(?<version>.+)\\.zip$";
             json["identifier"] = "ExampleProject4";
 
-            var sut = new GithubTransformer(apiMockUp.Object, false);
+            var sut = new GithubTransformer(apiMockUp!.Object, false);
 
             // Act
             var results = sut.Transform(
@@ -236,20 +237,20 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual(
                 "http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip",
-                (string)transformedJsons[0]["download"]
+                (string?)transformedJsons[0]["download"]
             );
             Assert.AreEqual(
                 "http://github.example/download/1.2/ExampleProject_1.2-1.9.1.zip",
-                (string)transformedJsons[1]["download"]
+                (string?)transformedJsons[1]["download"]
             );
 
             Assert.AreEqual(
                 "1.2-1.8.1",
-                (string)transformedJsons[0]["version"]
+                (string?)transformedJsons[0]["version"]
             );
             Assert.AreEqual(
                 "1.2-1.9.1",
-                (string)transformedJsons[1]["version"]
+                (string?)transformedJsons[1]["version"]
             );
         }
 
@@ -262,7 +263,7 @@ namespace Tests.NetKAN.Transformers
             json["$kref"] = "#/ckan/github/ExampleAccount/ExampleProject";
             json["identifier"] = "ExampleProject5";
 
-            var sut = new GithubTransformer(apiMockUp.Object, false);
+            var sut = new GithubTransformer(apiMockUp!.Object, false);
 
             // Act
             var results = sut.Transform(
@@ -273,11 +274,11 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual(
                 "1.1",
-                results[0].Version.ToString()
+                results[0]?.Version?.ToString()
             );
             Assert.AreEqual(
                 "1.2",
-                results[1].Version.ToString()
+                results[1]?.Version?.ToString()
             );
         }
     }

@@ -55,17 +55,17 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public CkanModule Wait()
+        public CkanModule? Wait()
         {
-            task = new TaskCompletionSource<CkanModule>();
+            task = new TaskCompletionSource<CkanModule?>();
             return task.Task.Result;
         }
 
         public ListView.SelectedListViewItemCollection SelectedItems => ChooseProvidedModsListView.SelectedItems;
 
-        public event Action<ListView.SelectedListViewItemCollection> OnSelectedItemsChanged;
+        public event Action<ListView.SelectedListViewItemCollection>? OnSelectedItemsChanged;
 
-        private void ChooseProvidedModsListView_SelectedIndexChanged(object sender, EventArgs e)
+        private void ChooseProvidedModsListView_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             OnSelectedItemsChanged?.Invoke(ChooseProvidedModsListView.SelectedItems);
         }
@@ -85,18 +85,20 @@ namespace CKAN.GUI
             }
         }
 
-        private void ChooseProvidedModsCancelButton_Click(object sender, EventArgs e)
+        private void ChooseProvidedModsCancelButton_Click(object? sender, EventArgs? e)
         {
-            task.SetResult(null);
+            task?.SetResult(null);
         }
 
-        private void ChooseProvidedModsContinueButton_Click(object sender, EventArgs e)
+        private void ChooseProvidedModsContinueButton_Click(object? sender, EventArgs? e)
         {
-            task.SetResult(ChooseProvidedModsListView.CheckedItems.Cast<ListViewItem>()
-                .Select(item => item?.Tag as CkanModule)
-                .FirstOrDefault());
+            task?.SetResult(
+                ChooseProvidedModsListView.CheckedItems
+                                          .OfType<ListViewItem>()
+                                          .Select(item => item?.Tag as CkanModule)
+                                          .FirstOrDefault());
         }
 
-        private TaskCompletionSource<CkanModule> task;
+        private TaskCompletionSource<CkanModule?>? task;
     }
 }

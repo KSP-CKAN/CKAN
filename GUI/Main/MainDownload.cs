@@ -9,14 +9,14 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private NetAsyncModulesDownloader downloader;
+        private NetAsyncModulesDownloader? downloader;
 
         private void ModInfo_OnDownloadClick(GUIMod gmod)
         {
             StartDownload(gmod);
         }
 
-        public void StartDownload(GUIMod module)
+        public void StartDownload(GUIMod? module)
         {
             if (module == null || !module.IsCKAN)
             {
@@ -40,26 +40,34 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private void CacheMod(object sender, DoWorkEventArgs e)
+        private void CacheMod(object? sender, DoWorkEventArgs? e)
         {
-            GUIMod gm = e.Argument as GUIMod;
-            downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
-            downloader.Progress      += Wait.SetModuleProgress;
-            downloader.AllComplete   += Wait.DownloadsComplete;
-            downloader.StoreProgress += (module, remaining, total) =>
-                Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
-                    remaining, total);
-            Wait.OnCancel += downloader.CancelDownload;
-            downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
-            e.Result = e.Argument;
+            if (e != null
+                && e.Argument is GUIMod gm
+                && Manager?.Cache != null)
+            {
+                downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+                downloader.Progress      += Wait.SetModuleProgress;
+                downloader.AllComplete   += Wait.DownloadsComplete;
+                downloader.StoreProgress += (module, remaining, total) =>
+                    Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload,
+                                                   module),
+                                     remaining, total);
+                Wait.OnCancel += downloader.CancelDownload;
+                downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
+                e.Result = e.Argument;
+            }
         }
 
-        public void PostModCaching(object sender, RunWorkerCompletedEventArgs e)
+        public void PostModCaching(object? sender, RunWorkerCompletedEventArgs? e)
         {
-            Wait.OnCancel -= downloader.CancelDownload;
-            downloader = null;
+            if (downloader != null)
+            {
+                Wait.OnCancel -= downloader.CancelDownload;
+                downloader = null;
+            }
             // Can't access e.Result if there's an error
-            if (e.Error != null)
+            if (e?.Error != null)
             {
                 switch (e.Error)
                 {
@@ -87,13 +95,13 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private void UpdateCachedByDownloads(CkanModule module)
+        private void UpdateCachedByDownloads(CkanModule? module)
         {
             var allGuiMods = ManageMods.AllGUIMods();
             var affectedMods =
                 module?.GetDownloadsGroup(allGuiMods.Values
                                                     .Select(guiMod => guiMod.ToModule())
-                                                    .Where(mod => mod != null))
+                                                    .OfType<CkanModule>())
                        .Select(other => allGuiMods[other.identifier])
                 ?? allGuiMods.Values;
             foreach (var otherMod in affectedMods)
@@ -103,7 +111,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private void OnModStoredOrPurged(CkanModule module)
+        private void OnModStoredOrPurged(CkanModule? module)
         {
             UpdateCachedByDownloads(module);
 

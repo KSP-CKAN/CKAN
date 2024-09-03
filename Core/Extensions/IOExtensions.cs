@@ -35,7 +35,7 @@ namespace CKAN.Extensions
             long total = 0;
             var lastProgressTime = DateTime.Now;
             // Sometimes a server just freezes and times out, send extra updates if requested
-            Timer timer = null;
+            Timer? timer = null;
             if (idleInterval.HasValue)
             {
                 timer = new Timer(idleInterval.Value > minProgressInterval

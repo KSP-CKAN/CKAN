@@ -43,6 +43,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "DoesNotExist";
+            json["author"] = "DidNotCreate";
             json["version"] = "1.0";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
 
@@ -51,7 +52,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["foo"], Is.EqualTo("bar"),
+            Assert.That((string?)transformedJson["foo"], Is.EqualTo("bar"),
                 "InternalCkanTransformer should add properties from the internal ckan that don't exist on the original."
             );
         }
@@ -82,6 +83,7 @@ namespace Tests.NetKAN.Transformers
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "DoesNotExist";
+            json["author"] = "DidNotCreate";
             json["version"] = "1.0";
             json["foo"] = "baz";
             json["download"] = "https://awesomemod.example/AwesomeMod.zip";
@@ -91,7 +93,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["foo"], Is.EqualTo("baz"),
+            Assert.That((string?)transformedJson["foo"], Is.EqualTo("baz"),
                 "InternalCkanTransformer should not override existing properties."
             );
         }

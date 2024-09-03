@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 using Autofac;
@@ -22,7 +21,7 @@ namespace CKAN
         /// <summary>
         /// Raised when data arrives for a download
         /// </summary>
-        public event Action<DownloadTarget, long, long> Progress;
+        public event Action<DownloadTarget, long, long>? Progress;
 
         private readonly object dlMutex = new object();
         // NOTE: Never remove anything from this, because closures have indexes into it!
@@ -41,7 +40,7 @@ namespace CKAN
         /// <param>The download that is done</param>
         /// <param>Exception thrown if failed</param>
         /// <param>ETag of the URL</param>
-        public event Action<DownloadTarget, Exception, string> onOneCompleted;
+        public event Action<DownloadTarget, Exception?, string?>? onOneCompleted;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader
@@ -52,10 +51,10 @@ namespace CKAN
             complete_or_canceled = new ManualResetEvent(false);
         }
 
-        public static string DownloadWithProgress(string url, string filename = null, IUser user = null)
+        public static string DownloadWithProgress(string url, string? filename = null, IUser? user = null)
             => DownloadWithProgress(new Uri(url), filename, user);
 
-        public static string DownloadWithProgress(Uri url, string filename = null, IUser user = null)
+        public static string DownloadWithProgress(Uri url, string? filename = null, IUser? user = null)
         {
             var targets = new[]
             {
@@ -65,7 +64,7 @@ namespace CKAN
             return targets.First().filename;
         }
 
-        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser user = null)
+        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser? user = null)
         {
             var downloader = new NetAsyncDownloader(user ?? new NullUser());
             downloader.onOneCompleted += (target, error, etag) =>
@@ -144,43 +143,38 @@ namespace CKAN
             }
 
             // Check to see if we've had any errors. If so, then release the kraken!
-            var exceptions = new List<KeyValuePair<int, Exception>>();
-            for (int i = 0; i < downloads.Count; ++i)
+            var exceptions = downloads.Select((dl, i) => dl.error is Exception exc
+                                                         ? new KeyValuePair<int, Exception>(i, exc)
+                                                         : (KeyValuePair<int, Exception>?)null)
+                                      .OfType<KeyValuePair<int, Exception>>()
+                                      .ToList();
+
+            if (exceptions.Select(kvp => kvp.Value)
+                          .OfType<WebException>()
+                          // Check if it's a certificate error. If so, report that instead,
+                          // as this is common (and user-fixable) under Linux.
+                          .Any(exc => exc.Status == WebExceptionStatus.SecureChannelFailure))
             {
-                if (downloads[i].error != null)
-                {
-                    // Check if it's a certificate error. If so, report that instead,
-                    // as this is common (and user-fixable) under Linux.
-                    if (downloads[i].error is WebException)
-                    {
-                        WebException wex = downloads[i].error as WebException;
-                        if (certificatePattern.IsMatch(wex.Message))
-                        {
-                            throw new MissingCertificateKraken();
-                        }
-                        #pragma warning disable IDE0011
-                        else switch ((wex.Response as HttpWebResponse)?.StatusCode)
-                        #pragma warning restore IDE0011
-                        {
-                            // Handle HTTP 403 used for throttling
-                            case HttpStatusCode.Forbidden:
-                                Uri infoUrl = null;
-                                var throttledUri = downloads[i].target.urls.FirstOrDefault(uri =>
-                                    uri.IsAbsoluteUri
-                                    && Net.ThrottledHosts.TryGetValue(uri.Host, out infoUrl));
-                                if (throttledUri != null)
-                                {
-                                    throw new DownloadThrottledKraken(throttledUri, infoUrl);
-                                }
-                                break;
-                        }
-                    }
-                    // Otherwise just note the error and which download it came from,
-                    // then throw them all at once later.
-                    exceptions.Add(new KeyValuePair<int, Exception>(
-                        targets.IndexOf(downloads[i].target), downloads[i].error));
-                }
+                throw new MissingCertificateKraken();
             }
+
+            var throttled = exceptions.Select(kvp => kvp.Value is WebException wex
+                                                     && wex.Response is HttpWebResponse hresp
+                                                     // Handle HTTP 403 used for throttling
+                                                     && hresp.StatusCode == HttpStatusCode.Forbidden
+                                                     && downloads[kvp.Key].CurrentUri is Uri url
+                                                     && url.IsAbsoluteUri
+                                                     && Net.ThrottledHosts.TryGetValue(url.Host, out Uri? infoUrl)
+                                                     && infoUrl is not null
+                                                         ? new DownloadThrottledKraken(url, infoUrl)
+                                                         : null)
+                                      .OfType<DownloadThrottledKraken>()
+                                      .FirstOrDefault();
+            if (throttled is not null)
+            {
+                throw throttled;
+            }
+
             if (exceptions.Count > 0)
             {
                 throw new DownloadErrorsKraken(exceptions);
@@ -189,11 +183,6 @@ namespace CKAN
             // Yay! Everything worked!
             log.Debug("Done downloading");
         }
-
-        private static readonly Regex certificatePattern = new Regex(
-            @"authentication or decryption has failed",
-            RegexOptions.Compiled
-        );
 
         /// <summary>
         /// <see cref="IDownloader.CancelDownload()"/>
@@ -375,7 +364,7 @@ namespace CKAN
         /// This method gets called back by `WebClient` when a download is completed.
         /// It in turncalls the onCompleted hook when *all* downloads are finished.
         /// </summary>
-        private void FileDownloadComplete(int index, Exception error, bool canceled, string etag)
+        private void FileDownloadComplete(int index, Exception? error, bool canceled, string? etag)
         {
             var dl      = downloads[index];
             var doneUri = dl.CurrentUri;
@@ -416,11 +405,8 @@ namespace CKAN
             }
             catch (Exception exc)
             {
-                if (dl.error == null)
-                {
-                    // Capture anything that goes wrong with the post-download process as well
-                    dl.error = exc;
-                }
+                // Capture anything that goes wrong with the post-download process as well
+                dl.error ??= exc;
             }
 
             // Make sure the threads don't trip on one another

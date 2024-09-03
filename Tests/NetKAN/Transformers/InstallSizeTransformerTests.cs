@@ -35,7 +35,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.AreEqual(52291, (int)transformedJson["install_size"]);
+            Assert.AreEqual(52291, (int?)transformedJson["install_size"]);
         }
 
         private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);

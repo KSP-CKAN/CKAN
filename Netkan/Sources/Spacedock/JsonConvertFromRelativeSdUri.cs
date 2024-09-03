@@ -11,18 +11,12 @@ namespace CKAN.NetKAN.Sources.Spacedock
     /// </summary>
     internal class JsonConvertFromRelativeSdUri : JsonConverter
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            if (reader.Value != null)
-            {
-                return ExpandPath(reader.Value.ToString());
-            }
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+            => reader.Value?.ToString() is string s
+                ? ExpandPath(s)
+                : null;
 
-            return null;
-
-        }
-
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Autofac;
 
 using CKAN.Configuration;
+using CKAN.Versioning;
 
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
@@ -56,9 +57,9 @@ namespace CKAN.GUI
                     log.Info("Making auto-update call");
                     var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
                     var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
-                    var latestVersion = update.Version;
 
-                    if (latestVersion.IsGreaterThan(Meta.ReleaseVersion))
+                    if (update.Version is CkanModuleVersion latestVersion
+                        && latestVersion.IsGreaterThan(Meta.ReleaseVersion))
                     {
                         log.DebugFormat("Found higher CKAN version: {0}", latestVersion);
                         var releaseNotes = update.ReleaseNotes;
@@ -100,7 +101,7 @@ namespace CKAN.GUI
                               null);
         }
 
-        private void UpdateReady(object sender, RunWorkerCompletedEventArgs e)
+        private void UpdateReady(object? sender, RunWorkerCompletedEventArgs? e)
         {
             // Close will be cancelled if the window is still disabled
             EnableMainWindow();

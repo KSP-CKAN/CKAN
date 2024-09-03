@@ -25,9 +25,8 @@ namespace CKAN
         /// <param name="path">The path to normalize</param>
         /// <returns>The normalized path</returns>
         public static string NormalizePath(string path)
-            => path == null    ? null
-             : path.Length < 2 ? path.Replace('\\', '/')
-             : path.Replace('\\', '/').TrimEnd('/');
+            => path.Length < 2 ? path.Replace('\\', '/')
+                               : path.Replace('\\', '/').TrimEnd('/');
 
         /// <summary>
         /// Gets the last path element. Ex: /a/b/c returns c
@@ -61,11 +60,6 @@ namespace CKAN
         /// </summary>
         public static string ToRelative(string path, string root)
         {
-            if (path == null || root == null)
-            {
-                throw new PathErrorKraken(null, "Null path provided");
-            }
-
             // We have to normalise before we check for rootedness,
             // otherwise backslash separators fail on Linux.
 
@@ -96,11 +90,6 @@ namespace CKAN
         /// </summary>
         public static string ToAbsolute(string path, string root)
         {
-            if (path == null || root == null)
-            {
-                throw new PathErrorKraken(null, "Null path provided");
-            }
-
             path = NormalizePath(path);
             root = NormalizePath(root);
 

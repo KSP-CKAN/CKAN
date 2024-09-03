@@ -7,13 +7,16 @@ using System.Text;
 using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
 
 using CKAN.Versioning;
+#if !NET8_0_OR_GREATER
 using CKAN.Extensions;
+#endif
 
 namespace CKAN
 {
@@ -25,8 +28,8 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(RegistryManager));
         private readonly string path;
         public readonly string lockfilePath;
-        private FileStream lockfileStream = null;
-        private StreamWriter lockfileWriter = null;
+        private FileStream?   lockfileStream = null;
+        private StreamWriter? lockfileWriter = null;
 
         private readonly GameInstance gameInstance;
 
@@ -35,12 +38,12 @@ namespace CKAN
         /// <summary>
         /// If loading the registry failed, the parsing error text, else null.
         /// </summary>
-        public string previousCorruptedMessage;
+        public string? previousCorruptedMessage;
 
         /// <summary>
         /// If loading the registry failed, the location to which we moved it, else null.
         /// </summary>
-        public string previousCorruptedPath;
+        public string? previousCorruptedPath;
 
         private static string InstanceRegistryLockPath(string ckanDirPath)
             => Path.Combine(ckanDirPath, "registry.locked");
@@ -281,7 +284,7 @@ namespace CKAN
 
         public static void DisposeInstance(GameInstance inst)
         {
-            if (registryCache.TryGetValue(inst.CkanDir(), out RegistryManager regMgr))
+            if (registryCache.TryGetValue(inst.CkanDir(), out RegistryManager? regMgr))
             {
                 regMgr.Dispose();
             }
@@ -300,6 +303,7 @@ namespace CKAN
             }
         }
 
+        [MemberNotNull(nameof(registry))]
         private void Load(RepositoryDataManager repoData)
         {
             // Our registry needs to know our game instance when upgrading from older
@@ -320,6 +324,7 @@ namespace CKAN
             log.InfoFormat("Loaded CKAN registry at {0}", path);
         }
 
+        [MemberNotNull(nameof(registry))]
         private void LoadOrCreate(RepositoryDataManager repoData)
         {
             try
@@ -354,6 +359,7 @@ namespace CKAN
             AscertainDefaultRepo();
         }
 
+        [MemberNotNull(nameof(registry))]
         private void Create()
         {
             log.InfoFormat("Creating new CKAN registry at {0}", path);
@@ -365,7 +371,7 @@ namespace CKAN
 
         private void AscertainDefaultRepo()
         {
-            if (registry.Repositories == null || registry.Repositories.Count == 0)
+            if (registry.Repositories.Count == 0)
             {
                 log.InfoFormat("Fabricating repository: {0}", gameInstance.game.DefaultRepositoryURL);
                 var name = $"{gameInstance.game.ShortName}-{Repository.default_ckan_repo_name}";
@@ -405,7 +411,7 @@ namespace CKAN
                 registry.CheckSanity();
             }
 
-            string directoryPath = Path.GetDirectoryName(path);
+            var directoryPath = Path.GetDirectoryName(path);
 
             if (directoryPath == null)
             {
@@ -490,9 +496,9 @@ namespace CKAN
                 ksp_version_min       = minAndMax.Lower.AsInclusiveLower().WithoutBuild,
                 ksp_version_max       = minAndMax.Upper.AsInclusiveUpper().WithoutBuild,
                 download_content_type = typeof(CkanModule).GetTypeInfo()
-                                            .GetDeclaredField("download_content_type")
-                                            .GetCustomAttribute<DefaultValueAttribute>()
-                                            .Value.ToString(),
+                                            ?.GetDeclaredField("download_content_type")
+                                            ?.GetCustomAttribute<DefaultValueAttribute>()
+                                            ?.Value?.ToString(),
                 release_date          = DateTime.Now,
             };
 
@@ -568,7 +574,7 @@ namespace CKAN
                                      .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
                                      .Select(absPath => gameInstance.ToRelativeGameDir(absPath))
                                      .Where(relPath => !gameInstance.game.StockFolders.Any(f => relPath.StartsWith($"{f}/")))
-                                     .GroupBy(relPath => gameInstance.DllPathToIdentifier(relPath))
+                                     .GroupBy(relPath => gameInstance.DllPathToIdentifier(relPath) ?? "")
                                      .ToDictionary(grp => grp.Key,
                                                    grp => grp.First());
                 log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values));
@@ -605,9 +611,10 @@ namespace CKAN
 
         private IEnumerable<KeyValuePair<string, ModuleVersion>> WellKnownDlcScan()
             => gameInstance.game.DlcDetectors
-                .Select(d => d.IsInstalled(gameInstance, out string identifier, out UnmanagedModuleVersion version)
+                .Select(d => d.IsInstalled(gameInstance, out string? identifier, out UnmanagedModuleVersion? version)
+                                 && identifier is not null && version is not null
                              ? new KeyValuePair<string, ModuleVersion>(identifier, version)
-                             : new KeyValuePair<string, ModuleVersion>(null,       null))
-                .Where(pair => pair.Key != null);
+                             : (KeyValuePair<string, ModuleVersion>?)null)
+                .OfType<KeyValuePair<string, ModuleVersion>>();
     }
 }

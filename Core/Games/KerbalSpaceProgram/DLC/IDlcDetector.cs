@@ -1,4 +1,5 @@
 using CKAN.Versioning;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.DLC
 {
@@ -37,7 +38,9 @@ namespace CKAN.DLC
         /// </item>
         /// </list>
         /// </returns>
-        bool IsInstalled(GameInstance inst, out string identifier, out UnmanagedModuleVersion version);
+        bool IsInstalled(GameInstance inst,
+                         [NotNullWhen(returnValue: true)] out string? identifier,
+                         [NotNullWhen(returnValue: true)] out UnmanagedModuleVersion? version);
 
         /// <summary>
         /// Path to the DLC directory relative to GameDir.

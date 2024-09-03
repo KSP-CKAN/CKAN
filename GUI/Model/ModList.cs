@@ -12,7 +12,9 @@ using System.Runtime.Versioning;
 using log4net;
 
 using CKAN.Versioning;
+#if !NET8_0_OR_GREATER
 using CKAN.Extensions;
+#endif
 using CKAN.Games;
 
 namespace CKAN.GUI
@@ -45,7 +47,7 @@ namespace CKAN.GUI
         //identifier, row
         internal Dictionary<string, DataGridViewRow> full_list_of_mod_rows = new Dictionary<string, DataGridViewRow>();
 
-        public event Action ModFiltersUpdated;
+        public event Action? ModFiltersUpdated;
         public IReadOnlyCollection<GUIMod> Modules { get; private set; } =
             new ReadOnlyCollection<GUIMod>(new List<GUIMod>());
         public bool HasAnyInstalled { get; private set; }
@@ -55,32 +57,28 @@ namespace CKAN.GUI
             => full_list_of_mod_rows.Values.Any(row => ((row.Tag as GUIMod)?.IsInstalled ?? false)
                                                        && row.Visible);
 
-        public readonly ModuleLabelList ModuleLabels = ModuleLabelList.Load(ModuleLabelList.DefaultPath)
-            ?? ModuleLabelList.GetDefaultLabels();
-
-        public readonly ModuleTagList ModuleTags = ModuleTagList.Load(ModuleTagList.DefaultPath)
-            ?? new ModuleTagList();
-
-        private List<ModSearch> activeSearches = null;
+        private List<ModSearch>? activeSearches = null;
 
         public void SetSearches(List<ModSearch> newSearches)
         {
-            if (!SearchesEqual(activeSearches, newSearches))
+            if (!SearchesEqual(activeSearches, newSearches)
+                && Main.Instance?.configuration is GUIConfiguration cfg)
             {
                 activeSearches = newSearches;
-
-                Main.Instance.configuration.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "").ToList()
-                    ?? new List<string>() { "" };
-
+                cfg.DefaultSearches = activeSearches?.Select(s => s?.Combined ?? "")
+                                                     .ToList()
+                                                    ?? new List<string>() { "" };
                 ModFiltersUpdated?.Invoke();
             }
         }
 
-        private static bool SearchesEqual(List<ModSearch> a, List<ModSearch> b)
+        private static bool SearchesEqual(List<ModSearch>? a, List<ModSearch>? b)
             => a == null ? b == null
                          : b != null && a.SequenceEqual(b);
 
-        private static string FilterName(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
+        private static string FilterName(GUIModFilter filter,
+                                         ModuleTag?   tag   = null,
+                                         ModuleLabel? label = null)
         {
             switch (filter)
             {
@@ -103,11 +101,13 @@ namespace CKAN.GUI
             return "";
         }
 
-        public static SavedSearch FilterToSavedSearch(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
+        public static SavedSearch FilterToSavedSearch(GUIModFilter filter,
+                                                      ModuleTag?   tag   = null,
+                                                      ModuleLabel? label = null)
             => new SavedSearch()
             {
                 Name   = FilterName(filter, tag, label),
-                Values = new List<string>() { new ModSearch(filter, tag, label).Combined },
+                Values = new List<string>() { new ModSearch(filter, tag, label).Combined ?? "" },
             };
 
         private static readonly RelationshipResolverOptions conflictOptions = new RelationshipResolverOptions()
@@ -181,11 +181,11 @@ namespace CKAN.GUI
             {
                 if (!changeSet.Any(ch => ch.ChangeType == GUIModChangeType.Replace
                                       && ch.Mod.identifier == dependent)
-                    && installed_modules.TryGetValue(dependent, out CkanModule depMod))
+                    && installed_modules.TryGetValue(dependent, out CkanModule? depMod)
+                    && (registry.GetModuleByVersion(depMod.identifier, depMod.version)
+                        ?? registry.InstalledModule(dependent)?.Module)
+                        is CkanModule modByVer)
                 {
-                    var modByVer = registry.GetModuleByVersion(depMod.identifier,
-                                                               depMod.version)
-                                   ?? registry.InstalledModule(dependent).Module;
                     changeSet.Add(new ModChange(modByVer, GUIModChangeType.Remove,
                                                 new SelectionReason.DependencyRemoved()));
                     modules_to_remove.Add(modByVer);
@@ -237,8 +237,8 @@ namespace CKAN.GUI
             return registry.InstalledModules
                 .Where(im => !removingIdents.Contains(im.identifier))
                 .Concat(changeSet
-                    .Where(ch => ch.ChangeType != GUIModChangeType.Remove
-                              && ch.ChangeType != GUIModChangeType.Replace)
+                    .Where(ch => ch.ChangeType is not GUIModChangeType.Remove
+                                              and not GUIModChangeType.Replace)
                     .Select(ch => new InstalledModule(
                         null,
                         (ch as ModUpgrade)?.targetMod ?? ch.Mod,
@@ -258,14 +258,14 @@ namespace CKAN.GUI
 
         private bool HiddenByTagsOrLabels(GUIMod m, string instanceName, IGame game, Registry registry)
             // "Hide" labels apply to all non-custom filters
-            => (ModuleLabels?.LabelsFor(instanceName)
-                             .Where(l => !LabelInSearches(l) && l.Hide)
-                             .Any(l => l.ContainsModule(game, m.Identifier))
-                ?? false)
-               || (registry?.Tags?.Values
-                                    .Where(t => !TagInSearches(t) && ModuleTags.HiddenTags.Contains(t.Name))
-                                    .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
-                   ?? false);
+            => (ModuleLabelList.ModuleLabels?.LabelsFor(instanceName)
+                                             .Where(l => !LabelInSearches(l) && l.Hide)
+                                             .Any(l => l.ContainsModule(game, m.Identifier))
+                                            ?? false)
+               || (registry.Tags?.Values
+                                 .Where(t => !TagInSearches(t) && ModuleTagList.ModuleTags.HiddenTags.Contains(t.Name))
+                                 .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
+                                ?? false);
 
         public int CountModsBySearches(List<ModSearch> searches)
             => Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
@@ -281,9 +281,9 @@ namespace CKAN.GUI
         /// <param name="mc">Changes the user has made</param>
         /// <returns>The mod list</returns>
         public IEnumerable<DataGridViewRow> ConstructModList(IReadOnlyCollection<GUIMod> modules,
-                                                             string                      instanceName,
+                                                             string?                     instanceName,
                                                              IGame                       game,
-                                                             IEnumerable<ModChange>      mc = null)
+                                                             IEnumerable<ModChange>?     mc = null)
         {
             Modules = modules;
             var changes = mc?.ToList();
@@ -294,14 +294,14 @@ namespace CKAN.GUI
             return full_list_of_mod_rows.Values;
         }
 
-        private DataGridViewRow MakeRow(GUIMod mod, List<ModChange> changes, string instanceName, IGame game)
+        private DataGridViewRow MakeRow(GUIMod mod, List<ModChange>? changes, string? instanceName, IGame game)
         {
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
             item.DefaultCellStyle.BackColor = GetRowBackground(mod, false, instanceName, game);
             item.DefaultCellStyle.SelectionBackColor = SelectionBlend(item.DefaultCellStyle.BackColor);
 
-            ModChange myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
+            var myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
 
             var selecting = mod.IsAutodetected
                 ? new DataGridViewTextBoxCell()
@@ -385,13 +385,15 @@ namespace CKAN.GUI
         private static string ToGridText(string text)
             => Platform.IsMono ? text.Replace("&", "&&") : text;
 
-        public Color GetRowBackground(GUIMod mod, bool conflicted, string instanceName, IGame game)
-            => conflicted ? conflictColor
-                          : Util.BlendColors(
-                              ModuleLabels.LabelsFor(instanceName)
-                                          .Where(l => l.ContainsModule(game, mod.Identifier))
-                                          .Select(l => l.Color)
-                                          .ToArray());
+        public Color GetRowBackground(GUIMod mod, bool conflicted, string? instanceName, IGame game)
+            => conflicted           ? conflictColor
+             : instanceName != null ? Util.BlendColors(
+                                          ModuleLabelList.ModuleLabels.LabelsFor(instanceName)
+                                                                      .Where(l => l.ContainsModule(game, mod.Identifier))
+                                                                      .Select(l => l.Color)
+                                                                      .OfType<Color>()
+                                                                      .ToArray())
+             : Color.Transparent;
 
         private static readonly Color conflictColor = Color.FromArgb(255, 64, 64);
 
@@ -400,10 +402,10 @@ namespace CKAN.GUI
         /// after it has been added to or removed from a label group
         /// </summary>
         /// <param name="mod">The mod that needs an update</param>
-        public DataGridViewRow ReapplyLabels(GUIMod mod, bool conflicted,
+        public DataGridViewRow? ReapplyLabels(GUIMod mod, bool conflicted,
                                              string instanceName, IGame game, Registry registry)
         {
-            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out DataGridViewRow row))
+            if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out DataGridViewRow? row))
             {
                 row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName, game);
                 row.DefaultCellStyle.SelectionBackColor = SelectionBlend(row.DefaultCellStyle.BackColor);
@@ -433,21 +435,22 @@ namespace CKAN.GUI
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
         private IEnumerable<ModChange> rowChanges(DataGridViewRow row,
-                                                  DataGridViewColumn upgradeCol,
-                                                  DataGridViewColumn replaceCol)
-            => (row.Tag as GUIMod).GetModChanges(
+                                                  DataGridViewColumn? upgradeCol,
+                                                  DataGridViewColumn? replaceCol)
+            => (row.Tag as GUIMod)?.GetModChanges(
                    upgradeCol != null && upgradeCol.Visible
                    && row.Cells[upgradeCol.Index] is DataGridViewCheckBoxCell upgradeCell
                    && (bool)upgradeCell.Value,
                    replaceCol != null && replaceCol.Visible
                    && row.Cells[replaceCol.Index] is DataGridViewCheckBoxCell replaceCell
-                   && (bool)replaceCell.Value);
+                   && (bool)replaceCell.Value)
+               ?? Enumerable.Empty<ModChange>();
 
-        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier    registry,
-                                                       GameVersionCriteria crit,
-                                                       GameInstance        instance,
-                                                       DataGridViewColumn  upgradeCol,
-                                                       DataGridViewColumn  replaceCol)
+        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier?    registry,
+                                                       GameVersionCriteria? crit,
+                                                       GameInstance?        instance,
+                                                       DataGridViewColumn?  upgradeCol,
+                                                       DataGridViewColumn?  replaceCol)
         {
             log.Debug("Computing user changeset");
             var modChanges = full_list_of_mod_rows?.Values
@@ -477,7 +480,7 @@ namespace CKAN.GUI
                     foreach (var change in upgrades)
                     {
                         change.targetMod = upgradeable.TryGetValue(change.Mod.identifier,
-                                                                   out CkanModule allowedMod)
+                                                                   out CkanModule? allowedMod)
                             // Upgrade to the version the registry says we should
                             ? allowedMod
                             // Not upgradeable!
@@ -511,12 +514,12 @@ namespace CKAN.GUI
         /// <returns>true if any mod can be updated, false otherwise</returns>
         public bool ResetHasUpdate(GameInstance              inst,
                                    IRegistryQuerier          registry,
-                                   List<ModChange>           ChangeSet,
+                                   List<ModChange>?          ChangeSet,
                                    DataGridViewRowCollection rows)
         {
             var upgGroups = registry.CheckUpgradeable(inst,
-                                                      ModuleLabels.HeldIdentifiers(inst)
-                                                                  .ToHashSet());
+                                                      ModuleLabelList.ModuleLabels.HeldIdentifiers(inst)
+                                                                                  .ToHashSet());
             var dlls = registry.InstalledDlls.ToList();
             foreach ((var upgradeable, var mods) in upgGroups)
             {
@@ -535,12 +538,12 @@ namespace CKAN.GUI
         }
 
         private void CheckRowUpgradeable(GameInstance              inst,
-                                         List<ModChange>           ChangeSet,
+                                         List<ModChange>?          ChangeSet,
                                          DataGridViewRowCollection rows,
                                          string                    ident,
                                          bool                      upgradeable)
         {
-            if (full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow row)
+            if (full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow? row)
                 && row.Tag is GUIMod gmod
                 && gmod.HasUpdate != upgradeable)
             {
@@ -569,11 +572,11 @@ namespace CKAN.GUI
         public IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
                                               RepositoryDataManager repoData,
                                               GameInstance          inst,
-                                              GUIConfiguration      config)
+                                              GUIConfiguration?     config)
             => GetGUIMods(registry, repoData, inst, inst.VersionCriteria(),
                           registry.InstalledModules.Select(im => im.identifier)
                                                    .ToHashSet(),
-                          config.HideEpochs, config.HideV);
+                          config?.HideEpochs ?? false, config?.HideV ?? false);
 
         private IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
                                                RepositoryDataManager repoData,
@@ -583,8 +586,8 @@ namespace CKAN.GUI
                                                bool                  hideEpochs,
                                                bool                  hideV)
             => registry.CheckUpgradeable(inst,
-                                         ModuleLabels.HeldIdentifiers(inst)
-                                                     .ToHashSet())
+                                         ModuleLabelList.ModuleLabels.HeldIdentifiers(inst)
+                                                                     .ToHashSet())
                        .SelectMany(kvp => kvp.Value
                                              .Select(mod => registry.IsAutodetected(mod.identifier)
                                                             ? new GUIMod(mod, repoData, registry,
@@ -593,13 +596,17 @@ namespace CKAN.GUI
                                                               {
                                                                   HasUpdate = kvp.Key,
                                                               }
-                                                            : new GUIMod(registry.InstalledModule(mod.identifier),
+                                                            : registry.InstalledModule(mod.identifier)
+                                                              is InstalledModule found
+                                                                ? new GUIMod(found,
                                                                          repoData, registry,
                                                                          versionCriteria, null,
                                                                          hideEpochs, hideV)
                                                               {
                                                                   HasUpdate = kvp.Key,
-                                                              }))
+                                                              }
+                                                              : null))
+                       .OfType<GUIMod>()
                        .Concat(registry.CompatibleModules(versionCriteria)
                                        .Where(m => !installedIdents.Contains(m.identifier))
                                        .AsParallel()

@@ -26,7 +26,7 @@ namespace CKAN
         /// <param name="writer">The object writing JSON to disk</param>
         /// <param name="value">A value to be written for this class</param>
         /// <param name="serializer">Generates output objects from tokens</param>
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
@@ -46,48 +46,44 @@ namespace CKAN
         /// <param name="existingValue">Not used</param>
         /// <param name="serializer">Generates output objects from tokens</param>
         /// <returns>Class object populated according to the renaming scheme</returns>
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            object instance = Activator.CreateInstance(objectType);
+            var instance = Activator.CreateInstance(objectType);
             JObject jo = JObject.Load(reader);
             var changes = mapping;
             foreach (JProperty jp in jo.Properties())
             {
-                if (!changes.TryGetValue(jp.Name, out string name))
+                if (!changes.TryGetValue(jp.Name, out string? name))
                 {
                     name = jp.Name;
                 }
-                PropertyInfo prop = objectType.GetTypeInfo().DeclaredProperties.FirstOrDefault(pi =>
-                    pi.CanWrite
-                    && (pi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? pi.Name) == name);
-                if (prop != null)
+                if (objectType.GetTypeInfo().DeclaredProperties.FirstOrDefault(pi =>
+                        pi.CanWrite
+                        && (pi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? pi.Name) == name) is PropertyInfo prop
+                    && GetValue(prop.GetCustomAttribute<JsonConverterAttribute>(), jp.Value, prop.PropertyType, serializer) is object obj)
                 {
-                    prop.SetValue(instance,
-                                  GetValue(prop.GetCustomAttribute<JsonConverterAttribute>(),
-                                           jp.Value, prop.PropertyType, serializer));
+                    prop.SetValue(instance, obj);
                 }
-                else
+                // No property, maybe there's a field
+                else if (objectType.GetTypeInfo().DeclaredFields.FirstOrDefault(fi =>
+                        (fi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? fi.Name) == name) is FieldInfo field
+                        && GetValue(field.GetCustomAttribute<JsonConverterAttribute>(), jp.Value, field.FieldType, serializer) is object obj2)
                 {
-                    // No property, maybe there's a field
-                    FieldInfo field = objectType.GetTypeInfo().DeclaredFields.FirstOrDefault(fi =>
-                        (fi.GetCustomAttribute<JsonPropertyAttribute>()?.PropertyName ?? fi.Name) == name);
-                    field?.SetValue(instance,
-                                    GetValue(field.GetCustomAttribute<JsonConverterAttribute>(),
-                                             jp.Value, field.FieldType, serializer));
+                    field.SetValue(instance, obj2);
                 }
             }
             return instance;
         }
 
-        private static object GetValue(JsonConverterAttribute attrib,
-                                       JToken value, Type outputType, JsonSerializer serializer)
-            => attrib != null ? ApplyConverter((JsonConverter)Activator.CreateInstance(attrib.ConverterType,
-                                                                                       attrib.ConverterParameters),
-                                               value, outputType, serializer)
-                              : value.ToObject(outputType, serializer);
+        private static object? GetValue(JsonConverterAttribute? attrib,
+                                        JToken value, Type outputType, JsonSerializer serializer)
+            => attrib != null
+               && Activator.CreateInstance(attrib.ConverterType, attrib.ConverterParameters) is JsonConverter conv
+                   ? ApplyConverter(conv, value, outputType, serializer)
+                   : value.ToObject(outputType, serializer);
 
-        private static object ApplyConverter(JsonConverter converter,
-                                             JToken value, Type outputType, JsonSerializer serializer)
+        private static object? ApplyConverter(JsonConverter converter,
+                                              JToken value, Type outputType, JsonSerializer serializer)
             => converter.CanRead ? converter.ReadJson(new JTokenReader(value),
                                                       outputType, null, serializer)
                                  : value.ToObject(outputType, serializer);

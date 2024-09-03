@@ -20,7 +20,7 @@ namespace CKAN.NetKAN.Transformers
             _game = game;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             if (metadata.Download != null)
             {

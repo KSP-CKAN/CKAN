@@ -16,10 +16,10 @@ namespace Tests.Core.Relationships
     [TestFixture]
     public class SanityChecker
     {
-        private RegistryManager manager;
-        private CKAN.Registry registry;
-        private DisposableKSP ksp;
-        private TemporaryRepositoryData repoData;
+        private RegistryManager?         manager;
+        private CKAN.Registry?           registry;
+        private DisposableKSP?           ksp;
+        private TemporaryRepositoryData? repoData;
 
         [OneTimeSetUp]
         public void Setup()
@@ -45,9 +45,9 @@ namespace Tests.Core.Relationships
         [OneTimeTearDown]
         public void TearDown()
         {
-            manager.Dispose();
-            ksp.Dispose();
-            repoData.Dispose();
+            manager?.Dispose();
+            ksp?.Dispose();
+            repoData?.Dispose();
         }
 
         [Test]
@@ -57,16 +57,10 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void Void()
-        {
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(null));
-        }
-
-        [Test]
         public void DogeCoin()
         {
             // Test with a module that depends and conflicts with nothing.
-            var mods = new List<CkanModule> {registry.LatestAvailable("DogeCoinFlag",null)};
+            var mods = new List<CkanModule?> { registry?.LatestAvailable("DogeCoinFlag", null) }.OfType<CkanModule>();
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
         }
@@ -74,14 +68,14 @@ namespace Tests.Core.Relationships
         [Test]
         public void CustomBiomes()
         {
-            var mods = new List<CkanModule> {registry.LatestAvailable("CustomBiomes", null)};
+            var mods = Enumerable.Repeat(registry?.LatestAvailable("CustomBiomes", null), 1).OfType<CkanModule>().ToList();
 
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes without data");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal",null));
+            mods.Add(registry?.LatestAvailable("CustomBiomesKerbal", null)!);
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with stock data");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesRSS",null));
+            mods.Add(registry?.LatestAvailable("CustomBiomesRSS", null)!);
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with conflicting data");
         }
 
@@ -89,23 +83,23 @@ namespace Tests.Core.Relationships
         public void CustomBiomesWithDlls()
         {
             var mods = new List<CkanModule>();
-            var dlls = new List<string> {"CustomBiomes"};
+            var dlls = new List<string> { "CustomBiomes" };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes dll by itself");
 
             // This would actually be a terrible thing for users to have, but it tests the
             // relationship we want.
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal", null));
+            mods.Add(registry?.LatestAvailable("CustomBiomesKerbal", null)!);
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes DLL, with config added");
 
-            mods.Add(registry.LatestAvailable("CustomBiomesRSS", null));
+            mods.Add(registry?.LatestAvailable("CustomBiomesRSS", null)!);
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes with conflicting data");
         }
 
         [Test]
         public void ConflictWithDll()
         {
-            var mods = new List<CkanModule> { registry.LatestAvailable("SRL", null) };
+            var mods = new List<CkanModule> { registry?.LatestAvailable("SRL", null)! };
             var dlls = new List<string> { "QuickRevert" };
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
@@ -121,17 +115,17 @@ namespace Tests.Core.Relationships
 
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "Empty list");
 
-            mods.Add(registry.LatestAvailable("DogeCoinFlag", null));
+            mods.Add(registry?.LatestAvailable("DogeCoinFlag", null)!);
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "DogeCoinFlag");
 
-            mods.Add(registry.LatestAvailable("CustomBiomes", null));
+            mods.Add(registry?.LatestAvailable("CustomBiomes", null)!);
             Assert.Contains(
                 "CustomBiomesData",
                 CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc).Select(kvp => kvp.Item2.ToString()).ToList(),
                 "Missing CustomBiomesData"
             );
 
-            mods.Add(registry.LatestAvailable("CustomBiomesKerbal", null));
+            mods.Add(registry?.LatestAvailable("CustomBiomesKerbal", null)!);
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "CBD+CBK");
 
             mods.RemoveAll(x => x.identifier == "CustomBiomes");
@@ -147,16 +141,16 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReverseDepends()
         {
-            var mods = new HashSet<CkanModule>()
+            var mods = new CkanModule?[]
             {
-                registry.LatestAvailable("CustomBiomes",       null),
-                registry.LatestAvailable("CustomBiomesKerbal", null),
-                registry.LatestAvailable("DogeCoinFlag",       null)
-            };
+                registry?.LatestAvailable("CustomBiomes",       null),
+                registry?.LatestAvailable("CustomBiomesKerbal", null),
+                registry?.LatestAvailable("DogeCoinFlag",       null)
+            }.OfType<CkanModule>().ToHashSet();
 
             // Make sure some of our expectations regarding dependencies are correct.
-            Assert.Contains("CustomBiomes", registry.LatestAvailable("CustomBiomesKerbal",null).depends.Select(x => x.ToString()).ToList());
-            Assert.Contains("CustomBiomesData", registry.LatestAvailable("CustomBiomes",null).depends.Select(x => x.ToString()).ToList());
+            Assert.Contains("CustomBiomes", registry?.LatestAvailable("CustomBiomesKerbal", null)?.depends?.Select(x => x.ToString()).ToList());
+            Assert.Contains("CustomBiomesData", registry?.LatestAvailable("CustomBiomes", null)?.depends?.Select(x => x.ToString()).ToList());
 
             // Removing DCF should only remove itself.
             var to_remove = new List<string> {"DogeCoinFlag"};
@@ -190,7 +184,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""depends"": [ {
@@ -199,7 +195,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.1.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -216,7 +214,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""depends"": [ {
@@ -225,7 +225,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -242,7 +244,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -251,7 +255,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.1.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -268,7 +274,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""depender"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -277,7 +285,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""dependency"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01""
                 }")
@@ -294,7 +304,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""self-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -302,7 +314,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""self-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""conflicts"": [ {
@@ -322,7 +336,9 @@ namespace Tests.Core.Relationships
             List<CkanModule> modules = new List<CkanModule>()
             {
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""provides-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.0.0"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""provides"":   [ ""providee"" ],
@@ -331,7 +347,9 @@ namespace Tests.Core.Relationships
                     } ]
                 }"),
                 CkanModule.FromJson(@"{
+                    ""spec_version"": 1,
                     ""identifier"": ""provides-conflictor"",
+                    ""author"":     ""modder"",
                     ""version"":    ""1.2.3"",
                     ""download"":   ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01"",
                     ""provides"":   [ ""providee"" ],
@@ -345,14 +363,14 @@ namespace Tests.Core.Relationships
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
         }
 
-        private static void TestDepends(List<string>                      to_remove,
-                                        HashSet<CkanModule>               mods,
-                                        HashSet<string>                   dlls,
-                                        Dictionary<string, ModuleVersion> dlc,
-                                        List<string>                      expected,
-                                        string                            message)
+        private static void TestDepends(List<string>                       to_remove,
+                                        HashSet<CkanModule>                mods,
+                                        HashSet<string>?                   dlls,
+                                        Dictionary<string, ModuleVersion>? dlc,
+                                        List<string>                       expected,
+                                        string                             message)
         {
-            dlls = dlls ?? new HashSet<string>();
+            dlls ??= new HashSet<string>();
 
             var remove_count = to_remove.Count;
             var dll_count = dlls.Count;

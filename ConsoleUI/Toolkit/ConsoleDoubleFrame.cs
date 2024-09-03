@@ -76,7 +76,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                 if (leftSidePad < 0 || rightSidePad < 0) {
                     leftSidePad  = 0;
                     rightSidePad = 0;
-                    title = title.Substring(0, w - 4);
+                    title = title[..(w - 4)];
                 }
                 Console.Write(new string(doubleBorder ? Symbols.horizLineDouble : Symbols.horizLine, leftSidePad));
                 Console.Write($" {title} ");

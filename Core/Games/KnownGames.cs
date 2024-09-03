@@ -17,7 +17,7 @@ namespace CKAN.Games
         /// </summary>
         /// <param name="shortName">The short name to find</param>
         /// <returns>A game object or null if none found</returns>
-        public static IGame GameByShortName(string shortName)
+        public static IGame? GameByShortName(string? shortName)
             => knownGames.FirstOrDefault(g => g.ShortName == shortName);
 
         /// <summary>

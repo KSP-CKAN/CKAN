@@ -43,7 +43,7 @@ namespace CKAN.GUI
         public bool? Value
         {
             get => YesRadioButton.Checked ? true
-                 : NoRadioButton.Checked ? (bool?)false
+                 : NoRadioButton.Checked  ? false
                  : null;
             set
             {
@@ -62,7 +62,7 @@ namespace CKAN.GUI
             }
         }
 
-        public event Action<bool?> Changed;
+        public event Action<bool?>? Changed;
 
         private RadioButton MakeRadioButton(int index, Bitmap icon, string tooltip, bool check = false)
         {
@@ -82,18 +82,20 @@ namespace CKAN.GUI
             return rb;
         }
 
-        private void RadioButtonChanged(object sender, EventArgs e)
+        private void RadioButtonChanged(object? sender, EventArgs? e)
         {
-            var butt = sender as RadioButton;
-            // Will probably fire 3 times per click, only pass along one of them
-            if (butt.Checked)
+            if (sender is RadioButton butt)
             {
-                Changed?.Invoke(Value);
-                butt.BackColor = SystemColors.Highlight;
-            }
-            else
-            {
-                butt.BackColor = DefaultBackColor;
+                // Will probably fire 3 times per click, only pass along one of them
+                if (butt.Checked)
+                {
+                    Changed?.Invoke(Value);
+                    butt.BackColor = SystemColors.Highlight;
+                }
+                else
+                {
+                    butt.BackColor = DefaultBackColor;
+                }
             }
         }
 

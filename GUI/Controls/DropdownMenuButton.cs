@@ -26,7 +26,7 @@ namespace CKAN.GUI
             Browsable(true),
             DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
         ]
-        public ContextMenuStrip Menu { get; set; }
+        public ContextMenuStrip? Menu { get; set; }
 
         /// <summary>
         /// Draw the triangle on the button

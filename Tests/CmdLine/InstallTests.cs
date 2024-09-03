@@ -76,8 +76,8 @@ namespace Tests.CmdLine
                 var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);
-                var module = regMgr.registry.GetModuleByVersion(identifier, version);
-                manager.Cache.Store(module, TestData.DogeCoinFlagZip(), null);
+                var module = regMgr.registry.GetModuleByVersion(identifier, version)!;
+                manager.Cache?.Store(module, TestData.DogeCoinFlagZip(), null);
                 var opts = new InstallOptions()
                 {
                     modules = new List<string> { $"{identifier}={version}" },

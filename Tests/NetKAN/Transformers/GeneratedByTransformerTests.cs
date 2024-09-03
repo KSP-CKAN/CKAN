@@ -24,7 +24,7 @@ namespace Tests.NetKAN.Transformers
             var transformedJson = result.Json();
 
             // Assert
-            Assert.That((string)transformedJson["x_generated_by"], Does.Contain("netkan"),
+            Assert.That((string?)transformedJson["x_generated_by"], Does.Contain("netkan"),
                 "GeneratedByTransformer should add an x_generated_by property containing the string 'netkan'"
             );
         }

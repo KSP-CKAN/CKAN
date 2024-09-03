@@ -40,7 +40,7 @@ namespace Tests.Core.Net
                         "https://archive.org/",
                      }),
             // Irrelevant settings
-            TestCase(new string[] { "api.github.com", "curseforge.com", null, "www.dropbox.com", "drive.google.com" },
+            TestCase(new string?[] { "api.github.com", "curseforge.com", null, "www.dropbox.com", "drive.google.com" },
                      new string[]
                      {
                         "https://taniwha.org/",
@@ -49,7 +49,7 @@ namespace Tests.Core.Net
                         "https://archive.org/",
                      }),
             // Prioritize one
-            TestCase(new string[] { "github.com", null },
+            TestCase(new string?[] { "github.com", null },
                      new string[]
                      {
                         "https://github.com/",
@@ -58,7 +58,7 @@ namespace Tests.Core.Net
                         "https://archive.org/",
                      }),
             // De-prioritize one
-            TestCase(new string[] { null, "spacedock.info" },
+            TestCase(new string?[] { null, "spacedock.info" },
                      new string[]
                      {
                         "https://taniwha.org/",
@@ -67,7 +67,7 @@ namespace Tests.Core.Net
                         "https://spacedock.info/",
                      }),
             // Prioritize one, de-prioritize another
-            TestCase(new string[] { "github.com", null, "spacedock.info" },
+            TestCase(new string?[] { "github.com", null, "spacedock.info" },
                      new string[]
                      {
                         "https://github.com/",

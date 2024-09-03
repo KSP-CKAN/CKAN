@@ -21,7 +21,7 @@ namespace CKAN
         /// Throws a BadMetadataKraken if passed a non-compliant string.
         /// </summary>
         /// <param name="status">Status.</param>
-        public ReleaseStatus(string status)
+        public ReleaseStatus(string? status)
         {
             switch (status)
             {

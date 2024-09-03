@@ -59,10 +59,9 @@ namespace Tests
         {
             var messages = assembly
                 .GetAsyncVoidMethods()
-                .Select(method =>
-                    string.Format("'{0}.{1}' is an async void method.",
-                        method.DeclaringType.Name,
-                        method.Name))
+                .Select(method => string.Format("'{0}.{1}' is an async void method.",
+                                                method.DeclaringType?.Name ?? "",
+                                                method.Name))
                 .ToList();
             Assert.False(messages.Any(),
                 "Async void methods found!" + Environment.NewLine + string.Join(Environment.NewLine, messages));
@@ -85,7 +84,7 @@ namespace Tests
         {
             if (assembly == null)
             {
-                throw new ArgumentNullException("assembly");
+                throw new ArgumentNullException(nameof(assembly));
             }
 
             try
@@ -94,7 +93,7 @@ namespace Tests
             }
             catch (ReflectionTypeLoadException e)
             {
-                return e.Types.Where(t => t != null);
+                return e.Types.OfType<Type>();
             }
         }
 

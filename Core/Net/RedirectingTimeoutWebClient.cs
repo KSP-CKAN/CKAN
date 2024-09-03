@@ -39,7 +39,7 @@ namespace CKAN
                 log.InfoFormat("Setting MIME type {0}", mimeType);
                 Headers.Add("Accept", mimeType);
             }
-            if (permanentRedirects.TryGetValue(address, out Uri redirUri))
+            if (permanentRedirects.TryGetValue(address, out Uri? redirUri))
             {
                 // Obey a previously received permanent redirect
                 address = redirUri;
@@ -56,17 +56,7 @@ namespace CKAN
 
         protected override WebResponse GetWebResponse(WebRequest request)
         {
-            if (request == null)
-            {
-                return null;
-            }
-
             var response = base.GetWebResponse(request);
-            if (response == null)
-            {
-                return null;
-            }
-
             if (response is HttpWebResponse hwr)
             {
                 int statusCode = (int)hwr.StatusCode;
@@ -83,7 +73,7 @@ namespace CKAN
                         Headers.Remove("Authorization");
                     }
                     // Moved or PermanentRedirect
-                    if (statusCode == 301 || statusCode == 308)
+                    if (statusCode is 301 or 308)
                     {
                         permanentRedirects.Add(request.RequestUri, redirUri);
                     }

@@ -1,5 +1,3 @@
-using System;
-
 using NUnit.Framework;
 
 using CKAN.GUI;
@@ -39,38 +37,6 @@ namespace Tests.GUI
 
             Assert.IsFalse(nav.CanNavigateBackward);
             Assert.IsFalse(nav.CanNavigateForward);
-        }
-
-        [Test]
-        public void NavigatingBackward_WhenUnable_ThrowsException()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>();
-
-            // act
-
-            TestDelegate act = () => nav.NavigateBackward();
-
-            // assert
-
-            Assert.Throws<InvalidOperationException>(act);
-        }
-
-        [Test]
-        public void NavigatingForward_WhenUnable_ThrowsException()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>();
-
-            // act
-
-            TestDelegate act = () => nav.NavigateForward();
-
-            // assert
-
-            Assert.Throws<InvalidOperationException>(act);
         }
 
         [Test]
@@ -121,7 +87,7 @@ namespace Tests.GUI
 
             // act
 
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
 
             // assert
 
@@ -141,8 +107,8 @@ namespace Tests.GUI
 
             // act
 
-            var two = nav.NavigateBackward();
-            var one = nav.NavigateBackward();
+            nav.TryGoBackward(out var two);
+            nav.TryGoBackward(out var one);
 
             // assert
 
@@ -161,13 +127,13 @@ namespace Tests.GUI
             nav.AddToHistory(2);
             nav.AddToHistory(3);
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             // act
 
-            var two = nav.NavigateForward();
-            var three = nav.NavigateForward();
+            nav.TryGoForward(out var two);
+            nav.TryGoForward(out var three);
 
             // assert
 
@@ -186,8 +152,8 @@ namespace Tests.GUI
             nav.AddToHistory(2);
             nav.AddToHistory(3);
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             // act
 
@@ -211,18 +177,18 @@ namespace Tests.GUI
             nav.AddToHistory(4);
             nav.AddToHistory(5);
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             // act
 
             nav.AddToHistory(9);
 
-            var one = nav.NavigateBackward();
+            nav.TryGoBackward(out var one);
             var navBackAfterOne = nav.CanNavigateBackward;
-            var nine = nav.NavigateForward();
+            nav.TryGoForward(out var nine);
             var navForwAfterNine = nav.CanNavigateForward;
 
             // assert
@@ -272,15 +238,15 @@ namespace Tests.GUI
 
             // act
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             var canStillNavigate = nav.CanNavigateBackward;
 
             nav.IsReadOnly = false;
 
-            var two = nav.NavigateBackward();
+            nav.TryGoBackward(out var two);
 
             // assert
 
@@ -299,22 +265,22 @@ namespace Tests.GUI
             nav.AddToHistory(2);
             nav.AddToHistory(3);
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             nav.IsReadOnly = true;
 
             // act
 
-            nav.NavigateForward();
-            nav.NavigateForward();
-            nav.NavigateForward();
+            nav.TryGoForward(out _);
+            nav.TryGoForward(out _);
+            nav.TryGoForward(out _);
 
             var canStillNavigate = nav.CanNavigateForward;
 
             nav.IsReadOnly = false;
 
-            var two = nav.NavigateForward();
+            nav.TryGoForward(out var two);
 
             // assert
 
@@ -337,7 +303,7 @@ namespace Tests.GUI
 
             // act
 
-            var zero = nav.NavigateBackward();
+            nav.TryGoBackward(out var zero);
 
             // assert
 
@@ -355,14 +321,14 @@ namespace Tests.GUI
             nav.AddToHistory(2);
             nav.AddToHistory(3);
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             nav.IsReadOnly = true;
 
             // act
 
-            var zero = nav.NavigateForward();
+            nav.TryGoForward(out var zero);
 
             // assert
 
@@ -410,7 +376,7 @@ namespace Tests.GUI
 
             // act
 
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
 
             // assert
 
@@ -429,8 +395,8 @@ namespace Tests.GUI
             nav.AddToHistory(2);
             nav.AddToHistory(3);
 
-            nav.NavigateBackward();
-            nav.NavigateBackward();
+            nav.TryGoBackward(out _);
+            nav.TryGoBackward(out _);
 
             nav.OnHistoryChange += () =>
             {
@@ -439,7 +405,7 @@ namespace Tests.GUI
 
             // act
 
-            nav.NavigateForward();
+            nav.TryGoForward(out _);
 
             // assert
 

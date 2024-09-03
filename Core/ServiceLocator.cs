@@ -11,17 +11,13 @@ namespace CKAN
     /// </summary>
     public static class ServiceLocator
     {
-        private static IContainer _container;
+        private static IContainer? _container;
         public static IContainer Container
         {
             // NB: Totally not thread-safe.
             get
             {
-                if (_container == null)
-                {
-                    Init();
-                }
-
+                _container ??= Init();
                 return _container;
             }
 
@@ -33,7 +29,7 @@ namespace CKAN
             #pragma warning restore IDE0027
         }
 
-        private static void Init()
+        private static IContainer Init()
         {
             var builder = new ContainerBuilder();
 
@@ -61,7 +57,7 @@ namespace CKAN
             builder.RegisterType<RepositoryDataManager>()
                    .SingleInstance();
 
-            _container = builder.Build();
+            return builder.Build();
         }
     }
 }

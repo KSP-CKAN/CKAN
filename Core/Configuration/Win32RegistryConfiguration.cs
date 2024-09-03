@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
-using Microsoft.Win32;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.Configuration
 {
@@ -26,12 +27,12 @@ namespace CKAN.Configuration
         private static readonly string defaultDownloadCacheDir =
             Path.Combine(CKANPathUtils.AppDataPath, "downloads");
 
-        public string DownloadCacheDir
+        public string? DownloadCacheDir
         {
             get => GetRegistryValue(@"DownloadCacheDir", defaultDownloadCacheDir);
             set
             {
-                if (string.IsNullOrEmpty(value))
+                if (value == null || string.IsNullOrEmpty(value))
                 {
                     DeleteRegistryValue(@"DownloadCacheDir");
                 }
@@ -50,8 +51,8 @@ namespace CKAN.Configuration
         {
             get
             {
-                string val = GetRegistryValue<string>(@"CacheSizeLimit", null);
-                return string.IsNullOrEmpty(val) ? null : (long?)Convert.ToInt64(val);
+                var val = GetRegistryValue<string?>(@"CacheSizeLimit", null);
+                return string.IsNullOrEmpty(val) ? null : Convert.ToInt64(val);
             }
             set
             {
@@ -84,7 +85,7 @@ namespace CKAN.Configuration
 
         private int InstanceCount => GetRegistryValue(@"KSPInstanceCount", 0);
 
-        public string AutoStartInstance
+        public string? AutoStartInstance
         {
             get => GetRegistryValue(@"KSPAutoStartInstance", "");
             #pragma warning disable IDE0027
@@ -92,12 +93,12 @@ namespace CKAN.Configuration
             #pragma warning restore IDE0027
         }
 
-        public string Language
+        public string? Language
         {
-            get => GetRegistryValue<string>("Language", null);
+            get => GetRegistryValue<string?>("Language", null);
             set
             {
-                if (Utilities.AvailableLanguages.Contains(value))
+                if (value != null && Utilities.AvailableLanguages.Contains(value))
                 {
                     SetRegistryValue("Language", value);
                 }
@@ -130,11 +131,10 @@ namespace CKAN.Configuration
         }
 
         public IEnumerable<Tuple<string, string, string>> GetInstances()
-        {
-            return Enumerable.Range(0, InstanceCount).Select(GetInstance).ToList();
-        }
+            => Enumerable.Range(0, InstanceCount).Select(GetInstance).ToList();
 
-        public bool TryGetAuthToken(string host, out string token)
+        public bool TryGetAuthToken(string host,
+                                    [NotNullWhen(returnValue: true)] out string? token)
         {
             try
             {
@@ -152,19 +152,19 @@ namespace CKAN.Configuration
 
         public IEnumerable<string> GetAuthTokenHosts()
         {
-            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix);
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix);
             return key?.GetValueNames() ?? Array.Empty<string>();
         }
 
-        public void SetAuthToken(string host, string token)
+        public void SetAuthToken(string host, string? token)
         {
             ConstructKey(authTokenKeyNoPrefix);
             if (!string.IsNullOrEmpty(host))
             {
                 if (string.IsNullOrEmpty(token))
                 {
-                    RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix, true);
-                    key.DeleteValue(host);
+                    var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(authTokenKeyNoPrefix, true);
+                    key?.DeleteValue(host);
                 }
                 else
                 {
@@ -176,12 +176,12 @@ namespace CKAN.Configuration
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
-        public string[] GlobalInstallFilters { get; set; }
+        public string[] GlobalInstallFilters { get; set; } = new string[] { };
 
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
-        public string[] PreferredHosts { get; set; }
+        public string?[] PreferredHosts { get; set; } = new string?[] { };
 
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
@@ -190,7 +190,7 @@ namespace CKAN.Configuration
 
         public static bool DoesRegistryConfigurationExist()
         {
-            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX);
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX);
             return key != null;
         }
 
@@ -207,12 +207,12 @@ namespace CKAN.Configuration
             int firstBackslash = keyname.IndexOf(@"\");
             return firstBackslash < 0
                 ? keyname
-                : keyname.Substring(1 + firstBackslash);
+                : keyname[(1 + firstBackslash)..];
         }
 
         private static void ConstructKey(string whichKey)
         {
-            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(whichKey);
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(whichKey);
             if (key == null)
             {
                 Microsoft.Win32.Registry.CurrentUser.CreateSubKey(whichKey);
@@ -235,20 +235,20 @@ namespace CKAN.Configuration
             SetRegistryValue(@"KSPInstancePath_" + instanceIndex, ksp.GameDir());
         }
 
-        private static void SetRegistryValue<T>(string key, T value)
+        private static void SetRegistryValue<T>(string key, T value) where T: notnull
         {
             Microsoft.Win32.Registry.SetValue(CKAN_KEY, key, value);
         }
 
         private static T GetRegistryValue<T>(string key, T defaultValue)
-        {
-            return (T)Microsoft.Win32.Registry.GetValue(CKAN_KEY, key, defaultValue);
-        }
+            => Microsoft.Win32.Registry.GetValue(CKAN_KEY, key, null) is T v
+                ? v
+                : defaultValue;
 
         private static void DeleteRegistryValue(string name)
         {
-            RegistryKey key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX, true);
-            key.DeleteValue(name, false);
+            var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(CKAN_KEY_NO_PREFIX, true);
+            key?.DeleteValue(name, false);
         }
     }
 }

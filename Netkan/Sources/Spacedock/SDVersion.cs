@@ -13,15 +13,15 @@ namespace CKAN.NetKAN.Sources.Spacedock
 
         [JsonConverter(typeof(JsonConvertGameVersion))]
         [JsonProperty("game_version")]
-        public GameVersion KSP_version;
+        public GameVersion? KSP_version;
 
-        public string changelog;
+        public string? changelog;
         public DateTime? created;
 
         [JsonConverter(typeof(JsonConvertFromRelativeSdUri))]
-        public Uri download_path;
+        public Uri? download_path;
 
-        public ModuleVersion friendly_version;
+        public ModuleVersion? friendly_version;
         public int id;
 
         /// <summary>
@@ -32,8 +32,8 @@ namespace CKAN.NetKAN.Sources.Spacedock
         /// </summary>
         internal class JsonConvertGameVersion : JsonConverter
         {
-            public override object ReadJson(
-                JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer
+            public override object? ReadJson(
+                JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer
             )
             {
                 if (reader.Value == null)
@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
                     return null;
                 }
 
-                string raw_version = reader.Value.ToString();
+                var raw_version = reader.Value.ToString();
 
                 return GameVersion.Parse(ExpandVersionIfNeeded(raw_version));
             }
@@ -49,9 +49,9 @@ namespace CKAN.NetKAN.Sources.Spacedock
             /// <summary>
             /// Actually expand the KSP version. It's way easier to test this than the override. :)
             /// </summary>
-            public static string ExpandVersionIfNeeded(string version)
+            public static string? ExpandVersionIfNeeded(string? version)
             {
-                if (Regex.IsMatch(version, @"^\d+\.\d+$"))
+                if (Regex.IsMatch(version ?? "", @"^\d+\.\d+$"))
                 {
                     // Two part string, add our .0
                     return version + ".0";
@@ -60,7 +60,7 @@ namespace CKAN.NetKAN.Sources.Spacedock
                 return version;
             }
 
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
             {
                 throw new NotImplementedException();
             }

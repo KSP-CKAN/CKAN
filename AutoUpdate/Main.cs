@@ -4,6 +4,9 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * CKAN AUTO-UPDATE TOOL
@@ -145,7 +148,7 @@ namespace CKAN.AutoUpdateHelper
                 {
                     UseShellExecute = false
                 });
-                permsprocess.WaitForExit();
+                permsprocess?.WaitForExit();
             }
         }
 
@@ -158,8 +161,17 @@ namespace CKAN.AutoUpdateHelper
         /// <summary>
         /// Are we on Windows?
         /// </summary>
-        private static bool IsOnWindows
-            => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        #if NET6_0_OR_GREATER
+        [SupportedOSPlatformGuard("windows")]
+        #endif
+        private static readonly bool IsOnWindows
+            = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+
+        #if NET8_0_OR_GREATER
+        [SupportedOSPlatformGuard("windows6.1")]
+        private static readonly bool IsOnWindows61
+            = IsOnWindows && OperatingSystem.IsWindowsVersionAtLeast(6, 1);
+        #endif
 
         /// <summary>
         /// Display unexpected exceptions to user
@@ -179,11 +191,20 @@ namespace CKAN.AutoUpdateHelper
         {
             string err = string.Format(message, args);
             Console.Error.WriteLine(err);
-            if (fromGui)
+            #if NETFRAMEWORK || WINDOWS
+            if (
+                #if NET8_0_OR_GREATER
+                IsOnWindows61 &&
+                #endif
+                fromGui)
             {
                 // Show a popup in case the console isn't open
-                MessageBox.Show(err, Properties.Resources.FatalErrorTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(err,
+                                Properties.Resources.FatalErrorTitle,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
             }
+            #endif
         }
 
         private const  int  maxRetries = 8;

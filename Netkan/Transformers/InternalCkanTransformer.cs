@@ -29,9 +29,10 @@ namespace CKAN.NetKAN.Transformers
             _game = game;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (metadata.Download != null)
+            if (metadata.Download != null
+                && _http.DownloadModule(metadata) is string contents)
             {
                 var json = metadata.Json();
 
@@ -39,10 +40,9 @@ namespace CKAN.NetKAN.Transformers
                 // Set it to a default if missing so CkanModule can initialize.
                 var moduleJson = metadata.Json();
                 moduleJson.SafeAdd("version", "1");
-                CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
+                CkanModule   mod  = CkanModule.FromJson(moduleJson.ToString());
                 GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
-
-                var internalJson = _moduleService.GetInternalCkan(mod, _http.DownloadModule(metadata), inst);
+                var internalJson = _moduleService.GetInternalCkan(mod, contents, inst);
 
                 if (internalJson != null)
                 {

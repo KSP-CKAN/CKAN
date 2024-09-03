@@ -27,9 +27,11 @@ namespace CKAN
                                                   File.OpenRead(Path.Combine(libraryPath,
                                                                              "config",
                                                                              "libraryfolders.vdf")))
-                                             .Select(lf => appRelPaths.Select(p => Path.Combine(lf.Path, p))
-                                                                      .FirstOrDefault(Directory.Exists))
-                                             .Where(p => p != null)
+                                             .Select(lf => lf.Path is string libPath
+                                                           ? appRelPaths.Select(p => Path.Combine(libPath, p))
+                                                                        .FirstOrDefault(Directory.Exists)
+                                                           : null)
+                                             .OfType<string>()
                                              .ToArray();
                 var steamGames    = appPaths.SelectMany(p => LibraryPathGames(txtParser, p));
                 var binParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Binary);
@@ -47,7 +49,7 @@ namespace CKAN
         }
 
         public IEnumerable<Uri> GameAppURLs(DirectoryInfo gameDir)
-            => Games.Where(g => gameDir.FullName.Equals(g.GameDir.FullName, Platform.PathComparison))
+            => Games.Where(g => gameDir.FullName.Equals(g.GameDir?.FullName, Platform.PathComparison))
                     .Select(g => g.LaunchUrl);
 
         public readonly GameBase[] Games;
@@ -65,11 +67,14 @@ namespace CKAN
 
         private const string registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
         private const string registryValue = @"SteamPath";
-        private static string[] SteamPaths
-            => Platform.IsWindows ? new string[]
+        private static string?[] SteamPaths
+            => Platform.IsWindows
+               // First check the registry
+               && Microsoft.Win32.Registry.GetValue(registryKey, registryValue, "") is string val
+               && !string.IsNullOrEmpty(val)
+            ? new string[]
             {
-                // First check the registry
-                (string)Microsoft.Win32.Registry.GetValue(registryKey, registryValue, null),
+                val,
             }
             : Platform.IsUnix ? new string[]
             {
@@ -92,31 +97,34 @@ namespace CKAN
 
     public class LibraryFolder
     {
-        [KVProperty("path")] public string Path { get; set; }
+        [KVProperty("path")] public string? Path { get; set; }
     }
 
     public abstract class GameBase
     {
-        public abstract string Name { get; set; }
+        public abstract string? Name { get; set; }
 
-        [KVIgnore] public          DirectoryInfo GameDir   { get; set; }
-        [KVIgnore] public abstract Uri           LaunchUrl { get;      }
+        [KVIgnore] public          DirectoryInfo? GameDir   { get; set; }
+        [KVIgnore] public abstract Uri            LaunchUrl { get;      }
 
         public abstract GameBase NormalizeDir(string appPath);
     }
 
     public class SteamGame : GameBase
     {
-        [KVProperty("appid")]      public          ulong  AppId      { get; set; }
-        [KVProperty("name")]       public override string Name       { get; set; }
-        [KVProperty("installdir")] public          string InstallDir { get; set; }
+        [KVProperty("appid")]      public          ulong   AppId      { get; set; }
+        [KVProperty("name")]       public override string? Name       { get; set; }
+        [KVProperty("installdir")] public          string? InstallDir { get; set; }
 
         [KVIgnore]
         public override Uri LaunchUrl => new Uri($"steam://rungameid/{AppId}");
 
         public override GameBase NormalizeDir(string commonPath)
         {
-            GameDir = new DirectoryInfo(CKANPathUtils.NormalizePath(Path.Combine(commonPath, InstallDir)));
+            if (InstallDir != null)
+            {
+                GameDir = new DirectoryInfo(CKANPathUtils.NormalizePath(Path.Combine(commonPath, InstallDir)));
+            }
             return this;
         }
     }
@@ -124,11 +132,11 @@ namespace CKAN
     public class NonSteamGame : GameBase
     {
         [KVProperty("appid")]
-        public          int    AppId    { get; set; }
+        public          int     AppId    { get; set; }
         [KVProperty("AppName")]
-        public override string Name     { get; set; }
-        public          string Exe      { get; set; }
-        public          string StartDir { get; set; }
+        public override string? Name     { get; set; }
+        public          string? Exe      { get; set; }
+        public          string? StartDir { get; set; }
 
         [KVIgnore]
         private ulong UrlId => (unchecked((ulong)AppId) << 32) | 0x02000000;
@@ -138,7 +146,8 @@ namespace CKAN
 
         public override GameBase NormalizeDir(string appPath)
         {
-            GameDir = new DirectoryInfo(CKANPathUtils.NormalizePath(StartDir.Trim('"')));
+            GameDir = StartDir == null ? null
+                                       : new DirectoryInfo(CKANPathUtils.NormalizePath(StartDir.Trim('"')));
             return this;
         }
     }

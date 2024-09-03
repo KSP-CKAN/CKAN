@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Transactions;
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 using ChinhDo.Transactions.FileManager;
@@ -27,11 +28,11 @@ namespace CKAN
         /// It is initialized during the startup with a ConsoleUser,
         /// do not use in functions that could be called by the GUI.
         /// </summary>
-        public IUser User { get; set; }
-        public IConfiguration Configuration { get; set; }
-        public GameInstance CurrentInstance { get; set; }
+        public IUser          User            { get; set; }
+        public IConfiguration Configuration   { get; set; }
+        public GameInstance?  CurrentInstance { get; set; }
 
-        public NetModuleCache Cache { get; private set; }
+        public NetModuleCache? Cache { get; private set; }
 
         public readonly SteamLibrary SteamLibrary = new SteamLibrary();
 
@@ -44,14 +45,15 @@ namespace CKAN
             .Distinct()
             .ToArray();
 
-        public string AutoStartInstance
+        public string? AutoStartInstance
         {
-            get => HasInstance(Configuration.AutoStartInstance)
-                ? Configuration.AutoStartInstance
-                : null;
+            get => Configuration.AutoStartInstance != null && HasInstance(Configuration.AutoStartInstance)
+                       ? Configuration.AutoStartInstance
+                       : null;
+
             private set
             {
-                if (!string.IsNullOrEmpty(value) && !HasInstance(value))
+                if (value != null && !string.IsNullOrEmpty(value) && !HasInstance(value))
                 {
                     throw new InvalidKSPInstanceKraken(value);
                 }
@@ -61,7 +63,7 @@ namespace CKAN
 
         public SortedList<string, GameInstance> Instances => new SortedList<string, GameInstance>(instances);
 
-        public GameInstanceManager(IUser user, IConfiguration configuration = null)
+        public GameInstanceManager(IUser user, IConfiguration? configuration = null)
         {
             User = user;
             Configuration = configuration ?? ServiceLocator.Container.Resolve<IConfiguration>();
@@ -84,14 +86,14 @@ namespace CKAN
         ///
         /// Returns null if we have multiple instances, but none of them are preferred.
         /// </summary>
-        public GameInstance GetPreferredInstance()
+        public GameInstance? GetPreferredInstance()
         {
             CurrentInstance = _GetPreferredInstance();
             return CurrentInstance;
         }
 
         // Actual worker for GetPreferredInstance()
-        internal GameInstance _GetPreferredInstance()
+        internal GameInstance? _GetPreferredInstance()
         {
             foreach (IGame game in KnownGames.knownGames)
             {
@@ -99,7 +101,7 @@ namespace CKAN
 
                 // First check if we're part of a portable install
                 // Note that this *does not* register in the config.
-                string path = GameInstance.PortableDir(game);
+                string? path = GameInstance.PortableDir(game);
 
                 if (path != null)
                 {
@@ -121,8 +123,9 @@ namespace CKAN
             // Return the autostart, if we can find it.
             // We check both null and "" as we can't write NULL to the config, so we write an empty string instead
             // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the config!
-            if (!string.IsNullOrEmpty(AutoStartInstance)
-                    && instances[AutoStartInstance].Valid)
+            if (AutoStartInstance != null
+                && !string.IsNullOrEmpty(AutoStartInstance)
+                && instances[AutoStartInstance].Valid)
             {
                 return instances[AutoStartInstance];
             }
@@ -140,7 +143,7 @@ namespace CKAN
         ///
         /// Returns the resulting game instance if found.
         /// </summary>
-        public GameInstance FindAndRegisterDefaultInstances()
+        public GameInstance? FindAndRegisterDefaultInstances()
         {
             if (instances.Any())
             {
@@ -163,12 +166,15 @@ namespace CKAN
                                         .Select(sg => new { name = sg.Name, dir = sg.GameDir })
                                         .Append(new
                                                 {
-                                                    name = string.Format(Properties.Resources.GameInstanceManagerAuto,
+                                                    name = (string?)string.Format(Properties.Resources.GameInstanceManagerAuto,
                                                                          g.ShortName),
                                                     dir  = g.MacPath(),
                                                 })
-                                        .Where(obj => obj.dir != null && g.GameInFolder(obj.dir))
-                                        .Select(obj => new GameInstance(g, obj.dir.FullName, obj.name, User)))
+                                        .Select(obj => obj.dir != null && g.GameInFolder(obj.dir)
+                                                       ? new GameInstance(g, obj.dir.FullName,
+                                                                          obj.name ?? g.ShortName, User)
+                                                       : null)
+                                        .OfType<GameInstance>())
                                   .Where(inst => inst.Valid)
                                   .ToArray();
             foreach (var group in found.GroupBy(inst => inst.Name))
@@ -222,7 +228,7 @@ namespace CKAN
         /// <param name="user">IUser object for interaction</param>
         /// <returns>The resulting GameInstance object</returns>
         /// <exception cref="NotKSPDirKraken">Thrown if the instance is not a valid game instance.</exception>
-        public GameInstance AddInstance(string path, string name, IUser user)
+        public GameInstance? AddInstance(string path, string name, IUser user)
         {
             var game = DetermineGame(new DirectoryInfo(path), user);
             return game == null ? null : AddInstance(new GameInstance(game, path, name, user));
@@ -275,7 +281,7 @@ namespace CKAN
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
         /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if a write operation didn't complete for whatever reason.</exception>
         public void FakeInstance(IGame game, string newName, string newPath, GameVersion version,
-                                 Dictionary<DLC.IDlcDetector, GameVersion> dlcs = null)
+                                 Dictionary<DLC.IDlcDetector, GameVersion>? dlcs = null)
         {
             TxFileManager fileMgr = new TxFileManager();
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
@@ -479,7 +485,7 @@ namespace CKAN
             }
         }
 
-        public GameInstance InstanceAt(string path)
+        public GameInstance? InstanceAt(string path)
         {
             var matchingGames = KnownGames.knownGames
                 .Where(g => g.GameInFolder(new DirectoryInfo(path)))
@@ -554,7 +560,7 @@ namespace CKAN
 
         private void LoadCacheSettings()
         {
-            if (!Directory.Exists(Configuration.DownloadCacheDir))
+            if (Configuration.DownloadCacheDir != null && !Directory.Exists(Configuration.DownloadCacheDir))
             {
                 try
                 {
@@ -564,11 +570,14 @@ namespace CKAN
                 {
                     // Can't create the configured directory, try reverting it to the default
                     Configuration.DownloadCacheDir = null;
-                    Directory.CreateDirectory(Configuration.DownloadCacheDir);
+                    if (Configuration.DownloadCacheDir is not null)
+                    {
+                        Directory.CreateDirectory(Configuration.DownloadCacheDir);
+                    }
                 }
             }
 
-            if (!TrySetupCache(Configuration.DownloadCacheDir, out string failReason))
+            if (!TrySetupCache(Configuration.DownloadCacheDir, out string? failReason))
             {
                 log.ErrorFormat("Cache not found at configured path {0}: {1}", Configuration.DownloadCacheDir, failReason);
                 // Fall back to default path to minimize chance of ending up in an invalid state at startup
@@ -584,12 +593,13 @@ namespace CKAN
         /// <returns>
         /// true if successful, false otherwise
         /// </returns>
-        public bool TrySetupCache(string path, out string failureReason)
+        public bool TrySetupCache(string? path,
+                                  [NotNullWhen(returnValue: false)] out string? failureReason)
         {
-            string origPath = Configuration.DownloadCacheDir;
+            var origPath = Configuration.DownloadCacheDir;
             try
             {
-                if (string.IsNullOrEmpty(path))
+                if (path == null || string.IsNullOrEmpty(path))
                 {
                     Configuration.DownloadCacheDir = "";
                     Cache = new NetModuleCache(this, Configuration.DownloadCacheDir);
@@ -646,7 +656,7 @@ namespace CKAN
         /// <param name="user">IUser object for interaction</param>
         /// <returns>An instance of the matching game or null if the user cancelled</returns>
         /// <exception cref="NotKSPDirKraken">Thrown when no games found</exception>
-        public IGame DetermineGame(DirectoryInfo path, IUser user)
+        public IGame? DetermineGame(DirectoryInfo path, IUser user)
         {
             var matchingGames = KnownGames.knownGames.Where(g => g.GameInFolder(path)).ToList();
             switch (matchingGames.Count)

@@ -8,7 +8,8 @@ namespace CKAN.NetKAN.Validators
         public void Validate(Metadata metadata)
         {
             var json = metadata.Json();
-            if (metadata.SpecVersion < v1p26 && json.ContainsKey("replaced_by"))
+            if (metadata.SpecVersion != null
+                && metadata.SpecVersion < v1p26 && json.ContainsKey("replaced_by"))
             {
                 throw new Kraken("spec_version v1.26+ required for 'replaced_by'");
             }

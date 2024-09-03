@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 
 using CommandLine;
 
+using CKAN.Versioning;
+
 namespace CKAN.CmdLine
 {
     public class Search : ICommand
@@ -30,8 +32,8 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            List<CkanModule> matching_compatible = PerformSearch(ksp, options.search_term, options.author_term, false);
-            List<CkanModule> matching_incompatible = new List<CkanModule>();
+            var matching_compatible = PerformSearch(ksp, options.search_term, options.author_term, false);
+            var matching_incompatible = new List<CkanModule>();
             if (options.all)
             {
                 matching_incompatible = PerformSearch(ksp, options.search_term, options.author_term, true);
@@ -41,34 +43,35 @@ namespace CKAN.CmdLine
             if (options.all && !string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFoundByAuthorWithIncompat,
-                    matching_compatible.Count().ToString(),
-                    matching_incompatible.Count().ToString(),
-                    options.search_term,
-                    options.author_term);
+                                  matching_compatible.Count.ToString(),
+                                  matching_incompatible.Count.ToString(),
+                                  options.search_term ?? "",
+                                  options.author_term ?? "");
             }
             else if (options.all && string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFoundWithIncompat,
-                    matching_compatible.Count().ToString(),
-                    matching_incompatible.Count().ToString(),
-                    options.search_term);
+                                  matching_compatible.Count.ToString(),
+                                  matching_incompatible.Count.ToString(),
+                                  options.search_term ?? "");
             }
             else if (!options.all && !string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFoundByAuthor,
-                    matching_compatible.Count().ToString(),
-                    options.search_term,
-                    options.author_term);
+                                  matching_compatible.Count.ToString(),
+                                  options.search_term ?? "",
+                                  options.author_term ?? "");
             }
             else if (!options.all && string.IsNullOrWhiteSpace(options.author_term))
             {
                 user.RaiseMessage(Properties.Resources.SearchFound,
-                    matching_compatible.Count().ToString(),
-                    options.search_term);
+                                  matching_compatible.Count.ToString(),
+                                  options.search_term ?? "");
             }
 
             // Present the results.
-            if (!matching_compatible.Any() && (!options.all || !matching_incompatible.Any()))
+            if (!matching_compatible.Any()
+                && (!options.all || !matching_incompatible.Any()))
             {
                 return Exit.OK;
             }
@@ -79,11 +82,11 @@ namespace CKAN.CmdLine
                 foreach (CkanModule mod in matching_compatible)
                 {
                     user.RaiseMessage(Properties.Resources.SearchCompatibleMod,
-                        mod.identifier,
-                        mod.version,
-                        mod.name,
-                        mod.author == null ? "N/A" : string.Join(", ", mod.author),
-                        mod.@abstract);
+                                      mod.identifier,
+                                      mod.version,
+                                      mod.name,
+                                      mod.author == null ? "N/A" : string.Join(", ", mod.author),
+                                      mod.@abstract);
                 }
 
                 if (matching_incompatible.Any())
@@ -92,12 +95,15 @@ namespace CKAN.CmdLine
                     foreach (CkanModule mod in matching_incompatible)
                     {
                         CkanModule.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
-                        string GameVersion = Versioning.GameVersionRange.VersionSpan(ksp.game, minKsp, maxKsp).ToString();
+                        var gv = GameVersionRange.VersionSpan(ksp.game,
+                                                              minKsp ?? GameVersion.Any,
+                                                              maxKsp ?? GameVersion.Any)
+                                                 .ToString();
 
                         user.RaiseMessage(Properties.Resources.SearchIncompatibleMod,
                             mod.identifier,
                             mod.version,
-                            GameVersion,
+                            gv,
                             mod.name,
                             mod.author == null ? "N/A" : string.Join(", ", mod.author),
                             mod.@abstract);
@@ -127,7 +133,10 @@ namespace CKAN.CmdLine
         /// <param name="term">The search term. Case insensitive.</param>
         /// <param name="author">Name of author to find</param>
         /// <param name="searchIncompatible">True to look for incompatible modules, false (default) to look for compatible</param>
-        public List<CkanModule> PerformSearch(CKAN.GameInstance ksp, string term, string author = null, bool searchIncompatible = false)
+        public List<CkanModule> PerformSearch(CKAN.GameInstance ksp,
+                                              string?           term,
+                                              string?           author             = null,
+                                              bool              searchIncompatible = false)
         {
             // Remove spaces and special characters from the search term.
             term   = string.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
@@ -167,9 +176,9 @@ namespace CKAN.CmdLine
         private static string CaseInsensitiveExactMatch(List<CkanModule> mods, string module)
         {
             // Look for a matching mod with a case insensitive search
-            CkanModule found = mods.FirstOrDefault(
-                (CkanModule m) => string.Equals(m.identifier, module, StringComparison.OrdinalIgnoreCase)
-            );
+            var found = mods.FirstOrDefault(m => string.Equals(m.identifier,
+                                                               module,
+                                                               StringComparison.OrdinalIgnoreCase));
             // If we don't find anything, use the original string so the main code can raise errors
             return found?.identifier ?? module;
         }
@@ -214,10 +223,10 @@ namespace CKAN.CmdLine
         public bool all { get; set; }
 
         [Option("author", HelpText = "Limit search results to mods by matching authors")]
-        public string author_term { get; set; }
+        public string? author_term { get; set; }
 
         [ValueOption(0)]
-        public string search_term { get; set; }
+        public string? search_term { get; set; }
     }
 
 }

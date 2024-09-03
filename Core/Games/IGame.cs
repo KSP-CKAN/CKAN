@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
@@ -17,8 +18,8 @@ namespace CKAN.Games
         DateTime FirstReleaseDate { get; }
 
         // Where are we?
-        bool          GameInFolder(DirectoryInfo where);
-        DirectoryInfo MacPath();
+        bool           GameInFolder(DirectoryInfo where);
+        DirectoryInfo? MacPath();
 
         // What do we contain?
         string         PrimaryModDirectoryRelative     { get; }
@@ -30,10 +31,10 @@ namespace CKAN.Games
         string[]       CreateableDirs     { get; }
         string[]       AutoRemovableDirs  { get; }
         bool           IsReservedDirectory(GameInstance inst, string path);
-        bool           AllowInstallationIn(string name, out string path);
+        bool           AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path);
         void           RebuildSubdirectories(string absGameRoot);
         string[]       DefaultCommandLines(SteamLibrary steamLib, DirectoryInfo path);
-        string[]       AdjustCommandLine(string[] args, GameVersion installedVersion);
+        string[]       AdjustCommandLine(string[] args, GameVersion? installedVersion);
         IDlcDetector[] DlcDetectors { get; }
 
         // Which versions exist and which is present?
@@ -41,7 +42,7 @@ namespace CKAN.Games
         List<GameVersion> KnownVersions { get; }
         GameVersion[]     EmbeddedGameVersions { get; }
         GameVersion[]     ParseBuildsJson(JToken json);
-        GameVersion       DetectVersion(DirectoryInfo where);
+        GameVersion?      DetectVersion(DirectoryInfo where);
         string            CompatibleVersionsFile { get; }
         string[]          InstanceAnchorFiles { get; }
 

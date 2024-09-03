@@ -10,7 +10,7 @@ namespace CKAN.Versioning
     {
         private readonly List<GameVersion> _versions = new List<GameVersion>();
 
-        public GameVersionCriteria(GameVersion v)
+        public GameVersionCriteria(GameVersion? v)
         {
             if (v != null)
             {
@@ -18,7 +18,7 @@ namespace CKAN.Versioning
             }
         }
 
-        public GameVersionCriteria(GameVersion v, List<GameVersion> compatibleVersions)
+        public GameVersionCriteria(GameVersion? v, List<GameVersion> compatibleVersions)
         {
             if (v != null)
             {
@@ -41,11 +41,11 @@ namespace CKAN.Versioning
         public GameVersionCriteria Union(GameVersionCriteria other)
             => new GameVersionCriteria(null, _versions.Union(other.Versions).ToList());
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => Equals(obj as GameVersionCriteria);
 
         // From IEquatable<GameVersionCriteria>
-        public bool Equals(GameVersionCriteria other)
+        public bool Equals(GameVersionCriteria? other)
             => other != null && !_versions.Except(other._versions).Any()
                              && !other._versions.Except(_versions).Any();
 

@@ -46,7 +46,7 @@ namespace Tests.Core.Registry
         /// </summary>
         private bool TestLock(string path)
         {
-            FileStream lockfileStream = null;
+            FileStream? lockfileStream = null;
 
             try
             {
@@ -213,6 +213,7 @@ namespace Tests.Core.Registry
                 registry.RegisterModule(CkanModule.FromJson(@"{
                                             ""spec_version"": ""v1.4"",
                                             ""identifier"":   ""InstalledMod"",
+                                            ""author"":       ""InstalledModder"",
                                             ""version"":      ""1.0"",
                                             ""download"":     ""https://github.com/""
                                         }"),

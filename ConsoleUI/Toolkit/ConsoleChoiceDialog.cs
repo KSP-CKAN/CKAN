@@ -12,13 +12,14 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Initialize the Dialog
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="m">Message to show</param>
         /// <param name="hdr">Text for column header of list box</param>
         /// <param name="c">List of objects to put in the list box</param>
         /// <param name="renderer">Function to generate text for each option</param>
         /// <param name="comparer">Optional function to sort the rows</param>
-        public ConsoleChoiceDialog(string m, string hdr, List<ChoiceT> c, Func<ChoiceT, string> renderer, Comparison<ChoiceT> comparer = null)
-            : base()
+        public ConsoleChoiceDialog(ConsoleTheme theme, string m, string hdr, List<ChoiceT> c, Func<ChoiceT, string> renderer, Comparison<ChoiceT>? comparer = null)
+            : base(theme)
         {
             int l = GetLeft(),
                 r = GetRight();
@@ -34,7 +35,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             SetDimensions(l, t, r, b);
 
             // Wrapped message at top
-            ConsoleTextBox tb = new ConsoleTextBox(
+            var tb = new ConsoleTextBox(
                 l + 2, t + 2, r - 2, t + 2 + msgLines.Count - 1,
                 false,
                 TextAlign.Left,
@@ -49,23 +50,18 @@ namespace CKAN.ConsoleUI.Toolkit {
                 l + 2, t + 2 + msgLines.Count + 1, r - 2, b - 2,
                 c,
                 new List<ConsoleListBoxColumn<ChoiceT>>() {
-                    new ConsoleListBoxColumn<ChoiceT>() {
-                        Header   = hdr,
-                        Width    = null,
-                        Renderer = renderer,
-                        Comparer = comparer
-                    }
+                    new ConsoleListBoxColumn<ChoiceT>(hdr, renderer, comparer, null)
                 },
                 0, 0, ListSortDirection.Ascending
             );
 
             choices.AddTip(Properties.Resources.Enter, Properties.Resources.Accept);
-            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            choices.AddBinding(Keys.Enter, (object sender) => {
                 return false;
             });
 
             choices.AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            choices.AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            choices.AddBinding(Keys.Escape, (object sender) => {
                 cancelled = true;
                 return false;
             });
@@ -76,14 +72,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Display the dialog and handle its interaction
         /// </summary>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
         /// <returns>
         /// Row user selected
         /// </returns>
-        public new ChoiceT Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
+        public new ChoiceT? Run(Action? process = null)
         {
-            base.Run(theme, process);
+            base.Run(process);
             return cancelled ? default : choices.Selection;
         }
 

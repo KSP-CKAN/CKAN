@@ -17,15 +17,16 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(VersionedOverrideTransformer));
 
-        private readonly HashSet<string> _before;
-        private readonly HashSet<string> _after;
+        private readonly List<string?> _before;
+        private readonly List<string?> _after;
 
         public string Name => "versioned_override";
 
-        public VersionedOverrideTransformer(IEnumerable<string> before, IEnumerable<string> after)
+        public VersionedOverrideTransformer(IEnumerable<string?> before,
+                                            IEnumerable<string?> after)
         {
-            _before = new HashSet<string>(before);
-            _after = new HashSet<string>(after);
+            _before = new List<string?>(before);
+            _after  = new List<string?>(after);
         }
 
         public void AddBefore(string before)
@@ -38,11 +39,11 @@ namespace CKAN.NetKAN.Transformers
             _after.Add(after);
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             var json = metadata.Json();
 
-            if (json.TryGetValue("x_netkan_override", out JToken overrideList))
+            if (json.TryGetValue("x_netkan_override", out JToken? overrideList))
             {
                 Log.InfoFormat("Executing override transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
@@ -84,14 +85,14 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         private void ProcessOverrideStanza(JObject overrideStanza, JObject metadata)
         {
-            string before = null;
-            string after = null;
+            string? before = null;
+            string? after  = null;
 
-            if (overrideStanza.TryGetValue("before", out JToken jBefore))
+            if (overrideStanza.TryGetValue("before", out JToken? jBefore))
             {
-                if (jBefore.Type == JTokenType.String)
+                if (jBefore is JValue val)
                 {
-                    before = (string)jBefore;
+                    before = val.ToString();
                 }
                 else
                 {
@@ -99,11 +100,11 @@ namespace CKAN.NetKAN.Transformers
                 }
             }
 
-            if (overrideStanza.TryGetValue("after", out JToken jAfter))
+            if (overrideStanza.TryGetValue("after", out JToken? jAfter))
             {
-                if (jAfter.Type == JTokenType.String)
+                if (jAfter is JValue val)
                 {
-                    after = (string)jAfter;
+                    after = val.ToString();
                 }
                 else
                 {
@@ -115,7 +116,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 Log.InfoFormat("Processing override: {0}", overrideStanza);
 
-                if (!overrideStanza.TryGetValue("version", out JToken stanzaConstraints))
+                if (!overrideStanza.TryGetValue("version", out JToken? stanzaConstraints))
                 {
                     throw new Kraken(
                         string.Format(
@@ -143,7 +144,8 @@ namespace CKAN.NetKAN.Transformers
                 }
 
                 // If the constraints don't apply, then do nothing.
-                if (!ConstraintsApply(constraints, new ModuleVersion(metadata["version"].ToString())))
+                if (metadata["version"]?.ToString() is string s
+                    && !ConstraintsApply(constraints, new ModuleVersion(s)))
                 {
                     return;
                 }
@@ -151,21 +153,21 @@ namespace CKAN.NetKAN.Transformers
                 // All the constraints pass; let's replace the metadata we have with what's
                 // in the override.
 
-                if (overrideStanza.TryGetValue("override", out JToken overrideBlock))
+                if (overrideStanza.TryGetValue("override", out JToken? overrideBlock)
+                    && overrideBlock is JObject overrides)
                 {
-                    var overrides = overrideBlock as JObject;
                     if (gameVersionProperties.Any(p => overrides.ContainsKey(p)))
                     {
                         ModuleService.ApplyVersions(
                             metadata,
                             overrides.ContainsKey("ksp_version")
-                                ? GameVersion.Parse((string)overrides["ksp_version"])
+                                ? GameVersion.Parse((string?)overrides["ksp_version"])
                                 : null,
                             overrides.ContainsKey("ksp_version_min")
-                                ? GameVersion.Parse((string)overrides["ksp_version_min"])
+                                ? GameVersion.Parse((string?)overrides["ksp_version_min"])
                                 : null,
                             overrides.ContainsKey("ksp_version_max")
-                                ? GameVersion.Parse((string)overrides["ksp_version_max"])
+                                ? GameVersion.Parse((string?)overrides["ksp_version_max"])
                                 : null
                         );
                         foreach (var p in gameVersionProperties)
@@ -181,9 +183,10 @@ namespace CKAN.NetKAN.Transformers
 
                 // And let's delete anything that needs deleting.
 
-                if (overrideStanza.TryGetValue("delete", out JToken deleteList))
+                if (overrideStanza.TryGetValue("delete", out JToken? deleteList))
                 {
-                    foreach (string key in ((JArray)deleteList).Select(v => (string)v))
+                    foreach (string key in ((JArray)deleteList).Select(v => (string?)v)
+                                                               .OfType<string>())
                     {
                         metadata.Remove(key);
                     }

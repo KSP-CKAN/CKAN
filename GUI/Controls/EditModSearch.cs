@@ -61,16 +61,16 @@ namespace CKAN.GUI
         /// <summary>
         /// Event fired when a search needs to be executed.
         /// </summary>
-        public event Action<EditModSearch, ModSearch> ApplySearch;
+        public event Action<EditModSearch, ModSearch?>? ApplySearch;
 
         /// <summary>
         /// Event fired when user wants to switch focus away from this control.
         /// </summary>
-        public event Action SurrenderFocus;
+        public event Action? SurrenderFocus;
 
-        public event Action<string> ShowError;
+        public event Action<string>? ShowError;
 
-        public ModSearch Search
+        public ModSearch? Search
         {
             get => currentSearch;
             set
@@ -113,10 +113,10 @@ namespace CKAN.GUI
             FormGeometryChanged();
         }
 
-        private bool suppressSearch = false;
-        private ModSearch currentSearch = null;
+        private bool       suppressSearch = false;
+        private ModSearch? currentSearch  = null;
 
-        private void ImmediateHandler(object sender, EventArgs e)
+        private void ImmediateHandler(object? sender, EventArgs? e)
         {
             try
             {
@@ -136,9 +136,14 @@ namespace CKAN.GUI
                         }
                         break;
                 }
-                // Sync the search boxes immediately
-                currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text,
-                    Main.Instance.ManageMods.mainModList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name).ToList());
+                if (Main.Instance?.CurrentInstance != null)
+                {
+                    // Sync the search boxes immediately
+                    currentSearch = ModSearch.Parse(
+                        FilterCombinedTextBox.Text,
+                        ModuleLabelList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name)
+                                                    .ToList());
+                }
                 SearchToEditor();
             }
             catch (Kraken k)
@@ -147,7 +152,7 @@ namespace CKAN.GUI
             }
         }
 
-        private bool SkipDelayIf(object sender, EventArgs e)
+        private bool SkipDelayIf(object? sender, EventArgs? e)
         {
             if (e == null)
             {
@@ -176,9 +181,9 @@ namespace CKAN.GUI
                 || (currentSearch?.Name.Length ?? 0) > 4;
         }
 
-        private bool AbortIf(object sender, EventArgs e) => suppressSearch;
+        private bool AbortIf(object? sender, EventArgs? e) => suppressSearch;
 
-        private void DelayedHandler(object sender, EventArgs e)
+        private void DelayedHandler(object? sender, EventArgs? e)
         {
             ApplySearch?.Invoke(this, currentSearch);
         }
@@ -191,7 +196,7 @@ namespace CKAN.GUI
         /// </summary>
         private readonly EventHandler<EventArgs> handler;
 
-        private void ExpandButton_CheckedChanged(object sender, EventArgs e)
+        private void ExpandButton_CheckedChanged(object? sender, EventArgs? e)
         {
             ExpandButton.Text = ExpandButton.Checked ? "▴" : "▾";
             DoLayout(ExpandButton.Checked);
@@ -226,7 +231,7 @@ namespace CKAN.GUI
             suppressSearch = false;
         }
 
-        private void SearchDetails_ApplySearch(object sender, EventArgs e)
+        private void SearchDetails_ApplySearch(object? sender, EventArgs e)
         {
             if (suppressSearch)
             {
@@ -250,7 +255,7 @@ namespace CKAN.GUI
             ExpandButton.Checked = false;
         }
 
-        private void FilterTextBox_Enter(object sender, EventArgs e)
+        private void FilterTextBox_Enter(object? sender, EventArgs? e)
         {
             (sender as TextBox)?.SelectAll();
         }

@@ -29,10 +29,10 @@ namespace CKAN.GUI
 
 
         [ForbidGUICalls]
-        public void StartWaiting(Action<object, DoWorkEventArgs>             mainWork,
-                                 Action<object, RunWorkerCompletedEventArgs> postWork,
+        public void StartWaiting(Action<object?, DoWorkEventArgs?>             mainWork,
+                                 Action<object?, RunWorkerCompletedEventArgs?> postWork,
                                  bool cancelable,
-                                 object param)
+                                 object? param)
         {
             bgLogic   = mainWork;
             postLogic = postWork;
@@ -42,9 +42,9 @@ namespace CKAN.GUI
             bgWorker.RunWorkerAsync(param);
         }
 
-        public event Action OnRetry;
-        public event Action OnCancel;
-        public event Action OnOk;
+        public event Action? OnRetry;
+        public event Action? OnCancel;
+        public event Action? OnOk;
 
         #pragma warning disable IDE0027
 
@@ -89,7 +89,7 @@ namespace CKAN.GUI
             {
                 Util.Invoke(this, () =>
                 {
-                    if (progressBars.TryGetValue(label, out ProgressBar pb))
+                    if (progressBars.TryGetValue(label, out ProgressBar? pb))
                     {
                         // download_size is allowed to be 0
                         pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
@@ -133,8 +133,8 @@ namespace CKAN.GUI
             SetProgress(module.ToString(), remaining, total);
         }
 
-        private Action<object, DoWorkEventArgs>             bgLogic;
-        private Action<object, RunWorkerCompletedEventArgs> postLogic;
+        private Action<object?, DoWorkEventArgs?>?             bgLogic;
+        private Action<object?, RunWorkerCompletedEventArgs?>? postLogic;
 
         private readonly BackgroundWorker bgWorker = new BackgroundWorker()
         {
@@ -142,12 +142,12 @@ namespace CKAN.GUI
             WorkerSupportsCancellation = true,
         };
 
-        private void DoWork(object sender, DoWorkEventArgs e)
+        private void DoWork(object? sender, DoWorkEventArgs? e)
         {
             bgLogic?.Invoke(sender, e);
         }
 
-        private void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void RunWorkerCompleted(object? sender, RunWorkerCompletedEventArgs? e)
         {
             postLogic?.Invoke(sender, e);
         }
@@ -295,7 +295,7 @@ namespace CKAN.GUI
             });
         }
 
-        private string lastProgressMessage;
+        private string? lastProgressMessage;
 
         [ForbidGUICalls]
         private void ClearLog()
@@ -309,12 +309,12 @@ namespace CKAN.GUI
             LogTextBox.AppendText(message + "\r\n");
         }
 
-        private void RetryCurrentActionButton_Click(object sender, EventArgs e)
+        private void RetryCurrentActionButton_Click(object? sender, EventArgs? e)
         {
             OnRetry?.Invoke();
         }
 
-        private void CancelCurrentActionButton_Click(object sender, EventArgs e)
+        private void CancelCurrentActionButton_Click(object? sender, EventArgs? e)
         {
             bgWorker.CancelAsync();
             if (OnCancel != null)
@@ -325,7 +325,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void OkButton_Click(object sender, EventArgs e)
+        private void OkButton_Click(object? sender, EventArgs? e)
         {
             OnOk?.Invoke();
         }

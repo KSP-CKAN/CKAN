@@ -26,6 +26,7 @@ namespace Tests.NetKAN.Validators
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
+            json["author"] = "AmazingModder";
             json["version"] = "1.0.0";
             json["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
 
@@ -47,12 +48,15 @@ namespace Tests.NetKAN.Validators
             var mHttp = new Mock<IHttpService>();
             var mModuleService = new Mock<IModuleService>();
 
+            mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
+                 .Returns("");
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(false);
 
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
+            json["author"] = "AmazingModder";
             json["version"] = "1.0.0";
             json["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
 

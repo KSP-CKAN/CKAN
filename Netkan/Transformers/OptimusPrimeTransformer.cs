@@ -11,11 +11,11 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "optimus_prime";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             var json = metadata.Json();
 
-            if (json.TryGetValue("x_netkan_optimus_prime", out JToken optimusPrime) && (bool)optimusPrime)
+            if (json.TryGetValue("x_netkan_optimus_prime", out JToken? optimusPrime) && (bool)optimusPrime)
             {
                 Log.Info("Autobots roll out!");
             }

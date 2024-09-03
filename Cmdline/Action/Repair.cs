@@ -8,7 +8,7 @@ namespace CKAN.CmdLine
     internal class RepairSubOptions : VerbCommandOptions
     {
         [VerbOption("registry", HelpText = "Try to repair the CKAN registry")]
-        public InstanceSpecificOptions Registry { get; set; }
+        public InstanceSpecificOptions? Registry { get; set; }
 
         [HelpVerbOption]
         public string GetUsage(string verb)
@@ -52,7 +52,9 @@ namespace CKAN.CmdLine
             this.repoData = repoData;
         }
 
-        public int RunSubCommand(GameInstanceManager manager, CommonOptions opts, SubCommandOptions unparsed)
+        public int RunSubCommand(GameInstanceManager? manager,
+                                 CommonOptions?       opts,
+                                 SubCommandOptions    unparsed)
         {
             int exitCode = Exit.OK;
             // Parse and process our sub-verbs
@@ -64,10 +66,7 @@ namespace CKAN.CmdLine
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
                     User = new ConsoleUser(options.Headless);
-                    if (manager == null)
-                    {
-                        manager = new GameInstanceManager(User);
-                    }
+                    manager ??= new GameInstanceManager(User);
                     exitCode = options.Handle(manager, User);
                     if (exitCode != Exit.OK)
                     {
@@ -91,7 +90,7 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private IUser User { get; set; }
+        private          IUser?                User { get; set; }
         private readonly RepositoryDataManager repoData;
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace CKAN.CmdLine
         {
             regMgr.registry.Repair();
             regMgr.Save();
-            User.RaiseMessage(Properties.Resources.Repaired);
+            User?.RaiseMessage(Properties.Resources.Repaired);
             return Exit.OK;
         }
     }

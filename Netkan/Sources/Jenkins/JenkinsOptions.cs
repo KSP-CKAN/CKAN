@@ -14,7 +14,7 @@ namespace CKAN.NetKAN.Sources.Jenkins
         [DefaultValue(false)]
         public bool UseFilenameVersion = false;
 
-        private Regex _assetMatch;
+        private Regex? _assetMatch;
         [JsonProperty("asset_match")]
         public Regex AssetMatchPattern
         {

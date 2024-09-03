@@ -164,7 +164,7 @@ namespace CKAN.CmdLine
                     : string.Format(Properties.Resources.UserSelectionPromptWithoutDefault,1, args.Length));
 
                 // Wait for input from the command line.
-                string input = Console.In.ReadLine();
+                var input = Console.In.ReadLine();
 
                 if (input == null)
                 {
@@ -234,10 +234,10 @@ namespace CKAN.CmdLine
             if (Headless)
             {
                 // Special GitHub Action formatting for mutli-line errors
-                log.ErrorFormat(
-                    message.Replace("\r\n", "%0A"),
-                    args.Select(a => a.ToString().Replace("\r\n", "%0A")).ToArray()
-                );
+                log.ErrorFormat(message.Replace("\r\n", "%0A"),
+                                args.Select(a => a.ToString()?.Replace("\r\n", "%0A"))
+                                    .OfType<string>()
+                                    .ToArray());
             }
             else
             {
@@ -290,7 +290,7 @@ namespace CKAN.CmdLine
         /// </summary>
         private int previousPercent = -1;
 
-        private string lastProgressMessage = null;
+        private string? lastProgressMessage = null;
 
         /// <summary>
         /// Writes a message to the console

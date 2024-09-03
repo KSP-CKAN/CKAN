@@ -8,8 +8,8 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var errors = CKANSchema.schema.Validate(metadata.Json());
-            if (errors.Any())
+            var errors = CKANSchema.schema?.Validate(metadata.Json());
+            if (errors?.Any() ?? false)
             {
                 var msg = string.Join(", ", errors.Select(err => $"{err.Path}: {err.Kind}"));
                 throw new Kraken($"Schema validation failed: {msg}");

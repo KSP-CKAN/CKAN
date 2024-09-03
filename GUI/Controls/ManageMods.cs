@@ -12,7 +12,6 @@ using Autofac;
 using log4net;
 
 using CKAN.Extensions;
-using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
@@ -69,28 +68,33 @@ namespace CKAN.GUI
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));
         private readonly RepositoryDataManager repoData;
         private DateTime lastSearchTime;
-        private string lastSearchKey;
+        private string? lastSearchKey;
         private readonly NavigationHistory<GUIMod> navHistory;
         private static readonly Font uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
 
-        private List<ModChange> currentChangeSet;
-        private Dictionary<GUIMod, string> conflicts;
+        private List<ModChange>?            currentChangeSet;
+        private Dictionary<GUIMod, string>? conflicts;
         private bool freezeChangeSet = false;
 
-        public event Action<string> RaiseMessage;
-        public event Action<string> RaiseError;
-        public event Action<string> SetStatusBar;
-        public event Action         ClearStatusBar;
-        public event Action<string> LaunchGame;
-        public event Action         EditCommandLines;
+        public event Action<string>?  RaiseMessage;
+        public event Action<string>?  RaiseError;
+        public event Action<string>?  SetStatusBar;
+        public event Action?          ClearStatusBar;
+        public event Action<string?>? LaunchGame;
+        public event Action?          EditCommandLines;
 
         public readonly ModList mainModList;
         private List<string> SortColumns
         {
             get
             {
+                if (guiConfig == null)
+                {
+                    return new List<string>();
+                }
                 // Make sure we don't return any column the GUI doesn't know about.
-                var unknownCols = guiConfig.SortColumns.Where(col => !ModGrid.Columns.Contains(col)).ToList();
+                var unknownCols = guiConfig.SortColumns.Where(col => !ModGrid.Columns.Contains(col))
+                                                       .ToList();
                 foreach (var unknownCol in unknownCols)
                 {
                     int index = guiConfig.SortColumns.IndexOf(unknownCol);
@@ -101,26 +105,26 @@ namespace CKAN.GUI
             }
         }
 
-        private GUIConfiguration    guiConfig       => Main.Instance.configuration;
-        private GameInstance        currentInstance => Main.Instance.CurrentInstance;
-        private GameInstanceManager manager         => Main.Instance.Manager;
-        private IUser               user            => Main.Instance.currentUser;
+        private GUIConfiguration?    guiConfig       => Main.Instance?.configuration;
+        private GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
+        private GameInstanceManager? manager         => Main.Instance?.Manager;
+        private IUser?               user            => Main.Instance?.currentUser;
 
-        private List<bool> descending => guiConfig.MultiSortDescending;
+        private List<bool> descending => guiConfig?.MultiSortDescending ?? new List<bool>();
 
-        public event Action<GUIMod> OnSelectedModuleChanged;
-        public event Action<List<ModChange>, Dictionary<GUIMod, string>> OnChangeSetChanged;
-        public event Action OnRegistryChanged;
+        public event Action<GUIMod>? OnSelectedModuleChanged;
+        public event Action<List<ModChange>?, Dictionary<GUIMod, string>?>? OnChangeSetChanged;
+        public event Action? OnRegistryChanged;
 
-        public event Action<List<ModChange>, Dictionary<GUIMod, string>> StartChangeSet;
-        public event Action<IEnumerable<GUIMod>> LabelsAfterUpdate;
+        public event Action<List<ModChange>?, Dictionary<GUIMod, string>?>? StartChangeSet;
+        public event Action<IEnumerable<GUIMod>>? LabelsAfterUpdate;
 
         private void EditModSearches_ShowError(string error)
         {
             RaiseError?.Invoke(error);
         }
 
-        private List<ModChange> ChangeSet
+        private List<ModChange>? ChangeSet
         {
             get => currentChangeSet;
             [ForbidGUICalls]
@@ -175,7 +179,7 @@ namespace CKAN.GUI
                 .Where(ch => ch?.ChangeType == changeType)
                 .Select(ch => ch.Mod.identifier);
 
-        private Dictionary<GUIMod, string> Conflicts
+        private Dictionary<GUIMod, string>? Conflicts
         {
             get => conflicts;
             [ForbidGUICalls]
@@ -190,7 +194,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ConflictsUpdated(Dictionary<GUIMod, string> prevConflicts)
+        private void ConflictsUpdated(Dictionary<GUIMod, string>? prevConflicts)
         {
             if (Conflicts == null)
             {
@@ -198,29 +202,32 @@ namespace CKAN.GUI
                 ClearStatusBar?.Invoke();
             }
 
-            var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            if (prevConflicts != null)
+            if (currentInstance != null)
             {
-                // Mark old conflicts as non-conflicted
-                // (rows that are _still_ conflicted will be marked as such in the next loop)
-                foreach (GUIMod guiMod in prevConflicts.Keys)
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                if (prevConflicts != null)
                 {
-                    SetUnsetRowConflicted(guiMod, false, null, currentInstance, registry);
+                    // Mark old conflicts as non-conflicted
+                    // (rows that are _still_ conflicted will be marked as such in the next loop)
+                    foreach (GUIMod guiMod in prevConflicts.Keys)
+                    {
+                        SetUnsetRowConflicted(guiMod, false, null, currentInstance, registry);
+                    }
                 }
-            }
-            if (Conflicts != null)
-            {
-                // Mark current conflicts as conflicted
-                foreach ((GUIMod guiMod, string conflict_text) in Conflicts)
+                if (Conflicts != null)
                 {
-                    SetUnsetRowConflicted(guiMod, true, conflict_text, currentInstance, registry);
+                    // Mark current conflicts as conflicted
+                    foreach ((GUIMod guiMod, string conflict_text) in Conflicts)
+                    {
+                        SetUnsetRowConflicted(guiMod, true, conflict_text, currentInstance, registry);
+                    }
                 }
             }
         }
 
         private void SetUnsetRowConflicted(GUIMod       guiMod,
                                            bool         conflicted,
-                                           string       tooltip,
+                                           string?      tooltip,
                                            GameInstance inst,
                                            Registry     registry)
         {
@@ -239,59 +246,64 @@ namespace CKAN.GUI
             }
         }
 
-        private void RefreshToolButton_Click(object sender, EventArgs e)
+        private void RefreshToolButton_Click(object? sender, EventArgs? e)
         {
             // If user is holding Shift or Ctrl, force a full update
-            Main.Instance.UpdateRepo(ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+            Main.Instance?.UpdateRepo(ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
         }
 
         #region Filter dropdown
 
-        private void FilterToolButton_DropDown_Opening(object sender, CancelEventArgs e)
+        private void FilterToolButton_DropDown_Opening(object? sender, CancelEventArgs? e)
         {
             // The menu items' dropdowns can't be accessed if they're empty
             FilterTagsToolButton_DropDown_Opening(null, null);
             FilterLabelsToolButton_DropDown_Opening(null, null);
         }
 
-        private void FilterTagsToolButton_DropDown_Opening(object sender, CancelEventArgs e)
+        private void FilterTagsToolButton_DropDown_Opening(object? sender, CancelEventArgs? e)
         {
-            var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            FilterTagsToolButton.DropDownItems.Clear();
-            foreach (var kvp in registry.Tags.OrderBy(kvp => kvp.Key))
+            if (currentInstance != null)
             {
-                FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                    $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
-                    null, tagFilterButton_Click
-                )
-                {
-                    Tag         = kvp.Value,
-                    ToolTipText = Properties.Resources.FilterLinkToolTip,
-                });
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                FilterTagsToolButton.DropDownItems.Clear();
+                FilterTagsToolButton.DropDownItems.AddRange(
+                    registry.Tags.OrderBy(kvp => kvp.Key)
+                                 .Select(kvp => new ToolStripMenuItem(
+                                                    $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
+                                                    null, tagFilterButton_Click)
+                                                {
+                                                    Tag         = kvp.Value,
+                                                    ToolTipText = Properties.Resources.FilterLinkToolTip,
+                                                })
+                                 .OfType<ToolStripItem>()
+                                 .Append(untaggedFilterToolStripSeparator)
+                                 .Append(new ToolStripMenuItem(
+                                             string.Format(Properties.Resources.MainLabelsUntagged,
+                                                           registry.Untagged.Count),
+                                             null, tagFilterButton_Click)
+                                         {
+                                             Tag = null
+                                         })
+                                 .ToArray());
             }
-            FilterTagsToolButton.DropDownItems.Add(untaggedFilterToolStripSeparator);
-            FilterTagsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                string.Format(Properties.Resources.MainLabelsUntagged, registry.Untagged.Count),
-                null, tagFilterButton_Click
-            )
-            {
-                Tag = null
-            });
         }
 
-        private void FilterLabelsToolButton_DropDown_Opening(object sender, CancelEventArgs e)
+        private void FilterLabelsToolButton_DropDown_Opening(object? sender, CancelEventArgs? e)
         {
-            FilterLabelsToolButton.DropDownItems.Clear();
-            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.LabelsFor(currentInstance.Name))
+            if (currentInstance != null)
             {
-                FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                    $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
-                    null, customFilterButton_Click
-                )
+                FilterLabelsToolButton.DropDownItems.Clear();
+                foreach (ModuleLabel mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
                 {
-                    Tag         = mlbl,
-                    ToolTipText = Properties.Resources.FilterLinkToolTip,
-                });
+                    FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
+                        $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
+                        null, customFilterButton_Click)
+                    {
+                        Tag         = mlbl,
+                        ToolTipText = Properties.Resources.FilterLinkToolTip,
+                    });
+                }
             }
         }
 
@@ -299,141 +311,146 @@ namespace CKAN.GUI
 
         #region Filter right click menu
 
-        private void LabelsContextMenuStrip_Opening(object sender, CancelEventArgs e)
+        private void LabelsContextMenuStrip_Opening(object? sender, CancelEventArgs? e)
         {
-            LabelsContextMenuStrip.Items.Clear();
-
-            var module = SelectedModule;
-            foreach (ModuleLabel mlbl in mainModList.ModuleLabels.LabelsFor(currentInstance.Name))
+            if (e != null && currentInstance != null && SelectedModule is GUIMod module)
             {
-                LabelsContextMenuStrip.Items.Add(
-                    new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
-                    {
-                        BackColor    = mlbl.Color,
-                        Checked      = mlbl.ContainsModule(currentInstance.game, module.Identifier),
-                        CheckOnClick = true,
-                        Tag          = mlbl,
-                    }
-                );
+                LabelsContextMenuStrip.Items.Clear();
+                foreach (ModuleLabel mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
+                {
+                    LabelsContextMenuStrip.Items.Add(
+                        new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
+                        {
+                            BackColor    = mlbl.Color ?? Color.Transparent,
+                            Checked      = mlbl.ContainsModule(currentInstance.game, module.Identifier),
+                            CheckOnClick = true,
+                            Tag          = mlbl,
+                        });
+                }
+                LabelsContextMenuStrip.Items.Add(labelToolStripSeparator);
+                LabelsContextMenuStrip.Items.Add(editLabelsToolStripMenuItem);
+                e.Cancel = false;
             }
-            LabelsContextMenuStrip.Items.Add(labelToolStripSeparator);
-            LabelsContextMenuStrip.Items.Add(editLabelsToolStripMenuItem);
-            e.Cancel = false;
         }
 
-        private void labelMenuItem_Click(object sender, EventArgs e)
+        private void labelMenuItem_Click(object? sender, EventArgs? e)
         {
-            var item   = sender   as ToolStripMenuItem;
-            var mlbl   = item.Tag as ModuleLabel;
-            var module = SelectedModule;
-            if (item.Checked)
+            if (user != null && manager != null && currentInstance != null && SelectedModule != null)
             {
-                mlbl.Add(currentInstance.game, module.Identifier);
+                var item   = sender    as ToolStripMenuItem;
+                var mlbl   = item?.Tag as ModuleLabel;
+                if (item?.Checked ?? false)
+                {
+                    mlbl?.Add(currentInstance.game, SelectedModule.Identifier);
+                }
+                else
+                {
+                    mlbl?.Remove(currentInstance.game, SelectedModule.Identifier);
+                }
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                mainModList.ReapplyLabels(SelectedModule, Conflicts?.ContainsKey(SelectedModule) ?? false,
+                                          currentInstance.Name, currentInstance.game, registry);
+                ModuleLabelList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
+                UpdateHiddenTagsAndLabels();
+                if (mlbl?.HoldVersion ?? false)
+                {
+                    UpdateCol.Visible = UpdateAllToolButton.Enabled =
+                        mainModList.ResetHasUpdate(currentInstance, registry, ChangeSet, ModGrid.Rows);
+                }
             }
-            else
+        }
+
+        private void editLabelsToolStripMenuItem_Click(object? sender, EventArgs? e)
+        {
+            if (user != null && manager != null && currentInstance != null)
             {
-                mlbl.Remove(currentInstance.game, module.Identifier);
-            }
-            var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
-                                      currentInstance.Name, currentInstance.game, registry);
-            mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
-            UpdateHiddenTagsAndLabels();
-            if (mlbl.HoldVersion)
-            {
+                var eld = new EditLabelsDialog(user, manager, ModuleLabelList.ModuleLabels);
+                eld.ShowDialog(this);
+                eld.Dispose();
+                ModuleLabelList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                foreach (var module in mainModList.Modules)
+                {
+                    mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
+                                              currentInstance.Name, currentInstance.game, registry);
+                }
+                UpdateHiddenTagsAndLabels();
                 UpdateCol.Visible = UpdateAllToolButton.Enabled =
                     mainModList.ResetHasUpdate(currentInstance, registry, ChangeSet, ModGrid.Rows);
             }
         }
 
-        private void editLabelsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var eld = new EditLabelsDialog(user, manager, mainModList.ModuleLabels);
-            eld.ShowDialog(this);
-            eld.Dispose();
-            mainModList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
-            var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            foreach (var module in mainModList.Modules)
-            {
-                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
-                                          currentInstance.Name, currentInstance.game, registry);
-            }
-            UpdateHiddenTagsAndLabels();
-            UpdateCol.Visible = UpdateAllToolButton.Enabled =
-                mainModList.ResetHasUpdate(currentInstance, registry, ChangeSet, ModGrid.Rows);
-        }
-
         #endregion
 
-        private void tagFilterButton_Click(object sender, EventArgs e)
+        private void tagFilterButton_Click(object? sender, EventArgs? e)
         {
             var clicked = sender as ToolStripMenuItem;
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked.Tag as ModuleTag, null), merge);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked?.Tag as ModuleTag, null), merge);
         }
 
-        private void customFilterButton_Click(object sender, EventArgs e)
+        private void customFilterButton_Click(object? sender, EventArgs? e)
         {
             var clicked = sender as ToolStripMenuItem;
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked.Tag as ModuleLabel), merge);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked?.Tag as ModuleLabel), merge);
         }
 
-        private void FilterCompatibleButton_Click(object sender, EventArgs e)
+        private void FilterCompatibleButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible), merge);
         }
 
-        private void FilterInstalledButton_Click(object sender, EventArgs e)
+        private void FilterInstalledButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed), merge);
         }
 
-        private void FilterInstalledUpdateButton_Click(object sender, EventArgs e)
+        private void FilterInstalledUpdateButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable), merge);
         }
 
-        private void FilterReplaceableButton_Click(object sender, EventArgs e)
+        private void FilterReplaceableButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable), merge);
         }
 
-        private void FilterCachedButton_Click(object sender, EventArgs e)
+        private void FilterCachedButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached), merge);
         }
 
-        private void FilterUncachedButton_Click(object sender, EventArgs e)
+        private void FilterUncachedButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached), merge);
         }
 
-        private void FilterNewButton_Click(object sender, EventArgs e)
+        private void FilterNewButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository), merge);
         }
 
-        private void FilterNotInstalledButton_Click(object sender, EventArgs e)
+        private void FilterNotInstalledButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled), merge);
         }
 
-        private void FilterIncompatibleButton_Click(object sender, EventArgs e)
+        private void FilterIncompatibleButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible), merge);
         }
 
-        private void FilterAllButton_Click(object sender, EventArgs e)
+        private void FilterAllButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
             Filter(ModList.FilterToSavedSearch(GUIModFilter.All), merge);
@@ -446,22 +463,28 @@ namespace CKAN.GUI
         /// <param name="merge">If true, merge with current searches, else replace</param>
         public void Filter(SavedSearch search, bool merge)
         {
-            var searches = search.Values.Select(s => ModSearch.Parse(s,
-                mainModList.ModuleLabels.LabelsFor(currentInstance.Name).ToList()
-            )).ToList();
-
-            Util.Invoke(ModGrid, () =>
+            if (currentInstance != null)
             {
-                if (merge)
+                var lbls = ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name)
+                                                       .ToList();
+                var searches = search.Values
+                                     .Select(s => ModSearch.Parse(s, lbls))
+                                     .OfType<ModSearch>()
+                                     .ToList();
+
+                Util.Invoke(ModGrid, () =>
                 {
-                    EditModSearches.MergeSearches(searches);
-                }
-                else
-                {
-                    EditModSearches.SetSearches(searches);
-                }
-                ShowHideColumns(searches);
-            });
+                    if (merge)
+                    {
+                        EditModSearches.MergeSearches(searches);
+                    }
+                    else
+                    {
+                        EditModSearches.SetSearches(searches);
+                    }
+                    ShowHideColumns(searches);
+                });
+            }
         }
 
         public void SetSearches(List<ModSearch> searches)
@@ -483,7 +506,7 @@ namespace CKAN.GUI
                 if (col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol"
                     && !installedColumnNames.Contains(col.Name))
                 {
-                    col.Visible = !guiConfig.HiddenColumnNames.Contains(col.Name);
+                    col.Visible = !guiConfig?.HiddenColumnNames.Contains(col.Name) ?? true;
                 }
             }
 
@@ -500,15 +523,18 @@ namespace CKAN.GUI
 
         private void setInstalledColumnsVisible(bool visible)
         {
-            var hiddenColumnNames = guiConfig.HiddenColumnNames;
-            foreach (var colName in installedColumnNames.Where(nm => ModGrid.Columns.Contains(nm)))
+            if (guiConfig != null)
             {
-                ModGrid.Columns[colName].Visible = visible && !hiddenColumnNames.Contains(colName);
+                var hiddenColumnNames = guiConfig.HiddenColumnNames;
+                foreach (var colName in installedColumnNames.Where(nm => ModGrid.Columns.Contains(nm)))
+                {
+                    ModGrid.Columns[colName].Visible = visible && !hiddenColumnNames.Contains(colName);
+                }
             }
         }
 
         private static bool SearchesExcludeInstalled(List<ModSearch> searches)
-            => searches?.All(s => s != null && s.Installed == false) ?? false;
+            => searches.Count > 0 && searches.All(s => s?.Installed == false);
 
         public void MarkAllUpdates()
         {
@@ -521,7 +547,7 @@ namespace CKAN.GUI
                 {
                     if (gmod?.HasUpdate ?? false)
                     {
-                        if (!Main.Instance.LabelsHeld(gmod.Identifier))
+                        if (!Main.Instance?.LabelsHeld(gmod.Identifier) ?? false)
                         {
                             gmod.SelectedMod = gmod.LatestCompatibleMod;
                         }
@@ -529,7 +555,7 @@ namespace CKAN.GUI
                 }
 
                 // only sort by Update column if checkbox in settings checked
-                if (guiConfig.AutoSortByUpdate)
+                if (guiConfig?.AutoSortByUpdate ?? false)
                 {
                     // Retain their current sort as secondaries
                     AddSort(UpdateCol, true);
@@ -543,63 +569,67 @@ namespace CKAN.GUI
             });
         }
 
-        private void UpdateAllToolButton_Click(object sender, EventArgs e)
+        private void UpdateAllToolButton_Click(object? sender, EventArgs? e)
         {
             MarkAllUpdates();
         }
 
-        private void ApplyToolButton_Click(object sender, EventArgs e)
+        private void ApplyToolButton_Click(object? sender, EventArgs? e)
         {
             StartChangeSet?.Invoke(currentChangeSet, Conflicts);
         }
 
-        private void LaunchGameToolStripMenuItem_MouseHover(object sender, EventArgs e)
+        private void LaunchGameToolStripMenuItem_MouseHover(object? sender, EventArgs? e)
         {
-            var cmdLines = guiConfig.CommandLines;
-            LaunchGameToolStripMenuItem.DropDownItems.Clear();
-            LaunchGameToolStripMenuItem.DropDownItems.AddRange(
-                cmdLines.Select(cmdLine => (ToolStripItem)
-                                           new ToolStripMenuItem(cmdLine, null,
-                                                                 LaunchGameToolStripMenuItem_Click)
-                                           {
-                                               Tag = cmdLine,
-                                               ShortcutKeyDisplayString = CmdLineHelp(cmdLine),
-                                           })
-                        .Append(CommandLinesToolStripSeparator)
-                        .Append(EditCommandLinesToolStripMenuItem)
-                        .ToArray());
-            LaunchGameToolStripMenuItem.ShowDropDown();
+            if (guiConfig != null)
+            {
+                var cmdLines = guiConfig.CommandLines;
+                LaunchGameToolStripMenuItem.DropDownItems.Clear();
+                LaunchGameToolStripMenuItem.DropDownItems.AddRange(
+                    cmdLines.Select(cmdLine => (ToolStripItem)
+                                               new ToolStripMenuItem(cmdLine, null,
+                                                                     LaunchGameToolStripMenuItem_Click)
+                                               {
+                                                   Tag = cmdLine,
+                                                   ShortcutKeyDisplayString = CmdLineHelp(cmdLine),
+                                               })
+                            .Append(CommandLinesToolStripSeparator)
+                            .Append(EditCommandLinesToolStripMenuItem)
+                            .ToArray());
+                LaunchGameToolStripMenuItem.ShowDropDown();
+            }
         }
 
         private string CmdLineHelp(string cmdLine)
-            => manager.SteamLibrary.Games.Length > 0
+            => manager?.SteamLibrary.Games.Length > 0
                 ? cmdLine.StartsWith("steam://", StringComparison.InvariantCultureIgnoreCase)
                     ? Properties.Resources.ManageModsSteamPlayTimeYesTooltip
                     : Properties.Resources.ManageModsSteamPlayTimeNoTooltip
-                : "";
+                : ""
+            ?? "";
 
-        private void LaunchGameToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LaunchGameToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             var menuItem = sender as ToolStripMenuItem;
             LaunchGame?.Invoke(menuItem?.Tag as string);
         }
 
-        private void EditCommandLinesToolStripMenuItem_Click(object sender, EventArgs e)
+        private void EditCommandLinesToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             EditCommandLines?.Invoke();
         }
 
-        private void NavBackwardToolButton_Click(object sender, EventArgs e)
+        private void NavBackwardToolButton_Click(object? sender, EventArgs? e)
         {
             NavGoBackward();
         }
 
-        private void NavForwardToolButton_Click(object sender, EventArgs e)
+        private void NavForwardToolButton_Click(object? sender, EventArgs? e)
         {
             NavGoForward();
         }
 
-        private void ModGrid_SelectionChanged(object sender, EventArgs e)
+        private void ModGrid_SelectionChanged(object? sender, EventArgs? e)
         {
             // Skip if already disposed (i.e. after the form has been closed).
             // Needed for TransparentTextBoxes
@@ -620,10 +650,10 @@ namespace CKAN.GUI
         /// Called when there's a click on the ModGrid header row.
         /// Handles sorting and the header right click context menu.
         /// </summary>
-        private void ModGrid_HeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void ModGrid_HeaderMouseClick(object? sender, DataGridViewCellMouseEventArgs? e)
         {
             // Left click -> sort by new column / change sorting direction.
-            if (e.Button == MouseButtons.Left)
+            if (e?.Button == MouseButtons.Left)
             {
                 if (ModifierKeys.HasFlag(Keys.Shift))
                 {
@@ -636,7 +666,7 @@ namespace CKAN.GUI
                 UpdateFilters();
             }
             // Right click -> Bring up context menu to change visibility of columns.
-            else if (e.Button == MouseButtons.Right)
+            else if (e?.Button == MouseButtons.Right)
             {
                 ShowHeaderContextMenu();
             }
@@ -658,17 +688,19 @@ namespace CKAN.GUI
             {
                 // Add columns
                 ModListHeaderContextMenuStrip.Items.AddRange(
-                    ModGrid.Columns.Cast<DataGridViewColumn>()
-                    .Where(col => col.Name != "Installed" && col.Name != "UpdateCol" && col.Name != "ReplaceCol")
-                    .Select(col => new ToolStripMenuItem()
-                    {
-                        Name    = col.Name,
-                        Text    = col.HeaderText,
-                        Checked = col.Visible,
-                        Tag     = col
-                    })
-                    .ToArray()
-                );
+                    ModGrid.Columns
+                           .OfType<DataGridViewColumn>()
+                           .Where(col => col.Name is not "Installed"
+                                                 and not "UpdateCol"
+                                                 and not "ReplaceCol")
+                           .Select(col => new ToolStripMenuItem()
+                           {
+                               Name    = col.Name,
+                               Text    = col.HeaderText,
+                               Checked = col.Visible,
+                               Tag     = col
+                           })
+                           .ToArray());
             }
 
             if (columns && tags)
@@ -677,7 +709,7 @@ namespace CKAN.GUI
                 ModListHeaderContextMenuStrip.Items.Add(new ToolStripSeparator());
             }
 
-            if (tags)
+            if (tags && currentInstance != null)
             {
                 // Add tags
                 var registry = RegistryManager.Instance(currentInstance, repoData).registry;
@@ -687,7 +719,7 @@ namespace CKAN.GUI
                     {
                         Name    = kvp.Key,
                         Text    = kvp.Key,
-                        Checked = !mainModList.ModuleTags.HiddenTags.Contains(kvp.Key),
+                        Checked = !ModuleTagList.ModuleTags.HiddenTags.Contains(kvp.Key),
                         Tag     = kvp.Value,
                     })
                     .ToArray()
@@ -701,15 +733,15 @@ namespace CKAN.GUI
         /// <summary>
         /// Called if a ToolStripButton of the header context menu is pressed.
         /// </summary>
-        private void ModListHeaderContextMenuStrip_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        private void ModListHeaderContextMenuStrip_ItemClicked(object? sender, ToolStripItemClickedEventArgs? e)
         {
             // ClickedItem is of type ToolStripItem, we need ToolStripButton.
-            ToolStripMenuItem  clickedItem = e.ClickedItem    as ToolStripMenuItem;
+            var clickedItem = e?.ClickedItem as ToolStripMenuItem;
 
             if (clickedItem?.Tag is DataGridViewColumn col)
             {
                 col.Visible = !clickedItem.Checked;
-                guiConfig.SetColumnVisibility(col.Name, !clickedItem.Checked);
+                guiConfig?.SetColumnVisibility(col.Name, !clickedItem.Checked);
                 if (col.Index == 0)
                 {
                     InstallAllCheckbox.Visible = col.Visible;
@@ -719,13 +751,13 @@ namespace CKAN.GUI
             {
                 if (!clickedItem.Checked)
                 {
-                    mainModList.ModuleTags.HiddenTags.Remove(tag.Name);
+                    ModuleTagList.ModuleTags.HiddenTags.Remove(tag.Name);
                 }
                 else
                 {
-                    mainModList.ModuleTags.HiddenTags.Add(tag.Name);
+                    ModuleTagList.ModuleTags.HiddenTags.Add(tag.Name);
                 }
-                mainModList.ModuleTags.Save(ModuleTagList.DefaultPath);
+                ModuleTagList.ModuleTags.Save(ModuleTagList.DefaultPath);
                 UpdateFilters();
                 UpdateHiddenTagsAndLabels();
             }
@@ -735,9 +767,9 @@ namespace CKAN.GUI
         /// Called on key down when the mod list is focused.
         /// Makes the Home/End keys go to the top/bottom of the list respectively.
         /// </summary>
-        private void ModGrid_KeyDown(object sender, KeyEventArgs e)
+        private void ModGrid_KeyDown(object? sender, KeyEventArgs? e)
         {
-            switch (e.KeyCode)
+            switch (e?.KeyCode)
             {
                 case Keys.Home:
                     // First row.
@@ -753,7 +785,7 @@ namespace CKAN.GUI
                     // Last row.
                     if (ModGrid.Rows.Count > 0) //Handles for empty filters
                     {
-                        ModGrid.CurrentCell = ModGrid.Rows[ModGrid.Rows.Count - 1].Cells[SelectableColumnIndex()];
+                        ModGrid.CurrentCell = ModGrid.Rows[^1].Cells[SelectableColumnIndex()];
                     }
 
                     e.Handled = true;
@@ -793,48 +825,51 @@ namespace CKAN.GUI
         /// being pressed repeatedly, it cycles through mods names beginning with that key.
         /// If space is pressed, the checkbox at the current row is toggled.
         /// </summary>
-        private void ModGrid_KeyPress(object sender, KeyPressEventArgs e)
+        private void ModGrid_KeyPress(object? sender, KeyPressEventArgs? e)
         {
-            // Don't search for spaces or newlines
-            if (e.KeyChar == (char)Keys.Space || e.KeyChar == (char)Keys.Enter)
+            if (e != null)
             {
-                return;
+                // Don't search for spaces or newlines
+                if (e.KeyChar is ((char)Keys.Space) or ((char)Keys.Enter))
+                {
+                    return;
+                }
+
+                var key = e.KeyChar.ToString();
+                // Determine time passed since last key press.
+                TimeSpan interval = DateTime.Now - lastSearchTime;
+                if (interval.TotalSeconds < 1)
+                {
+                    // Last keypress was < 1 sec ago, so combine the last and current keys.
+                    key = lastSearchKey + key;
+                }
+
+                // Remember the current time and key.
+                lastSearchTime = DateTime.Now;
+                lastSearchKey = key;
+
+                if (key.Distinct().Count() == 1)
+                {
+                    // Treat repeating and single keypresses the same.
+                    key = key[..1];
+                }
+
+                FocusMod(key, false);
+                e.Handled = true;
             }
-
-            var key = e.KeyChar.ToString();
-            // Determine time passed since last key press.
-            TimeSpan interval = DateTime.Now - lastSearchTime;
-            if (interval.TotalSeconds < 1)
-            {
-                // Last keypress was < 1 sec ago, so combine the last and current keys.
-                key = lastSearchKey + key;
-            }
-
-            // Remember the current time and key.
-            lastSearchTime = DateTime.Now;
-            lastSearchKey = key;
-
-            if (key.Distinct().Count() == 1)
-            {
-                // Treat repeating and single keypresses the same.
-                key = key.Substring(0, 1);
-            }
-
-            FocusMod(key, false);
-            e.Handled = true;
         }
 
         /// <summary>
         /// I'm pretty sure this is what gets called when the user clicks on a ticky in the mod list.
         /// </summary>
-        private void ModGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void ModGrid_CellContentClick(object? sender, DataGridViewCellEventArgs? e)
         {
             ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void ModGrid_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        private void ModGrid_CellMouseDoubleClick(object? sender, DataGridViewCellMouseEventArgs? e)
         {
-            if (e.Button != MouseButtons.Left)
+            if (e?.Button != MouseButtons.Left)
             {
                 return;
             }
@@ -845,7 +880,7 @@ namespace CKAN.GUI
             }
 
             DataGridViewRow row = ModGrid.Rows[e.RowIndex];
-            if (!(row.Cells[0] is DataGridViewCheckBoxCell))
+            if (row.Cells[0] is not DataGridViewCheckBoxCell)
             {
                 return;
             }
@@ -855,16 +890,16 @@ namespace CKAN.GUI
             ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
-        private void ModGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void ModGrid_CellValueChanged(object? sender, DataGridViewCellEventArgs? e)
         {
-            if (e.RowIndex >= 0)
+            if (currentInstance != null && e?.RowIndex >= 0)
             {
-                var row = ModGrid?.Rows?[e.RowIndex];
+                var row = ModGrid.Rows?[e.RowIndex];
                 switch (row?.Cells[e.ColumnIndex])
                 {
                     case DataGridViewLinkCell linkCell:
                         // Launch URLs if found in grid
-                        string cmd = linkCell.Value.ToString();
+                        var cmd = linkCell.Value.ToString();
                         if (!string.IsNullOrEmpty(cmd))
                         {
                             Utilities.ProcessStartURL(cmd);
@@ -915,13 +950,14 @@ namespace CKAN.GUI
             }
         }
 
-        private void guiModule_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void guiModule_PropertyChanged(object? sender, PropertyChangedEventArgs? e)
         {
-            if (sender is GUIMod gmod
+            if (currentInstance != null
+                && sender is GUIMod gmod
                 && mainModList.full_list_of_mod_rows.TryGetValue(gmod.Identifier,
-                                                                 out DataGridViewRow row))
+                                                                 out DataGridViewRow? row))
             {
-                switch (e.PropertyName)
+                switch (e?.PropertyName)
                 {
                     case "SelectedMod":
                         Util.Invoke(this, () =>
@@ -963,11 +999,12 @@ namespace CKAN.GUI
 
         public void RemoveChangesetItem(ModChange change)
         {
-            if (currentChangeSet != null
+            if (currentInstance != null
+                && currentChangeSet != null
                 && currentChangeSet.Contains(change)
                 && change.IsRemovable
                 && mainModList.full_list_of_mod_rows.TryGetValue(change.Mod.identifier,
-                                                                 out DataGridViewRow row)
+                                                                 out DataGridViewRow? row)
                 && row.Tag is GUIMod guiMod)
             {
                 if (change.IsAutoRemoval)
@@ -999,7 +1036,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModGrid_GotFocus(object sender, EventArgs e)
+        private void ModGrid_GotFocus(object? sender, EventArgs? e)
         {
             Util.Invoke(this, () =>
             {
@@ -1009,7 +1046,7 @@ namespace CKAN.GUI
             });
         }
 
-        private void ModGrid_LostFocus(object sender, EventArgs e)
+        private void ModGrid_LostFocus(object? sender, EventArgs? e)
         {
             Util.Invoke(this, () =>
             {
@@ -1019,7 +1056,7 @@ namespace CKAN.GUI
             });
         }
 
-        private void InstallAllCheckbox_CheckChanged(object sender, EventArgs e)
+        private void InstallAllCheckbox_CheckChanged(object? sender, EventArgs? e)
         {
             WithFrozenChangeset(() =>
             {
@@ -1061,17 +1098,21 @@ namespace CKAN.GUI
                         updateCell.Value = false;
                     }
                 }
-                // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
-                // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
-                foreach (DataGridViewRow row in mainModList.full_list_of_mod_rows.Values)
+                if (ChangeSet != null)
                 {
-                    GUIMod mod = row.Tag as GUIMod;
-                    if (mod.InstalledMod != null
-                        && ChangeSet.Contains(new ModChange(mod.InstalledMod?.Module,
-                                                            GUIModChangeType.Remove,
-                                                            new SelectionReason.NoLongerUsed())))
+                    // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
+                    // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
+                    var noLongerUsed = ChangeSet.Where(ch => ch.ChangeType == GUIModChangeType.Remove
+                                                             && ch.Reasons.Any(r => r is SelectionReason.NoLongerUsed))
+                                                .Select(ch => ch.Mod)
+                                                .ToArray();
+                    foreach (var mod in noLongerUsed)
                     {
-                        mod.SetAutoInstallChecked(row, AutoInstalled, false);
+                        if (mainModList.full_list_of_mod_rows.TryGetValue(mod.identifier, out DataGridViewRow? row)
+                            && row.Tag is GUIMod gmod)
+                        {
+                            gmod.SetAutoInstallChecked(row, AutoInstalled, false);
+                        }
                     }
                 }
             });
@@ -1096,8 +1137,11 @@ namespace CKAN.GUI
                     // Don't let anything ever prevent us from unfreezing the changeset
                     freezeChangeSet = false;
                     ModGrid.Refresh();
-                    UpdateChangeSetAndConflicts(currentInstance,
-                                                RegistryManager.Instance(currentInstance, repoData).registry);
+                    if (currentInstance != null)
+                    {
+                        UpdateChangeSetAndConflicts(currentInstance,
+                                                    RegistryManager.Instance(currentInstance, repoData).registry);
+                    }
                 }
             }
         }
@@ -1111,35 +1155,34 @@ namespace CKAN.GUI
         /// Index of the column to use.
         /// </returns>
         private int SelectableColumnIndex()
-        {
             // First try the currently active cell's column
-            return ModGrid.CurrentCell?.ColumnIndex
+            => ModGrid.CurrentCell?.ColumnIndex
                 // If there's no currently active cell, use the first visible non-checkbox column
                 ?? ModGrid.Columns.Cast<DataGridViewColumn>()
                     .FirstOrDefault(c => c is DataGridViewTextBoxColumn && c.Visible)?.Index
                 // Otherwise use the Installed checkbox column since it can't be hidden
                 ?? Installed.Index;
-        }
 
         public void FocusMod(string key, bool exactMatch, bool showAsFirst = false)
         {
             DataGridViewRow current_row = ModGrid.CurrentRow;
             int currentIndex = current_row?.Index ?? 0;
-            DataGridViewRow first_match = null;
+            DataGridViewRow? first_match = null;
 
             var does_name_begin_with_key = new Func<DataGridViewRow, bool>(row =>
             {
-                GUIMod mod = row.Tag as GUIMod;
+                var mod = row.Tag as GUIMod;
                 bool row_match;
                 if (exactMatch)
                 {
-                    row_match = mod.Name == key || mod.Identifier == key;
+                    row_match = mod?.Name == key || mod?.Identifier == key;
                 }
                 else
                 {
-                    row_match = mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
-                                mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase) ||
-                                mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase);
+                    row_match = mod != null
+                                && (mod.Name.StartsWith(key, StringComparison.OrdinalIgnoreCase)
+                                    || mod.Abbrevation.StartsWith(key, StringComparison.OrdinalIgnoreCase)
+                                    || mod.Identifier.StartsWith(key, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (row_match && first_match == null)
@@ -1158,9 +1201,10 @@ namespace CKAN.GUI
             });
 
             ModGrid.ClearSelection();
-            DataGridViewRow match = ModGrid.Rows.Cast<DataGridViewRow>()
-                .Where(row => row.Visible)
-                .FirstOrDefault(does_name_begin_with_key);
+            var match = ModGrid.Rows
+                               .OfType<DataGridViewRow>()
+                               .Where(row => row.Visible)
+                               .FirstOrDefault(does_name_begin_with_key);
             if (match == null && first_match != null)
             {
                 // If there were no matches after the first match, cycle over to the beginning.
@@ -1183,7 +1227,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModGrid_MouseDown(object sender, MouseEventArgs e)
+        private void ModGrid_MouseDown(object? sender, MouseEventArgs e)
         {
             var rowIndex = ModGrid.HitTest(e.X, e.Y).RowIndex;
 
@@ -1215,15 +1259,15 @@ namespace CKAN.GUI
             return false;
         }
 
-        private void ModGrid_Resize(object sender, EventArgs e)
+        private void ModGrid_Resize(object? sender, EventArgs? e)
         {
             InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
         }
 
-        private void reinstallToolStripMenuItem_Click(object sender, EventArgs e)
+        private void reinstallToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             var module = SelectedModule?.ToModule();
-            if (module != null)
+            if (module != null && currentInstance != null)
             {
                 IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
                 StartChangeSet?.Invoke(new List<ModChange>()
@@ -1244,25 +1288,25 @@ namespace CKAN.GUI
             => mainModList.Modules.ToDictionary(guiMod => guiMod.Identifier,
                                                 guiMod => guiMod);
 
-        private void purgeContentsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void purgeContentsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             // Purge other versions as well since the user is likely to want that
             // and has no other way to achieve it
             var selected = SelectedModule;
-            if (selected != null)
+            if (selected != null && currentInstance != null)
             {
                 IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
                 var allAvail = registry.AvailableByIdentifier(selected.Identifier);
                 foreach (CkanModule mod in allAvail)
                 {
-                    manager.Cache.Purge(mod);
+                    manager?.Cache?.Purge(mod);
                 }
             }
         }
 
-        private void downloadContentsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void downloadContentsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            Main.Instance.StartDownload(SelectedModule);
+            Main.Instance?.StartDownload(SelectedModule);
         }
 
         private void EditModSearches_ApplySearches(List<ModSearch> searches)
@@ -1288,7 +1332,7 @@ namespace CKAN.GUI
 
         private void _UpdateFilters()
         {
-            if (ModGrid == null || mainModList?.full_list_of_mod_rows == null)
+            if (ModGrid == null || mainModList?.full_list_of_mod_rows == null || currentInstance == null)
             {
                 return;
             }
@@ -1301,10 +1345,10 @@ namespace CKAN.GUI
             mainModList.full_list_of_mod_rows.Values.CopyTo(rows, 0);
             // Try to remember the current scroll position and selected mod
             var scroll_col = Math.Max(0, ModGrid.FirstDisplayedScrollingColumnIndex);
-            GUIMod selected_mod = null;
+            GUIMod? selected_mod = null;
             if (ModGrid.CurrentRow != null)
             {
-                selected_mod = (GUIMod)ModGrid.CurrentRow.Tag;
+                selected_mod = ModGrid.CurrentRow.Tag as GUIMod;
             }
 
             var registry = RegistryManager.Instance(currentInstance, repoData).registry;
@@ -1312,8 +1356,8 @@ namespace CKAN.GUI
             var instName = currentInstance.Name;
             var instGame = currentInstance.game;
             rows.AsParallel().ForAll(row =>
-                row.Visible = mainModList.IsVisible((GUIMod)row.Tag,
-                                                    instName, instGame, registry));
+                row.Visible = row.Tag is GUIMod gmod
+                && mainModList.IsVisible(gmod, instName, instGame, registry));
             ApplyHeaderGlyphs();
             ModGrid.Rows.AddRange(Sort(rows.Where(row => row.Visible)).ToArray());
 
@@ -1321,7 +1365,7 @@ namespace CKAN.GUI
             if (selected_mod != null)
             {
                 var selected_row = ModGrid.Rows.Cast<DataGridViewRow>()
-                    .FirstOrDefault(row => selected_mod.Identifier.Equals(((GUIMod)row.Tag).Identifier));
+                    .FirstOrDefault(row => selected_mod.Identifier.Equals((row.Tag as GUIMod)?.Identifier));
                 if (selected_row != null)
                 {
                     ModGrid.CurrentCell = selected_row.Cells[scroll_col];
@@ -1330,14 +1374,22 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void Update(object sender, DoWorkEventArgs e)
+        public void Update(object? sender, DoWorkEventArgs? e)
         {
-            e.Result = _UpdateModsList(e.Argument as Dictionary<string, bool>);
+            if (e != null)
+            {
+                e.Result = _UpdateModsList(e.Argument as Dictionary<string, bool>);
+            }
         }
 
         [ForbidGUICalls]
-        private bool _UpdateModsList(Dictionary<string, bool> old_modules = null)
+        private bool _UpdateModsList(Dictionary<string, bool>? old_modules = null)
         {
+            if (currentInstance == null || guiConfig == null)
+            {
+                return false;
+            }
+
             log.Info("Updating the mod list");
 
             var regMgr = RegistryManager.Instance(currentInstance, repoData);
@@ -1345,7 +1397,7 @@ namespace CKAN.GUI
 
             repoData.Prepopulate(
                 registry.Repositories.Values.ToList(),
-                new Progress<int>(p => user.RaiseProgress(
+                new Progress<int>(p => user?.RaiseProgress(
                     Properties.Resources.LoadingCachedRepoData, p)));
 
             if (!regMgr.registry.HasAnyAvailable())
@@ -1417,7 +1469,8 @@ namespace CKAN.GUI
 
             RaiseMessage?.Invoke(Properties.Resources.MainModListUpdatingFilters);
 
-            var has_unheld_updates = mainModList.Modules.Any(mod => mod.HasUpdate && !Main.Instance.LabelsHeld(mod.Identifier));
+            var has_unheld_updates = mainModList.Modules.Any(mod => mod.HasUpdate
+                                                                    && (!Main.Instance?.LabelsHeld(mod.Identifier) ?? true));
             Util.Invoke(menuStrip2, () =>
             {
                 FilterCompatibleButton.Text = string.Format(Properties.Resources.MainModListCompatible,
@@ -1469,7 +1522,13 @@ namespace CKAN.GUI
                 }
                 else if (timeSinceUpdate < RepositoryDataManager.TimeTillVeryStale)
                 {
-                    RefreshToolButton.Image = EmbeddedImages.refreshStale;
+                    // Gradually turn the dot from yellow to red as the user ignores it longer and longer
+                    RefreshToolButton.Image = Util.LerpBitmaps(
+                        EmbeddedImages.refreshStale,
+                        EmbeddedImages.refreshVeryStale,
+                        (float)((timeSinceUpdate - RepositoryDataManager.TimeTillStale).TotalSeconds
+                                / (RepositoryDataManager.TimeTillVeryStale
+                                   - RepositoryDataManager.TimeTillStale).TotalSeconds));
                     RefreshToolButton.ToolTipText = string.Format(Properties.Resources.ManageModsRefreshStaleToolTip,
                                                                   Math.Round(timeSinceUpdate.TotalDays));
                 }
@@ -1486,7 +1545,7 @@ namespace CKAN.GUI
             return true;
         }
 
-        private void ModGrid_CurrentCellDirtyStateChanged(object sender, EventArgs e)
+        private void ModGrid_CurrentCellDirtyStateChanged(object? sender, EventArgs? e)
         {
             ModGrid_CellContentClick(sender, null);
         }
@@ -1507,9 +1566,9 @@ namespace CKAN.GUI
 
         private void AddSort(DataGridViewColumn col, bool atStart = false)
         {
-            if (SortColumns.Count > 0 && SortColumns[SortColumns.Count - 1] == col.Name)
+            if (SortColumns.Count > 0 && SortColumns[^1] == col.Name)
             {
-                descending[descending.Count - 1] = !descending[descending.Count - 1];
+                descending[^1] = !descending[^1];
             }
             else
             {
@@ -1581,10 +1640,10 @@ namespace CKAN.GUI
         /// </returns>
         private int CompareColumn(DataGridViewRow a, DataGridViewRow b, DataGridViewColumn col)
         {
-            GUIMod gmodA = a.Tag as GUIMod;
-            GUIMod gmodB = b.Tag as GUIMod;
-            CkanModule modA = gmodA.ToModule();
-            CkanModule modB = gmodB.ToModule();
+            var gmodA = a.Tag as GUIMod;
+            var gmodB = b.Tag as GUIMod;
+            var modA = gmodA?.ToModule();
+            var modB = gmodB?.ToModule();
             var cellA = a.Cells[col.Index];
             var cellB = b.Cells[col.Index];
             if (col is DataGridViewCheckBoxColumn)
@@ -1606,7 +1665,7 @@ namespace CKAN.GUI
                         : ((string)cellA.Value).CompareTo((string)cellB.Value);
                 }
             }
-            else
+            else if (gmodA != null && gmodB != null && modA != null && modB != null)
             {
                 switch (col.Name)
                 {
@@ -1626,6 +1685,7 @@ namespace CKAN.GUI
                         return valA.CompareTo(valB);
                 }
             }
+            return 0;
         }
 
         private static int CompareToNullable<T>(T? a, T? b) where T : struct, IComparable
@@ -1647,8 +1707,8 @@ namespace CKAN.GUI
         /// </returns>
         private int GameCompatComparison(DataGridViewRow a, DataGridViewRow b)
         {
-            GameVersion verA = ((GUIMod)a.Tag)?.GameCompatibilityVersion;
-            GameVersion verB = ((GUIMod)b.Tag)?.GameCompatibilityVersion;
+            var verA = (a.Tag as GUIMod)?.GameCompatibilityVersion;
+            var verB = (b.Tag as GUIMod)?.GameCompatibilityVersion;
             if (verA == null)
             {
                 return verB == null ? 0 : -1;
@@ -1701,7 +1761,7 @@ namespace CKAN.GUI
             FocusMod(module.identifier, true);
         }
 
-        public GUIMod SelectedModule =>
+        public GUIMod? SelectedModule =>
             ModGrid.SelectedRows.Count == 0
                 ? null
                 : ModGrid.SelectedRows[0]?.Tag as GUIMod;
@@ -1721,32 +1781,35 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private void UpdateHiddenTagsAndLabels()
         {
-            var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            var tags = mainModList.ModuleTags.HiddenTags
-                                             .Intersect(registry.Tags.Keys)
-                                             .OrderByDescending(tagName => tagName)
-                                             .Select(tagName => registry.Tags[tagName])
-                                             .ToList();
-            var labels = mainModList.ModuleLabels.LabelsFor(currentInstance.Name)
-                                                 .Where(l => l.Hide && l.ModuleCount(currentInstance.game) > 0)
-                                                 .ToList();
-            hiddenTagsLabelsLinkList.UpdateTagsAndLabels(tags, labels);
-            Util.Invoke(hiddenTagsLabelsLinkList, () =>
+            if (currentInstance != null)
             {
-                hiddenTagsLabelsLinkList.Visible = tags.Count > 0 || labels.Count > 0;
-                if (tags.Count > 0 || labels.Count > 0)
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                var tags = ModuleTagList.ModuleTags.HiddenTags
+                                                   .Intersect(registry.Tags.Keys)
+                                                   .OrderByDescending(tagName => tagName)
+                                                   .Select(tagName => registry.Tags[tagName])
+                                                   .ToList();
+                var labels = ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name)
+                                                         .Where(l => l.Hide && l.ModuleCount(currentInstance.game) > 0)
+                                                         .ToList();
+                hiddenTagsLabelsLinkList.UpdateTagsAndLabels(tags, labels);
+                Util.Invoke(hiddenTagsLabelsLinkList, () =>
                 {
-                    hiddenTagsLabelsLinkList.Controls.Add(new Label()
+                    hiddenTagsLabelsLinkList.Visible = tags.Count > 0 || labels.Count > 0;
+                    if (tags.Count > 0 || labels.Count > 0)
                     {
-                        Text = tags.Count   == 0 ? Properties.Resources.ManageModsHiddenLabels
-                             : labels.Count == 0 ? Properties.Resources.ManageModsHiddenTags
-                             :                     Properties.Resources.ManageModsHiddenLabelsAndTags,
-                        AutoSize = true,
-                        Padding  = new Padding(0),
-                        Margin   = new Padding(0, 2, 0, 2),
-                    });
-                }
-            });
+                        hiddenTagsLabelsLinkList.Controls.Add(new Label()
+                        {
+                            Text = tags.Count   == 0 ? Properties.Resources.ManageModsHiddenLabels
+                                 : labels.Count == 0 ? Properties.Resources.ManageModsHiddenTags
+                                 :                     Properties.Resources.ManageModsHiddenLabelsAndTags,
+                            AutoSize = true,
+                            Padding  = new Padding(0),
+                            Margin   = new Padding(0, 2, 0, 2),
+                        });
+                    }
+                });
+            }
         }
 
         private void hiddenTagsLabelsLinkList_TagClicked(ModuleTag tag, bool merge)
@@ -1775,12 +1838,6 @@ namespace CKAN.GUI
             }
         }
 
-        private void NavUpdateUI()
-        {
-            NavBackwardToolButton.Enabled = navHistory.CanNavigateBackward;
-            NavForwardToolButton.Enabled = navHistory.CanNavigateForward;
-        }
-
         private void NavSelectMod(GUIMod module)
         {
             navHistory.AddToHistory(module);
@@ -1788,24 +1845,24 @@ namespace CKAN.GUI
 
         public void NavGoBackward()
         {
-            if (navHistory.CanNavigateBackward)
+            if (navHistory.TryGoBackward(out GUIMod? newCurrentItem))
             {
-                NavGoToMod(navHistory.NavigateBackward());
+                NavGoToMod(newCurrentItem);
             }
         }
 
         public void NavGoForward()
         {
-            if (navHistory.CanNavigateForward)
+            if (navHistory.TryGoForward(out GUIMod? newCurrentItem))
             {
-                NavGoToMod(navHistory.NavigateForward());
+                NavGoToMod(newCurrentItem);
             }
         }
 
         private void NavGoToMod(GUIMod module)
         {
-            // Focussing on a mod also causes navigation, but we don't want
-            // this to affect the history. so we switch to read-only mode.
+            // Focusing on a mod also causes navigation, but we don't want
+            // this to affect the history, so we switch to read-only mode.
             navHistory.IsReadOnly = true;
             FocusMod(module.Name, true);
             navHistory.IsReadOnly = false;
@@ -1813,7 +1870,8 @@ namespace CKAN.GUI
 
         private void NavOnHistoryChange()
         {
-            NavUpdateUI();
+            NavBackwardToolButton.Enabled = navHistory.CanNavigateBackward;
+            NavForwardToolButton.Enabled = navHistory.CanNavigateForward;
         }
 
         #endregion
@@ -1851,9 +1909,9 @@ namespace CKAN.GUI
                 string confDescrip = Conflicts
                     .Select(kvp => kvp.Value)
                     .Aggregate((a, b) => $"{a}, {b}");
-                if (!Main.Instance.YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
+                if (!Main.Instance?.YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
                     Properties.Resources.MainQuit,
-                    Properties.Resources.MainGoBack))
+                    Properties.Resources.MainGoBack) ?? false)
                 {
                     return false;
                 }
@@ -1866,9 +1924,9 @@ namespace CKAN.GUI
                     .Select(grp => $"{grp.Key}: "
                         + grp.Aggregate((a, b) => $"{a}, {b}"))
                     .Aggregate((a, b) => $"{a}\r\n{b}");
-                if (!Main.Instance.YesNoDialog(string.Format(Properties.Resources.MainQuitWithUnappliedChanges, changeDescrip),
+                if (!Main.Instance?.YesNoDialog(string.Format(Properties.Resources.MainQuitWithUnappliedChanges, changeDescrip),
                     Properties.Resources.MainQuit,
-                    Properties.Resources.MainGoBack))
+                    Properties.Resources.MainGoBack) ?? false)
                 {
                     return false;
                 }
@@ -1884,11 +1942,13 @@ namespace CKAN.GUI
         }
 
         public HashSet<ModChange> ComputeUserChangeSet()
-            => mainModList.ComputeUserChangeSet(
-                  RegistryManager.Instance(currentInstance, repoData).registry,
-                  currentInstance.VersionCriteria(),
-                  currentInstance,
-                  UpdateCol, ReplaceCol);
+            => currentInstance == null
+                ? new HashSet<ModChange>()
+                : mainModList.ComputeUserChangeSet(
+                      RegistryManager.Instance(currentInstance, repoData).registry,
+                      currentInstance.VersionCriteria(),
+                      currentInstance,
+                      UpdateCol, ReplaceCol);
 
         [ForbidGUICalls]
         public void UpdateChangeSetAndConflicts(GameInstance inst, IRegistryQuerier registry)
@@ -1899,8 +1959,8 @@ namespace CKAN.GUI
                 return;
             }
 
-            List<ModChange> full_change_set = null;
-            Dictionary<GUIMod, string> new_conflicts = null;
+            List<ModChange>? full_change_set = null;
+            Dictionary<GUIMod, string>? new_conflicts = null;
 
             var gameVersion = inst.VersionCriteria();
             var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, inst, UpdateCol, ReplaceCol);
@@ -1920,7 +1980,8 @@ namespace CKAN.GUI
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
                     item => new GUIMod(item.Key, repoData, registry, gameVersion, null,
-                                       guiConfig.HideEpochs, guiConfig.HideV),
+                                       guiConfig?.HideEpochs ?? false,
+                                       guiConfig?.HideV      ?? false),
                     item => item.Value);
                 if (new_conflicts.Count > 0)
                 {

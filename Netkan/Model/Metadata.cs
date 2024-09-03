@@ -24,30 +24,30 @@ namespace CKAN.NetKAN.Model
 
         private readonly JObject _json;
 
-        public string        Identifier      => (string)_json["identifier"];
-        public RemoteRef     Kref            { get; private set; }
-        public RemoteRef     Vref            { get; private set; }
-        public ModuleVersion SpecVersion     { get; private set; }
-        public ModuleVersion Version         { get; private set; }
-        public Uri           Download        { get; private set; }
-        public DateTime?     RemoteTimestamp { get; private set; }
-        public bool          Staged          { get; private set; }
-        public string        StagingReason   { get; private set; }
+        public string         Identifier      => (string?)_json["identifier"] ?? "";
+        public RemoteRef?     Kref            { get; private set; }
+        public RemoteRef?     Vref            { get; private set; }
+        public ModuleVersion? SpecVersion     { get; private set; }
+        public ModuleVersion? Version         { get; private set; }
+        public Uri?           Download        { get; private set; }
+        public DateTime?      RemoteTimestamp { get; private set; }
+        public bool           Staged          { get; private set; }
+        public string?        StagingReason   { get; private set; }
 
-        public Metadata(JObject json)
+        public Metadata(JObject? json)
         {
             if (json == null)
             {
-                throw new ArgumentNullException("json");
+                throw new ArgumentNullException(nameof(json));
             }
 
             _json = json;
 
-            if (json.TryGetValue(KrefPropertyName, out JToken krefToken))
+            if (json.TryGetValue(KrefPropertyName, out JToken? krefToken))
             {
                 if (krefToken.Type == JTokenType.String)
                 {
-                    Kref = new RemoteRef((string)krefToken);
+                    Kref = new RemoteRef((string?)krefToken ?? "");
                 }
                 else
                 {
@@ -55,11 +55,11 @@ namespace CKAN.NetKAN.Model
                 }
             }
 
-            if (json.TryGetValue(VrefPropertyName, out JToken vrefToken))
+            if (json.TryGetValue(VrefPropertyName, out JToken? vrefToken))
             {
                 if (vrefToken.Type == JTokenType.String)
                 {
-                    Vref = new RemoteRef((string)vrefToken);
+                    Vref = new RemoteRef((string?)vrefToken ?? "");
                 }
                 else
                 {
@@ -67,7 +67,7 @@ namespace CKAN.NetKAN.Model
                 }
             }
 
-            if (json.TryGetValue(SpecVersionPropertyName, out JToken specVersionToken))
+            if (json.TryGetValue(SpecVersionPropertyName, out JToken? specVersionToken))
             {
                 if (specVersionToken.Type == JTokenType.Integer && (int)specVersionToken == 1)
                 {
@@ -75,7 +75,7 @@ namespace CKAN.NetKAN.Model
                 }
                 else if (specVersionToken.Type == JTokenType.String)
                 {
-                    SpecVersion = new ModuleVersion((string)specVersionToken);
+                    SpecVersion = new ModuleVersion((string?)specVersionToken ?? "");
                 }
                 else
                 {
@@ -86,30 +86,32 @@ namespace CKAN.NetKAN.Model
                 }
             }
 
-            if (json.TryGetValue(VersionPropertyName, out JToken versionToken))
+            if (json.TryGetValue(VersionPropertyName, out JToken? versionToken))
             {
-                Version = new ModuleVersion((string)versionToken);
+                Version = new ModuleVersion((string?)versionToken ?? "");
             }
 
-            if (json.TryGetValue(DownloadPropertyName, out JToken downloadToken))
+            if (json.TryGetValue(DownloadPropertyName, out JToken? downloadToken))
             {
-                Download = new Uri(
-                    downloadToken.Type == JTokenType.String
-                        ? (string)downloadToken
-                        : (string)downloadToken.Children().First());
+                Download = (downloadToken.Type == JTokenType.String
+                                ? (string?)downloadToken
+                                : (string?)downloadToken.Children().First())
+                            is string s
+                                ? new Uri(s)
+                                : null;
             }
 
-            if (json.TryGetValue(StagedPropertyName, out JToken stagedToken))
+            if (json.TryGetValue(StagedPropertyName, out JToken? stagedToken))
             {
                 Staged = (bool)stagedToken;
             }
 
-            if (json.TryGetValue(StagingReasonPropertyName, out JToken stagingReasonToken))
+            if (json.TryGetValue(StagingReasonPropertyName, out JToken? stagingReasonToken))
             {
-                StagingReason = (string)stagingReasonToken;
+                StagingReason = (string?)stagingReasonToken ?? "";
             }
 
-            if (json.TryGetValue(UpdatedPropertyName, out JToken updatedToken))
+            if (json.TryGetValue(UpdatedPropertyName, out JToken? updatedToken))
             {
                 DateTime t = (DateTime)updatedToken;
                 RemoteTimestamp = t.ToUniversalTime();
@@ -133,17 +135,17 @@ namespace CKAN.NetKAN.Model
                 MergeArrayHandling     = MergeArrayHandling.Replace,
                 MergeNullValueHandling = MergeNullValueHandling.Merge,
             };
-            var downloads = jsons.SelectMany(json => json[DownloadPropertyName] is JArray
-                                                         ? json[DownloadPropertyName].Children()
+            var downloads = jsons.SelectMany(json => json[DownloadPropertyName] is JArray arr
+                                                         ? arr.Children()
                                                          : Enumerable.Repeat(json[DownloadPropertyName], 1))
                                  .Distinct()
                                  .ToArray();
             var first = jsons.First();
             foreach (var other in jsons.Skip(1))
             {
-                if ((string)first["download_size"] != (string)other["download_size"]
-                    || (string)first["download_hash"]["sha1"] != (string)other["download_hash"]["sha1"]
-                    || (string)first["download_hash"]["sha256"] != (string)other["download_hash"]["sha256"])
+                if ((string?)first["download_size"] != (string?)other["download_size"]
+                    || (string?)first["download_hash"]?["sha1"] != (string?)other["download_hash"]?["sha1"]
+                    || (string?)first["download_hash"]?["sha256"] != (string?)other["download_hash"]?["sha256"])
                 {
                     // Can't treat the URLs as equivalent if they're different files
                     throw new Kraken(string.Format(
@@ -166,15 +168,16 @@ namespace CKAN.NetKAN.Model
             get
             {
                 var lic = _json["license"];
-                switch (lic.Type)
+                switch (lic?.Type)
                 {
                     case JTokenType.Array:
                         return lic.Children()
-                            .Select(t => (string)t)
-                            .ToArray();
+                                  .Select(t => (string?)t)
+                                  .OfType<string>()
+                                  .ToArray();
 
                     case JTokenType.String:
-                        return new string[] { (string)lic };
+                        return new string[] { (string?)lic ?? "" };
                 }
                 return Array.Empty<string>();
             }
@@ -182,30 +185,14 @@ namespace CKAN.NetKAN.Model
 
         public bool Redistributable => Licenses.Any(lic => new License(lic).Redistributable);
 
-        public Uri FallbackDownload
-        {
-            get
-            {
-                if (Identifier == null || Version == null || !Redistributable)
-                {
-                    return null;
-                }
-                string verStr = Version.ToString().Replace(':', '-');
-                var hashes = (JObject)_json["download_hash"];
-                if (hashes == null)
-                {
-                    return null;
-                }
-                var sha1 = (string)hashes["sha1"];
-                if (sha1 == null)
-                {
-                    return null;
-                }
-                return new Uri(
-                    $"https://archive.org/download/{Identifier}-{verStr}/{sha1.Substring(0, 8)}-{Identifier}-{verStr}.zip"
-                );
-            }
-        }
+        public Uri? FallbackDownload
+            => Identifier != null
+            && Redistributable
+            && Version?.ToString().Replace(':', '-') is string verStr
+            && (JObject?)_json["download_hash"] is JObject hashes
+            && (string?)hashes["sha1"] is string sha1
+                ? new Uri($"https://archive.org/download/{Identifier}-{verStr}/{sha1[..8]}-{Identifier}-{verStr}.zip")
+                : null;
 
         public JObject Json() => (JObject)_json.DeepClone();
     }

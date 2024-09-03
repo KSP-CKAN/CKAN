@@ -5,15 +5,15 @@ namespace CKAN
 {
     public class GitHubReleaseInfo
     {
-        public string      tag_name;
-        public string      name;
-        public string      body;
-        public List<Asset> assets;
+        public string?      tag_name;
+        public string?      name;
+        public string?      body;
+        public List<Asset>? assets;
 
         public sealed class Asset
         {
-            public Uri  browser_download_url;
-            public long size;
+            public Uri?  browser_download_url;
+            public long  size;
         }
     }
 }

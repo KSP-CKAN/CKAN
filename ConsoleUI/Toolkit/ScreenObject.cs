@@ -35,7 +35,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         public static string PadCenter(string s, int w, char pad = ' ')
         {
             if (s.Length > w) {
-                return s.Substring(0, w);
+                return s[..w];
             } else {
                 int lp = (w - s.Length) / 2;
                 return FormatExactWidth(s, w - lp, pad).PadLeft(w, pad);
@@ -53,7 +53,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </returns>
         public static string FormatExactWidth(string val, int w, char pad = ' ')
         {
-            return val.PadRight(w, pad).Substring(0, w);
+            return val.PadRight(w, pad)[..w];
         }
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>First 'w' characters of 'val', or whole string if short enough</returns>
         public static string TruncateLength(string val, int w)
             => val.Length <= w ? val
-                               : val.Substring(0, w);
+                               : val[..w];
 
         /// <summary>
         /// Custom key bindings for this UI element
@@ -105,11 +105,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="key">Description of the key</param>
         /// <param name="descrip">Description of the action bound to the key</param>
         /// <param name="displayIf">Function returning true to show the tip, false to hide it</param>
-        public void AddTip(string key, string descrip, Func<bool> displayIf = null)
+        public void AddTip(string key, string descrip, Func<bool>? displayIf = null)
         {
-            if (displayIf == null) {
-                displayIf = () => true;
-            }
+            displayIf ??= () => true;
             Tips.Add(new ScreenTip(key, descrip, displayIf));
         }
 
@@ -183,7 +181,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Event to notify container that we'd like to lose focus
         /// </summary>
-        public event BlurListener OnBlur;
+        public event BlurListener? OnBlur;
         /// <summary>
         /// Function to fire event to notify container that we'd like to lose focus
         /// </summary>

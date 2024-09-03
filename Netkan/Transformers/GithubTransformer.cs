@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
+using CKAN.Extensions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -25,16 +26,16 @@ namespace CKAN.NetKAN.Transformers
         {
             if (api == null)
             {
-                throw new ArgumentNullException("api");
+                throw new ArgumentNullException(nameof(api));
             }
 
             _api            = api;
             _matchPreleases = matchPreleases;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "github")
+            if (metadata.Kref != null && metadata.Kref.Source == "github" && opts != null)
             {
                 var json = metadata.Json();
 
@@ -46,7 +47,7 @@ namespace CKAN.NetKAN.Transformers
 
                 var useSourceAchive = false;
 
-                var githubMetadata = (JObject)json["x_netkan_github"];
+                var githubMetadata = (JObject?)json["x_netkan_github"];
                 if (githubMetadata != null)
                 {
                     var githubUseSourceArchive = (bool?)githubMetadata["use_source_archive"];
@@ -61,6 +62,10 @@ namespace CKAN.NetKAN.Transformers
 
                 // Get the GitHub repository
                 var ghRepo = _api.GetRepo(ghRef);
+                if (ghRepo == null)
+                {
+                    throw new Kraken("Failed to get GitHub repo info!");
+                }
                 if (ghRepo.Archived)
                 {
                     Log.Warn("Repo is archived, consider freezing");
@@ -77,7 +82,7 @@ namespace CKAN.NetKAN.Transformers
                 bool returnedAny = false;
                 foreach (GithubRelease rel in releases)
                 {
-                    if (ghRef.VersionFromAsset != null)
+                    if (ghRef.VersionFromAsset != null && rel.Assets != null)
                     {
                         Log.DebugFormat("Found version_from_asset regex, inflating all assets");
                         foreach (var asset in rel.Assets)
@@ -98,7 +103,7 @@ namespace CKAN.NetKAN.Transformers
                             yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, asset, extractedVersion.Value);
                         }
                     }
-                    else
+                    else if (rel.Assets != null && rel.Tag != null)
                     {
                         if (rel.Assets.Count > 1)
                         {
@@ -106,7 +111,7 @@ namespace CKAN.NetKAN.Transformers
                                 metadata.Identifier, rel.Tag);
                         }
                         returnedAny = true;
-                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, rel.Assets.FirstOrDefault(), rel.Tag.ToString());
+                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, rel.Assets.First(), rel.Tag.ToString());
                     }
                 }
                 if (!returnedAny)
@@ -132,10 +137,13 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(
-            Metadata metadata, JObject json, GithubRef ghRef, GithubRepo ghRepo, GithubRelease ghRelease,
-            GithubReleaseAsset ghAsset, string version
-        )
+        private Metadata TransformOne(Metadata           metadata,
+                                      JObject            json,
+                                      GithubRef          ghRef,
+                                      GithubRepo         ghRepo,
+                                      GithubRelease      ghRelease,
+                                      GithubReleaseAsset ghAsset,
+                                      string             version)
         {
             if (!string.IsNullOrWhiteSpace(ghRepo.Description))
             {
@@ -143,7 +151,7 @@ namespace CKAN.NetKAN.Transformers
             }
 
             // GitHub says NOASSERTION if it can't figure out the repo's license
-            if (!string.IsNullOrWhiteSpace(ghRepo.License?.Id)
+            if (ghRepo.License?.Id != null && !string.IsNullOrWhiteSpace(ghRepo.License.Id)
                 && ghRepo.License.Id != "NOASSERTION")
             {
                 json.SafeAdd("license", ghRepo.License.Id);
@@ -159,23 +167,23 @@ namespace CKAN.NetKAN.Transformers
                 SetRepoResources(ghRepo, resourcesJson);
             }
 
-            if (ghRelease != null)
+            if (ghRelease?.Tag != null)
             {
                 json.SafeAdd("version",  version);
-                json.SafeAdd("author",   () => getAuthors(ghRepo, ghRelease));
+                json.SafeAdd("author",   () => GetAuthors(ghRepo, ghRelease));
                 json.Remove("$kref");
                 json.SafeAdd("download", ghAsset.Download.ToString());
                 json.SafeAdd(Metadata.UpdatedPropertyName, ghAsset.Updated);
 
-                if (ghRef.Project.Contains("_"))
+                if (ghRef.Project.Contains('_'))
                 {
                     json.SafeAdd("name", ghRef.Project.Replace("_", " "));
                 }
-                else if (ghRef.Project.Contains("-"))
+                else if (ghRef.Project.Contains('-'))
                 {
                     json.SafeAdd("name", ghRef.Project.Replace("-", " "));
                 }
-                else if (ghRef.Project.Contains("."))
+                else if (ghRef.Project.Contains('.'))
                 {
                     json.SafeAdd("name", ghRef.Project.Replace(".", " "));
                 }
@@ -196,8 +204,7 @@ namespace CKAN.NetKAN.Transformers
 
                 json.SafeMerge(
                     "x_netkan_version_pieces",
-                    JObject.FromObject(new Dictionary<string, string>{ {"tag", ghRelease.Tag.ToString()} })
-                );
+                    JObject.FromObject(new Dictionary<string, string>{ {"tag", ghRelease.Tag.ToString()} }));
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
@@ -227,39 +234,21 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private JToken getAuthors(GithubRepo repo, GithubRelease release)
-        {
-            // Start with the user that published the release
-            var authors = new List<string>() { release.Author };
-            for (GithubRepo r = repo; r != null;)
-            {
-                switch (r.Owner?.Type)
-                {
-                    case userType:
-                        // Prepend repo owner
-                        if (!authors.Contains(r.Owner.Login))
-                        {
-                            authors.Insert(0, r.Owner.Login);
-                        }
-
-                        break;
-                    case orgType:
-                        // Prepend org members
-                        authors.InsertRange(0,
-                            _api.getOrgMembers(r.Owner)
-                                .Where(u => !authors.Contains(u.Login))
-                                .Select(u => u.Login)
-                        );
-                        break;
-                }
-                // Check parent repos
-                r = r.ParentRepo == null
-                    ? null
-                    : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}", false, _matchPreleases));
-            }
-            // Return a string if just one author, else an array
-            return authors.Count == 1 ? (JToken)authors.First() : new JArray(authors);
-        }
+        private JToken? GetAuthors(GithubRepo repo, GithubRelease release)
+            => JObjectExtensions.FromMessyList(
+                   release.Author,
+                   repo.TraverseNodes(r => r.ParentRepo == null
+                                               ? null
+                                               : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}",
+                                                              false, _matchPreleases)))
+                       .Reverse()
+                       .SelectMany(r => r.Owner?.Type switch
+                                        {
+                                            userType => Enumerable.Repeat(r.Owner.Login, 1),
+                                            orgType  => _api.getOrgMembers(r.Owner)
+                                                            .Select(u => u.Login),
+                                            _        => Enumerable.Empty<string>()
+                                        }));
 
         private const string userType = "User";
         private const string orgType  = "Organization";

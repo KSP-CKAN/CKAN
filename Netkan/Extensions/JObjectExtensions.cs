@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -15,7 +17,7 @@ namespace CKAN.NetKAN.Extensions
         /// <param name="jobject">The <see cref="JObject"/> to write to.</param>
         /// <param name="propertyName">The name of the property to write.</param>
         /// <param name="token">The value of the property to write if it does not exist.</param>
-        public static void SafeAdd(this JObject jobject, string propertyName, JToken token)
+        public static void SafeAdd(this JObject jobject, string propertyName, JToken? token)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
@@ -36,7 +38,7 @@ namespace CKAN.NetKAN.Extensions
         /// <param name="jobject">The <see cref="JObject"/> to write to</param>
         /// <param name="propertyName">The name of the property to write</param>
         /// <param name="tokenCallback">Function to generate value of the property to write if it does not exist</param>
-        public static void SafeAdd(this JObject jobject, string propertyName, Func<JToken> tokenCallback)
+        public static void SafeAdd(this JObject jobject, string propertyName, Func<JToken?> tokenCallback)
         {
             if (string.IsNullOrWhiteSpace(propertyName))
             {
@@ -59,9 +61,9 @@ namespace CKAN.NetKAN.Extensions
         /// <returns>
         /// Returns
         /// </returns>
-        public static void SafeMerge(this JObject jobject, string propertyName, JToken token)
+        public static void SafeMerge(this JObject jobject, string propertyName, JToken? token)
         {
-            JObject srcObj = token as JObject;
+            var srcObj = token as JObject;
             // No need to do anything if source object is null or empty
             if (srcObj?.Properties().Any() ?? false)
             {
@@ -77,6 +79,21 @@ namespace CKAN.NetKAN.Extensions
                     }
                 }
             }
+        }
+
+        public static JToken? FromMessyList<T>(T? first, IEnumerable<T?>? rest) where T: notnull
+        {
+            var items = Enumerable.Repeat(first, 1)
+                                  .Concat(rest ?? Enumerable.Empty<T?>())
+                                  .OfType<T>()
+                                  .Distinct()
+                                  .ToList();
+            return items.Count switch
+            {
+                0 => null,
+                1 => new JValue(items.First()),
+                _ => new JArray(items),
+            };
         }
 
     }

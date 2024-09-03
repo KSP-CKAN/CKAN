@@ -21,32 +21,31 @@ namespace CKAN.GUI
         public static readonly string DefaultPath =
             Path.Combine(CKANPathUtils.AppDataPath, "labels.json");
 
+        public static readonly ModuleLabelList ModuleLabels = Load(DefaultPath) ?? GetDefaultLabels();
+
         public static ModuleLabelList GetDefaultLabels()
             => new ModuleLabelList()
             {
                 Labels = new ModuleLabel[]
                 {
-                    new ModuleLabel()
+                    new ModuleLabel(Properties.Resources.ModuleLabelListFavourites)
                     {
-                        Name  = Properties.Resources.ModuleLabelListFavourites,
                         Color = Color.PaleGreen,
                     },
-                    new ModuleLabel()
+                    new ModuleLabel(Properties.Resources.ModuleLabelListHidden)
                     {
-                        Name  = Properties.Resources.ModuleLabelListHidden,
                         Hide  = true,
                         Color = Color.PaleVioletRed,
                     },
-                    new ModuleLabel()
+                    new ModuleLabel(Properties.Resources.ModuleLabelListHeld)
                     {
-                        Name        = Properties.Resources.ModuleLabelListHeld,
                         HoldVersion = true,
                         Color       = Color.FromArgb(255, 255, 176),
                     }
                 }
             };
 
-        public static ModuleLabelList Load(string path)
+        public static ModuleLabelList? Load(string path)
         {
             try
             {

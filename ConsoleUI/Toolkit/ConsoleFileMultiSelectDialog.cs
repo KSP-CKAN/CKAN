@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -13,17 +14,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Initialize the popup.
         /// </summary>
+        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="title">String to be shown in the top center of the popup</param>
         /// <param name="startPath">Path of directory to start in</param>
         /// <param name="filPat">Glob-style wildcard string for matching files to show</param>
         /// <param name="toggleHeader">Header for the column with checkmarks for selected files</param>
         /// <param name="acceptTip">Description of the F9 action to accept selections</param>
-        public ConsoleFileMultiSelectDialog(string title,
+        public ConsoleFileMultiSelectDialog(ConsoleTheme theme,
+                                            string title,
                                             string startPath,
                                             string filPat,
                                             string toggleHeader,
                                             string acceptTip)
-            : base()
+            : base(theme)
         {
             CenterHeader = () => title;
             curDir       = new DirectoryInfo(startPath);
@@ -63,57 +66,51 @@ namespace CKAN.ConsoleUI.Toolkit {
                 left + 2, top + 4, right - 2, bottom - 2,
                 getFileList(),
                 new List<ConsoleListBoxColumn<FileSystemInfo>>() {
-                    new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = toggleHeader,
-                        Width    = 8,
-                        Renderer = getRowSymbol
-                    }, new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = Properties.Resources.FileSelectNameHeader,
-                        Width    = null,
-                        Renderer = getRowName,
-                        Comparer = compareNames
-                    }, new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = Properties.Resources.FileSelectSizeHeader,
-                        // Longest: "1023.1 KB"
-                        Width    = 9,
-                        Renderer = (FileSystemInfo fi) => getLength(fi),
-                        Comparer = (a, b) => {
-                            FileInfo fb = b as FileInfo;
-                            return !(a is FileInfo fa)
+                    new ConsoleListBoxColumn<FileSystemInfo>(
+                        toggleHeader, getRowSymbol, null, 8),
+                    new ConsoleListBoxColumn<FileSystemInfo>(
+                        Properties.Resources.FileSelectNameHeader,
+                        getRowName, compareNames, null),
+                    new ConsoleListBoxColumn<FileSystemInfo>(
+                        Properties.Resources.FileSelectSizeHeader,
+                        (FileSystemInfo fi) => getLength(fi),
+                        (a, b) => {
+                            var fb = b as FileInfo;
+                            return a is not FileInfo fa
                                 ? (fb == null ? 0 : -1)
                                 : (fb == null ? 1 : fa.Length.CompareTo(fb.Length));
-                        }
-                    }, new ConsoleListBoxColumn<FileSystemInfo>() {
-                        Header   = Properties.Resources.FileSelectTimestampHeader,
-                        Width    = 10,
-                        Renderer = (FileSystemInfo fi) => fi.LastWriteTime.ToString("yyyy-MM-dd"),
-                        Comparer = (a, b) => a.LastWriteTime.CompareTo(b.LastWriteTime)
-                    }
+                        },
+                        9),
+                    new ConsoleListBoxColumn<FileSystemInfo>(
+                        Properties.Resources.FileSelectTimestampHeader,
+                        (FileSystemInfo fi) => fi.LastWriteTime.ToString("yyyy-MM-dd"),
+                        (a, b) => a.LastWriteTime.CompareTo(b.LastWriteTime),
+                        10)
                 },
                 1, 1, ListSortDirection.Ascending
             );
             AddObject(fileList);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object sender) => {
                 chosenFiles.Clear();
                 return false;
             });
 
             AddTip("F10", Properties.Resources.Sort);
-            AddBinding(Keys.F10, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.F10, (object sender) => {
                 fileList.SortMenu().Run(theme, right - 2, top + 2);
-                DrawBackground(theme);
+                DrawBackground();
                 return true;
             });
 
             AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectChangeDirectory, () => fileList.Selection != null &&  isDir(fileList.Selection));
             AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectSelect,          () => fileList.Selection != null && !isDir(fileList.Selection));
-            AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => selectRow());
-            AddBinding(Keys.Space, (object sender, ConsoleTheme theme) => selectRow());
+            AddBinding(Keys.Enter, (object sender) => selectRow());
+            AddBinding(Keys.Space, (object sender) => selectRow());
 
             AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
-            AddBinding(Keys.CtrlA, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.CtrlA, (object sender) => {
                 foreach (FileSystemInfo fi in contents) {
                     if (!isDir(fi)) {
                         if (fi is FileInfo file)
@@ -126,7 +123,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => chosenFiles.Count > 0);
-            AddBinding(Keys.CtrlD, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.CtrlD, (object sender) => {
                 if (chosenFiles.Count > 0) {
                     chosenFiles.Clear();
                 }
@@ -134,12 +131,12 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip("F9", acceptTip, () => chosenFiles.Count > 0);
-            AddBinding(Keys.F9, (object sender, ConsoleTheme theme) => false);
+            AddBinding(Keys.F9, (object sender) => false);
         }
 
         private bool selectRow()
         {
-            if (isDir(fileList.Selection)) {
+            if (fileList.Selection != null && isDir(fileList.Selection)) {
                 if (fileList.Selection is DirectoryInfo di)
                 {
                     curDir = di;
@@ -176,17 +173,17 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Display the dialog and handle its interaction
         /// </summary>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
         /// <returns>
         /// Files user selected
         /// </returns>
-        public new HashSet<FileInfo> Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
+        public new HashSet<FileInfo> Run(Action? process = null)
         {
-            base.Run(theme, process);
+            base.Run(process);
             return chosenFiles;
         }
 
+        [MemberNotNull(nameof(contents))]
         private IList<FileSystemInfo> getFileList()
         {
             contents = new List<FileSystemInfo>();
@@ -210,7 +207,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// True if they're the same file/directory, false otherwise.
         /// </returns>
-        private static bool pathEquals(FileSystemInfo a, FileSystemInfo b)
+        private static bool pathEquals(FileSystemInfo? a, FileSystemInfo? b)
         {
             if (a == null || b == null) {
                 return false;
@@ -247,7 +244,9 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         private string getRowSymbol(FileSystemInfo fi)
-            => !isDir(fi) && chosenFiles.Contains(fi as FileInfo)
+            => !isDir(fi)
+                && fi is FileInfo file
+                && chosenFiles.Contains(file)
                 ? chosen
                 : "";
 

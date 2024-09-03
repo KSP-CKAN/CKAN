@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN.Versioning;
 using CKAN.Games;
@@ -16,7 +17,7 @@ namespace CKAN.ConsoleUI {
         /// <summary>
         /// Initialize the popup
         /// </summary>
-        public CompatibleVersionDialog(IGame game) : base()
+        public CompatibleVersionDialog(ConsoleTheme theme, IGame game) : base(theme)
         {
             int l = GetLeft(),
                 r = GetRight();
@@ -28,18 +29,17 @@ namespace CKAN.ConsoleUI {
                 l + 2, t + 2, r - 2, b - 4,
                 options,
                 new List<ConsoleListBoxColumn<GameVersion>>() {
-                    new ConsoleListBoxColumn<GameVersion>() {
-                        Header   = Properties.Resources.CompatibleVersionsListHeader,
-                        Width    = null,
-                        Renderer = v => v.ToString(),
-                        Comparer = (v1, v2) => v1.CompareTo(v2)
-                    }
+                    new ConsoleListBoxColumn<GameVersion>(
+                        Properties.Resources.CompatibleVersionsListHeader,
+                        v => v.ToString() ?? "",
+                        (v1, v2) => v1.CompareTo(v2),
+                        null)
                 },
                 0, 0, ListSortDirection.Descending
             );
             AddObject(choices);
             choices.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsListAcceptTip);
-            choices.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            choices.AddBinding(Keys.Enter, (object sender) => {
                 choice = choices.Selection;
                 return false;
             });
@@ -51,7 +51,7 @@ namespace CKAN.ConsoleUI {
             };
             AddObject(manualEntry);
             manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsEntryAcceptTip, () => GameVersion.TryParse(manualEntry.Value, out choice));
-            manualEntry.AddBinding(Keys.Enter, (object sender, ConsoleTheme theme) => {
+            manualEntry.AddBinding(Keys.Enter, (object sender) => {
                 if (GameVersion.TryParse(manualEntry.Value, out choice)) {
                     // Good value, done running
                     return false;
@@ -62,7 +62,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender, ConsoleTheme theme) => {
+            AddBinding(Keys.Escape, (object StronglyTypedResourceBuilder) => {
                 choice = null;
                 return false;
             });
@@ -74,16 +74,16 @@ namespace CKAN.ConsoleUI {
         /// Display the dialog and handle its interaction
         /// </summary>
         /// <param name="process">Function to control the dialog, default is normal user interaction</param>
-        /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <returns>
         /// Row user selected
         /// </returns>
-        public new GameVersion Run(ConsoleTheme theme, Action<ConsoleTheme> process = null)
+        public new GameVersion? Run(Action? process = null)
         {
-            base.Run(theme, process);
+            base.Run(process);
             return choice;
         }
 
+        [MemberNotNull(nameof(options))]
         private void loadOptions(IGame game)
         {
             options = game.KnownVersions;
@@ -92,7 +92,7 @@ namespace CKAN.ConsoleUI {
                 GameVersion v = options[i];
                 // From GUI/CompatibleGameVersionsDialog.cs
                 GameVersion fullKnownVersion = v.ToVersionRange().Lower.Value;
-                GameVersion toAdd = new GameVersion(fullKnownVersion.Major, fullKnownVersion.Minor);
+                var toAdd = new GameVersion(fullKnownVersion.Major, fullKnownVersion.Minor);
                 if (!options.Contains(toAdd)) {
                     options.Add(toAdd);
                 }
@@ -103,6 +103,6 @@ namespace CKAN.ConsoleUI {
 
         private readonly ConsoleListBox<GameVersion> choices;
         private readonly ConsoleField                manualEntry;
-        private          GameVersion                 choice;
+        private          GameVersion?                choice;
     }
 }

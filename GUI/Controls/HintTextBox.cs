@@ -1,6 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
@@ -8,6 +11,9 @@ namespace CKAN.GUI
     /// A textbox which shows a "clear text" icon on the right side
     /// whenever data is present.
     /// </summary>
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     public partial class HintTextBox : TextBox
     {
 
@@ -25,7 +31,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="sender">The control sending the event</param>
         /// <param name="e">The event arguments</param>
-        private void HintClearIcon_Click(object sender, EventArgs e)
+        private void HintClearIcon_Click(object? sender, EventArgs? e)
         {
             Text = "";
         }
@@ -35,7 +41,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="sender">The control sending the event</param>
         /// <param name="e">The event arguments</param>
-        private void HintTextBox_TextChanged(object sender, EventArgs e)
+        private void HintTextBox_TextChanged(object? sender, EventArgs? e)
         {
             ClearIcon.Visible = (TextLength > 0) && !ReadOnly;
         }
@@ -45,7 +51,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="sender">The control sending the event</param>
         /// <param name="e">The event arguments</param>
-        private void HintTextBox_SizeChanged(object sender, EventArgs e)
+        private void HintTextBox_SizeChanged(object? sender, EventArgs? e)
         {
             if (ClearIcon.Image != null)
             {

@@ -22,7 +22,7 @@ namespace CKAN
         /// Instantiate a repo data manager
         /// </summary>
         /// <param name="path">Directory to use as cache, defaults to APPDATA/CKAN/repos if null</param>
-        public RepositoryDataManager(string path = null)
+        public RepositoryDataManager(string? path = null)
         {
             reposDir = path ?? defaultReposDir;
             Directory.CreateDirectory(reposDir);
@@ -38,13 +38,13 @@ namespace CKAN
         /// <param name="repos">The repositories we want to use</param>
         /// <param name="identifier">The identifier to look up</param>
         /// <returns>Sequence of available modules, if any</returns>
-        public IEnumerable<AvailableModule> GetAvailableModules(IEnumerable<Repository> repos,
-                                                                string identifier)
+        public IEnumerable<AvailableModule> GetAvailableModules(IEnumerable<Repository>? repos,
+                                                                string                   identifier)
             => GetRepoDatas(repos)
-                .Where(data => data.AvailableModules != null)
-                .Select(data => data.AvailableModules.TryGetValue(identifier, out AvailableModule am)
+                .Select(data => data.AvailableModules != null
+                                && data.AvailableModules.TryGetValue(identifier, out AvailableModule? am)
                                     ? am : null)
-                .Where(am => am != null);
+                .OfType<AvailableModule>();
 
         /// <summary>
         /// Return the cached available module dictionaries for a given set of repositories.
@@ -53,10 +53,10 @@ namespace CKAN
         /// </summary>
         /// <param name="repos">The repositories we want to use</param>
         /// <returns>Sequence of available module dictionaries</returns>
-        public IEnumerable<Dictionary<string, AvailableModule>> GetAllAvailDicts(IEnumerable<Repository> repos)
+        public IEnumerable<Dictionary<string, AvailableModule>> GetAllAvailDicts(IEnumerable<Repository>? repos)
             => GetRepoDatas(repos).Select(data => data.AvailableModules)
-                                  .Where(availMods => availMods != null
-                                                      && availMods.Count > 0);
+                                  .OfType<Dictionary<string, AvailableModule>>()
+                                  .Where(availMods => availMods.Count > 0);
 
         /// <summary>
         /// Return the cached AvailableModule objects from the given repositories.
@@ -64,7 +64,7 @@ namespace CKAN
         /// </summary>
         /// <param name="repos">Sequence of repositories to get modules from</param>
         /// <returns>Sequence of available modules</returns>
-        public IEnumerable<AvailableModule> GetAllAvailableModules(IEnumerable<Repository> repos)
+        public IEnumerable<AvailableModule> GetAllAvailableModules(IEnumerable<Repository>? repos)
             => GetAllAvailDicts(repos).SelectMany(d => d.Values);
 
         /// <summary>
@@ -73,11 +73,13 @@ namespace CKAN
         /// <param name="repos">The repositories from which to get download count data</param>
         /// <param name="identifier">The identifier to look up</param>
         /// <returns>Number if found, else null</returns>
-        public int? GetDownloadCount(IEnumerable<Repository> repos, string identifier)
-            => GetRepoDatas(repos)
-                .Select(data => data.DownloadCounts.TryGetValue(identifier, out int count)
-                                    ? (int?)count : null)
-                .FirstOrDefault(count => count != null);
+        public int? GetDownloadCount(IEnumerable<Repository>? repos, string identifier)
+            => GetRepoDatas(repos).Select(data => data.DownloadCounts)
+                                  .OfType<SortedDictionary<string, int>>()
+                                  .Select(counts => counts.TryGetValue(identifier, out int count)
+                                                        ? (int?)count : null)
+                                  .OfType<int>()
+                                  .FirstOrDefault();
 
         #endregion
 
@@ -88,7 +90,7 @@ namespace CKAN
         /// </summary>
         /// <param name="repos">Repositories for which to load data</param>
         /// <param name="progress">Progress object for reporting percentage complete</param>
-        public void Prepopulate(List<Repository> repos, IProgress<int> percentProgress)
+        public void Prepopulate(List<Repository> repos, IProgress<int>? percentProgress)
         {
             // Look up the sizes of repos that have uncached files
             var reposAndSizes = repos.Where(r => r.uri != null && !repositoriesData.ContainsKey(r))
@@ -174,7 +176,10 @@ namespace CKAN
             try
             {
                 // Download metadata
-                var targets = toUpdate.Select(r => new NetAsyncDownloader.DownloadTargetStream(r.uri))
+                var targets = toUpdate.Select(r => r.uri == null
+                                                   ? null
+                                                   : new NetAsyncDownloader.DownloadTargetStream(r.uri))
+                                      .OfType<NetAsyncDownloader.DownloadTargetStream>()
                                       .ToArray();
                 downloader.DownloadAndWait(targets);
 
@@ -250,7 +255,7 @@ namespace CKAN
         /// Fired when repository data changes so registries can invalidate their
         /// caches of available module data
         /// </summary>
-        public event Action<Repository[]> Updated;
+        public event Action<Repository[]>? Updated;
 
         #region ETags
 
@@ -274,7 +279,9 @@ namespace CKAN
             file_transaction.WriteAllText(etagsPath, JsonConvert.SerializeObject(etags, Formatting.Indented));
         }
 
-        private void setETag(NetAsyncDownloader.DownloadTarget target, Exception error, string etag)
+        private void setETag(NetAsyncDownloader.DownloadTarget target,
+                             Exception?                        error,
+                             string?                           etag)
         {
             var url = target.urls.First();
             if (etag != null)
@@ -288,8 +295,10 @@ namespace CKAN
         }
 
         private bool repoDataStale(Repository r)
-            // No ETag on file
-            => !etags.TryGetValue(r.uri, out string etag)
+            // URL missing
+            => r.uri == null
+               // No ETag on file
+               ||!etags.TryGetValue(r.uri, out string? etag)
                // No data on disk
                || !File.Exists(GetRepoDataPath(r))
                // Current ETag doesn't match
@@ -297,12 +306,12 @@ namespace CKAN
 
         #endregion
 
-        private RepositoryData GetRepoData(Repository repo)
-            => repositoriesData.TryGetValue(repo, out RepositoryData data)
+        private RepositoryData? GetRepoData(Repository repo)
+            => repositoriesData.TryGetValue(repo, out RepositoryData? data)
                 ? data
                 : LoadRepoData(repo, null);
 
-        private RepositoryData LoadRepoData(Repository repo, IProgress<int> progress)
+        private RepositoryData? LoadRepoData(Repository repo, IProgress<int>? progress)
         {
             var path = GetRepoDataPath(repo);
             log.DebugFormat("Looking for data in {0}", path);
@@ -315,18 +324,18 @@ namespace CKAN
             return data;
         }
 
-        private IEnumerable<RepositoryData> GetRepoDatas(IEnumerable<Repository> repos)
+        private IEnumerable<RepositoryData> GetRepoDatas(IEnumerable<Repository>? repos)
             => repos?.OrderBy(repo => repo.priority)
                      .ThenBy(repo => repo.name)
                      .Select(repo => GetRepoData(repo))
-                     .Where(data => data != null)
+                     .OfType<RepositoryData>()
                ?? Enumerable.Empty<RepositoryData>();
 
         private DateTime? RepoUpdateTimestamp(Repository repo)
             => FileTimestamp(GetRepoDataPath(repo));
 
         private static DateTime? FileTimestamp(string path)
-            => File.Exists(path) ? (DateTime?)File.GetLastWriteTime(path)
+            => File.Exists(path) ? File.GetLastWriteTime(path)
                                  : null;
 
         private string etagsPath => Path.Combine(reposDir, "etags.json");

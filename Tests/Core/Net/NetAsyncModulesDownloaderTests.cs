@@ -16,12 +16,12 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloaderTests
     {
-        private GameInstanceManager     manager;
-        private RegistryManager         registry_manager;
-        private CKAN.Registry           registry;
-        private DisposableKSP           ksp;
-        private NetModuleCache          cache;
-        private TemporaryRepositoryData repoData;
+        private GameInstanceManager?     manager;
+        private RegistryManager?         registry_manager;
+        private CKAN.Registry?           registry;
+        private DisposableKSP?           ksp;
+        private NetModuleCache?          cache;
+        private TemporaryRepositoryData? repoData;
 
         [SetUp]
         public void Setup()
@@ -54,9 +54,9 @@ namespace Tests.Core.Net
         [TearDown]
         public void TearDown()
         {
-            manager.Dispose();
-            ksp.Dispose();
-            repoData.Dispose();
+            manager?.Dispose();
+            ksp?.Dispose();
+            repoData?.Dispose();
         }
 
         [Test,
@@ -68,7 +68,9 @@ namespace Tests.Core.Net
             TestCase(new string[]
                      {
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ]
                          }",
@@ -79,28 +81,34 @@ namespace Tests.Core.Net
             TestCase(new string[]
                      {
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""license"": ""GPL-3.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ],
                             ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF""}
                          }",
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""license"": ""GPL-3.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ],
                             ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF""}
                          }",
                          @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModC"",
+                            ""author"": ""Modder"",
                             ""version"": ""1.0"",
                             ""license"": ""GPL-3.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://github.com/"" ],
                             ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF""}
                          }",
                      },
-                     new string[] { "github.com", null },
+                     new string?[] { "github.com", null },
                      new string[]
                      {
                          "https://github.com/",
@@ -110,12 +118,14 @@ namespace Tests.Core.Net
                          "https://archive.org/download/ModC-1.0/DEADBEEF-ModC-1.0.zip"
                      }),
         ]
-        public void TargetFromModuleGroup_WithModules_ExpectedTarget(string[] moduleJsons, string[] preferredHosts, string[] correctURLs)
+        public void TargetFromModuleGroup_WithModules_ExpectedTarget(string[]  moduleJsons,
+                                                                     string?[] preferredHosts,
+                                                                     string[]  correctURLs)
         {
             // Arrange
-            var group = moduleJsons.Select(j => CkanModule.FromJson(j))
+            var group = moduleJsons.Select(CkanModule.FromJson)
                                    .ToHashSet();
-            var downloader = new NetAsyncModulesDownloader(new NullUser(), cache);
+            var downloader = new NetAsyncModulesDownloader(new NullUser(), cache!);
 
             if (correctURLs == null)
             {

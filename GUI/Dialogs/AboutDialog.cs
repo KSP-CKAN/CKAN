@@ -18,20 +18,25 @@ namespace CKAN.GUI
             versionLabel.Text = string.Format(Properties.Resources.AboutDialogLabel2Text, Meta.GetVersion());
         }
 
-        private void linkLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs? e)
         {
-            string url = (sender as LinkLabel).Text;
-            Util.HandleLinkClicked(url, e);
+            if (sender is LinkLabel l)
+            {
+                Util.HandleLinkClicked(l.Text, e);
+            }
         }
 
-        private void linkLabel_KeyDown(object sender, KeyEventArgs e)
+        private void linkLabel_KeyDown(object? sender, KeyEventArgs? e)
         {
-            switch (e.KeyCode)
+            if (sender is LinkLabel l)
             {
-                case Keys.Apps:
-                    Util.LinkContextMenu((sender as LinkLabel).Text);
-                    e.Handled = true;
-                    break;
+                switch (e?.KeyCode)
+                {
+                    case Keys.Apps:
+                        Util.LinkContextMenu(l.Text);
+                        e.Handled = true;
+                        break;
+                }
             }
         }
 

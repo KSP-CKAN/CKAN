@@ -42,8 +42,17 @@ dotnet_diagnostic.IDE0055.severity = none
 # OK to call functions that return values and not use them
 dotnet_diagnostic.IDE0058.severity = none
 
+# I like seeing when a using block ends
+dotnet_diagnostic.IDE0063.severity = none
+
 # A `using` inside a namespace is useful as a typedef
 dotnet_diagnostic.IDE0065.severity = none
+
+# 'switch' expressions are nice, but I don't need to be alerted about them
+dotnet_diagnostic.IDE0066.severity = none
+
+# Why do 'new' expressions need to be simple?
+dotnet_diagnostic.IDE0090.severity = none
 
 # Allow namespaces to be independent of folder names
 dotnet_diagnostic.IDE0130.severity = none

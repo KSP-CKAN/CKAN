@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             var options = raw_options as InstallOptions;
-            if (options.modules.Count == 0 && options.ckan_files == null)
+            if (options?.modules?.Count == 0 && options.ckan_files == null)
             {
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("install"))
@@ -44,9 +44,9 @@ namespace CKAN.CmdLine
             }
 
             var regMgr = RegistryManager.Instance(instance, repoData);
-            List<CkanModule> modules = null;
+            List<CkanModule>? modules = null;
 
-            if (options.ckan_files != null)
+            if (options?.ckan_files != null)
             {
                 // Install from CKAN files
                 try
@@ -63,7 +63,7 @@ namespace CKAN.CmdLine
                 catch (FileNotFoundKraken kraken)
                 {
                     user.RaiseError(Properties.Resources.InstallNotFound,
-                                    kraken.file);
+                                    kraken.file ?? "");
                     return Exit.ERROR;
                 }
                 catch (Kraken kraken)
@@ -77,7 +77,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                var identifiers = options.modules;
+                var identifiers = options?.modules ?? new List<string> { };
                 var registry    = regMgr.registry;
                 var installed   = registry.InstalledModules
                                           .Select(im => im.Module)
@@ -86,22 +86,28 @@ namespace CKAN.CmdLine
                 Search.AdjustModulesCase(instance, registry, identifiers);
                 modules = identifiers.Select(arg => CkanModule.FromIDandVersion(
                                                         registry, arg,
-                                                        options.allow_incompatible
+                                                        (options?.allow_incompatible ?? false)
                                                             ? null
                                                             : crit)
                                                     ?? registry.LatestAvailable(arg, crit,
                                                                                 null, installed)
                                                     ?? registry.InstalledModule(arg)?.Module)
+                                     .OfType<CkanModule>()
                                      .ToList();
+            }
+
+            if (manager.Cache == null)
+            {
+                return Exit.ERROR;
             }
 
             var installer   = new ModuleInstaller(instance, manager.Cache, user);
             var install_ops = new RelationshipResolverOptions
             {
-                with_all_suggests              = options.with_all_suggests,
-                with_suggests                  = options.with_suggests,
-                with_recommends                = !options.no_recommends,
-                allow_incompatible             = options.allow_incompatible,
+                with_all_suggests              = options?.with_all_suggests ?? false,
+                with_suggests                  = options?.with_suggests ?? false,
+                with_recommends                = !options?.no_recommends ?? true,
+                allow_incompatible             = options?.allow_incompatible ?? false,
                 without_toomanyprovides_kraken = user.Headless,
                 without_enforce_consistency    = user.Headless,
             };
@@ -111,7 +117,7 @@ namespace CKAN.CmdLine
                 // Install everything requested. :)
                 try
                 {
-                    HashSet<string> possibleConfigOnlyDirs = null;
+                    HashSet<string>? possibleConfigOnlyDirs = null;
                     installer.InstallList(modules, install_ops, regMgr,
                                           ref possibleConfigOnlyDirs);
                     user.RaiseMessage("");
@@ -128,19 +134,20 @@ namespace CKAN.CmdLine
                     if (ex.version == null)
                     {
                         user.RaiseError(Properties.Resources.InstallUnversionedDependencyNotSatisfied,
-                            ex.module, instance.game.ShortName);
+                                        ex.module, instance.game.ShortName);
                     }
                     else
                     {
                         user.RaiseError(Properties.Resources.InstallVersionedDependencyNotSatisfied,
-                            ex.module, ex.version, instance.game.ShortName);
+                                        ex.module, ex.version, instance.game.ShortName);
                     }
                     user.RaiseMessage(Properties.Resources.InstallTryAgain);
                     return Exit.ERROR;
                 }
                 catch (BadMetadataKraken ex)
                 {
-                    user.RaiseError(Properties.Resources.InstallBadMetadata, ex.module, ex.Message);
+                    user.RaiseError(Properties.Resources.InstallBadMetadata,
+                                    ex.module?.ToString() ?? "", ex.Message);
                     return Exit.ERROR;
                 }
                 catch (TooManyModsProvideKraken ex)
@@ -176,13 +183,13 @@ namespace CKAN.CmdLine
                     if (ex.owningModule != null)
                     {
                         user.RaiseError(Properties.Resources.InstallFileConflictOwned,
-                            ex.filename, ex.installingModule, ex.owningModule,
-                            Meta.GetVersion(VersionFormat.Full));
+                                        ex.filename, ex.installingModule?.ToString() ?? "", ex.owningModule,
+                                        Meta.GetVersion(VersionFormat.Full));
                     }
                     else
                     {
                         user.RaiseError(Properties.Resources.InstallFileConflictUnowned,
-                            ex.installingModule, ex.filename);
+                                        ex.installingModule?.ToString() ?? "", ex.filename);
                     }
 
                     user.RaiseMessage(Properties.Resources.InstallGamedataReturned, instance.game.PrimaryModDirectoryRelative);
@@ -230,8 +237,8 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseError(Properties.Resources.InstallDLC, kraken.module.name);
                     var res = kraken?.module?.resources;
-                    var storePagesMsg = new Uri[] { res?.store, res?.steamstore }
-                        .Where(u => u != null)
+                    var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
+                        .OfType<Uri>()
                         .Aggregate("", (a, b) => $"{a}\r\n- {b}");
                     if (!string.IsNullOrEmpty(storePagesMsg))
                     {
@@ -261,7 +268,7 @@ namespace CKAN.CmdLine
     internal class InstallOptions : InstanceSpecificOptions
     {
         [OptionArray('c', "ckanfiles", HelpText = "Local CKAN files or URLs to process")]
-        public string[] ckan_files { get; set; }
+        public string[]? ckan_files { get; set; }
 
         [Option("no-recommends", DefaultValue = false, HelpText = "Do not install recommended modules")]
         public bool no_recommends { get; set; }
@@ -277,7 +284,7 @@ namespace CKAN.CmdLine
 
         [ValueList(typeof(List<string>))]
         [AvailableIdentifiers]
-        public List<string> modules { get; set; }
+        public List<string>? modules { get; set; }
     }
 
 }

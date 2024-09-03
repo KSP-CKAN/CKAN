@@ -98,11 +98,11 @@ namespace CKAN.Versioning
 
     public partial class ModuleVersion : IEquatable<ModuleVersion>
     {
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => ReferenceEquals(this, obj)
                 || (obj is ModuleVersion version && Equals(version));
 
-        public bool Equals(ModuleVersion other)
+        public bool Equals(ModuleVersion? other)
             => ReferenceEquals(this, other)
                 || CompareTo(other) == 0;
 
@@ -130,7 +130,7 @@ namespace CKAN.Versioning
         /// </item>
         /// </list>
         /// </returns>
-        public static bool operator ==(ModuleVersion left, ModuleVersion right)
+        public static bool operator ==(ModuleVersion? left, ModuleVersion? right)
             => Equals(left, right);
 
         /// <summary>
@@ -154,7 +154,7 @@ namespace CKAN.Versioning
         /// </item>
         /// </list>
         /// </returns>
-        public static bool operator !=(ModuleVersion left, ModuleVersion right)
+        public static bool operator !=(ModuleVersion? left, ModuleVersion? right)
             => !Equals(left, right);
     }
 
@@ -192,7 +192,7 @@ namespace CKAN.Versioning
         /// </item>
         /// </list>
         /// </returns>
-        public int CompareTo(ModuleVersion other)
+        public int CompareTo(ModuleVersion? other)
         {
             Comparison stringComp(string v1, string v2)
             {
@@ -212,8 +212,8 @@ namespace CKAN.Versioning
                 {
                     if (char.IsNumber(v1[i]))
                     {
-                        comparison.FirstRemainder = v1.Substring(i);
-                        str1 = v1.Substring(0, i);
+                        comparison.FirstRemainder = v1[i..];
+                        str1 = v1[..i];
                         break;
                     }
                 }
@@ -222,8 +222,8 @@ namespace CKAN.Versioning
                 {
                     if (char.IsNumber(v2[i]))
                     {
-                        comparison.SecondRemainder = v2.Substring(i);
-                        str2 = v2.Substring(0, i);
+                        comparison.SecondRemainder = v2[i..];
+                        str2 = v2[..i];
                         break;
                     }
                 }
@@ -272,7 +272,7 @@ namespace CKAN.Versioning
                 {
                     if (!char.IsNumber(v1[i]))
                     {
-                        comparison.FirstRemainder = v1.Substring(i);
+                        comparison.FirstRemainder = v1[i..];
                         break;
                     }
 
@@ -284,7 +284,7 @@ namespace CKAN.Versioning
                 {
                     if (!char.IsNumber(v2[i]))
                     {
-                        comparison.SecondRemainder = v2.Substring(i);
+                        comparison.SecondRemainder = v2[i..];
                         break;
                     }
 
@@ -292,12 +292,12 @@ namespace CKAN.Versioning
                 }
 
 
-                if (!int.TryParse(v1.Substring(0, minimumLength1), out var integer1))
+                if (!int.TryParse(v1[..minimumLength1], out var integer1))
                 {
                     integer1 = 0;
                 }
 
-                if (!int.TryParse(v2.Substring(0, minimumLength2), out var integer2))
+                if (!int.TryParse(v2[..minimumLength2], out var integer2))
                 {
                     integer2 = 0;
                 }
@@ -437,10 +437,8 @@ namespace CKAN.Versioning
         /// </item>
         /// </list>
         /// </returns>
-        public bool IsLessThan(ModuleVersion other)
-        {
-            return CompareTo(other) < 0;
-        }
+        public bool IsLessThan(ModuleVersion? other)
+            => CompareTo(other) < 0;
 
         /// <summary>
         /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
@@ -469,9 +467,7 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public bool IsGreaterThan(ModuleVersion other)
-        {
-            return CompareTo(other) > 0;
-        }
+            => CompareTo(other) > 0;
 
         /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than the second.

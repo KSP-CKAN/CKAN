@@ -11,7 +11,7 @@ namespace CKAN.GUI
     [XmlRoot("Configuration")]
     public class GUIConfiguration
     {
-        public string CommandLineArguments = null;
+        public string? CommandLineArguments = null;
 
         [XmlArray, XmlArrayItem(ElementName = "CommandLine")]
         public List<string> CommandLines = new List<string>();
@@ -41,15 +41,15 @@ namespace CKAN.GUI
         /// <summary>
         /// Name of the tag filter the user chose, if any
         /// </summary>
-        public string TagFilter = null;
+        public string? TagFilter = null;
 
         /// <summary>
         /// Name of the label filter the user chose, if any
         /// </summary>
-        public string CustomLabelFilter = null;
+        public string? CustomLabelFilter = null;
 
         [XmlArray, XmlArrayItem(ElementName = "Search")]
-        public List<string> DefaultSearches = null;
+        public List<string>? DefaultSearches = null;
 
         public List<string> SortColumns = new List<string>();
         public List<bool> MultiSortDescending = new List<bool>();
@@ -139,7 +139,7 @@ namespace CKAN.GUI
             {
                 try
                 {
-                    configuration = (GUIConfiguration) serializer.Deserialize(stream);
+                    configuration = serializer.Deserialize<GUIConfiguration>(stream);
                 }
                 catch (Exception e)
                 {
@@ -200,6 +200,7 @@ namespace CKAN.GUI
                 configuration.CommandLines.AddRange(
                     Enumerable.Repeat(configuration.CommandLineArguments, 1)
                               .Concat(defaultCommandLines)
+                              .OfType<string>()
                               .Distinct());
                 configuration.CommandLineArguments = null;
                 needsSave = true;
@@ -227,8 +228,7 @@ namespace CKAN.GUI
 
         private static void SaveConfiguration(GUIConfiguration configuration)
         {
-            var serializer = new XmlSerializer(typeof (GUIConfiguration));
-
+            var serializer = new XmlSerializer(typeof(GUIConfiguration));
             using (var writer = new StreamWriter(configuration.path))
             {
                 serializer.Serialize(writer, configuration);
@@ -240,9 +240,20 @@ namespace CKAN.GUI
     [XmlRoot("SavedSearch")]
     public class SavedSearch
     {
-        public string Name;
+        public string       Name   = "";
         [XmlArray, XmlArrayItem(ElementName = "Search")]
-        public List<string> Values;
+        public List<string> Values = new List<string>();
+    }
+
+    /// <summary>
+    /// We only use XML format for the GUI config
+    /// </summary>
+    public static class XmlSerializerExtensions
+    {
+        public static T Deserialize<T>(this XmlSerializer serializer,
+                                       StreamReader s)
+            where T: class
+            => (serializer.Deserialize(s) as T)!;
     }
 
 }

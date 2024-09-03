@@ -39,10 +39,8 @@ namespace CKAN.CmdLine
                 if (installedModuleToShow != null)
                 {
                     // Show the installed module.
-                    combined_exit_code = CombineExitCodes(
-                        combined_exit_code,
-                        ShowMod(installedModuleToShow, options)
-                    );
+                    combined_exit_code = CombineExitCodes(combined_exit_code,
+                                                          ShowMod(installedModuleToShow, options));
                     if (options.with_versions)
                     {
                         ShowVersionTable(instance, registry.AvailableByIdentifier(installedModuleToShow.identifier).ToList());
@@ -53,12 +51,10 @@ namespace CKAN.CmdLine
 
                 // Module was not installed, look for an exact match in the available modules,
                 // either by "name" (the user-friendly display name) or by identifier
-                CkanModule moduleToShow = registry
-                                          .CompatibleModules(instance.VersionCriteria())
-                                          .SingleOrDefault(
-                                                mod => mod.name       == modName
-                                                    || mod.identifier == modName
-                                          );
+                var moduleToShow = registry.CompatibleModules(instance.VersionCriteria())
+                                           .SingleOrDefault(
+                                                 mod => mod.name       == modName
+                                                     || mod.identifier == modName);
                 if (moduleToShow == null)
                 {
                     // No exact match found. Try to look for a close match for this KSP version.
@@ -169,7 +165,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("{0}", module.name);
                 }
 
-                if (!string.IsNullOrEmpty(module.description))
+                if (module.description != null && !string.IsNullOrEmpty(module.description))
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage("{0}", module.description);
@@ -261,67 +257,34 @@ namespace CKAN.CmdLine
             {
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ShowResourcesHeader);
-                if (module.resources.homepage != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowHomePage,
-                                      Net.NormalizeUri(module.resources.homepage.ToString()));
-                }
-                if (module.resources.manual != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowManual,
-                                      Net.NormalizeUri(module.resources.manual.ToString()));
-                }
-                if (module.resources.spacedock != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowSpaceDock,
-                                      Net.NormalizeUri(module.resources.spacedock.ToString()));
-                }
-                if (module.resources.repository != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowRepository,
-                                      Net.NormalizeUri(module.resources.repository.ToString()));
-                }
-                if (module.resources.bugtracker != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowBugTracker,
-                                      Net.NormalizeUri(module.resources.bugtracker.ToString()));
-                }
-                if (module.resources.discussions != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowDiscussions,
-                                      Net.NormalizeUri(module.resources.discussions.ToString()));
-                }
-                if (module.resources.curse != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowCurse,
-                                      Net.NormalizeUri(module.resources.curse.ToString()));
-                }
-                if (module.resources.store != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowStore,
-                                      Net.NormalizeUri(module.resources.store.ToString()));
-                }
-                if (module.resources.steamstore != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowSteamStore,
-                                      Net.NormalizeUri(module.resources.steamstore.ToString()));
-                }
-                if (module.resources.remoteAvc != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowVersionFile,
-                                      Net.NormalizeUri(module.resources.remoteAvc.ToString()));
-                }
-                if (module.resources.remoteSWInfo != null)
-                {
-                    user.RaiseMessage(Properties.Resources.ShowSpaceWarpInfo,
-                                      Net.NormalizeUri(module.resources.remoteSWInfo.ToString()));
-                }
+                RaiseResource(Properties.Resources.ShowHomePage,
+                              module.resources.homepage);
+                RaiseResource(Properties.Resources.ShowManual,
+                              module.resources.manual);
+                RaiseResource(Properties.Resources.ShowSpaceDock,
+                              module.resources.spacedock);
+                RaiseResource(Properties.Resources.ShowRepository,
+                              module.resources.repository);
+                RaiseResource(Properties.Resources.ShowBugTracker,
+                              module.resources.bugtracker);
+                RaiseResource(Properties.Resources.ShowDiscussions,
+                              module.resources.discussions);
+                RaiseResource(Properties.Resources.ShowCurse,
+                              module.resources.curse);
+                RaiseResource(Properties.Resources.ShowStore,
+                              module.resources.store);
+                RaiseResource(Properties.Resources.ShowSteamStore,
+                              module.resources.steamstore);
+                RaiseResource(Properties.Resources.ShowVersionFile,
+                              module.resources.remoteAvc);
+                RaiseResource(Properties.Resources.ShowSpaceWarpInfo,
+                              module.resources.remoteSWInfo);
             }
 
             if (!opts.without_files && !module.IsDLC)
             {
                 // Compute the CKAN filename.
-                string file_uri_hash = NetFileCache.CreateURLHash(module.download[0]);
+                string file_uri_hash = NetFileCache.CreateURLHash(module.download?[0]);
                 string file_name = CkanModule.StandardName(module.identifier, module.version);
 
                 user.RaiseMessage("");
@@ -329,6 +292,14 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
+        }
+
+        private void RaiseResource(string fmt, Uri? url)
+        {
+            if (url is Uri u && Net.NormalizeUri(u.ToString()) is string s)
+            {
+                user.RaiseMessage(fmt, s);
+            }
         }
 
         private static int CombineExitCodes(int a, int b)
@@ -342,8 +313,10 @@ namespace CKAN.CmdLine
             var versions     = modules.Select(m => m.version.ToString()).ToList();
             var gameVersions = modules.Select(m =>
             {
-                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out GameVersion minKsp, out GameVersion maxKsp);
-                return GameVersionRange.VersionSpan(inst.game, minKsp, maxKsp);
+                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out GameVersion? minKsp, out GameVersion? maxKsp);
+                return GameVersionRange.VersionSpan(inst.game,
+                                                    minKsp ?? GameVersion.Any,
+                                                    maxKsp ?? GameVersion.Any);
             }).ToList();
             string[] headers = new string[] {
                 Properties.Resources.ShowVersionHeader,
@@ -409,7 +382,7 @@ namespace CKAN.CmdLine
 
         [ValueList(typeof(List<string>))]
         [AvailableIdentifiers]
-        public List<string> modules { get; set; }
+        public List<string>? modules { get; set; }
     }
 
 }

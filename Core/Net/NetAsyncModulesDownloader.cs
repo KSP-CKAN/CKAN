@@ -17,9 +17,9 @@ namespace CKAN
     /// </summary>
     public class NetAsyncModulesDownloader : IDownloader
     {
-        public event Action<CkanModule, long, long> Progress;
-        public event Action<CkanModule, long, long> StoreProgress;
-        public event Action                         AllComplete;
+        public event Action<CkanModule, long, long>? Progress;
+        public event Action<CkanModule, long, long>? StoreProgress;
+        public event Action?                         AllComplete;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
@@ -44,17 +44,17 @@ namespace CKAN
 
         internal NetAsyncDownloader.DownloadTargetFile TargetFromModuleGroup(
                 HashSet<CkanModule> group,
-                string[]            preferredHosts)
+                string?[]           preferredHosts)
             => TargetFromModuleGroup(group, group.OrderBy(m => m.identifier).First(), preferredHosts);
 
         private NetAsyncDownloader.DownloadTargetFile TargetFromModuleGroup(
                 HashSet<CkanModule> group,
                 CkanModule          first,
-                string[]            preferredHosts)
+                string?[]           preferredHosts)
             => new NetAsyncDownloader.DownloadTargetFile(
-                group.SelectMany(mod => mod.download)
+                group.SelectMany(mod => mod.download ?? Enumerable.Empty<Uri>())
                      .Concat(group.Select(mod => mod.InternetArchiveDownload)
-                                  .Where(uri => uri != null)
+                                  .OfType<Uri>()
                                   .OrderBy(uri => uri.ToString()))
                      .Distinct()
                      .OrderBy(u => u,
@@ -71,7 +71,8 @@ namespace CKAN
         /// </summary>
         public void DownloadModules(IEnumerable<CkanModule> modules)
         {
-            var activeURLs = this.modules.SelectMany(m => m.download)
+            var activeURLs = this.modules.SelectMany(m => m.download ?? Enumerable.Empty<Uri>())
+                                         .OfType<Uri>()
                                          .ToHashSet();
             var moduleGroups = CkanModule.GroupByDownloads(modules);
             // Make sure we have enough space to download and cache
@@ -87,7 +88,7 @@ namespace CKAN
                 // Start the downloads!
                 downloader.DownloadAndWait(moduleGroups
                     // Skip any group that already has a URL in progress
-                    .Where(grp => grp.All(mod => mod.download.All(dlUri => !activeURLs.Contains(dlUri))))
+                    .Where(grp => grp.All(mod => mod.download?.All(dlUri => !activeURLs.Contains(dlUri)) ?? false))
                     // Each group gets one target containing all the URLs
                     .Select(grp => TargetFromModuleGroup(grp, preferredHosts))
                     .ToArray());
@@ -119,75 +120,78 @@ namespace CKAN
 
         private const    string                  defaultMimeType = "application/octet-stream";
 
-        private readonly List<CkanModule>        modules;
-        private readonly NetAsyncDownloader      downloader;
-        private          IUser                   User => downloader.User;
-        private readonly NetModuleCache          cache;
-        private          CancellationTokenSource cancelTokenSrc;
+        private readonly List<CkanModule>         modules;
+        private readonly NetAsyncDownloader       downloader;
+        private          IUser                    User => downloader.User;
+        private readonly NetModuleCache           cache;
+        private          CancellationTokenSource? cancelTokenSrc;
 
         private void ModuleDownloadComplete(NetAsyncDownloader.DownloadTarget target,
-                                            Exception error,
-                                            string etag)
+                                            Exception?                        error,
+                                            string?                           etag)
         {
-            var url      = target.urls.First();
-            var filename = (target as NetAsyncDownloader.DownloadTargetFile)?.filename;
-
-            log.DebugFormat("Received download completion: {0}, {1}, {2}",
-                            url, filename, error?.Message);
-            if (error != null)
+            if (target is NetAsyncDownloader.DownloadTargetFile fileTarget)
             {
-                // If there was an error in DOWNLOADING, keep the file so we can retry it later
-                log.Info(error.Message);
-            }
-            else
-            {
-                // Cache if this download succeeded
-                CkanModule module = null;
-                try
-                {
-                    module = modules.First(m => (m.download?.Any(dlUri => dlUri == url)
-                                                 ?? false)
-                                                || m.InternetArchiveDownload == url);
-                    User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
-                    cache.Store(module, filename,
-                        new Progress<int>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
-                        module.StandardName(),
-                        false,
-                        cancelTokenSrc.Token);
-                    File.Delete(filename);
-                }
-                catch (InvalidModuleFileKraken kraken)
-                {
-                    User.RaiseError(kraken.ToString());
-                    if (module != null)
-                    {
-                        // Finish out the progress bar
-                        StoreProgress?.Invoke(module, 0, 100);
-                    }
-                    // If there was an error in STORING, delete the file so we can try it from scratch later
-                    File.Delete(filename);
+                var url      = fileTarget.urls.First();
+                var filename = fileTarget.filename;
 
-                    // Tell downloader there is a problem with this file
-                    throw;
-                }
-                catch (OperationCanceledException exc)
+                log.DebugFormat("Received download completion: {0}, {1}, {2}",
+                                url, filename, error?.Message);
+                if (error != null)
                 {
-                    log.WarnFormat("Cancellation token threw, validation incomplete: {0}", filename);
-                    User.RaiseMessage(exc.Message);
-                    if (module != null)
+                    // If there was an error in DOWNLOADING, keep the file so we can retry it later
+                    log.Info(error.Message);
+                }
+                else
+                {
+                    // Cache if this download succeeded
+                    CkanModule? module = null;
+                    try
                     {
-                        // Finish out the progress bar
-                        StoreProgress?.Invoke(module, 0, 100);
+                        module = modules.First(m => (m.download?.Any(dlUri => dlUri == url)
+                                                     ?? false)
+                                                    || m.InternetArchiveDownload == url);
+                        User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
+                        cache.Store(module, filename,
+                            new Progress<int>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
+                            module.StandardName(),
+                            false,
+                            cancelTokenSrc?.Token);
+                        File.Delete(filename);
                     }
-                    // Don't delete because there might be nothing wrong
-                }
-                catch (FileNotFoundException e)
-                {
-                    log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
-                }
-                catch (InvalidOperationException)
-                {
-                    log.WarnFormat("No module found for completed URL: {0}", url);
+                    catch (InvalidModuleFileKraken kraken)
+                    {
+                        User.RaiseError(kraken.ToString());
+                        if (module != null)
+                        {
+                            // Finish out the progress bar
+                            StoreProgress?.Invoke(module, 0, 100);
+                        }
+                        // If there was an error in STORING, delete the file so we can try it from scratch later
+                        File.Delete(filename);
+
+                        // Tell downloader there is a problem with this file
+                        throw;
+                    }
+                    catch (OperationCanceledException exc)
+                    {
+                        log.WarnFormat("Cancellation token threw, validation incomplete: {0}", filename);
+                        User.RaiseMessage(exc.Message);
+                        if (module != null)
+                        {
+                            // Finish out the progress bar
+                            StoreProgress?.Invoke(module, 0, 100);
+                        }
+                        // Don't delete because there might be nothing wrong
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        log.WarnFormat("cache.Store(): FileNotFoundException: {0}", e.Message);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        log.WarnFormat("No module found for completed URL: {0}", url);
+                    }
                 }
             }
         }

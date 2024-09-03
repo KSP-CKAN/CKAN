@@ -6,25 +6,29 @@ namespace CKAN.NetKAN.Transformers
 {
     internal class TransformOptions
     {
-        public TransformOptions(int? releases, int? skipReleases, ModuleVersion highVer, bool staged, string stagingReason)
+        public TransformOptions(int?           releases,
+                                int?           skipReleases,
+                                ModuleVersion? highVer,
+                                bool           staged,
+                                string?        stagingReason)
         {
             Releases       = releases;
             SkipReleases   = skipReleases;
             HighestVersion = highVer;
             Staged         = staged;
             StagingReasons = new List<string>();
-            if (!string.IsNullOrEmpty(stagingReason))
+            if (stagingReason != null && !string.IsNullOrEmpty(stagingReason))
             {
                 StagingReasons.Add(stagingReason);
             }
         }
 
-        public readonly int?          Releases;
-        public readonly int?          SkipReleases;
-        public readonly ModuleVersion HighestVersion;
-        public          bool          Staged;
-        public readonly List<string>  StagingReasons;
-        public          bool          FlakyAPI = false;
+        public readonly int?           Releases;
+        public readonly int?           SkipReleases;
+        public readonly ModuleVersion? HighestVersion;
+        public          bool           Staged;
+        public readonly List<string>   StagingReasons;
+        public          bool           FlakyAPI = false;
     }
 
     /// <summary>
@@ -42,6 +46,6 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="metadata">The metadata to transform.</param>
         /// <returns>The transformed metadata.</returns>
-        IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts);
+        IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts);
     }
 }

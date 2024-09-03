@@ -17,7 +17,7 @@ namespace CKAN
 
         public CkanUpdate GetUpdate(bool devBuild)
         {
-            if (updates.TryGetValue(devBuild, out CkanUpdate update))
+            if (updates.TryGetValue(devBuild, out CkanUpdate? update))
             {
                 return update;
             }
@@ -29,6 +29,9 @@ namespace CKAN
         }
 
         private readonly Dictionary<bool, CkanUpdate> updates = new Dictionary<bool, CkanUpdate>();
+
+        // This is null when running tests, seemingly.
+        private static readonly string exePath = Assembly.GetEntryAssembly()?.Location ?? "";
 
         /// <summary>
         /// Report whether it's possible to run the auto-updater.
@@ -43,7 +46,7 @@ namespace CKAN
         /// and then launches the helper allowing us to upgrade.
         /// </summary>
         /// <param name="launchCKANAfterUpdate">If set to <c>true</c> launch CKAN after update.</param>
-        public void StartUpdateProcess(bool launchCKANAfterUpdate, bool devBuild, IUser user = null)
+        public void StartUpdateProcess(bool launchCKANAfterUpdate, bool devBuild, IUser? user = null)
         {
             var pid = Process.GetCurrentProcess().Id;
 
@@ -84,8 +87,8 @@ namespace CKAN
                 {
                     UseShellExecute = false
                 };
-                Process permsprocess = Process.Start(permsinfo);
-                permsprocess.WaitForExit();
+                var permsprocess = Process.Start(permsinfo);
+                permsprocess?.WaitForExit();
             }
         }
 
@@ -103,8 +106,5 @@ namespace CKAN
                 return false;
             }
         }
-
-        // This is null when running tests, seemingly.
-        private static readonly string exePath = Assembly.GetEntryAssembly()?.Location ?? "";
     }
 }

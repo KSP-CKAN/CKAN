@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -82,7 +83,7 @@ namespace CKAN.GUI
             IsUserRequested = Reasons.All(r => r is SelectionReason.UserRequested);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null)
             {
@@ -99,7 +100,7 @@ namespace CKAN.GUI
                 return false;
             }
 
-            return (obj as ModChange).Mod.Equals(Mod);
+            return (obj as ModChange)?.Mod.Equals(Mod) ?? false;
         }
 
         private static readonly int maxEnumVal = Enum.GetValues(typeof(GUIModChangeType)).Cast<int>().Max();
@@ -113,8 +114,8 @@ namespace CKAN.GUI
         public override string ToString()
             => $"{ChangeType.Localize()} {Mod} ({Description})";
 
-        public virtual string NameAndStatus
-            => Main.Instance.Manager.Cache.DescribeAvailability(Mod);
+        public virtual string? NameAndStatus
+            => Main.Instance?.Manager?.Cache?.DescribeAvailability(Mod);
 
         private string DescribeGroup(IEnumerable<SelectionReason> reasons)
             => reasons.First().DescribeWith(reasons.Skip(1));
@@ -123,9 +124,9 @@ namespace CKAN.GUI
             => string.Join("; ",
                 Reasons.GroupBy(r => r.GetType(), (t, reasons) =>
                     DescribeGroup(
-                        // Avoid the reasons that throw exceptions for Parent
-                        t.Equals(typeof(SelectionReason.Depends))
-                            ? reasons.OrderBy(r => r.Parent.name)
+                        t.IsSubclassOf(typeof(SelectionReason.RelationshipReason))
+                            ? reasons.OfType<SelectionReason.RelationshipReason>()
+                                     .OrderBy(r => r.Parent.name)
                             : reasons)));
     }
 
@@ -144,8 +145,8 @@ namespace CKAN.GUI
             this.userReinstall = userReinstall;
         }
 
-        public override string NameAndStatus
-            => Main.Instance.Manager.Cache.DescribeAvailability(targetMod);
+        public override string? NameAndStatus
+            => Main.Instance?.Manager?.Cache?.DescribeAvailability(targetMod);
 
         public override string Description
             => IsReinstall

@@ -93,7 +93,7 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    Util.Invoke(OptionsList, () => OptionsList.Items.Add(args[i].ToString()));
+                    Util.Invoke(OptionsList, () => OptionsList.Items.Add(args[i].ToString() ?? ""));
                 }
             }
 
@@ -123,7 +123,7 @@ namespace CKAN.GUI
             Util.Invoke(this, Close);
         }
 
-        private void OptionsList_SelectedIndexChanged(object sender, EventArgs e)
+        private void OptionsList_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             currentSelected = OptionsList.SelectedIndex;
         }

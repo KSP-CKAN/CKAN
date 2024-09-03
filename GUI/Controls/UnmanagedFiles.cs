@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 
@@ -27,7 +28,10 @@ namespace CKAN.GUI
             GameFolderTree.TreeViewNodeSorter = new DirsFirstSorter();
         }
 
-        public void LoadFiles(GameInstance inst, RepositoryDataManager repoData, IUser user)
+        [MemberNotNull(nameof(inst), nameof(user), nameof(registry))]
+        public void LoadFiles(GameInstance          inst,
+                              RepositoryDataManager repoData,
+                              IUser                 user)
         {
             this.inst = inst;
             this.user = user;
@@ -38,7 +42,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Invoked when the user clicks OK
         /// </summary>
-        public event Action Done;
+        public event Action? Done;
 
         /// <summary>
         /// Open the user guide when the user presses F1
@@ -50,36 +54,39 @@ namespace CKAN.GUI
 
         private void _UpdateGameFolderTree()
         {
-            GameFolderTree.BackColor = SystemColors.Window;
-            GameFolderTree.LineColor = SystemColors.WindowText;
-
-            GameFolderTree.Nodes.Clear();
-            var rootNode = GameFolderTree.Nodes.Add(
-                "",
-                Platform.FormatPath(inst.GameDir()),
-                "folder", "folder");
-
-            UseWaitCursor = true;
-            Task.Factory.StartNew(() =>
+            if (inst != null && registry != null)
             {
-                var paths = inst?.UnmanagedFiles(registry).ToArray()
-                    ?? Array.Empty<string>();
-                Util.Invoke(this, () =>
+                GameFolderTree.BackColor = SystemColors.Window;
+                GameFolderTree.LineColor = SystemColors.WindowText;
+
+                GameFolderTree.Nodes.Clear();
+                var rootNode = GameFolderTree.Nodes.Add(
+                    "",
+                    Platform.FormatPath(inst.GameDir()),
+                    "folder", "folder");
+
+                UseWaitCursor = true;
+                Task.Factory.StartNew(() =>
                 {
-                    GameFolderTree.BeginUpdate();
-                    foreach (string path in paths)
+                    var paths = inst.UnmanagedFiles(registry).ToArray()
+                        ?? Array.Empty<string>();
+                    Util.Invoke(this, () =>
                     {
-                        AddContentPieces(rootNode, path.Split(new char[] {'/'}));
-                    }
-                    rootNode.Expand();
-                    rootNode.EnsureVisible();
-                    ExpandDefaultModDir(inst.game);
-                    // The nodes don't have children at first, so the sort needs to be re-applied after they're added
-                    GameFolderTree.Sort();
-                    GameFolderTree.EndUpdate();
-                    UseWaitCursor = false;
+                        GameFolderTree.BeginUpdate();
+                        foreach (string path in paths)
+                        {
+                            AddContentPieces(rootNode, path.Split(new char[] {'/'}));
+                        }
+                        rootNode.Expand();
+                        rootNode.EnsureVisible();
+                        ExpandDefaultModDir(inst.game);
+                        // The nodes don't have children at first, so the sort needs to be re-applied after they're added
+                        GameFolderTree.Sort();
+                        GameFolderTree.EndUpdate();
+                        UseWaitCursor = false;
+                    });
                 });
-            });
+            }
         }
 
         private IEnumerable<string> ParentPaths(string[] pathPieces)
@@ -116,12 +123,12 @@ namespace CKAN.GUI
             }
         }
 
-        private void RefreshButton_Click(object sender, EventArgs e)
+        private void RefreshButton_Click(object? sender, EventArgs? e)
         {
             Refresh();
         }
 
-        private void ExpandAllButton_Click(object sender, EventArgs e)
+        private void ExpandAllButton_Click(object? sender, EventArgs? e)
         {
             GameFolderTree.BeginUpdate();
             GameFolderTree.ExpandAll();
@@ -130,7 +137,7 @@ namespace CKAN.GUI
             GameFolderTree.Focus();
         }
 
-        private void CollapseAllButton_Click(object sender, EventArgs e)
+        private void CollapseAllButton_Click(object? sender, EventArgs? e)
         {
             GameFolderTree.BeginUpdate();
             GameFolderTree.CollapseAll();
@@ -139,114 +146,97 @@ namespace CKAN.GUI
             GameFolderTree.Focus();
         }
 
-        private void ResetCollapseButton_Click(object sender, EventArgs e)
+        private void ResetCollapseButton_Click(object? sender, EventArgs? e)
         {
-            GameFolderTree.BeginUpdate();
-            GameFolderTree.CollapseAll();
-            GameFolderTree.Nodes[0].Expand();
-            ExpandDefaultModDir(inst.game);
-            GameFolderTree.Nodes[0].EnsureVisible();
-            GameFolderTree.EndUpdate();
-            GameFolderTree.Focus();
-        }
-
-        private void ShowInFolderButton_Click(object sender, EventArgs e)
-        {
-            OpenFileBrowser(GameFolderTree.SelectedNode);
-            GameFolderTree.Focus();
-        }
-
-        private void DeleteButton_Click(object sender, EventArgs e)
-        {
-            var relPath = GameFolderTree.SelectedNode?.Name;
-            var absPath = inst.ToAbsoluteGameDir(relPath);
-            log.DebugFormat("Trying to delete {0}", absPath);
-            if (inst.HasManagedFiles(registry, absPath))
+            if (inst != null)
             {
-                Main.Instance.ErrorDialog(Properties.Resources.FolderContainsManagedFiles, relPath);
+                GameFolderTree.BeginUpdate();
+                GameFolderTree.CollapseAll();
+                GameFolderTree.Nodes[0].Expand();
+                ExpandDefaultModDir(inst.game);
+                GameFolderTree.Nodes[0].EnsureVisible();
+                GameFolderTree.EndUpdate();
+                GameFolderTree.Focus();
             }
-            else if (!string.IsNullOrEmpty(relPath) && Main.Instance.YesNoDialog(
-                string.Format(Properties.Resources.DeleteUnmanagedFileConfirmation,
-                              Platform.FormatPath(relPath)),
-                Properties.Resources.DeleteUnmanagedFileDelete,
-                Properties.Resources.DeleteUnmanagedFileCancel))
+        }
+
+        private void ShowInFolderButton_Click(object? sender, EventArgs? e)
+        {
+            Utilities.OpenFileBrowser(GameFolderTree.SelectedNode.Name);
+            GameFolderTree.Focus();
+        }
+
+        private void DeleteButton_Click(object? sender, EventArgs? e)
+        {
+            if (inst != null && registry != null
+                && GameFolderTree.SelectedNode?.Name is string relPath)
             {
-                try
+                var absPath = inst.ToAbsoluteGameDir(relPath);
+                log.DebugFormat("Trying to delete {0}", absPath);
+                if (inst.HasManagedFiles(registry, absPath))
                 {
-                    if (File.Exists(absPath))
-                    {
-                        File.Delete(absPath);
-                    }
-                    else if (Directory.Exists(absPath))
-                    {
-                        Directory.Delete(absPath, true);
-                    }
-                    GameFolderTree.Nodes.Remove(GameFolderTree.SelectedNode);
+                    Main.Instance?.ErrorDialog(Properties.Resources.FolderContainsManagedFiles, relPath);
                 }
-                catch (Exception exc)
+                else if (!string.IsNullOrEmpty(relPath)
+                         && (Main.Instance?.YesNoDialog(string.Format(Properties.Resources.DeleteUnmanagedFileConfirmation,
+                                                                    Platform.FormatPath(relPath)),
+                                                        Properties.Resources.DeleteUnmanagedFileDelete,
+                                                        Properties.Resources.DeleteUnmanagedFileCancel) ?? false))
                 {
-                    user.RaiseError(exc.Message);
+                    try
+                    {
+                        if (File.Exists(absPath))
+                        {
+                            File.Delete(absPath);
+                        }
+                        else if (Directory.Exists(absPath))
+                        {
+                            Directory.Delete(absPath, true);
+                        }
+                        GameFolderTree.Nodes.Remove(GameFolderTree.SelectedNode);
+                    }
+                    catch (Exception exc)
+                    {
+                        user?.RaiseError(exc.Message);
+                    }
                 }
             }
         }
 
         private void GameFolderTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            OpenFileBrowser(e.Node);
+            Utilities.OpenFileBrowser(e.Node.Name);
         }
 
-        private void OKButton_Click(object sender, EventArgs e)
+        private void OKButton_Click(object? sender, EventArgs? e)
         {
             Done?.Invoke();
         }
 
-        /// <summary>
-        /// Opens the folder of the double-clicked node
-        /// in the file browser of the user's system
-        /// </summary>
-        /// <param name="node">A node of the GameFolderTree</param>
-        private void OpenFileBrowser(TreeNode node)
-        {
-            if (node != null)
-            {
-                string location = inst.ToAbsoluteGameDir(node.Name);
-
-                if (File.Exists(location))
-                {
-                    // We need the Folder of the file
-                    // Otherwise the OS would try to open the file in its default application
-                    location = Path.GetDirectoryName(location);
-                }
-
-                if (!Directory.Exists(location))
-                {
-                    // User either selected the parent node
-                    // or clicked on the tree node of a cached, but not installed mod
-                    return;
-                }
-
-                Utilities.ProcessStartURL(location);
-            }
-        }
-
-        private GameInstance inst;
-        private IUser        user;
-        private Registry     registry;
+        private GameInstance? inst;
+        private IUser?        user;
+        private Registry?     registry;
         private static readonly ILog log = LogManager.GetLogger(typeof(UnmanagedFiles));
     }
 
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     internal class DirsFirstSorter : IComparer, IComparer<TreeNode>
     {
-        public int Compare(object a, object b)
+        public int Compare(object? a, object? b)
             => Compare(a as TreeNode, b as TreeNode);
 
-        public int Compare(TreeNode a, TreeNode b)
-            => a.Nodes.Count > 0
-                ? b.Nodes.Count > 0
-                    ? string.Compare(a.Text, b.Text)
-                    : -1
-                : b.Nodes.Count > 0
-                    ? 1
-                    : string.Compare(a.Text, b.Text);
+        public int Compare(TreeNode? a, TreeNode? b)
+            => a == null ? b == null ? 0
+                                     : -1
+                         : b == null ? 1
+                                     : a.Nodes.Count > 0
+                                         ? b.Nodes.Count > 0
+                                             ? string.Compare(a.Text, b.Text)
+                                             : -1
+                                         : b.Nodes.Count > 0
+                                             ? 1
+                                             : string.Compare(a.Text, b.Text);
     }
 }

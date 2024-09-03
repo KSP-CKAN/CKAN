@@ -17,8 +17,8 @@ namespace Tests.NetKAN.Sources.Github
         // with GitHub, these sometimes cause test failures because github will throw random
         // 403s. (Hence we disable them in CI with --where="Category!=FlakyNetwork")
 
-        private string       _cachePath;
-        private NetFileCache _cache;
+        private string?       _cachePath;
+        private NetFileCache? _cache;
 
         [OneTimeSetUp]
         public void TestFixtureSetup()
@@ -33,9 +33,12 @@ namespace Tests.NetKAN.Sources.Github
         [OneTimeTearDown]
         public void TestFixtureTearDown()
         {
-            _cache.Dispose();
+            _cache?.Dispose();
             _cache = null;
-            Directory.Delete(_cachePath, recursive: true);
+            if (_cachePath != null)
+            {
+                Directory.Delete(_cachePath, recursive: true);
+            }
         }
 
         [Test]
@@ -44,16 +47,16 @@ namespace Tests.NetKAN.Sources.Github
         public void GetsLatestReleaseCorrectly()
         {
             // Arrange
-            var sut = new GithubApi(new CachingHttpService(_cache));
+            var sut = new GithubApi(new CachingHttpService(_cache!));
 
             // Act
             var githubRelease = sut.GetLatestRelease(new GithubRef("#/ckan/github/KSP-CKAN/Test", false, false));
 
             // Assert
-            Assert.IsNotNull(githubRelease.Author);
-            Assert.IsNotNull(githubRelease.Tag);
-            Assert.IsNotNull(githubRelease.Assets.FirstOrDefault());
-            Assert.IsNotNull(githubRelease.Assets.FirstOrDefault()?.Download);
+            Assert.IsNotNull(githubRelease?.Author);
+            Assert.IsNotNull(githubRelease?.Tag);
+            Assert.IsNotNull(githubRelease?.Assets?.FirstOrDefault());
+            Assert.IsNotNull(githubRelease?.Assets?.FirstOrDefault()?.Download);
         }
     }
 }

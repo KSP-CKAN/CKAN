@@ -23,8 +23,17 @@ namespace CKAN.NetKAN.Processors
 {
     public class QueueHandler
     {
-        public QueueHandler(string inputQueueName, string outputQueueName, string cacheDir, bool overwriteCache, string githubToken, string gitlabToken, bool prerelease, IGame game)
+        public QueueHandler(string  inputQueueName,
+                            string  outputQueueName,
+                            string? cacheDir,
+                            string? outputDir,
+                            bool    overwriteCache,
+                            string? githubToken,
+                            string? gitlabToken,
+                            bool    prerelease,
+                            IGame   game)
         {
+            this.outputDir = outputDir;
             warningAppender = GetQueueLogAppender();
             (LogManager.GetRepository() as Hierarchy)?.Root.AddAppender(warningAppender);
             this.game = game;
@@ -39,11 +48,7 @@ namespace CKAN.NetKAN.Processors
 
         ~QueueHandler()
         {
-            if (warningAppender != null)
-            {
-                (LogManager.GetRepository() as Hierarchy)?.Root.RemoveAppender(warningAppender);
-                warningAppender = null;
-            }
+            (LogManager.GetRepository() as Hierarchy)?.Root.RemoveAppender(warningAppender);
         }
 
         public void Process()
@@ -135,22 +140,26 @@ namespace CKAN.NetKAN.Processors
                                         .ToArray();
 
             int releases = 1;
-            if (msg.MessageAttributes.TryGetValue("Releases", out MessageAttributeValue releasesAttr))
+            if (msg.MessageAttributes.TryGetValue("Releases", out MessageAttributeValue? releasesAttr))
             {
                 releases = int.Parse(releasesAttr.StringValue);
             }
 
-            ModuleVersion highVer = null;
-            if (msg.MessageAttributes.TryGetValue("HighestVersion", out MessageAttributeValue highVerAttr))
+            ModuleVersion? highVer = null;
+            if (msg.MessageAttributes.TryGetValue("HighestVersion", out MessageAttributeValue? highVerAttr))
             {
                 highVer = new ModuleVersion(highVerAttr.StringValue);
             }
 
             log.InfoFormat("Inflating {0}", netkans.First().Identifier);
-            IEnumerable<Metadata> ckans = null;
-            bool   caught        = false;
-            string caughtMessage = null;
-            var    opts          = new TransformOptions(releases, null, highVer, netkans.First().Staged, netkans.First().StagingReason);
+            IEnumerable<Metadata>? ckans = null;
+            bool    caught        = false;
+            string? caughtMessage = null;
+            var     opts          = new TransformOptions(releases,
+                                                         null,
+                                                         highVer,
+                                                         netkans.First().Staged,
+                                                         netkans.First().StagingReason);
             try
             {
                 ckans = inflator.Inflate($"{netkans[0].Identifier}.netkan", netkans, opts)
@@ -167,19 +176,24 @@ namespace CKAN.NetKAN.Processors
             }
             if (caught)
             {
-                yield return inflationMessage(null, netkans.FirstOrDefault(), opts, false, caughtMessage);
+                yield return inflationMessage(null, netkans.First(), opts, false, outputDir, caughtMessage);
             }
             if (ckans != null)
             {
                 foreach (Metadata ckan in ckans)
                 {
                     log.InfoFormat("Sending {0}-{1}", ckan.Identifier, ckan.Version);
-                    yield return inflationMessage(ckan, netkans.FirstOrDefault(), opts, true);
+                    yield return inflationMessage(ckan, netkans.First(), opts, true, outputDir);
                 }
             }
         }
 
-        private SendMessageBatchRequestEntry inflationMessage(Metadata ckan, Metadata netkan, TransformOptions opts, bool success, string err = null)
+        private SendMessageBatchRequestEntry inflationMessage(Metadata?        ckan,
+                                                              Metadata         netkan,
+                                                              TransformOptions opts,
+                                                              bool             success,
+                                                              string?          outDir,
+                                                              string?          err = null)
         {
             var attribs = new Dictionary<string, MessageAttributeValue>()
             {
@@ -231,7 +245,7 @@ namespace CKAN.NetKAN.Processors
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = Program.CkanFileName(ckan.Json())
+                        StringValue = Program.CkanFileName(outDir, ckan.Json())
                     }
                 );
             }
@@ -279,7 +293,7 @@ namespace CKAN.NetKAN.Processors
             };
         }
 
-        internal static string serializeCkan(Metadata ckan)
+        internal static string serializeCkan(Metadata? ckan)
         {
             if (ckan == null)
             {
@@ -309,6 +323,7 @@ namespace CKAN.NetKAN.Processors
             };
         }
 
+        private readonly string?         outputDir;
         private readonly IGame           game;
         private readonly Inflator        inflator;
         private readonly AmazonSQSClient client = new AmazonSQSClient();
@@ -319,6 +334,6 @@ namespace CKAN.NetKAN.Processors
         private int responseId = 0;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(QueueHandler));
-        private QueueAppender        warningAppender;
+        private readonly QueueAppender warningAppender;
     }
 }

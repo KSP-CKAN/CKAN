@@ -26,9 +26,9 @@ namespace CKAN
 
         /// <summary>
         /// Returns a simple array of the latest compatible module for each identifier for
-        /// the specified version of KSP.
+        /// the specified game version.
         /// </summary>
-        IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria ksp_version);
+        IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria? ksp_version);
 
         /// <summary>
         /// Get full JSON metadata string for a mod's available versions
@@ -45,17 +45,17 @@ namespace CKAN
         /// If no ksp_version is provided, the latest module for *any* KSP version is returned.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        CkanModule LatestAvailable(string                  identifier,
-                                   GameVersionCriteria     ksp_version,
-                                   RelationshipDescriptor  relationship_descriptor = null,
-                                   ICollection<CkanModule> installed = null,
-                                   ICollection<CkanModule> toInstall = null);
+        CkanModule? LatestAvailable(string                   identifier,
+                                    GameVersionCriteria?     ksp_version,
+                                    RelationshipDescriptor?  relationship_descriptor = null,
+                                    ICollection<CkanModule>? installed               = null,
+                                    ICollection<CkanModule>? toInstall               = null);
 
         /// <summary>
         /// Returns the max game version that is compatible with the given mod.
         /// </summary>
         /// <param name="identifier">Name of mod to check</param>
-        GameVersion LatestCompatibleGameVersion(List<GameVersion> realVersions, string identifier);
+        GameVersion? LatestCompatibleGameVersion(List<GameVersion> realVersions, string identifier);
 
         /// <summary>
         /// Returns all available versions of a module.
@@ -70,11 +70,11 @@ namespace CKAN
         /// Returns an empty list if nothing is available for our system, which includes if no such module exists.
         /// If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
-        List<CkanModule> LatestAvailableWithProvides(string                  identifier,
-                                                     GameVersionCriteria     ksp_version,
-                                                     RelationshipDescriptor  relationship_descriptor = null,
-                                                     ICollection<CkanModule> installed = null,
-                                                     ICollection<CkanModule> toInstall = null);
+        List<CkanModule> LatestAvailableWithProvides(string                   identifier,
+                                                     GameVersionCriteria?     ksp_version,
+                                                     RelationshipDescriptor?  relationship_descriptor = null,
+                                                     ICollection<CkanModule>? installed               = null,
+                                                     ICollection<CkanModule>? toInstall               = null);
 
         /// <summary>
         /// Checks the sanity of the registry, to ensure that all dependencies are met,
@@ -86,21 +86,21 @@ namespace CKAN
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
-        IEnumerable<string> FindReverseDependencies(List<string> modulesToRemove,
-                                                    List<CkanModule> modulesToInstall = null,
-                                                    Func<RelationshipDescriptor, bool> satisfiedFilter = null);
+        IEnumerable<string> FindReverseDependencies(List<string>                        modulesToRemove,
+                                                    List<CkanModule>?                   modulesToInstall = null,
+                                                    Func<RelationshipDescriptor, bool>? satisfiedFilter  = null);
 
         /// <summary>
         /// Gets the installed version of a mod. Does not check for provided or autodetected mods.
         /// </summary>
         /// <returns>The module or null if not found</returns>
-        CkanModule GetInstalledVersion(string identifier);
+        CkanModule? GetInstalledVersion(string identifier);
 
         /// <summary>
         /// Attempts to find a module with the given identifier and version.
         /// </summary>
         /// <returns>The module if it exists, null otherwise.</returns>
-        CkanModule GetModuleByVersion(string identifier, ModuleVersion version);
+        CkanModule? GetModuleByVersion(string identifier, ModuleVersion version);
 
         /// <summary>
         /// Returns a simple array of all incompatible modules for
@@ -120,7 +120,7 @@ namespace CKAN
         /// Returns the InstalledModule, or null if it is not installed.
         /// Does *not* look up virtual modules.
         /// </summary>
-        InstalledModule InstalledModule(string identifier);
+        InstalledModule? InstalledModule(string identifier);
 
         /// <summary>
         /// Returns the installed version of a given mod.
@@ -129,7 +129,7 @@ namespace CKAN
         /// </summary>
         /// <param name="with_provides">If set to false will not check for provided versions.</param>
         /// <returns>The version of the mod or null if not found</returns>
-        ModuleVersion InstalledVersion(string identifier, bool with_provides = true);
+        ModuleVersion? InstalledVersion(string identifier, bool with_provides = true);
 
         /// <summary>
         /// Check whether any versions of this mod are installable (including dependencies) on the given game versions
@@ -148,7 +148,7 @@ namespace CKAN
         /// <summary>
         /// Helper to call <see cref="IRegistryQuerier.GetModuleByVersion(string, ModuleVersion)"/>
         /// </summary>
-        public static CkanModule GetModuleByVersion(this IRegistryQuerier querier, string ident, string version)
+        public static CkanModule? GetModuleByVersion(this IRegistryQuerier querier, string ident, string version)
             => querier.GetModuleByVersion(ident, new ModuleVersion(version));
 
         /// <summary>
@@ -171,11 +171,11 @@ namespace CKAN
         /// <summary>
         /// Is the mod installed and does it have a newer version compatible with versionCrit
         /// </summary>
-        public static bool HasUpdate(this IRegistryQuerier   querier,
-                                     string                  identifier,
-                                     GameInstance            instance,
-                                     out CkanModule          latestMod,
-                                     ICollection<CkanModule> installed = null)
+        public static bool HasUpdate(this IRegistryQuerier    querier,
+                                     string                   identifier,
+                                     GameInstance?            instance,
+                                     out CkanModule?          latestMod,
+                                     ICollection<CkanModule>? installed = null)
         {
             // Check if it's installed (including manually!)
             var instVer = querier.InstalledVersion(identifier);
@@ -187,7 +187,7 @@ namespace CKAN
             // Check if it's available
             try
             {
-                latestMod = querier.LatestAvailable(identifier, instance.VersionCriteria(), null, installed);
+                latestMod = querier.LatestAvailable(identifier, instance?.VersionCriteria(), null, installed);
             }
             catch
             {
@@ -221,7 +221,7 @@ namespace CKAN
         }
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
-                                                                          GameInstance          instance,
+                                                                          GameInstance?         instance,
                                                                           HashSet<string>       heldIdents)
         {
             // Get the absolute latest versions ignoring restrictions,
@@ -230,17 +230,18 @@ namespace CKAN
                                    .Keys
                                    .Select(ident => !heldIdents.Contains(ident)
                                                     && querier.HasUpdate(ident, instance,
-                                                                         out CkanModule latest)
+                                                                         out CkanModule? latest)
+                                                    && latest is not null
                                                     && !latest.IsDLC
                                                         ? latest
                                                         : querier.GetInstalledVersion(ident))
-                                   .Where(m => m != null)
+                                   .OfType<CkanModule>()
                                    .ToList();
             return querier.CheckUpgradeable(instance, heldIdents, unlimited);
         }
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
-                                                                          GameInstance          instance,
+                                                                          GameInstance?         instance,
                                                                           HashSet<string>       heldIdents,
                                                                           List<CkanModule>      initial)
         {
@@ -251,7 +252,8 @@ namespace CKAN
             {
                 if (!heldIdents.Contains(ident)
                     && querier.HasUpdate(ident, instance,
-                                         out CkanModule latest, initial)
+                                         out CkanModule? latest, initial)
+                    && latest is not null
                     && !latest.IsDLC)
                 {
                     upgradeable.Add(latest);
@@ -300,7 +302,7 @@ namespace CKAN
                                                     IGame                 game,
                                                     string                identifier)
         {
-            List<CkanModule> releases = null;
+            List<CkanModule>? releases = null;
             try
             {
                 releases = querier.AvailableByIdentifier(identifier)
@@ -318,8 +320,10 @@ namespace CKAN
             if (releases != null && releases.Count > 0)
             {
                 CkanModule.GetMinMaxVersions(releases, out _, out _,
-                                             out GameVersion minKsp, out GameVersion maxKsp);
-                return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
+                                             out GameVersion? minKsp, out GameVersion? maxKsp);
+                return GameVersionRange.VersionSpan(game,
+                                                    minKsp ?? GameVersion.Any,
+                                                    maxKsp ?? GameVersion.Any);
             }
             return "";
         }
@@ -335,12 +339,12 @@ namespace CKAN
         /// </returns>
         public static string CompatibleGameVersions(this CkanModule module, IGame game)
         {
-            CkanModule.GetMinMaxVersions(
-                new CkanModule[] { module },
-                out _, out _,
-                out GameVersion minKsp, out GameVersion maxKsp
-            );
-            return GameVersionRange.VersionSpan(game, minKsp, maxKsp);
+            CkanModule.GetMinMaxVersions(new CkanModule[] { module },
+                                         out _, out _,
+                                         out GameVersion? minKsp, out GameVersion? maxKsp);
+            return GameVersionRange.VersionSpan(game,
+                                                minKsp ?? GameVersion.Any,
+                                                maxKsp ?? GameVersion.Any);
         }
 
         /// <summary>
@@ -350,28 +354,18 @@ namespace CKAN
         /// Given a mod identifier, return a ModuleReplacement containing the relevant replacement
         /// if compatibility matches.
         /// </summary>
-        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, string identifier, GameVersionCriteria version)
-        {
-            // We only care about the installed version
-            CkanModule installedVersion;
-            try
-            {
-                installedVersion = querier.GetInstalledVersion(identifier);
-            }
-            catch (ModuleNotFoundKraken)
-            {
-                return null;
-            }
-            return querier.GetReplacement(installedVersion, version);
-        }
+        public static ModuleReplacement? GetReplacement(this IRegistryQuerier querier,
+                                                        string                identifier,
+                                                        GameVersionCriteria   version)
+        // We only care about the installed version
+            => querier.GetInstalledVersion(identifier) is CkanModule mod
+                ? Utilities.DefaultIfThrows(() => querier.GetReplacement(mod, version))
+                : null;
 
-        public static ModuleReplacement GetReplacement(this IRegistryQuerier querier, CkanModule installedVersion, GameVersionCriteria version)
+        public static ModuleReplacement? GetReplacement(this IRegistryQuerier querier,
+                                                        CkanModule            installedVersion,
+                                                        GameVersionCriteria   version)
         {
-            // Mod is not installed, so we don't care about replacements
-            if (installedVersion == null)
-            {
-                return null;
-            }
             // No replaced_by relationship
             if (installedVersion.replaced_by == null)
             {
@@ -379,43 +373,23 @@ namespace CKAN
             }
 
             // Get the identifier from the replaced_by relationship, if it exists
-            ModuleRelationshipDescriptor replacedBy = installedVersion.replaced_by;
+            var replacedBy = installedVersion.replaced_by;
 
             // Now we need to see if there is a compatible version of the replacement
             try
             {
-                ModuleReplacement replacement = new ModuleReplacement
-                {
-                    ToReplace = installedVersion
-                };
                 if (installedVersion.replaced_by.version != null)
                 {
-                    replacement.ReplaceWith = querier.GetModuleByVersion(installedVersion.replaced_by.name, installedVersion.replaced_by.version);
-                    if (replacement.ReplaceWith != null)
+                    if (querier.GetModuleByVersion(installedVersion.replaced_by.name, installedVersion.replaced_by.version)
+                        is CkanModule replacement && replacement.IsCompatible(version))
                     {
-                        if (replacement.ReplaceWith.IsCompatible(version))
-                        {
-                            return replacement;
-                        }
+                        return new ModuleReplacement(installedVersion, replacement);
                     }
                 }
-                else
+                else if (querier.LatestAvailable(installedVersion.replaced_by.name, version, replacedBy)
+                         is CkanModule replacement && replacement.IsCompatible(version))
                 {
-                    replacement.ReplaceWith = querier.LatestAvailable(installedVersion.replaced_by.name, version);
-                    if (replacement.ReplaceWith != null)
-                    {
-                        if (installedVersion.replaced_by.min_version != null)
-                        {
-                            if (!replacement.ReplaceWith.version.IsLessThan(replacedBy.min_version))
-                            {
-                                return replacement;
-                            }
-                        }
-                        else
-                        {
-                            return replacement;
-                        }
-                    }
+                    return new ModuleReplacement(installedVersion, replacement);
                 }
                 return null;
             }
@@ -441,7 +415,7 @@ namespace CKAN
             List<InstalledModule>              installedModules,
             HashSet<string>                    dlls,
             IDictionary<string, ModuleVersion> dlc,
-            GameVersionCriteria                crit)
+            GameVersionCriteria?               crit)
         {
             log.DebugFormat("Finding removable autoInstalled for: {0}",
                             string.Join(", ", installedModules.Select(im => im.identifier)));
@@ -483,7 +457,7 @@ namespace CKAN
         public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
             this IRegistryQuerier querier,
             List<InstalledModule> installedModules,
-            GameVersionCriteria   crit)
+            GameVersionCriteria?  crit)
             => querier?.FindRemovableAutoInstalled(installedModules,
                                                    querier.InstalledDlls.ToHashSet(),
                                                    querier.InstalledDlc,

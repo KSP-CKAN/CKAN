@@ -14,7 +14,7 @@ namespace CKAN
             return false;
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             JToken token = JToken.Load(reader);
             if (token.Type == JTokenType.Array)
@@ -33,11 +33,19 @@ namespace CKAN
                                     Properties.Resources.JsonRelationshipConverterAnyOfCombined, forbiddenPropertyName));
                             }
                         }
-                        rels.Add(child.ToObject<AnyOfRelationshipDescriptor>());
+                        if (child.ToObject<AnyOfRelationshipDescriptor>()
+                            is AnyOfRelationshipDescriptor rel)
+                        {
+                            rels.Add(rel);
+                        }
                     }
                     else if (child["name"] != null)
                     {
-                        rels.Add(child.ToObject<ModuleRelationshipDescriptor>());
+                        if (child.ToObject<ModuleRelationshipDescriptor>()
+                            is ModuleRelationshipDescriptor rel)
+                        {
+                            rels.Add(rel);
+                        }
                     }
 
                 }
@@ -48,7 +56,7 @@ namespace CKAN
 
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

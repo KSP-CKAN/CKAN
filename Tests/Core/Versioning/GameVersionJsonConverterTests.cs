@@ -21,7 +21,7 @@ namespace Tests.Core.Versioning
 
         private static readonly object[] ReadJsonCases =
         {
-            new object[] { @"{ ""GameVersion"": null }", null },
+            new object?[] { @"{ ""GameVersion"": null }", null },
             new object[] { @"{ ""GameVersion"": ""any"" }", GameVersion.Any },
             new object[] { @"{ ""GameVersion"": ""1""} ", new GameVersion(1) },
             new object[] { @"{ ""GameVersion"": ""1.2""} ", new GameVersion(1, 2) },
@@ -43,10 +43,10 @@ namespace Tests.Core.Versioning
             var poco = new TestPoco { GameVersion = version };
 
             // Act
-            dynamic result = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(poco));
+            dynamic? result = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(poco));
 
             // Assert
-            Assert.That((string)result.GameVersion, Is.EqualTo(expected));
+            Assert.That((string?)result?.GameVersion, Is.EqualTo(expected));
         }
 
         [TestCaseSource("ReadJsonCases")]
@@ -56,7 +56,7 @@ namespace Tests.Core.Versioning
             var result = JsonConvert.DeserializeObject<TestPoco>(json);
 
             // Assert
-            Assert.That(result.GameVersion, Is.EqualTo(expected));
+            Assert.That(result?.GameVersion, Is.EqualTo(expected));
         }
 
         [TestCaseSource("ReadJsonFailureCases")]
@@ -89,7 +89,7 @@ namespace Tests.Core.Versioning
 
         private sealed class TestPoco
         {
-            public GameVersion GameVersion { get; set; }
+            public GameVersion? GameVersion { get; set; }
         }
     }
 }

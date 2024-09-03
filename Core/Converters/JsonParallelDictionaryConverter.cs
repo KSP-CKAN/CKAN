@@ -18,7 +18,7 @@ namespace CKAN
     {
         public override object ReadJson(JsonReader     reader,
                                         Type           objectType,
-                                        object         existingValue,
+                                        object?        existingValue,
                                         JsonSerializer serializer)
             => ParseWithProgress(JObject.Load(reader)
                                         .Properties()
@@ -30,7 +30,7 @@ namespace CKAN
             => Partitioner.Create(properties, true)
                           .AsParallel()
                           .WithMergeOptions(ParallelMergeOptions.NotBuffered)
-                          .Select(prop => new KeyValuePair<string, V>(
+                          .Select(prop => new KeyValuePair<string, V?>(
                                               prop.Name,
                                               prop.Value.ToObject<V>()))
                           .WithProgress(properties.Length,
@@ -38,7 +38,7 @@ namespace CKAN
                           .ToDictionary();
 
         public override bool CanWrite => false;
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

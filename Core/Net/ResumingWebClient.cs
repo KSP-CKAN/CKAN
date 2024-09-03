@@ -62,7 +62,7 @@ namespace CKAN
         /// is private instead of protected, so we have to reinvent this wheel.
         /// (Meanwhile AsyncCompletedEventArgs has none of these problems.)
         /// </summary>
-        public event Action<int, long, long> DownloadProgress;
+        public event Action<int, long, long>? DownloadProgress;
 
         /// <summary>
         /// CancelAsync isn't virtual, so we make another function
@@ -149,10 +149,10 @@ namespace CKAN
                             switch (e.UserState)
                             {
                                 case string path:
-                                    ToFile(netStream, path);
+                                    ToFile(netStream, path, cancelTokenSrc.Token);
                                     break;
                                 case Stream stream:
-                                    ToStream(netStream, stream);
+                                    ToStream(netStream, stream, cancelTokenSrc.Token);
                                     break;
                             }
                             // Make sure caller knows we've finished
@@ -176,15 +176,15 @@ namespace CKAN
             OnDownloadFileCompleted(new AsyncCompletedEventArgs(e.Error, e.Cancelled, e.UserState));
         }
 
-        private void ToFile(Stream netStream, string path)
+        private void ToFile(Stream netStream, string path, CancellationToken token)
         {
             using (var outStream = new FileStream(path, FileMode.Append, FileAccess.Write))
             {
-                ToStream(netStream, outStream);
+                ToStream(netStream, outStream, token);
             }
         }
 
-        private void ToStream(Stream netStream, Stream outStream)
+        private void ToStream(Stream netStream, Stream outStream, CancellationToken token)
         {
             netStream.CopyTo(outStream, new Progress<long>(bytesDownloaded =>
                 {
@@ -192,7 +192,7 @@ namespace CKAN
                                              bytesDownloaded, contentLength);
                 }),
                 TimeSpan.FromSeconds(5),
-                cancelTokenSrc.Token);
+                token);
         }
 
         /// <summary>
@@ -201,7 +201,7 @@ namespace CKAN
         /// </summary>
         private long bytesToSkip   = 0;
         private long contentLength = 0;
-        private CancellationTokenSource cancelTokenSrc;
+        private CancellationTokenSource? cancelTokenSrc;
 
         private const int timeoutMs = 30 * 1000;
         private static readonly ILog log = LogManager.GetLogger(typeof(ResumingWebClient));

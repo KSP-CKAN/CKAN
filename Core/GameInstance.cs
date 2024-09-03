@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -27,10 +28,10 @@ namespace CKAN
 
         private readonly string gameDir;
         public readonly IGame game;
-        private GameVersion version;
+        private GameVersion? version;
         private List<GameVersion> _compatibleVersions = new List<GameVersion>();
 
-        public TimeLog playTime;
+        public TimeLog? playTime;
 
         public string Name { get; set; }
 
@@ -38,7 +39,7 @@ namespace CKAN
         /// Returns a file system safe version of the instance name that can be used within file names.
         /// </summary>
         public string SanitizedName => string.Join("", Name.Split(Path.GetInvalidFileNameChars()));
-        public GameVersion GameVersionWhenCompatibleVersionsWereStored { get; private set; }
+        public GameVersion? GameVersionWhenCompatibleVersionsWereStored { get; private set; }
         public bool CompatibleVersionsAreFromDifferentGameVersion
             => _compatibleVersions.Count > 0
                && GameVersionWhenCompatibleVersionsWereStored != Version();
@@ -54,11 +55,11 @@ namespace CKAN
         /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
         /// if the directory contains a valid KSP install.
         /// </summary>
-        public GameInstance(IGame game, string gameDir, string name, IUser user)
+        public GameInstance(IGame game, string gameDir, string name, IUser? user)
         {
             this.game = game;
             Name = name;
-            User = user;
+            User = user ?? new NullUser();
             // Make sure our path is absolute and has normalised slashes.
             this.gameDir = CKANPathUtils.NormalizePath(Path.GetFullPath(gameDir));
             if (Platform.IsWindows)
@@ -96,6 +97,7 @@ namespace CKAN
         /// <summary>
         /// Create the CKAN directory and any supporting files.
         /// </summary>
+        [MemberNotNull(nameof(playTime))]
         private void SetupCkanDirectories()
         {
             log.InfoFormat("Initialising {0}", CkanDir());
@@ -139,7 +141,9 @@ namespace CKAN
                 JsonConvert.SerializeObject(new CompatibleGameVersions()
                 {
                     GameVersionWhenWritten = Version()?.ToString(),
-                    Versions = _compatibleVersions.Select(v => v.ToString()).ToList()
+                    Versions               = _compatibleVersions.Select(v => v.ToString())
+                                                                .OfType<string>()
+                                                                .ToList()
                 })
             );
             GameVersionWhenCompatibleVersionsWereStored = Version();
@@ -148,15 +152,16 @@ namespace CKAN
         private void LoadCompatibleVersions()
         {
             string path = CompatibleGameVersionsFile();
-            if (File.Exists(path))
+            if (File.Exists(path)
+                && JsonConvert.DeserializeObject<CompatibleGameVersions>(File.ReadAllText(path))
+                   is CompatibleGameVersions compatibleGameVersions)
             {
-                CompatibleGameVersions compatibleGameVersions = JsonConvert.DeserializeObject<CompatibleGameVersions>(File.ReadAllText(path));
-
                 _compatibleVersions = compatibleGameVersions.Versions
-                    .Select(v => GameVersion.Parse(v)).ToList();
+                                                            .Select(v => GameVersion.Parse(v))
+                                                            .ToList();
 
                 // Get version without throwing exceptions for null
-                GameVersion.TryParse(compatibleGameVersions.GameVersionWhenWritten, out GameVersion mainVer);
+                GameVersion.TryParse(compatibleGameVersions.GameVersionWhenWritten, out GameVersion? mainVer);
                 GameVersionWhenCompatibleVersionsWereStored = mainVer;
             }
         }
@@ -167,8 +172,9 @@ namespace CKAN
         public List<GameVersion> GetCompatibleVersions()
             => new List<GameVersion>(_compatibleVersions);
 
-        public HashSet<string> GetSuppressedCompatWarningIdentifiers =>
-            SuppressedCompatWarningIdentifiers.LoadFrom(Version(), SuppressedCompatWarningIdentifiersFile).Identifiers;
+        public HashSet<string> GetSuppressedCompatWarningIdentifiers
+            => SuppressedCompatWarningIdentifiers.LoadFrom(Version(), SuppressedCompatWarningIdentifiersFile)
+                                                 .Identifiers;
 
         public void AddSuppressedCompatWarningIdentifiers(HashSet<string> idents)
         {
@@ -177,14 +183,15 @@ namespace CKAN
             scwi.SaveTo(SuppressedCompatWarningIdentifiersFile);
         }
 
-        private string SuppressedCompatWarningIdentifiersFile =>
-            Path.Combine(CkanDir(), "suppressed_compat_warning_identifiers.json");
+        private string SuppressedCompatWarningIdentifiersFile
+            => Path.Combine(CkanDir(), "suppressed_compat_warning_identifiers.json");
 
         public string[] InstallFilters
         {
-            get => File.Exists(InstallFiltersFile)
-                    ? JsonConvert.DeserializeObject<string[]>(File.ReadAllText(InstallFiltersFile))
-                    : Array.Empty<string>();
+            get => (File.Exists(InstallFiltersFile)
+                        ? JsonConvert.DeserializeObject<string[]>(File.ReadAllText(InstallFiltersFile))
+                        : null)
+                   ?? Array.Empty<string>();
 
             #pragma warning disable IDE0027
             set
@@ -205,7 +212,7 @@ namespace CKAN
         /// directory as the game, or if the game is in the current directory.
         /// Otherwise, returns null.
         /// </summary>
-        public static string PortableDir(IGame game)
+        public static string? PortableDir(IGame game)
         {
             string curDir = Directory.GetCurrentDirectory();
 
@@ -219,10 +226,11 @@ namespace CKAN
             }
 
             // Find the directory our executable is stored in.
-            string exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (string.IsNullOrEmpty(exeDir))
+            var exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (string.IsNullOrEmpty(exeDir)
+                && Process.GetCurrentProcess()?.MainModule?.FileName is string s)
             {
-                exeDir = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName);
+                exeDir = Path.GetDirectoryName(s);
                 if (string.IsNullOrEmpty(exeDir))
                 {
                     log.InfoFormat("Executing assembly path and main module path not found");
@@ -234,7 +242,8 @@ namespace CKAN
             log.DebugFormat("Checking if {0} is in my exe dir: {1}",
                 game.ShortName, exeDir);
 
-            if (curDir != exeDir && game.GameInFolder(new DirectoryInfo(exeDir)))
+            if (curDir != exeDir && exeDir != null
+                && game.GameInFolder(new DirectoryInfo(exeDir)))
             {
                 log.InfoFormat("{0} found at {1}", game.ShortName, exeDir);
                 return exeDir;
@@ -246,9 +255,9 @@ namespace CKAN
         /// <summary>
         /// Detects the version of a game in a given directory.
         /// </summary>
-        private GameVersion DetectVersion(string directory)
+        private GameVersion? DetectVersion(string directory)
         {
-            GameVersion version = game.DetectVersion(new DirectoryInfo(directory));
+            var version = game.DetectVersion(new DirectoryInfo(directory));
             if (version != null)
             {
                 log.DebugFormat("Found version {0}", version);
@@ -285,12 +294,9 @@ namespace CKAN
                         .Select(f => new FileInfo(f))
                         .OrderByDescending(fi => fi.CreationTime);
 
-        public GameVersion Version()
+        public GameVersion? Version()
         {
-            if (version == null)
-            {
-                version = DetectVersion(GameDir());
-            }
+            version ??= DetectVersion(GameDir());
             return version;
         }
 
@@ -332,7 +338,7 @@ namespace CKAN
         /// <returns>
         /// Identifier if found otherwise null
         /// </returns>
-        public string DllPathToIdentifier(string relative_path)
+        public string? DllPathToIdentifier(string relative_path)
         {
             var paths = Enumerable.Repeat(game.PrimaryModDirectoryRelative, 1)
                                   .Concat(game.AlternateModDirectoriesRelative);
@@ -342,9 +348,8 @@ namespace CKAN
                 return null;
             }
             Match match = dllPattern.Match(relative_path);
-            return match.Success
-                ? Identifier.Sanitize(match.Groups["identifier"].Value)
-                : null;
+            return match.Success ? Identifier.Sanitize(match.Groups["identifier"].Value)
+                                 : null;
         }
 
         /// <summary>
@@ -373,7 +378,7 @@ namespace CKAN
                    && Directory.EnumerateFileSystemEntries(absPath, "*", SearchOption.AllDirectories)
                                .Any(f => registry.FileOwner(ToRelativeGameDir(f)) != null));
 
-        public void PlayGame(string command, Action onExit = null)
+        public void PlayGame(string command, Action? onExit = null)
         {
             var split = (command ?? "").Split(' ');
             if (split.Length == 0)
@@ -400,12 +405,12 @@ namespace CKAN
 
                 p.Exited += (sender, e) =>
                 {
-                    playTime.Stop(CkanDir());
+                    playTime?.Stop(CkanDir());
                     onExit?.Invoke();
                 };
 
                 p.Start();
-                playTime.Start();
+                playTime?.Start();
             }
             catch (Exception exception)
             {
@@ -416,10 +421,10 @@ namespace CKAN
         public override string ToString()
             => string.Format(Properties.Resources.GameInstanceToString, game.ShortName, gameDir);
 
-        public bool Equals(GameInstance other)
+        public bool Equals(GameInstance? other)
             => other != null && gameDir.Equals(other.GameDir());
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => Equals(obj as GameInstance);
 
         public override int GetHashCode()

@@ -10,6 +10,7 @@ using System.Runtime.Versioning;
 #endif
 
 using CKAN.Extensions;
+using CKAN.Games;
 
 namespace CKAN.GUI
 {
@@ -25,12 +26,12 @@ namespace CKAN.GUI
             ChangesGrid.GetType()
                        .GetProperty("DoubleBuffered",
                                     BindingFlags.Instance | BindingFlags.NonPublic)
-                       .SetValue(ChangesGrid, true, null);
+                       ?.SetValue(ChangesGrid, true, null);
         }
 
-        public void LoadChangeset(List<ModChange>                changes,
-                                  List<ModuleLabel>              AlertLabels,
-                                  Dictionary<CkanModule, string> conflicts)
+        public void LoadChangeset(List<ModChange>                 changes,
+                                  List<ModuleLabel>               AlertLabels,
+                                  Dictionary<CkanModule, string>? conflicts)
         {
             changeset = changes;
             ConfirmChangesButton.Enabled = conflicts == null || !conflicts.Any();
@@ -42,13 +43,13 @@ namespace CKAN.GUI
                        ?? new List<ChangesetRow>());
         }
 
-        public CkanModule SelectedItem => SelectedRow?.Change.Mod;
+        public CkanModule? SelectedItem => SelectedRow?.Change.Mod;
 
-        public event Action<CkanModule> OnSelectedItemsChanged;
-        public event Action<ModChange>  OnRemoveItem;
+        public event Action<CkanModule?>? OnSelectedItemsChanged;
+        public event Action<ModChange>?   OnRemoveItem;
 
-        public event Action<List<ModChange>> OnConfirmChanges;
-        public event Action<bool>            OnCancelChanges;
+        public event Action<List<ModChange>?>? OnConfirmChanges;
+        public event Action<bool>?            OnCancelChanges;
 
         private void ChangesGrid_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
         {
@@ -80,28 +81,28 @@ namespace CKAN.GUI
                 && row.ConfirmUncheck())
             {
                 (ChangesGrid.DataSource as BindingList<ChangesetRow>)?.Remove(row);
-                changeset.Remove(row.Change);
+                changeset?.Remove(row.Change);
                 OnRemoveItem?.Invoke(row.Change);
             }
         }
 
-        private void ConfirmChangesButton_Click(object sender, EventArgs e)
+        private void ConfirmChangesButton_Click(object? sender, EventArgs? e)
         {
             OnConfirmChanges?.Invoke(changeset);
         }
 
-        private void CancelChangesButton_Click(object sender, EventArgs e)
+        private void CancelChangesButton_Click(object? sender, EventArgs? e)
         {
             changeset = null;
             OnCancelChanges?.Invoke(true);
         }
 
-        private void BackButton_Click(object sender, EventArgs e)
+        private void BackButton_Click(object? sender, EventArgs? e)
         {
             OnCancelChanges?.Invoke(false);
         }
 
-        private void ChangesGrid_SelectionChanged(object sender, EventArgs e)
+        private void ChangesGrid_SelectionChanged(object? sender, EventArgs? e)
         {
             if (ChangesGrid.SelectedRows.Count > 0 && !Visible)
             {
@@ -122,13 +123,13 @@ namespace CKAN.GUI
             GUIModChangeType.Replace,
         };
 
-        private ChangesetRow SelectedRow
+        private ChangesetRow? SelectedRow
             => ChangesGrid.SelectedRows
                           .OfType<DataGridViewRow>()
                           .FirstOrDefault()
                           ?.DataBoundItem as ChangesetRow;
 
-        private List<ModChange> changeset;
+        private List<ModChange>? changeset;
     }
 
     #if NET5_0_OR_GREATER
@@ -136,14 +137,15 @@ namespace CKAN.GUI
     #endif
     public class ChangesetRow
     {
-        public ChangesetRow(ModChange                      change,
-                            List<ModuleLabel>              alertLabels,
-                            Dictionary<CkanModule, string> conflicts)
+        public ChangesetRow(ModChange                       change,
+                            List<ModuleLabel>               alertLabels,
+                            Dictionary<CkanModule, string>? conflicts)
         {
-            Change  = change;
-            WarningLabel = alertLabels?.FirstOrDefault(l =>
-                l.ContainsModule(Main.Instance.CurrentInstance.game,
-                                 Change.Mod.identifier));
+            Change = change;
+            if (Main.Instance?.CurrentInstance?.game is IGame game)
+            {
+                WarningLabel = alertLabels?.FirstOrDefault(l => l.ContainsModule(game, Change.Mod.identifier));
+            }
             conflicts?.TryGetValue(Change.Mod, out Conflict);
             Reasons = Conflict != null
                         ? string.Format("{0} ({1})", Conflict, Change.Description)
@@ -154,26 +156,28 @@ namespace CKAN.GUI
                     : Change.Description;
         }
 
-        public readonly ModChange   Change;
-        public readonly ModuleLabel WarningLabel = null;
-        public readonly string      Conflict     = null;
+        public readonly ModChange    Change;
+        public readonly ModuleLabel? WarningLabel = null;
+        public readonly string?      Conflict     = null;
 
-        public string Mod         => Change.NameAndStatus;
+        public string Mod         => Change.NameAndStatus ?? "";
         public string ChangeType  => Change.ChangeType.Localize();
         public string Reasons     { get; private set; }
-        public Bitmap DeleteImage => Change.IsRemovable ? EmbeddedImages.textClear
+        public Bitmap DeleteImage => Change.IsRemovable ? EmbeddedImages.textClear ?? EmptyBitmap
                                                         : EmptyBitmap;
 
         public bool ConfirmUncheck()
             => Change.IsAutoRemoval
-                ? Main.Instance.YesNoDialog(
+                ? Main.Instance?.YesNoDialog(
                     string.Format(Properties.Resources.ChangesetConfirmRemoveAutoRemoval, Change.Mod),
                     Properties.Resources.ChangesetConfirmRemoveAutoRemovalYes,
                     Properties.Resources.ChangesetConfirmRemoveAutoRemovalNo)
-                : Main.Instance.YesNoDialog(
+                    ?? true
+                : Main.Instance?.YesNoDialog(
                     string.Format(Properties.Resources.ChangesetConfirmRemoveUserRequested, ChangeType, Change.Mod),
                     Properties.Resources.ChangesetConfirmRemoveUserRequestedYes,
-                    Properties.Resources.ChangesetConfirmRemoveUserRequestedNo);
+                    Properties.Resources.ChangesetConfirmRemoveUserRequestedNo)
+                    ?? true;
 
         private static readonly Bitmap EmptyBitmap = new Bitmap(1, 1);
     }

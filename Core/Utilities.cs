@@ -28,7 +28,7 @@ namespace CKAN
             "nl-NL",
         };
 
-        public static T DefaultIfThrows<T>(Func<T> func)
+        public static T? DefaultIfThrows<T>(Func<T?> func) where T : class
         {
             try
             {
@@ -104,7 +104,8 @@ namespace CKAN
             {
                 var temppath = Path.Combine(destDirPath, subdir.Name);
                 // If already a sym link, replicate it in the new location
-                if (DirectoryLink.TryGetTarget(subdir.FullName, out string existingLinkTarget))
+                if (DirectoryLink.TryGetTarget(subdir.FullName, out string? existingLinkTarget)
+                    && existingLinkTarget is not null)
                 {
                     DirectoryLink.Create(existingLinkTarget, temppath, file_transaction);
                 }
@@ -177,6 +178,23 @@ namespace CKAN
             }
             return false;
         }
+
+        public static void OpenFileBrowser(string location)
+        {
+            // We need the folder of the file
+            // Otherwise the OS would try to open the file in its default application
+            if (DirPath(location) is string path)
+            {
+                ProcessStartURL(path);
+            }
+        }
+
+        private static string? DirPath(string path)
+            => Directory.Exists(path) ? path
+             : File.Exists(path) && Path.GetDirectoryName(path) is string parent
+                                 && Directory.Exists(parent)
+                 ? parent
+             : null;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Utilities));
     }

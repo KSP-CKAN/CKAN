@@ -1,3 +1,5 @@
+using System.Linq;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -15,18 +17,20 @@ namespace CKAN.NetKAN.Validators
             {
                 if (json.ContainsKey(relName))
                 {
-                    if (metadata.SpecVersion < v1p2 && relName.Equals("supports"))
+                    if (metadata.SpecVersion != null
+                        && metadata.SpecVersion < v1p2 && relName.Equals("supports"))
                     {
                         throw new Kraken("spec_version v1.2+ required for 'supports'");
                     }
-                    foreach (var relToken in json[relName].Children())
+                    foreach (var relToken in json[relName]?.Children() ?? Enumerable.Empty<JToken>())
                     {
                         switch (relToken)
                         {
                             case JObject rel:
                                 if (rel.ContainsKey("any_of"))
                                 {
-                                    if (metadata.SpecVersion < v1p26)
+                                    if (metadata.SpecVersion != null
+                                        && metadata.SpecVersion < v1p26)
                                     {
                                         throw new Kraken("spec_version v1.26+ required for 'any_of'");
                                     }
@@ -37,17 +41,17 @@ namespace CKAN.NetKAN.Validators
                                             throw new Kraken($"{forbiddenPropertyName} is not valid in the same relationship as 'any_of'");
                                         }
                                     }
-                                    if (rel.ContainsKey("choice_help_text") && metadata.SpecVersion < v1p31)
+                                    if (rel.ContainsKey("choice_help_text") && metadata.SpecVersion != null && metadata.SpecVersion < v1p31)
                                     {
                                         throw new Kraken("spec_version v1.31+ required for choice_help_text in same relationship as 'any_of'");
                                     }
-                                    foreach (var optToken in rel["any_of"].Children())
+                                    foreach (var optToken in rel["any_of"]?.Children() ?? Enumerable.Empty<JToken>())
                                     {
                                         switch (optToken)
                                         {
                                             case JObject opt:
-                                                string name = (string)opt["name"];
-                                                if (!Identifier.ValidIdentifierPattern.IsMatch(name))
+                                                var name = (string?)opt["name"];
+                                                if (name != null && !Identifier.ValidIdentifierPattern.IsMatch(name))
                                                 {
                                                     throw new Kraken($"{name} in {relName} 'any_of' is not a valid CKAN identifier");
                                                 }
@@ -59,8 +63,8 @@ namespace CKAN.NetKAN.Validators
                                 }
                                 else
                                 {
-                                    string name = (string)rel["name"];
-                                    if (!Identifier.ValidIdentifierPattern.IsMatch(name))
+                                    var name = (string?)rel["name"];
+                                    if (name != null && !Identifier.ValidIdentifierPattern.IsMatch(name))
                                     {
                                         throw new Kraken($"{name} in {relName} is not a valid CKAN identifier");
                                     }

@@ -34,9 +34,9 @@ namespace CKAN
     {
         private readonly FileSystemWatcher watcher;
         // hash => full file path
-        private Dictionary<string, string> cachedFiles;
+        private Dictionary<string, string>? cachedFiles;
         private readonly string cachePath;
-        private readonly GameInstanceManager manager;
+        private readonly GameInstanceManager? manager;
         private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
 
@@ -44,7 +44,7 @@ namespace CKAN
         /// Initialize a cache given a GameInstanceManager
         /// </summary>
         /// <param name="mgr">GameInstanceManager object containing the Instances that might have old caches</param>
-        public NetFileCache(GameInstanceManager mgr, string path)
+        public NetFileCache(GameInstanceManager? mgr, string path)
             : this(path)
         {
             manager = mgr;
@@ -81,9 +81,9 @@ namespace CKAN
             // If we spot any changes, we fire our event handler.
             // NOTE: FileSystemWatcher.Changed fires when you READ info about a file,
             //       do NOT listen for it!
-            watcher.Created += new FileSystemEventHandler(OnCacheChanged);
-            watcher.Deleted += new FileSystemEventHandler(OnCacheChanged);
-            watcher.Renamed += new RenamedEventHandler(OnCacheChanged);
+            watcher.Created += OnCacheChanged;
+            watcher.Deleted += OnCacheChanged;
+            watcher.Renamed += OnCacheChanged;
 
             // Enable events!
             watcher.EnableRaisingEvents = true;
@@ -120,7 +120,7 @@ namespace CKAN
             => GetInProgressFileName(CreateURLHash(url),
                                      description);
 
-        public string GetInProgressFileName(List<Uri> urls, string description)
+        public string? GetInProgressFileName(List<Uri> urls, string description)
         {
             var filenames = urls?.Select(url => GetInProgressFileName(CreateURLHash(url), description))
                                  .ToArray();
@@ -134,8 +134,15 @@ namespace CKAN
         /// </summary>
         private void OnCacheChanged(object source, FileSystemEventArgs e)
         {
-            log.Debug("File system watcher event fired");
+            log.DebugFormat("File system watcher event {0} fired for {1}",
+                            e.ChangeType.ToString(),
+                            e.FullPath);
             OnCacheChanged();
+            if (e.ChangeType == WatcherChangeTypes.Deleted)
+            {
+                log.DebugFormat("Purging hashes reactively: {0}", e.FullPath);
+                PurgeHashes(null, e.FullPath);
+            }
         }
 
         /// <summary>
@@ -153,7 +160,7 @@ namespace CKAN
 
         // returns true if a url is already in the cache
         // returns the filename in the outFilename parameter
-        public bool IsCached(Uri url, out string outFilename)
+        public bool IsCached(Uri url, out string? outFilename)
         {
             outFilename = GetCachedFilename(url);
             return outFilename != null;
@@ -173,7 +180,7 @@ namespace CKAN
         /// </summary>
         /// <param name="url">The URL to check for in the cache</param>
         /// <param name="remoteTimestamp">Timestamp of the remote file, if known; cached files older than this will be considered invalid</param>
-        public string GetCachedFilename(Uri url, DateTime? remoteTimestamp = null)
+        public string? GetCachedFilename(Uri url, DateTime? remoteTimestamp = null)
         {
             log.DebugFormat("Checking cache for {0}", url);
 
@@ -190,30 +197,31 @@ namespace CKAN
             // *may* get cleared by OnCacheChanged while we're
             // using it.
 
-            Dictionary<string, string> files = cachedFiles;
+            var files = cachedFiles;
 
             if (files == null)
             {
                 log.Debug("Rebuilding cache index");
                 cachedFiles = files = allFiles()
-                    .GroupBy(fi => fi.Name.Substring(0, 8))
-                    .ToDictionary(
-                        grp => grp.Key,
-                        grp => grp.First().FullName
-                    );
+                    .GroupBy(fi => fi.Name[..8])
+                    .ToDictionary(grp => grp.Key,
+                                  grp => grp.First().FullName);
             }
 
             // Now that we have a list of files one way or another,
             // check them to see if we can find the one we're looking
             // for.
 
-            string found = scanDirectory(files, hash, remoteTimestamp);
+            var found = scanDirectory(files, hash, remoteTimestamp);
             return string.IsNullOrEmpty(found) ? null : found;
         }
 
-        private string scanDirectory(Dictionary<string, string> files, string findHash, DateTime? remoteTimestamp = null)
+        private string? scanDirectory(Dictionary<string, string> files,
+                                      string                     findHash,
+                                      DateTime?                  remoteTimestamp = null)
         {
-            if (files.TryGetValue(findHash, out string file))
+            if (files.TryGetValue(findHash, out string? file)
+                && File.Exists(file))
             {
                 log.DebugFormat("Found file {0}", file);
                 // Check local vs remote timestamps; if local is older, then it's invalid.
@@ -230,10 +238,7 @@ namespace CKAN
                     // Local file too old, delete it
                     log.Debug("Found stale file, deleting it");
                     File.Delete(file);
-                    File.Delete($"{file}.sha1");
-                    File.Delete($"{file}.sha256");
-                    sha1Cache.Remove(file);
-                    sha256Cache.Remove(file);
+                    PurgeHashes(null, file);
                 }
             }
             else
@@ -292,14 +297,14 @@ namespace CKAN
             if (curBytes > bytes)
             {
                 // This object will let us determine whether a module is compatible with any of our instances
-                GameVersionCriteria aggregateCriteria = manager?.Instances.Values
+                var aggregateCriteria = manager?.Instances.Values
                     .Where(ksp => ksp.Valid)
                     .Select(ksp => ksp.VersionCriteria())
                     .Aggregate(
                         manager?.CurrentInstance?.VersionCriteria()
                             ?? new GameVersionCriteria(null),
-                        (combinedCrit, nextCrit) => combinedCrit.Union(nextCrit)
-                    );
+                        (combinedCrit, nextCrit) => combinedCrit.Union(nextCrit))
+                    ?? new GameVersionCriteria(null);
 
                 // This object lets us find the modules associated with a cached file
                 var hashMap = registry.GetDownloadUrlHashIndex();
@@ -337,11 +342,11 @@ namespace CKAN
         private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, FileInfo a, FileInfo b)
         {
             // Compatible modules for file A
-            hashMap.TryGetValue(a.Name.Substring(0, 8), out List<CkanModule> modulesA);
+            hashMap.TryGetValue(a.Name[..8], out List<CkanModule>? modulesA);
             bool compatA = modulesA?.Any() ?? false;
 
             // Compatible modules for file B
-            hashMap.TryGetValue(b.Name.Substring(0, 8), out List<CkanModule> modulesB);
+            hashMap.TryGetValue(b.Name[..8], out List<CkanModule>? modulesB);
             bool compatB = modulesB?.Any() ?? false;
 
             if (modulesA == null && modulesB != null)
@@ -401,23 +406,25 @@ namespace CKAN
         ///
         /// This method is filesystem transaction aware.
         /// </summary>
-        public string Store(Uri url, string path, string description = null, bool move = false)
+        public string Store(Uri     url,
+                            string  path,
+                            string? description = null,
+                            bool    move        = false)
         {
             log.DebugFormat("Storing {0}", url);
 
             TxFileManager tx_file = new TxFileManager();
 
-            // Make sure we clear our cache entry first.
+            // Clear our cache entry first
             Remove(url);
 
             string hash = CreateURLHash(url);
 
-            description = description ?? Path.GetFileName(path);
+            description ??= Path.GetFileName(path);
 
             Debug.Assert(
                 Regex.IsMatch(description, "^[A-Za-z0-9_.-]*$"),
-                "description isn't as filesystem safe as we thought... (#1266)"
-            );
+                $"description {description} isn't as filesystem safe as we thought... (#1266)");
 
             string fullName = string.Format("{0}-{1}", hash, Path.GetFileName(description));
             string targetPath = Path.Combine(cachePath, fullName);
@@ -452,29 +459,32 @@ namespace CKAN
         /// </summary>
         public bool Remove(Uri url)
         {
-            TxFileManager tx_file = new TxFileManager();
-
-            string file = GetCachedFilename(url);
-
-            if (file != null)
+            if (GetCachedFilename(url) is string file)
             {
+                TxFileManager tx_file = new TxFileManager();
                 tx_file.Delete(file);
                 // We've changed our cache, so signal that immediately.
                 cachedFiles?.Remove(CreateURLHash(url));
                 PurgeHashes(tx_file, file);
                 return true;
             }
-
             return false;
         }
 
-        private void PurgeHashes(TxFileManager tx_file, string file)
+        private void PurgeHashes(TxFileManager? tx_file, string file)
         {
-            tx_file.Delete($"{file}.sha1");
-            tx_file.Delete($"{file}.sha256");
+            try
+            {
+                sha1Cache.Remove(file);
+                sha256Cache.Remove(file);
 
-            sha1Cache.Remove(file);
-            sha256Cache.Remove(file);
+                tx_file ??= new TxFileManager();
+                tx_file.Delete($"{file}.sha1");
+                tx_file.Delete($"{file}.sha256");
+            }
+            catch
+            {
+            }
         }
 
         /// <summary>
@@ -551,13 +561,13 @@ namespace CKAN
         /// <returns>
         /// Returns the 8-byte hash for a given url
         /// </returns>
-        public static string CreateURLHash(Uri url)
+        public static string CreateURLHash(Uri? url)
         {
             using (SHA1 sha1 = SHA1.Create())
             {
                 byte[] hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(url?.ToString() ?? ""));
 
-                return BitConverter.ToString(hash).Replace("-", "").Substring(0, 8);
+                return BitConverter.ToString(hash).Replace("-", "")[..8];
             }
         }
 
@@ -569,7 +579,9 @@ namespace CKAN
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha1(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha1(string             filePath,
+                                      IProgress<int>?    progress,
+                                      CancellationToken? cancelToken = default)
             => GetFileHash(filePath, "sha1", sha1Cache, SHA1.Create, progress, cancelToken);
 
         /// <summary>
@@ -580,7 +592,9 @@ namespace CKAN
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
-        public string GetFileHashSha256(string filePath, IProgress<int> progress, CancellationToken cancelToken = default)
+        public string GetFileHashSha256(string             filePath,
+                                        IProgress<int>?    progress,
+                                        CancellationToken? cancelToken = default)
             => GetFileHash(filePath, "sha256", sha256Cache, SHA256.Create, progress, cancelToken);
 
         /// <summary>
@@ -591,15 +605,15 @@ namespace CKAN
         /// <returns>
         /// Hash, in all-caps hexadecimal format
         /// </returns>
-        private string GetFileHash(string filePath,
-                                   string hashSuffix,
+        private string GetFileHash(string                     filePath,
+                                   string                     hashSuffix,
                                    Dictionary<string, string> cache,
-                                   Func<HashAlgorithm> getHashAlgo,
-                                   IProgress<int> progress,
-                                   CancellationToken cancelToken)
+                                   Func<HashAlgorithm>        getHashAlgo,
+                                   IProgress<int>?            progress,
+                                   CancellationToken?         cancelToken)
         {
             string hashFile = $"{filePath}.{hashSuffix}";
-            if (cache.TryGetValue(filePath, out string hash))
+            if (cache.TryGetValue(filePath, out string? hash))
             {
                 return hash;
             }

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 using Newtonsoft.Json.Linq;
@@ -40,21 +39,21 @@ namespace Tests.Core.Types
             Assert.AreEqual("kOS - Kerbal OS", module.name);
             Assert.AreEqual("kOS", module.identifier);
             Assert.AreEqual("A programming and automation environment for KSP craft.", module.@abstract);
-            Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download[0].ToString());
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS/releases/download/v0.14/kOS.v14.zip", module.download?[0].ToString());
             Assert.AreEqual("GPL-3.0", module.license.First().ToString());
             Assert.AreEqual("0.14", module.version.ToString());
-            Assert.AreEqual("stable", module.release_status.ToString());
-            Assert.AreEqual("0.24.2", module.ksp_version.ToString());
+            Assert.AreEqual("stable", module.release_status?.ToString());
+            Assert.AreEqual("0.24.2", module.ksp_version?.ToString());
 
-            Assert.That(module.install.First().file, Is.EqualTo("GameData/kOS"));
-            Assert.That(module.install.First().install_to, Is.EqualTo("GameData"));
+            Assert.That(module.install?.First().file, Is.EqualTo("GameData/kOS"));
+            Assert.That(module.install?.First().install_to, Is.EqualTo("GameData"));
 
-            Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources.homepage.ToString());
-            Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources.bugtracker.ToString());
-            Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources.repository.ToString());
+            Assert.AreEqual("http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13", module.resources?.homepage?.ToString());
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS/issues", module.resources?.bugtracker?.ToString());
+            Assert.AreEqual("https://github.com/KSP-KOS/KOS", module.resources?.repository?.ToString());
 
-            Assert.AreEqual("C5A224AC4397770C0B19B4A6417F6C5052191608", module.download_hash.sha1.ToString());
-            Assert.AreEqual("E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB", module.download_hash.sha256.ToString());
+            Assert.AreEqual("C5A224AC4397770C0B19B4A6417F6C5052191608", module.download_hash?.sha1?.ToString());
+            Assert.AreEqual("E0FB79C81D8FCDA8DB6E38B104106C3B7D078FDC06ACA2BC7834973B43D789CB", module.download_hash?.sha256?.ToString());
         }
 
         /// <summary>
@@ -67,7 +66,7 @@ namespace Tests.Core.Types
         public void SpacesPreservedInDownload()
         {
             CkanModule module = CkanModule.FromJson(TestData.DogeCoinFlag_101());
-            Assert.AreEqual("https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01", module.download[0].OriginalString);
+            Assert.AreEqual("https://kerbalstuff.com/mod/269/Dogecoin%20Flag/download/1.01", module.download?[0].OriginalString);
         }
 
         [Test]
@@ -76,10 +75,10 @@ namespace Tests.Core.Types
             CkanModule module = CkanModule.FromJson(TestData.DogeCoinFlag_101());
 
             // Assert known things about this mod.
-            Assert.IsNotNull(module.install[0].filter);
-            Assert.IsNotNull(module.install[0].filter_regexp);
+            Assert.IsNotNull(module.install?[0].filter);
+            Assert.IsNotNull(module.install?[0].filter_regexp);
 
-            Assert.AreEqual(2, module.install[0].filter.Count);
+            Assert.AreEqual(2, module.install?[0].filter?.Count);
         }
 
         [Test]
@@ -164,12 +163,12 @@ namespace Tests.Core.Types
             JObject metadata = JObject.Parse(TestData.kOS_014());
 
             // Guess which string totally isn't a valid Url? This one.
-            metadata["resources"]["homepage"] = "https://included%in%the%download";
+            metadata["resources"]!["homepage"] = "https://included%in%the%download";
 
             CkanModule mod = CkanModule.FromJson(metadata.ToString());
 
             Assert.IsNotNull(mod);
-            Assert.IsNull(mod.resources.homepage);
+            Assert.IsNull(mod.resources?.homepage);
         }
 
         [Test]
@@ -179,7 +178,7 @@ namespace Tests.Core.Types
 
             Assert.AreEqual(
                 "http://forum.kerbalspaceprogram.com/threads/68089-0-23-kOS-Scriptable-Autopilot-System-v0-11-2-13",
-                mod.resources.homepage.ToString()
+                mod.resources?.homepage?.ToString()
             );
         }
 
@@ -189,10 +188,10 @@ namespace Tests.Core.Types
             // Arrange
             CkanModule module = TestData.kOS_014_module();
             // Act
-            Uri uri = module.InternetArchiveDownload;
+            var uri = module.InternetArchiveDownload;
             // Assert
             Assert.IsNotNull(uri);
-            Assert.AreEqual("https://archive.org/download/kOS-0.14/C5A224AC-kOS-0.14.zip", uri.ToString());
+            Assert.AreEqual("https://archive.org/download/kOS-0.14/C5A224AC-kOS-0.14.zip", uri?.ToString());
         }
 
         [Test]
@@ -201,7 +200,7 @@ namespace Tests.Core.Types
             // Arrange
             CkanModule module = TestData.FireSpitterModule();
             // Act
-            Uri uri = module.InternetArchiveDownload;
+            var uri = module.InternetArchiveDownload;
             // Assert
             Assert.IsNull(uri);
         }
@@ -212,10 +211,10 @@ namespace Tests.Core.Types
             // Arrange
             CkanModule module = TestData.kOS_014_epoch_module();
             // Act
-            Uri uri = module.InternetArchiveDownload;
+            var uri = module.InternetArchiveDownload;
             // Assert
             Assert.IsNotNull(uri);
-            Assert.AreEqual("https://archive.org/download/kOS-3-0.14/C5A224AC-kOS-3-0.14.zip", uri.ToString());
+            Assert.AreEqual("https://archive.org/download/kOS-3-0.14/C5A224AC-kOS-3-0.14.zip", uri?.ToString());
         }
 
         [Test]
@@ -224,7 +223,7 @@ namespace Tests.Core.Types
             // Arrange
             CkanModule module = TestData.RandSCapsuleDyneModule();
             // Act
-            Uri uri = module.InternetArchiveDownload;
+            var uri = module.InternetArchiveDownload;
             // Assert
             Assert.IsNull(uri);
         }
@@ -238,7 +237,9 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
@@ -248,12 +249,16 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": ""https://spacedock.info/""
                         }",
@@ -264,12 +269,16 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderA"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": ""https://github.com/""
                         }",
@@ -279,27 +288,37 @@ namespace Tests.Core.Types
             TestCase(new string[]
                      {
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModA"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://github.com/"", ""https://spacedock.info/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModB"",
+                            ""author"": ""ModderB"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://curseforge.com/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModC"",
+                            ""author"": ""ModderC"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://spacedock.info/"", ""https://archive.org/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModD"",
+                            ""author"": ""ModderD"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://drive.google.com/"" ]
                         }",
                         @"{
+                            ""spec_version"": 1,
                             ""identifier"": ""ModE"",
+                            ""author"": ""ModderE"",
                             ""version"": ""1.0"",
                             ""download"": [ ""https://archive.org/"", ""https://taniwha.org/"" ]
                         }",
@@ -334,6 +353,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""1.5"",
                          ""download"":        ""https://github.com/""
@@ -349,6 +369,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""3.0"",
                          ""download"":        ""https://github.com/""
@@ -363,6 +384,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""1.0"",
                          ""ksp_version_max"": ""1.9"",
@@ -378,6 +400,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":    1,
                          ""identifier"":      ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":         ""1.0"",
                          ""ksp_version_min"": ""1.0"",
                          ""ksp_version_max"": ""1.9"",
@@ -393,6 +416,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":     1,
                          ""identifier"":       ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":          ""1.0"",
                          ""ksp_version_max"":  ""1.5"",
                          ""download"":         ""https://github.com/""
@@ -407,6 +431,7 @@ namespace Tests.Core.Types
             TestCase(@"{
                          ""spec_version"":     1,
                          ""identifier"":       ""testMod"",
+                         ""author"":          ""TestModder"",
                          ""version"":          ""1.0"",
                          ""ksp_version_max"":  ""1.5.0.0"",
                          ""download"":         ""https://github.com/""
@@ -443,6 +468,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.0"",
                              ""ksp_version"":  ""1.0"",
                              ""download"":     ""https://github.com/""
@@ -455,6 +481,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.0"",
                              ""ksp_version"":  ""1.0"",
                              ""download"":     ""https://github.com/""
@@ -462,6 +489,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.1"",
                              ""ksp_version"":  ""2.0"",
                              ""download"":     ""https://github.com/""
@@ -474,12 +502,14 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.0"",
                              ""download"":     ""https://github.com/""
                          }",
                          @"{
                              ""spec_version"": 1,
                              ""identifier"":   ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":      ""1.1"",
                              ""download"":     ""https://github.com/""
                          }",
@@ -491,6 +521,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"":   1,
                              ""identifier"":      ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":         ""1.0"",
                              ""ksp_version_max"": ""1.0"",
                              ""download"":        ""https://github.com/""
@@ -498,6 +529,7 @@ namespace Tests.Core.Types
                          @"{
                              ""spec_version"":    1,
                              ""identifier"":      ""testMod"",
+                             ""author"":          ""TestModder"",
                              ""version"":         ""1.1"",
                              ""ksp_version_min"": ""2.0"",
                              ""download"":        ""https://github.com/""
@@ -520,10 +552,10 @@ namespace Tests.Core.Types
 
             // Act
             CkanModule.GetMinMaxVersions(modules,
-                                         out ModuleVersion minMod,
-                                         out ModuleVersion maxMod,
-                                         out GameVersion   minGame,
-                                         out GameVersion   maxGame);
+                                         out ModuleVersion? minMod,
+                                         out ModuleVersion? maxMod,
+                                         out GameVersion?   minGame,
+                                         out GameVersion?   maxGame);
 
             // Assert
             Assert.AreEqual(correctMinModVer,  minMod);

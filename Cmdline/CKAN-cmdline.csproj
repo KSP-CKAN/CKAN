@@ -16,10 +16,12 @@
     <Deterministic>true</Deterministic>
     <Configurations>Debug;Release;NoGUI</Configurations>
     <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>9</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <StartupObject>CKAN.CmdLine.MainClass</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworks>net48;net7.0;net7.0-windows</TargetFrameworks>
+    <TargetFrameworks>net48;net8.0;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
@@ -74,7 +76,7 @@
       <Name>CKAN-ConsoleUI</Name>
     </ProjectReference>
     <ProjectReference Include="..\GUI\CKAN-GUI.csproj"
-                      Condition=" '$(TargetFramework)' != 'net7.0' ">
+                      Condition=" '$(TargetFramework)' != 'net8.0' ">
       <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>

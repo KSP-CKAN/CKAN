@@ -14,4 +14,3 @@ namespace CKAN
         bool Compatible(GameVersionCriteria gameVersion, CkanModule module);
     }
 }
-

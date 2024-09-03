@@ -15,6 +15,7 @@ namespace Tests.NetKAN.Validators
         {
             ValidCkan["spec_version"] = 1;
             ValidCkan["identifier"] = "AwesomeMod";
+            ValidCkan["author"] = "Phenomenal Author";
             ValidCkan["version"] = "1.0.0";
             ValidCkan["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
         }

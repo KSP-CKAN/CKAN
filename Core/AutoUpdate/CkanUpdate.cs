@@ -11,12 +11,8 @@ namespace CKAN
     /// </summary>
     public abstract class CkanUpdate
     {
-        public CkanModuleVersion Version         { get; protected set; }
-        public Uri               ReleaseDownload { get; protected set; }
-        public long              ReleaseSize     { get; protected set; }
-        public Uri               UpdaterDownload { get; protected set; }
-        public long              UpdaterSize     { get; protected set; }
-        public string            ReleaseNotes    { get; protected set; }
+        public CkanModuleVersion? Version         { get; protected set; }
+        public string?            ReleaseNotes    { get; protected set; }
 
         public string updaterFilename = $"{Path.GetTempPath()}{Guid.NewGuid()}.exe";
         public string ckanFilename    = $"{Path.GetTempPath()}{Guid.NewGuid()}.exe";

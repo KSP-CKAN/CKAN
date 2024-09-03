@@ -53,7 +53,7 @@ namespace CKAN.GUI
             });
         }
 
-        private void DismissButton_Click(object sender, EventArgs e)
+        private void DismissButton_Click(object? sender, EventArgs? e)
         {
             Close();
         }

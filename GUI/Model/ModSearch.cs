@@ -31,13 +31,13 @@ namespace CKAN.GUI
         /// <param name="combined">Full formatted search string if known, will be auto generated otherwise</param>
         public ModSearch(
             string byName, List<string> byAuthors, string byDescription,
-            List<string> licenses, List<string> localizations,
-            List<string> depends, List<string> recommends, List<string> suggests, List<string> conflicts,
-            List<string> supports,
-            List<string> tagNames, List<ModuleLabel> labels,
+            List<string>? licenses, List<string>? localizations,
+            List<string>? depends, List<string>? recommends, List<string>? suggests, List<string>? conflicts,
+            List<string>? supports,
+            List<string>? tagNames, List<ModuleLabel>? labels,
             bool? compatible, bool? installed, bool? cached, bool? newlyCompatible,
             bool? upgradeable, bool? replaceable,
-            string combined = null)
+            string? combined = null)
         {
             Name = (ShouldNegateTerm(byName, out string subName) ? "-" : "")
                 + CkanModule.nonAlphaNums.Replace(subName, "");
@@ -45,7 +45,7 @@ namespace CKAN.GUI
             Description = (ShouldNegateTerm(byDescription, out string subDesc) ? "-" : "")
                 + CkanModule.nonAlphaNums.Replace(subDesc, "");
             initStringList(Localizations, localizations);
-            initStringList(Licenses, licenses);
+            initStringList(Licenses,      licenses);
 
             initStringList(DependsOn,     depends);
             initStringList(Recommends,    recommends);
@@ -69,7 +69,7 @@ namespace CKAN.GUI
             Combined = combined ?? getCombined();
         }
 
-        private void initStringList(List<string> dest, List<string> source)
+        private void initStringList(List<string> dest, List<string>? source)
         {
             if (source?.Any() ?? false)
             {
@@ -77,7 +77,9 @@ namespace CKAN.GUI
             }
         }
 
-        public ModSearch(GUIModFilter filter, ModuleTag tag = null, ModuleLabel label = null)
+        public ModSearch(GUIModFilter filter,
+                         ModuleTag?   tag   = null,
+                         ModuleLabel? label = null)
         {
             switch (filter)
             {
@@ -90,7 +92,12 @@ namespace CKAN.GUI
                 case GUIModFilter.Cached:                   Cached          = true;  break;
                 case GUIModFilter.Uncached:                 Cached          = false; break;
                 case GUIModFilter.NewInRepository:          NewlyCompatible = true;  break;
-                case GUIModFilter.Tag:                      TagNames.Add(tag?.Name); break;
+                case GUIModFilter.Tag:
+                    if (tag?.Name is string n)
+                    {
+                        TagNames.Add(n);
+                    }
+                    break;
                 case GUIModFilter.CustomLabel:
                     if (label != null)
                     {
@@ -98,7 +105,8 @@ namespace CKAN.GUI
                     }
                     break;
                 default:
-                case GUIModFilter.All:                                               break;
+                case GUIModFilter.All:
+                    break;
             }
             Combined = getCombined();
         }
@@ -106,7 +114,7 @@ namespace CKAN.GUI
         /// <summary>
         /// String to search for in mod names, identifiers, and abbreviations
         /// </summary>
-        public readonly string Name;
+        public readonly string Name = "";
 
         /// <summary>
         /// String to search for in author names
@@ -116,7 +124,7 @@ namespace CKAN.GUI
         /// <summary>
         /// String to search for in mod descriptions
         /// </summary>
-        public readonly string Description;
+        public readonly string Description = "";
 
         /// <summary>
         /// License substring to search for in mod licenses
@@ -156,7 +164,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Full formatted search string
         /// </summary>
-        public readonly string Combined;
+        public readonly string? Combined;
 
         public readonly List<string>      TagNames = new List<string>();
         public readonly List<ModuleLabel> Labels   = new List<ModuleLabel>();
@@ -216,7 +224,7 @@ namespace CKAN.GUI
         /// <returns>
         ///
         /// </returns>
-        private string getCombined()
+        private string? getCombined()
         {
             var pieces = new List<string>();
             if (!string.IsNullOrWhiteSpace(Name))
@@ -313,7 +321,7 @@ namespace CKAN.GUI
         /// <returns>
         /// New search object, or null if no search terms defined
         /// </returns>
-        public static ModSearch Parse(string combined, List<ModuleLabel> knownLabels)
+        public static ModSearch? Parse(string combined, List<ModuleLabel> knownLabels)
         {
             if (string.IsNullOrWhiteSpace(combined))
             {
@@ -391,7 +399,7 @@ namespace CKAN.GUI
                         knownLabels.Where(lb => lb.Name.Replace(" ", "") == labelName)
                             // If label doesn't exist, maybe it will be created later or the user is still typing.
                             // Make an unofficial label object to accurately reflect the search.
-                            .DefaultIfEmpty(new ModuleLabel() { Name = labelName })
+                            .DefaultIfEmpty(new ModuleLabel(labelName))
                     );
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchYesPrefix, out string yesSuffix))
@@ -469,12 +477,12 @@ namespace CKAN.GUI
         {
             if (container.StartsWith(prefix))
             {
-                remainder = container.Substring(prefix.Length);
+                remainder = container[prefix.Length..];
                 return true;
             }
             else if (container.StartsWith($"-{prefix}"))
             {
-                remainder = $"-{container.Substring(prefix.Length + 1)}";
+                remainder = $"-{container[(prefix.Length + 1)..]}";
                 return true;
             }
             else
@@ -486,14 +494,14 @@ namespace CKAN.GUI
 
         private static string AddTermPrefix(string prefix, string term)
             => term.StartsWith("-")
-                ? $"-{prefix}{term.Substring(1)}"
+                ? $"-{prefix}{term[1..]}"
                 : $"{prefix}{term}";
 
         private static bool ShouldNegateTerm(string term, out string subTerm)
         {
             if (term.StartsWith("-"))
             {
-                subTerm = term.Substring(1);
+                subTerm = term[1..];
                 return true;
             }
             else
@@ -586,7 +594,7 @@ namespace CKAN.GUI
             => RelationshipMatch(mod.ToModule().conflicts, ConflictsWith);
         private bool MatchesSupports(GUIMod mod)
             => RelationshipMatch(mod.ToModule().supports, Supports);
-        private bool RelationshipMatch(List<RelationshipDescriptor> rels, List<string> toFind)
+        private bool RelationshipMatch(List<RelationshipDescriptor>? rels, List<string> toFind)
             => toFind.Count < 1
                 || (rels != null && toFind.All(searchRel =>
                     ShouldNegateTerm(searchRel, out string subRel)
@@ -605,8 +613,9 @@ namespace CKAN.GUI
 
         private bool MatchesLabels(GUIMod mod)
             // Every label in Labels must contain this mod
-            => Labels.Count < 1 || Labels.All(lb =>
-                lb.ContainsModule(Main.Instance.CurrentInstance.game, mod.Identifier));
+            => Main.Instance?.CurrentInstance != null
+                && (Labels.Count < 1
+                    || Labels.All(lb => lb.ContainsModule(Main.Instance.CurrentInstance.game, mod.Identifier)));
 
         private bool MatchesCompatible(GUIMod mod)
             => !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;
@@ -626,7 +635,7 @@ namespace CKAN.GUI
         private bool MatchesReplaceable(GUIMod mod)
             => !Replaceable.HasValue || Replaceable.Value == (mod.IsInstalled && mod.HasReplacement);
 
-        public bool Equals(ModSearch other)
+        public bool Equals(ModSearch? other)
             => other != null
                 && Name            == other.Name
                 && Description     == other.Description
@@ -647,11 +656,11 @@ namespace CKAN.GUI
                 && TagNames.SequenceEqual(other.TagNames)
                 && Labels.SequenceEqual(other.Labels);
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
             => Equals(obj as ModSearch);
 
         public override int GetHashCode()
-            => Combined.GetHashCode();
+            => Combined?.GetHashCode() ?? 0;
 
     }
 }

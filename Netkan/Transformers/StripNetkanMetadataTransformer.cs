@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "strip_netkan_metadata";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
             var json = metadata.Json();
 

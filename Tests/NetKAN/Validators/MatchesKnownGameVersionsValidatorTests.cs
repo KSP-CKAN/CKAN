@@ -43,6 +43,7 @@ namespace Tests.NetKAN.Validators
             json["version"]      = "1.0";
             json["identifier"]   = "AwesomeMod";
             json["download"]     = "https://mysite.org/mymod.zip";
+            json["author"]       = "AwesomeAuthor";
             if (ksp_version != null)
             {
                 json["ksp_version"] = ksp_version;

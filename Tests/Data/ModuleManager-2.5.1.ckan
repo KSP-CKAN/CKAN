@@ -14,5 +14,9 @@
             "file"       : "ModuleManager.2.5.1.dll",
             "install_to" : "GameData"
         }
-    ]
+    ],
+    "download_hash": {
+        "sha1": "C854159B59A4BBC3415140C1E25EE014AF25A398",
+        "sha256": "F799628E0749ACB6B180CB4F129580AA23B7C284DCBC94043B1DA5FFA4C19D92"
+    }
 }

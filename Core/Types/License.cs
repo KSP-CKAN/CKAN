@@ -16,15 +16,19 @@ namespace CKAN
     public class License
     {
         public static readonly HashSet<string> valid_licenses =
-            CKANSchema.schema.Definitions["license"]
-                .Enumeration
-                .Select(obj => obj.ToString())
+            (CKANSchema.schema?.Definitions["license"]
+                               .Enumeration
+                               .Select(obj => obj.ToString())
+                               .OfType<string>()
+                              ?? Enumerable.Empty<string>())
                 .ToHashSet();
 
         private static readonly HashSet<string> redistributable_licenses =
-            CKANSchema.schema.Definitions["redistributable_license"]
-                .Enumeration
-                .Select(obj => obj.ToString())
+            (CKANSchema.schema?.Definitions["redistributable_license"]
+                               .Enumeration
+                               .Select(obj => obj.ToString())
+                               .OfType<string>()
+                              ?? Enumerable.Empty<string>())
                 .ToHashSet();
 
         // Make sure this is the last static field so the others will be ready for the instance constructor!

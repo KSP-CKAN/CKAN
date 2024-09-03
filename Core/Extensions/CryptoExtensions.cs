@@ -22,8 +22,8 @@ namespace CKAN.Extensions
         /// <returns>The requested hash of the input stream</returns>
         public static byte[] ComputeHash(this HashAlgorithm hashAlgo,
                                          Stream             stream,
-                                         IProgress<int>     progress,
-                                         CancellationToken  cancelToken = default)
+                                         IProgress<int>?    progress,
+                                         CancellationToken? cancelToken = default)
         {
             const int bufSize = 1024 * 1024;
             var buffer = new byte[bufSize];
@@ -31,13 +31,13 @@ namespace CKAN.Extensions
             while (true)
             {
                 var bytesRead = stream.Read(buffer, 0, bufSize);
-                cancelToken.ThrowIfCancellationRequested();
+                cancelToken?.ThrowIfCancellationRequested();
 
                 if (bytesRead < bufSize)
                 {
                     // Done!
                     hashAlgo.TransformFinalBlock(buffer, 0, bytesRead);
-                    progress.Report(100);
+                    progress?.Report(100);
                     break;
                 }
                 else
@@ -46,9 +46,9 @@ namespace CKAN.Extensions
                 }
 
                 totalBytesRead += bytesRead;
-                progress.Report((int)(100 * totalBytesRead / stream.Length));
+                progress?.Report((int)(100 * totalBytesRead / stream.Length));
             }
-            return hashAlgo.Hash;
+            return hashAlgo.Hash ?? Array.Empty<byte>();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Tests.Core.Versioning
 
         private static readonly object[] ParseFailureCases =
         {
-            new object[] { null },
+            new object?[] { null },
             new object[] { "" },
             new object[] { "1.2.3.4.5" },
             new object[] { "1.2.3.A" },
@@ -35,7 +35,7 @@ namespace Tests.Core.Versioning
 
         private static readonly object[] EqualityCases =
         {
-            new object[] { new GameVersion(), null, false },
+            new object?[] { new GameVersion(), null, false },
             new object[] { new GameVersion(), new GameVersion(), true },
             new object[] { new GameVersion(1), new GameVersion(1), true },
             new object[] { new GameVersion(1, 2), new GameVersion(1, 2), true},
@@ -305,12 +305,12 @@ namespace Tests.Core.Versioning
         public void TryParseWorksCorrectly(string s, GameVersion version)
         {
             // Act
-            var success = GameVersion.TryParse(s, out GameVersion result);
+            var success = GameVersion.TryParse(s, out GameVersion? result);
 
             // Assert
             Assert.IsTrue(success);
             Assert.AreEqual(version, result);
-            Assert.AreEqual(s, result.ToString());
+            Assert.AreEqual(s, result?.ToString());
         }
 
         [TestCaseSource("ParseFailureCases")]
@@ -383,29 +383,13 @@ namespace Tests.Core.Versioning
             // ReSharper disable ReturnValueOfPureMethodIsNotUsed
             // ReSharper disable UnusedVariable
             TestDelegate actGenericCompareTo = () => new GameVersion().CompareTo(null);
-            TestDelegate actNonGenericCompareTo = () => new GameVersion().CompareTo((object)null);
-            TestDelegate lessThanOperatorNullLeft = () => { var _ = null < new GameVersion(); };
-            TestDelegate lessThanOperatorNullRight = () => { var _ = new GameVersion() < null; };
-            TestDelegate lessThanOrEqualOperatorNullLeft = () => { var _ = null <= new GameVersion(); };
-            TestDelegate lessThanOrEqualOperatorNullRight = () => { var _ = new GameVersion() <= null; };
-            TestDelegate greaterThanOperatorNullLeft = () => { var _ = null > new GameVersion(); };
-            TestDelegate greaterThanOperatorNullRight = () => { var _ = new GameVersion() > null; };
-            TestDelegate greaterThanOrEqualOperatorNullLeft = () => { var _ = null >= new GameVersion(); };
-            TestDelegate greaterThanOrEqualOperatorNullRight = () => { var _ = new GameVersion() >= null; };
+            TestDelegate actNonGenericCompareTo = () => new GameVersion().CompareTo((object?)null);
             // ReSharper restore UnusedVariable
             // ReSharper restore ReturnValueOfPureMethodIsNotUsed
 
             // Assert
             Assert.That(actGenericCompareTo, Throws.Exception);
             Assert.That(actNonGenericCompareTo, Throws.Exception);
-            Assert.That(lessThanOperatorNullLeft, Throws.Exception);
-            Assert.That(lessThanOperatorNullRight, Throws.Exception);
-            Assert.That(lessThanOrEqualOperatorNullLeft, Throws.Exception);
-            Assert.That(lessThanOrEqualOperatorNullRight, Throws.Exception);
-            Assert.That(greaterThanOperatorNullLeft, Throws.Exception);
-            Assert.That(greaterThanOperatorNullRight, Throws.Exception);
-            Assert.That(greaterThanOrEqualOperatorNullLeft, Throws.Exception);
-            Assert.That(greaterThanOrEqualOperatorNullRight, Throws.Exception);
         }
 
         [Test]

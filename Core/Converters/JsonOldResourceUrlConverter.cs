@@ -18,14 +18,14 @@ namespace CKAN
             return false;
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
             JToken token = JToken.Load(reader);
 
             // If we've got an object, extract the URL, since that's all we use now.
             if (token.Type == JTokenType.Object)
             {
-                return token["url"].ToObject<Uri>();
+                return token["url"]?.ToObject<Uri>();
             }
 
             // Otherwise just return whatever we found, which we hope converts okay. :)
@@ -34,7 +34,7 @@ namespace CKAN
 
         public override bool CanWrite => false;
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }

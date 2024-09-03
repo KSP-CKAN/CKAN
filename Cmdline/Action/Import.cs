@@ -36,8 +36,8 @@ namespace CKAN.CmdLine
         {
             try
             {
-                ImportOptions opts = options as ImportOptions;
-                HashSet<FileInfo> toImport = GetFiles(opts);
+                var opts = options as ImportOptions;
+                var toImport = GetFiles(opts?.paths);
                 if (toImport.Count < 1)
                 {
                     user.RaiseError(Properties.Resources.ArgumentMissing);
@@ -47,16 +47,16 @@ namespace CKAN.CmdLine
                     }
                     return Exit.ERROR;
                 }
-                else
+                else if (manager.Cache != null)
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
                     var toInstall = new List<CkanModule>();
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
                     var regMgr    = RegistryManager.Instance(instance, repoData);
-                    installer.ImportFiles(toImport, user, mod => toInstall.Add(mod), regMgr.registry, !opts.Headless);
-                    HashSet<string> possibleConfigOnlyDirs = null;
+                    installer.ImportFiles(toImport, user, mod => toInstall.Add(mod), regMgr.registry, !opts?.Headless ?? false);
                     if (toInstall.Count > 0)
                     {
+                        HashSet<string>? possibleConfigOnlyDirs = null;
                         installer.InstallList(toInstall,
                                               new RelationshipResolverOptions(),
                                               regMgr,
@@ -64,6 +64,7 @@ namespace CKAN.CmdLine
                     }
                     return Exit.OK;
                 }
+                return Exit.ERROR;
             }
             catch (Exception ex)
             {
@@ -72,23 +73,26 @@ namespace CKAN.CmdLine
             }
         }
 
-        private HashSet<FileInfo> GetFiles(ImportOptions options)
+        private HashSet<FileInfo> GetFiles(List<string>? paths)
         {
             HashSet<FileInfo> files = new HashSet<FileInfo>();
-            foreach (string filename in options.paths)
+            if (paths != null)
             {
-                if (Directory.Exists(filename))
+                foreach (string filename in paths)
                 {
-                    // Import everything in this folder
-                    log.InfoFormat("{0} is a directory", filename);
-                    foreach (string dirfile in Directory.EnumerateFiles(filename))
+                    if (Directory.Exists(filename))
                     {
-                        AddFile(files, dirfile);
+                        // Import everything in this folder
+                        log.InfoFormat("{0} is a directory", filename);
+                        foreach (string dirfile in Directory.EnumerateFiles(filename))
+                        {
+                            AddFile(files, dirfile);
+                        }
                     }
-                }
-                else
-                {
-                    AddFile(files, filename);
+                    else
+                    {
+                        AddFile(files, filename);
+                    }
                 }
             }
             return files;
@@ -117,7 +121,7 @@ namespace CKAN.CmdLine
     internal class ImportOptions : InstanceSpecificOptions
     {
         [ValueList(typeof(List<string>))]
-        public List<string> paths { get; set; }
+        public List<string>? paths { get; set; }
     }
 
 }

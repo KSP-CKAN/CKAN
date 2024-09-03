@@ -32,7 +32,7 @@ namespace Tests.NetKAN.Extensions
             var result = version.ToSpecVersionJson();
 
             // Assert
-            Assert.That((string)result == "v1.2", Is.True,
+            Assert.That((string?)result == "v1.2", Is.True,
                 "ToSpecVersionJson() should return a string for versions higher than 1."
             );
         }

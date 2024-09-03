@@ -1,6 +1,8 @@
 using System.Linq;
+
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using Tests.Data;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
@@ -10,7 +12,7 @@ namespace Tests.NetKAN
     [TestFixture]
     public class NetkanOverride
     {
-        private JObject such_metadata;
+        private JObject? such_metadata;
         private readonly TransformOptions opts = new TransformOptions(1, null, null, false, null);
 
         [SetUp]
@@ -27,7 +29,7 @@ namespace Tests.NetKAN
 
             // Add our override and processs.
             JObject new_metadata = ProcessOverrides(
-                such_metadata,
+                such_metadata!,
                 @"[{
                     ""version"" : ""1.01"",
                     ""override"" : {
@@ -35,7 +37,7 @@ namespace Tests.NetKAN
                     }
                 }]");
 
-            Assert.AreEqual("doge",new_metadata["author"].ToString(),"Override processed");
+            Assert.AreEqual("doge", new_metadata!["author"]?.ToString(), "Override processed");
 
             // Make sure our original metadata didn't change.
             OriginalAuthorUnchanged();
@@ -45,7 +47,7 @@ namespace Tests.NetKAN
         public void UntriggeredOverride()
         {
             JObject new_metadata = ProcessOverrides(
-                such_metadata,
+                such_metadata!,
                 @"[{
                     ""version"" : ""1.02"",
                     ""override"" : {
@@ -53,7 +55,7 @@ namespace Tests.NetKAN
                     }
                 }]");
 
-            Assert.AreEqual("pjf", new_metadata["author"].ToString(), "Untrigged override changes nothing");
+            Assert.AreEqual("pjf", new_metadata["author"]?.ToString(), "Untrigged override changes nothing");
         }
 
         [Test]
@@ -96,9 +98,9 @@ namespace Tests.NetKAN
         public void RangedOverride(string label, string expected_author, string override_json)
         {
             JObject new_metadata = ProcessOverrides(
-                such_metadata, override_json);
+                such_metadata!, override_json);
 
-            Assert.AreEqual(expected_author, new_metadata["author"].ToString(), label);
+            Assert.AreEqual(expected_author, new_metadata["author"]?.ToString(), label);
 
             OriginalAuthorUnchanged();
         }
@@ -106,11 +108,11 @@ namespace Tests.NetKAN
         [Test]
         public void DeleteOverride()
         {
-            Assert.IsTrue(such_metadata.TryGetValue("abstract", out _));
-            Assert.IsTrue(such_metadata.TryGetValue("author", out _));
+            Assert.IsTrue(such_metadata?.TryGetValue("abstract", out _));
+            Assert.IsTrue(such_metadata?.TryGetValue("author",   out _));
 
             JObject new_metadata = ProcessOverrides(
-                    such_metadata,
+                    such_metadata!,
                     @"[{
                     ""version"" : ""1.01"",
                     ""delete"" : [ ""abstract"", ""author"" ]
@@ -118,14 +120,14 @@ namespace Tests.NetKAN
 
 
             Assert.IsFalse(new_metadata.TryGetValue("abstract", out _));
-            Assert.IsFalse(new_metadata.TryGetValue("author", out _));
+            Assert.IsFalse(new_metadata.TryGetValue("author",   out _));
         }
 
         [Test]
         public void LaterOverridesOverrideEarlierOverrides()
         {
             var metadata = such_metadata;
-            metadata["x_netkan_override"] = JArray.Parse(@"[
+            metadata!["x_netkan_override"] = JArray.Parse(@"[
                 {
                     ""version"": ""1.01"",
                     ""before"": ""$all"",
@@ -148,7 +150,7 @@ namespace Tests.NetKAN
             var transformedMetadata1 = earlyTransformer.Transform(new Metadata(metadata), opts).First().Json();
             var transformedMetadata2 = lateTransformer.Transform(new Metadata(transformedMetadata1), opts).First();
 
-            Assert.AreEqual((string)transformedMetadata2.Json()["name"], "LATE");
+            Assert.AreEqual((string?)transformedMetadata2.Json()["name"], "LATE");
         }
 
         /// <summary>
@@ -156,7 +158,7 @@ namespace Tests.NetKAN
         /// </summary>
         private void OriginalAuthorUnchanged()
         {
-            Assert.AreEqual("pjf", such_metadata["author"].ToString(), "Sanity check");
+            Assert.AreEqual("pjf", such_metadata?["author"]?.ToString(), "Sanity check");
         }
 
         /// <summary>
@@ -165,8 +167,8 @@ namespace Tests.NetKAN
         private JObject ProcessOverrides(JObject metadata)
         {
             var transformer = new VersionedOverrideTransformer(
-                before: new string[] { null },
-                after: new string[] { null }
+                before: new string?[] { null },
+                after:  new string?[] { null }
             );
 
             return transformer.Transform(new Metadata(metadata), opts).First().Json();

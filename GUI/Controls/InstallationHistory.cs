@@ -56,17 +56,17 @@ namespace CKAN.GUI
         /// <summary>
         /// Invoked when the user selects a module
         /// </summary>
-        public event Action<CkanModule> OnSelectedModuleChanged;
+        public event Action<CkanModule?>? OnSelectedModuleChanged;
 
         /// <summary>
         /// Invoked when the user clicks the Install toolbar button
         /// </summary>
-        public event Action<CkanModule[]> Install;
+        public event Action<CkanModule[]>? Install;
 
         /// <summary>
         /// Invoked when the user clicks OK
         /// </summary>
-        public event Action Done;
+        public event Action? Done;
 
         /// <summary>
         /// Open the user guide when the user presses F1
@@ -76,7 +76,7 @@ namespace CKAN.GUI
             evt.Handled = Util.TryOpenWebPage(HelpURLs.InstallationHistory);
         }
 
-        private void HistoryListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void HistoryListView_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs? e)
         {
             UseWaitCursor = true;
             Task.Factory.StartNew(() =>
@@ -84,15 +84,17 @@ namespace CKAN.GUI
                 try
                 {
                     var path = HistoryListView.SelectedItems
-                                              .Cast<ListViewItem>()
+                                              .OfType<ListViewItem>()
                                               .Select(lvi => lvi.Tag as FileInfo)
+                                              .OfType<FileInfo>()
                                               .First();
                     var modRows = CkanModule.FromFile(path.FullName)
                                             .depends
-                                            .OfType<ModuleRelationshipDescriptor>()
-                                            .Select(ItemFromRelationship)
-                                            .Where(row => row != null)
-                                            .ToArray();
+                                            ?.OfType<ModuleRelationshipDescriptor>()
+                                             .Select(ItemFromRelationship)
+                                             .OfType<ListViewItem>()
+                                             .ToArray()
+                                            ?? Array.Empty<ListViewItem>();
                     Util.Invoke(this, () =>
                     {
                         ModsListView.BeginUpdate();
@@ -140,8 +142,12 @@ namespace CKAN.GUI
             });
         }
 
-        private ListViewItem ItemFromRelationship(ModuleRelationshipDescriptor rel)
+        private ListViewItem? ItemFromRelationship(ModuleRelationshipDescriptor rel)
         {
+            if (registry == null || config == null || rel.version == null)
+            {
+                return null;
+            }
             var mod = registry.GetModuleByVersion(rel.name, rel.version)
                       ?? SaneLatestAvail(rel.name);
             return mod == null
@@ -177,17 +183,17 @@ namespace CKAN.GUI
         }
 
         // Registry.LatestAvailable without exceptions
-        private CkanModule SaneLatestAvail(string identifier)
+        private CkanModule? SaneLatestAvail(string identifier)
         {
             try
             {
-                return registry.LatestAvailable(identifier, inst.VersionCriteria());
+                return registry?.LatestAvailable(identifier, inst?.VersionCriteria());
             }
             catch
             {
                 try
                 {
-                    return registry.LatestAvailable(identifier, null);
+                    return registry?.LatestAvailable(identifier, null);
                 }
                 catch
                 {
@@ -196,7 +202,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ModsListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void ModsListView_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs? e)
         {
             var mod = ModsListView.SelectedItems
                                   .Cast<ListViewItem>()
@@ -208,7 +214,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void InstallButton_Click(object sender, EventArgs e)
+        private void InstallButton_Click(object? sender, EventArgs? e)
         {
             Install?.Invoke(ModsListView.Items
                                         .Cast<ListViewItem>()
@@ -218,13 +224,13 @@ namespace CKAN.GUI
                                         .ToArray());
         }
 
-        private void OKButton_Click(object sender, EventArgs e)
+        private void OKButton_Click(object? sender, EventArgs? e)
         {
             Done?.Invoke();
         }
 
-        private GameInstance     inst;
-        private Registry         registry;
-        private GUIConfiguration config;
+        private GameInstance?     inst;
+        private Registry?         registry;
+        private GUIConfiguration? config;
     }
 }
