@@ -83,11 +83,11 @@ namespace CKAN.NetKAN.Extensions
 
         public static JToken? FromMessyList<T>(T? first, IEnumerable<T?>? rest) where T: notnull
         {
-            var items = Enumerable.Repeat(first, 1)
-                                  .Concat(rest ?? Enumerable.Empty<T?>())
-                                  .OfType<T>()
-                                  .Distinct()
-                                  .ToList();
+            var items = (rest ?? Enumerable.Empty<T?>())
+                            .Append(first)
+                            .OfType<T>()
+                            .Distinct()
+                            .ToList();
             return items.Count switch
             {
                 0 => null,
