@@ -48,6 +48,7 @@ namespace Tests.NetKAN.Sources.Jenkins
             // Assert
             Assert.IsNotNull(build?.Url);
             Assert.IsNotNull(build?.Artifacts);
+            Assert.IsNotNull(build?.Timestamp);
         }
 
         private string?       _cachePath;

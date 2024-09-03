@@ -30,7 +30,7 @@ namespace CKAN.NetKAN.Sources.Jenkins
     public class UnixDateTimeMillisecondsConverter : DateTimeConverterBase
     {
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-            => reader.Value is double d
+            => reader.Value is long d
                 ? UnixEpoch.AddMilliseconds(d)
                 : null;
 
