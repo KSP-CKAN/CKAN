@@ -882,6 +882,29 @@ An `x_netkan_gitlab` field must be provided to customize how the metadata is fet
   Specifies that the source ZIP of the release will be used instead of any discrete assets.<br/>
   Note that this must be `true`! GitLab only offers source ZIP assets, so we can only index mods that use them. If at some point in the future GitLab adds support for non-source assets, we will be able to add support for setting this property to `false` or omitting it.
 
+###### `#/ckan/sourceforge/:repo`
+
+Indicates that data should be fetched from SourceForge using the `:repo` provided.
+For example: `'#/ckan/sourceforge/ksre`
+
+When used, the following fields will be auto-filled if not already present:
+
+- `name`
+- `resources.homepage`
+- `resources.repository`
+- `resources.bugtracker`
+- `download`
+- `download_size`
+- `download_hash`
+- `download_content_type`
+- `release_date`
+
+An example `.netkan` excerpt:
+
+```yaml
+$kref: '#/ckan/sourceforge/ksre'
+```
+
 ###### `#/ckan/jenkins/:joburl`
 
 Indicates data should be fetched from a [Jenkins CI server](https://jenkins-ci.org/) using the `:joburl` provided. For

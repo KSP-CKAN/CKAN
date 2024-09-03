@@ -10,6 +10,7 @@ using CKAN.NetKAN.Sources.Gitlab;
 using CKAN.NetKAN.Sources.Jenkins;
 using CKAN.NetKAN.Sources.Spacedock;
 using CKAN.Games;
+using CKAN.NetKAN.Sources.SourceForge;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -35,6 +36,7 @@ namespace CKAN.NetKAN.Transformers
             _validator = validator;
             var ghApi = new GithubApi(http, githubToken);
             var glApi = new GitlabApi(http, gitlabToken);
+            var sfApi = new SourceForgeApi(http);
             _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
             {
                 new StagingTransformer(game),
@@ -43,6 +45,7 @@ namespace CKAN.NetKAN.Transformers
                 new CurseTransformer(new CurseApi(http)),
                 new GithubTransformer(ghApi, prerelease),
                 new GitlabTransformer(glApi),
+                new SourceForgeTransformer(sfApi),
                 new HttpTransformer(),
                 new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http, ghApi),
