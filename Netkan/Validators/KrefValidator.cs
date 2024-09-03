@@ -22,6 +22,7 @@ namespace CKAN.NetKAN.Validators
                 case "jenkins":
                 case "netkan":
                 case "spacedock":
+                case "sourceforge":
                     // We know this $kref, looks good
                     break;
 

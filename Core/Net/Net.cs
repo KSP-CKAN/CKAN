@@ -197,12 +197,13 @@ namespace CKAN
             return null;
         }
 
-        public static Uri? ResolveRedirect(Uri url)
+        public static Uri? ResolveRedirect(Uri     url,
+                                           string? userAgent = "")
         {
             const int maxRedirects = 6;
             for (int redirects = 0; redirects <= maxRedirects; ++redirects)
             {
-                var rwClient = new RedirectWebClient();
+                var rwClient = new RedirectWebClient(userAgent);
                 using (rwClient.OpenRead(url)) { }
                 var location = rwClient.ResponseHeaders?["Location"];
                 if (location == null)
@@ -239,7 +240,7 @@ namespace CKAN
             // Is it supposed to turn a "&" into part of the content of a form field,
             // or is it supposed to assume that it separates different form fields?
             // https://github.com/dotnet/runtime/issues/31387
-            // So now we have to just substitude certain characters ourselves one by one.
+            // So now we have to just substitute certain characters ourselves one by one.
 
             // Square brackets are "reserved characters" that should not appear
             // in strings to begin with, so C# doesn't try to escape them in case

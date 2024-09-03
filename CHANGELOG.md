@@ -79,6 +79,7 @@ All notable changes to this project will be documented in this file.
 - [Infra] Trigger mod installer deploy after APT repo update (#4158 by: HebaruSan)
 - [CLI] Ability to update repos without a game instance (#4161 by: HebaruSan)
 - [Multiple] Nullable references, net8.0, blend registry alert dot, netkan fixes (#4171 by: HebaruSan)
+- [Netkan] SourceForge kref (#4172 by: HebaruSan)
 
 ## v1.34.4 (Niven)
 
