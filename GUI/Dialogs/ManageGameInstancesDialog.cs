@@ -358,12 +358,14 @@ namespace CKAN.GUI
 
         private void UpdateButtonState()
         {
-            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
-            {
-                RenameButton.Enabled = SelectButton.Enabled = SetAsDefaultCheckbox.Enabled = CloneGameInstanceMenuItem.Enabled = HasSelections;
-                ForgetButton.Enabled = HasSelections && instName != manager.CurrentInstance?.Name;
-                ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
-            }
+            RenameButton.Enabled = SelectButton.Enabled
+                                 = SetAsDefaultCheckbox.Enabled
+                                 = CloneGameInstanceMenuItem.Enabled
+                                 = HasSelections;
+            ForgetButton.Enabled = HasSelections
+                                   && GameInstancesListView.SelectedItems[0].Tag is string instName
+                                   && instName != manager.CurrentInstance?.Name;
+            ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
         }
 
         private readonly GameInstanceManager manager;
