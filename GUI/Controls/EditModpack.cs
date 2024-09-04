@@ -349,6 +349,7 @@ namespace CKAN.GUI
                 {
                     module.suggests = null;
                 }
+                module.spec_version = SpecVersionAnalyzer.MinimumSpecVersion(module);
                 CkanModule.ToFile(ApplyCheckboxes(module), filename);
                 Utilities.OpenFileBrowser(filename);
                 task?.SetResult(true);
