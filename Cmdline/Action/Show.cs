@@ -76,13 +76,15 @@ namespace CKAN.CmdLine
                         user.RaiseMessage("");
                         continue;
                     }
-                    else if (matches.Count() == 1)
+                    else if (//matches is [CkanModule oneMod]
+                             matches.Count == 1
+                             && matches[0] is CkanModule oneMod)
                     {
                         // If there is only 1 match, display it.
-                        user.RaiseMessage(Properties.Resources.ShowFoundOne, matches[0].name);
+                        user.RaiseMessage(Properties.Resources.ShowFoundOne, oneMod.name);
                         user.RaiseMessage("");
 
-                        moduleToShow = matches[0];
+                        moduleToShow = oneMod;
                     }
                     else
                     {
@@ -281,10 +283,14 @@ namespace CKAN.CmdLine
                               module.resources.remoteSWInfo);
             }
 
-            if (!opts.without_files && !module.IsDLC)
+            if (!opts.without_files && !module.IsDLC
+                //&& module.download is [Uri url, ..]
+                && module.download != null
+                && module.download.Count > 0
+                && module.download[0] is Uri url)
             {
                 // Compute the CKAN filename.
-                string file_uri_hash = NetFileCache.CreateURLHash(module.download?[0]);
+                string file_uri_hash = NetFileCache.CreateURLHash(url);
                 string file_name = CkanModule.StandardName(module.identifier, module.version);
 
                 user.RaiseMessage("");
@@ -313,35 +319,28 @@ namespace CKAN.CmdLine
             var versions     = modules.Select(m => m.version.ToString()).ToList();
             var gameVersions = modules.Select(m =>
             {
-                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _, out GameVersion? minKsp, out GameVersion? maxKsp);
+                CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _,
+                                             out GameVersion? minKsp, out GameVersion? maxKsp);
                 return GameVersionRange.VersionSpan(inst.game,
                                                     minKsp ?? GameVersion.Any,
                                                     maxKsp ?? GameVersion.Any);
             }).ToList();
-            string[] headers = new string[] {
-                Properties.Resources.ShowVersionHeader,
-                Properties.Resources.ShowGameVersionsHeader
-            };
-            int versionLength     = Math.Max(headers[0].Length, versions.Max(v => v.Length));
-            int gameVersionLength = Math.Max(headers[1].Length, gameVersions.Max(v => v.Length));
+            int versionLength     = Math.Max(Properties.Resources.ShowVersionHeader.Length,
+                                             versions.Max(v => v.Length));
+            int gameVersionLength = Math.Max(Properties.Resources.ShowGameVersionsHeader.Length,
+                                             gameVersions.Max(v => v.Length));
             user.RaiseMessage("");
-            user.RaiseMessage(
-                "{0}  {1}",
-                headers[0].PadRight(versionLength),
-                headers[1].PadRight(gameVersionLength)
-            );
-            user.RaiseMessage(
-                "{0}  {1}",
-                new string('-', versionLength),
-                new string('-', gameVersionLength)
-            );
+            user.RaiseMessage("{0}  {1}",
+                              Properties.Resources.ShowVersionHeader.PadRight(versionLength),
+                              Properties.Resources.ShowGameVersionsHeader.PadRight(gameVersionLength));
+            user.RaiseMessage("{0}  {1}",
+                              new string('-', versionLength),
+                              new string('-', gameVersionLength));
             for (int row = 0; row < versions.Count; ++row)
             {
-                user.RaiseMessage(
-                    "{0}  {1}",
-                    versions[row].PadRight(versionLength),
-                    gameVersions[row].PadRight(gameVersionLength)
-                );
+                user.RaiseMessage("{0}  {1}",
+                                  versions[row].PadRight(versionLength),
+                                  gameVersions[row].PadRight(gameVersionLength));
             }
         }
 

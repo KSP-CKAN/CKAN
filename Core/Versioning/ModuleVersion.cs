@@ -230,17 +230,19 @@ namespace CKAN.Versioning
 
                 // Then compare the two strings, and return our comparison state.
                 // Override sorting of '.' to higher than other characters.
-                if (str1.Length > 0 && str2.Length > 0)
+                if (//str1 is [char first1, ..] && str2 is [char first2, ..]
+                    str1.Length > 0 && str1[0] is var first1
+                 && str2.Length > 0 && str2[0] is var first2)
                 {
-                    if (str1[0] != '.' && str2[0] == '.')
+                    if (first1 != '.' && first2 == '.')
                     {
                         comparison.CompareTo = -1;
                     }
-                    else if (str1[0] == '.' && str2[0] != '.')
+                    else if (first1 == '.' && first2 != '.')
                     {
                         comparison.CompareTo = 1;
                     }
-                    else if (str1[0] == '.' && str2[0] == '.')
+                    else if (first1 == '.' && first2 == '.')
                     {
                         if (str1.Length == 1 && str2.Length > 1)
                         {

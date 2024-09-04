@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace CKAN.Exporters
 {
@@ -53,7 +54,7 @@ namespace CKAN.Exporters
                                                  QuoteIfNecessary(mod.Module.description),
                                                  QuoteIfNecessary(mod.Module.author == null ? "" : string.Join(";", mod.Module.author)),
                                                  QuoteIfNecessary(mod.Module.kind),
-                                                 WriteUri(mod.Module.download?[0]),
+                                                 WriteUri(mod.Module.download),
                                                  mod.Module.download_size,
                                                  mod.Module.ksp_version,
                                                  mod.Module.ksp_version_min,
@@ -71,9 +72,16 @@ namespace CKAN.Exporters
         }
 
         private string WriteUri(Uri? uri)
-            => uri != null
-                ? QuoteIfNecessary(uri.ToString())
-                : string.Empty;
+            => uri != null ? QuoteIfNecessary(uri.ToString())
+                           : string.Empty;
+
+        private string WriteUri(List<Uri>? uris)
+            => WriteUri(//uris is [Uri uri, ..]
+                        uris != null
+                        && uris.Count > 0
+                        && uris[0] is Uri uri
+                            ? uri
+                            : null);
 
         private string WriteRepository(ResourcesDescriptor? resources)
             => resources != null && resources.repository != null

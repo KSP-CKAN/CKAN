@@ -87,32 +87,35 @@ namespace CKAN.CmdLine
             // It breaks command-specific help, for starters.
             try
             {
-                switch (args[0])
+                if (args.Length > 0)
                 {
-                    case "repair":
-                        return (new Repair(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                    switch (args[0])
+                    {
+                        case "repair":
+                            return (new Repair(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "instance":
-                        return (new GameInstance()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "instance":
+                            return (new GameInstance()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "compat":
-                        return (new Compat()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "compat":
+                            return (new Compat()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "repo":
-                        return (new Repo(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "repo":
+                            return (new Repo(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "authtoken":
-                        return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "authtoken":
+                            return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "cache":
-                        return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "cache":
+                            return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "mark":
-                        return (new Mark(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "mark":
+                            return (new Mark(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
-                    case "filter":
-                        return (new Filter()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                        case "filter":
+                            return (new Filter()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
+                    }
                 }
             }
             catch (NoGameInstanceKraken)

@@ -312,34 +312,35 @@ namespace CKAN
                 //
                 // And that the fourth segment (index 3) is either "blob/" or "tree/"
 
-                var remoteUriBuilder = new UriBuilder(remoteUri)
-                {
-                    // Replace host with raw host
-                    Host = "raw.githubusercontent.com"
-                };
-
                 // Check that the path is what we expect
                 var segments = remoteUri.Segments.ToList();
 
-                if (segments.Count >= 4
-                    && string.Compare(segments[3], "raw/", StringComparison.OrdinalIgnoreCase) == 0)
+                if (//segments is [_, _, _, "raw/", ..]
+                    segments.Count > 3
+                    && segments[3] is "raw/")
                 {
                     log.InfoFormat("Remote GitHub URL is in raw format, using as is.");
                     return remoteUri;
                 }
-                if (segments.Count < 6
-                    || (string.Compare(segments[3], "blob/", StringComparison.OrdinalIgnoreCase) != 0
-                        && string.Compare(segments[3], "tree/", StringComparison.OrdinalIgnoreCase) != 0))
+                if (//segments is not [_, _, _, "blob/" or "tree/", _, _, ..]
+                    segments.Count < 6
+                    || segments[3] is not ("blob/" or "tree/"))
                 {
                     log.WarnFormat("Remote non-raw GitHub URL is in an unknown format, using as is.");
                     return remoteUri;
                 }
 
-                // Remove "blob/" or "tree/" segment from raw URI
-                segments.RemoveAt(3);
-                remoteUriBuilder.Path = string.Join("", segments);
+                var remoteUriBuilder = new UriBuilder(remoteUri)
+                {
+                    // Replace host with raw host
+                    Host = "raw.githubusercontent.com",
+                    // Remove "blob/" or "tree/" segment from raw URI
+                    Path = string.Join("", segments.Take(3)
+                                                   .Concat(segments.Skip(4))),
+                };
 
-                log.InfoFormat("Canonicalized non-raw GitHub URL to: {0}", remoteUriBuilder.Uri);
+                log.InfoFormat("Canonicalized non-raw GitHub URL to: {0}",
+                               remoteUriBuilder.Uri);
 
                 return remoteUriBuilder.Uri;
             }

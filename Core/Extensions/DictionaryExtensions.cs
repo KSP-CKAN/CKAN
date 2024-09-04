@@ -9,7 +9,7 @@ namespace CKAN.Extensions
                                                   IDictionary<K, V>?      b)
             => a == null ? b == null
                          : b != null && a.Count == b.Count
-                           && a.Keys.All(k => b.ContainsKey(k))
+                           && a.Keys.All(b.ContainsKey)
                            && b.Keys.All(k => a.ContainsKey(k)
                                               && EqualityComparer<V>.Default.Equals(a[k], b[k]));
 

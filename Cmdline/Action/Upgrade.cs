@@ -55,7 +55,12 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            if (!options.upgrade_all && options.modules?[0] == "ckan" && AutoUpdate.CanUpdate)
+            if (!options.upgrade_all
+                //&& options.modules is ["ckan"]
+                && options.modules != null
+                && options.modules.Count > 0
+                && options.modules[0] is "ckan"
+                && AutoUpdate.CanUpdate)
             {
                 if (options.dev_build && options.stable_release)
                 {
@@ -196,7 +201,7 @@ namespace CKAN.CmdLine
                     installer.Upgrade(modules, downloader,
                                       ref possibleConfigOnlyDirs,
                                       regMgr, true, true, true),
-                m => modules.Add(m));
+                modules.Add);
         }
 
         /// <summary>

@@ -85,8 +85,21 @@ namespace CKAN
         {
             const string divider = "\r\n---\r\n";
             // Get at most two pieces, the first is the image, the second is the release notes
-            string[] notesArray = releaseBody.Split(new string[] { divider }, 2, StringSplitOptions.None);
-            return notesArray.Length > 1 ? notesArray[1] : notesArray[0];
+            //return releaseBody.Split(new string[] { divider },
+            //                         2, StringSplitOptions.None) switch {
+            //    [_, string val, ..] => val,
+            //    [string val]        => val,
+            //    _                   => "",
+            //};
+            var array = releaseBody.Split(new string[] { divider },
+                                          2, StringSplitOptions.None);
+            return array.Length > 1
+                   && array[1] is string val
+                       ? val
+                       : array.Length == 1
+                         && array[0] is string val2
+                             ? val2
+                             : "";
         }
 
         private static readonly Uri latestCKANReleaseApiUrl =

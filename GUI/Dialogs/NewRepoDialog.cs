@@ -36,8 +36,9 @@ namespace CKAN.GUI
 
         private void ReposListBox_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            if (ReposListBox.SelectedItems.Count > 0
-                && ReposListBox.SelectedItems[0].Tag is Repository r)
+            if (//ReposListBox.SelectedItems is [{Tag: Repository r}, ..]
+                ReposListBox.SelectedItems.Count > 0
+                && ReposListBox.SelectedItems[0] is {Tag: Repository r})
             {
                 RepoNameTextBox.Text = r.name;
                 RepoUrlTextBox.Text = r.uri.ToString();

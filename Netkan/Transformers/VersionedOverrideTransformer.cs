@@ -156,7 +156,7 @@ namespace CKAN.NetKAN.Transformers
                 if (overrideStanza.TryGetValue("override", out JToken? overrideBlock)
                     && overrideBlock is JObject overrides)
                 {
-                    if (gameVersionProperties.Any(p => overrides.ContainsKey(p)))
+                    if (gameVersionProperties.Any(overrides.ContainsKey))
                     {
                         ModuleService.ApplyVersions(
                             metadata,

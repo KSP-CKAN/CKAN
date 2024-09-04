@@ -110,8 +110,8 @@ namespace CKAN
         }
 
         public TimeSpan LastUpdate(IEnumerable<Repository> repos)
-            => repos.Distinct().Where(r => repoDataStale(r))
-                               .Select(r => RepoUpdateTimestamp(r))
+            => repos.Distinct().Where(repoDataStale)
+                               .Select(RepoUpdateTimestamp)
                                .OfType<DateTime>()
                                .Select(dt => DateTime.Now - dt)
                                .DefaultIfEmpty(TimeSpan.Zero)
@@ -327,7 +327,7 @@ namespace CKAN
         private IEnumerable<RepositoryData> GetRepoDatas(IEnumerable<Repository>? repos)
             => repos?.OrderBy(repo => repo.priority)
                      .ThenBy(repo => repo.name)
-                     .Select(repo => GetRepoData(repo))
+                     .Select(GetRepoData)
                      .OfType<RepositoryData>()
                ?? Enumerable.Empty<RepositoryData>();
 

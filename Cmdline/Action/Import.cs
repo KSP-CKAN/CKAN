@@ -53,7 +53,7 @@ namespace CKAN.CmdLine
                     var toInstall = new List<CkanModule>();
                     var installer = new ModuleInstaller(instance, manager.Cache, user);
                     var regMgr    = RegistryManager.Instance(instance, repoData);
-                    installer.ImportFiles(toImport, user, mod => toInstall.Add(mod), regMgr.registry, !opts?.Headless ?? false);
+                    installer.ImportFiles(toImport, user, toInstall.Add, regMgr.registry, !opts?.Headless ?? false);
                     if (toInstall.Count > 0)
                     {
                         HashSet<string>? possibleConfigOnlyDirs = null;

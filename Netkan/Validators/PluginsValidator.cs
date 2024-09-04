@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Validators
                             .OrderBy(f => f)
                             .ToList();
                         var dllIdentifiers = dllPaths
-                            .Select(p => inst.DllPathToIdentifier(p))
+                            .Select(inst.DllPathToIdentifier)
                             .Where(ident => !string.IsNullOrEmpty(ident)
                                 && !identifiersToIgnore.Contains(ident))
                             .ToHashSet();

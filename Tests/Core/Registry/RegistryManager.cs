@@ -198,9 +198,9 @@ namespace Tests.Core.Registry
                 var gameInst = dispInst.KSP;
                 var regMgr   = RegistryManager.Instance(gameInst, repoData.Manager);
                 var registry = regMgr.registry;
-                var absReg   = registered.Select(p => gameInst.ToAbsoluteGameDir(p))
+                var absReg   = registered.Select(gameInst.ToAbsoluteGameDir)
                                                 .ToList();
-                var absUnreg = unregistered.Select(p => gameInst.ToAbsoluteGameDir(p))
+                var absUnreg = unregistered.Select(gameInst.ToAbsoluteGameDir)
                                                   .ToArray();
 
                 // Create all the files
@@ -225,7 +225,7 @@ namespace Tests.Core.Registry
                 // Assert
                 CollectionAssert.AreEquivalent(
                     unregistered,
-                    registry.InstalledDlls.Select(ident => registry.DllPath(ident))
+                    registry.InstalledDlls.Select(registry.DllPath)
                                           .ToArray());
             }
         }

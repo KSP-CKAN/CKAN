@@ -25,7 +25,7 @@ namespace Tests.GUI
             var mainModule = ModuleDefinition.ReadModule(Assembly.GetAssembly(typeof(CKAN.GUI.Main))!
                                                                  .Location);
             var allMethods = mainModule.Types
-                                       .SelectMany(t => GetAllNestedTypes(t))
+                                       .SelectMany(GetAllNestedTypes)
                                        .SelectMany(t => t.Methods)
                                        .ToArray();
             var calls = allMethods.Where(hasForbidGUIAttribute)
@@ -46,7 +46,7 @@ namespace Tests.GUI
 
         private IEnumerable<TypeDefinition> GetAllNestedTypes(TypeDefinition td)
             => Enumerable.Repeat(td, 1)
-                         .Concat(td.NestedTypes.SelectMany(nested => GetAllNestedTypes(nested)));
+                         .Concat(td.NestedTypes.SelectMany(GetAllNestedTypes));
 
         private IEnumerable<MethodCall> FindStartedTasks(MethodDefinition md)
             => StartNewCalls(md).Select(FindStartNewArgument)

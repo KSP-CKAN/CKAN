@@ -57,8 +57,11 @@ namespace CKAN
             {
                 return token.ToObject(objectType);
             }
-            var valueType = objectType.GetGenericArguments()[1];
-            if (Activator.CreateInstance(objectType) is IDictionary obj
+            if (//objectType.GetGenericArguments() is [_, var valueType, ..]
+                objectType.GetGenericArguments() is Type[] types
+                && types.Length > 0
+                && types[1] is var valueType
+                && Activator.CreateInstance(objectType) is IDictionary obj
                 && !IsTokenEmpty(token))
             {
                 foreach (var gameName in KnownGames.AllGameShortNames())

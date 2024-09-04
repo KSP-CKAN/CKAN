@@ -73,7 +73,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                         getRowName, compareNames, null),
                     new ConsoleListBoxColumn<FileSystemInfo>(
                         Properties.Resources.FileSelectSizeHeader,
-                        (FileSystemInfo fi) => getLength(fi),
+                        getLength,
                         (a, b) => {
                             var fb = b as FileInfo;
                             return a is not FileInfo fa

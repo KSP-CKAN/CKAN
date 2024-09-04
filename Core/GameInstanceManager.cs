@@ -544,7 +544,7 @@ namespace CKAN
                 try
                 {
                     var game = KnownGames.knownGames.FirstOrDefault(g => g.ShortName == gameName)
-                        ?? KnownGames.knownGames[0];
+                        ?? KnownGames.knownGames.First();
                     log.DebugFormat("Loading {0} from {1}", name, path);
                     // Add unconditionally, sort out invalid instances downstream
                     instances.Add(name, new GameInstance(game, path, name, User));

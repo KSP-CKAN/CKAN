@@ -62,12 +62,18 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
-                if (Options.Queues != null && !string.IsNullOrEmpty(Options.Queues))
+                if (Options.Queues != null
+                    && !string.IsNullOrEmpty(Options.Queues)
+                    && Options.Queues.Split(new char[] { ',' }, 2)
+                       //is [var input, var output]
+                       is string[] array
+                    && array.Length == 2
+                    && array[0] is var input
+                    && array[1] is var output)
                 {
-                    var queues = Options.Queues.Split(new char[] { ',' }, 2);
                     var qh = new QueueHandler(
-                        queues[0],
-                        queues[1],
+                        input,
+                        output,
                         Options.CacheDir,
                         Options.OutputDir,
                         Options.OverwriteCache,
@@ -92,8 +98,7 @@ namespace CKAN.NetKAN
                         Options.GitHubToken,
                         Options.GitLabToken,
                         Options.PreRelease,
-                        game
-                    );
+                        game);
                     var ckans = inf.Inflate(
                             Options.File,
                             netkans,
@@ -101,8 +106,8 @@ namespace CKAN.NetKAN
                                 ParseReleases(Options.Releases),
                                 ParseSkipReleases(Options.SkipReleases),
                                 ParseHighestVersion(Options.HighestVersion),
-                                netkans[0].Staged,
-                                netkans[0].StagingReason))
+                                netkans.First().Staged,
+                                netkans.First().StagingReason))
                         .ToArray();
                     foreach (Metadata ckan in ckans)
                     {

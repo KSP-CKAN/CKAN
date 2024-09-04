@@ -89,7 +89,15 @@ namespace CKAN.GUI
         private void AddButton_Click(object? sender, EventArgs? e)
         {
             (CmdLineGrid.DataSource as BindingList<CmdLineRow>)?.AddNew();
-            CmdLineGrid.CurrentCell = CmdLineGrid.Rows[CmdLineGrid.RowCount - 1].Cells[0];
+            if (//CmdLineGrid.Rows is [.., var last]
+                //&& last.Cells is [var first, ..]
+                CmdLineGrid.Rows.Count > 0
+                && CmdLineGrid.Rows[^1] is DataGridViewRow last
+                && last.Cells.Count > 0
+                && last.Cells[0] is var first)
+            {
+                CmdLineGrid.CurrentCell = first;
+            }
             CmdLineGrid.BeginEdit(false);
         }
 

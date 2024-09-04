@@ -60,7 +60,7 @@ namespace CKAN
             cache.MoveFrom(fromDir);
         }
         public bool IsCached(CkanModule m)
-            => m.download?.Any(dlUri => cache.IsCached(dlUri))
+            => m.download?.Any(cache.IsCached)
                 ?? false;
         public bool IsCached(CkanModule m, out string? outFilename)
         {
@@ -231,7 +231,14 @@ namespace CKAN
                 cancelToken?.ThrowIfCancellationRequested();
             }
             // If no exceptions, then everything is fine
-            var success = cache.Store(module.download?[0]!, path, description ?? module.StandardName(), move);
+            var success = //module.download is [Uri url, ..]
+                          module.download != null
+                          && module.download.Count > 0
+                          && module.download[0] is Uri url
+                            ? cache.Store(url, path,
+                                          description ?? module.StandardName(),
+                                          move)
+                            : "";
             // Make sure completion is signalled so progress bars go away
             progress?.Report(100);
             ModStored?.Invoke(module);

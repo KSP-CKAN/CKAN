@@ -66,9 +66,11 @@ namespace CKAN.NetKAN.Sources.Curse
             if (_filename == null)
             {
                 Match match = Regex.Match(GetDownloadUrl(), "[^/]*\\.zip");
-                _filename = match.Groups.Count > 0
-                    ? match.Groups[0].Value
-                    : GetCurseIdVersion();
+                _filename = //match.Groups is [var grp, ..]
+                            match.Groups.Count > 0
+                            && match.Groups[0] is var grp
+                                ? grp.Value
+                                : GetCurseIdVersion();
             }
             return _filename;
         }
@@ -82,9 +84,11 @@ namespace CKAN.NetKAN.Sources.Curse
             if (_fileVersion == null)
             {
                 Match match = Regex.Match(GetDownloadUrl(), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
-                if (match.Groups.Count > 1)
+                if (//match.Groups is [_, var grp, ..]
+                    match.Groups.Count > 1
+                    && match.Groups[1] is var grp)
                 {
-                    _fileVersion = match.Groups[1].Value;
+                    _fileVersion = grp.Value;
                 }
                 else
                 {

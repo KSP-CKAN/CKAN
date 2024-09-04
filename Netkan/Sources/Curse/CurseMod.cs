@@ -68,9 +68,11 @@ namespace CKAN.NetKAN.Sources.Curse
                 // Matches the longest sequence of letters and spaces ending in two letters from the beggining of the string
                 // This is to filter out version information
                 Match match = Regex.Match(title ?? "", "^([A-Za-z ]*[A-Za-z][A-Za-z])");
-                if (match.Groups.Count > 1)
+                if (//match.Groups is [_, var grp, ..]
+                    match.Groups.Count > 1
+                    && match.Groups[1] is var grp)
                 {
-                    _name = match.Groups[1].Value;
+                    _name = grp.Value;
                 }
                 else
                 {

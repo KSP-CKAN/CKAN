@@ -286,7 +286,8 @@ namespace CKAN.GUI
 
         public static Color BlendColors(Color[] colors)
             => colors.Length <  1 ? Color.Empty
-             : colors.Length == 1 ? colors[0]
+             //: colors is [var c] ? c
+             : colors.Length == 1 && colors[0] is var c ? c
              : colors.Aggregate((back, fore) => fore.AlphaBlendWith(1f / colors.Length, back));
 
         public static Color AlphaBlendWith(this Color c1, float alpha, Color c2)

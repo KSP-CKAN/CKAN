@@ -145,7 +145,12 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         public static readonly char leftHalfBlock = cp437c(0xdd);
 
-        private static char   cp437c(byte num) => dosCodePage.GetChars(new byte[] {num})[0];
+        private static char   cp437c(byte num) => //dosCodePage.GetChars(new byte[] {num}) is [char val]
+                                                  dosCodePage.GetChars(new byte[] {num}) is char[] chars
+                                                  && chars.Length > 0
+                                                  && chars[0] is char val
+                                                      ? val
+                                                      : (char)0;
         private static string cp437s(byte num) => $"{cp437c(num)}";
     }
 

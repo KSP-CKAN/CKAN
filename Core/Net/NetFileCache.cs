@@ -124,7 +124,7 @@ namespace CKAN
         {
             var filenames = urls?.Select(url => GetInProgressFileName(CreateURLHash(url), description))
                                  .ToArray();
-            return filenames?.FirstOrDefault(filename => File.Exists(filename))
+            return filenames?.FirstOrDefault(File.Exists)
                 ?? filenames?.FirstOrDefault();
         }
 
@@ -287,7 +287,7 @@ namespace CKAN
             => manager?.Instances.Values
                 .Where(ksp => ksp.Valid)
                 .Select(ksp => ksp.DownloadCacheDir())
-                .Where(dir => Directory.Exists(dir))
+                .Where(Directory.Exists)
                 .ToHashSet()
                 ?? new HashSet<string>();
 

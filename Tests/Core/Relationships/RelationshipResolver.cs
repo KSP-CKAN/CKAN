@@ -1051,7 +1051,7 @@ namespace Tests.Core.Relationships
                 registry.RegisterModule(eve, new List<string>(), ksp.KSP, false);
                 registry.RegisterModule(eveDefaultConfig, new List<string>(), ksp.KSP, false);
 
-                Assert.DoesNotThrow(() => registry.CheckSanity());
+                Assert.DoesNotThrow(registry.CheckSanity);
 
                 List<CkanModule> modulesToInstall;
                 List<CkanModule> modulesToRemove;
