@@ -481,8 +481,7 @@ namespace CKAN
             var    crit      = gameInstance.VersionCriteria();
             var    minAndMax = crit.MinAndMax;
             var module = new CkanModule(
-                // v1.18 to allow Unlicense
-                new ModuleVersion("v1.18"),
+                new ModuleVersion("v1.6"),
                 Identifier.Sanitize(name),
                 name,
                 string.Format(Properties.Resources.RegistryManagerDefaultModpackAbstract, gameInstanceName),
@@ -517,6 +516,7 @@ namespace CKAN
             {
                 module.depends    = rels;
             }
+            module.spec_version = SpecVersionAnalyzer.MinimumSpecVersion(module);
 
             return module;
         }
