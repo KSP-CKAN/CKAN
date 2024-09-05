@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +10,7 @@ using Autofac;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
+using CKAN.Extensions;
 using CKAN.Configuration;
 
 namespace CKAN
@@ -198,33 +200,37 @@ namespace CKAN
         }
 
         public static Uri? ResolveRedirect(Uri     url,
-                                           string? userAgent = "")
+                                           string? userAgent    = null,
+                                           int     maxRedirects = 6)
         {
-            const int maxRedirects = 6;
-            for (int redirects = 0; redirects <= maxRedirects; ++redirects)
+            var urls = url.TraverseNodes(u => new RedirectWebClient(userAgent) is RedirectWebClient rwClient
+                                              && rwClient.OpenRead(u) is Stream s && DisposeStream(s)
+                                              && rwClient.ResponseHeaders is WebHeaderCollection headers
+                                              && headers["Location"] is string location
+                                                  ? Uri.IsWellFormedUriString(location, UriKind.Absolute)
+                                                      ? new Uri(location)
+                                                      : Uri.IsWellFormedUriString(location, UriKind.Relative)
+                                                          ? new Uri(u, location)
+                                                          : throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation,
+                                                                                           location))
+                                                  : null)
+                          // The first element is the input, so e.g. if we want two redirects, that's three elements
+                          .Take(maxRedirects + 1)
+                          .ToArray();
+            if (log.IsDebugEnabled)
             {
-                var rwClient = new RedirectWebClient(userAgent);
-                using (rwClient.OpenRead(url)) { }
-                var location = rwClient.ResponseHeaders?["Location"];
-                if (location == null)
+                foreach ((Uri from, Uri to) in urls.Zip(urls.Skip(1)))
                 {
-                    return url;
-                }
-                else if (Uri.IsWellFormedUriString(location, UriKind.Absolute))
-                {
-                    url = new Uri(location);
-                }
-                else if (Uri.IsWellFormedUriString(location, UriKind.Relative))
-                {
-                    url = new Uri(url, location);
-                    log.DebugFormat("Relative URL {0} is absolute URL {1}", location, url);
-                }
-                else
-                {
-                    throw new Kraken(string.Format(Properties.Resources.NetInvalidLocation, location));
+                    log.DebugFormat("Redirected {0} to {1}", from, to);
                 }
             }
-            return null;
+            return urls.LastOrDefault();
+        }
+
+        private static bool DisposeStream(Stream s)
+        {
+            s.Dispose();
+            return true;
         }
 
         /// <summary>
