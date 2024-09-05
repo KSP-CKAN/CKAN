@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Web;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 using Newtonsoft.Json.Linq;
 using log4net;
@@ -74,8 +76,18 @@ namespace CKAN.NetKAN.Transformers
                 { "bugtracker", mod.BugTrackerLink },
             }));
             // SourceForge doesn't send redirects to user agents it considers browser-like
-            json.SafeAdd("download", Net.ResolveRedirect(version.Link, "Wget")
-                                        ?.OriginalString);
+            if (Net.ResolveRedirect(version.Link, "Wget", 1) is Uri firstRedir)
+            {
+                // SourceForge redirects to different mirrors for load-balancing
+                // (IF it considers your user agent string a non-browser, which excludes the CKAN client),
+                // but for us that means CKAN users constantly shifting from one server
+                // to another in unison as the bot changes the URL in the metadata.
+                // https://sourceforge.net/p/forge/documentation/Mirrors/
+                // Tweak the intermediate redirect URL to use the same mirror every time.
+                json.SafeAdd("download", Net.ResolveRedirect(SetQueryKey(firstRedir, "use_mirror", mirror),
+                                                             "Wget", 1)
+                                            ?.OriginalString);
+            }
             json.SafeAdd(Metadata.UpdatedPropertyName, version.Timestamp);
 
             json.Remove("$kref");
@@ -84,7 +96,22 @@ namespace CKAN.NetKAN.Transformers
             return new Metadata(json);
         }
 
+        private static Uri SetQueryKey(Uri url, string key, string value)
+        {
+            if (HttpUtility.ParseQueryString(url.Query) is NameValueCollection newQuery)
+            {
+                newQuery.Set(key, value);
+                return new UriBuilder(url)
+                {
+                    Query = newQuery.ToString(),
+                }.Uri;
+
+            }
+            return url;
+        }
+
         private        readonly ISourceForgeApi api;
-        private static readonly ILog            log = LogManager.GetLogger(typeof(GitlabTransformer));
+        private const           string          mirror = "psychz"; // Brooklyn, United States
+        private static readonly ILog            log    = LogManager.GetLogger(typeof(GitlabTransformer));
     }
 }

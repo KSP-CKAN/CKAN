@@ -127,7 +127,7 @@ namespace CKAN.Versioning
         {
             if (major < 0)
             {
-                throw new ArgumentOutOfRangeException("major");
+                throw new ArgumentOutOfRangeException(nameof(major), major.ToString());
             }
 
             _major = major;
@@ -148,12 +148,12 @@ namespace CKAN.Versioning
         {
             if (major < 0)
             {
-                throw new ArgumentOutOfRangeException("major");
+                throw new ArgumentOutOfRangeException(nameof(major), major.ToString());
             }
 
             if (minor < 0)
             {
-                throw new ArgumentOutOfRangeException("minor");
+                throw new ArgumentOutOfRangeException(nameof(minor), minor.ToString());
             }
 
             _major = major;
@@ -175,17 +175,17 @@ namespace CKAN.Versioning
         {
             if (major < 0)
             {
-                throw new ArgumentOutOfRangeException("major");
+                throw new ArgumentOutOfRangeException(nameof(major), major.ToString());
             }
 
             if (minor < 0)
             {
-                throw new ArgumentOutOfRangeException("minor");
+                throw new ArgumentOutOfRangeException(nameof(minor), minor.ToString());
             }
 
             if (patch < 0)
             {
-                throw new ArgumentOutOfRangeException("patch");
+                throw new ArgumentOutOfRangeException(nameof(patch), patch.ToString());
             }
 
             _major = major;
@@ -208,22 +208,22 @@ namespace CKAN.Versioning
         {
             if (major < 0)
             {
-                throw new ArgumentOutOfRangeException("major", major, $"{major}");
+                throw new ArgumentOutOfRangeException(nameof(major), major, $"{major}");
             }
 
             if (minor < 0)
             {
-                throw new ArgumentOutOfRangeException("minor", minor, $"{minor}");
+                throw new ArgumentOutOfRangeException(nameof(minor), minor, $"{minor}");
             }
 
             if (patch < 0)
             {
-                throw new ArgumentOutOfRangeException("patch", patch, $"{patch}");
+                throw new ArgumentOutOfRangeException(nameof(patch), patch, $"{patch}");
             }
 
             if (build < 0)
             {
-                throw new ArgumentOutOfRangeException("build", build, $"{build}");
+                throw new ArgumentOutOfRangeException(nameof(build), build, $"{build}");
             }
 
             _major = major;

@@ -85,9 +85,8 @@ namespace CKAN.GUI
                     var fileMode = File.Exists(dlg.FileName) ? FileMode.Truncate : FileMode.CreateNew;
                     using (var stream = new FileStream(dlg.FileName, fileMode))
                     {
-                        new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(
-                            RegistryManager.Instance(CurrentInstance, repoData).registry,
-                            stream);
+                        var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
+                        new Exporter(specialExportOptions[dlg.FilterIndex - 1].ExportFileType).Export(regMgr, regMgr.registry, stream);
                     }
                 }
             }

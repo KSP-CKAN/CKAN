@@ -5,7 +5,7 @@ namespace CKAN.Exporters
 {
     public sealed class MarkdownExporter : IExporter
     {
-        public void Export(IRegistryQuerier registry, Stream stream)
+        public void Export(RegistryManager manager, IRegistryQuerier registry, Stream stream)
         {
             using (var writer = new StreamWriter(stream))
             {

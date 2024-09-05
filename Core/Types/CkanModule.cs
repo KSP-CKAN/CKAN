@@ -151,7 +151,7 @@ namespace CKAN
         // and has the spec_version's in his installed_modules section
         // We should return this to a simple Required.Always field some time in the future
         // ~ Postremus, 03.09.2015
-        [JsonProperty("spec_version", Order = 1)]
+        [JsonProperty(nameof(spec_version), Order = 1)]
         public ModuleVersion spec_version
         {
             get
@@ -566,7 +566,18 @@ namespace CKAN
                     }
                 }
             }
+
             if (install_size != other.install_size)
+            {
+                return false;
+            }
+            if (download_hash?.sha256 != null && other.download_hash?.sha256 != null
+                && download_hash.sha256 != other.download_hash.sha256)
+            {
+                return false;
+            }
+            if (download_hash?.sha1 != null && other.download_hash?.sha1 != null
+                && download_hash.sha1 != other.download_hash.sha1)
             {
                 return false;
             }

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+
 using CKAN.Types;
 
 namespace CKAN.Exporters
@@ -18,31 +19,24 @@ namespace CKAN.Exporters
 
         public Exporter(ExportFileType exportFileType)
         {
-            switch (exportFileType)
+            _exporter = exportFileType switch
             {
-                case ExportFileType.PlainText:
-                    _exporter = new PlainTextExporter();
-                    break;
-                case ExportFileType.Markdown:
-                    _exporter = new MarkdownExporter();
-                    break;
-                case ExportFileType.BbCode:
-                    _exporter = new BbCodeExporter();
-                    break;
-                case ExportFileType.Csv:
-                    _exporter = new DelimeterSeparatedValueExporter(DelimeterSeparatedValueExporter.Delimeter.Comma);
-                    break;
-                case ExportFileType.Tsv:
-                    _exporter = new DelimeterSeparatedValueExporter(DelimeterSeparatedValueExporter.Delimeter.Tab);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                ExportFileType.Ckan      => new CkanExporter(),
+                ExportFileType.PlainText => new PlainTextExporter(),
+                ExportFileType.Markdown  => new MarkdownExporter(),
+                ExportFileType.BbCode    => new BbCodeExporter(),
+                ExportFileType.Csv       => new DelimiterSeparatedValueExporter(DelimiterSeparatedValueExporter.Delimiter.Comma),
+                ExportFileType.Tsv       => new DelimiterSeparatedValueExporter(DelimiterSeparatedValueExporter.Delimiter.Tab),
+                _                        => throw new ArgumentOutOfRangeException(nameof(exportFileType),
+                                                                                  exportFileType.ToString()),
+            };
         }
 
-        public void Export(IRegistryQuerier registry, Stream stream)
+        public void Export(RegistryManager  manager,
+                           IRegistryQuerier registry,
+                           Stream           stream)
         {
-            _exporter.Export(registry, stream);
+            _exporter.Export(manager, registry, stream);
         }
     }
 }
