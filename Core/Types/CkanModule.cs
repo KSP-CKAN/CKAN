@@ -566,7 +566,18 @@ namespace CKAN
                     }
                 }
             }
+
             if (install_size != other.install_size)
+            {
+                return false;
+            }
+            if (download_hash?.sha256 != null && other.download_hash?.sha256 != null
+                && download_hash.sha256 != other.download_hash.sha256)
+            {
+                return false;
+            }
+            if (download_hash?.sha1 != null && other.download_hash?.sha1 != null
+                && download_hash.sha1 != other.download_hash.sha1)
             {
                 return false;
             }
