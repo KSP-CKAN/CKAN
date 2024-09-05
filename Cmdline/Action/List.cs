@@ -147,9 +147,10 @@ namespace CKAN.CmdLine
             }
             else
             {
-                var stream = Console.OpenStandardOutput();
-                new Exporter(exportFileType.Value).Export(registry, stream);
-                stream.Flush();
+                using (var stream = Console.OpenStandardOutput())
+                {
+                    new Exporter(exportFileType.Value).Export(regMgr, registry, stream);
+                }
             }
 
             if (!(options.porcelain) && exportFileType == null)
@@ -163,17 +164,16 @@ namespace CKAN.CmdLine
         }
 
         private static ExportFileType? GetExportFileType(string? export)
-        {
-            switch (export?.ToLowerInvariant())
+            => export?.ToLowerInvariant() switch
             {
-                case "text":     return ExportFileType.PlainText;
-                case "markdown": return ExportFileType.Markdown;
-                case "bbcode":   return ExportFileType.BbCode;
-                case "csv":      return ExportFileType.Csv;
-                case "tsv":      return ExportFileType.Tsv;
-                default:         return null;
-            }
-        }
+                "ckan"     => ExportFileType.Ckan,
+                "text"     => ExportFileType.PlainText,
+                "markdown" => ExportFileType.Markdown,
+                "bbcode"   => ExportFileType.BbCode,
+                "csv"      => ExportFileType.Csv,
+                "tsv"      => ExportFileType.Tsv,
+                _          => null,
+            };
 
         private readonly RepositoryDataManager repoData;
         private readonly IUser                 user;
@@ -186,7 +186,7 @@ namespace CKAN.CmdLine
         [Option("porcelain", HelpText = "Dump raw list of modules, good for shell scripting")]
         public bool porcelain { get; set; }
 
-        [Option("export", HelpText = "Export list of modules in specified format to stdout")]
+        [Option("export", HelpText = "Format of module list: ckan, text, markdown, bbcode, csv, tsv")]
         public string? export { get; set; }
     }
 
