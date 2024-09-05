@@ -19,7 +19,7 @@ namespace CKAN.Versioning
         {
             if (!value.IsAny && !value.IsFullyDefined)
             {
-                throw new ArgumentException("Version must be either fully undefined or fully defined.", "value");
+                throw new ArgumentException("Version must be either fully undefined or fully defined.", nameof(value));
             }
 
             Value = value;
@@ -120,12 +120,12 @@ namespace CKAN.Versioning
 
             if (!versionBounds.Any())
             {
-                throw new ArgumentException("Value cannot be empty.", "versionBounds");
+                throw new ArgumentException("Value cannot be empty.", nameof(versionBounds));
             }
 
             if (versionBounds.Contains(null))
             {
-                throw new ArgumentException("Value cannot contain null.", "versionBounds");
+                throw new ArgumentException("Value cannot contain null.", nameof(versionBounds));
             }
 
             return versionBounds.OfType<GameVersionBound>()
@@ -144,19 +144,14 @@ namespace CKAN.Versioning
         /// <returns>The highest value in <see cref="versionBounds"/>.</returns>
         public static GameVersionBound Highest(params GameVersionBound?[] versionBounds)
         {
-            if (versionBounds == null)
+            if (versionBounds.Length == 0)
             {
-                throw new ArgumentNullException(nameof(versionBounds));
-            }
-
-            if (!versionBounds.Any())
-            {
-                throw new ArgumentException("Value cannot be empty.", "versionBounds");
+                throw new ArgumentException("Value cannot be empty.", nameof(versionBounds));
             }
 
             if (versionBounds.Contains(null))
             {
-                throw new ArgumentException("Value cannot contain null.", "versionBounds");
+                throw new ArgumentException("Value cannot contain null.", nameof(versionBounds));
             }
 
             return versionBounds.OfType<GameVersionBound>()
