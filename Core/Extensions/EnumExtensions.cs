@@ -7,7 +7,7 @@ namespace CKAN.Extensions
     {
 
         public static bool HasAnyFlag(this Enum val, params Enum[] flags)
-            => flags.Any(f => val.HasFlag(f));
+            => flags.Any(val.HasFlag);
 
     }
 }

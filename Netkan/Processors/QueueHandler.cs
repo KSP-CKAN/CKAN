@@ -162,7 +162,7 @@ namespace CKAN.NetKAN.Processors
                                                          netkans.First().StagingReason);
             try
             {
-                ckans = inflator.Inflate($"{netkans[0].Identifier}.netkan", netkans, opts)
+                ckans = inflator.Inflate($"{netkans.First().Identifier}.netkan", netkans, opts)
                     .ToArray();
             }
             catch (Exception e)

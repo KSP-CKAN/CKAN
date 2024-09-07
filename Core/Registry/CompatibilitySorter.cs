@@ -140,7 +140,7 @@ namespace CKAN
                         .GroupBy(kvp => kvp.Key,
                                  kvp => kvp.Value)
                         .ToDictionary(grp => grp.Key,
-                                      grp => AvailableModule.Merge(grp))
+                                      AvailableModule.Merge)
                         // Group into trivially [in]compatible (false/true) and indeterminate (null)
                         .AsParallel()
                         .GroupBy(kvp => kvp.Value.AllAvailable()
@@ -196,7 +196,7 @@ namespace CKAN
                             // For each of those identifiers, if it is provided by at least one module, get all the modules
                             // that provide it (and make sure each is only once in the list)
                             var candidates = RelationshipIdentifiers(rel)
-                                .Where(ident => providers.ContainsKey(ident))
+                                .Where(providers.ContainsKey)
                                 .SelectMany(ident => providers[ident])
                                 .Distinct();
 

@@ -28,8 +28,12 @@ namespace CKAN
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            var list = value as List<T>;
-            serializer.Serialize(writer, list?.Count == 1 ? list[0] : value);
+            serializer.Serialize(writer, //value is List<T> and [T val]
+                                         value is List<T> list
+                                         && list.Count == 1
+                                         && list[0] is T val
+                                             ? val
+                                             : value);
         }
 
         /// <summary>

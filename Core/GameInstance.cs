@@ -157,7 +157,7 @@ namespace CKAN
                    is CompatibleGameVersions compatibleGameVersions)
             {
                 _compatibleVersions = compatibleGameVersions.Versions
-                                                            .Select(v => GameVersion.Parse(v))
+                                                            .Select(GameVersion.Parse)
                                                             .ToList();
 
                 // Get version without throwing exceptions for null
@@ -380,41 +380,38 @@ namespace CKAN
 
         public void PlayGame(string command, Action? onExit = null)
         {
-            var split = (command ?? "").Split(' ');
-            if (split.Length == 0)
+            if (game.AdjustCommandLine(command.Split(' '), Version())
+                //is [string binary, ..] and string[] split
+                is string[] split
+                && split.Length > 0
+                && split[0] is string binary)
             {
-                return;
-            }
-
-            split = game.AdjustCommandLine(split, Version());
-            var binary = split[0];
-            var args = string.Join(" ", split.Skip(1));
-
-            try
-            {
-                Directory.SetCurrentDirectory(GameDir());
-                Process p = new Process()
+                try
                 {
-                    StartInfo = new ProcessStartInfo()
+                    Directory.SetCurrentDirectory(GameDir());
+                    Process p = new Process()
                     {
-                        FileName = binary,
-                        Arguments = args
-                    },
-                    EnableRaisingEvents = true
-                };
+                        StartInfo = new ProcessStartInfo()
+                        {
+                            FileName  = binary,
+                            Arguments = string.Join(" ", split.Skip(1))
+                        },
+                        EnableRaisingEvents = true
+                    };
 
-                p.Exited += (sender, e) =>
+                    p.Exited += (sender, e) =>
+                    {
+                        playTime?.Stop(CkanDir());
+                        onExit?.Invoke();
+                    };
+
+                    p.Start();
+                    playTime?.Start();
+                }
+                catch (Exception exception)
                 {
-                    playTime?.Stop(CkanDir());
-                    onExit?.Invoke();
-                };
-
-                p.Start();
-                playTime?.Start();
-            }
-            catch (Exception exception)
-            {
-                User.RaiseError(Properties.Resources.GameInstancePlayGameFailed, exception.Message);
+                    User.RaiseError(Properties.Resources.GameInstancePlayGameFailed, exception.Message);
+                }
             }
         }
 

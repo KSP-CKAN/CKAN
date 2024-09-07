@@ -874,7 +874,7 @@ namespace CKAN
             var inconsistencies = new List<string>();
 
             // We always work with relative files, so let's get some!
-            var relativeFiles = absoluteFiles.Select(x => inst.ToRelativeGameDir(x))
+            var relativeFiles = absoluteFiles.Select(inst.ToRelativeGameDir)
                                              .ToHashSet(Platform.PathComparer);
 
             // For now, it's always cool if a module wants to register a directory.

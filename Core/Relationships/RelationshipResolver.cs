@@ -369,7 +369,7 @@ namespace CKAN
                     }
                 }
 
-                CkanModule candidate = candidates[0];
+                CkanModule candidate = candidates.First();
 
                 // Finally, check our candidate against everything which might object
                 // to it being installed; that's all the mods which are fixed in our

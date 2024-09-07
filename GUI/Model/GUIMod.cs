@@ -8,8 +8,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 #endif
 
-using Autofac;
-
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -223,7 +221,14 @@ namespace CKAN.GUI
             Name          = mod.name.Trim();
             Abstract      = mod.@abstract.Trim();
             Description   = mod.description?.Trim() ?? string.Empty;
-            Abbrevation   = new string(Name.Split(' ').Where(s => s.Length > 0).Select(s => s[0]).ToArray());
+            Abbrevation   = new string(Name.Split(' ')
+                                           .Select(s => //s is [char first, ..]
+                                                        s.Length > 0
+                                                        && s[0] is char first
+                                                            ? (char?)first
+                                                            : null)
+                                           .OfType<char>()
+                                           .ToArray());
 
             HasReplacement = registry.GetReplacement(mod, current_game_version) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);

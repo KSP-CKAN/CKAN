@@ -562,8 +562,8 @@ namespace CKAN
             {
                 var dlls = Enumerable.Repeat(gameInstance.game.PrimaryModDirectoryRelative, 1)
                                      .Concat(gameInstance.game.AlternateModDirectoriesRelative)
-                                     .Select(relDir => gameInstance.ToAbsoluteGameDir(relDir))
-                                     .Where(absDir => Directory.Exists(absDir))
+                                     .Select(gameInstance.ToAbsoluteGameDir)
+                                     .Where(Directory.Exists)
                                      // EnumerateFiles is *case-sensitive* in its pattern, which causes
                                      // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
                                      // GameData *twice*.
@@ -572,7 +572,7 @@ namespace CKAN
                                      .SelectMany(absDir => Directory.EnumerateFiles(absDir, "*",
                                                                                     SearchOption.AllDirectories))
                                      .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
-                                     .Select(absPath => gameInstance.ToRelativeGameDir(absPath))
+                                     .Select(gameInstance.ToRelativeGameDir)
                                      .Where(relPath => !gameInstance.game.StockFolders.Any(f => relPath.StartsWith($"{f}/")))
                                      .GroupBy(relPath => gameInstance.DllPathToIdentifier(relPath) ?? "")
                                      .ToDictionary(grp => grp.Key,

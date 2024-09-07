@@ -61,19 +61,22 @@ namespace CKAN.GUI
         public Main(string[] cmdlineArgs, GameInstanceManager? mgr)
         {
             log.Info("Starting the GUI");
-            if (cmdlineArgs.Length >= 2)
+            if (//cmdlineArgs is [_, string focusIdent, ..]
+                cmdlineArgs.Length > 1
+                && cmdlineArgs[1] is string focusIdent)
             {
-                focusIdent = cmdlineArgs[1];
-                if (focusIdent.StartsWith("//"))
+                if (//focusIdent is ['/', '/', .. var rest]
+                    focusIdent.Length > 2)
                 {
                     focusIdent = focusIdent[2..];
                 }
-                else if (focusIdent.StartsWith("ckan://"))
+                else if (//focusIdent is ['c', 'k', 'a', 'n', ':', '/', '/', .. var rest2]
+                    focusIdent.StartsWith("ckan://"))
                 {
                     focusIdent = focusIdent[7..];
                 }
-
-                if (focusIdent.EndsWith("/"))
+                if (//focusIdent is [.. var start, '/']
+                    focusIdent.EndsWith("/"))
                 {
                     focusIdent = focusIdent[..^1];
                 }

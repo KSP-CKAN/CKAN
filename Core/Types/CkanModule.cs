@@ -533,7 +533,7 @@ namespace CKAN
 
         private GameVersion LatestCompatibleRealGameVersion(GameVersionRange range,
                                                             List<GameVersion> realVers)
-            => (realVers?.LastOrDefault(v => range.Contains(v))
+            => (realVers?.LastOrDefault(range.Contains)
                         ?? LatestCompatibleGameVersion());
 
         public bool IsMetapackage => kind == "metapackage";

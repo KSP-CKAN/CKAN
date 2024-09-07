@@ -338,19 +338,26 @@ namespace CKAN.GUI
                 // re-added automatically at load, so empty repos isn't a valid state.
                 // To remove the last one, add its replacement first.
                 && ReposListBox.Items.Count > 1;
-            UpRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
-                && ReposListBox.SelectedIndices[0] > 0
-                && ReposListBox.SelectedIndices[0] < ReposListBox.Items.Count;
-            DownRepoButton.Enabled = ReposListBox.SelectedIndices.Count > 0
-                && ReposListBox.SelectedIndices[0] < ReposListBox.Items.Count - 1
-                && ReposListBox.SelectedIndices[0] >= 0;
+            UpRepoButton.Enabled =
+                //ReposListBox.SelectedIndices is [int i and > 0, ..]
+                ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] is int i
+                && i > 0
+                && i < ReposListBox.Items.Count;
+            DownRepoButton.Enabled =
+                //ReposListBox.SelectedIndices is [int j and >= 0, ..]
+                ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] is int j
+                && j > 0
+                && j < ReposListBox.Items.Count - 1;
         }
 
         private void DeleteRepoButton_Click(object? sender, EventArgs? e)
         {
             YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-            if (ReposListBox.SelectedItems.Count > 0
-                && ReposListBox.SelectedItems[0].Tag is Repository repo
+            if (//ReposListBox.SelectedItems is [{Tag: Repository repo}, ..]
+                ReposListBox.SelectedItems.Count > 0
+                && ReposListBox.SelectedItems[0] is {Tag: Repository repo}
                 && deleteConfirmationDialog.ShowYesNoDialog(this,
                     string.Format(Properties.Resources.SettingsDialogRepoDeleteConfirm,
                                   repo.name),
@@ -401,9 +408,12 @@ namespace CKAN.GUI
 
         private void UpRepoButton_Click(object? sender, EventArgs? e)
         {
-            if (ReposListBox.SelectedIndices.Count > 0
-                && ReposListBox.SelectedIndices[0] != 0
-                && ReposListBox.SelectedItems[0].Tag is Repository selected)
+            if (//ReposListBox.SelectedIndices is [> 0, ..]
+                ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] > 0
+                //&& ReposListBox.SelectedItems is [{Tag: Repository selected}, ..]
+                && ReposListBox.SelectedItems.Count > 0
+                && ReposListBox.SelectedItems[0] is {Tag: Repository selected})
             {
                 var prev = ReposListBox.Items.OfType<ListViewItem>()
                                              .Select(item => item.Tag as Repository)
@@ -421,14 +431,18 @@ namespace CKAN.GUI
 
         private void DownRepoButton_Click(object? sender, EventArgs? e)
         {
-            if (ReposListBox.SelectedIndices.Count > 0
-                && ReposListBox.SelectedIndices[0] != ReposListBox.Items.Count - 1
-                && ReposListBox.SelectedItems[0].Tag is Repository selected)
+            if (//ReposListBox.SelectedIndices is [int i, ..]
+                ReposListBox.SelectedIndices.Count > 0
+                && ReposListBox.SelectedIndices[0] is int i
+                && i < ReposListBox.Items.Count - 1
+                //&& ReposListBox.SelectedItems is [{Tag: Repository selected}]
+                && ReposListBox.SelectedItems.Count > 0
+                && ReposListBox.SelectedItems[0] is {Tag: Repository selected})
             {
-                var next     = ReposListBox.Items.Cast<ListViewItem>()
-                                                 .Select(item => item.Tag as Repository)
-                                                 .OfType<Repository>()
-                                                 .FirstOrDefault(r => r.priority == selected.priority + 1);
+                var next = ReposListBox.Items.Cast<ListViewItem>()
+                                             .Select(item => item.Tag as Repository)
+                                             .OfType<Repository>()
+                                             .FirstOrDefault(r => r.priority == selected.priority + 1);
                 ++selected.priority;
                 RepositoryMoved = true;
                 if (next != null)
@@ -573,16 +587,18 @@ namespace CKAN.GUI
 
         private void DeleteAuthTokenButton_Click(object? sender, EventArgs? e)
         {
-            if (AuthTokensListBox.SelectedItems.Count > 0)
+            if (//AuthTokensListBox.SelectedItems is [{Tag: string item}, ..]
+                AuthTokensListBox.SelectedItems.Count > 0
+                && AuthTokensListBox.SelectedItems[0] is {Tag: string item}
+                //&& item.Split('|') is [var firstPiece, ..]
+                && item.Split('|') is string[] pieces
+                && pieces.Length > 0
+                && pieces[0] is string firstPiece)
             {
-                var item = AuthTokensListBox.SelectedItems[0].Tag as string;
-                var host = item?.Split('|')[0].Trim();
-                if (host != null)
-                {
-                    coreConfig.SetAuthToken(host, null);
-                    RefreshAuthTokensListBox();
-                    DeleteAuthTokenButton.Enabled = false;
-                }
+                var host = firstPiece.Trim();
+                coreConfig.SetAuthToken(host, null);
+                RefreshAuthTokensListBox();
+                DeleteAuthTokenButton.Enabled = false;
             }
         }
 

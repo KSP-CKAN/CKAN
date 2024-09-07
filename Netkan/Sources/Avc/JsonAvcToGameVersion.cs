@@ -36,20 +36,23 @@ namespace CKAN.NetKAN.Sources.Avc
             {
                 case JTokenType.String:
                     var tokenArray = token.ToString().Split('.');
-
-                    if (tokenArray.Length > 0)
+                    if (//tokenArray is [var majorToken, ..]
+                        tokenArray.Length > 0
+                        && tokenArray[0] is var majorToken)
                     {
-                        major = tokenArray[0];
-                    }
-
-                    if (tokenArray.Length > 1)
-                    {
-                        minor = tokenArray[1];
-                    }
-
-                    if (tokenArray.Length > 2)
-                    {
-                        patch = tokenArray[2];
+                        major = majorToken;
+                        if (//tokenArray is [_, var minorToken, ..]
+                            tokenArray.Length > 1
+                            && tokenArray[1] is var minorToken)
+                        {
+                            minor = minorToken;
+                            if (//tokenArray is [_, _, var patchToken, ..]
+                                tokenArray.Length > 2
+                                && tokenArray[2] is var patchToken)
+                            {
+                                patch = patchToken;
+                            }
+                        }
                     }
                     break;
                 case JTokenType.Object:
@@ -121,27 +124,30 @@ namespace CKAN.NetKAN.Sources.Avc
             {
                 case JTokenType.String:
                     var tokenArray = token.ToString().Split('.');
-
-                    if (tokenArray.Length > 0)
+                    if (//tokenArray is [var majorToken, ..]
+                        tokenArray.Length > 0
+                        && tokenArray[0] is var majorToken)
                     {
-                        major = tokenArray[0];
+                        major = majorToken;
+                        if (//tokenArray is [_, var minorToken, ..]
+                            tokenArray.Length > 1
+                            && tokenArray[1] is var minorToken)
+                        {
+                            minor = minorToken;
+                            if (//tokenArray is [_, _, var patchToken, ..]
+                                tokenArray.Length > 2
+                                && tokenArray[2] is var patchToken)
+                            {
+                                patch = patchToken;
+                                if (//tokenArray is [_, _, _, var buildToken, ..]
+                                    tokenArray.Length > 3
+                                    && tokenArray[3] is var buildToken)
+                                {
+                                    build = buildToken;
+                                }
+                            }
+                        }
                     }
-
-                    if (tokenArray.Length > 1)
-                    {
-                        minor = tokenArray[1];
-                    }
-
-                    if (tokenArray.Length > 2)
-                    {
-                        patch = tokenArray[2];
-                    }
-
-                    if (tokenArray.Length > 3)
-                    {
-                        build = tokenArray[3];
-                    }
-
                     break;
                 case JTokenType.Object:
                     major = token.Value<string>("MAJOR") ?? major;

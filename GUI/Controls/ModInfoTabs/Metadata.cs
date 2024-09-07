@@ -100,7 +100,7 @@ namespace CKAN.GUI
             AuthorsPanel.SuspendLayout();
             AuthorsPanel.Controls.Clear();
             AuthorsPanel.Controls.AddRange(
-                authors.Select(a => AuthorLink(a)).ToArray());
+                authors.Select(AuthorLink).ToArray());
             AuthorsPanel.ResumeLayout();
         }
 

@@ -81,7 +81,7 @@ namespace CKAN.GUI
             if (Platform.IsMono)
             {
                 // Workaround: make sure the ListView headers are drawn
-                Util.Invoke(this, () => RelationshipsListView.EndUpdate());
+                Util.Invoke(this, RelationshipsListView.EndUpdate);
             }
             this.user = user;
             task = new TaskCompletionSource<bool>();

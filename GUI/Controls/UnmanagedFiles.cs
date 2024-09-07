@@ -132,7 +132,12 @@ namespace CKAN.GUI
         {
             GameFolderTree.BeginUpdate();
             GameFolderTree.ExpandAll();
-            GameFolderTree.Nodes[0].EnsureVisible();
+            if (//GameFolderTree.Nodes is [TreeNode top, ..]
+                GameFolderTree.Nodes.Count > 0
+                && GameFolderTree.Nodes[0] is TreeNode top)
+            {
+                top.EnsureVisible();
+            }
             GameFolderTree.EndUpdate();
             GameFolderTree.Focus();
         }
@@ -141,20 +146,28 @@ namespace CKAN.GUI
         {
             GameFolderTree.BeginUpdate();
             GameFolderTree.CollapseAll();
-            GameFolderTree.Nodes[0].Expand();
+            if (//GameFolderTree.Nodes is [TreeNode top, ..]
+                GameFolderTree.Nodes.Count > 0
+                && GameFolderTree.Nodes[0] is TreeNode top)
+            {
+                top.Expand();
+            }
             GameFolderTree.EndUpdate();
             GameFolderTree.Focus();
         }
 
         private void ResetCollapseButton_Click(object? sender, EventArgs? e)
         {
-            if (inst != null)
+            if (inst != null
+                //&& GameFolderTree.Nodes is [TreeNode top, ..]
+                && GameFolderTree.Nodes.Count > 0
+                && GameFolderTree.Nodes[0] is TreeNode top)
             {
                 GameFolderTree.BeginUpdate();
                 GameFolderTree.CollapseAll();
-                GameFolderTree.Nodes[0].Expand();
+                top.Expand();
                 ExpandDefaultModDir(inst.game);
-                GameFolderTree.Nodes[0].EnsureVisible();
+                top.EnsureVisible();
                 GameFolderTree.EndUpdate();
                 GameFolderTree.Focus();
             }

@@ -28,18 +28,22 @@ namespace CKAN.AutoUpdateHelper
         {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
 
-            if (args.Length != 4)
+            if (//args is not [string pid_str,
+                //             string local_path,
+                //             string updated_path,
+                //             string launch and ("launch" or "nolaunch")]
+                args.Length < 4
+                    || args[0] is not string pid_str
+                    || args[1] is not string local_path
+                    || args[2] is not string updated_path
+                    || args[3] is not (string launch and ("launch" or "nolaunch")))
             {
-                ReportError("{0}: AutoUpdater.exe pid oldPath newPath [no]launch", Properties.Resources.Usage);
+                ReportError("{0}: AutoUpdater.exe pid oldPath newPath [no]launch",
+                            Properties.Resources.Usage);
                 return ExitBADOPT;
             }
-
-            // Yes, it's a global variable, but we're an ephemeral singleton so :shrug:
-            fromGui = (args[3] == "launch");
-
-            int    pid          = int.Parse(args[0]);
-            string local_path   = args[1];
-            string updated_path = args[2];
+            int pid = int.Parse(pid_str);
+            fromGui = (launch == "launch");
 
             if (!File.Exists(updated_path))
             {

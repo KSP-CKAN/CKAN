@@ -341,7 +341,7 @@ namespace CKAN
                         var dllFolders = files
                             .Select(f => instance.ToRelativeGameDir(f.destination))
                             .Where(relPath => instance.DllPathToIdentifier(relPath) == module.identifier)
-                            .Select(relPath => Path.GetDirectoryName(relPath))
+                            .Select(Path.GetDirectoryName)
                             .ToHashSet();
                         // Make sure that the DLL is actually included in the install
                         // (NearFutureElectrical, NearFutureElectrical-Core)
@@ -715,7 +715,7 @@ namespace CKAN
             }
 
             var instDlc = mods
-                .Select(ident => registry_manager.registry.InstalledModule(ident))
+                .Select(registry_manager.registry.InstalledModule)
                 .OfType<InstalledModule>()
                 .FirstOrDefault(m => m.Module.IsDLC);
             if (instDlc != null)
@@ -750,7 +750,7 @@ namespace CKAN
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToRemove);
             User.RaiseMessage("");
 
-            foreach (var module in goners.Select(m => registry_manager.registry.InstalledModule(m))
+            foreach (var module in goners.Select(registry_manager.registry.InstalledModule)
                                          .OfType<InstalledModule>())
             {
                 User.RaiseMessage(" * {0} {1}", module.Module.name, module.Module.version);
@@ -901,7 +901,7 @@ namespace CKAN
                                           (Directory.Exists(directory)
                                               ? Directory.EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
                                               : Enumerable.Empty<string>())
-                                           .Select(f => instance.ToRelativeGameDir(f))
+                                           .Select(instance.ToRelativeGameDir)
                                            .ToArray(),
                                           out string[] removable,
                                           out string[] notRemovable);

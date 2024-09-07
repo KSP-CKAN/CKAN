@@ -202,7 +202,9 @@ namespace CKAN.GUI
 
         private void CloneGameInstanceMenuItem_Click(object? sender, EventArgs? e)
         {
-            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
+            if (//GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                GameInstancesListView.SelectedItems.Count > 0
+                && GameInstancesListView.SelectedItems[0] is {Tag: string instName})
             {
                 var old_instance = manager.CurrentInstance;
 
@@ -229,8 +231,9 @@ namespace CKAN.GUI
                 return;
             }
 
-            var selected = GameInstancesListView.SelectedItems[0];
-            if (selected?.Tag is string instName)
+            if (//GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                GameInstancesListView.SelectedItems.Count > 0
+                && GameInstancesListView.SelectedItems[0] is {Tag: string instName})
             {
                 try
                 {
@@ -254,8 +257,9 @@ namespace CKAN.GUI
                 return;
             }
 
-            var selected = GameInstancesListView.SelectedItems[0];
-            if (selected?.Tag is string instName)
+            if (//GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                GameInstancesListView.SelectedItems.Count > 0
+                && GameInstancesListView.SelectedItems[0] is {Tag: string instName})
             {
                 try
                 {
@@ -271,7 +275,9 @@ namespace CKAN.GUI
 
         private void GameInstancesListView_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
+            if (//GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                GameInstancesListView.SelectedItems.Count > 0
+                && GameInstancesListView.SelectedItems[0] is {Tag: string instName})
             {
                 UpdateButtonState();
 
@@ -313,7 +319,9 @@ namespace CKAN.GUI
 
         private void OpenDirectoryMenuItem_Click(object? sender, EventArgs? e)
         {
-            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
+            if (//GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                GameInstancesListView.SelectedItems.Count > 0
+                && GameInstancesListView.SelectedItems[0] is {Tag: string instName})
             {
                 string path = manager.Instances[instName].GameDir();
 
@@ -329,7 +337,9 @@ namespace CKAN.GUI
 
         private void RenameButton_Click(object? sender, EventArgs? e)
         {
-            if (GameInstancesListView.SelectedItems[0].Tag is string instName)
+            if (//GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                GameInstancesListView.SelectedItems.Count > 0
+                && GameInstancesListView.SelectedItems[0] is {Tag: string instName})
             {
                 // show the dialog, and only continue if the user selected "OK"
                 var renameInstanceDialog = new RenameInstanceDialog();
@@ -363,7 +373,9 @@ namespace CKAN.GUI
                                  = CloneGameInstanceMenuItem.Enabled
                                  = HasSelections;
             ForgetButton.Enabled = HasSelections
-                                   && GameInstancesListView.SelectedItems[0].Tag is string instName
+                                   //&& GameInstancesListView.SelectedItems is [{Tag: string instName}, ..]
+                                   && GameInstancesListView.SelectedItems.Count > 0
+                                   && GameInstancesListView.SelectedItems[0] is {Tag: string instName}
                                    && instName != manager.CurrentInstance?.Name;
             ImportFromSteamMenuItem.Enabled = manager.SteamLibrary.Games.Length > 0;
         }

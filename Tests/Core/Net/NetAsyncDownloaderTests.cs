@@ -69,7 +69,7 @@ namespace Tests.Core.Net
         {
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser());
-            var fromPaths  = pathsWithinTestData.Select(p => TestData.DataDir(p)).ToArray();
+            var fromPaths  = pathsWithinTestData.Select(TestData.DataDir).ToArray();
             var targets    = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
                                                                                              Path.GetTempFileName()))
                                       .ToArray();

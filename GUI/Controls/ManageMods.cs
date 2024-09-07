@@ -526,7 +526,7 @@ namespace CKAN.GUI
             if (guiConfig != null)
             {
                 var hiddenColumnNames = guiConfig.HiddenColumnNames;
-                foreach (var colName in installedColumnNames.Where(nm => ModGrid.Columns.Contains(nm)))
+                foreach (var colName in installedColumnNames.Where(ModGrid.Columns.Contains))
                 {
                     ModGrid.Columns[colName].Visible = visible && !hiddenColumnNames.Contains(colName);
                 }
@@ -561,9 +561,11 @@ namespace CKAN.GUI
                     AddSort(UpdateCol, true);
                     UpdateFilters();
                     // Select the top row and scroll the list to it.
-                    if (ModGrid.Rows.Count > 0)
+                    if (//ModGrid.Rows is [DataGridViewRow row, ..]
+                        ModGrid.Rows.Count > 0
+                        && ModGrid.Rows[0] is DataGridViewRow row)
                     {
-                        ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                        ModGrid.CurrentCell = row.Cells[SelectableColumnIndex()];
                     }
                 }
             });
@@ -773,9 +775,12 @@ namespace CKAN.GUI
             {
                 case Keys.Home:
                     // First row.
-                    if (ModGrid.Rows.Count > 0) //Handles for empty filters
+                    // Handles for empty filters
+                    if (//ModGrid.Rows is [DataGridViewRow top, ..]
+                        ModGrid.Rows.Count > 0
+                        && ModGrid.Rows[0] is DataGridViewRow top)
                     {
-                        ModGrid.CurrentCell = ModGrid.Rows[0].Cells[SelectableColumnIndex()];
+                        ModGrid.CurrentCell = top.Cells[SelectableColumnIndex()];
                     }
 
                     e.Handled = true;
@@ -783,9 +788,12 @@ namespace CKAN.GUI
 
                 case Keys.End:
                     // Last row.
-                    if (ModGrid.Rows.Count > 0) //Handles for empty filters
+                    // Handles for empty filters
+                    if (//ModGrid.Rows is [.., DataGridViewRow bottom]
+                        ModGrid.Rows.Count > 0
+                        && ModGrid.Rows[^1] is DataGridViewRow bottom)
                     {
-                        ModGrid.CurrentCell = ModGrid.Rows[^1].Cells[SelectableColumnIndex()];
+                        ModGrid.CurrentCell = bottom.Cells[SelectableColumnIndex()];
                     }
 
                     e.Handled = true;
@@ -873,20 +881,21 @@ namespace CKAN.GUI
             {
                 return;
             }
-
             if (e.RowIndex < 0)
             {
                 return;
             }
 
             DataGridViewRow row = ModGrid.Rows[e.RowIndex];
-            if (row.Cells[0] is not DataGridViewCheckBoxCell)
+            if (//row.Cells is not [DataGridViewCheckBoxCell cell, ..]
+                row.Cells.Count < 1
+                || row.Cells[0] is not DataGridViewCheckBoxCell cell)
             {
                 return;
             }
 
             // Need to change the state here, because the user hasn't clicked on a checkbox.
-            row.Cells[0].Value = !(bool)row.Cells[0].Value;
+            cell.Value = !(bool)cell.Value;
             ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
         }
 
@@ -1552,7 +1561,10 @@ namespace CKAN.GUI
 
         private void SetSort(DataGridViewColumn col)
         {
-            if (SortColumns.Count == 1 && SortColumns[0] == col.Name)
+            if (//SortColumns is [string colName]
+                SortColumns.Count == 1
+                && SortColumns[0] is string colName
+                && colName == col.Name)
             {
                 descending[0] = !descending[0];
             }
@@ -1762,9 +1774,11 @@ namespace CKAN.GUI
         }
 
         public GUIMod? SelectedModule =>
-            ModGrid.SelectedRows.Count == 0
-                ? null
-                : ModGrid.SelectedRows[0]?.Tag as GUIMod;
+            //ModGrid.SelectedRows is [{Tag: GUIMod gmod}, ..]
+            ModGrid.SelectedRows.Count > 0
+            && ModGrid.SelectedRows[0] is {Tag: GUIMod gmod}
+                ? gmod
+                : null;
 
         public void CloseSearch(Point screenCoords)
         {

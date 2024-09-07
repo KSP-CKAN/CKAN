@@ -330,7 +330,7 @@ namespace Tests.Core.Types
         public void GroupByDownloads_WithModules_GroupsBySharedURLs(string[] moduleJsons, params string[][] correctGroups)
         {
             // Arrange
-            var modules = moduleJsons.Select(j => CkanModule.FromJson(j))
+            var modules = moduleJsons.Select(CkanModule.FromJson)
                                      .ToArray();
             // Turn [null] into [] as Workaround for params argument not allowing no values
             // (params argument itself is a workaround for TestCase not allowing string[][])
@@ -449,7 +449,7 @@ namespace Tests.Core.Types
             // Arrange
             var module         = CkanModule.FromJson(moduleJson);
             var correctVersion = GameVersion.Parse(correct);
-            var realVersions   = real.Select(v => GameVersion.Parse(v)).ToList();
+            var realVersions   = real.Select(GameVersion.Parse).ToList();
 
             // Act
             var latestCompat = module.LatestCompatibleRealGameVersion(realVersions);

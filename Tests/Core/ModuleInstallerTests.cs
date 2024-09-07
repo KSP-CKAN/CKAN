@@ -654,7 +654,7 @@ namespace Tests.Core
                 var game     = new KerbalSpaceProgram();
                 var registry = RegistryManager.Instance(inst.KSP, repoData.Manager).registry;
                 // Make files to be registered to another mod
-                var absFiles = registeredFiles.Select(f => inst.KSP.ToAbsoluteGameDir(f))
+                var absFiles = registeredFiles.Select(inst.KSP.ToAbsoluteGameDir)
                                               .ToList();
                 foreach (var absPath in absFiles)
                 {

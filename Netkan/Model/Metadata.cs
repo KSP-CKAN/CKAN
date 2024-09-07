@@ -123,10 +123,13 @@ namespace CKAN.NetKAN.Model
         }
 
         public static Metadata Merge(Metadata[] modules)
-            => modules.Length == 1 ? modules[0]
-                                   : PropertySortTransformer.SortProperties(
-                                       new Metadata(MergeJson(modules.Select(m => m._json)
-                                                                     .ToArray())));
+            => //modules is [var m]
+               modules.Length == 1
+               && modules[0] is var m
+                   ? m
+                   : PropertySortTransformer.SortProperties(
+                       new Metadata(MergeJson(modules.Select(m => m._json)
+                                                     .ToArray())));
 
         private static JObject MergeJson(JObject[] jsons)
         {

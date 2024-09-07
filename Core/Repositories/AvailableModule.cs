@@ -211,7 +211,7 @@ namespace CKAN
                                   .Aggregate((best, r) => r.Upper == GameVersionBound.Highest(best.Upper, r.Upper)
                                                               ? r
                                                               : best);
-            return realVersions?.LastOrDefault(v => bestRange.Contains(v))
+            return realVersions?.LastOrDefault(bestRange.Contains)
                                // This is needed for when we have no real versions loaded, such as tests
                                ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
                                                        .Max()

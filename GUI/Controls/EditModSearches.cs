@@ -34,7 +34,12 @@ namespace CKAN.GUI
             {
                 RemoveSearch(editors[i]);
             }
-            editors[0].Clear();
+            if (//editors is [var editor]
+                editors.Count == 1
+                && editors[0] is var editor)
+            {
+                editor.Clear();
+            }
         }
 
         public void ExpandCollapse()
@@ -66,7 +71,12 @@ namespace CKAN.GUI
             }
             if (searches.Count < 1)
             {
-                editors[0].Clear();
+                if (//editors is [var editor]
+                    editors.Count == 1
+                    && editors[0] is var editor)
+                {
+                    editor.Clear();
+                }
             }
             else
             {
@@ -149,7 +159,12 @@ namespace CKAN.GUI
                 editors.Remove(which);
                 Controls.Remove(which);
                 // Make sure the top label is always visible
-                editors[0].ShowLabel = true;
+                if (//editors is [var editor, ..]
+                    editors.Count > 0
+                    && editors[0] is var editor)
+                {
+                    editor.ShowLabel = true;
+                }
 
                 AddSearchButton.Top = editors[^1].Top;
 

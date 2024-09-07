@@ -69,7 +69,7 @@ namespace CKAN.GUI
             if (Platform.IsMono)
             {
                 // Workaround: make sure the ListView headers are drawn
-                Util.Invoke(this, () => RecommendedModsListView.EndUpdate());
+                Util.Invoke(this, RecommendedModsListView.EndUpdate);
             }
             task = new TaskCompletionSource<HashSet<CkanModule>?>();
             return task.Task.Result;
@@ -190,19 +190,26 @@ namespace CKAN.GUI
                                                                && kvp.Value.Item1
                                                                && !uncheckLabels.Any(mlbl =>
                                                                    mlbl.ContainsModule(game, kvp.Key.identifier))))
-                              .OrderBy(item => item.SubItems[1].Text)
+                              .OrderBy(SecondColumn)
                               .Concat(suggestions.Select(kvp => getRecSugItem(cache,
                                                                               kvp.Key,
                                                                               string.Join(", ", kvp.Value),
                                                                               SuggestionsGroup,
                                                                               false))
-                                                 .OrderBy(item => item.SubItems[1].Text))
+                                                 .OrderBy(SecondColumn))
                               .Concat(supporters.Select(kvp => getRecSugItem(cache,
                                                                              kvp.Key,
                                                                              string.Join(", ", kvp.Value.OrderBy(s => s)),
                                                                              SupportedByGroup,
                                                                              false))
-                                                .OrderBy(item => item.SubItems[1].Text));
+                                                .OrderBy(SecondColumn));
+
+        private string SecondColumn(ListViewItem item)
+            => //item.SubItems is [_, {Text: string text}, ..]
+               item.SubItems.Count > 1
+               && item.SubItems[0].Text is string text
+                   ? text
+                   : "";
 
         private ListViewItem getRecSugItem(NetModuleCache cache,
                                            CkanModule     module,

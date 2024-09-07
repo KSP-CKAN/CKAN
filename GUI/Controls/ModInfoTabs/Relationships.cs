@@ -273,7 +273,7 @@ namespace CKAN.GUI
         }
 
         private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier registry, CkanModule module, GameVersionCriteria crit)
-            => (module.provides?.Select(p => providedNode(p))
+            => (module.provides?.Select(providedNode)
                     ?? Enumerable.Empty<TreeNode>())
                 .Concat(kindsOfRelationships.SelectMany(relationship =>
                     GetModRelationships(module, relationship).Select(dependency =>
@@ -328,12 +328,12 @@ namespace CKAN.GUI
                 // Nothing found, don't return a node
                 return null;
             }
-            else if (childNodes.Count == 1
-                     && childNodes[0].Tag is CkanModule module
+            else if (//childNodes is [var node and {Tag: CkanModule module}]
+                     childNodes[0] is var node and {Tag: CkanModule module}
                      && relDescr.ContainsAny(new string[] { module.identifier }))
             {
                 // Only one exact match module, return a simple node
-                return childNodes[0];
+                return node;
             }
             else
             {
