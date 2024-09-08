@@ -49,14 +49,21 @@ namespace CKAN.NetKAN.Processors
                 }
                 log.Debug("Input successfully passed pre-validation");
 
-                var ckans = netkans
-                    .SelectMany(netkan => transformer.Transform(netkan, opts))
-                    .GroupBy(module => module.Version)
-                    .Select(grp => Metadata.Merge(grp.ToArray()))
-                    .SelectMany(merged => specVersionTransformer.Transform(merged, opts))
-                    .SelectMany(withSpecVersion => sortTransformer.Transform(withSpecVersion, opts))
-                    .ToList();
+                var ckans = netkans.SelectMany(netkan => transformer.Transform(netkan, opts))
+                                   .GroupBy(module => module.Version)
+                                   .Select(grp => Metadata.Merge(grp.ToArray()))
+                                   .SelectMany(merged => specVersionTransformer.Transform(merged, opts))
+                                   .SelectMany(withSpecVersion => sortTransformer.Transform(withSpecVersion, opts))
+                                   .ToList();
                 log.Debug("Finished transformation");
+
+                if (ckans.Count > (opts?.Releases ?? 1))
+                {
+                    throw new Kraken(string.Format("Generated {0} modules but only {1} requested: {2}",
+                                                   ckans.Count,
+                                                   opts?.Releases ?? 1,
+                                                   string.Join("; ", ckans.Select(DescribeHosting))));
+                }
 
                 foreach (Metadata ckan in ckans)
                 {
@@ -122,6 +129,9 @@ namespace CKAN.NetKAN.Processors
                 }
             }
         }
+
+        private string DescribeHosting(Metadata metadata)
+            => $"{metadata.Version} on {string.Join(", ", metadata.Hosts)}";
 
         private readonly NetFileCache cache;
         private readonly IHttpService http;
