@@ -34,6 +34,18 @@ namespace CKAN.NetKAN.Model
         public bool           Staged          { get; private set; }
         public string?        StagingReason   { get; private set; }
 
+        public string[]       Hosts
+            => (_json.TryGetValue(DownloadPropertyName, out JToken? downloadToken)
+                    ? downloadToken.Type == JTokenType.String
+                      && (string?)downloadToken is string url
+                          ? Enumerable.Repeat(url, 1)
+                          : downloadToken.Children()
+                                         .Select(ch => (string?)ch)
+                                         .OfType<string>()
+                    : Enumerable.Empty<string>())
+                .Select(u => new Uri(u).Host)
+                .ToArray();
+
         public Metadata(JObject? json)
         {
             if (json == null)
