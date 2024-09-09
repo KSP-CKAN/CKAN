@@ -63,7 +63,7 @@ namespace CKAN.GUI
             this.DependsGraphTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.DependsGraphTree.Location = new System.Drawing.Point(3, 132);
             this.DependsGraphTree.Name = "DependsGraphTree";
-            this.DependsGraphTree.Size = new System.Drawing.Size(494, 364);
+            this.DependsGraphTree.Size = new System.Drawing.Size(494, 340);
             this.DependsGraphTree.TabIndex = 0;
             this.DependsGraphTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.DependsGraphTree_NodeMouseDoubleClick);
             this.DependsGraphTree.ShowNodeToolTips = true;
