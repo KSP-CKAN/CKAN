@@ -111,7 +111,7 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private        readonly ISourceForgeApi api;
-        private const           string          mirror = "psychz"; // Brooklyn, United States
+        private const           string          mirror = "master";
         private static readonly ILog            log    = LogManager.GetLogger(typeof(GitlabTransformer));
     }
 }
