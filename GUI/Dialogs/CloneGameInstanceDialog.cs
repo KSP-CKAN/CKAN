@@ -24,7 +24,9 @@ namespace CKAN.GUI
         private readonly GameInstanceManager manager;
         private readonly IUser               user;
 
-        public CloneGameInstanceDialog(GameInstanceManager manager, IUser user, string? selectedInstanceName = null)
+        public CloneGameInstanceDialog(GameInstanceManager manager,
+                                       IUser               user,
+                                       string?             selectedInstanceName = null)
             : base()
         {
             this.manager = manager;
@@ -54,7 +56,7 @@ namespace CKAN.GUI
         private void comboBoxKnownInstance_SelectedIndexChanged(object? sender, EventArgs? e)
         {
             textBoxClonePath.Text = comboBoxKnownInstance.SelectedItem is string sel
-                                    && string.IsNullOrEmpty(sel)
+                                    && !string.IsNullOrEmpty(sel)
                 ? Platform.FormatPath(manager.Instances[sel].GameDir())
                 : "";
         }
