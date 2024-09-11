@@ -10,6 +10,8 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
+using CKAN.Games;
+
 namespace CKAN.GUI
 {
     /// <summary>
@@ -123,79 +125,74 @@ namespace CKAN.GUI
 
             try
             {
-                if (comboBoxKnownInstance.SelectedItem is string s
-                    && (!manager.Instances.TryGetValue(s, out GameInstance? instanceToClone)
-                        || existingPath != Platform.FormatPath(instanceToClone.GameDir())))
+                var instanceToClone = comboBoxKnownInstance.SelectedItem is string s
+                                      && manager.Instances.TryGetValue(s, out GameInstance? instFromBox)
+                                      && existingPath == Platform.FormatPath(instFromBox.GameDir())
+                                          ? instFromBox
+                                          : manager.DetermineGame(new DirectoryInfo(existingPath), user) is IGame sourceGame
+                                              ? new GameInstance(sourceGame, existingPath,
+                                                                 "irrelevant", user)
+                                              : null;
+                if (instanceToClone == null)
                 {
-                    var sourceGame = manager.DetermineGame(new DirectoryInfo(existingPath), user);
-                    if (sourceGame == null)
-                    {
-                        // User cancelled, let them try again
-                        reactivateDialog();
-                        return;
-                    }
-                    instanceToClone = new GameInstance(
-                        sourceGame, existingPath, "irrelevant", user);
-                    await Task.Run(() =>
-                    {
-                        if (instanceToClone.Valid)
-                        {
-                            manager.CloneInstance(instanceToClone, newName, newPath, checkBoxShareStock.Checked);
-                        }
-                        else
-                        {
-                            throw new NotKSPDirKraken(instanceToClone.GameDir());
-                        }
-                    });
+                    // User cancelled, let them try again
+                    reactivateDialog();
+                    return;
                 }
+                await Task.Run(() =>
+                {
+                    if (instanceToClone.Valid)
+                    {
+                        manager.CloneInstance(instanceToClone, newName, newPath, checkBoxShareStock.Checked);
+                    }
+                    else
+                    {
+                        throw new NotKSPDirKraken(instanceToClone.GameDir());
+                    }
+                });
+
+                if (checkBoxSetAsDefault.Checked)
+                {
+                    manager.SetAutoStart(newName);
+                }
+
+                if (checkBoxSwitchInstance.Checked)
+                {
+                    manager.SetCurrentInstance(newName);
+                }
+
+                user.RaiseMessage(Properties.Resources.CloneFakeKspDialogSuccessfulClone);
+
+                DialogResult = DialogResult.OK;
+                Close();
             }
             catch (InstanceNameTakenKraken)
             {
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
                 reactivateDialog();
-                return;
             }
             catch (NotKSPDirKraken kraken)
             {
                 user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogInstanceNotValid,
                                 Platform.FormatPath(kraken.path)));
                 reactivateDialog();
-                return;
             }
             catch (PathErrorKraken kraken)
             {
                 user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty,
                                 Platform.FormatPath(kraken?.path ?? "")));
                 reactivateDialog();
-                return;
             }
             catch (IOException ex)
             {
                 user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogCloneFailed, ex.Message));
                 reactivateDialog();
-                return;
             }
             catch (Exception ex)
             {
                 user.RaiseError(string.Format(Properties.Resources.CloneFakeKspDialogCloneFailed, ex.Message));
                 reactivateDialog();
-                return;
             }
-
-            if (checkBoxSetAsDefault.Checked)
-            {
-                manager.SetAutoStart(newName);
-            }
-
-            if (checkBoxSwitchInstance.Checked)
-            {
-                manager.SetCurrentInstance(newName);
-            }
-
-            user.RaiseMessage(Properties.Resources.CloneFakeKspDialogSuccessfulClone);
-
-            DialogResult = DialogResult.OK;
-            Close();
         }
 
         private void buttonCancel_Click(object? sender, EventArgs? e)
