@@ -90,9 +90,10 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Currently selected row's object
         /// </summary>
         public RowT? Selection
-            => selectedRow >= 0 && selectedRow < sortedFilteredData.Count
-                ? sortedFilteredData[selectedRow]
-                : default;
+            => sortedFilteredData != null
+                && selectedRow >= 0 && selectedRow < sortedFilteredData.Count
+                    ? sortedFilteredData[selectedRow]
+                    : default;
 
         /// <returns>
         /// Return the number of rows shown in the box
