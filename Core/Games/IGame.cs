@@ -43,6 +43,7 @@ namespace CKAN.Games
         GameVersion[]     EmbeddedGameVersions { get; }
         GameVersion[]     ParseBuildsJson(JToken json);
         GameVersion?      DetectVersion(DirectoryInfo where);
+        GameVersion[]     DefaultCompatibleVersions(GameVersion installedVersion);
         string            CompatibleVersionsFile { get; }
         string[]          InstanceAnchorFiles { get; }
 

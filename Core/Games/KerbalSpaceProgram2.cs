@@ -202,6 +202,12 @@ namespace CKAN.Games.KerbalSpaceProgram2
                     ? v
                     : null;
 
+        public GameVersion[] DefaultCompatibleVersions(GameVersion installedVersion)
+            // KSP2 didn't last long enough to break compatibility :~(
+            => Enumerable.Range(1, 2)
+                         .Select(minor => new GameVersion(0, minor))
+                         .ToArray();
+
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 
         public string[] InstanceAnchorFiles =>
