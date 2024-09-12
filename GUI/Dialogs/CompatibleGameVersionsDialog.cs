@@ -36,8 +36,10 @@ namespace CKAN.GUI
 
             var compatibleVersions = inst.GetCompatibleVersions();
 
-            GameVersionLabel.Text  = inst.Version()?.ToString() ?? Properties.Resources.CompatibleGameVersionsDialogNone;
-            GameLocationLabel.Text = Platform.FormatPath(inst.GameDir());
+            ActualGameVersionLabel.Text  = inst.Version()
+                                               ?.ToString()
+                                               ?? Properties.Resources.CompatibleGameVersionsDialogNone;
+            ActualInstancePathLabel.Text = Platform.FormatPath(inst.GameDir());
             var knownVersions = inst.game.KnownVersions;
             var majorVersionsList = CreateMajorVersionsList(knownVersions);
             var compatibleVersionsLeftOthers = compatibleVersions.Except(knownVersions)
@@ -69,13 +71,17 @@ namespace CKAN.GUI
         {
             if (_inst.CompatibleVersionsAreFromDifferentGameVersion)
             {
-                MessageBox.Show(Properties.Resources.CompatibleGameVersionsDialogGameUpdated);
                 CancelChooseCompatibleVersionsButton.Visible = false;
-                GameVersionLabel.Text = string.Format(
+                ActualGameVersionLabel.Text = string.Format(
                     Properties.Resources.CompatibleGameVersionsDialogVersionDetails,
                     _inst.Version(),
                     _inst.GameVersionWhenCompatibleVersionsWereStored);
-                GameVersionLabel.ForeColor = Color.Red;
+                ActualGameVersionLabel.ForeColor = Color.Red;
+                MessageBox.Show(this,
+                                Properties.Resources.CompatibleGameVersionsDialogGameUpdatedDetails,
+                                Properties.Resources.CompatibleGameVersionsDialogGameUpdatedTitle,
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
             }
         }
 
@@ -100,7 +106,8 @@ namespace CKAN.GUI
             {
                 return;
             }
-            if (AddVersionToListTextBox.Text.ToLower() == "any")
+            if (AddVersionToListTextBox.Text.Equals("any",
+                                                    StringComparison.CurrentCultureIgnoreCase))
             {
                 MessageBox.Show(Properties.Resources.CompatibleGameVersionsDialogInvalidFormat,
                                 Properties.Resources.CompatibleGameVersionsDialogErrorTitle,
