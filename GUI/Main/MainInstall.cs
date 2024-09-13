@@ -374,8 +374,8 @@ namespace CKAN.GUI
 
         private void OnModInstalled(CkanModule mod)
         {
-            currentUser.RaiseMessage(string.Format(Properties.Resources.MainInstallModSuccess,
-                                     mod));
+            currentUser.RaiseMessage(Properties.Resources.MainInstallModSuccess,
+                                     mod);
             LabelsAfterInstall(mod);
         }
 
@@ -399,7 +399,7 @@ namespace CKAN.GUI
                         break;
 
                     case NotEnoughSpaceKraken exc:
-                        currentUser.RaiseMessage(exc.Message);
+                        currentUser.RaiseMessage("{0}", exc.Message);
                         break;
 
                     case FileExistsKraken exc:
@@ -420,7 +420,7 @@ namespace CKAN.GUI
                         break;
 
                     case InconsistentKraken exc:
-                        currentUser.RaiseMessage(exc.Message);
+                        currentUser.RaiseMessage("{0}", exc.Message);
                         break;
 
                     case CancelledActionKraken exc:
@@ -430,12 +430,12 @@ namespace CKAN.GUI
                         break;
 
                     case MissingCertificateKraken exc:
-                        currentUser.RaiseMessage(exc.ToString());
+                        currentUser.RaiseMessage("{0}", exc.ToString());
                         break;
 
                     case DownloadThrottledKraken exc:
                         string msg = exc.ToString();
-                        currentUser.RaiseMessage(msg);
+                        currentUser.RaiseMessage("{0}", msg);
                         if (configuration != null && CurrentInstance != null
                             && YesNoDialog(string.Format(Properties.Resources.MainInstallOpenSettingsPrompt, msg),
                                 Properties.Resources.MainInstallOpenSettings,
@@ -465,15 +465,15 @@ namespace CKAN.GUI
 
                     case ModuleIsDLCKraken exc:
                         string dlcMsg = string.Format(Properties.Resources.MainInstallCantInstallDLC, exc.module.name);
-                        currentUser.RaiseMessage(dlcMsg);
-                        currentUser.RaiseError(dlcMsg);
+                        currentUser.RaiseMessage("{0}", dlcMsg);
+                        currentUser.RaiseError("{0}", dlcMsg);
                         break;
 
                     case TransactionalKraken exc:
                         // Thrown when the Registry tries to enlist with multiple different transactions
                         // Want to see the stack trace for this one
-                        currentUser.RaiseMessage(exc.ToString());
-                        currentUser.RaiseError(exc.ToString());
+                        currentUser.RaiseMessage("{0}", exc.ToString());
+                        currentUser.RaiseError("{0}", exc.ToString());
                         break;
 
                     case TransactionException texc:
@@ -483,12 +483,12 @@ namespace CKAN.GUI
                                                 .Reverse())
                         {
                             log.Error(exc.Message, exc);
-                            currentUser.RaiseMessage(exc.Message);
+                            currentUser.RaiseMessage("{0}", exc.Message);
                         }
                         break;
 
                     default:
-                        currentUser.RaiseMessage(e.Error.Message);
+                        currentUser.RaiseMessage("{0}", e.Error.Message);
                         break;
                 }
 

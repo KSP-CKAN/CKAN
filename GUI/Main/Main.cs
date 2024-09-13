@@ -777,7 +777,7 @@ namespace CKAN.GUI
                 }
                 catch (Kraken kraken)
                 {
-                    currentUser.RaiseError(kraken.InnerException == null
+                    currentUser.RaiseError("{0}", kraken.InnerException == null
                         ? kraken.Message
                         : $"{kraken.Message}: {kraken.InnerException.Message}");
 
@@ -785,7 +785,7 @@ namespace CKAN.GUI
                 }
                 catch (Exception ex)
                 {
-                    currentUser.RaiseError(ex.Message);
+                    currentUser.RaiseError("{0}", ex.Message);
                     continue;
                 }
 
@@ -960,12 +960,12 @@ namespace CKAN.GUI
 
         private void ManageMods_RaiseMessage(string message)
         {
-            currentUser.RaiseMessage(message);
+            currentUser.RaiseMessage("{0}", message);
         }
 
         private void ManageMods_RaiseError(string error)
         {
-            currentUser.RaiseError(error);
+            currentUser.RaiseError("{0}", error);
         }
 
         private void ManageMods_SetStatusBar(string message)

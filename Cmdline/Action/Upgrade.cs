@@ -50,7 +50,7 @@ namespace CKAN.CmdLine
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("upgrade"))
                 {
-                    user.RaiseError(h);
+                    user.RaiseError("{0}", h);
                 }
                 return Exit.BADOPT;
             }
@@ -93,7 +93,7 @@ namespace CKAN.CmdLine
                                           latestVersion?.ToString() ?? "");
                         if (update.ReleaseNotes != null)
                         {
-                            user.RaiseMessage(update.ReleaseNotes);
+                            user.RaiseMessage("{0}", update.ReleaseNotes);
                         }
                         user.RaiseMessage("");
                         user.RaiseMessage("");
@@ -157,7 +157,7 @@ namespace CKAN.CmdLine
             }
             catch (InconsistentKraken kraken)
             {
-                user.RaiseMessage(kraken.ToString());
+                user.RaiseMessage("{0}", kraken.ToString());
                 return Exit.ERROR;
             }
             catch (ModuleIsDLCKraken kraken)

@@ -690,7 +690,7 @@ namespace CKAN.CmdLine
         {
             foreach (var h in InstanceSubOptions.GetHelp(verb))
             {
-                user?.RaiseError(h);
+                user?.RaiseError("{0}", h);
             }
         }
 

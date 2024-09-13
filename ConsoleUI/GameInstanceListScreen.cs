@@ -94,7 +94,7 @@ namespace CKAN.ConsoleUI {
                         } catch (Exception ex) {
                             // This can throw if the previous current instance had an error,
                             // since it gets destructed when it's replaced.
-                            RaiseError(ex.Message);
+                            RaiseError("{0}", ex.Message);
                         }
                         return false;
                     } else {

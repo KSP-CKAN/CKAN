@@ -123,9 +123,9 @@ namespace CKAN.ConsoleUI {
                             // Don't need to tell the user they just cancelled out.
                         } catch (FileNotFoundKraken ex) {
                             // Possible file corruption
-                            RaiseError(ex.Message);
+                            RaiseError("{0}", ex.Message);
                         } catch (DirectoryNotFoundKraken ex) {
-                            RaiseError(ex.Message);
+                            RaiseError("{0}", ex.Message);
                         } catch (FileExistsKraken ex) {
                             if (ex.owningModule != null) {
                                 RaiseMessage(Properties.Resources.InstallOwnedFileConflict, ex.installingModule?.ToString() ?? "", ex.filename, ex.owningModule);
@@ -134,9 +134,9 @@ namespace CKAN.ConsoleUI {
                             }
                             RaiseError(Properties.Resources.InstallFilesReverted);
                         } catch (DownloadErrorsKraken ex) {
-                            RaiseError(ex.ToString());
+                            RaiseError("{0}", ex.ToString());
                         } catch (ModuleDownloadErrorsKraken ex) {
-                            RaiseError(ex.ToString());
+                            RaiseError("{0}", ex.ToString());
                         } catch (DownloadThrottledKraken ex) {
                             if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.ToString()))) {
                                 if (ex.infoUrl != null) {
@@ -145,9 +145,9 @@ namespace CKAN.ConsoleUI {
                                 LaunchSubScreen(new AuthTokenScreen(theme));
                             }
                         } catch (MissingCertificateKraken ex) {
-                            RaiseError(ex.ToString());
+                            RaiseError("{0}", ex.ToString());
                         } catch (InconsistentKraken ex) {
-                            RaiseError(ex.Message);
+                            RaiseError("{0}", ex.Message);
                         } catch (TooManyModsProvideKraken ex) {
 
                             var ch = new ConsoleChoiceDialog<CkanModule>(
@@ -174,7 +174,7 @@ namespace CKAN.ConsoleUI {
                         } catch (ModNotInstalledKraken ex) {
                             RaiseError(Properties.Resources.InstallNotInstalled, ex.mod);
                         } catch (DllLocationMismatchKraken ex) {
-                            RaiseError(ex.Message);
+                            RaiseError("{0}", ex.Message);
                         }
                     } while (retry);
                 }

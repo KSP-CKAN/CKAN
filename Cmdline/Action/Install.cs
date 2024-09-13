@@ -38,7 +38,7 @@ namespace CKAN.CmdLine
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("install"))
                 {
-                    user.RaiseError(h);
+                    user.RaiseError("{0}", h);
                 }
                 return Exit.BADOPT;
             }
@@ -164,7 +164,7 @@ namespace CKAN.CmdLine
                     }
                     catch (Kraken e)
                     {
-                        user.RaiseMessage(e.Message);
+                        user.RaiseMessage("{0}", e.Message);
                         return Exit.ERROR;
                     }
 

@@ -22,8 +22,9 @@ namespace CKAN.CmdLine
                 .Where(m => !m.IsDLC)
                 .OrderBy(m => m.identifier);
 
-            user.RaiseMessage(string.Format(Properties.Resources.AvailableHeader,
-                instance.game.ShortName, instance.Version()));
+            user.RaiseMessage(Properties.Resources.AvailableHeader,
+                              instance.game.ShortName,
+                              instance.Version()?.ToString() ?? "");
             user.RaiseMessage("");
 
             if (opts.detail)

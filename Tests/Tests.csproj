@@ -20,6 +20,7 @@
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>CS0436</WarningsNotAsErrors>
     <NoWarn>IDE1006,NU1701</NoWarn>
     <TargetFrameworks>net48;net8.0;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
@@ -42,6 +43,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
+    <PackageReference Include="StringSyntaxAttribute" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">

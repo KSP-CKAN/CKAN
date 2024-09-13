@@ -455,7 +455,7 @@ namespace CKAN.ConsoleUI {
                     RaiseError(Properties.Resources.ModListAuditNotFound);
                 }
             } catch (ModuleNotFoundKraken k) {
-                RaiseError($"{k.module} {k.version}: {k.Message}");
+                RaiseError("{0} {1}: {2}", k.module, k.version ?? "", k.Message);
             }
             return true;
         }
@@ -496,7 +496,7 @@ namespace CKAN.ConsoleUI {
                                         userAgent);
                     } catch (Exception ex) {
                         // There can be errors while you re-install mods with changed metadata
-                        ps.RaiseError(ex.Message + ex.StackTrace);
+                        ps.RaiseError("{0}", ex.Message + ex.StackTrace);
                     }
                     // Update recent with mods that were updated in this pass
                     foreach (CkanModule mod in registry.CompatibleModules(
@@ -517,11 +517,9 @@ namespace CKAN.ConsoleUI {
         }
 
         private static string newModPrompt(int howMany)
-        {
-            return howMany == 1
+            => howMany == 1
                 ? string.Format(Properties.Resources.ModListNewMod,  howMany)
                 : string.Format(Properties.Resources.ModListNewMods, howMany);
-        }
 
         private bool ScanForMods()
         {
