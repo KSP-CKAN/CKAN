@@ -143,7 +143,7 @@ namespace CKAN.CmdLine
             return Exit.ERROR;
         }
 
-        private void PrintUsage(IUser user, string verb)
+        private static void PrintUsage(IUser user, string verb)
         {
             foreach (var h in MarkSubOptions.GetHelp(verb))
             {

@@ -102,7 +102,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private bool installable(ModuleInstaller     installer,
+        private static bool installable(ModuleInstaller     installer,
                                  CkanModule          module,
                                  IRegistryQuerier    registry)
             => currentInstance != null

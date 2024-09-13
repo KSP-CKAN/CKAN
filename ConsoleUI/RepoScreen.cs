@@ -148,7 +148,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected SortedDictionary<string, Repository> editList;
 
-        private int labelWidth => Math.Max(8, Math.Max(
+        private static int labelWidth => Math.Max(8, Math.Max(
             Properties.Resources.RepoNameLabel.Length,
             Properties.Resources.RepoURLLabel.Length));
         private const int nameRow    = 3;

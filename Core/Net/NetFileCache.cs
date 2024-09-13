@@ -266,7 +266,7 @@ namespace CKAN
             }
         }
 
-        private void GetSizeInfo(string path, ref int numFiles, ref long numBytes)
+        private static void GetSizeInfo(string path, ref int numFiles, ref long numBytes)
         {
             DirectoryInfo cacheDir = new DirectoryInfo(path);
             foreach (var file in cacheDir.EnumerateFiles("*", SearchOption.AllDirectories))
@@ -339,7 +339,7 @@ namespace CKAN
             }
         }
 
-        private int compareFiles(Dictionary<string, List<CkanModule>> hashMap, FileInfo a, FileInfo b)
+        private static int compareFiles(Dictionary<string, List<CkanModule>> hashMap, FileInfo a, FileInfo b)
         {
             // Compatible modules for file A
             hashMap.TryGetValue(a.Name[..8], out List<CkanModule>? modulesA);

@@ -22,8 +22,8 @@ namespace CKAN.GUI
         public  CkanModule?      LatestAvailableMod  { get; private set; }
         public  InstalledModule? InstalledMod        { get; private set; }
 
-        private GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
-        private GameInstanceManager? manager         => Main.Instance?.Manager;
+        private static GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
+        private static GameInstanceManager? manager         => Main.Instance?.Manager;
 
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,

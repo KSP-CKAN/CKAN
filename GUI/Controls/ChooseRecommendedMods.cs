@@ -211,7 +211,7 @@ namespace CKAN.GUI
                    ? text
                    : "";
 
-        private ListViewItem getRecSugItem(NetModuleCache cache,
+        private static ListViewItem getRecSugItem(NetModuleCache cache,
                                            CkanModule     module,
                                            string         descrip,
                                            ListViewGroup  group,

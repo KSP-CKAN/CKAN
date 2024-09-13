@@ -29,7 +29,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryId(identifier));
         }
 
-        private void TryId(string identifier)
+        private static void TryId(string identifier)
         {
             // Arrange
             var json = new JObject();

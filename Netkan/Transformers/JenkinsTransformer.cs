@@ -61,7 +61,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(Metadata       metadata,
+        private static Metadata TransformOne(Metadata       metadata,
                                       JObject        json,
                                       JenkinsBuild   build,
                                       JenkinsOptions options)

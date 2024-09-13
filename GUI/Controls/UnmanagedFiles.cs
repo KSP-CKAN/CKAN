@@ -89,7 +89,7 @@ namespace CKAN.GUI
             }
         }
 
-        private IEnumerable<string> ParentPaths(string[] pathPieces)
+        private static IEnumerable<string> ParentPaths(string[] pathPieces)
             => Enumerable.Range(1, pathPieces.Length)
                          .Select(numPieces => string.Join("/", pathPieces.Take(numPieces)));
 

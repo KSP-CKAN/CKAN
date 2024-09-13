@@ -105,10 +105,10 @@ namespace CKAN.GUI
             }
         }
 
-        private GUIConfiguration?    guiConfig       => Main.Instance?.configuration;
-        private GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
-        private GameInstanceManager? manager         => Main.Instance?.Manager;
-        private IUser?               user            => Main.Instance?.currentUser;
+        private static GUIConfiguration?    guiConfig       => Main.Instance?.configuration;
+        private static GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
+        private static GameInstanceManager? manager         => Main.Instance?.Manager;
+        private static IUser?               user            => Main.Instance?.currentUser;
 
         private List<bool> descending => guiConfig?.MultiSortDescending ?? new List<bool>();
 
@@ -1762,7 +1762,7 @@ namespace CKAN.GUI
         /// <returns>
         /// Positive to sort a lessthan b, negative to sort b lessthan a
         /// </returns>
-        private int VersionPieceCompare(bool definedA, int valA, bool definedB, int valB)
+        private static int VersionPieceCompare(bool definedA, int valA, bool definedB, int valB)
             => definedA
                 ? (definedB ? valA.CompareTo(valB) : -1)
                 : (definedB ? 1                    :  0);

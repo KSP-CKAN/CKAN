@@ -84,7 +84,7 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private void drawLine(ConsoleTheme theme, int y, FancyLinePiece[] pieces)
+        private static void drawLine(ConsoleTheme theme, int y, FancyLinePiece[] pieces)
         {
             // First we need to know how long the text is for centering
             int textLen = 0;

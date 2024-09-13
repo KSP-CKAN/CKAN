@@ -25,7 +25,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryVersionStrict(spec_version, strict));
         }
 
-        private void TryVersionStrict(string spec_version, bool strict)
+        private static void TryVersionStrict(string spec_version, bool strict)
         {
             // Arrange
             var json = new JObject();

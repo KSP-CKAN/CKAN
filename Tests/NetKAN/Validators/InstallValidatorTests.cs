@@ -50,7 +50,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryInstallStanza(spec_version, install_stanza));
         }
 
-        private void TryInstallTo(string spec_version, string install_to)
+        private static void TryInstallTo(string spec_version, string install_to)
         {
             // Arrange
             var json = new JObject();
@@ -68,7 +68,7 @@ namespace Tests.NetKAN.Validators
             val.Validate(new Metadata(json));
         }
 
-        private void TryInstallStanza(string spec_version, string install_stanza)
+        private static void TryInstallStanza(string spec_version, string install_stanza)
         {
             // Arrange
             var json = new JObject();

@@ -85,7 +85,7 @@ namespace CKAN.GUI
             }
         }
 
-        private HashSet<FileInfo> GetFiles(string[] filenames)
+        private static HashSet<FileInfo> GetFiles(string[] filenames)
             => filenames.Select(fn => new FileInfo(fn))
                         .ToHashSet();
 

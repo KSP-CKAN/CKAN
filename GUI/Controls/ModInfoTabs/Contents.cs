@@ -49,7 +49,7 @@ namespace CKAN.GUI
 
         private GUIMod?              selectedModule;
         private CkanModule?          currentModContentsModule;
-        private GameInstanceManager? manager => Main.Instance?.Manager;
+        private static GameInstanceManager? manager => Main.Instance?.Manager;
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object? sender, TreeNodeMouseClickEventArgs? e)
         {
@@ -165,7 +165,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void AddContentPieces(TreeNode parent, IEnumerable<string> pieces)
+        private static void AddContentPieces(TreeNode parent, IEnumerable<string> pieces)
         {
             var firstPiece = pieces.FirstOrDefault();
             if (firstPiece != null)

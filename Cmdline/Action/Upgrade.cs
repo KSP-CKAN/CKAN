@@ -287,7 +287,7 @@ namespace CKAN.CmdLine
         /// <param name="instance">Game instance to use</param>
         /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
         /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
-        private void UpgradeModules(NetModuleCache        cache,
+        private static void UpgradeModules(NetModuleCache        cache,
                                     IUser                 user,
                                     CKAN.GameInstance     instance,
                                     RepositoryDataManager repoData,

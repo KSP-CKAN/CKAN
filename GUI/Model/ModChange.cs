@@ -117,7 +117,7 @@ namespace CKAN.GUI
         public virtual string? NameAndStatus
             => Main.Instance?.Manager?.Cache?.DescribeAvailability(Mod);
 
-        private string DescribeGroup(IEnumerable<SelectionReason> reasons)
+        private static string DescribeGroup(IEnumerable<SelectionReason> reasons)
             => reasons.First().DescribeWith(reasons.Skip(1));
 
         public virtual string Description

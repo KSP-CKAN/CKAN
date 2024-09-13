@@ -1,9 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CKAN.NetKAN.Model;
+
 using log4net;
 using Newtonsoft.Json.Linq;
+
+using CKAN.NetKAN.Model;
+#if NETFRAMEWORK
+using CKAN.Extensions;
+#endif
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -48,9 +53,9 @@ namespace CKAN.NetKAN.Transformers
             "install_size",
             "release_date",
         }
-            .Select((str, index) => new {index, str})
-            .Concat(new[] { new { index = int.MaxValue, str = "x_generated_by"} })
-            .ToDictionary(t => t.str, t=> t.index);
+            .Select((str, i) => new KeyValuePair<string, int>(str, i))
+            .Append(new KeyValuePair<string, int>("x_generated_by", int.MaxValue))
+            .ToDictionary();
 
         private static readonly Dictionary<string, int> ResourcePropertySortOrder = new string[]
         {
@@ -63,8 +68,8 @@ namespace CKAN.NetKAN.Transformers
             "license",
             "manual",
         }
-            .Select((str, index) => new {index, str})
-            .ToDictionary(t => t.str, t=> t.index);
+            .Select((str, i) => new KeyValuePair<string, int>(str, i))
+            .ToDictionary();
 
         public string Name => "property_sort";
 

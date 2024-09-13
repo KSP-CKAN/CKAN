@@ -35,7 +35,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryVersion(ksp_version, ksp_version_min, ksp_version_max));
         }
 
-        private void TryVersion(string ksp_version, string ksp_version_min, string ksp_version_max)
+        private static void TryVersion(string ksp_version, string ksp_version_min, string ksp_version_max)
         {
             // Arrange
             var json = new JObject();

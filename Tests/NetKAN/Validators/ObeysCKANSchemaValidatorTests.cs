@@ -64,7 +64,7 @@ namespace Tests.NetKAN.Validators
                                 ]")));
         }
 
-        private void TryModule(string json,
+        private static void TryModule(string json,
                                string? removeProperty   = null,
                                string? addProperty      = null,
                                JToken? addPropertyValue = null)

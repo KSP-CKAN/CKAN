@@ -506,7 +506,7 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
-        private string newModPrompt(int howMany)
+        private static string newModPrompt(int howMany)
         {
             return howMany == 1
                 ? string.Format(Properties.Resources.ModListNewMod,  howMany)
@@ -752,7 +752,7 @@ namespace CKAN.ConsoleUI {
         private readonly ChangePlan      plan   = new ChangePlan();
         private readonly HashSet<string> recent = new HashSet<string>();
 
-        private int searchWidth => Math.Max(30, Math.Max(
+        private static int searchWidth => Math.Max(30, Math.Max(
             Properties.Resources.ModListSearchFocusedGhostText.Length,
             Properties.Resources.ModListSearchUnfocusedGhostText.Length
         ));

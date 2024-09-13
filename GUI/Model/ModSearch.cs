@@ -69,7 +69,7 @@ namespace CKAN.GUI
             Combined = combined ?? getCombined();
         }
 
-        private void initStringList(List<string> dest, List<string>? source)
+        private static void initStringList(List<string> dest, List<string>? source)
         {
             if (source?.Any() ?? false)
             {
@@ -594,7 +594,7 @@ namespace CKAN.GUI
             => RelationshipMatch(mod.ToModule().conflicts, ConflictsWith);
         private bool MatchesSupports(GUIMod mod)
             => RelationshipMatch(mod.ToModule().supports, Supports);
-        private bool RelationshipMatch(List<RelationshipDescriptor>? rels, List<string> toFind)
+        private static bool RelationshipMatch(List<RelationshipDescriptor>? rels, List<string> toFind)
             => toFind.Count < 1
                 || (rels != null && toFind.All(searchRel =>
                     ShouldNegateTerm(searchRel, out string subRel)

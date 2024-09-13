@@ -163,16 +163,19 @@ namespace CKAN
         {
             var found = KnownGames.knownGames.SelectMany(g =>
                             SteamLibrary.Games
-                                        .Select(sg => new { name = sg.Name, dir = sg.GameDir })
-                                        .Append(new
-                                                {
-                                                    name = (string?)string.Format(Properties.Resources.GameInstanceManagerAuto,
-                                                                         g.ShortName),
-                                                    dir  = g.MacPath(),
-                                                })
-                                        .Select(obj => obj.dir != null && g.GameInFolder(obj.dir)
-                                                       ? new GameInstance(g, obj.dir.FullName,
-                                                                          obj.name ?? g.ShortName, User)
+                                        .Select(sg => sg.Name is string name && sg.GameDir is DirectoryInfo dir
+                                                          ? new Tuple<string, DirectoryInfo>(name, dir)
+                                                          : null)
+                                        .Append(g.MacPath() is DirectoryInfo dir
+                                                    ? new Tuple<string, DirectoryInfo>(
+                                                        string.Format(Properties.Resources.GameInstanceManagerAuto,
+                                                                      g.ShortName),
+                                                        dir)
+                                                    : null)
+                                        .OfType<Tuple<string, DirectoryInfo>>()
+                                        .Select(tuple => tuple.Item1 != null && g.GameInFolder(tuple.Item2)
+                                                       ? new GameInstance(g, tuple.Item2.FullName,
+                                                                          tuple.Item1 ?? g.ShortName, User)
                                                        : null)
                                         .OfType<GameInstance>())
                                   .Where(inst => inst.Valid)

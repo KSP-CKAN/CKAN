@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-
+using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
-using System.Diagnostics.CodeAnalysis;
+
+#if NETFRAMEWORK || NETSTANDARD2_0
+using CKAN.Extensions;
+#endif
 
 namespace CKAN.Configuration
 {
@@ -83,7 +86,7 @@ namespace CKAN.Configuration
             }
         }
 
-        private int InstanceCount => GetRegistryValue(@"KSPInstanceCount", 0);
+        private static int InstanceCount => GetRegistryValue(@"KSPInstanceCount", 0);
 
         public string? AutoStartInstance
         {
@@ -123,10 +126,10 @@ namespace CKAN.Configuration
         {
             SetNumberOfInstances(instances.Count);
 
-            foreach (var instance in instances.Select((instance,i)=>
-                new {number=i,name=instance.Key,path=instance.Value}))
+            int i = 0;
+            foreach ((string name, GameInstance inst) in instances)
             {
-                SetInstanceKeysTo(instance.number, instance.name, instance.path);
+                SetInstanceKeysTo(i++, name, inst);
             }
         }
 
@@ -219,17 +222,17 @@ namespace CKAN.Configuration
             }
         }
 
-        private void SetAutoStartInstance(string instanceName)
+        private static void SetAutoStartInstance(string instanceName)
         {
             SetRegistryValue(@"KSPAutoStartInstance", instanceName ?? string.Empty);
         }
 
-        private void SetNumberOfInstances(int count)
+        private static void SetNumberOfInstances(int count)
         {
             SetRegistryValue(@"KSPInstanceCount", count);
         }
 
-        private void SetInstanceKeysTo(int instanceIndex, string name, GameInstance ksp)
+        private static void SetInstanceKeysTo(int instanceIndex, string name, GameInstance ksp)
         {
             SetRegistryValue(@"KSPInstanceName_" + instanceIndex, name);
             SetRegistryValue(@"KSPInstancePath_" + instanceIndex, ksp.GameDir());

@@ -25,7 +25,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryRelationships(spec_version, replacement));
         }
 
-        private void TryRelationships(string spec_version, string replacement)
+        private static void TryRelationships(string spec_version, string replacement)
         {
             // Arrange
             var json = new JObject();

@@ -186,6 +186,7 @@ If you must run as an administrator, the `--asroot` parameter will bypass this c
   <data name="InstanceListYes" xml:space="preserve"><value>Yes</value></data>
   <data name="InstanceListNo" xml:space="preserve"><value>No</value></data>
   <data name="InstanceListNameHeader" xml:space="preserve"><value>Name</value></data>
+  <data name="InstanceListGameHeader" xml:space="preserve"><value>Game</value></data>
   <data name="InstanceListVersionHeader" xml:space="preserve"><value>Version</value></data>
   <data name="InstanceListDefaultHeader" xml:space="preserve"><value>Default</value></data>
   <data name="InstanceListPathHeader" xml:space="preserve"><value>Path</value></data>

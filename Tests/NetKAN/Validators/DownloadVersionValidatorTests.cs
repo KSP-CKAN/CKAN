@@ -26,7 +26,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryDownloadVersion(download, version));
         }
 
-        private void TryDownloadVersion(string download, string version)
+        private static void TryDownloadVersion(string download, string version)
         {
             // Arrange
             var json = new JObject();

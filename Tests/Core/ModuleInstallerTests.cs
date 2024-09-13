@@ -341,7 +341,7 @@ namespace Tests.Core
             Assert.AreEqual("Cannot find central directory", exc?.Message);
         }
 
-        private string CopyDogeFromZip()
+        private static string CopyDogeFromZip()
         {
             ZipFile zipfile = new ZipFile(TestData.DogeCoinFlagZip());
 

@@ -414,7 +414,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-        private Comparison<RowT> getComparer(ConsoleListBoxColumn<RowT> col, bool ascending)
+        private static Comparison<RowT> getComparer(ConsoleListBoxColumn<RowT> col, bool ascending)
             => ascending
                 ? col.Comparer
                     ?? ((a, b) => col.Renderer(a).Trim().CompareTo(col.Renderer(b).Trim()))
@@ -424,7 +424,7 @@ namespace CKAN.ConsoleUI.Toolkit {
 
         // Sometimes type safety can be a minor hindrance;
         // this would just be "first || second" in C
-        private int IntOr(Func<int> first, Func<int> second)
+        private static int IntOr(Func<int> first, Func<int> second)
         {
             int a = first();
             return a != 0 ? a : second();

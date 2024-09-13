@@ -44,22 +44,22 @@ namespace Tests.GUI
             });
         }
 
-        private IEnumerable<TypeDefinition> GetAllNestedTypes(TypeDefinition td)
+        private static IEnumerable<TypeDefinition> GetAllNestedTypes(TypeDefinition td)
             => Enumerable.Repeat(td, 1)
                          .Concat(td.NestedTypes.SelectMany(GetAllNestedTypes));
 
-        private IEnumerable<MethodCall> FindStartedTasks(MethodDefinition md)
+        private static IEnumerable<MethodCall> FindStartedTasks(MethodDefinition md)
             => StartNewCalls(md).Select(FindStartNewArgument)
                                 .OfType<MethodDefinition>()
                                 .Select(taskArg => new MethodCall() { md, taskArg });
 
-        private IEnumerable<Instruction> StartNewCalls(MethodDefinition md)
+        private static IEnumerable<Instruction> StartNewCalls(MethodDefinition md)
             => md.Body?.Instructions.Where(instr => callOpCodes.Contains(instr.OpCode.Name)
                                                     && instr.Operand is MethodReference mr
                                                     && isStartNew(mr))
                       ?? Enumerable.Empty<Instruction>();
 
-        private bool isStartNew(MethodReference mr)
+        private static bool isStartNew(MethodReference mr)
             => (mr.DeclaringType.Namespace == "System.Threading.Tasks"
                 && mr.DeclaringType.Name   == "TaskFactory"
                 && mr.Name                 == "StartNew")
@@ -72,21 +72,21 @@ namespace Tests.GUI
         // 2. newobj a System.Action to hold it
         // 3. callvirt StartNew
         // ... so find the operand of the ldftn most immediately preceding the call
-        private MethodDefinition? FindStartNewArgument(Instruction instr)
+        private static MethodDefinition? FindStartNewArgument(Instruction instr)
             => instr.OpCode.Name == "ldftn" ? instr.Operand as MethodDefinition
                                             : FindStartNewArgument(instr.Previous);
 
-        private IEnumerable<MethodCall> GetAllCallsWithoutForbidGUI(MethodCall initialStack)
+        private static IEnumerable<MethodCall> GetAllCallsWithoutForbidGUI(MethodCall initialStack)
             => VisitMethodDefinition(initialStack, initialStack.Last(), new CallsDict(), hasForbidGUIAttribute, unsafeCall);
 
         private string SimpleName(MethodDefinition md) => $"{md.DeclaringType.Name}.{md.Name}";
 
         // https://gist.github.com/lnicola/b48db1a6ff3617bdac2a
-        private IEnumerable<MethodCall> VisitMethodDefinition(MethodCall                   fullStack,
-                                                              MethodDefinition             methDef,
-                                                              CallsDict                    calls,
-                                                              Func<MethodDefinition, bool> skip,
-                                                              Func<MethodDefinition, bool> stopAfter)
+        private static IEnumerable<MethodCall> VisitMethodDefinition(MethodCall                   fullStack,
+                                                                     MethodDefinition             methDef,
+                                                                     CallsDict                    calls,
+                                                                     Func<MethodDefinition, bool> skip,
+                                                                     Func<MethodDefinition, bool> stopAfter)
         {
             var called = calls[methDef] = methodsCalledBy(methDef).Distinct().ToList();
             foreach (var calledMeth in called)
@@ -107,7 +107,7 @@ namespace Tests.GUI
             }
         }
 
-        private IEnumerable<MethodDefinition> methodsCalledBy(MethodDefinition methDef)
+        private static IEnumerable<MethodDefinition> methodsCalledBy(MethodDefinition methDef)
             => methDef.Body
                       .Instructions
                       .Where(instr => callOpCodes.Contains(instr.OpCode.Name))
@@ -117,15 +117,15 @@ namespace Tests.GUI
                       .Where(calledMeth => calledMeth?.Body != null);
 
         // Property setters are virtual and have references instead of definitions
-        private MethodDefinition? GetSetterDef(MethodReference? mr)
+        private static MethodDefinition? GetSetterDef(MethodReference? mr)
             => (mr?.Name.StartsWith("set_") ?? false) ? mr.Resolve()
                                                       : null;
 
-        private bool hasForbidGUIAttribute(MethodDefinition md)
+        private static bool hasForbidGUIAttribute(MethodDefinition md)
             => md.CustomAttributes.Any(attr => attr.AttributeType.Namespace == forbidAttrib.Namespace
                                             && attr.AttributeType.Name      == forbidAttrib.Name);
 
-        private bool unsafeCall(MethodDefinition md)
+        private static bool unsafeCall(MethodDefinition md)
             // If it has [ForbidGUICalls], then treat as safe because it'll be checked on its own
             => !hasForbidGUIAttribute(md)
                 // Adding an event handler is OK
@@ -136,7 +136,7 @@ namespace Tests.GUI
                 && unsafeType(md.DeclaringType);
 
         // Any method on a type in WinForms or inheriting from anything in WinForms is presumed unsafe
-        private bool unsafeType(TypeDefinition t)
+        private static bool unsafeType(TypeDefinition t)
             => t.Namespace == winformsNamespace
                 || (t.BaseType != null && unsafeType(t.BaseType.Resolve()));
 

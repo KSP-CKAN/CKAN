@@ -251,7 +251,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private Uri getUri(string arg)
+        private static Uri getUri(string arg)
             => Uri.IsWellFormedUriString(arg, UriKind.Absolute)
                 ? new Uri(arg)
                 : File.Exists(arg)

@@ -127,7 +127,7 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private void drawCentered(int y, string val)
+        private static void drawCentered(int y, string val)
         {
             int lp = (Console.WindowWidth - val.Length) / 2;
             try {

@@ -244,54 +244,53 @@ namespace CKAN.CmdLine
 
         private int ListInstalls()
         {
-            var output = Manager?.Instances
-                .OrderByDescending(i => i.Value.Name == Manager.AutoStartInstance)
-                .ThenByDescending(i => i.Value.Version() ?? GameVersion.Any)
-                .ThenBy(i => i.Key)
-                .Select(i => new
-                {
-                    Name = i.Key,
-                    Version = i.Value.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
-                    Default = i.Value.Name == Manager.AutoStartInstance
-                        ? Properties.Resources.InstanceListYes
-                        : Properties.Resources.InstanceListNo,
-                    Path = i.Value.GameDir()
-                })
+            var output = Manager?.Instances.Values
+                .OrderByDescending(i => i.Name == Manager.AutoStartInstance)
+                .ThenByDescending(i => i.game.FirstReleaseDate)
+                .ThenByDescending(i => i.Version() ?? GameVersion.Any)
+                .ThenBy(i => i.Name)
+                .Select(i => new Tuple<string, string, string, string, string>(
+                                i.Name,
+                                i.game.ShortName,
+                                i.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
+                                i.Name == Manager.AutoStartInstance
+                                    ? Properties.Resources.InstanceListYes
+                                    : Properties.Resources.InstanceListNo,
+                                Platform.FormatPath(i.GameDir())))
                 .ToList();
 
-            if (output != null)
+            if (output != null && user != null)
             {
-                string nameHeader    = Properties.Resources.InstanceListNameHeader;
-                string versionHeader = Properties.Resources.InstanceListVersionHeader;
-                string defaultHeader = Properties.Resources.InstanceListDefaultHeader;
-                string pathHeader    = Properties.Resources.InstanceListPathHeader;
+                var nameHeader    = Properties.Resources.InstanceListNameHeader;
+                var gameHeader    = Properties.Resources.InstanceListGameHeader;
+                var versionHeader = Properties.Resources.InstanceListVersionHeader;
+                var defaultHeader = Properties.Resources.InstanceListDefaultHeader;
+                var pathHeader    = Properties.Resources.InstanceListPathHeader;
 
-                var nameWidth    = Enumerable.Repeat(nameHeader, 1).Concat(output.Select(i => i.Name)).Max(i => i.Length);
-                var versionWidth = Enumerable.Repeat(versionHeader, 1).Concat(output.Select(i => i.Version)).Max(i => i.Length);
-                var defaultWidth = Enumerable.Repeat(defaultHeader, 1).Concat(output.Select(i => i.Default)).Max(i => i.Length);
-                var pathWidth    = Enumerable.Repeat(pathHeader, 1).Concat(output.Select(i => i.Path)).Max(i => i.Length);
+                var nameWidth    = output.Select(i => i.Item1).Append(nameHeader).Max(i => i.Length);
+                var gameWidth    = output.Select(i => i.Item2).Append(gameHeader).Max(i => i.Length);
+                var versionWidth = output.Select(i => i.Item3).Append(versionHeader).Max(i => i.Length);
+                var defaultWidth = output.Select(i => i.Item4).Append(defaultHeader).Max(i => i.Length);
+                var pathWidth    = output.Select(i => i.Item5).Append(pathHeader).Max(i => i.Length);
 
-                const string columnFormat = "{0}  {1}  {2}  {3}";
+                var columnFormat = string.Join("  ", $"{{0,-{nameWidth}}}",
+                                                     $"{{1,-{gameWidth}}}",
+                                                     $"{{2,-{versionWidth}}}",
+                                                     $"{{3,-{defaultWidth}}}",
+                                                     $"{{4,-{pathWidth}}}");
 
-                user?.RaiseMessage(columnFormat,
-                                   nameHeader.PadRight(nameWidth),
-                                   versionHeader.PadRight(versionWidth),
-                                   defaultHeader.PadRight(defaultWidth),
-                                   pathHeader.PadRight(pathWidth));
+                user.RaiseMessage(columnFormat,
+                                  nameHeader, gameHeader, versionHeader, defaultHeader, pathHeader);
 
-                user?.RaiseMessage(columnFormat,
-                                   new string('-', nameWidth),
-                                   new string('-', versionWidth),
-                                   new string('-', defaultWidth),
-                                   new string('-', pathWidth));
+                user.RaiseMessage(columnFormat, new string('-', nameWidth),
+                                                new string('-', gameWidth),
+                                                new string('-', versionWidth),
+                                                new string('-', defaultWidth),
+                                                new string('-', pathWidth));
 
                 foreach (var line in output)
                 {
-                    user?.RaiseMessage(columnFormat,
-                                       line.Name.PadRight(nameWidth),
-                                       line.Version.PadRight(versionWidth),
-                                       line.Default.PadRight(defaultWidth),
-                                       line.Path.PadRight(pathWidth));
+                    user.RaiseMessage(columnFormat, line.Item1, line.Item2, line.Item3, line.Item4, line.Item5);
                 }
 
                 return Exit.OK;

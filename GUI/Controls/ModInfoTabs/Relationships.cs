@@ -87,7 +87,7 @@ namespace CKAN.GUI
         }
 
         private GUIMod?                        selectedModule;
-        private GameInstanceManager?           manager => Main.Instance?.Manager;
+        private static GameInstanceManager?           manager => Main.Instance?.Manager;
         private readonly RepositoryDataManager repoData;
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -98,7 +98,7 @@ namespace CKAN.GUI
             }
         }
 
-        private bool ImMyOwnGrandpa(TreeNode node)
+        private static bool ImMyOwnGrandpa(TreeNode node)
         {
             if (node.Tag is CkanModule module)
             {
@@ -359,7 +359,7 @@ namespace CKAN.GUI
                         .Select(r => indexedNode(registry, otherMod, relationship, r, crit)))));
         }
 
-        private TreeNode providesNode(string           identifier,
+        private static TreeNode providesNode(string           identifier,
                                       RelationshipType relationship,
                                       TreeNode[]       children)
         {
@@ -416,7 +416,7 @@ namespace CKAN.GUI
             };
         }
 
-        private TreeNode nonindexedNode(RelationshipDescriptor relDescr,
+        private static TreeNode nonindexedNode(RelationshipDescriptor relDescr,
                                         RelationshipType       relationship)
         {
             // Completely nonexistent dependency, e.g. "AJE"

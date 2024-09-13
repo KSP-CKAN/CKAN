@@ -78,7 +78,7 @@ namespace CKAN.ConsoleUI {
             ));
         }
 
-        private string LeftRightTable(string header, Tuple<string, string>[] rows)
+        private static string LeftRightTable(string header, Tuple<string, string>[] rows)
         {
             int leftW  = rows.Max(r => r.Item1.Length);
             int rightW = rows.Max(r => r.Item2.Length);

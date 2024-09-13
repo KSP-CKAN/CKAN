@@ -458,7 +458,7 @@ namespace CKAN
         /// <returns>
         /// true if both streams contain same bytes, false otherwise
         /// </returns>
-        private bool StreamsEqual(Stream s1, Stream s2)
+        private static bool StreamsEqual(Stream s1, Stream s2)
         {
             const int bufLen = 1024;
             byte[] bytes1 = new byte[bufLen];
@@ -499,7 +499,7 @@ namespace CKAN
         /// fails at a later stage.
         /// </summary>
         /// <param name="files">The files to overwrite</param>
-        private void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
+        private static void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
         {
             TxFileManager file_transaction = new TxFileManager();
             foreach (InstallableFile file in files)

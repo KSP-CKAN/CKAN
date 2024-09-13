@@ -31,7 +31,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryLicense(spec_version, license));
         }
 
-        private void TryLicense(string spec_version, string license)
+        private static void TryLicense(string spec_version, string license)
         {
             // Arrange
             var json = new JObject();

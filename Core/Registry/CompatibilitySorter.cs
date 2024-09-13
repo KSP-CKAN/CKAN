@@ -118,7 +118,7 @@ namespace CKAN
         /// <returns>
         /// Mapping from identifiers to compatible mods providing those identifiers
         /// </returns>
-        private Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
+        private static Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
             GameVersionCriteria                          crit,
             Dictionary<string, HashSet<AvailableModule>> providers)
             => providers

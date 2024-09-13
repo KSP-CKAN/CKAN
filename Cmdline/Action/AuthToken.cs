@@ -113,7 +113,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private int removeAuthToken(RemoveAuthTokenOptions opts)
+        private static int removeAuthToken(RemoveAuthTokenOptions opts)
         {
             if (opts.host is string h)
             {

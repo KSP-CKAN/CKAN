@@ -126,7 +126,7 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private void RemoveFilter(ConsoleListBox<string> box, List<string> filters)
+        private static void RemoveFilter(ConsoleListBox<string> box, List<string> filters)
         {
             if (box.Selection is not null)
             {

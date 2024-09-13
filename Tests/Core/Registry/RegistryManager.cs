@@ -44,7 +44,7 @@ namespace Tests.Core.Registry
         /// <summary>
         /// Tests if <c>path</c> is locked. Returns true if it is.
         /// </summary>
-        private bool TestLock(string path)
+        private static bool TestLock(string path)
         {
             FileStream? lockfileStream = null;
 

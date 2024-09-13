@@ -45,7 +45,7 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private bool AllowedCraftPath(string path)
+        private static bool AllowedCraftPath(string path)
             => path.StartsWith("Ships/")
                || path.StartsWith("Missions/")
                || path.StartsWith("GameData/ContractPacks/");

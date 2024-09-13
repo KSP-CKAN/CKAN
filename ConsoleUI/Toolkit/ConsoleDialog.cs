@@ -131,12 +131,12 @@ namespace CKAN.ConsoleUI.Toolkit {
             DrawShadow(theme, GetLeft(), GetTop(), GetRight(), GetBottom());
         }
 
-        private bool validX(int x)
+        private static bool validX(int x)
         {
             x = Formatting.ConvertCoord(x, Console.WindowWidth);
             return x >= 0 && x < Console.WindowWidth;
         }
-        private bool validY(int y)
+        private static bool validY(int y)
         {
             y = Formatting.ConvertCoord(y, Console.WindowHeight);
             return y >= 0 && y < Console.WindowHeight;

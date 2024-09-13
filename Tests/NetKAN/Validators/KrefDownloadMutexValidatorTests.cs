@@ -26,7 +26,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryKrefDownload(kref, download));
         }
 
-        private void TryKrefDownload(string kref, string download)
+        private static void TryKrefDownload(string kref, string download)
         {
             // Arrange
             var json = new JObject();

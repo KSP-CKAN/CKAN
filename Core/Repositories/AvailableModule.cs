@@ -69,7 +69,7 @@ namespace CKAN
 
         [OnError]
         #pragma warning disable IDE0051, IDE0060
-        private void OnError(StreamingContext context, ErrorContext errorContext)
+        private static void OnError(StreamingContext context, ErrorContext errorContext)
         #pragma warning restore IDE0051, IDE0060
         {
             log.WarnFormat("Discarding CkanModule, failed to parse {0}: {1}",

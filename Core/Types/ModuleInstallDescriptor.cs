@@ -468,7 +468,7 @@ namespace CKAN
             return files;
         }
 
-        private bool AllowDirectoryCreation(IGame game, string relativePath)
+        private static bool AllowDirectoryCreation(IGame game, string relativePath)
             => game.CreateableDirs.Any(dir => relativePath == dir || relativePath.StartsWith($"{dir}/"));
 
         /// <summary>

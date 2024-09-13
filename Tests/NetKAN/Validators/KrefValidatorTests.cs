@@ -32,7 +32,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryKref(kref));
         }
 
-        private void TryKref(string kref)
+        private static void TryKref(string kref)
         {
             // Arrange
             var json = new JObject();

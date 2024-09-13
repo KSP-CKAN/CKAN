@@ -228,7 +228,7 @@ namespace CKAN.GUI
         /// <param name="changeSet">Changes to be made to the installed modules</param>
         /// <param name="crit">Compatible versions of current instance</param>
         /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
-        private IEnumerable<InstalledModule> InstalledAfterChanges(
+        private static IEnumerable<InstalledModule> InstalledAfterChanges(
             IRegistryQuerier registry, HashSet<ModChange> changeSet)
         {
             var removingIdents = changeSet
@@ -435,7 +435,7 @@ namespace CKAN.GUI
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
-        private IEnumerable<ModChange> rowChanges(DataGridViewRow row,
+        private static IEnumerable<ModChange> rowChanges(DataGridViewRow row,
                                                   DataGridViewColumn? upgradeCol,
                                                   DataGridViewColumn? replaceCol)
             => (row.Tag as GUIMod)?.GetModChanges(
@@ -579,7 +579,7 @@ namespace CKAN.GUI
                                                    .ToHashSet(),
                           config?.HideEpochs ?? false, config?.HideV ?? false);
 
-        private IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
+        private static IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
                                                RepositoryDataManager repoData,
                                                GameInstance          inst,
                                                GameVersionCriteria   versionCriteria,

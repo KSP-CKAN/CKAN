@@ -28,7 +28,7 @@ namespace Tests.NetKAN.Validators
             Assert.Throws<CKAN.Kraken>(() => TryOverride(json));
         }
 
-        private void TryOverride(string ovr)
+        private static void TryOverride(string ovr)
         {
             // Arrange
             var json = new JObject();

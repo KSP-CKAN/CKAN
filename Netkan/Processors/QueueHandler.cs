@@ -60,7 +60,7 @@ namespace CKAN.NetKAN.Processors
             }
         }
 
-        private QueueAppender GetQueueLogAppender()
+        private static QueueAppender GetQueueLogAppender()
         {
             var qap = new QueueAppender()
             {
