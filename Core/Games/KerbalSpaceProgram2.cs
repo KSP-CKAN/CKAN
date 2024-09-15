@@ -161,11 +161,11 @@ namespace CKAN.Games.KerbalSpaceProgram2
                 is Stream s
                     ? JsonConvert.DeserializeObject<GameVersion[]>(new StreamReader(s).ReadToEnd())
                     : null)
-                ?? new GameVersion[] { };
+                ?? Array.Empty<GameVersion>();
 
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<GameVersion[]>()
-                ?? new GameVersion[] { };
+                ?? Array.Empty<GameVersion>();
 
         public GameVersion DetectVersion(DirectoryInfo where)
             => VersionFromAssembly(Path.Combine(where.FullName,

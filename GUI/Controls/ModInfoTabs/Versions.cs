@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -226,7 +227,7 @@ namespace CKAN.GUI
 
                 return items;
             }
-            return new ListViewItem[] { };
+            return Array.Empty<ListViewItem>();
         }
 
         [ForbidGUICalls]

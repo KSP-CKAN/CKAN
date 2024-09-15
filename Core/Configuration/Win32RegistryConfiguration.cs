@@ -179,12 +179,12 @@ namespace CKAN.Configuration
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
-        public string[] GlobalInstallFilters { get; set; } = new string[] { };
+        public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
-        public string?[] PreferredHosts { get; set; } = new string?[] { };
+        public string?[] PreferredHosts { get; set; } = Array.Empty<string?>();
 
         /// <summary>
         /// Not implemented because the Windows registry is deprecated

@@ -213,14 +213,14 @@ namespace CKAN.Games.KerbalSpaceProgram
                 ?.Builds
                 ?.Select(b => GameVersion.Parse(b.Value))
                  .ToArray()
-                ?? new GameVersion[] { };
+                ?? Array.Empty<GameVersion>();
 
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<JBuilds>()
                    ?.Builds
                    ?.Select(b => GameVersion.Parse(b.Value))
                     .ToArray()
-                   ?? new GameVersion[] { };
+                   ?? Array.Empty<GameVersion>();
 
         public GameVersion? DetectVersion(DirectoryInfo where)
             => ServiceLocator.Container
