@@ -329,7 +329,8 @@ namespace CKAN.GUI
                 return null;
             }
             else if (//childNodes is [var node and {Tag: CkanModule module}]
-                     childNodes[0] is var node and {Tag: CkanModule module}
+                     childNodes.Count == 1
+                     && childNodes[0] is var node and {Tag: CkanModule module}
                      && relDescr.ContainsAny(new string[] { module.identifier }))
             {
                 // Only one exact match module, return a simple node
