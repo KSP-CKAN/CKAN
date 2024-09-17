@@ -19,14 +19,14 @@ namespace CKAN
         /// Initialize the Object
         /// </summary>
         /// <param name="json">JSON representation of release</param>
-        public GitHubReleaseCkanUpdate(GitHubReleaseInfo? releaseJson = null)
+        public GitHubReleaseCkanUpdate(GitHubReleaseInfo? releaseJson = null, string? userAgent = null)
         {
             if (releaseJson == null)
             {
                 var coreConfig = ServiceLocator.Container.Resolve<IConfiguration>();
                 var token = coreConfig.TryGetAuthToken(latestCKANReleaseApiUrl.Host, out string? t)
                     ? t : null;
-                releaseJson = Net.DownloadText(latestCKANReleaseApiUrl, token) is string content
+                releaseJson = Net.DownloadText(latestCKANReleaseApiUrl, userAgent, token) is string content
                               ? JsonConvert.DeserializeObject<GitHubReleaseInfo>(content)
                               : null;
             }

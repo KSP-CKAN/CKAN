@@ -8,12 +8,12 @@ namespace CKAN
     {
         public Repository[] repositories;
 
-        public static RepositoryList? DefaultRepositories(IGame game)
+        public static RepositoryList? DefaultRepositories(IGame game, string? userAgent)
         {
             try
             {
                 return JsonConvert.DeserializeObject<RepositoryList>(
-                    Net.DownloadText(game.RepositoryListURL) ?? "");
+                    Net.DownloadText(game.RepositoryListURL, userAgent) ?? "");
             }
             catch
             {

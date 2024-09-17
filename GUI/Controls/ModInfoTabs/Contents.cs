@@ -134,13 +134,9 @@ namespace CKAN.GUI
                         UseWaitCursor = true;
                         Task.Factory.StartNew(() =>
                         {
-                            var paths = new ModuleInstaller(
-                                    manager.CurrentInstance,
-                                    manager.Cache,
-                                    Main.Instance.currentUser)
-                                .GetModuleContentsList(module)
-                                // Load fully in bg
-                                .ToArray();
+                            var paths = ModuleInstaller.GetModuleContentsList(manager.Cache, manager.CurrentInstance, module)
+                                                       // Load fully in bg
+                                                       .ToArray();
                             // Stop if user switched to another mod
                             if (rootNode.TreeView != null)
                             {

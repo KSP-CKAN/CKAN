@@ -20,8 +20,13 @@ namespace CKAN.ConsoleUI {
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager object for getting hte Instances</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
+        /// <param name="userAgent">HTTP useragent to use</param>
         /// <param name="first">If true, this is the first screen after the splash, so Ctrl+Q exits, else Esc exits</param>
-        public GameInstanceListScreen(ConsoleTheme theme, GameInstanceManager mgr, RepositoryDataManager repoData, bool first = false)
+        public GameInstanceListScreen(ConsoleTheme          theme,
+                                      GameInstanceManager   mgr,
+                                      RepositoryDataManager repoData,
+                                      string?               userAgent,
+                                      bool                  first = false)
             : base(theme)
         {
             manager = mgr;
@@ -127,7 +132,7 @@ namespace CKAN.ConsoleUI {
                                    null);
                     // Still launch the screen even if the load fails,
                     // because you need to be able to fix the name/path.
-                    LaunchSubScreen(new GameInstanceEditScreen(theme, manager, repoData, instanceList.Selection));
+                    LaunchSubScreen(new GameInstanceEditScreen(theme, manager, repoData, instanceList.Selection, userAgent));
                 }
                 return true;
             });

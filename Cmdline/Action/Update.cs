@@ -62,7 +62,7 @@ namespace CKAN.CmdLine
                                                      .Select(am => am.Latest())
                                                      .OfType<CkanModule>()
                                                      .ToList();
-                        UpdateRepositories(game, repos, options.force);
+                        UpdateRepositories(game, repos, options.NetUserAgent, options.force);
                         PrintChanges(availablePrior,
                                      repoData.GetAllAvailableModules(repos)
                                              .Select(am => am.Latest())
@@ -71,7 +71,7 @@ namespace CKAN.CmdLine
                     }
                     else
                     {
-                        UpdateRepositories(game, repos, options.force);
+                        UpdateRepositories(game, repos, options.NetUserAgent, options.force);
                     }
                 }
                 else
@@ -83,13 +83,13 @@ namespace CKAN.CmdLine
                         var registry = RegistryManager.Instance(instance, repoData).registry;
                         var crit     = instance.VersionCriteria();
                         var compatible_prior = registry.CompatibleModules(crit).ToList();
-                        UpdateRepositories(instance, options.force);
+                        UpdateRepositories(instance, options.NetUserAgent, options.force);
                         PrintChanges(compatible_prior,
                                      registry.CompatibleModules(crit).ToList());
                     }
                     else
                     {
-                        UpdateRepositories(instance, options.force);
+                        UpdateRepositories(instance, options.NetUserAgent, options.force);
                     }
                 }
             }
@@ -177,12 +177,12 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="instance">The game instance to work on.</param>
         /// <param name="repository">Repository to update. If null all repositories are used.</param>
-        private void UpdateRepositories(CKAN.GameInstance instance, bool force = false)
+        private void UpdateRepositories(CKAN.GameInstance instance, string? userAgent, bool force = false)
         {
             var registry = RegistryManager.Instance(instance, repoData).registry;
             var result = repoData.Update(registry.Repositories.Values.ToArray(),
                                          instance.game, force,
-                                         new NetAsyncDownloader(user), user);
+                                         new NetAsyncDownloader(user, userAgent), user, userAgent);
             if (result == RepositoryDataManager.UpdateResult.Updated)
             {
                 user.RaiseMessage(Properties.Resources.UpdateSummary,
@@ -195,9 +195,9 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="game">The game for which the URLs contain metadata</param>
         /// <param name="repos">Repositories to update</param>
-        private void UpdateRepositories(IGame game, Repository[] repos, bool force = false)
+        private void UpdateRepositories(IGame game, Repository[] repos, string? userAgent, bool force = false)
         {
-            var result = repoData.Update(repos, game, force, new NetAsyncDownloader(user), user);
+            var result = repoData.Update(repos, game, force, new NetAsyncDownloader(user, userAgent), user, userAgent);
             if (result == RepositoryDataManager.UpdateResult.Updated)
             {
                 user.RaiseMessage(Properties.Resources.UpdateSummary,

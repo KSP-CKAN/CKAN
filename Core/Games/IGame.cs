@@ -38,7 +38,7 @@ namespace CKAN.Games
         IDlcDetector[] DlcDetectors { get; }
 
         // Which versions exist and which is present?
-        void              RefreshVersions();
+        void              RefreshVersions(string? userAgent);
         List<GameVersion> KnownVersions { get; }
         GameVersion[]     EmbeddedGameVersions { get; }
         GameVersion[]     ParseBuildsJson(JToken json);

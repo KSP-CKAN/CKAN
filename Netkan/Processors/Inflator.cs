@@ -20,6 +20,7 @@ namespace CKAN.NetKAN.Processors
                         bool    overwriteCache,
                         string? githubToken,
                         string? gitlabToken,
+                        string? userAgent,
                         bool    prerelease,
                         IGame   game)
         {
@@ -29,10 +30,10 @@ namespace CKAN.NetKAN.Processors
 
             IModuleService moduleService = new ModuleService(game);
             IFileService   fileService   = new FileService(cache);
-            http          = new CachingHttpService(cache, overwriteCache);
+            http          = new CachingHttpService(cache, overwriteCache, userAgent);
             ckanValidator = new CkanValidator(http, moduleService, game, githubToken);
             transformer   = new NetkanTransformer(http, fileService, moduleService,
-                                                  githubToken, gitlabToken, prerelease, game, netkanValidator);
+                                                  githubToken, gitlabToken, userAgent, prerelease, game, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string filename, Metadata[] netkans, TransformOptions? opts)
@@ -136,8 +137,8 @@ namespace CKAN.NetKAN.Processors
         private readonly NetFileCache cache;
         private readonly IHttpService http;
 
-        private readonly NetkanTransformer transformer;
-        private readonly SpecVersionTransformer specVersionTransformer = new SpecVersionTransformer();
+        private readonly NetkanTransformer       transformer;
+        private readonly SpecVersionTransformer  specVersionTransformer = new SpecVersionTransformer();
         private readonly PropertySortTransformer sortTransformer = new PropertySortTransformer();
 
         private readonly NetkanValidator netkanValidator = new NetkanValidator();

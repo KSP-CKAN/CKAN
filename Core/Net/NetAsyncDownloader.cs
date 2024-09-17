@@ -16,7 +16,8 @@ namespace CKAN
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncDownloader));
 
-        public readonly IUser User;
+        public  readonly IUser  User;
+        private readonly string userAgent;
 
         /// <summary>
         /// Raised when data arrives for a download
@@ -45,28 +46,18 @@ namespace CKAN
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader
         /// </summary>
-        public NetAsyncDownloader(IUser user)
+        public NetAsyncDownloader(IUser user, string? userAgent = null)
         {
             User = user;
+            this.userAgent = userAgent ?? Net.UserAgentString;
             complete_or_canceled = new ManualResetEvent(false);
         }
 
-        public static string DownloadWithProgress(string url, string? filename = null, IUser? user = null)
-            => DownloadWithProgress(new Uri(url), filename, user);
-
-        public static string DownloadWithProgress(Uri url, string? filename = null, IUser? user = null)
+        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets,
+                                                string?               userAgent,
+                                                IUser?                user = null)
         {
-            var targets = new[]
-            {
-                new DownloadTargetFile(url, filename)
-            };
-            DownloadWithProgress(targets, user);
-            return targets.First().filename;
-        }
-
-        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets, IUser? user = null)
-        {
-            var downloader = new NetAsyncDownloader(user ?? new NullUser());
+            var downloader = new NetAsyncDownloader(user ?? new NullUser(), userAgent);
             downloader.onOneCompleted += (target, error, etag) =>
             {
                 if (error != null)
@@ -90,7 +81,7 @@ namespace CKAN
                     // Some downloads are still in progress, add to the current batch
                     foreach (var target in targets)
                     {
-                        DownloadModule(new DownloadPart(target));
+                        DownloadModule(new DownloadPart(target, userAgent));
                     }
                     // Wait for completion along with original caller
                     // so we can handle completion tasks for the added mods
@@ -205,7 +196,7 @@ namespace CKAN
             queuedDownloads.Clear();
             foreach (var t in targets)
             {
-                DownloadModule(new DownloadPart(t));
+                DownloadModule(new DownloadPart(t, userAgent));
             }
         }
 

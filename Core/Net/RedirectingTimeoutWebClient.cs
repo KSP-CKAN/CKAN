@@ -24,16 +24,19 @@ namespace CKAN
         /// </summary>
         /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
         /// <param name="mimeType">A mime type sent with the "Accept" header</param>
-        public RedirectingTimeoutWebClient(int timeout = 100000, string mimeType = "")
+        public RedirectingTimeoutWebClient(string userAgent,
+                                           int    timeout  = 100000,
+                                           string mimeType = "")
         {
-            this.timeout  = timeout;
-            this.mimeType = mimeType;
+            this.userAgent = userAgent;
+            this.timeout   = timeout;
+            this.mimeType  = mimeType;
         }
 
         protected override WebRequest GetWebRequest(Uri address)
         {
             // Set user agent and MIME type for every request. including redirects
-            Headers.Add("User-Agent", Net.UserAgentString);
+            Headers.Add("User-Agent", userAgent);
             if (!string.IsNullOrEmpty(mimeType))
             {
                 log.InfoFormat("Setting MIME type {0}", mimeType);
@@ -83,6 +86,7 @@ namespace CKAN
             return response;
         }
 
+        private readonly string userAgent;
         private readonly int    timeout;
         private readonly string mimeType;
         private static readonly Dictionary<Uri, Uri> permanentRedirects = new Dictionary<Uri, Uri>();

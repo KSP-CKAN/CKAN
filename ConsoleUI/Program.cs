@@ -18,7 +18,7 @@ namespace CKAN.ConsoleUI
         public static void Main(string[] args)
         #pragma warning restore IDE0060
         {
-            Main_(null, null);
+            Main_(null, null, null);
         }
 
         /// <summary>
@@ -27,15 +27,19 @@ namespace CKAN.ConsoleUI
         /// </summary>
         /// <param name="manager">Game instance manager object potentially initialized by command line flags</param>
         /// <param name="themeName">'default' to use default theme, 'dark' to use dark theme</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="debug">True if debug options should be available, false otherwise</param>
         /// <returns>
         /// Process exit status
         /// </returns>
-        public static int Main_(GameInstanceManager? manager, string? themeName, bool debug = false)
+        public static int Main_(GameInstanceManager? manager,
+                                string?              themeName,
+                                string?              userAgent,
+                                bool                 debug = false)
         {
             Logging.Initialize();
 
-            new ConsoleCKAN(manager, themeName, debug);
+            new ConsoleCKAN(manager, themeName, userAgent, debug);
 
             // Tell RegistryManager not to throw Dispose-related exceptions at exit
             RegistryManager.DisposeAll();

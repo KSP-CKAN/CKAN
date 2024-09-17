@@ -145,11 +145,12 @@ namespace CKAN
                                    IGame              game,
                                    bool               skipETags,
                                    NetAsyncDownloader downloader,
-                                   IUser              user)
+                                   IUser              user,
+                                   string?            userAgent = null)
         {
             // Get latest copy of the game versions data (remote build map)
             user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
-            game.RefreshVersions();
+            game.RefreshVersions(userAgent);
 
             // Check if any ETags have changed, quit if not
             user.RaiseProgress(Properties.Resources.NetRepoCheckingForUpdates, 0);

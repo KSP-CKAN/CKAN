@@ -32,6 +32,7 @@ namespace CKAN.GUI
         private readonly RegistryManager  regMgr;
         private readonly AutoUpdate       updater;
         private readonly IUser            user;
+        private readonly string?          userAgent;
 
         /// <summary>
         /// Initialize a settings window
@@ -40,7 +41,8 @@ namespace CKAN.GUI
                               GUIConfiguration guiConfig,
                               RegistryManager  regMgr,
                               AutoUpdate       updater,
-                              IUser            user)
+                              IUser            user,
+                              string?          userAgent)
         {
             InitializeComponent();
             this.coreConfig = coreConfig;
@@ -48,6 +50,7 @@ namespace CKAN.GUI
             this.regMgr     = regMgr;
             this.updater    = updater;
             this.user       = user;
+            this.userAgent  = userAgent;
             if (Platform.IsMono)
             {
                 ClearCacheMenu.Renderer = new FlatToolStripRenderer();
@@ -89,7 +92,7 @@ namespace CKAN.GUI
             LocalVersionLabel.Text = Meta.GetVersion();
             try
             {
-                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false)
+                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false, userAgent)
                                            .Version;
                 LatestVersionLabel.Text = latestVersion?.ToString() ?? "";
                 // Allow downgrading in case they want to stop using dev builds
@@ -376,7 +379,7 @@ namespace CKAN.GUI
         private void NewRepoButton_Click(object? sender, EventArgs? e)
         {
             if (manager?.CurrentInstance != null
-                && RepositoryList.DefaultRepositories(manager.CurrentInstance.game)?.repositories
+                && RepositoryList.DefaultRepositories(manager.CurrentInstance.game, userAgent)?.repositories
                    is Repository[] repos)
             {
                 var dialog = new NewRepoDialog(repos);

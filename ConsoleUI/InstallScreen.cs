@@ -19,9 +19,15 @@ namespace CKAN.ConsoleUI {
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing instances</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="cp">Plan of mods to install or remove</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public InstallScreen(ConsoleTheme theme, GameInstanceManager mgr, RepositoryDataManager repoData, ChangePlan cp, bool dbg)
+        public InstallScreen(ConsoleTheme          theme,
+                             GameInstanceManager   mgr,
+                             RepositoryDataManager repoData,
+                             string?               userAgent,
+                             ChangePlan            cp,
+                             bool                  dbg)
             : base(
                 theme,
                 Properties.Resources.InstallTitle,
@@ -31,6 +37,7 @@ namespace CKAN.ConsoleUI {
             manager = mgr;
             plan    = cp;
             this.repoData = repoData;
+            this.userAgent = userAgent;
         }
 
         /// <summary>
@@ -58,7 +65,7 @@ namespace CKAN.ConsoleUI {
                             // CmdLine assumes recs and ignores sugs
                             if (plan.Install.Count > 0) {
                                 // Track previously rejected optional dependencies and don't prompt for them again.
-                                DependencyScreen ds = new DependencyScreen(theme, manager, registry, plan, rejected, debug);
+                                DependencyScreen ds = new DependencyScreen(theme, manager, registry, userAgent, plan, rejected, debug);
                                 if (ds.HaveOptions()) {
                                     LaunchSubScreen(ds);
                                 }
@@ -68,13 +75,13 @@ namespace CKAN.ConsoleUI {
 
                             HashSet<string>? possibleConfigOnlyDirs = null;
 
-                            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
+                            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this, userAgent);
                             inst.onReportModInstalled += OnModInstalled;
                             if (plan.Remove.Count > 0) {
                                 inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                                 plan.Remove.Clear();
                             }
-                            NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache);
+                            NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache, userAgent);
                             if (plan.Install.Count > 0) {
                                 var iList = plan.Install
                                                 .Select(m => Utilities.DefaultIfThrows(() =>
@@ -87,7 +94,7 @@ namespace CKAN.ConsoleUI {
                                                                                           plan.Install))
                                                              ?? m)
                                                 .ToArray();
-                                inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, dl);
+                                inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, userAgent, dl);
                                 plan.Install.Clear();
                             }
                             if (plan.Upgrade.Count > 0) {
@@ -225,6 +232,7 @@ namespace CKAN.ConsoleUI {
 
         private readonly GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
+        private readonly string?               userAgent;
         private readonly ChangePlan            plan;
         private readonly bool                  debug;
     }

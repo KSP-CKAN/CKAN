@@ -19,7 +19,11 @@ namespace CKAN.ConsoleUI {
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="cache">Cache object to import into</param>
         /// <param name="cp">Change plan object for marking things to be installed</param>
-        public static void ImportDownloads(ConsoleTheme theme, GameInstance gameInst, RepositoryDataManager repoData, NetModuleCache cache, ChangePlan cp)
+        public static void ImportDownloads(ConsoleTheme          theme,
+                                           GameInstance          gameInst,
+                                           RepositoryDataManager repoData,
+                                           NetModuleCache        cache,
+                                           ChangePlan            cp)
         {
             var cfmsd = new ConsoleFileMultiSelectDialog(
                 theme,
@@ -36,11 +40,10 @@ namespace CKAN.ConsoleUI {
                     theme,
                     Properties.Resources.ImportProgressTitle,
                     Properties.Resources.ImportProgressMessage);
-                ModuleInstaller inst = new ModuleInstaller(gameInst, cache, ps);
-                ps.Run(() => inst.ImportFiles(files, ps,
-                    (CkanModule mod) => cp.Install.Add(mod), RegistryManager.Instance(gameInst, repoData).registry));
-                // Don't let the installer re-use old screen references
-                inst.User = new NullUser();
+                ps.Run(() => ModuleInstaller.ImportFiles(files, ps,
+                                                         (CkanModule mod) => cp.Install.Add(mod),
+                                                         RegistryManager.Instance(gameInst, repoData).registry,
+                                                         gameInst, cache));
             }
         }
 

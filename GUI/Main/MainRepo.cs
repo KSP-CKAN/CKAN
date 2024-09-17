@@ -90,7 +90,7 @@ namespace CKAN.GUI
                         try
                         {
                             bool canceled = false;
-                            var downloader = new NetAsyncDownloader(currentUser);
+                            var downloader = new NetAsyncDownloader(currentUser, userAgent);
                             downloader.Progress += (target, remaining, total) =>
                             {
                                 var repo = repos.Where(r => target.urls.Contains(r.uri))
@@ -109,7 +109,7 @@ namespace CKAN.GUI
                             currentUser.RaiseMessage(Properties.Resources.MainRepoUpdating);
 
                             var updateResult = repoData.Update(repos, CurrentInstance.game,
-                                                               forceFullRefresh, downloader, currentUser);
+                                                               forceFullRefresh, downloader, currentUser, userAgent);
 
                             if (canceled)
                             {

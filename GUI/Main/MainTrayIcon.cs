@@ -124,7 +124,8 @@ namespace CKAN.GUI
                                    configuration,
                                    RegistryManager.Instance(CurrentInstance, repoData),
                                    updater,
-                                   currentUser)
+                                   currentUser,
+                                   userAgent)
                     .ShowDialog(this);
             }
         }

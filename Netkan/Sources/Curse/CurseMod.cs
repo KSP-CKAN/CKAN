@@ -42,12 +42,12 @@ namespace CKAN.NetKAN.Sources.Curse
         /// Returns the direct path to the mod's current home on Curse
         /// </summary>
         /// <returns>The home</returns>
-        public string GetPageUrl()
+        public string GetPageUrl(string? userAgent)
         {
             if (_pageUrl == null)
             {
                 var url = new Uri(GetProjectUrl());
-                var resolved = Net.ResolveRedirect(url);
+                var resolved = Net.ResolveRedirect(url, userAgent);
                 if (resolved == null)
                 {
                     throw new Kraken($"Too many redirects resolving: {url}");
@@ -87,14 +87,14 @@ namespace CKAN.NetKAN.Sources.Curse
             return string.Format("{0}", title);
         }
 
-        public static CurseMod? FromJson(string json)
+        public static CurseMod? FromJson(string json, string? userAgent)
         {
             var mod = JsonConvert.DeserializeObject<CurseMod>(json);
             if (mod != null)
             {
                 foreach (CurseFile file in mod.All())
                 {
-                    file.ModPageUrl = mod.GetPageUrl();
+                    file.ModPageUrl = mod.GetPageUrl(userAgent);
                 }
             }
             return mod;

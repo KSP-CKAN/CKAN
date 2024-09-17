@@ -18,12 +18,14 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(CurseTransformer));
 
         private readonly ICurseApi _api;
+        private readonly string?   _userAgent;
 
         public string Name => "curse";
 
-        public CurseTransformer(ICurseApi api)
+        public CurseTransformer(ICurseApi api, string? userAgent = null)
         {
-            _api      = api;
+            _api       = api;
+            _userAgent = userAgent;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
@@ -71,9 +73,9 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private static Metadata TransformOne(JObject json, CurseMod curseMod, CurseFile latestVersion)
+        private Metadata TransformOne(JObject json, CurseMod curseMod, CurseFile latestVersion)
         {
-            Log.InfoFormat("Found Curse mod: {0} {1}", curseMod.GetName(), latestVersion.GetFileVersion());
+            Log.InfoFormat("Found Curse mod: {0} {1}", curseMod.GetName(), latestVersion.GetFileVersion(_userAgent));
 
             // Only pre-fill version info if there's none already. GH #199
             if (json["ksp_version_min"] == null && json["ksp_version_max"] == null && json["ksp_version"] == null)
@@ -133,7 +135,7 @@ namespace CKAN.NetKAN.Transformers
             }
             else if (useFilenameVersion)
             {
-                json.SafeAdd("version", latestVersion.GetFilename());
+                json.SafeAdd("version", latestVersion.GetFilename(_userAgent));
             }
             else if (useCurseIdVersion)
             {
@@ -141,12 +143,12 @@ namespace CKAN.NetKAN.Transformers
             }
             else
             {
-                json.SafeAdd("version", latestVersion.GetFileVersion());
+                json.SafeAdd("version", latestVersion.GetFileVersion(_userAgent));
             }
 
             json.SafeAdd("author",   () => JToken.FromObject(curseMod.authors));
             json.Remove("$kref");
-            json.SafeAdd("download", Regex.Replace(latestVersion.GetDownloadUrl(), " ", "%20"));
+            json.SafeAdd("download", Regex.Replace(latestVersion.GetDownloadUrl(_userAgent), " ", "%20"));
 
             // Curse provides users with the following default selection of licenses. Let's convert them to CKAN
             // compatible license strings if possible.

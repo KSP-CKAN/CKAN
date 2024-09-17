@@ -24,10 +24,10 @@ namespace CKAN
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
         /// </summary>
-        public NetAsyncModulesDownloader(IUser user, NetModuleCache cache)
+        public NetAsyncModulesDownloader(IUser user, NetModuleCache cache, string? userAgent = null)
         {
             modules    = new List<CkanModule>();
-            downloader = new NetAsyncDownloader(user);
+            downloader = new NetAsyncDownloader(user, userAgent);
             // Schedule us to process each module on completion.
             downloader.onOneCompleted += ModuleDownloadComplete;
             downloader.Progress += (target, remaining, total) =>

@@ -55,7 +55,7 @@ namespace CKAN.CmdLine
                                          .Select(arg => new NetAsyncDownloader.DownloadTargetFile(getUri(arg)))
                                          .ToArray();
                     log.DebugFormat("Urls: {0}", targets.SelectMany(t => t.urls));
-                    new NetAsyncDownloader(new NullUser()).DownloadAndWait(targets);
+                    new NetAsyncDownloader(new NullUser(), options.NetUserAgent).DownloadAndWait(targets);
                     log.DebugFormat("Files: {0}", targets.Select(t => t.filename));
                     modules = targets.Select(t => MainClass.LoadCkanFromFile(t.filename))
                                      .ToList();
@@ -101,7 +101,7 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
 
-            var installer   = new ModuleInstaller(instance, manager.Cache, user);
+            var installer   = new ModuleInstaller(instance, manager.Cache, user, options?.NetUserAgent);
             var install_ops = new RelationshipResolverOptions
             {
                 with_all_suggests              = options?.with_all_suggests ?? false,
@@ -119,7 +119,7 @@ namespace CKAN.CmdLine
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
                     installer.InstallList(modules, install_ops, regMgr,
-                                          ref possibleConfigOnlyDirs);
+                                          ref possibleConfigOnlyDirs, options?.NetUserAgent);
                     user.RaiseMessage("");
                     done = true;
                 }

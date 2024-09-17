@@ -300,7 +300,7 @@ namespace CKAN.CmdLine
             // GUI expects its first param to be an identifier, don't confuse it
             GUI.GUI.Main_(args.Except(new string[] {"--verbose", "--debug", "--show-console", "--asroot"})
                               .ToArray(),
-                          manager, options.ShowConsole);
+                          options.NetUserAgent, manager, options.ShowConsole);
 
             return Exit.OK;
         }
@@ -312,7 +312,7 @@ namespace CKAN.CmdLine
             LogManager.GetRepository().Threshold = Level.Warn;
             return ConsoleUI.ConsoleUI.Main_(manager,
                 opts.Theme ?? Environment.GetEnvironmentVariable("CKAN_CONSOLEUI_THEME") ?? "default",
-                opts.Debug);
+                opts.NetUserAgent, opts.Debug);
         }
 
         private static int Version(IUser user)
