@@ -15,8 +15,12 @@ namespace CKAN.ConsoleUI {
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
-        public RepoAddScreen(ConsoleTheme theme, IGame game, SortedDictionary<string, Repository> reps)
-            : base(theme, game, reps, "", "") { }
+        /// <param name="userAgent">HTTP useragent string to use</param>
+        public RepoAddScreen(ConsoleTheme                         theme,
+                             IGame                                game,
+                             SortedDictionary<string, Repository> reps,
+                             string?                              userAgent)
+            : base(theme, game, reps, "", "", userAgent) { }
 
         /// <summary>
         /// Check whether the fields are valid

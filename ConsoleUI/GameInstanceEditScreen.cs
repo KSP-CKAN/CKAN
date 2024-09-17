@@ -19,10 +19,12 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">Game instance manager containing the instances</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="k">Instance to edit</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
         public GameInstanceEditScreen(ConsoleTheme theme,
                                       GameInstanceManager   mgr,
                                       RepositoryDataManager repoData,
-                                      GameInstance          k)
+                                      GameInstance          k,
+                                      string?               userAgent)
             : base(theme, mgr, k.Name, k.GameDir())
         {
             ksp = k;
@@ -81,7 +83,7 @@ namespace CKAN.ConsoleUI {
                 AddObject(repoList);
                 repoList.AddTip("A", Properties.Resources.Add);
                 repoList.AddBinding(Keys.A, (object sender) => {
-                    LaunchSubScreen(new RepoAddScreen(theme, ksp.game, repoEditList));
+                    LaunchSubScreen(new RepoAddScreen(theme, ksp.game, repoEditList, userAgent));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
@@ -105,7 +107,7 @@ namespace CKAN.ConsoleUI {
                 repoList.AddBinding(Keys.E, (object sender) => {
                     if (repoList.Selection is Repository repo)
                     {
-                        LaunchSubScreen(new RepoEditScreen(theme, ksp.game, repoEditList, repo));
+                        LaunchSubScreen(new RepoEditScreen(theme, ksp.game, repoEditList, repo, userAgent));
                         repoList.SetData(new List<Repository>(repoEditList.Values));
                     }
                     return true;

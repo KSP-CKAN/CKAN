@@ -54,6 +54,7 @@ namespace CKAN.NetKAN
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
+                        Options.NetUserAgent,
                         Options.PreRelease,
                         game);
                     inf.ValidateCkan(ckan);
@@ -79,6 +80,7 @@ namespace CKAN.NetKAN
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
+                        Options.NetUserAgent,
                         Options.PreRelease,
                         game);
                     qh.Process();
@@ -97,6 +99,7 @@ namespace CKAN.NetKAN
                         Options.OverwriteCache,
                         Options.GitHubToken,
                         Options.GitLabToken,
+                        Options.NetUserAgent,
                         Options.PreRelease,
                         game);
                     var ckans = inf.Inflate(
@@ -168,10 +171,6 @@ namespace CKAN.NetKAN
                 : Options.Debug   ? Level.Debug
                 :                   Level.Warn;
 
-            if (Options.NetUserAgent != null)
-            {
-                Net.UserAgentString = Options.NetUserAgent;
-            }
             return Options;
         }
 
@@ -182,15 +181,16 @@ namespace CKAN.NetKAN
                 Log.WarnFormat("Input is not a .netkan file");
             }
 
-            return ArgContents(Options.File).Select(ymap => new Metadata(ymap))
-                                            .ToArray();
+            return ArgContents(Options.NetUserAgent ?? Net.UserAgentString, Options.File)
+                       .Select(ymap => new Metadata(ymap))
+                       .ToArray();
         }
 
-        private static YamlMappingNode[] ArgContents(string? arg)
+        private static YamlMappingNode[] ArgContents(string userAgent, string? arg)
             => arg == null
                 ? Array.Empty<YamlMappingNode>()
                 : Uri.IsWellFormedUriString(arg, UriKind.Absolute)
-                   && Net.DownloadText(new Uri(arg)) is string s
+                   && Net.DownloadText(new Uri(arg), userAgent) is string s
                     ? YamlExtensions.Parse(s)
                     : YamlExtensions.Parse(File.OpenText(arg));
 

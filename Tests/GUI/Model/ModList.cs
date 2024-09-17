@@ -169,6 +169,7 @@ namespace Tests.GUI
                     new RelationshipResolverOptions(),
                     registryManager,
                     ref possibleConfigOnlyDirs,
+                    null,
                     downloader);
 
                 // TODO: Refactor the column header code to allow mocking of the GUI without creating columns
@@ -214,6 +215,7 @@ namespace Tests.GUI
                         new RelationshipResolverOptions(),
                         registryManager,
                         ref possibleConfigOnlyDirs,
+                        null,
                         downloader);
 
                     // Now we need to sort

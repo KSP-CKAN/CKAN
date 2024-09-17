@@ -13,6 +13,12 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(HttpTransformer));
 
         public string Name => "http";
+        private readonly string? userAgent;
+
+        public HttpTransformer(string? userAgent = null)
+        {
+            this.userAgent = userAgent;
+        }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
         {
@@ -25,7 +31,7 @@ namespace CKAN.NetKAN.Transformers
 
                 if (Uri.IsWellFormedUriString(metadata.Kref.Id, UriKind.Absolute))
                 {
-                    var resolvedUri = Net.ResolveRedirect(new Uri(metadata.Kref.Id));
+                    var resolvedUri = Net.ResolveRedirect(new Uri(metadata.Kref.Id), userAgent);
 
                     Log.InfoFormat("URL {0} resolved to {1}", metadata.Kref.Id, resolvedUri);
 

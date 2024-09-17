@@ -17,7 +17,10 @@ namespace CKAN.ConsoleUI {
         /// Starts with a splash screen, then instance selection if no default,
         /// then list of mods.
         /// </summary>
-        public ConsoleCKAN(GameInstanceManager? mgr, string? themeName, bool debug)
+        public ConsoleCKAN(GameInstanceManager? mgr,
+                           string?              themeName,
+                           string?              userAgent,
+                           bool                 debug)
         {
             if (ConsoleTheme.Themes.TryGetValue(themeName ?? "default", out ConsoleTheme? theme))
             {
@@ -40,12 +43,13 @@ namespace CKAN.ConsoleUI {
                             manager.GetPreferredInstance();
                         } else {
                             // Multiple instances, no default, pick one
-                            new GameInstanceListScreen(theme, manager, repoData).Run();
+                            new GameInstanceListScreen(theme, manager, repoData, userAgent).Run();
                         }
                     }
                     if (manager.CurrentInstance != null) {
                         new ModListScreen(theme, manager, repoData,
                                           RegistryManager.Instance(manager.CurrentInstance, repoData),
+                                          userAgent,
                                           manager.CurrentInstance.game,
                                           debug).Run();
                     }

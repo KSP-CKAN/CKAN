@@ -102,22 +102,20 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private static bool installable(ModuleInstaller     installer,
-                                 CkanModule          module,
-                                 IRegistryQuerier    registry)
+        private static bool installable(CkanModule       module,
+                                        IRegistryQuerier registry)
             => currentInstance != null
-                && installable(installer, module, registry,
+                && installable(module, registry,
                                currentInstance.VersionCriteria());
 
         [ForbidGUICalls]
-        private static bool installable(ModuleInstaller     installer,
-                                        CkanModule          module,
+        private static bool installable(CkanModule          module,
                                         IRegistryQuerier    registry,
                                         GameVersionCriteria crit)
             => module.IsCompatible(crit)
-                && installer.CanInstall(new List<CkanModule>() { module },
-                                        RelationshipResolverOptions.DependsOnlyOpts(),
-                                        registry, crit);
+                && ModuleInstaller.CanInstall(new List<CkanModule>() { module },
+                                              RelationshipResolverOptions.DependsOnlyOpts(),
+                                              registry, crit);
 
         private bool allowInstall(CkanModule module)
         {
@@ -126,9 +124,8 @@ namespace CKAN.GUI
                 return false;
             }
             IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
-            var installer = new ModuleInstaller(currentInstance, manager.Cache, user);
 
-            return installable(installer, module, registry)
+            return installable(module, registry)
                 || (Main.Instance?.YesNoDialog(
                     string.Format(Properties.Resources.AllModVersionsInstallPrompt,
                         module.ToString(),
@@ -239,7 +236,6 @@ namespace CKAN.GUI
                 && user != null && cancelTokenSrc != null && visibleGuiModule != null)
             {
                 var registry  = RegistryManager.Instance(currentInstance, repoData).registry;
-                var installer = new ModuleInstaller(currentInstance, manager.Cache, user);
                 ListViewItem? latestCompatible = null;
                 // Load balance the items so they're processed roughly in-order instead of blocks
                 Partitioner.Create(items, true)
@@ -254,7 +250,7 @@ namespace CKAN.GUI
                                             && (item.Tag as CkanModule) != visibleGuiModule.SelectedMod)
                            // Slow step to be performed across multiple cores
                            .Where(item => item.Tag is CkanModule m
-                                          && installable(installer, m, registry))
+                                          && installable(m, registry))
                            // Jump back to GUI thread for the updates for each compatible item
                            .ForAll(item => Util.Invoke(this, () =>
                            {

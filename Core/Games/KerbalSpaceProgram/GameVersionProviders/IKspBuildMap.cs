@@ -12,6 +12,6 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         /// <summary>
         /// Download the build map from the server to the cache
         /// </summary>
-        void Refresh();
+        void Refresh(string? userAgent);
     }
 }

@@ -155,7 +155,7 @@ namespace CKAN.CmdLine
                     switch (option)
                     {
                         case "available":
-                            exitCode = AvailableRepositories();
+                            exitCode = AvailableRepositories(options.NetUserAgent);
                             break;
 
                         case "list":
@@ -189,14 +189,14 @@ namespace CKAN.CmdLine
             return exitCode;
         }
 
-        private int AvailableRepositories()
+        private int AvailableRepositories(string? userAgent)
         {
             user?.RaiseMessage(Properties.Resources.RepoAvailableHeader);
 
             try
             {
                 if (RepositoryList.DefaultRepositories(
-                        MainClass.GetGameInstance(Manager).game)
+                        MainClass.GetGameInstance(Manager).game, userAgent)
                         is RepositoryList repoList)
                 {
                     var maxNameLen = repoList.repositories
@@ -270,7 +270,7 @@ namespace CKAN.CmdLine
             if (options.uri == null)
             {
                 if (RepositoryList.DefaultRepositories(
-                        MainClass.GetGameInstance(Manager).game)
+                        MainClass.GetGameInstance(Manager).game, options.NetUserAgent)
                     is RepositoryList repoList)
                 {
                     foreach (var candidate in repoList.repositories)

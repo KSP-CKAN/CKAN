@@ -19,10 +19,17 @@ namespace CKAN.ConsoleUI {
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing game instances</param>
         /// <param name="registry">Registry of the current instance for finding mods</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="cp">Plan of other mods to be added or removed</param>
         /// <param name="m">The module to display</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public ModInfoScreen(ConsoleTheme theme, GameInstanceManager mgr, Registry registry, ChangePlan cp, CkanModule m, bool dbg)
+        public ModInfoScreen(ConsoleTheme        theme,
+                             GameInstanceManager mgr,
+                             Registry            registry,
+                             string?             userAgent,
+                             ChangePlan          cp,
+                             CkanModule          m,
+                             bool                dbg)
             : base(theme)
         {
             debug    = dbg;
@@ -30,6 +37,7 @@ namespace CKAN.ConsoleUI {
             manager  = mgr;
             plan     = cp;
             this.registry = registry;
+            this.userAgent = userAgent;
 
             int midL = (Console.WindowWidth / 2) - 1;
 
@@ -560,8 +568,8 @@ namespace CKAN.ConsoleUI {
             if (manager.CurrentInstance != null && manager.Cache != null)
             {
                 var ps   = new ProgressScreen(theme, string.Format(Properties.Resources.ModInfoDownloading, mod.identifier));
-                var dl   = new NetAsyncModulesDownloader(ps, manager.Cache);
-                var inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps);
+                var dl   = new NetAsyncModulesDownloader(ps, manager.Cache, userAgent);
+                var inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps, userAgent);
                 LaunchSubScreen(
                     ps,
                     () => {
@@ -592,6 +600,7 @@ namespace CKAN.ConsoleUI {
 
         private readonly GameInstanceManager manager;
         private readonly IRegistryQuerier    registry;
+        private readonly string?             userAgent;
         private readonly ChangePlan          plan;
         private readonly CkanModule          mod;
         private readonly bool                debug;

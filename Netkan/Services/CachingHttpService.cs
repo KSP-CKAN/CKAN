@@ -11,6 +11,7 @@ namespace CKAN.NetKAN.Services
     internal sealed class CachingHttpService : IHttpService
     {
         private readonly NetFileCache _cache;
+        private readonly string?      _userAgent;
         private readonly HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
         private readonly bool         _overwriteCache = false;
         private readonly Dictionary<Uri, StringCacheEntry> _stringCache = new Dictionary<Uri, StringCacheEntry>();
@@ -18,9 +19,10 @@ namespace CKAN.NetKAN.Services
         // Re-use string value URLs within 15 minutes
         private static readonly TimeSpan stringCacheLifetime = new TimeSpan(0, 15, 0);
 
-        public CachingHttpService(NetFileCache cache, bool overwrite = false)
+        public CachingHttpService(NetFileCache cache, bool overwrite = false, string? userAgent = null)
         {
             _cache          = cache;
+            _userAgent      = userAgent;
             _overwriteCache = overwrite;
         }
 
@@ -80,7 +82,7 @@ namespace CKAN.NetKAN.Services
             }
             else
             {
-                var downloadedFile = Net.Download(url);
+                var downloadedFile = Net.Download(url, _userAgent);
 
                 string extension;
 
@@ -131,11 +133,11 @@ namespace CKAN.NetKAN.Services
 
         public string? DownloadText(Uri url)
         {
-            return TryGetCached(url, () => Net.DownloadText(url, timeout: 10000));
+            return TryGetCached(url, () => Net.DownloadText(url, _userAgent, timeout: 10000));
         }
         public string? DownloadText(Uri url, string? authToken, string? mimeType = null)
         {
-            return TryGetCached(url, () => Net.DownloadText(url, authToken, mimeType, 10000));
+            return TryGetCached(url, () => Net.DownloadText(url, _userAgent, authToken, mimeType, 10000));
         }
 
         private string? TryGetCached(Uri url, Func<string?> uncached)

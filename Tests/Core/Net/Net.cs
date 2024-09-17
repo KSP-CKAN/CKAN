@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Net;
 
@@ -29,10 +28,10 @@ namespace Tests.Core.Net
         [Category("Online")]
         public void DownloadReturnsSavefileNameAndSavefileExists()
         {
-            // Two-argument test, should save to the file we supply
+            // Three-argument test, should save to the file we supply
             string savefile = "example.txt";
-            string downloaded = CKAN.Net.Download(KnownURL, savefile);
-            Assert.AreEqual(downloaded, savefile);
+            string downloaded = CKAN.Net.Download(KnownURL, null, savefile);
+            Assert.AreEqual(savefile, downloaded);
             Assert.That(File.Exists(savefile));
             File.Delete(savefile);
         }
@@ -50,12 +49,9 @@ namespace Tests.Core.Net
         [Category("FlakyNetwork"), Category("Online")]
         public void SpaceDockSSL()
         {
-            string file = CKAN.Net.Download("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1");
-            if (!File.Exists(file))
-            {
-                throw new Exception("File not downloaded");
-            }
-            File.Delete(file);
+            string downloaded = CKAN.Net.Download("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1");
+            Assert.That(File.Exists(downloaded), "File not downloaded");
+            File.Delete(downloaded);
         }
     }
 }

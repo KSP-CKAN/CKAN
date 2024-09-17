@@ -18,8 +18,14 @@ namespace CKAN.ConsoleUI {
         /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
         /// <param name="initName">Initial value of the Name field</param>
-        /// <param name="initUrl">Iniital value of the URL field</param>
-        protected RepoScreen(ConsoleTheme theme, IGame game, SortedDictionary<string, Repository> reps, string initName, string initUrl)
+        /// <param name="initUrl">Initial value of the URL field</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
+        protected RepoScreen(ConsoleTheme                         theme,
+                             IGame                                game,
+                             SortedDictionary<string, Repository> reps,
+                             string                               initName,
+                             string                               initUrl,
+                             string?                              userAgent)
             : base(theme)
         {
             editList = reps;
@@ -50,7 +56,7 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, (object sender) => false);
 
             // mainMenu = list of default options
-            mainMenu = (RepositoryList.DefaultRepositories(game) is RepositoryList repoList)
+            mainMenu = (RepositoryList.DefaultRepositories(game, userAgent) is RepositoryList repoList)
                            ? new ConsolePopupMenu(
                                  repoList.repositories
                                          .Select(r => new ConsoleMenuOption(r.name,

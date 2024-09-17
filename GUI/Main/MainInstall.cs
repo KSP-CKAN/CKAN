@@ -85,7 +85,7 @@ namespace CKAN.GUI
             {
                 var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
                 var registry = registry_manager.registry;
-                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent);
                 // Avoid accumulating multiple event handlers
                 installer.onReportModInstalled -= OnModInstalled;
                 installer.onReportModInstalled += OnModInstalled;
@@ -139,7 +139,8 @@ namespace CKAN.GUI
                 try
                 {
                     // Prompt for recommendations and suggestions, if any
-                    if (installer.FindRecommendations(
+                    if (ModuleInstaller.FindRecommendations(
+                        CurrentInstance,
                         changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
                                .Select(ch => ch.Mod)
                                .ToHashSet(),
@@ -190,7 +191,7 @@ namespace CKAN.GUI
                 });
                 tabController.SetTabLock(true);
 
-                IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+                IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
                 downloader.Progress      += Wait.SetModuleProgress;
                 downloader.AllComplete   += Wait.DownloadsComplete;
                 downloader.StoreProgress += (module, remaining, total) =>
@@ -224,7 +225,7 @@ namespace CKAN.GUI
                             }
                             if (!canceled && toInstall.Count > 0)
                             {
-                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, downloader, false);
+                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, userAgent, downloader, false);
                                 toInstall.Clear();
                             }
                             if (!canceled && toUpgrade.Count > 0)
@@ -451,7 +452,8 @@ namespace CKAN.GUI
                                                configuration,
                                                RegistryManager.Instance(CurrentInstance, repoData),
                                                updater,
-                                               currentUser)
+                                               currentUser,
+                                               userAgent)
                                 .ShowDialog(this);
                             Enabled = true;
                         }

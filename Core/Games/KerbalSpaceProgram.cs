@@ -170,9 +170,9 @@ namespace CKAN.Games.KerbalSpaceProgram
             new MakingHistoryDlcDetector(),
         };
 
-        public void RefreshVersions()
+        public void RefreshVersions(string? userAgent)
         {
-            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh();
+            ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh(userAgent);
             versions = null;
         }
 

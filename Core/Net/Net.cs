@@ -23,7 +23,7 @@ namespace CKAN
     {
         // The user agent that we report to web sites
         // Maybe overwritten by command line args
-        public static string UserAgentString = "Mozilla/4.0 (compatible; CKAN)";
+        public static readonly string UserAgentString = $"Mozilla/5.0 (compatible; CKAN/{Meta.ReleaseVersion})";
 
         private const int MaxRetries             = 3;
         private const int RetryDelayMilliseconds = 100;
@@ -76,16 +76,30 @@ namespace CKAN
         /// Throws a MissingCertificateException *and* prints a message to the
         /// console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
-        public static string Download(Uri url, out string? etag, string? filename = null, IUser? user = null)
-            => Download(url.OriginalString, out etag, filename, user);
+        public static string Download(Uri     url,
+                                      string? userAgent = null,
+                                      string? filename  = null,
+                                      IUser?  user      = null)
+            => Download(url, out _, userAgent, filename, user);
 
-        public static string Download(Uri url, string? filename = null, IUser? user = null)
-            => Download(url, out _, filename, user);
+        public static string Download(Uri         url,
+                                      out string? etag,
+                                      string?     userAgent = null,
+                                      string?     filename = null,
+                                      IUser?      user = null)
+            => Download(url.OriginalString, out etag, userAgent, filename, user);
 
-        public static string Download(string url, string? filename = null, IUser? user = null)
-            => Download(url, out _, filename, user);
+        public static string Download(string      url,
+                                      string?     userAgent = null,
+                                      string?     filename = null,
+                                      IUser?      user     = null)
+            => Download(url, out _, userAgent, filename, user);
 
-        public static string Download(string url, out string? etag, string? filename = null, IUser? user = null)
+        public static string Download(string      url,
+                                      out string? etag,
+                                      string?     userAgent = null,
+                                      string?     filename = null,
+                                      IUser?      user     = null)
         {
             user ??= new NullUser();
             user.RaiseMessage(Properties.Resources.NetDownloading, url);
@@ -100,7 +114,7 @@ namespace CKAN
             {
                 // This WebClient child class does some complicated stuff, let's keep using it for now
                 #pragma warning disable SYSLIB0014
-                var agent = new RedirectingTimeoutWebClient();
+                var agent = new RedirectingTimeoutWebClient(userAgent ?? UserAgentString);
                 #pragma warning restore SYSLIB0014
                 agent.DownloadFile(url, filename);
                 etag = agent.ResponseHeaders?.Get("ETag")?.Replace("\"", "");
@@ -115,7 +129,7 @@ namespace CKAN
                     var response = wexc.Response as HttpWebResponse;
                     if (response?.StatusCode == HttpStatusCode.Redirect)
                     {
-                        return Download(response.GetResponseHeader("Location"), out etag, filename, user);
+                        return Download(response.GetResponseHeader("Location"), out etag, userAgent, filename, user);
                     }
                     // Otherwise it's a valid failure from the server (probably a 404), keep it
                 }
@@ -157,13 +171,17 @@ namespace CKAN
         /// <param name="mimeType">A mime type sent with the "Accept" header</param>
         /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
         /// <returns>The text content returned by the server</returns>
-        public static string? DownloadText(Uri url, string? authToken = "", string? mimeType = null, int timeout = 100000)
+        public static string? DownloadText(Uri     url,
+                                           string? userAgent = null,
+                                           string? authToken = "",
+                                           string? mimeType = null,
+                                           int     timeout = 100000)
         {
             log.DebugFormat("About to download {0}", url.OriginalString);
 
-            // This WebClient child class does some complicated stuff, let's keep using it for now
             #pragma warning disable SYSLIB0014
-            WebClient agent = new RedirectingTimeoutWebClient(timeout, mimeType ?? "");
+            WebClient agent = new RedirectingTimeoutWebClient(userAgent ?? UserAgentString,
+                                                              timeout, mimeType ?? "");
             #pragma warning restore SYSLIB0014
 
             // Check whether to use an auth token for this host
@@ -200,10 +218,10 @@ namespace CKAN
         }
 
         public static Uri? ResolveRedirect(Uri     url,
-                                           string? userAgent    = null,
+                                           string? userAgent,
                                            int     maxRedirects = 6)
         {
-            var urls = url.TraverseNodes(u => new RedirectWebClient(userAgent) is RedirectWebClient rwClient
+            var urls = url.TraverseNodes(u => new RedirectWebClient(userAgent ?? UserAgentString) is RedirectWebClient rwClient
                                               && rwClient.OpenRead(u) is Stream s && DisposeStream(s)
                                               && rwClient.ResponseHeaders is WebHeaderCollection headers
                                               && headers["Location"] is string location

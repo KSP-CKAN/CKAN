@@ -46,7 +46,7 @@ namespace CKAN.GUI
                 && e.Argument is GUIMod gm
                 && Manager?.Cache != null)
             {
-                downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache);
+                downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
                 downloader.Progress      += Wait.SetModuleProgress;
                 downloader.AllComplete   += Wait.DownloadsComplete;
                 downloader.StoreProgress += (module, remaining, total) =>

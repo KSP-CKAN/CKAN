@@ -18,10 +18,13 @@ namespace CKAN.GUI
         [STAThread]
         public static void Main(string[] args)
         {
-            Main_(args);
+            Main_(args, null);
         }
 
-        public static void Main_(string[] args, GameInstanceManager? manager = null, bool showConsole = false)
+        public static void Main_(string[]             args,
+                                 string?              userAgent,
+                                 GameInstanceManager? manager = null,
+                                 bool                 showConsole = false)
         {
             Logging.Initialize();
 
@@ -38,7 +41,7 @@ namespace CKAN.GUI
             }
             else
             {
-                var main = new Main(args, manager);
+                var main = new Main(args, manager, userAgent);
                 if (!showConsole)
                 {
                     Util.HideConsoleWindow();

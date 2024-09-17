@@ -17,8 +17,13 @@ namespace CKAN.ConsoleUI {
         /// <param name="game">Game from which to get repos</param>
         /// <param name="reps">Collection of Repository objects</param>
         /// <param name="repo">The object to edit</param>
-        public RepoEditScreen(ConsoleTheme theme, IGame game, SortedDictionary<string, Repository> reps, Repository repo)
-            : base(theme, game, reps, repo.name, repo.uri.ToString())
+        /// <param name="userAgent">HTTP useragent string to use</param>
+        public RepoEditScreen(ConsoleTheme                         theme,
+                              IGame                                game,
+                              SortedDictionary<string, Repository> reps,
+                              Repository                           repo,
+                              string?                              userAgent)
+            : base(theme, game, reps, repo.name, repo.uri.ToString(), userAgent)
         {
             repository = repo;
         }

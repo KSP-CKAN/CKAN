@@ -8,9 +8,9 @@ namespace CKAN
     // HttpClient doesn't handle redirects well on Mono, but net7.0 considers WebClient obsolete
     internal sealed class RedirectWebClient : WebClient
     {
-        public RedirectWebClient(string? userAgent = null)
+        public RedirectWebClient(string userAgent)
         {
-            Headers.Add("User-Agent", userAgent ?? Net.UserAgentString);
+            Headers.Add("User-Agent", userAgent);
         }
 
         protected override WebRequest GetWebRequest(Uri address)

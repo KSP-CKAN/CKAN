@@ -31,11 +31,13 @@ namespace CKAN
             public event Action<object?, AsyncCompletedEventArgs, string?>? Done;
 
             private string mimeType => target.mimeType;
+            private readonly string userAgent;
             private ResumingWebClient? agent;
 
-            public DownloadPart(DownloadTarget target)
+            public DownloadPart(DownloadTarget target, string userAgent)
             {
                 this.target = target;
+                this.userAgent = userAgent ?? "";
                 size = bytesLeft = target.size;
                 lastProgressUpdateTime = DateTime.Now;
                 triedDownloads = 0;
@@ -84,7 +86,7 @@ namespace CKAN
                 agent = new ResumingWebClient();
                 #pragma warning restore SYSLIB0014
 
-                agent.Headers.Add("User-Agent", Net.UserAgentString);
+                agent.Headers.Add("User-Agent", userAgent);
 
                 // Tell the server what kind of files we want
                 if (!string.IsNullOrEmpty(mimeType))

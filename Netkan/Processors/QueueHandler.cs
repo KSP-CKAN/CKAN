@@ -30,6 +30,7 @@ namespace CKAN.NetKAN.Processors
                             bool    overwriteCache,
                             string? githubToken,
                             string? gitlabToken,
+                            string? userAgent,
                             bool    prerelease,
                             IGame   game)
         {
@@ -39,7 +40,7 @@ namespace CKAN.NetKAN.Processors
             this.game = game;
 
             log.Debug("Initializing SQS queue handler");
-            inflator = new Inflator(cacheDir, overwriteCache, githubToken, gitlabToken, prerelease, game);
+            inflator = new Inflator(cacheDir, overwriteCache, githubToken, gitlabToken, userAgent, prerelease, game);
 
             inputQueueURL  = getQueueUrl(inputQueueName);
             outputQueueURL = getQueueUrl(outputQueueName);

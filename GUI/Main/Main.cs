@@ -36,6 +36,7 @@ namespace CKAN.GUI
         public readonly GameInstanceManager Manager;
         public GameInstance? CurrentInstance => Manager.CurrentInstance;
         private readonly RepositoryDataManager repoData;
+        private readonly string? userAgent;
         private readonly AutoUpdate updater = new AutoUpdate();
 
         // Stuff we set when the game instance changes
@@ -58,7 +59,9 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="cmdlineArgs">The strings from the command line that launched us</param>
         /// <param name="mgr">Game instance manager created by the cmdline handler</param>
-        public Main(string[] cmdlineArgs, GameInstanceManager? mgr)
+        public Main(string[]             cmdlineArgs,
+                    GameInstanceManager? mgr,
+                    string?              userAgent)
         {
             log.Info("Starting the GUI");
             if (//cmdlineArgs is [_, string focusIdent, ..]
@@ -105,6 +108,7 @@ namespace CKAN.GUI
             ModInfo.OnChangeFilter += ManageMods.Filter;
             ModInfo.ModuleDoubleClicked += ManageMods.ResetFilterAndSelectModOnList;
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
+            this.userAgent = userAgent;
 
             Instance = this;
 
@@ -678,7 +682,8 @@ namespace CKAN.GUI
                                                 configuration,
                                                 RegistryManager.Instance(CurrentInstance, repoData),
                                                 updater,
-                                                currentUser);
+                                                currentUser,
+                                                userAgent);
                 dialog.ShowDialog(this);
                 Enabled = true;
                 if (dialog.RepositoryAdded)

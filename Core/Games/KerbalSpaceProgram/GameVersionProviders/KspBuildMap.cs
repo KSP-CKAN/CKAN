@@ -94,10 +94,10 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         /// <summary>
         /// Download the build map from the server to the cache
         /// </summary>
-        public void Refresh()
+        public void Refresh(string? userAgent)
         {
             Log.Debug("Refreshing build map from server");
-            if (TrySetRemoteBuildMap())
+            if (TrySetRemoteBuildMap(userAgent))
             {
                 return;
             }
@@ -133,12 +133,12 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
             }
         }
 
-        private bool TrySetRemoteBuildMap()
+        private bool TrySetRemoteBuildMap(string? userAgent)
         {
             try
             {
                 Log.Debug("Getting remote build map");
-                var json = Net.DownloadText(BuildMapUri);
+                var json = Net.DownloadText(BuildMapUri, userAgent);
                 if (json != null && TrySetBuildMap(json))
                 {
                     // Save to disk if parse succeeds

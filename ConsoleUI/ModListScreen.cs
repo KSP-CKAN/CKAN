@@ -26,12 +26,14 @@ namespace CKAN.ConsoleUI {
         /// <param name="mgr">Game instance manager object containing the current instance</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="regMgr">Registry manager for the current instance</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="game">The game of the current instance, used for getting known versions</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public ModListScreen(ConsoleTheme          theme,
                              GameInstanceManager   mgr,
                              RepositoryDataManager repoData,
                              RegistryManager       regMgr,
+                             string?               userAgent,
                              IGame                 game,
                              bool                  dbg)
             : base(theme)
@@ -41,6 +43,7 @@ namespace CKAN.ConsoleUI {
             this.regMgr   = regMgr;
             registry = regMgr.registry;
             this.repoData = repoData;
+            this.userAgent = userAgent;
 
             moduleList = new ConsoleListBox<CkanModule>(
                 1, 4, -1, -2,
@@ -190,7 +193,7 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddBinding(Keys.Enter, (object sender) => {
                 if (moduleList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(theme, manager, registry, plan, moduleList.Selection, debug));
+                    LaunchSubScreen(new ModInfoScreen(theme, manager, registry, userAgent, plan, moduleList.Selection, debug));
                 }
                 return true;
             });
@@ -428,7 +431,7 @@ namespace CKAN.ConsoleUI {
                 }
             }
             try {
-                DependencyScreen ds = new DependencyScreen(theme, manager, registry, reinstall, new HashSet<string>(), debug);
+                DependencyScreen ds = new DependencyScreen(theme, manager, registry, userAgent, reinstall, new HashSet<string>(), debug);
                 if (ds.HaveOptions()) {
                     LaunchSubScreen(ds);
                     bool needRefresh = false;
@@ -482,8 +485,9 @@ namespace CKAN.ConsoleUI {
                         repoData.Update(registry.Repositories.Values.ToArray(),
                                         manager.CurrentInstance.game,
                                         false,
-                                        new NetAsyncDownloader(ps),
-                                        ps);
+                                        new NetAsyncDownloader(ps, userAgent),
+                                        ps,
+                                        userAgent);
                     } catch (Exception ex) {
                         // There can be errors while you re-install mods with changed metadata
                         ps.RaiseError(ex.Message + ex.StackTrace);
@@ -530,7 +534,7 @@ namespace CKAN.ConsoleUI {
             {
                 var prevRepos   = new SortedDictionary<string, Repository>(registry.Repositories);
                 var prevVerCrit = manager.CurrentInstance.VersionCriteria();
-                LaunchSubScreen(new GameInstanceEditScreen(theme, manager, repoData, manager.CurrentInstance));
+                LaunchSubScreen(new GameInstanceEditScreen(theme, manager, repoData, manager.CurrentInstance, userAgent));
                 if (!registry.Repositories.DictionaryEquals(prevRepos)) {
                     // Repos changed, need to fetch them
                     UpdateRegistry(false);
@@ -550,7 +554,7 @@ namespace CKAN.ConsoleUI {
                 var prevInst = manager.CurrentInstance;
                 var prevRepos = new SortedDictionary<string, Repository>(registry.Repositories);
                 var prevVerCrit = prevInst.VersionCriteria();
-                LaunchSubScreen(new GameInstanceListScreen(theme, manager, repoData));
+                LaunchSubScreen(new GameInstanceListScreen(theme, manager, repoData, userAgent));
                 if (!prevInst.Equals(manager.CurrentInstance)) {
                     // Game instance changed, reset everything
                     plan.Reset();
@@ -664,7 +668,7 @@ namespace CKAN.ConsoleUI {
                                                                   ?? rel.ExactMatch(regMgr.registry, null, installed, modules))
                                                               .OfType<CkanModule>()
                                                              ?? Enumerable.Empty<CkanModule>())));
-                    LaunchSubScreen(new InstallScreen(theme, manager, repoData, cp, debug));
+                    LaunchSubScreen(new InstallScreen(theme, manager, repoData, userAgent, cp, debug));
                     RefreshList();
                 }
             }
@@ -683,7 +687,7 @@ namespace CKAN.ConsoleUI {
         {
             if (plan.NonEmpty())
             {
-                LaunchSubScreen(new InstallScreen(theme, manager, repoData, plan, debug));
+                LaunchSubScreen(new InstallScreen(theme, manager, repoData, userAgent, plan, debug));
                 RefreshList();
             }
             return true;
@@ -740,6 +744,7 @@ namespace CKAN.ConsoleUI {
 
         private readonly GameInstanceManager                 manager;
         private          RegistryManager                     regMgr;
+        private readonly string?                             userAgent;
         private          Registry                            registry;
         private readonly RepositoryDataManager               repoData;
         private          Dictionary<bool, List<CkanModule>>? upgradeableGroups;

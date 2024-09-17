@@ -24,10 +24,18 @@ namespace CKAN.ConsoleUI {
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing instances</param>
         /// <param name="reg">Registry of the current instance for finding mods</param>
+        /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="cp">Plan of mods to add and remove</param>
         /// <param name="rej">Mods that the user saw and did not select, in this pass or a previous pass</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
-        public DependencyScreen(ConsoleTheme theme, GameInstanceManager mgr, Registry reg, ChangePlan cp, HashSet<string> rej, bool dbg) : base(theme)
+        public DependencyScreen(ConsoleTheme        theme,
+                                GameInstanceManager mgr,
+                                Registry            reg,
+                                string?             userAgent,
+                                ChangePlan          cp,
+                                HashSet<string>     rej,
+                                bool                dbg)
+            : base(theme)
         {
             debug    = dbg;
             manager  = mgr;
@@ -40,8 +48,7 @@ namespace CKAN.ConsoleUI {
 
             if (manager.CurrentInstance != null && manager.Cache != null)
             {
-                generateList(new ModuleInstaller(manager.CurrentInstance, manager.Cache, this),
-                             plan.Install
+                generateList(plan.Install
                                  .Concat(ReplacementModules(plan.Replace,
                                                             manager.CurrentInstance.VersionCriteria()))
                                  .ToHashSet());
@@ -99,7 +106,7 @@ namespace CKAN.ConsoleUI {
             dependencyList.AddTip(Properties.Resources.Enter, Properties.Resources.Details);
             dependencyList.AddBinding(Keys.Enter, (object sender) => {
                 if (dependencyList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(theme, manager, reg, plan,
+                    LaunchSubScreen(new ModInfoScreen(theme, manager, reg, userAgent, plan,
                                                              dependencyList.Selection.module,
                                                              debug));
                 }
@@ -145,9 +152,10 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         public bool HaveOptions() => dependencies.Count > 0;
 
-        private void generateList(ModuleInstaller installer, HashSet<CkanModule> inst)
+        private void generateList(HashSet<CkanModule> inst)
         {
-            if (installer.FindRecommendations(
+            if (ModuleInstaller.FindRecommendations(
+                manager.CurrentInstance,
                 inst, new List<CkanModule>(inst), registry,
                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                 out Dictionary<CkanModule, List<string>> suggestions,

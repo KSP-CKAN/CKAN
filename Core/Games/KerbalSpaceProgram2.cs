@@ -133,11 +133,11 @@ namespace CKAN.Games.KerbalSpaceProgram2
                         : "")
             ?? new List<GameVersion>();
 
-        public void RefreshVersions()
+        public void RefreshVersions(string? userAgent)
         {
             try
             {
-                if (Net.DownloadText(BuildMapUri) is string json)
+                if (Net.DownloadText(BuildMapUri, userAgent) is string json)
                 {
                     versions = JsonConvert.DeserializeObject<List<GameVersion>>(json) ?? versions;
 

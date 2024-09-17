@@ -89,7 +89,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     var upd = new AutoUpdate();
-                    var update = upd.GetUpdate(config.DevBuilds ?? false);
+                    var update = upd.GetUpdate(config.DevBuilds ?? false, options.NetUserAgent);
                     var latestVersion = update.Version;
                     var currentVersion = new ModuleVersion(Meta.GetVersion());
 
@@ -107,7 +107,7 @@ namespace CKAN.CmdLine
                         if (user.RaiseYesNoDialog(Properties.Resources.UpgradeProceed))
                         {
                             user.RaiseMessage(Properties.Resources.UpgradePleaseWait);
-                            upd.StartUpdateProcess(false, config.DevBuilds ?? false, user);
+                            upd.StartUpdateProcess(false, options.NetUserAgent, config.DevBuilds ?? false, user);
                         }
                     }
                     else
@@ -138,7 +138,7 @@ namespace CKAN.CmdLine
                     }
                     else if (manager.Cache != null)
                     {
-                        UpgradeModules(manager.Cache, user, instance, to_upgrade);
+                        UpgradeModules(manager.Cache, options.NetUserAgent, user, instance, to_upgrade);
                     }
                 }
                 else
@@ -146,7 +146,7 @@ namespace CKAN.CmdLine
                     if (options.modules != null && manager.Cache != null)
                     {
                         Search.AdjustModulesCase(instance, registry, options.modules);
-                        UpgradeModules(manager.Cache, user, instance, options.modules);
+                        UpgradeModules(manager.Cache, options.NetUserAgent, user, instance, options.modules);
                     }
                 }
                 user.RaiseMessage("");
@@ -191,12 +191,13 @@ namespace CKAN.CmdLine
         /// <param name="instance">Game instance to use</param>
         /// <param name="modules">List of modules to upgrade</param>
         private void UpgradeModules(NetModuleCache      cache,
+                                    string?             userAgent,
                                     IUser               user,
                                     CKAN.GameInstance   instance,
                                     List<CkanModule>    modules)
         {
             UpgradeModules(
-                cache, user, instance, repoData,
+                cache, userAgent, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs) =>
                     installer.Upgrade(modules, downloader,
                                       ref possibleConfigOnlyDirs,
@@ -212,12 +213,13 @@ namespace CKAN.CmdLine
         /// <param name="instance">Game instance to use</param>
         /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
         private void UpgradeModules(NetModuleCache      cache,
+                                    string?             userAgent,
                                     IUser               user,
                                     CKAN.GameInstance   instance,
                                     List<string>        identsAndVersions)
         {
             UpgradeModules(
-                cache, user, instance, repoData,
+                cache, userAgent, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs) =>
                 {
                     var crit     = instance.VersionCriteria();
@@ -288,15 +290,16 @@ namespace CKAN.CmdLine
         /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
         /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
         private static void UpgradeModules(NetModuleCache        cache,
-                                    IUser                 user,
-                                    CKAN.GameInstance     instance,
-                                    RepositoryDataManager repoData,
-                                    AttemptUpgradeAction  attemptUpgradeCallback,
-                                    Action<CkanModule>    addUserChoiceCallback)
+                                           string?               userAgent,
+                                           IUser                 user,
+                                           CKAN.GameInstance     instance,
+                                           RepositoryDataManager repoData,
+                                           AttemptUpgradeAction  attemptUpgradeCallback,
+                                           Action<CkanModule>    addUserChoiceCallback)
         {
             using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
-                var installer  = new ModuleInstaller(instance, cache, user);
-                var downloader = new NetAsyncModulesDownloader(user, cache);
+                var installer  = new ModuleInstaller(instance, cache, user, userAgent);
+                var downloader = new NetAsyncModulesDownloader(user, cache, userAgent);
                 var regMgr     = RegistryManager.Instance(instance, repoData);
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 bool done = false;

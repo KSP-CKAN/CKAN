@@ -18,10 +18,12 @@ namespace CKAN.NetKAN.Sources.Curse
         private const string CurseApiBase    = "https://api.cfwidget.com/kerbal/ksp-mods/";
 
         private readonly IHttpService _http;
+        private readonly string?      _userAgent;
 
-        public CurseApi(IHttpService http)
+        public CurseApi(IHttpService http, string? userAgent)
         {
             _http = http;
+            _userAgent = userAgent;
         }
 
         public CurseMod? GetMod(string nameOrId)
@@ -49,7 +51,7 @@ namespace CKAN.NetKAN.Sources.Curse
             {
                 throw new Kraken($"Could not get the mod from Curse, reason: {error.message}.");
             }
-            return CurseMod.FromJson(json);
+            return CurseMod.FromJson(json, _userAgent);
         }
 
         private string? Call(string nameOrId)

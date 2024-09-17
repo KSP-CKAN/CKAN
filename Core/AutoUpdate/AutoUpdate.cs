@@ -15,15 +15,15 @@ namespace CKAN
         {
         }
 
-        public CkanUpdate GetUpdate(bool devBuild)
+        public CkanUpdate GetUpdate(bool devBuild, string? userAgent = null)
         {
             if (updates.TryGetValue(devBuild, out CkanUpdate? update))
             {
                 return update;
             }
             var newUpdate = devBuild
-                ? new S3BuildCkanUpdate() as CkanUpdate
-                : new GitHubReleaseCkanUpdate();
+                ? new S3BuildCkanUpdate(null, userAgent) as CkanUpdate
+                : new GitHubReleaseCkanUpdate(null, userAgent);
             updates.Add(devBuild, newUpdate);
             return newUpdate;
         }
@@ -46,14 +46,14 @@ namespace CKAN
         /// and then launches the helper allowing us to upgrade.
         /// </summary>
         /// <param name="launchCKANAfterUpdate">If set to <c>true</c> launch CKAN after update.</param>
-        public void StartUpdateProcess(bool launchCKANAfterUpdate, bool devBuild, IUser? user = null)
+        public void StartUpdateProcess(bool launchCKANAfterUpdate, string? userAgent, bool devBuild, IUser? user = null)
         {
             var pid = Process.GetCurrentProcess().Id;
 
-            var update = GetUpdate(devBuild);
+            var update = GetUpdate(devBuild, userAgent);
 
             // download updater app and new ckan.exe
-            NetAsyncDownloader.DownloadWithProgress(update.Targets, user);
+            NetAsyncDownloader.DownloadWithProgress(update.Targets, userAgent, user);
 
             // run updater
             SetExecutable(update.updaterFilename);

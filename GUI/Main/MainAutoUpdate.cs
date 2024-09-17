@@ -56,7 +56,7 @@ namespace CKAN.GUI
                 {
                     log.Info("Making auto-update call");
                     var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
-                    var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
+                    var update = updater.GetUpdate(mainConfig.DevBuilds ?? false, userAgent);
 
                     if (update.Version is CkanModuleVersion latestVersion
                         && latestVersion.IsGreaterThan(Meta.ReleaseVersion))
@@ -90,12 +90,13 @@ namespace CKAN.GUI
             DisableMainWindow();
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
             var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
-            var update = updater.GetUpdate(mainConfig.DevBuilds ?? false);
+            var update = updater.GetUpdate(mainConfig.DevBuilds ?? false, userAgent);
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo,
                                               update.Version));
 
             log.Info("Starting CKAN update");
-            Wait.StartWaiting((sender, args) => updater.StartUpdateProcess(true, mainConfig.DevBuilds ?? false, currentUser),
+            Wait.StartWaiting((sender, args) => updater.StartUpdateProcess(true, userAgent,
+                                                                           mainConfig.DevBuilds ?? false, currentUser),
                               UpdateReady,
                               false,
                               null);

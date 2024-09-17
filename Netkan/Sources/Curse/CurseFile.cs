@@ -32,9 +32,10 @@ namespace CKAN.NetKAN.Sources.Curse
         /// <returns>
         /// The download URL
         /// </returns>
-        public string GetDownloadUrl()
+        public string GetDownloadUrl(string? userAgent)
         {
-            _downloadUrl ??= Net.ResolveRedirect(new Uri(url + "/file"))?.ToString();
+            _downloadUrl ??= Net.ResolveRedirect(new Uri(url + "/file"), userAgent)
+                                ?.ToString();
             if (_downloadUrl == null)
             {
                 throw new Kraken($"Too many redirects resolving: {url}/file");
@@ -61,11 +62,11 @@ namespace CKAN.NetKAN.Sources.Curse
         /// Returns the filename of the file
         /// </summary>
         /// <returns>The filename</returns>
-        public string GetFilename()
+        public string GetFilename(string? userAgent)
         {
             if (_filename == null)
             {
-                Match match = Regex.Match(GetDownloadUrl(), "[^/]*\\.zip");
+                Match match = Regex.Match(GetDownloadUrl(userAgent), "[^/]*\\.zip");
                 _filename = //match.Groups is [var grp, ..]
                             match.Groups.Count > 0
                             && match.Groups[0] is var grp
@@ -79,11 +80,11 @@ namespace CKAN.NetKAN.Sources.Curse
         /// Returns the version of the file
         /// </summary>
         /// <returns>The version</returns>
-        public string GetFileVersion()
+        public string GetFileVersion(string? userAgent)
         {
             if (_fileVersion == null)
             {
-                Match match = Regex.Match(GetDownloadUrl(), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
+                Match match = Regex.Match(GetDownloadUrl(userAgent), "(v?[0-9][0-9a-z.]*[0-9a-z])[^0-9]*\\.zip");
                 if (//match.Groups is [_, var grp, ..]
                     match.Groups.Count > 1
                     && match.Groups[1] is var grp)

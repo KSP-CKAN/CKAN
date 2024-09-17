@@ -156,7 +156,11 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(instance, manager.Cache, user).Replace(to_replace, replace_ops, new NetAsyncModulesDownloader(user, manager.Cache), ref possibleConfigOnlyDirs, regMgr);
+                    new ModuleInstaller(instance, manager.Cache, user, options.NetUserAgent)
+                        .Replace(to_replace, replace_ops,
+                                 new NetAsyncModulesDownloader(user, manager.Cache, options.NetUserAgent),
+                                 ref possibleConfigOnlyDirs,
+                                 regMgr);
                     user.RaiseMessage("");
                 }
                 catch (DependencyNotSatisfiedKraken ex)

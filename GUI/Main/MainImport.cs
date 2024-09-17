@@ -44,7 +44,7 @@ namespace CKAN.GUI
                         {
                             if (e != null && Manager?.Cache != null)
                             {
-                                e.Result = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser).ImportFiles(
+                                e.Result = ModuleInstaller.ImportFiles(
                                     GetFiles(dlg.FileNames),
                                     currentUser,
                                     (CkanModule mod) =>
@@ -58,7 +58,8 @@ namespace CKAN.GUI
                                             gmod.SelectedMod = mod;
                                         }
                                     },
-                                    RegistryManager.Instance(CurrentInstance, repoData).registry);
+                                    RegistryManager.Instance(CurrentInstance, repoData).registry,
+                                    CurrentInstance, Manager.Cache);
                             }
                         },
                         (sender, e) =>

@@ -279,12 +279,6 @@ namespace CKAN.CmdLine
                 Headless = true;
             }
 
-            // Assign user-agent string if user has given us one
-            if (NetUserAgent != null)
-            {
-                Net.UserAgentString = NetUserAgent;
-            }
-
             return Exit.OK;
         }
 
