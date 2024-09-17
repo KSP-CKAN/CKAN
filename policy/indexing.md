@@ -7,7 +7,7 @@ Our policy is based on two principles:
 
 Note that for purposes of this document, the term "author" does not necessarily mean the original author of a mod. It should be understood to include a maintainer, custodian, etc.
 
-All CKAN users, mod authors, and the CKAN team are part of the CKAN community and must comply with the [Code of Conduct](https://github.com/KSP-CKAN/.github/?tab=coc-ov-file#readme).
+All CKAN users, authors of mods listed in CKAN, and the CKAN team are part of the CKAN community and must comply with the [Code of Conduct](https://github.com/KSP-CKAN/.github/?tab=coc-ov-file#readme).
 
 ## Indexing
 
