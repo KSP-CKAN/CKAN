@@ -4,7 +4,7 @@
 
 It seems that a day doesn't go past when I don't have to explain why changing versions is *hard*, so I'm going to do that here. I'm also going to make us a nice policy folder where things like this can go, so we've got something that's easy to refer to, but also undergoes peer review before changing.
 
-So, why can't we change how we do version comparisons?
+So, why can't we change [how we do version comparisons](https://github.com/KSP-CKAN/CKAN/blob/master/Spec.md#version)?
 
 ## It can break existing mods
 
