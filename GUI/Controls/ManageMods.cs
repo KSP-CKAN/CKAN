@@ -465,10 +465,8 @@ namespace CKAN.GUI
         {
             if (currentInstance != null)
             {
-                var lbls = ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name)
-                                                       .ToList();
                 var searches = search.Values
-                                     .Select(s => ModSearch.Parse(s, lbls))
+                                     .Select(s => ModSearch.Parse(s))
                                      .OfType<ModSearch>()
                                      .ToList();
 

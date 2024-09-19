@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
@@ -45,11 +44,6 @@ namespace CKAN.GUI
         }
 
         public ModSearch CurrentSearch()
-            => CurrentSearch(
-                ModuleLabelList.ModuleLabels.LabelsFor(Main.Instance?.CurrentInstance?.Name ?? "")
-                                            .ToList());
-
-        private ModSearch CurrentSearch(List<ModuleLabel>? knownLabels)
             => new ModSearch(
                 FilterByNameTextBox.Text,
                 FilterByAuthorTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
@@ -62,10 +56,7 @@ namespace CKAN.GUI
                 FilterByConflictsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterBySupportsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByTagsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
-                FilterByLabelsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries)
-                                          .Select(ln => knownLabels?.FirstOrDefault(lb => lb.Name == ln))
-                                          .OfType<ModuleLabel>()
-                                          .ToList(),
+                FilterByLabelsTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 CompatibleToggle.Value,
                 InstalledToggle.Value,
                 CachedToggle.Value,
@@ -97,8 +88,7 @@ namespace CKAN.GUI
                                               ?? "";
             FilterByTagsTextBox.Text        = search?.TagNames.Aggregate("", CombinePieces)
                                               ?? "";
-            FilterByLabelsTextBox.Text      = search?.Labels.Select(lb => lb.Name)
-                                                            .Aggregate("", CombinePieces)
+            FilterByLabelsTextBox.Text      = search?.LabelNames.Aggregate("", CombinePieces)
                                               ?? "";
 
             CompatibleToggle.Value      = search?.Compatible;

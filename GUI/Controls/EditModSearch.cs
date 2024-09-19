@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
@@ -139,10 +138,7 @@ namespace CKAN.GUI
                 if (Main.Instance?.CurrentInstance != null)
                 {
                     // Sync the search boxes immediately
-                    currentSearch = ModSearch.Parse(
-                        FilterCombinedTextBox.Text,
-                        ModuleLabelList.ModuleLabels.LabelsFor(Main.Instance.CurrentInstance.Name)
-                                                    .ToList());
+                    currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text);
                 }
                 SearchToEditor();
             }
