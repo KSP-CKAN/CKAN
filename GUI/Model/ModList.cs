@@ -255,7 +255,7 @@ namespace CKAN.GUI
             => activeSearches?.Any(s => s?.TagNames.Contains(tag.Name) ?? false) ?? false;
 
         private bool LabelInSearches(ModuleLabel label)
-            => activeSearches?.Any(s => s?.Labels.Contains(label) ?? false) ?? false;
+            => activeSearches?.Any(s => s?.LabelNames.Contains(label.Name) ?? false) ?? false;
 
         private bool HiddenByTagsOrLabels(GUIMod m, string instanceName, IGame game, Registry registry)
             // "Hide" labels apply to all non-custom filters

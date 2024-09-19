@@ -34,7 +34,7 @@ namespace CKAN.GUI
             List<string>? licenses, List<string>? localizations,
             List<string>? depends, List<string>? recommends, List<string>? suggests, List<string>? conflicts,
             List<string>? supports,
-            List<string>? tagNames, List<ModuleLabel>? labels,
+            List<string>? tagNames, List<string>? labelNames,
             bool? compatible, bool? installed, bool? cached, bool? newlyCompatible,
             bool? upgradeable, bool? replaceable,
             string? combined = null)
@@ -53,11 +53,8 @@ namespace CKAN.GUI
             initStringList(ConflictsWith, conflicts);
             initStringList(Supports,      supports);
 
-            initStringList(TagNames, tagNames);
-            if (labels?.Any() ?? false)
-            {
-                Labels.AddRange(labels);
-            }
+            initStringList(TagNames,   tagNames);
+            initStringList(LabelNames, labelNames);
 
             Compatible      = compatible;
             Installed       = installed;
@@ -93,15 +90,15 @@ namespace CKAN.GUI
                 case GUIModFilter.Uncached:                 Cached          = false; break;
                 case GUIModFilter.NewInRepository:          NewlyCompatible = true;  break;
                 case GUIModFilter.Tag:
-                    if (tag?.Name is string n)
+                    if (tag?.Name is string tn)
                     {
-                        TagNames.Add(n);
+                        TagNames.Add(tn);
                     }
                     break;
                 case GUIModFilter.CustomLabel:
-                    if (label != null)
+                    if (label?.Name is string ln)
                     {
-                        Labels.Add(label);
+                        LabelNames.Add(ln);
                     }
                     break;
                 default:
@@ -166,8 +163,8 @@ namespace CKAN.GUI
         /// </summary>
         public readonly string? Combined;
 
-        public readonly List<string>      TagNames = new List<string>();
-        public readonly List<ModuleLabel> Labels   = new List<ModuleLabel>();
+        public readonly List<string> TagNames   = new List<string>();
+        public readonly List<string> LabelNames = new List<string>();
 
         public readonly bool? Compatible;
         public readonly bool? Installed;
@@ -209,7 +206,7 @@ namespace CKAN.GUI
                 ConflictsWith.Concat(other.ConflictsWith).Distinct().ToList(),
                 Supports.Concat(other.Supports).Distinct().ToList(),
                 TagNames.Concat(other.TagNames).Distinct().ToList(),
-                Labels.Concat(other.Labels).Distinct().ToList(),
+                LabelNames.Concat(other.LabelNames).Distinct().ToList(),
                 Compatible      ?? other.Compatible,
                 Installed       ?? other.Installed,
                 Cached          ?? other.Cached,
@@ -271,9 +268,9 @@ namespace CKAN.GUI
             {
                 pieces.Add(AddTermPrefix(Properties.Resources.ModSearchTagPrefix, tagName ?? ""));
             }
-            foreach (var label in Labels)
+            foreach (var label in LabelNames)
             {
-                pieces.Add($"{Properties.Resources.ModSearchLabelPrefix}{label.Name.Replace(" ", "")}");
+                pieces.Add($"{Properties.Resources.ModSearchLabelPrefix}{label.Replace(" ", "")}");
             }
             if (Compatible.HasValue)
             {
@@ -321,7 +318,7 @@ namespace CKAN.GUI
         /// <returns>
         /// New search object, or null if no search terms defined
         /// </returns>
-        public static ModSearch? Parse(string combined, List<ModuleLabel> knownLabels)
+        public static ModSearch? Parse(string combined)
         {
             if (string.IsNullOrWhiteSpace(combined))
             {
@@ -339,8 +336,8 @@ namespace CKAN.GUI
             var conflicts  = new List<string>();
             var supports   = new List<string>();
 
-            List<string>      tagNames = new List<string>();
-            List<ModuleLabel> labels   = new List<ModuleLabel>();
+            List<string> tagNames = new List<string>();
+            List<string> labels   = new List<string>();
 
             bool? compatible      = null;
             bool? installed       = null;
@@ -394,13 +391,7 @@ namespace CKAN.GUI
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchLabelPrefix, out string labelName))
                 {
-                    labels.AddRange(
-                        // Label searches exclude spaces, but label names can include them
-                        knownLabels.Where(lb => lb.Name.Replace(" ", "") == labelName)
-                            // If label doesn't exist, maybe it will be created later or the user is still typing.
-                            // Make an unofficial label object to accurately reflect the search.
-                            .DefaultIfEmpty(new ModuleLabel(labelName))
-                    );
+                    labels.Add(labelName);
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchYesPrefix, out string yesSuffix))
                 {
@@ -601,21 +592,28 @@ namespace CKAN.GUI
                     ^ rels.Any(r => r.StartsWith(subRel))));
 
         private bool MatchesTags(GUIMod mod)
-        {
-            var tagsInMod = mod.ToModule().Tags;
-            return TagNames.Count < 1
+            => TagNames.Count < 1
                 || TagNames.All(tn =>
-                    ShouldNegateTerm(tn, out string subTag) ^ (
-                        string.IsNullOrEmpty(subTag)
-                            ? tagsInMod == null
-                            : tagsInMod?.Contains(subTag) ?? false));
-        }
+                        ShouldNegateTerm(tn, out string subTag) ^ (
+                            string.IsNullOrEmpty(subTag)
+                                ? mod.ToModule().Tags == null
+                                : mod.ToModule().Tags?.Contains(subTag) ?? false));
 
         private bool MatchesLabels(GUIMod mod)
-            // Every label in Labels must contain this mod
-            => Main.Instance?.CurrentInstance != null
-                && (Labels.Count < 1
-                    || Labels.All(lb => lb.ContainsModule(Main.Instance.CurrentInstance.game, mod.Identifier)));
+            => LabelNames.Count < 1
+                || (Main.Instance?.CurrentInstance is GameInstance inst
+                    && ModuleLabelList.ModuleLabels.LabelsFor(inst.Name)
+                                                   .ToArray()
+                        is ModuleLabel[] instanceLabels
+                    && LabelNames.All(ln =>
+                        ShouldNegateTerm(ln, out string subLabel) ^ (
+                            string.IsNullOrEmpty(subLabel)
+                                ? instanceLabels.All(lbl => !lbl.ContainsModule(inst.game, mod.Identifier))
+                                : instanceLabels.Where(lbl => lbl.Name == subLabel)
+                                                .ToArray()
+                                       is ModuleLabel[] myLabels
+                                   && myLabels.Length > 0
+                                   && myLabels.All(lbl => lbl.ContainsModule(inst.game, mod.Identifier)))));
 
         private bool MatchesCompatible(GUIMod mod)
             => !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;
@@ -654,7 +652,7 @@ namespace CKAN.GUI
                 && ConflictsWith.SequenceEqual(other.ConflictsWith)
                 && Supports.SequenceEqual(other.Supports)
                 && TagNames.SequenceEqual(other.TagNames)
-                && Labels.SequenceEqual(other.Labels);
+                && LabelNames.SequenceEqual(other.LabelNames);
 
         public override bool Equals(object? obj)
             => Equals(obj as ModSearch);
