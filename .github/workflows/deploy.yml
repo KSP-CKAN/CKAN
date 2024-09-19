@@ -101,7 +101,7 @@ jobs:
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
       - name: Push dmg to S3
-        run: aws s3 sync _build/osx/CKAN.dmg s3://${AWS_S3_BUCKET} --follow-symlinks
+        run: aws s3 cp _build/osx/CKAN.dmg s3://${AWS_S3_BUCKET} --follow-symlinks
 
   upload-deb:
     needs:
