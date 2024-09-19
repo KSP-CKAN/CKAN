@@ -73,6 +73,36 @@ jobs:
       - name: Push ckan.exe, netkan.exe, and version.json to S3
         run: aws s3 sync _build/repack/Release s3://${AWS_S3_BUCKET} --follow-symlinks
 
+  upload-dmg:
+    needs:
+      - check-dev-build
+      - test-release
+      - smoke-inflator
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    if: github.event_name != 'repository_dispatch' && needs.check-dev-build.outputs.dev-build
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - name: Install OSX build dependencies
+        run: sudo apt-get install -y libplist-utils xorriso
+      - uses: actions/checkout@v4
+      - name: Download repack artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack/
+      - name: Build dmg
+        run: ./build osx --configuration=Release --exclusive
+      - name: Push dmg to S3
+        run: aws s3 sync _build/osx/CKAN.dmg s3://${AWS_S3_BUCKET} --follow-symlinks
+
   upload-deb:
     needs:
       - check-dev-build
@@ -239,6 +269,7 @@ jobs:
       - test-release
       - smoke-inflator
       - upload-release-s3
+      - upload-dmg
       - upload-deb
       - upload-rpm
       - upload-inflator
