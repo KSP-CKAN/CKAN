@@ -84,6 +84,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] SourceForge kref (#4172, #4174 by: HebaruSan)
 - [Netkan] Inflation error for multi-hosted mods with mismatched versions (#4178 by: HebaruSan)
 - [Multiple] Include version in useragent string, make it readonly (#4184, #4185 by: HebaruSan)
+- [Policy] indexing policy: add link to the code of conduct (#4183 by: JonnyOThan; reviewed: HebaruSan)
 
 ## v1.34.4 (Niven)
 
