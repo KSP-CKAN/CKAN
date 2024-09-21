@@ -21,9 +21,15 @@ var buildDirectory = rootDirectory.Combine("_build");
 var nugetDirectory = buildDirectory.Combine("lib")
                                    .Combine("nuget");
 var outDirectory = buildDirectory.Combine("out");
+var nupkgFile = outDirectory.Combine("CKAN")
+                            .Combine(configuration)
+                            .Combine("bin")
+                            .CombineWithFilePath($"CKAN.{GetVersion(false)}.nupkg");
 var repackDirectory = buildDirectory.Combine("repack");
 var ckanFile = repackDirectory.Combine(configuration)
                               .CombineWithFilePath("ckan.exe");
+var updaterFile = repackDirectory.Combine(configuration)
+                                 .CombineWithFilePath("AutoUpdater.exe");
 var netkanFile = repackDirectory.Combine(configuration)
                                 .CombineWithFilePath("netkan.exe");
 
@@ -202,7 +208,7 @@ Task("Repack-Ckan")
     // Need facade to instantiate types from netstandard2.0 DLLs on Mono
     assemblyPaths.Add(FacadesDirectory().CombineWithFilePath("netstandard.dll"));
     var ckanLogFile = repackDirectory.Combine(configuration)
-                                     .CombineWithFilePath($"ckan.log");
+                                     .CombineWithFilePath("ckan.log");
     ReportRepacking(ckanFile, ckanLogFile);
     ILRepack(
         ckanFile,
@@ -222,10 +228,8 @@ Task("Repack-Ckan")
                                              .Combine(configuration)
                                              .Combine("bin")
                                              .Combine(buildNetFramework);
-    var updaterFile = repackDirectory.Combine(configuration)
-                                     .CombineWithFilePath("AutoUpdater.exe");
     var updaterLogFile = repackDirectory.Combine(configuration)
-                                        .CombineWithFilePath($"AutoUpdater.log");
+                                        .CombineWithFilePath("AutoUpdater.log");
     ReportRepacking(updaterFile, updaterLogFile);
     ILRepack(
         updaterFile,
@@ -242,7 +246,7 @@ Task("Repack-Ckan")
             Log            = updaterLogFile.FullPath,
         });
 
-    CopyFile(ckanFile, buildDirectory.CombineWithFilePath("ckan.exe"));
+    CopyFile(ckanFile, buildDirectory.CombineWithFilePath(ckanFile.GetFilename()));
 });
 
 Task("Repack-Netkan")
@@ -256,7 +260,7 @@ Task("Repack-Netkan")
                                          .Combine("bin")
                                          .Combine(buildNetFramework);
     var netkanLogFile = repackDirectory.Combine(configuration)
-                                       .CombineWithFilePath($"netkan.log");
+                                       .CombineWithFilePath("netkan.log");
     var assemblyPaths = GetFiles(string.Format("{0}/*.dll", netkanBinDirectory));
     // Need facade to instantiate types from netstandard2.0 DLLs on Mono
     assemblyPaths.Add(FacadesDirectory().CombineWithFilePath("netstandard.dll"));
@@ -276,7 +280,20 @@ Task("Repack-Netkan")
         }
     );
 
-    CopyFile(netkanFile, buildDirectory.CombineWithFilePath("netkan.exe"));
+    CopyFile(netkanFile, buildDirectory.CombineWithFilePath(netkanFile.GetFilename()));
+});
+
+Task("Prepare-SignPath")
+    .Description("Create a folder with all artifacts to be signed")
+    .IsDependentOn("Repack-Ckan")
+    .Does(() =>
+{
+    var targetDir = buildDirectory.Combine("signpath")
+                                  .Combine(configuration);
+    CreateDirectory(targetDir);
+    CopyFile(ckanFile,    targetDir.CombineWithFilePath(ckanFile.GetFilename()));
+    CopyFile(updaterFile, targetDir.CombineWithFilePath(updaterFile.GetFilename()));
+    CopyFile(nupkgFile,   targetDir.CombineWithFilePath(nupkgFile.GetFilename()));
 });
 
 private void ReportRepacking(FilePath target, FilePath log)
@@ -447,7 +464,7 @@ private DirectoryPath FacadesDirectory()
                                    .Combine("4.8-api")
                                    .Combine("Facades");
 
-private Semver.SemVersion GetVersion()
+private Semver.SemVersion GetVersion(bool withBuild = true)
 {
     var pattern = new Regex(@"^\s*##\s+v(?<version>\S+)\s?.*$");
     var rootDirectory = Context.Environment.WorkingDirectory;
@@ -459,7 +476,7 @@ private Semver.SemVersion GetVersion()
 
     var version = ParseSemVer(versionMatch.Groups["version"].Value);
 
-    if (DirectoryExists(rootDirectory.Combine(".git")))
+    if (withBuild && DirectoryExists(rootDirectory.Combine(".git")))
     {
         var commitDate = GitLogTip(rootDirectory).Committer.When;
         version = CreateSemVer(version.Major,
