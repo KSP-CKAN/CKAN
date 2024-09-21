@@ -7,15 +7,15 @@ on:
         type: string
         default: Debug
     outputs:
-      repack-artifact-id:
-        description: "Artifact ID of the repack"
-        value: ${{ jobs.build.outputs.repack-artifact-id }}
+      unsigned-artifact-id:
+        description: Artifact ID of the assets to be signed
+        value: ${{ jobs.build.outputs.unsigned-artifact-id }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      repack-artifact-id: ${{ steps.upload-repack-artifact.outputs.artifact-id }}
+      unsigned-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
     steps:
       - uses: actions/checkout@v4
       - name: Restore cache for _build/tools
@@ -50,10 +50,21 @@ jobs:
           name: ${{ inputs.configuration }}-out-unsigned
           path: _build/out/
           retention-days: 1
+      - name: Bundle assets for signing
+        if: inputs.configuration == 'Release'
+        run: ./build Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
+      - name: Upload unsigned artifact
+        id: upload-unsigned-artifact
+        if: inputs.configuration == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned
+          path: _build/signpath
+          retention-days: 7
       - name: Upload ckan.exe artifact
+        if: inputs.configuration == 'Release'
         uses: actions/upload-artifact@v4
         with:
           name: ckan.exe
           path: _build/repack/Release/ckan.exe
           retention-days: 7
-        if: inputs.configuration == 'Release'
