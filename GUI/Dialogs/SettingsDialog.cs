@@ -135,7 +135,8 @@ namespace CKAN.GUI
             }
         }
 
-        private void RefreshReposListBox(bool saveChanges = true)
+        private void RefreshReposListBox(bool        saveChanges = true,
+                                         Repository? toSelect    = null)
         {
             ReposListBox.BeginUpdate();
             ReposListBox.Items.Clear();
@@ -148,10 +149,12 @@ namespace CKAN.GUI
                     })
                     {
                         Tag = r,
+                        Selected = toSelect == r,
                     })
                 .ToArray());
             ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            ReposListBox.Focus();
             ReposListBox.EndUpdate();
             EnableDisableRepoButtons();
 
@@ -351,7 +354,7 @@ namespace CKAN.GUI
                 //ReposListBox.SelectedIndices is [int j and >= 0, ..]
                 ReposListBox.SelectedIndices.Count > 0
                 && ReposListBox.SelectedIndices[0] is int j
-                && j > 0
+                && j >= 0
                 && j < ReposListBox.Items.Count - 1;
         }
 
@@ -428,7 +431,7 @@ namespace CKAN.GUI
                 {
                     ++prev.priority;
                 }
-                RefreshReposListBox();
+                RefreshReposListBox(true, selected);
             }
         }
 
@@ -452,7 +455,7 @@ namespace CKAN.GUI
                 {
                     --next.priority;
                 }
-                RefreshReposListBox();
+                RefreshReposListBox(true, selected);
             }
         }
 

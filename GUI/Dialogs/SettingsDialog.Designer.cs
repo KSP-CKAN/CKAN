@@ -117,7 +117,7 @@ namespace CKAN.GUI
             this.ReposListBox.MultiSelect = false;
             this.ReposListBox.Name = "ReposListBox";
             this.ReposListBox.Size = new System.Drawing.Size(464, 67);
-            this.ReposListBox.TabIndex = 0;
+            this.ReposListBox.TabIndex = 1;
             this.ReposListBox.View = System.Windows.Forms.View.Details;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
             //
@@ -137,7 +137,7 @@ namespace CKAN.GUI
             this.NewRepoButton.Location = new System.Drawing.Point(12, 93);
             this.NewRepoButton.Name = "NewRepoButton";
             this.NewRepoButton.Size = new System.Drawing.Size(73, 25);
-            this.NewRepoButton.TabIndex = 1;
+            this.NewRepoButton.TabIndex = 2;
             this.NewRepoButton.Click += new System.EventHandler(this.NewRepoButton_Click);
             resources.ApplyResources(this.NewRepoButton, "NewRepoButton");
             //
@@ -148,7 +148,7 @@ namespace CKAN.GUI
             this.UpRepoButton.Location = new System.Drawing.Point(91, 93);
             this.UpRepoButton.Name = "UpRepoButton";
             this.UpRepoButton.Size = new System.Drawing.Size(73, 25);
-            this.UpRepoButton.TabIndex = 2;
+            this.UpRepoButton.TabIndex = 3;
             this.UpRepoButton.Click += new System.EventHandler(this.UpRepoButton_Click);
             resources.ApplyResources(this.UpRepoButton, "UpRepoButton");
             //
@@ -159,7 +159,7 @@ namespace CKAN.GUI
             this.DownRepoButton.Location = new System.Drawing.Point(170, 93);
             this.DownRepoButton.Name = "DownRepoButton";
             this.DownRepoButton.Size = new System.Drawing.Size(73, 25);
-            this.DownRepoButton.TabIndex = 3;
+            this.DownRepoButton.TabIndex = 4;
             this.DownRepoButton.Click += new System.EventHandler(this.DownRepoButton_Click);
             resources.ApplyResources(this.DownRepoButton, "DownRepoButton");
             //
@@ -170,7 +170,7 @@ namespace CKAN.GUI
             this.DeleteRepoButton.Location = new System.Drawing.Point(406, 93);
             this.DeleteRepoButton.Name = "DeleteRepoButton";
             this.DeleteRepoButton.Size = new System.Drawing.Size(70, 25);
-            this.DeleteRepoButton.TabIndex = 4;
+            this.DeleteRepoButton.TabIndex = 5;
             this.DeleteRepoButton.Click += new System.EventHandler(this.DeleteRepoButton_Click);
             resources.ApplyResources(this.DeleteRepoButton, "DeleteRepoButton");
             //
@@ -184,7 +184,7 @@ namespace CKAN.GUI
             this.AuthTokensGroupBox.Location = new System.Drawing.Point(512, 6);
             this.AuthTokensGroupBox.Name = "AuthTokensGroupBox";
             this.AuthTokensGroupBox.Size = new System.Drawing.Size(244, 128);
-            this.AuthTokensGroupBox.TabIndex = 1;
+            this.AuthTokensGroupBox.TabIndex = 6;
             this.AuthTokensGroupBox.TabStop = false;
             resources.ApplyResources(this.AuthTokensGroupBox, "AuthTokensGroupBox");
             //
@@ -200,7 +200,7 @@ namespace CKAN.GUI
             this.AuthTokensListBox.Location = new System.Drawing.Point(12, 18);
             this.AuthTokensListBox.Name = "AuthTokensListBox";
             this.AuthTokensListBox.Size = new System.Drawing.Size(220, 67);
-            this.AuthTokensListBox.TabIndex = 0;
+            this.AuthTokensListBox.TabIndex = 7;
             this.AuthTokensListBox.SelectedIndexChanged += new System.EventHandler(this.AuthTokensListBox_SelectedIndexChanged);
             //
             // AuthHostHeader
@@ -219,7 +219,7 @@ namespace CKAN.GUI
             this.NewAuthTokenButton.Location = new System.Drawing.Point(12, 93);
             this.NewAuthTokenButton.Name = "NewAuthTokenButton";
             this.NewAuthTokenButton.Size = new System.Drawing.Size(73, 25);
-            this.NewAuthTokenButton.TabIndex = 1;
+            this.NewAuthTokenButton.TabIndex = 8;
             this.NewAuthTokenButton.Click += new System.EventHandler(this.NewAuthTokenButton_Click);
             resources.ApplyResources(this.NewAuthTokenButton, "NewAuthTokenButton");
             //
@@ -230,7 +230,7 @@ namespace CKAN.GUI
             this.DeleteAuthTokenButton.Location = new System.Drawing.Point(164, 93);
             this.DeleteAuthTokenButton.Name = "DeleteAuthTokenButton";
             this.DeleteAuthTokenButton.Size = new System.Drawing.Size(70, 25);
-            this.DeleteAuthTokenButton.TabIndex = 2;
+            this.DeleteAuthTokenButton.TabIndex = 9;
             this.DeleteAuthTokenButton.Click += new System.EventHandler(this.DeleteAuthTokenButton_Click);
             resources.ApplyResources(this.DeleteAuthTokenButton, "DeleteAuthTokenButton");
             //
@@ -249,7 +249,7 @@ namespace CKAN.GUI
             this.AutoUpdateGroupBox.Location = new System.Drawing.Point(12, 144);
             this.AutoUpdateGroupBox.Name = "AutoUpdateGroupBox";
             this.AutoUpdateGroupBox.Size = new System.Drawing.Size(254, 156);
-            this.AutoUpdateGroupBox.TabIndex = 2;
+            this.AutoUpdateGroupBox.TabIndex = 10;
             this.AutoUpdateGroupBox.TabStop = false;
             resources.ApplyResources(this.AutoUpdateGroupBox, "AutoUpdateGroupBox");
             //
@@ -259,7 +259,7 @@ namespace CKAN.GUI
             this.LocalVersionPreLabel.Location = new System.Drawing.Point(9, 18);
             this.LocalVersionPreLabel.Name = "LocalVersionPreLabel";
             this.LocalVersionPreLabel.Size = new System.Drawing.Size(73, 13);
-            this.LocalVersionPreLabel.TabIndex = 0;
+            this.LocalVersionPreLabel.TabIndex = 11;
             resources.ApplyResources(this.LocalVersionPreLabel, "LocalVersionPreLabel");
             //
             // LocalVersionLabel
@@ -268,7 +268,7 @@ namespace CKAN.GUI
             this.LocalVersionLabel.Location = new System.Drawing.Point(95, 18);
             this.LocalVersionLabel.Name = "LocalVersionLabel";
             this.LocalVersionLabel.Size = new System.Drawing.Size(37, 13);
-            this.LocalVersionLabel.TabIndex = 1;
+            this.LocalVersionLabel.TabIndex = 12;
             resources.ApplyResources(this.LocalVersionLabel, "LocalVersionLabel");
             //
             // LatestVersionPreLabel
@@ -277,7 +277,7 @@ namespace CKAN.GUI
             this.LatestVersionPreLabel.Location = new System.Drawing.Point(9, 39);
             this.LatestVersionPreLabel.Name = "LatestVersionPreLabel";
             this.LatestVersionPreLabel.Size = new System.Drawing.Size(76, 13);
-            this.LatestVersionPreLabel.TabIndex = 2;
+            this.LatestVersionPreLabel.TabIndex = 13;
             resources.ApplyResources(this.LatestVersionPreLabel, "LatestVersionPreLabel");
             //
             // LatestVersionLabel
@@ -286,7 +286,7 @@ namespace CKAN.GUI
             this.LatestVersionLabel.Location = new System.Drawing.Point(95, 39);
             this.LatestVersionLabel.Name = "LatestVersionLabel";
             this.LatestVersionLabel.Size = new System.Drawing.Size(25, 13);
-            this.LatestVersionLabel.TabIndex = 3;
+            this.LatestVersionLabel.TabIndex = 14;
             resources.ApplyResources(this.LatestVersionLabel, "LatestVersionLabel");
             //
             // CheckUpdateOnLaunchCheckbox
@@ -296,7 +296,7 @@ namespace CKAN.GUI
             this.CheckUpdateOnLaunchCheckbox.Location = new System.Drawing.Point(12, 61);
             this.CheckUpdateOnLaunchCheckbox.Name = "CheckUpdateOnLaunchCheckbox";
             this.CheckUpdateOnLaunchCheckbox.Size = new System.Drawing.Size(195, 17);
-            this.CheckUpdateOnLaunchCheckbox.TabIndex = 4;
+            this.CheckUpdateOnLaunchCheckbox.TabIndex = 15;
             this.CheckUpdateOnLaunchCheckbox.CheckedChanged += new System.EventHandler(this.CheckUpdateOnLaunchCheckbox_CheckedChanged);
             resources.ApplyResources(this.CheckUpdateOnLaunchCheckbox, "CheckUpdateOnLaunchCheckbox");
             //
@@ -307,7 +307,7 @@ namespace CKAN.GUI
             this.DevBuildsCheckbox.Location = new System.Drawing.Point(12, 85);
             this.DevBuildsCheckbox.Name = "DevBuildsCheckbox";
             this.DevBuildsCheckbox.Size = new System.Drawing.Size(195, 17);
-            this.DevBuildsCheckbox.TabIndex = 4;
+            this.DevBuildsCheckbox.TabIndex = 16;
             this.DevBuildsCheckbox.CheckedChanged += new System.EventHandler(this.DevBuildsCheckbox_CheckedChanged);
             resources.ApplyResources(this.DevBuildsCheckbox, "DevBuildsCheckbox");
             //
@@ -317,7 +317,7 @@ namespace CKAN.GUI
             this.CheckForUpdatesButton.Location = new System.Drawing.Point(12, 108);
             this.CheckForUpdatesButton.Name = "CheckForUpdatesButton";
             this.CheckForUpdatesButton.Size = new System.Drawing.Size(112, 38);
-            this.CheckForUpdatesButton.TabIndex = 5;
+            this.CheckForUpdatesButton.TabIndex = 17;
             this.CheckForUpdatesButton.Click += new System.EventHandler(this.CheckForUpdatesButton_Click);
             resources.ApplyResources(this.CheckForUpdatesButton, "CheckForUpdatesButton");
             //
@@ -328,7 +328,7 @@ namespace CKAN.GUI
             this.InstallUpdateButton.Location = new System.Drawing.Point(130, 108);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
             this.InstallUpdateButton.Size = new System.Drawing.Size(112, 38);
-            this.InstallUpdateButton.TabIndex = 6;
+            this.InstallUpdateButton.TabIndex = 18;
             this.InstallUpdateButton.Click += new System.EventHandler(this.InstallUpdateButton_Click);
             resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
             //
@@ -348,7 +348,7 @@ namespace CKAN.GUI
             this.CacheGroupBox.Location = new System.Drawing.Point(280, 144);
             this.CacheGroupBox.Name = "CacheGroupBox";
             this.CacheGroupBox.Size = new System.Drawing.Size(476, 156);
-            this.CacheGroupBox.TabIndex = 3;
+            this.CacheGroupBox.TabIndex = 19;
             this.CacheGroupBox.TabStop = false;
             resources.ApplyResources(this.CacheGroupBox, "CacheGroupBox");
             //
@@ -361,7 +361,7 @@ namespace CKAN.GUI
             this.CachePath.Margin = new System.Windows.Forms.Padding(2);
             this.CachePath.Name = "CachePath";
             this.CachePath.Size = new System.Drawing.Size(452, 20);
-            this.CachePath.TabIndex = 0;
+            this.CachePath.TabIndex = 20;
             this.CachePath.TextChanged += new System.EventHandler(this.CachePath_TextChanged);
             //
             // CacheSummary
@@ -370,7 +370,7 @@ namespace CKAN.GUI
             this.CacheSummary.Location = new System.Drawing.Point(9, 44);
             this.CacheSummary.Name = "CacheSummary";
             this.CacheSummary.Size = new System.Drawing.Size(70, 13);
-            this.CacheSummary.TabIndex = 1;
+            this.CacheSummary.TabIndex = 21;
             resources.ApplyResources(this.CacheSummary, "CacheSummary");
             //
             // CacheLimitPreLabel
@@ -379,7 +379,7 @@ namespace CKAN.GUI
             this.CacheLimitPreLabel.Location = new System.Drawing.Point(9, 65);
             this.CacheLimitPreLabel.Name = "CacheLimitPreLabel";
             this.CacheLimitPreLabel.Size = new System.Drawing.Size(108, 13);
-            this.CacheLimitPreLabel.TabIndex = 2;
+            this.CacheLimitPreLabel.TabIndex = 22;
             resources.ApplyResources(this.CacheLimitPreLabel, "CacheLimitPreLabel");
             //
             // CacheLimit
@@ -391,7 +391,7 @@ namespace CKAN.GUI
             this.CacheLimit.Margin = new System.Windows.Forms.Padding(2);
             this.CacheLimit.Name = "CacheLimit";
             this.CacheLimit.Size = new System.Drawing.Size(50, 20);
-            this.CacheLimit.TabIndex = 3;
+            this.CacheLimit.TabIndex = 23;
             this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
             this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);
             //
@@ -401,7 +401,7 @@ namespace CKAN.GUI
             this.CacheLimitPostLabel.Location = new System.Drawing.Point(167, 65);
             this.CacheLimitPostLabel.Name = "CacheLimitPostLabel";
             this.CacheLimitPostLabel.Size = new System.Drawing.Size(119, 13);
-            this.CacheLimitPostLabel.TabIndex = 4;
+            this.CacheLimitPostLabel.TabIndex = 24;
             resources.ApplyResources(this.CacheLimitPostLabel, "CacheLimitPostLabel");
             //
             // ChangeCacheButton
@@ -410,7 +410,7 @@ namespace CKAN.GUI
             this.ChangeCacheButton.Location = new System.Drawing.Point(12, 89);
             this.ChangeCacheButton.Name = "ChangeCacheButton";
             this.ChangeCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.ChangeCacheButton.TabIndex = 5;
+            this.ChangeCacheButton.TabIndex = 25;
             this.ChangeCacheButton.Click += new System.EventHandler(this.ChangeCacheButton_Click);
             resources.ApplyResources(this.ChangeCacheButton, "ChangeCacheButton");
             //
@@ -421,7 +421,7 @@ namespace CKAN.GUI
             this.ClearCacheButton.Menu = this.ClearCacheMenu;
             this.ClearCacheButton.Name = "ClearCacheButton";
             this.ClearCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.ClearCacheButton.TabIndex = 6;
+            this.ClearCacheButton.TabIndex = 26;
             resources.ApplyResources(this.ClearCacheButton, "ClearCacheButton");
             //
             // ClearCacheMenu
@@ -452,7 +452,7 @@ namespace CKAN.GUI
             this.ResetCacheButton.Location = new System.Drawing.Point(174, 89);
             this.ResetCacheButton.Name = "ResetCacheButton";
             this.ResetCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.ResetCacheButton.TabIndex = 7;
+            this.ResetCacheButton.TabIndex = 27;
             this.ResetCacheButton.Click += new System.EventHandler(this.ResetCacheButton_Click);
             resources.ApplyResources(this.ResetCacheButton, "ResetCacheButton");
             //
@@ -462,7 +462,7 @@ namespace CKAN.GUI
             this.OpenCacheButton.Location = new System.Drawing.Point(255, 89);
             this.OpenCacheButton.Name = "OpenCacheButton";
             this.OpenCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.OpenCacheButton.TabIndex = 8;
+            this.OpenCacheButton.TabIndex = 28;
             this.OpenCacheButton.Click += new System.EventHandler(this.OpenCacheButton_Click);
             resources.ApplyResources(this.OpenCacheButton, "OpenCacheButton");
             //
@@ -479,7 +479,7 @@ namespace CKAN.GUI
             this.BehaviourGroupBox.Location = new System.Drawing.Point(12, 310);
             this.BehaviourGroupBox.Name = "BehaviourGroupBox";
             this.BehaviourGroupBox.Size = new System.Drawing.Size(254, 150);
-            this.BehaviourGroupBox.TabIndex = 4;
+            this.BehaviourGroupBox.TabIndex = 29;
             this.BehaviourGroupBox.TabStop = false;
             resources.ApplyResources(this.BehaviourGroupBox, "BehaviourGroupBox");
             //
@@ -490,7 +490,7 @@ namespace CKAN.GUI
             this.EnableTrayIconCheckBox.Location = new System.Drawing.Point(12, 18);
             this.EnableTrayIconCheckBox.Name = "EnableTrayIconCheckBox";
             this.EnableTrayIconCheckBox.Size = new System.Drawing.Size(102, 17);
-            this.EnableTrayIconCheckBox.TabIndex = 0;
+            this.EnableTrayIconCheckBox.TabIndex = 30;
             this.EnableTrayIconCheckBox.CheckedChanged += new System.EventHandler(this.EnableTrayIconCheckBox_CheckedChanged);
             resources.ApplyResources(this.EnableTrayIconCheckBox, "EnableTrayIconCheckBox");
             //
@@ -501,7 +501,7 @@ namespace CKAN.GUI
             this.MinimizeToTrayCheckBox.Location = new System.Drawing.Point(12, 41);
             this.MinimizeToTrayCheckBox.Name = "MinimizeToTrayCheckBox";
             this.MinimizeToTrayCheckBox.Size = new System.Drawing.Size(98, 17);
-            this.MinimizeToTrayCheckBox.TabIndex = 1;
+            this.MinimizeToTrayCheckBox.TabIndex = 31;
             this.MinimizeToTrayCheckBox.CheckedChanged += new System.EventHandler(this.MinimizeToTrayCheckBox_CheckedChanged);
             resources.ApplyResources(this.MinimizeToTrayCheckBox, "MinimizeToTrayCheckBox");
             //
@@ -511,7 +511,7 @@ namespace CKAN.GUI
             this.RefreshPreLabel.Location = new System.Drawing.Point(9, 66);
             this.RefreshPreLabel.Name = "RefreshPreLabel";
             this.RefreshPreLabel.Size = new System.Drawing.Size(114, 26);
-            this.RefreshPreLabel.TabIndex = 2;
+            this.RefreshPreLabel.TabIndex = 32;
             resources.ApplyResources(this.RefreshPreLabel, "RefreshPreLabel");
             //
             // RefreshTextBox
@@ -522,7 +522,7 @@ namespace CKAN.GUI
             this.RefreshTextBox.Location = new System.Drawing.Point(125, 64);
             this.RefreshTextBox.Name = "RefreshTextBox";
             this.RefreshTextBox.Size = new System.Drawing.Size(25, 20);
-            this.RefreshTextBox.TabIndex = 3;
+            this.RefreshTextBox.TabIndex = 33;
             this.toolTip1.SetToolTip(this.RefreshTextBox, "Setting to 0 will not refresh modlist");
             this.RefreshTextBox.TextChanged += new System.EventHandler(this.RefreshTextBox_TextChanged);
             this.RefreshTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.RefreshTextBox_KeyPress);
@@ -533,7 +533,7 @@ namespace CKAN.GUI
             this.RefreshPostLabel.Location = new System.Drawing.Point(153, 66);
             this.RefreshPostLabel.Name = "RefreshPostLabel";
             this.RefreshPostLabel.Size = new System.Drawing.Size(49, 13);
-            this.RefreshPostLabel.TabIndex = 4;
+            this.RefreshPostLabel.TabIndex = 34;
             resources.ApplyResources(this.RefreshPostLabel, "RefreshPostLabel");
             //
             // PauseRefreshCheckBox
@@ -543,7 +543,7 @@ namespace CKAN.GUI
             this.PauseRefreshCheckBox.Location = new System.Drawing.Point(12, 103);
             this.PauseRefreshCheckBox.Name = "PauseRefreshCheckBox";
             this.PauseRefreshCheckBox.Size = new System.Drawing.Size(105, 17);
-            this.PauseRefreshCheckBox.TabIndex = 5;
+            this.PauseRefreshCheckBox.TabIndex = 35;
             this.PauseRefreshCheckBox.CheckedChanged += new System.EventHandler(this.PauseRefreshCheckBox_CheckedChanged);
             resources.ApplyResources(this.PauseRefreshCheckBox, "PauseRefreshCheckBox");
             //
@@ -560,7 +560,7 @@ namespace CKAN.GUI
             this.MoreSettingsGroupBox.Location = new System.Drawing.Point(280, 310);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
             this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 150);
-            this.MoreSettingsGroupBox.TabIndex = 5;
+            this.MoreSettingsGroupBox.TabIndex = 36;
             this.MoreSettingsGroupBox.TabStop = false;
             resources.ApplyResources(this.MoreSettingsGroupBox, "MoreSettingsGroupBox");
             //
@@ -579,7 +579,7 @@ namespace CKAN.GUI
             this.LanguageSelectionComboBox.Location = new System.Drawing.Point(244, 18);
             this.LanguageSelectionComboBox.Name = "LanguageSelectionComboBox";
             this.LanguageSelectionComboBox.Size = new System.Drawing.Size(220, 17);
-            this.LanguageSelectionComboBox.TabIndex = 0;
+            this.LanguageSelectionComboBox.TabIndex = 37;
             this.LanguageSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.LanguageSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.LanguageSelectionComboBox_SelectionChanged);
             this.LanguageSelectionComboBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.LanguageSelectionComboBox_MouseWheel);
@@ -591,7 +591,7 @@ namespace CKAN.GUI
             this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(12, 41);
             this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
             this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(167, 17);
-            this.RefreshOnStartupCheckbox.TabIndex = 1;
+            this.RefreshOnStartupCheckbox.TabIndex = 38;
             this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
             resources.ApplyResources(this.RefreshOnStartupCheckbox, "RefreshOnStartupCheckbox");
             //
@@ -602,7 +602,7 @@ namespace CKAN.GUI
             this.HideEpochsCheckbox.Location = new System.Drawing.Point(12, 64);
             this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
             this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
-            this.HideEpochsCheckbox.TabIndex = 2;
+            this.HideEpochsCheckbox.TabIndex = 39;
             this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
             resources.ApplyResources(this.HideEpochsCheckbox, "HideEpochsCheckbox");
             //
@@ -613,7 +613,7 @@ namespace CKAN.GUI
             this.HideVCheckbox.Location = new System.Drawing.Point(12, 87);
             this.HideVCheckbox.Name = "HideVCheckbox";
             this.HideVCheckbox.Size = new System.Drawing.Size(204, 17);
-            this.HideVCheckbox.TabIndex = 3;
+            this.HideVCheckbox.TabIndex = 40;
             this.HideVCheckbox.CheckedChanged += new System.EventHandler(this.HideVCheckbox_CheckedChanged);
             resources.ApplyResources(this.HideVCheckbox, "HideVCheckbox");
             //
@@ -626,7 +626,7 @@ namespace CKAN.GUI
             this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 110);
             this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
             this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(452, 32);
-            this.AutoSortUpdateCheckBox.TabIndex = 4;
+            this.AutoSortUpdateCheckBox.TabIndex = 41;
             this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
             resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
             //
