@@ -306,26 +306,26 @@ namespace CKAN.GUI
                               a.G + b.G,
                               a.B + b.B);
 
-        public static Bitmap LerpBitmaps(Bitmap a, Bitmap b, float amount)
+        public static Bitmap LerpBitmaps(Bitmap a, Bitmap b,
+                                         float amount)
+            => amount <= 0 ? a
+             : amount >= 1 ? b
+             : MergeBitmaps(a, b,
+                            // Note pixA and pixB are swapped because our blend function
+                            // pretends 'amount' is the first argument's alpha channel,
+                            // so 0 -> third param by itself
+                            (pixA, pixB) => AlphaBlendWith(pixB, amount, pixA));
+
+        private static Bitmap MergeBitmaps(Bitmap a, Bitmap b,
+                                           Func<Color, Color, Color> how)
         {
-            if (amount <= 0)
-            {
-                return a;
-            }
-            if (amount >= 1)
-            {
-                return b;
-            }
             var c = new Bitmap(a);
-            for (int y = 0; y < c.Height; ++y)
+            foreach (var y in Enumerable.Range(0, c.Height))
             {
-                for (int x = 0; x < c.Width; ++x)
+                foreach (var x in Enumerable.Range(0, c.Width))
                 {
-                    // Note a and b are swapped because our blend function pretends 'amount'
-                    // is the first argument's alpha channel, so 0 -> third param by itself
-                    c.SetPixel(x, y, AlphaBlendWith(b.GetPixel(x, y),
-                                                    amount,
-                                                    a.GetPixel(x, y)));
+                    c.SetPixel(x, y, how(a.GetPixel(x, y),
+                                         b.GetPixel(x, y)));
                 }
             }
             return c;

@@ -30,6 +30,8 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(CompatibleGameVersionsDialog));
+            this.MessageLabel = new System.Windows.Forms.Label();
+            this.MainContentsPanel = new System.Windows.Forms.Panel();
             this.InstancePathLabel = new System.Windows.Forms.Label();
             this.ActualInstancePathLabel = new System.Windows.Forms.Label();
             this.GameVersionLabel = new System.Windows.Forms.Label();
@@ -45,7 +47,44 @@ namespace CKAN.GUI
             this.WarningLabel = new System.Windows.Forms.Label();
             this.CancelChooseCompatibleVersionsButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
+            this.MainContentsPanel.SuspendLayout();
             this.SuspendLayout();
+            //
+            // MessageLabel
+            //
+            this.MessageLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.MessageLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.MessageLabel.BackColor = System.Drawing.SystemColors.Window;
+            this.MessageLabel.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.MessageLabel.Location = new System.Drawing.Point(0, 0);
+            this.MessageLabel.Margin = new System.Windows.Forms.Padding(8, 6, 8, 6);
+            this.MessageLabel.Padding = new System.Windows.Forms.Padding(8, 6, 8, 6);
+            this.MessageLabel.Name = "MessageLabel";
+            this.MessageLabel.Size = new System.Drawing.Size(60, 13);
+            this.MessageLabel.TabIndex = 0;
+            this.MessageLabel.Visible = false;
+            resources.ApplyResources(this.MessageLabel, "MessageLabel");
+            //
+            // MainContentsPanel
+            //
+            this.MainContentsPanel.Controls.Add(this.InstancePathLabel);
+            this.MainContentsPanel.Controls.Add(this.ActualInstancePathLabel);
+            this.MainContentsPanel.Controls.Add(this.GameVersionLabel);
+            this.MainContentsPanel.Controls.Add(this.ActualGameVersionLabel);
+            this.MainContentsPanel.Controls.Add(this.ListHeaderLabel);
+            this.MainContentsPanel.Controls.Add(this.SelectedVersionsCheckedListBox);
+            this.MainContentsPanel.Controls.Add(this.ClearSelectionButton);
+            this.MainContentsPanel.Controls.Add(this.AddVersionLabel);
+            this.MainContentsPanel.Controls.Add(this.AddVersionToListTextBox);
+            this.MainContentsPanel.Controls.Add(this.AddVersionToListButton);
+            this.MainContentsPanel.Controls.Add(this.WildcardExplanationLabel);
+            this.MainContentsPanel.Controls.Add(this.FutureUpdatesLabel);
+            this.MainContentsPanel.Controls.Add(this.WarningLabel);
+            this.MainContentsPanel.Controls.Add(this.CancelChooseCompatibleVersionsButton);
+            this.MainContentsPanel.Controls.Add(this.SaveButton);
+            this.MainContentsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.MainContentsPanel.Name = "MainContentsPanel";
+            this.MainContentsPanel.Size = new System.Drawing.Size(443, 383);
             //
             // InstancePathLabel
             //
@@ -216,21 +255,8 @@ namespace CKAN.GUI
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelChooseCompatibleVersionsButton;
             this.ClientSize = new System.Drawing.Size(443, 383);
-            this.Controls.Add(this.InstancePathLabel);
-            this.Controls.Add(this.ActualInstancePathLabel);
-            this.Controls.Add(this.GameVersionLabel);
-            this.Controls.Add(this.ActualGameVersionLabel);
-            this.Controls.Add(this.ListHeaderLabel);
-            this.Controls.Add(this.SelectedVersionsCheckedListBox);
-            this.Controls.Add(this.ClearSelectionButton);
-            this.Controls.Add(this.AddVersionLabel);
-            this.Controls.Add(this.AddVersionToListTextBox);
-            this.Controls.Add(this.AddVersionToListButton);
-            this.Controls.Add(this.WildcardExplanationLabel);
-            this.Controls.Add(this.FutureUpdatesLabel);
-            this.Controls.Add(this.WarningLabel);
-            this.Controls.Add(this.CancelChooseCompatibleVersionsButton);
-            this.Controls.Add(this.SaveButton);
+            this.Controls.Add(this.MainContentsPanel);
+            this.Controls.Add(this.MessageLabel);
             this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -240,12 +266,16 @@ namespace CKAN.GUI
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Shown += new System.EventHandler(this.CompatibleGameVersionsDialog_Shown);
             resources.ApplyResources(this, "$this");
+            this.MainContentsPanel.ResumeLayout(false);
+            this.MainContentsPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
+        private System.Windows.Forms.Label MessageLabel;
+        private System.Windows.Forms.Panel MainContentsPanel;
         private System.Windows.Forms.Label InstancePathLabel;
         private System.Windows.Forms.Label ActualInstancePathLabel;
         private System.Windows.Forms.Label GameVersionLabel;

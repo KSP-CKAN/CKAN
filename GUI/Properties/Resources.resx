@@ -136,7 +136,9 @@
   <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve"><value>Create junction points (Windows) or symbolic links (Unix) to stock directories instead of copying them.
 If you choose this option, DO NOT move or delete the old instance!!</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
-  <data name="CompatibleGameVersionsDialogGameUpdatedTitle" xml:space="preserve"><value>Game Version Updated</value></data>
+  <data name="CompatibleGameVersionsDialogDefaultedDetails" xml:space="preserve"><value>Default compatibility has been set based on your installed game version. These settings should bring the greatest number of working mods to the most users, but it's still possible that some older mods might misbehave.
+
+If you want to be cautious, click "Clear selection" to uncheck all the boxes.</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdatedDetails" xml:space="preserve"><value>The game has been updated since you last reviewed your compatible game versions. Please make sure that settings are correct.</value></data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (previous game version: {1})</value></data>
   <data name="CompatibleGameVersionsDialogInvalidFormat" xml:space="preserve"><value>Version has invalid format</value></data>

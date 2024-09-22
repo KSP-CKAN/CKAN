@@ -213,14 +213,14 @@ namespace CKAN.Games.KerbalSpaceProgram
                 ?.Builds
                 ?.Select(b => GameVersion.Parse(b.Value))
                  .ToArray()
-                ?? new GameVersion[] { };
+                ?? Array.Empty<GameVersion>();
 
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<JBuilds>()
                    ?.Builds
                    ?.Select(b => GameVersion.Parse(b.Value))
                     .ToArray()
-                   ?? new GameVersion[] { };
+                   ?? Array.Empty<GameVersion>();
 
         public GameVersion? DetectVersion(DirectoryInfo where)
             => ServiceLocator.Container
@@ -232,6 +232,28 @@ namespace CKAN.Games.KerbalSpaceProgram
                         .TryGetVersion(where.FullName, out GameVersion? verFromReadme)
                             ? verFromReadme
                             : null;
+
+        public GameVersion[] DefaultCompatibleVersions(GameVersion installedVersion)
+            // 1.2.9 was a prerelease that broke compatibility with previous 1.2 releases
+            => installedVersion.Major == 1 && installedVersion.Minor == 2 && installedVersion.Patch == 9
+                   ? Array.Empty<GameVersion>()
+                   : UnityBreakVersions.FirstOrDefault(brk => brk <= installedVersion)
+                     is GameVersion latestUnityBreak
+                       ? MinorVersionsInRange(latestUnityBreak, installedVersion)
+                       : new GameVersion[]
+                         {
+                             new GameVersion(installedVersion.Major,
+                                             installedVersion.Minor)
+                         };
+
+        private static readonly GameVersion[] UnityBreakVersions =
+            new int[] {8, 4, 2, 1}.Select(minor => new GameVersion(1, minor))
+                                  .ToArray();
+
+        private static GameVersion[] MinorVersionsInRange(GameVersion min, GameVersion max)
+            => Enumerable.Range(min.Minor, max.Minor - min.Minor + 1)
+                         .Select(minor => new GameVersion(min.Major, minor))
+                         .ToArray();
 
         public string CompatibleVersionsFile => "compatible_ksp_versions.json";
 

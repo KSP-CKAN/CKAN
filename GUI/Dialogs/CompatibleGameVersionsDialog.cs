@@ -67,21 +67,51 @@ namespace CKAN.GUI
             evt.Cancel = Util.TryOpenWebPage(HelpURLs.CompatibleGameVersions);
         }
 
+        private void ShowMessage(string msg)
+        {
+            if (string.IsNullOrEmpty(msg))
+            {
+                MessageLabel.Text = "";
+                MessageLabel.Visible = false;
+            }
+            else
+            {
+                MessageLabel.Text = msg;
+                MessageLabel.Visible = true;
+                MessageLabel.Height = Util.LabelStringHeight(CreateGraphics(),
+                                                             MessageLabel);
+                Height += MessageLabel.Height;
+            }
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (MessageLabel.Visible)
+            {
+                MessageLabel.Height = Util.LabelStringHeight(CreateGraphics(),
+                                                             MessageLabel);
+            }
+        }
+
         private void CompatibleGameVersionsDialog_Shown(object? sender, EventArgs? e)
         {
             if (_inst.CompatibleVersionsAreFromDifferentGameVersion)
             {
                 CancelChooseCompatibleVersionsButton.Visible = false;
-                ActualGameVersionLabel.Text = string.Format(
-                    Properties.Resources.CompatibleGameVersionsDialogVersionDetails,
-                    _inst.Version(),
-                    _inst.GameVersionWhenCompatibleVersionsWereStored);
-                ActualGameVersionLabel.ForeColor = Color.Red;
-                MessageBox.Show(this,
-                                Properties.Resources.CompatibleGameVersionsDialogGameUpdatedDetails,
-                                Properties.Resources.CompatibleGameVersionsDialogGameUpdatedTitle,
-                                MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
+                if (_inst.GameVersionWhenCompatibleVersionsWereStored == null)
+                {
+                    ShowMessage(Properties.Resources.CompatibleGameVersionsDialogDefaultedDetails);
+                }
+                else
+                {
+                    ActualGameVersionLabel.Text = string.Format(
+                        Properties.Resources.CompatibleGameVersionsDialogVersionDetails,
+                        _inst.Version(),
+                        _inst.GameVersionWhenCompatibleVersionsWereStored);
+                    ActualGameVersionLabel.ForeColor = Color.Red;
+                    ShowMessage(Properties.Resources.CompatibleGameVersionsDialogGameUpdatedDetails);
+                }
             }
         }
 

@@ -161,11 +161,11 @@ namespace CKAN.Games.KerbalSpaceProgram2
                 is Stream s
                     ? JsonConvert.DeserializeObject<GameVersion[]>(new StreamReader(s).ReadToEnd())
                     : null)
-                ?? new GameVersion[] { };
+                ?? Array.Empty<GameVersion>();
 
         public GameVersion[] ParseBuildsJson(JToken json)
             => json.ToObject<GameVersion[]>()
-                ?? new GameVersion[] { };
+                ?? Array.Empty<GameVersion>();
 
         public GameVersion DetectVersion(DirectoryInfo where)
             => VersionFromAssembly(Path.Combine(where.FullName,
@@ -201,6 +201,12 @@ namespace CKAN.Games.KerbalSpaceProgram2
                                         out GameVersion? v)
                     ? v
                     : null;
+
+        public GameVersion[] DefaultCompatibleVersions(GameVersion installedVersion)
+            // KSP2 didn't last long enough to break compatibility :~(
+            => Enumerable.Range(1, 2)
+                         .Select(minor => new GameVersion(0, minor))
+                         .ToArray();
 
         public string CompatibleVersionsFile => "compatible_game_versions.json";
 

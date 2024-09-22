@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't hide other providing mods for installed, make installed bold (#4163 by: HebaruSan)
 - [CLI] Set headless mode automatically (#4166 by: HebaruSan)
 - [Core] Autogenerate spec version for modpacks (#4173 by: HebaruSan)
+- [Multiple] Set compat of new instances based on Unity updates and alert user (#4191 by: HebaruSan)
 
 ### Bugfixes
 

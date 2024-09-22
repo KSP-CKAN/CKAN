@@ -164,6 +164,11 @@ namespace CKAN
                 GameVersion.TryParse(compatibleGameVersions.GameVersionWhenWritten, out GameVersion? mainVer);
                 GameVersionWhenCompatibleVersionsWereStored = mainVer;
             }
+            else if (Version() is GameVersion gv)
+            {
+                _compatibleVersions = game.DefaultCompatibleVersions(gv)
+                                          .ToList();
+            }
         }
 
         private string CompatibleGameVersionsFile()
