@@ -49,16 +49,22 @@ If the metadata we have is incorrect please [open an issue][7] and let us know.
 
 If you want to contribute, please read our [CONTRIBUTING][4] file.
 
+## Thanks
+
+Our sincere thanks to [SignPath.io][10] for allowing us to use their free code signing service, and to [the SignPath Foundation][11] for giving us a free code signing certificate!
+
 ---
+
 Note: Are you looking for the Open Data portal software called CKAN? If so, their GitHub repository is found [here][9].
 
-
- [1]:https://github.com/KSP-CKAN/CKAN/commits/master
- [2]:https://github.com/KSP-CKAN/CKAN/wiki/User-guide
- [3]:https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#verifying-metadata-files
- [4]:https://github.com/KSP-CKAN/.github/blob/master/CONTRIBUTING.md
- [5]:https://github.com/KSP-CKAN/CKAN/wiki
- [6]:https://github.com/KSP-CKAN/CKAN/issues/new
- [7]:https://github.com/KSP-CKAN/NetKAN/issues/new
- [8]:http://schemastore.org/json/
- [9]:https://github.com/ckan/ckan
+ [1]: https://github.com/KSP-CKAN/CKAN/commits/master
+ [2]: https://github.com/KSP-CKAN/CKAN/wiki/User-guide
+ [3]: https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-mod-to-the-CKAN#verifying-metadata-files
+ [4]: https://github.com/KSP-CKAN/.github/blob/master/CONTRIBUTING.md
+ [5]: https://github.com/KSP-CKAN/CKAN/wiki
+ [6]: https://github.com/KSP-CKAN/CKAN/issues/new
+ [7]: https://github.com/KSP-CKAN/NetKAN/issues/new
+ [8]: http://schemastore.org/json/
+ [9]: https://github.com/ckan/ckan
+ [10]: https://signpath.io/
+ [11]: https://signpath.org/
