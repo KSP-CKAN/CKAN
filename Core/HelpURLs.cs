@@ -13,7 +13,6 @@ namespace CKAN
         public const string ModPacks = "https://github.com/KSP-CKAN/CKAN/wiki/Sharing-a-modlist-%28metapackages%29";
         public const string AuthTokens = "https://github.com/KSP-CKAN/CKAN/wiki/Adding-a-GitHub-API-authtoken";
         public const string CertificateErrors = "https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors";
-        public const string WindowsDevBuilds = "https://github.com/KSP-CKAN/CKAN/wiki/Using-dev-builds-on-Windows";
 
         public const string CloneFakeInstances = "https://github.com/KSP-CKAN/CKAN/pull/2627";
         public const string DeleteDirectories = "https://github.com/KSP-CKAN/CKAN/pull/2962";

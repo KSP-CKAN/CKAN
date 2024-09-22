@@ -32,12 +32,6 @@ namespace CKAN.GUI
                 coreConfig.DevBuilds = !YesNoDialog(Properties.Resources.MainReleasesOrDevBuildsPrompt,
                                                     Properties.Resources.MainReleasesOrDevBuildsYes,
                                                     Properties.Resources.MainReleasesOrDevBuildsNo);
-                if (coreConfig.DevBuilds.Value && Platform.IsWindows)
-                {
-                    // Tell Windows users about malware scanner's false positives
-                    // and how to disable it, if they feel safe doing it
-                    Utilities.ProcessStartURL(HelpURLs.WindowsDevBuilds);
-                }
             }
         }
 

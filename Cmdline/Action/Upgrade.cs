@@ -72,12 +72,6 @@ namespace CKAN.CmdLine
                                || (!options.stable_release && (config.DevBuilds ?? false));
                 if (devBuild != config.DevBuilds)
                 {
-                    if (!config.DevBuilds.HasValue && devBuild && Platform.IsWindows)
-                    {
-                        // Tell Windows users about malware scanner's false positives
-                        // and how to disable it, if they feel safe doing it
-                        Utilities.ProcessStartURL(HelpURLs.WindowsDevBuilds);
-                    }
                     config.DevBuilds = devBuild;
                     user.RaiseMessage(
                         config.DevBuilds ?? false
