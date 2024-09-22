@@ -17,6 +17,7 @@ env:
 jobs:
   sign-assets:
     uses: ./.github/workflows/sign.yml
+    secrets: inherit
 
   check-dev-build:
     runs-on: ubuntu-latest
