@@ -1,0 +1,35 @@
+name: Sign assets
+
+on:
+  workflow_call:
+
+jobs:
+  test-release:
+    uses: ./.github/workflows/test.yml
+  smoke-inflator:
+    uses: ./.github/workflows/smoke.yml
+
+  sign:
+    runs-on: ubuntu-latest
+    needs:
+      - test-release
+      - smoke-inflator
+    steps:
+      - uses: signpath/github-action-submit-signing-request@v1
+        id: sign
+        with:
+          project-slug: CKAN
+          organization-id: 0cd9fc3f-b78d-4214-b152-b2e93c952e14
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: release
+          github-artifact-id: ${{ needs.smoke-inflator.outputs.unsigned-artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: _build/signed
+      - name: Upload signed artifact
+        id: upload-signed-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed
+          path: _build/signed/
+          retention-days: 7

@@ -8,15 +8,16 @@ on:
       - reopened
   workflow_call:
     outputs:
-      repack-artifact-id:
-        description: "Artifact ID of the repack"
-        value: ${{ jobs.build-release.outputs.repack-artifact-id }}
+      unsigned-artifact-id:
+        description: Artifact ID of the assets to be signed
+        value: ${{ jobs.build-release.outputs.unsigned-artifact-id }}
 
 jobs:
   build-release:
     uses: ./.github/workflows/build.yml
     with:
       configuration: Release
+
   smoke-test-inflator:
     needs: build-release
     runs-on: ubuntu-latest

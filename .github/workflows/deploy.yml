@@ -15,11 +15,8 @@ env:
   AWS_S3_BUCKET: ksp-ckan
 
 jobs:
-  test-release:
-    uses: ./.github/workflows/test.yml
-
-  smoke-inflator:
-    uses: ./.github/workflows/smoke.yml
+  sign-assets:
+    uses: ./.github/workflows/sign.yml
 
   check-dev-build:
     runs-on: ubuntu-latest
@@ -40,13 +37,12 @@ jobs:
 
   upload-release-s3:
     needs:
-      - test-release
-      - smoke-inflator
+      - sign-assets
+    if: github.event_name != 'repository_dispatch'
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    if: github.event_name != 'repository_dispatch'
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -55,11 +51,15 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - uses: actions/checkout@v4
-      - name: Download repack artifact
+      - name: Download signed artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
+          name: signed
+          path: _build/signed
+      - name: Put signed exes into repack path
+        run: |
+          mkdir -p _build/repack/Release
+          cp _build/signed/*.exe _build/repack/Release
       - uses: actions/setup-python@v5
         with:
           python-version: 3.11
@@ -70,14 +70,13 @@ jobs:
           pip install gitpython
           git config --global --add safe.directory '*'
           python bin/version_info.py > _build/repack/Release/version.json
-      - name: Push ckan.exe, netkan.exe, and version.json to S3
+      - name: Push ckan.exe, AutoUpdater.exe, netkan.exe, and version.json to S3
         run: aws s3 sync _build/repack/Release s3://${AWS_S3_BUCKET} --follow-symlinks
 
   upload-dmg:
     needs:
       - check-dev-build
-      - test-release
-      - smoke-inflator
+      - sign-assets
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -93,11 +92,15 @@ jobs:
       - name: Install OSX build dependencies
         run: sudo apt-get install -y libplist-utils xorriso
       - uses: actions/checkout@v4
-      - name: Download repack artifact
+      - name: Download signed artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
+          name: signed
+          path: _build/signed
+      - name: Put signed exe into repack path
+        run: |
+          mkdir -p _build/repack/Release
+          cp _build/signed/ckan.exe _build/repack/Release
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
       - name: Push dmg to S3
@@ -106,8 +109,7 @@ jobs:
   upload-deb:
     needs:
       - check-dev-build
-      - test-release
-      - smoke-inflator
+      - sign-assets
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -121,11 +123,15 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - uses: actions/checkout@v4
-      - name: Download repack artifact
+      - name: Download signed artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
+          name: signed
+          path: _build/signed
+      - name: Put signed exe into repack path
+        run: |
+          mkdir -p _build/repack/Release
+          cp _build/signed/ckan.exe _build/repack/Release
       - name: Build deb
         env:
           CODENAME: nightly
@@ -160,8 +166,7 @@ jobs:
   upload-rpm:
     needs:
       - check-dev-build
-      - test-release
-      - smoke-inflator
+      - sign-assets
     runs-on: ubuntu-latest
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -177,11 +182,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
-      - name: Download repack artifact
+      - name: Download signed artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
+          name: signed
+          path: _build/signed
+      - name: Put signed exe into repack path
+        run: |
+          mkdir -p _build/repack/Release
+          cp _build/signed/ckan.exe _build/repack/Release
       - name: Build rpm
         run: ./build rpm --configuration=Release --exclusive
       - name: Import GPG key
@@ -202,10 +211,9 @@ jobs:
 
   upload-inflator:
     needs:
-      - test-release
-      - smoke-inflator
-    runs-on: ubuntu-latest
+      - sign-assets
     if: github.event_name != 'repository_dispatch'
+    runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -239,8 +247,7 @@ jobs:
 
   upload-metadata-tester:
     needs:
-      - test-release
-      - smoke-inflator
+      - sign-assets
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -266,8 +273,7 @@ jobs:
 
   notify-discord:
     needs:
-      - test-release
-      - smoke-inflator
+      - sign-assets
       - upload-release-s3
       - upload-dmg
       - upload-deb
