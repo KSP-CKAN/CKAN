@@ -11,6 +11,7 @@ env:
 jobs:
   sign-assets:
     uses: ./.github/workflows/sign.yml
+    secrets: inherit
 
   upload-nuget:
     runs-on: ubuntu-latest
