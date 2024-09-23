@@ -27,7 +27,8 @@ namespace CKAN.GUI
         {
             ReposListBox.Items.Clear();
             ReposListBox.Items.AddRange(
-                repos.Select(r => new ListViewItem(r.name, r.uri.ToString())
+                repos.Select(r => new ListViewItem(new string[] { r.name,
+                                                                  r.uri.ToString() })
                                   {
                                       Tag = r
                                   })
