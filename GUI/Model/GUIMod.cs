@@ -56,7 +56,7 @@ namespace CKAN.GUI
 
         public string Name { get; private set; }
         public bool IsInstalled { get; private set; }
-        public bool IsAutoInstalled { get; private set; }
+        public bool IsAutoInstalled => InstalledMod?.AutoInstalled ?? false;
         public bool HasUpdate { get; set; }
         public bool HasReplacement { get; private set; }
         public bool IsIncompatible { get; private set; }
@@ -128,7 +128,6 @@ namespace CKAN.GUI
             InstalledMod     = instMod;
             selectedMod      = registry.GetModuleByVersion(instMod.identifier, instMod.Module.version)
                                ?? instMod.Module;
-            IsAutoInstalled  = instMod.AutoInstalled;
             InstallDate      = instMod.InstallTime;
 
             InstalledVersion = instMod.Module.version.ToString(hideEpochs, hideV);
@@ -342,8 +341,8 @@ namespace CKAN.GUI
                 var old_value = (bool) auto_cell.Value;
 
                 bool value = set_value_to ?? old_value;
-                IsAutoInstalled = value;
                 InstalledMod.AutoInstalled = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsAutoInstalled"));
 
                 if (old_value != value)
                 {
