@@ -110,8 +110,8 @@ namespace CKAN
         /// </summary>
         private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
         {
-            List<CkanModule> downloads = mods.Where(module => !Cache.IsCached(module)).ToList();
-
+            var downloads = mods.Where(module => !module.IsMetapackage && !Cache.IsCached(module))
+                                .ToList();
             if (downloads.Count > 0)
             {
                 downloader.DownloadModules(downloads);
@@ -166,7 +166,9 @@ namespace CKAN
             foreach (var module in modsToInstall)
             {
                 User.RaiseMessage(" * {0}", Cache.DescribeAvailability(module));
-                if (!Cache.IsMaybeCachedZip(module))
+                // Alert about attempts to install DLC before downloading or installing anything
+                CheckKindInstallationKraken(module);
+                if (!module.IsMetapackage && !Cache.IsMaybeCachedZip(module))
                 {
                     downloads.Add(module);
                 }
@@ -242,8 +244,7 @@ namespace CKAN
                              bool                 autoInstalled,
                              Registry             registry,
                              ref HashSet<string>? possibleConfigOnlyDirs,
-                             IProgress<int>?      progress,
-                             string?              filename = null)
+                             IProgress<int>?      progress)
         {
             CheckKindInstallationKraken(module);
             var version = registry.InstalledVersion(module.identifier);
@@ -256,15 +257,19 @@ namespace CKAN
                 return;
             }
 
-            // Find ZIP in the cache if we don't already have it.
-            filename ??= Cache.GetCachedFilename(module);
-
-            // If we *still* don't have a file, then kraken bitterly.
-            if (filename == null)
+            string? filename = null;
+            if (!module.IsMetapackage)
             {
-                throw new FileNotFoundKraken(null,
-                                             string.Format(Properties.Resources.ModuleInstallerZIPNotInCache,
-                                                           module));
+                // Find ZIP in the cache if we don't already have it.
+                filename ??= Cache.GetCachedFilename(module);
+
+                // If we *still* don't have a file, then kraken bitterly.
+                if (filename == null)
+                {
+                    throw new FileNotFoundKraken(null,
+                                                 string.Format(Properties.Resources.ModuleInstallerZIPNotInCache,
+                                                               module));
+                }
             }
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
@@ -285,19 +290,14 @@ namespace CKAN
 
             // Fire our callback that we've installed a module, if we have one.
             onReportModInstalled?.Invoke(module);
-
         }
 
         /// <summary>
-        /// Check if the given module is a metapackage:
+        /// Check if the given module is a DLC:
         /// if it is, throws a BadCommandKraken.
         /// </summary>
         private static void CheckKindInstallationKraken(CkanModule module)
         {
-            if (module.IsMetapackage)
-            {
-                throw new BadCommandKraken(Properties.Resources.ModuleInstallerMetapackage);
-            }
             if (module.IsDLC)
             {
                 throw new BadCommandKraken(Properties.Resources.ModuleInstallerDLC);
@@ -313,14 +313,18 @@ namespace CKAN
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
         private List<string> InstallModule(CkanModule           module,
-                                           string               zip_filename,
+                                           string?              zip_filename,
                                            Registry             registry,
                                            ref HashSet<string>? possibleConfigOnlyDirs,
                                            IProgress<int>?      moduleProgress)
         {
-            CheckKindInstallationKraken(module);
             var createdPaths = new List<string>();
-
+            if (module.IsMetapackage || zip_filename == null)
+            {
+                // It's OK to include metapackages in changesets,
+                // but there's no work to do for them
+                return createdPaths;
+            }
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
                 var filters = ServiceLocator.Container.Resolve<IConfiguration>().GlobalInstallFilters
@@ -1057,23 +1061,22 @@ namespace CKAN
         /// This *will* save the registry.
         /// </summary>
         /// <param name="add">Modules to add</param>
+        /// <param name="autoInstalled">true or false for each item in `add`</param>
         /// <param name="remove">Modules to remove</param>
         /// <param name="newModulesAreAutoInstalled">true if newly installed modules should be marked auto-installed, false otherwise</param>
         private void AddRemove(ref HashSet<string>?         possibleConfigOnlyDirs,
                                RegistryManager              registry_manager,
-                               IEnumerable<CkanModule>      add,
-                               IEnumerable<InstalledModule> remove,
-                               bool                         enforceConsistency,
-                               bool                         newModulesAreAutoInstalled)
+                               ICollection<CkanModule>      add,
+                               ICollection<bool>            autoInstalled,
+                               ICollection<InstalledModule> remove,
+                               bool                         enforceConsistency)
         {
             // TODO: We should do a consistency check up-front, rather than relying
             // upon our registry catching inconsistencies at the end.
 
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-                remove = remove.Memoize();
-                add    = add.Memoize();
-                int totSteps = remove.Count() + add.Count();
+                int totSteps = remove.Count + add.Count;
                 int step = 0;
                 foreach (InstalledModule instMod in remove)
                 {
@@ -1085,7 +1088,7 @@ namespace CKAN
                     Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs, registry_manager.registry);
                 }
 
-                foreach (CkanModule module in add)
+                foreach ((CkanModule module, bool autoInst) in add.Zip(autoInstalled))
                 {
                     var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
                     int percent_complete = (step++ * 70) / totSteps;
@@ -1095,7 +1098,7 @@ namespace CKAN
                     // For upgrading, new modules are dependencies and should be marked auto-installed,
                     // for replacing, new modules are the replacements and should not be marked auto-installed
                     Install(module,
-                            previous?.AutoInstalled ?? newModulesAreAutoInstalled,
+                            previous?.AutoInstalled ?? autoInst,
                             registry_manager.registry,
                             ref possibleConfigOnlyDirs,
                             null);
@@ -1116,7 +1119,7 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(IEnumerable<CkanModule> modules,
+        public void Upgrade(ICollection<CkanModule> modules,
                             IDownloader             netAsyncDownloader,
                             ref HashSet<string>?    possibleConfigOnlyDirs,
                             RegistryManager         registry_manager,
@@ -1124,8 +1127,8 @@ namespace CKAN
                             bool                    resolveRelationships = false,
                             bool                    ConfirmPrompt        = true)
         {
-            modules = modules.Memoize();
             var registry = registry_manager.registry;
+            var autoInstalled = modules.ToDictionary(m => m, m => true);
 
             if (resolveRelationships)
             {
@@ -1135,9 +1138,9 @@ namespace CKAN
                            .OfType<CkanModule>(),
                     RelationshipResolverOptions.DependsOnlyOpts(),
                     registry,
-                    instance.VersionCriteria()
-                );
-                modules = resolver.ModList().Memoize();
+                    instance.VersionCriteria());
+                modules = resolver.ModList().ToArray();
+                autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
             }
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToUpgrade);
@@ -1258,9 +1261,9 @@ namespace CKAN
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
                       modules,
+                      modules.Select(m => autoInstalled[m]).ToArray(),
                       to_remove,
-                      enforceConsistency,
-                      true);
+                      enforceConsistency);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 
@@ -1353,14 +1356,12 @@ namespace CKAN
             }
             var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry, instance.VersionCriteria());
             var resolvedModsToInstall = resolver.ModList().ToList();
-            AddRemove(
-                ref possibleConfigOnlyDirs,
-                registry_manager,
-                resolvedModsToInstall,
-                modsToRemove,
-                enforceConsistency,
-                false
-            );
+            AddRemove(ref possibleConfigOnlyDirs,
+                      registry_manager,
+                      resolvedModsToInstall,
+                      resolvedModsToInstall.Select(m => false).ToArray(),
+                      modsToRemove,
+                      enforceConsistency);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 

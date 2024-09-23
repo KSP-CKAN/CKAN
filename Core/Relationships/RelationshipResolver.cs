@@ -421,11 +421,6 @@ namespace CKAN
         /// </summary>
         private void Add(CkanModule module, SelectionReason reason)
         {
-            if (module.IsMetapackage)
-            {
-                AddReason(module, reason);
-                return;
-            }
             if (module.IsDLC)
             {
                 throw new ModuleIsDLCKraken(module);
