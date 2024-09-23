@@ -173,6 +173,14 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("author",   () => GetAuthors(ghRepo, ghRelease));
                 json.Remove("$kref");
                 json.SafeAdd("download", ghAsset.Download.ToString());
+                if (ghRef.UseSourceArchive)
+                {
+                    // https://docs.github.com/en/rest/repos/contents#download-a-repository-archive-zip
+                    // GitHub requires clients to specify JSON format
+                    // to download a source ZIP (!!!)
+                    json.SafeAdd("download_content_type",
+                                 "application/vnd.github+json");
+                }
                 json.SafeAdd(Metadata.UpdatedPropertyName, ghAsset.Updated);
 
                 if (ghRef.Project.Contains('_'))

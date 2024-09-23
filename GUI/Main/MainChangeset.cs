@@ -46,7 +46,7 @@ namespace CKAN.GUI
             {
                 Wait.StartWaiting(InstallMods, PostInstallMods, true,
                     new InstallArgument(
-                            // Only pass along user requested mods, so auto-installed can be determined
+                        // Only pass along user requested mods, so auto-installed can be determined
                         changeset.Where(ch => ch.Reasons.Any(r => r is SelectionReason.UserRequested)
                                               // Include all removes and upgrades
                                               || ch.ChangeType != GUIModChangeType.Install)

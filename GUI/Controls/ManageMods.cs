@@ -1000,6 +1000,12 @@ namespace CKAN.GUI
                                 RegistryManager.Instance(currentInstance, repoData).registry);
                         });
                         break;
+
+                    case "IsAutoInstalled":
+                        // Update the changeset
+                        UpdateChangeSetAndConflicts(currentInstance,
+                            RegistryManager.Instance(currentInstance, repoData).registry);
+                        break;
                 }
             }
         }

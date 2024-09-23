@@ -214,7 +214,6 @@ namespace CKAN.GUI
                          .Union(resolver.ModList()
                                         // Changeset already contains changes for these
                                         .Except(extraInstalls)
-                                        .Where(m => !m.IsMetapackage)
                                         .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m)))),
                 resolver.ConflictList,
                 resolver.ConflictDescriptions.ToList());

@@ -64,6 +64,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Work around OpenFileDialog always showing all shortcuts despite filters (#4168 by: HebaruSan)
 - [Core] Suppress exceptions for non-indexed mods (#4170 by: HebaruSan)
 - [GUI] Label search fixes (#4187 by: HebaruSan)
+- [Multiple] Fix installation of metapackages from repositories (#4192 by: HebaruSan)
 
 ### Internal
 

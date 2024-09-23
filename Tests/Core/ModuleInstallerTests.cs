@@ -1226,7 +1226,8 @@ namespace Tests.Core
                 // Act
                 installer.Upgrade(upgradeIdentifiers.Select(ident =>
                                       registry.LatestAvailable(ident, inst.KSP.VersionCriteria()))
-                                                    .OfType<CkanModule>(),
+                                                    .OfType<CkanModule>()
+                                                    .ToArray(),
                                   downloader, ref possibleConfigOnlyDirs, regMgr, false);
 
                 // Assert
