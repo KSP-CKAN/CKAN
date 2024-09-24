@@ -52,6 +52,11 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - uses: actions/checkout@v4
+      - name: Download repack artifact to get netkan.exe
+        uses: actions/download-artifact@v4
+        with:
+          name: Release-repack-unsigned
+          path: _build/repack
       - name: Download signed artifact
         uses: actions/download-artifact@v4
         with:
