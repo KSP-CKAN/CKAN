@@ -58,7 +58,7 @@ namespace CKAN.NetKAN.Transformers
                     json["download_hash"] = download_hashJson;
 
                     Log.Debug("Calculating download MIME type...");
-                    json["download_content_type"] = _fileService.GetMimetype(file);
+                    json.SafeAdd("download_content_type", _fileService.GetMimetype(file));
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
