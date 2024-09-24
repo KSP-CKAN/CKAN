@@ -40,7 +40,7 @@ namespace CKAN.ConsoleUI {
         {
             debug    = dbg;
             manager  = mgr;
-            this.regMgr   = regMgr;
+            this.regMgr = regMgr;
             registry = regMgr.registry;
             this.repoData = repoData;
             this.userAgent = userAgent;
@@ -153,6 +153,13 @@ namespace CKAN.ConsoleUI {
                 1, 2, -searchWidth - 2,
                 () => string.Format(Properties.Resources.ModListCount, moduleList.VisibleRowCount())
             ));
+            // Show total download size of all installed mods
+            AddObject(new ConsoleLabel(
+                1, 3, searchWidth,
+                () => string.Format(Properties.Resources.ModListSizeOnDisk, CkanModule.FmtSize(totalInstalledDownloadSize())),
+                null,
+                th => th.DimLabelFg));
+
             AddObject(searchBox);
             AddObject(moduleList);
 
@@ -268,13 +275,11 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
 
-            // Show total download size of all installed mods
-            AddObject(new ConsoleLabel(
-                1, -1, searchWidth,
-                () => string.Format(Properties.Resources.ModListSizeOnDisk, CkanModule.FmtSize(totalInstalledDownloadSize())),
-                null,
-                th => th.DimLabelFg
-            ));
+            // Abstract of currently selected mod under grid
+            AddObject(new ConsoleLabel(1, -1, -1,
+                                       () => moduleList.Selection?.@abstract.Trim() ?? "",
+                                       null,
+                                       th => th.DimLabelFg));
 
             AddObject(new ConsoleLabel(
                 -searchWidth, -1, -2,
