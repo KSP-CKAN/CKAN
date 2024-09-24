@@ -108,6 +108,7 @@ namespace CKAN.ConsoleUI {
                 if (dependencyList.Selection != null) {
                     LaunchSubScreen(new ModInfoScreen(theme, manager, reg, userAgent, plan,
                                                              dependencyList.Selection.module,
+                                                             null,
                                                              debug));
                 }
                 return true;

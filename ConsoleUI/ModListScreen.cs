@@ -193,7 +193,8 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddBinding(Keys.Enter, (object sender) => {
                 if (moduleList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(theme, manager, registry, userAgent, plan, moduleList.Selection, debug));
+                    LaunchSubScreen(new ModInfoScreen(theme, manager, registry, userAgent,
+                                                      plan, moduleList.Selection, upgradeableGroups?[true], debug));
                 }
                 return true;
             });

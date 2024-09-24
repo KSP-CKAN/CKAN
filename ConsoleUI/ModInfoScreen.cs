@@ -22,6 +22,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="cp">Plan of other mods to be added or removed</param>
         /// <param name="m">The module to display</param>
+        /// <param name="upgradeable">Modules that can be upgraded, if any</param>
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public ModInfoScreen(ConsoleTheme        theme,
                              GameInstanceManager mgr,
@@ -29,6 +30,7 @@ namespace CKAN.ConsoleUI {
                              string?             userAgent,
                              ChangePlan          cp,
                              CkanModule          m,
+                             List<CkanModule>?   upgradeable,
                              bool                dbg)
             : base(theme)
         {
@@ -38,6 +40,10 @@ namespace CKAN.ConsoleUI {
             plan     = cp;
             this.registry = registry;
             this.userAgent = userAgent;
+            this.upgradeable = upgradeable
+                                ?? registry.CheckUpgradeable(manager.CurrentInstance,
+                                                             new HashSet<string>())
+                                           [true];
 
             int midL = (Console.WindowWidth / 2) - 1;
 
@@ -264,9 +270,6 @@ namespace CKAN.ConsoleUI {
                 const int lblW = 16;
                 int midL = (Console.WindowWidth / 2) - 1;
                 int nameW = midL - 2 - lblW - 2 - 1;
-                var upgradeable = registry.CheckUpgradeable(manager.CurrentInstance,
-                                                            new HashSet<string>())
-                                          [true];
                 var depends = (mod.depends?.Select(dep => RelationshipString(dep, upgradeable, nameW))
                                           ?? Enumerable.Empty<string>())
                                   .ToArray();
@@ -601,6 +604,7 @@ namespace CKAN.ConsoleUI {
         private readonly GameInstanceManager manager;
         private readonly IRegistryQuerier    registry;
         private readonly string?             userAgent;
+        private readonly List<CkanModule>    upgradeable;
         private readonly ChangePlan          plan;
         private readonly CkanModule          mod;
         private readonly bool                debug;
