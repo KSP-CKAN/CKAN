@@ -25,7 +25,7 @@ namespace CKAN.ConsoleUI {
                                       RepositoryDataManager repoData,
                                       GameInstance          k,
                                       string?               userAgent)
-            : base(theme, mgr, k.Name, k.GameDir())
+            : base(theme, mgr, k.Name, Platform.FormatPath(k.GameDir()))
         {
             ksp = k;
             try {
