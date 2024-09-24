@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Support Windows KSP1 instances on Linux (#4044 by: HebaruSan)
 - [GUI] I18n updates from Crowdin (#4050 by: HebaruSan)
 - [Multiple] Better version specific relationships at install and upgrade (#4023, #4152 by: HebaruSan)
-- [GUI] Proportional, granular progress updates for installing (#4055 by: HebaruSan)
+- [GUI] Proportional, granular progress updates (#4055, #4193 by: HebaruSan)
 - [GUI] Modpack compatibility prompt, GameComparator clean-up (#4056 by: HebaruSan)
 - [ConsoleUI] Add downloads column for ConsoleUI (#4063 by: HebaruSan)
 - [ConsoleUI] Play game option for ConsoleUI (#4064 by: HebaruSan)
