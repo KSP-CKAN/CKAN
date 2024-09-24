@@ -761,16 +761,19 @@ namespace CKAN
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                int step = 0;
-                foreach (string mod in goners)
+                var registry = registry_manager.registry;
+                var progDescr = "";
+                var progress = new ProgressScalePercentsByFileSizes(
+                                   new Progress<int>(percent => User.RaiseProgress(progDescr, percent)),
+                                   goners.Select(id => (long?)registry.InstalledModule(id)?.Files.Count()
+                                                                                          ?? 0));
+                foreach (string ident in goners)
                 {
-                    int percent_complete = (step++ * 100) / goners.Count;
-                    var registry = registry_manager.registry;
-                    User.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerRemovingMod,
-                                                     registry.InstalledModule(mod)?.Module.ToString()
-                                                     ?? mod),
-                                       percent_complete);
-                    Uninstall(mod, ref possibleConfigOnlyDirs, registry);
+                    progDescr = string.Format(Properties.Resources.ModuleInstallerRemovingMod,
+                                                         registry.InstalledModule(ident)?.Module.ToString()
+                                                                                        ?? ident);
+                    Uninstall(ident, ref possibleConfigOnlyDirs, registry, progress);
+                    progress.NextFile();
                 }
 
                 // Enforce consistency if we're not installing anything,
@@ -792,7 +795,8 @@ namespace CKAN
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
         private void Uninstall(string               identifier,
                                ref HashSet<string>? possibleConfigOnlyDirs,
-                               Registry             registry)
+                               Registry             registry,
+                               IProgress<int>       progress)
         {
             var file_transaction = new TxFileManager();
 
@@ -815,9 +819,11 @@ namespace CKAN
                 // Files that Windows refused to delete due to locking (probably)
                 var undeletableFiles = new List<string>();
 
+                int i = 0;
                 foreach (string relPath in modFiles)
                 {
                     string absPath = instance.ToAbsoluteGameDir(relPath);
+                    progress?.Report(100 * i++ / modFiles.Length);
 
                     try
                     {
@@ -1077,39 +1083,41 @@ namespace CKAN
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
                 int totSteps = remove.Count + add.Count;
-                int step = 0;
+
+                string progDescr = "";
+                var rmProgress = new ProgressScalePercentsByFileSizes(
+                                     new Progress<int>(percent =>
+                                         User.RaiseProgress(progDescr,
+                                                            percent * add.Count / totSteps)),
+                                     remove.Select(instMod => (long)instMod.Files.Count()));
                 foreach (InstalledModule instMod in remove)
                 {
-                    // The post-install steps start at 80%, so count up to 70% for installation
-                    int percent_complete = (step++ * 70) / totSteps;
-                    User.RaiseProgress(
-                        string.Format(Properties.Resources.ModuleInstallerRemovingMod, instMod.Module),
-                        percent_complete);
-                    Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs, registry_manager.registry);
+                    progDescr = string.Format(Properties.Resources.ModuleInstallerRemovingMod, instMod.Module);
+                    Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs, registry_manager.registry, rmProgress);
+                    rmProgress.NextFile();
                 }
 
+                var addProgress = new ProgressScalePercentsByFileSizes(
+                                      new Progress<int>(percent =>
+                                          User.RaiseProgress(progDescr,
+                                                             ((100 * add.Count) + (percent * remove.Count)) / totSteps)),
+                                      add.Select(m => m.install_size));
                 foreach ((CkanModule module, bool autoInst) in add.Zip(autoInstalled))
                 {
+                    progDescr = string.Format(Properties.Resources.ModuleInstallerInstallingMod, module);
                     var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
-                    int percent_complete = (step++ * 70) / totSteps;
-                    User.RaiseProgress(
-                        string.Format(Properties.Resources.ModuleInstallerInstallingMod, module),
-                        percent_complete);
                     // For upgrading, new modules are dependencies and should be marked auto-installed,
                     // for replacing, new modules are the replacements and should not be marked auto-installed
                     Install(module,
                             previous?.AutoInstalled ?? autoInst,
                             registry_manager.registry,
                             ref possibleConfigOnlyDirs,
-                            null);
+                            addProgress);
+                    addProgress.NextFile();
                 }
 
-                User.RaiseProgress(Properties.Resources.ModuleInstallerUpdatingRegistry, 80);
                 registry_manager.Save(enforceConsistency);
-
-                User.RaiseProgress(Properties.Resources.ModuleInstallerCommitting, 90);
                 tx.Complete();
-
                 EnforceCacheSizeLimit(registry_manager.registry, Cache);
             }
         }
