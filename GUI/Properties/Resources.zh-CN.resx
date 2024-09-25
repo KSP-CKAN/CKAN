@@ -354,10 +354,10 @@
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>用户选择更新到 {0} 版本.</value>
   </data>
-  <data name="MainChangesetReinstall" xml:space="preserve">
+  <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve">
     <value>重新安装 (元数据已更改)</value>
   </data>
-  <data name="MainChangesetUserReinstall" xml:space="preserve">
+  <data name="MainChangesetReinstallUser" xml:space="preserve">
     <value>重新安装 (用户请求)</value>
   </data>
   <data name="MainImportTitle" xml:space="preserve">

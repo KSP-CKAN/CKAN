@@ -138,11 +138,13 @@ namespace CKAN.GUI
         public ModUpgrade(CkanModule       mod,
                           GUIModChangeType changeType,
                           CkanModule       targetMod,
-                          bool             userReinstall)
+                          bool             userReinstall,
+                          bool             metadataChanged)
             : base(mod, changeType)
         {
-            this.targetMod     = targetMod;
-            this.userReinstall = userReinstall;
+            this.targetMod       = targetMod;
+            this.userReinstall   = userReinstall;
+            this.metadataChanged = metadataChanged;
         }
 
         public override string? NameAndStatus
@@ -150,8 +152,9 @@ namespace CKAN.GUI
 
         public override string Description
             => IsReinstall
-                ? userReinstall ? Properties.Resources.MainChangesetUserReinstall
-                                : Properties.Resources.MainChangesetReinstall
+                ? userReinstall ? Properties.Resources.MainChangesetReinstallUser
+                                : metadataChanged ? Properties.Resources.MainChangesetReinstallMetadataChanged
+                                                  : Properties.Resources.MainChangesetReinstallMissing
                 : string.Format(Properties.Resources.MainChangesetUpdateSelected,
                                 targetMod.version);
 
@@ -165,5 +168,6 @@ namespace CKAN.GUI
                 && targetMod.version == Mod.version;
 
         private readonly bool userReinstall;
+        private readonly bool metadataChanged;
     }
 }

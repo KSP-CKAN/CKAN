@@ -215,8 +215,9 @@ Do you want to add the additional versions to this game instance's compatibility
 
 Are you sure you want to install them? Cancelling will abort the entire installation.</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Update selected by user to version {0}.</value></data>
-  <data name="MainChangesetReinstall" xml:space="preserve"><value>Re-install (metadata changed)</value></data>
-  <data name="MainChangesetUserReinstall" xml:space="preserve"><value>Re-install (user requested)</value></data>
+  <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve"><value>Re-install (metadata changed)</value></data>
+  <data name="MainChangesetReinstallMissing" xml:space="preserve"><value>Re-install (missing folders or files)</value></data>
+  <data name="MainChangesetReinstallUser" xml:space="preserve"><value>Re-install (user requested)</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Import Mods</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Status log</value></data>

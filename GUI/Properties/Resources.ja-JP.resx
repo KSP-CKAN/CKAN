@@ -187,7 +187,7 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>インストール</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>取消</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>選択されたものをバージョン{0}にアップデートする。</value></data>
-  <data name="MainChangesetReinstall" xml:space="preserve"><value> ()</value></data>
+  <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve"><value> ()</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Modインポート</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mod (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>

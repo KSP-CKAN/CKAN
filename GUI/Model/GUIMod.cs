@@ -291,7 +291,9 @@ namespace CKAN.GUI
         /// <returns>The CkanModule associated with this GUIMod or null if there is none</returns>
         public CkanModule ToModule() => Mod;
 
-        public IEnumerable<ModChange> GetModChanges(bool upgradeChecked, bool replaceChecked)
+        public IEnumerable<ModChange> GetModChanges(bool upgradeChecked,
+                                                    bool replaceChecked,
+                                                    bool metadataChanged)
         {
             if (replaceChecked)
             {
@@ -309,7 +311,7 @@ namespace CKAN.GUI
                     yield return new ModUpgrade(Mod,
                                                 GUIModChangeType.Update,
                                                 SelectedMod,
-                                                false);
+                                                false, false);
                 }
                 else
                 {
@@ -329,7 +331,7 @@ namespace CKAN.GUI
                 yield return new ModUpgrade(Mod,
                                             GUIModChangeType.Update,
                                             SelectedMod,
-                                            false);
+                                            false, metadataChanged);
             }
         }
 

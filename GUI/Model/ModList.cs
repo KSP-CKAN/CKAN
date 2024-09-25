@@ -434,19 +434,21 @@ namespace CKAN.GUI
         private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
         private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
 
-        private static IEnumerable<ModChange> rowChanges(DataGridViewRow row,
-                                                  DataGridViewColumn? upgradeCol,
-                                                  DataGridViewColumn? replaceCol)
-            => (row.Tag as GUIMod)?.GetModChanges(
+        private static IEnumerable<ModChange> rowChanges(IRegistryQuerier    registry,
+                                                         DataGridViewRow     row,
+                                                         DataGridViewColumn? upgradeCol,
+                                                         DataGridViewColumn? replaceCol)
+            => row.Tag is GUIMod gmod ? gmod.GetModChanges(
                    upgradeCol != null && upgradeCol.Visible
                    && row.Cells[upgradeCol.Index] is DataGridViewCheckBoxCell upgradeCell
                    && (bool)upgradeCell.Value,
                    replaceCol != null && replaceCol.Visible
                    && row.Cells[replaceCol.Index] is DataGridViewCheckBoxCell replaceCell
-                   && (bool)replaceCell.Value)
-               ?? Enumerable.Empty<ModChange>();
+                   && (bool)replaceCell.Value,
+                   registry.MetadataChanged(gmod.Identifier))
+               : Enumerable.Empty<ModChange>();
 
-        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier?    registry,
+        public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier     registry,
                                                        GameVersionCriteria? crit,
                                                        GameInstance?        instance,
                                                        DataGridViewColumn?  upgradeCol,
@@ -454,7 +456,7 @@ namespace CKAN.GUI
         {
             log.Debug("Computing user changeset");
             var modChanges = full_list_of_mod_rows?.Values
-                                                   .SelectMany(row => rowChanges(row, upgradeCol, replaceCol))
+                                                   .SelectMany(row => rowChanges(registry, row, upgradeCol, replaceCol))
                                                    .ToList()
                                                   ?? new List<ModChange>();
 

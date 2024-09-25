@@ -274,7 +274,7 @@ namespace CKAN
             };
         }
 
-        private static bool MetadataChanged(this IRegistryQuerier querier, string identifier)
+        public static bool MetadataChanged(this IRegistryQuerier querier, string identifier)
         {
             try
             {
