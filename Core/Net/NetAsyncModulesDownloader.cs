@@ -161,7 +161,7 @@ namespace CKAN
                     }
                     catch (InvalidModuleFileKraken kraken)
                     {
-                        User.RaiseError(kraken.ToString());
+                        User.RaiseError("{0}", kraken.ToString());
                         if (module != null)
                         {
                             // Finish out the progress bar
@@ -176,7 +176,7 @@ namespace CKAN
                     catch (OperationCanceledException exc)
                     {
                         log.WarnFormat("Cancellation token threw, validation incomplete: {0}", filename);
-                        User.RaiseMessage(exc.Message);
+                        User.RaiseMessage("{0}", exc.Message);
                         if (module != null)
                         {
                             // Finish out the progress bar

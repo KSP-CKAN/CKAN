@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.ConsoleUI.Toolkit {
 
@@ -141,7 +142,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         /// <param name="message">Format string for the message</param>
         /// <param name="args">Values to be interpolated into the format string</param>
-        public void RaiseError(string message, params object[] args)
+        public void RaiseError([StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+                               string message, params object[] args)
         {
             var d = new ConsoleMessageDialog(
                 theme,
@@ -159,7 +161,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// </summary>
         /// <param name="message">Format string for the message</param>
         /// <param name="args">Values to be interpolated into the format string</param>
-        public void RaiseMessage(string message, params object[] args)
+        public void RaiseMessage([StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+                                 string message, params object[] args)
         {
             Message(message, args);
             Draw();

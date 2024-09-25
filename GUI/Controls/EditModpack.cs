@@ -333,7 +333,7 @@ namespace CKAN.GUI
             if (!TryFieldsToModule(out string? error, out Control? badField))
             {
                 badField.Focus();
-                user?.RaiseError(error);
+                user?.RaiseError("{0}", error);
             }
             else if (module != null && TrySavePrompt(modpackExportOptions, out string? filename))
             {

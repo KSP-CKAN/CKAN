@@ -30,7 +30,7 @@ namespace CKAN.CmdLine
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("replace"))
                 {
-                    user.RaiseError(h);
+                    user.RaiseError("{0}", h);
                 }
                 return Exit.BADOPT;
             }

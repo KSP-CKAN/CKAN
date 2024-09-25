@@ -154,7 +154,7 @@ namespace CKAN.GUI
             }
             else
             {
-                user.RaiseError(errMsg);
+                user.RaiseError("{0}", errMsg);
             }
         }
 
@@ -281,7 +281,7 @@ namespace CKAN.GUI
                 {
                     if (!TrySave(out string errMsg))
                     {
-                        user.RaiseError(errMsg);
+                        user.RaiseError("{0}", errMsg);
                         return false;
                     }
                 }

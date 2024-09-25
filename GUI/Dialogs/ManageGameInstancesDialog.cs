@@ -182,7 +182,7 @@ namespace CKAN.GUI
             }
             catch (Exception exc)
             {
-                user.RaiseError(exc.Message);
+                user.RaiseError("{0}", exc.Message);
             }
         }
 

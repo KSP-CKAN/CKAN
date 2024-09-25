@@ -16,18 +16,20 @@ namespace Tests.GUI
     using CallsDict = Dictionary<MethodDefinition, List<MethodDefinition>>;
 
     [TestFixture]
-    public class ThreadSafetyTests
+    public class ThreadSafetyTests : MonoCecilAnalysisBase
     {
         [Test]
         public void GUIAssemblyModule_MethodsWithForbidGUICalls_DontCallGUI()
         {
-            // Arrange / Act
+            // Arrange
             var mainModule = ModuleDefinition.ReadModule(Assembly.GetAssembly(typeof(CKAN.GUI.Main))!
                                                                  .Location);
             var allMethods = mainModule.Types
                                        .SelectMany(GetAllNestedTypes)
                                        .SelectMany(t => t.Methods)
                                        .ToArray();
+
+            // Act
             var calls = allMethods.Where(hasForbidGUIAttribute)
                                   .Select(meth => new MethodCall() { meth })
                                   .Concat(allMethods.SelectMany(FindStartedTasks))
@@ -44,29 +46,6 @@ namespace Tests.GUI
             });
         }
 
-        private static IEnumerable<TypeDefinition> GetAllNestedTypes(TypeDefinition td)
-            => Enumerable.Repeat(td, 1)
-                         .Concat(td.NestedTypes.SelectMany(GetAllNestedTypes));
-
-        private static IEnumerable<MethodCall> FindStartedTasks(MethodDefinition md)
-            => StartNewCalls(md).Select(FindStartNewArgument)
-                                .OfType<MethodDefinition>()
-                                .Select(taskArg => new MethodCall() { md, taskArg });
-
-        private static IEnumerable<Instruction> StartNewCalls(MethodDefinition md)
-            => md.Body?.Instructions.Where(instr => callOpCodes.Contains(instr.OpCode.Name)
-                                                    && instr.Operand is MethodReference mr
-                                                    && isStartNew(mr))
-                      ?? Enumerable.Empty<Instruction>();
-
-        private static bool isStartNew(MethodReference mr)
-            => (mr.DeclaringType.Namespace == "System.Threading.Tasks"
-                && mr.DeclaringType.Name   == "TaskFactory"
-                && mr.Name                 == "StartNew")
-               || (mr.DeclaringType.Namespace == "System.Threading.Tasks"
-                   && mr.DeclaringType.Name   == "Task"
-                   && mr.Name                 == "Run");
-
         // The sequence to start a task seems to be:
         // 1. ldftn the function to start
         // 2. newobj a System.Action to hold it
@@ -77,49 +56,11 @@ namespace Tests.GUI
                                             : FindStartNewArgument(instr.Previous);
 
         private static IEnumerable<MethodCall> GetAllCallsWithoutForbidGUI(MethodCall initialStack)
-            => VisitMethodDefinition(initialStack, initialStack.Last(), new CallsDict(), hasForbidGUIAttribute, unsafeCall);
-
-        private string SimpleName(MethodDefinition md) => $"{md.DeclaringType.Name}.{md.Name}";
-
-        // https://gist.github.com/lnicola/b48db1a6ff3617bdac2a
-        private static IEnumerable<MethodCall> VisitMethodDefinition(MethodCall                   fullStack,
-                                                                     MethodDefinition             methDef,
-                                                                     CallsDict                    calls,
-                                                                     Func<MethodDefinition, bool> skip,
-                                                                     Func<MethodDefinition, bool> stopAfter)
-        {
-            var called = calls[methDef] = methodsCalledBy(methDef).Distinct().ToList();
-            foreach (var calledMeth in called)
-            {
-                if (!calls.ContainsKey(calledMeth) && !skip(calledMeth))
-                {
-                    var newStack = fullStack.Append(calledMeth).ToList();
-                    yield return newStack;
-                    if (!stopAfter(calledMeth))
-                    {
-                        // yield from, please!
-                        foreach (var subcall in VisitMethodDefinition(newStack, calledMeth, calls, skip, stopAfter))
-                        {
-                            yield return subcall;
-                        }
-                    }
-                }
-            }
-        }
-
-        private static IEnumerable<MethodDefinition> methodsCalledBy(MethodDefinition methDef)
-            => methDef.Body
-                      .Instructions
-                      .Where(instr => callOpCodes.Contains(instr.OpCode.Name))
-                      .Select(instr => instr.Operand as MethodDefinition
-                                       ?? GetSetterDef(instr.Operand as MethodReference))
-                      .OfType<MethodDefinition>()
-                      .Where(calledMeth => calledMeth?.Body != null);
-
-        // Property setters are virtual and have references instead of definitions
-        private static MethodDefinition? GetSetterDef(MethodReference? mr)
-            => (mr?.Name.StartsWith("set_") ?? false) ? mr.Resolve()
-                                                      : null;
+            => VisitMethodDefinition(initialStack,
+                                     initialStack.Last(),
+                                     new CallsDict(),
+                                     hasForbidGUIAttribute,
+                                     unsafeCall);
 
         private static bool hasForbidGUIAttribute(MethodDefinition md)
             => md.CustomAttributes.Any(attr => attr.AttributeType.Namespace == forbidAttrib.Namespace
@@ -142,17 +83,5 @@ namespace Tests.GUI
 
         private static readonly Type   forbidAttrib      = typeof(ForbidGUICallsAttribute);
         private static readonly string winformsNamespace = typeof(Control).Namespace!;
-
-        private static readonly HashSet<string> callOpCodes = new HashSet<string>
-        {
-            // Constructors
-            "newobj",
-
-            // Normal function calls
-            "call",
-
-            // Virtual function calls (includes property setters)
-            "callvirt",
-        };
     }
 }

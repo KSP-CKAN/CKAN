@@ -317,7 +317,7 @@ namespace CKAN.CmdLine
 
         private static int Version(IUser user)
         {
-            user.RaiseMessage(Meta.GetVersion(VersionFormat.Full));
+            user.RaiseMessage("{0}", Meta.GetVersion(VersionFormat.Full));
 
             return Exit.OK;
         }

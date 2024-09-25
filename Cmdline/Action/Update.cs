@@ -96,7 +96,7 @@ namespace CKAN.CmdLine
             catch (MissingCertificateKraken kraken)
             {
                 // Handling the kraken means we have prettier output.
-                user.RaiseMessage(kraken.ToString());
+                user.RaiseMessage("{0}", kraken.ToString());
                 return Exit.ERROR;
             }
 
@@ -162,7 +162,7 @@ namespace CKAN.CmdLine
                 throw new BadCommandKraken("List of modules cannot be null.");
             }
 
-            user.RaiseMessage(message);
+            user.RaiseMessage("{0}", message);
 
             foreach (CkanModule module in modules)
             {

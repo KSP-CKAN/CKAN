@@ -54,14 +54,14 @@ namespace CKAN.GUI
             Util.Invoke(statusStrip1, () =>
             {
                 StatusProgress.Visible = false;
-                currentUser.RaiseMessage(statusMsg);
+                currentUser.RaiseMessage("{0}", statusMsg);
             });
             Util.Invoke(WaitTabPage, () =>
             {
                 RecreateDialogs();
                 Wait.Finish();
             });
-            currentUser.RaiseMessage(logMsg);
+            currentUser.RaiseMessage("{0}", logMsg);
             Wait.SetDescription(description);
         }
 

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace CKAN
 {
     /// <summary>
@@ -18,11 +20,13 @@ namespace CKAN
         /// </summary>
         /// <returns>The index of the item selected from the array or -1 if cancelled</returns>
         int  RaiseSelectionDialog(string message, params object[] args);
-        void RaiseError(string message, params object[] args);
+        void RaiseError([StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+                        string message, params object[] args);
 
         void RaiseProgress(string message, int percent);
         void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft);
-        void RaiseMessage(string message, params object[] args);
+        void RaiseMessage([StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+                          string message, params object[] args);
     }
 
     /// <summary>

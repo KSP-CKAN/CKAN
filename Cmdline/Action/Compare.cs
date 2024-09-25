@@ -27,7 +27,7 @@ namespace CKAN.CmdLine
 
                 if (options.machine_readable)
                 {
-                    user.RaiseMessage(compareResult.ToString());
+                    user.RaiseMessage("{0}", compareResult.ToString());
                 }
                 else if (compareResult == 0)
                 {
@@ -51,7 +51,7 @@ namespace CKAN.CmdLine
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("compare"))
                 {
-                    user.RaiseError(h);
+                    user.RaiseError("{0}", h);
                 }
                 return Exit.BADOPT;
             }

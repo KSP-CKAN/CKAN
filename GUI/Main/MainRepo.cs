@@ -187,7 +187,7 @@ namespace CKAN.GUI
                                                 .Reverse())
                         {
                             log.Error(exc.Message, exc);
-                            currentUser.RaiseMessage(exc.Message);
+                            currentUser.RaiseMessage("{0}", exc.Message);
                         }
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
@@ -201,7 +201,7 @@ namespace CKAN.GUI
                                                           .Reverse()))
                         {
                             log.Error(inner.Message, inner);
-                            currentUser.RaiseMessage(inner.Message);
+                            currentUser.RaiseMessage("{0}", inner.Message);
                         }
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
@@ -210,7 +210,7 @@ namespace CKAN.GUI
 
                     case Exception exc:
                         log.Error(exc.Message, exc);
-                        currentUser.RaiseMessage(exc.Message);
+                        currentUser.RaiseMessage("{0}", exc.Message);
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
                         EnableMainWindow();

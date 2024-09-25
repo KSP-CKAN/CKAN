@@ -62,7 +62,7 @@ namespace CKAN
             {
                 if (error != null)
                 {
-                    user?.RaiseError(error.ToString());
+                    user?.RaiseError("{0}", error.ToString());
                 }
             };
             downloader.DownloadAndWait(downloadTargets);

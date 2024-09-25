@@ -87,6 +87,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Inflation error for multi-hosted mods with mismatched versions (#4178 by: HebaruSan)
 - [Multiple] Include version in useragent string, make it readonly (#4184, #4185 by: HebaruSan)
 - [Policy] indexing policy: add link to the code of conduct (#4183 by: JonnyOThan; reviewed: HebaruSan)
+- [Build] Tests for safety of string format calls (#4194 by: HebaruSan; reviewed: techman83)
 
 ## v1.34.4 (Niven)
 

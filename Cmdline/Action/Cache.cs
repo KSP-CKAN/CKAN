@@ -224,7 +224,7 @@ namespace CKAN.CmdLine
             IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
             if (cfg.CacheSizeLimit.HasValue)
             {
-                user?.RaiseMessage(CkanModule.FmtSize(cfg.CacheSizeLimit.Value));
+                user?.RaiseMessage("{0}", CkanModule.FmtSize(cfg.CacheSizeLimit.Value));
             }
             else
             {
@@ -258,7 +258,7 @@ namespace CKAN.CmdLine
         {
             foreach (var h in CacheSubOptions.GetHelp(verb))
             {
-                user?.RaiseError(h);
+                user?.RaiseError("{0}", h);
             }
         }
 

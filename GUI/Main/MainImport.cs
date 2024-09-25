@@ -74,7 +74,7 @@ namespace CKAN.GUI
                                 if (e?.Error is Exception exc)
                                 {
                                     log.Error(exc.Message, exc);
-                                    currentUser.RaiseMessage(exc.Message);
+                                    currentUser.RaiseMessage("{0}", exc.Message);
                                 }
                                 Wait.Finish();
                             }
