@@ -85,6 +85,7 @@ namespace CKAN.GUI
             this.ContentsPreviewTree.ImageList.Images.Add("file", global::CKAN.GUI.EmbeddedImages.file);
             this.ContentsPreviewTree.ShowPlusMinus = true;
             this.ContentsPreviewTree.ShowRootLines = false;
+            this.ContentsPreviewTree.ShowNodeToolTips = true;
             this.ContentsPreviewTree.Location = new System.Drawing.Point(3, 65);
             this.ContentsPreviewTree.Name = "ContentsPreviewTree";
             this.ContentsPreviewTree.Size = new System.Drawing.Size(494, 431);

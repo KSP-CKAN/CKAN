@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
@@ -9,6 +8,9 @@ using System.Threading.Tasks;
 using System.Runtime.Versioning;
 #endif
 
+using Autofac;
+
+using CKAN.Configuration;
 using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
@@ -53,9 +55,9 @@ namespace CKAN.GUI
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object? sender, TreeNodeMouseClickEventArgs? e)
         {
-            if (e != null)
+            if (e != null && manager?.CurrentInstance is GameInstance inst)
             {
-                Utilities.OpenFileBrowser(e.Node.Name);
+                Utilities.OpenFileBrowser(inst.ToAbsoluteGameDir(e.Node.Name));
             }
         }
 
@@ -119,9 +121,9 @@ namespace CKAN.GUI
                         ContentsOpenButton.Enabled = false;
                         ContentsPreviewTree.Enabled = false;
                     }
-                    else if (manager != null
-                             && manager?.CurrentInstance != null
+                    else if (manager?.CurrentInstance is GameInstance inst
                              && manager?.Cache != null
+                             && selectedModule != null
                              && Main.Instance?.currentUser != null)
                     {
                         rootNode.Text = Path.GetFileName(
@@ -134,23 +136,33 @@ namespace CKAN.GUI
                         UseWaitCursor = true;
                         Task.Factory.StartNew(() =>
                         {
-                            var paths = ModuleInstaller.GetModuleContentsList(manager.Cache, manager.CurrentInstance, module)
-                                                       // Load fully in bg
-                                                       .ToArray();
+                            var filters = ServiceLocator.Container.Resolve<IConfiguration>().GlobalInstallFilters
+                                                                  .Concat(inst.InstallFilters)
+                                                                  .ToHashSet();
+                            var tuples = ModuleInstaller.GetModuleContents(manager.Cache, inst, module, filters)
+                                                        .Select(f => (path:   inst.ToRelativeGameDir(f.destination),
+                                                                      dir:    f.source.IsDirectory,
+                                                                      exists: !selectedModule.IsInstalled
+                                                                              || File.Exists(f.destination)
+                                                                              || Directory.Exists(f.destination)))
+                                                        .ToArray();
                             // Stop if user switched to another mod
                             if (rootNode.TreeView != null)
                             {
                                 Util.Invoke(this, () =>
                                 {
                                     ContentsPreviewTree.BeginUpdate();
-                                    foreach (string path in paths)
+                                    foreach ((string path, bool dir, bool exists) in tuples)
                                     {
-                                        AddContentPieces(
-                                            rootNode,
-                                            path.Split(new char[] {'/'}));
+                                        AddContentPieces(inst, rootNode,
+                                                         path.Split(new char[] {'/'}),
+                                                         dir, exists);
                                     }
                                     rootNode.ExpandAll();
-                                    rootNode.EnsureVisible();
+                                    var initialFocus = FirstMatching(rootNode,
+                                                                     n => n.ForeColor == Color.Red)
+                                                       ?? rootNode;
+                                    initialFocus.EnsureVisible();
                                     ContentsPreviewTree.EndUpdate();
                                     UseWaitCursor = false;
                                 });
@@ -161,24 +173,45 @@ namespace CKAN.GUI
             }
         }
 
-        private static void AddContentPieces(TreeNode parent, IEnumerable<string> pieces)
+        private static void AddContentPieces(GameInstance inst,
+                                             TreeNode     parent,
+                                             string[]     pieces,
+                                             bool         dir,
+                                             bool         exists)
         {
             var firstPiece = pieces.FirstOrDefault();
             if (firstPiece != null)
             {
-                if (parent.ImageKey == "file")
-                {
-                    parent.SelectedImageKey = parent.ImageKey = "folder";
-                }
                 // Key/Name needs to be the full relative path for double click to work
                 var key = string.IsNullOrEmpty(parent.Name)
-                    ? firstPiece
-                    : $"{parent.Name}/{firstPiece}";
-                var node = parent.Nodes[key]
-                        ?? parent.Nodes.Add(key, firstPiece, "file", "file");
-                AddContentPieces(node, pieces.Skip(1));
+                              ? firstPiece
+                              : $"{parent.Name}/{firstPiece}";
+                var node = parent.Nodes[key];
+                if (node == null)
+                {
+                    var iconKey = dir || pieces.Length > 1 ? "folder" : "file";
+                    node = parent.Nodes.Add(key, firstPiece, iconKey, iconKey);
+                    if (!exists && (pieces.Length == 1 || !Directory.Exists(inst.ToAbsoluteGameDir(key))))
+                    {
+                        node.ForeColor   = Color.Red;
+                        node.ToolTipText = iconKey == "folder"
+                                               ? Properties.Resources.ModInfoFolderNotFound
+                                               : Properties.Resources.ModInfoFileNotFound;
+                    }
+                }
+                if (pieces.Length > 1)
+                {
+                    AddContentPieces(inst, node, pieces.Skip(1).ToArray(), dir, exists);
+                }
             }
         }
+
+        private static TreeNode? FirstMatching(TreeNode root, Func<TreeNode, bool> predicate)
+            => predicate(root) ? root
+                               : root.Nodes.OfType<TreeNode>()
+                                           .Select(n => FirstMatching(n, predicate))
+                                           .OfType<TreeNode>()
+                                           .FirstOrDefault();
 
     }
 }
