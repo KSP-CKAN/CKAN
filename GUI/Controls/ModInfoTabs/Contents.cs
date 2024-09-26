@@ -49,15 +49,41 @@ namespace CKAN.GUI
 
         public event Action<GUIMod>? OnDownloadClick;
 
-        private GUIMod?              selectedModule;
-        private CkanModule?          currentModContentsModule;
         private static GameInstanceManager? manager => Main.Instance?.Manager;
+
+        private GUIMod?     selectedModule;
+        private CkanModule? currentModContentsModule;
+        private bool        cancelExpandCollapse;
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object? sender, TreeNodeMouseClickEventArgs? e)
         {
             if (e != null && manager?.CurrentInstance is GameInstance inst)
             {
                 Utilities.OpenFileBrowser(inst.ToAbsoluteGameDir(e.Node.Name));
+            }
+        }
+
+        private void ContentsPreviewTree_MouseDown(object sender, MouseEventArgs e)
+        {
+            // Double click itself isn't cancellable, and it happens after expand/collapse anyway,
+            // so we have to detect it here and then cancel the main expand/collapse event
+            switch (e)
+            {
+                case {Clicks: > 1}:
+                    cancelExpandCollapse = true;
+                    break;
+            }
+        }
+
+        private void ContentsPreviewTree_BeforeExpandCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            switch (e)
+            {
+                case {Action: TreeViewAction.Expand
+                              or TreeViewAction.Collapse} when cancelExpandCollapse:
+                    e.Cancel = true;
+                    cancelExpandCollapse = false;
+                    break;
             }
         }
 

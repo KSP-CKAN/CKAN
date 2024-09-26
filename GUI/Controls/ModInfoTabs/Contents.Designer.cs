@@ -91,6 +91,9 @@ namespace CKAN.GUI
             this.ContentsPreviewTree.Size = new System.Drawing.Size(494, 431);
             this.ContentsPreviewTree.TabIndex = 2;
             this.ContentsPreviewTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.ContentsPreviewTree_NodeMouseDoubleClick);
+            this.ContentsPreviewTree.MouseDown += this.ContentsPreviewTree_MouseDown;
+            this.ContentsPreviewTree.BeforeExpand += this.ContentsPreviewTree_BeforeExpandCollapse;
+            this.ContentsPreviewTree.BeforeCollapse += this.ContentsPreviewTree_BeforeExpandCollapse;
             //
             // Contents
             //
