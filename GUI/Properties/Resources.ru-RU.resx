@@ -187,7 +187,7 @@
   <data name="AllModVersionsInstallYes" xml:space="preserve"><value>Установить</value></data>
   <data name="AllModVersionsInstallNo" xml:space="preserve"><value>Отмена</value></data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve"><value>Обновить выбранное пользователем до версии {0}.</value></data>
-  <data name="MainChangesetReinstall" xml:space="preserve"><value>Переустановка (Метаданные изменены)</value></data>
+  <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve"><value>Переустановка (Метаданные изменены)</value></data>
   <data name="MainImportTitle" xml:space="preserve"><value>Импортировать модификации</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Модификации (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Журнал</value></data>

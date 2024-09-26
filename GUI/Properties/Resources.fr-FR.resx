@@ -359,10 +359,10 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Mise à jour demandée vers la version {0}.</value>
   </data>
-  <data name="MainChangesetReinstall" xml:space="preserve">
+  <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve">
     <value>Réinstaller (métadonnées modifiées)</value>
   </data>
-  <data name="MainChangesetUserReinstall" xml:space="preserve">
+  <data name="MainChangesetReinstallUser" xml:space="preserve">
     <value>Réinstallation (à la demande de l'utilisateur)</value>
   </data>
   <data name="MainImportTitle" xml:space="preserve">

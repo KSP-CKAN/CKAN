@@ -584,21 +584,21 @@ namespace CKAN
 
         /// <summary>
         /// Returns the module contents if and only if we have it
-        /// available in our cache. Returns null, otherwise.
+        /// available in our cache, empty sequence otherwise.
         ///
         /// Intended for previews.
         /// </summary>
-        public static IEnumerable<string> GetModuleContentsList(NetModuleCache Cache,
-                                                                GameInstance   instance,
-
-                                                                CkanModule     module)
+        public static IEnumerable<InstallableFile> GetModuleContents(NetModuleCache  Cache,
+                                                                     GameInstance    instance,
+                                                                     CkanModule      module,
+                                                                     HashSet<string> filters)
             => (Cache.GetCachedFilename(module) is string filename
                     ? Utilities.DefaultIfThrows(() => FindInstallableFiles(module, filename, instance)
-                                                          // Skip folders
-                                                          .Where(f => !f.source.IsDirectory)
-                                                          .Select(f => instance.ToRelativeGameDir(f.destination)))
+                                                          .Where(instF => !filters.Any(filt =>
+                                                                  instF.destination != null
+                                                                  && instF.destination.Contains(filt))))
                     : null)
-               ?? Enumerable.Empty<string>();
+               ?? Enumerable.Empty<InstallableFile>();
 
         #endregion
 

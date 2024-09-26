@@ -1291,7 +1291,7 @@ namespace CKAN.GUI
                                    registry.GetModuleByVersion(module.identifier,
                                                                module.version)
                                            ?? module,
-                                   true)
+                                   true, false)
                 }, null);
             }
         }
