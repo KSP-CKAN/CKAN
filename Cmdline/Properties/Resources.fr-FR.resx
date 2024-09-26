@@ -302,6 +302,9 @@ Si vous n'avez vraiment pas le choix, le paramètre "--asroot" permet d'utiliser
   <data name="InstanceListNameHeader" xml:space="preserve">
     <value>Nom</value>
   </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Jeu</value>
+  </data>
   <data name="InstanceListVersionHeader" xml:space="preserve">
     <value>Version</value>
   </data>
@@ -735,8 +738,14 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="ShowGameVersionsHeader" xml:space="preserve">
     <value>Versions de Jeu</value>
   </data>
+  <data name="UpdateBadGame" xml:space="preserve">
+    <value>Jeu {0} introuvable ! Les options valides sont : {1}</value>
+  </data>
+  <data name="UpdateURLRepoName" xml:space="preserve">
+    <value>URL #{0}</value>
+  </data>
   <data name="UpdateChangesSummary" xml:space="preserve">
-    <value>{0} nouveaux modules, {1} modules retirés and {2} modules mis à jour ont été trouvés</value>
+    <value>{0} nouveaux modules, {1} modules retirés, and {2} modules mis à jour ont été trouvés.</value>
   </data>
   <data name="UpdateAddedHeader" xml:space="preserve">
     <value>Nouveaux modules [Nom (identifiant CKAN)] :</value>
@@ -748,7 +757,7 @@ Essayez `ckan list` pour une liste des mods installés.</value>
     <value>Modules mis à jour [Nom (identifiant CKAN)] :</value>
   </data>
   <data name="UpdateSummary" xml:space="preserve">
-    <value>Informations sur {0} modules compatibles mises à jour</value>
+    <value>Informations sur {0} modules mises à jour.</value>
   </data>
   <data name="UpgradeCannotCombineFlags" xml:space="preserve">
     <value>Les arguments `--dev-build` et `--stable-release` ne peuvent pas être utilisés ensemble !</value>

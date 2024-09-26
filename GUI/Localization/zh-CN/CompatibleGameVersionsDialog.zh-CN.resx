@@ -117,17 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="ListHeaderLabel.Text" xml:space="preserve">
     <value>此外，安装兼容以下游戏版本的Mod:</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
+  <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>游戏版本:</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
+  <data name="WarningLabel.Text" xml:space="preserve">
     <value>警告！无法检查Mod是否真正与所选版本兼容！请小心操作。</value>
-  </data>
-  <data name="GameVersionLabel.Text" xml:space="preserve">
-    <value>&lt;版本&gt;</value>
   </data>
   <data name="ClearSelectionButton.Text" xml:space="preserve">
     <value>清除选中</value>
@@ -135,23 +132,20 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>添加</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
+  <data name="AddVersionLabel.Text" xml:space="preserve">
     <value>向列表中添加版本:</value>
   </data>
-  <data name="label6.Text" xml:space="preserve">
+  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
     <value>注意:如果您添加类似于“1.2”的版本您将会强制所有兼容1.2.xx（例如1.2.0、1.2.1等等）的Mod与该版本兼容</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
     <value>如果游戏被更新，此对话框将重新弹出以便您调整设置。</value>
   </data>
   <data name="SaveButton.Text" xml:space="preserve">
     <value>确认</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
+  <data name="InstancePathLabel.Text" xml:space="preserve">
     <value>当前安装:</value>
-  </data>
-  <data name="GameLocationLabel.Text" xml:space="preserve">
-    <value>&lt;地址&gt;</value>
   </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>取消</value>
