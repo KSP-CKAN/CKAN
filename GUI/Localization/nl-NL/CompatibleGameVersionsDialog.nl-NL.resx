@@ -117,17 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="ListHeaderLabel.Text" xml:space="preserve">
     <value>Installeer ook mods compatibel met de volgende spel versies:</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
+  <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>Spel versie:</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
+  <data name="WarningLabel.Text" xml:space="preserve">
     <value>Waarschuwing! Er is geen manier om te controleren of de mod echt compatibel is met de hier geselecteerde versies!</value>
-  </data>
-  <data name="GameVersionLabel.Text" xml:space="preserve">
-    <value>&lt;versie&gt;</value>
   </data>
   <data name="ClearSelectionButton.Text" xml:space="preserve">
     <value>Selectie wissen</value>
@@ -135,23 +132,20 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>Voeg toe</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
+  <data name="AddVersionLabel.Text" xml:space="preserve">
     <value>Versie aan lijst toevoegen:</value>
   </data>
-  <data name="label6.Text" xml:space="preserve">
+  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
     <value>Let op: als je versies zoals "1.2" toevoegt, zal je alle mods die compatibel zijn met 1.2.xx (1.2.0, 1.2.1, enz) forceren om compatibel te zijn met deze spel instantie.</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
     <value>Als het spel wordt bijgewerkt, wordt dit dialoogvenster opnieuw getoond zodat je je instellingen kunt aanpassen.</value>
   </data>
   <data name="SaveButton.Text" xml:space="preserve">
     <value>Accepteren</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
+  <data name="InstancePathLabel.Text" xml:space="preserve">
     <value>Installatie:</value>
-  </data>
-  <data name="GameLocationLabel.Text" xml:space="preserve">
-    <value>&lt;locatie&gt;</value>
   </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>Annuleer</value>

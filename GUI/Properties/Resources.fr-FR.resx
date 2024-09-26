@@ -168,7 +168,12 @@ Si vous choisissez cette option, NE PAS déplacer ou supprimer l'ancienne instan
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
     <value>&lt;AUCUNE&gt;</value>
   </data>
-  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve">
+  <data name="CompatibleGameVersionsDialogDefaultedDetails" xml:space="preserve">
+    <value>La compatibilité par défaut a été défini en fonction de votre version de jeu. Ce réglage permet d'apporter un plus grand nombre de mods à la plupart des utilisateurs. Malgré tout, certains mods anciens pourraient ne pas être réellement compatibles.
+
+Si vous voulez être prudent, cliquez "vider la sélection" pour décocher toutes les cases.</value>
+  </data>
+  <data name="CompatibleGameVersionsDialogGameUpdatedDetails" xml:space="preserve">
     <value>Le jeu a été mis à jour depuis que vous avez défini les versions de jeu compatibles. Veuillez vérifier ces paramètres.</value>
   </data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve">
@@ -362,6 +367,9 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve">
     <value>Réinstaller (métadonnées modifiées)</value>
   </data>
+  <data name="MainChangesetReinstallMissing" xml:space="preserve">
+    <value>Réinstaller (dossiers ou fichiers manquants)</value>
+  </data>
   <data name="MainChangesetReinstallUser" xml:space="preserve">
     <value>Réinstallation (à la demande de l'utilisateur)</value>
   </data>
@@ -493,6 +501,12 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="ModInfoNoDownload" xml:space="preserve">
     <value>Le module n'est pas téléchargeable</value>
+  </data>
+  <data name="ModInfoFolderNotFound" xml:space="preserve">
+    <value>Dossier introuvable !</value>
+  </data>
+  <data name="ModInfoFileNotFound" xml:space="preserve">
+    <value>Fichier introuvable !</value>
   </data>
   <data name="ModInfoHomepageLabel" xml:space="preserve">
     <value>Page principale :</value>
@@ -690,6 +704,15 @@ Vous pouvez actualiser manuellement la liste de mods en cliquant le bouton Rafra
   </data>
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve">
     <value>{0} (VERROUILLÉE)</value>
+  </data>
+  <data name="ManageGameInstancesInvalidFileSelected" xml:space="preserve">
+    <value>Fichier d'instance invalide : "{0}"
+
+Si vous avez sélectionné un raccourci, cela ne fonctionnera pas ; Windows ne permet pas de cacher les raccourcis dans la fenêtre de dialogue, bien qu'ils soient invalides.
+
+Trouvez le dossier où votre jeu est installé et sélectionnez l'un de ces fichiers :
+
+{1}</value>
   </data>
   <data name="NewRepoDialogFailed" xml:space="preserve">
     <value>Échec de récupération de la liste maîtresse.</value>

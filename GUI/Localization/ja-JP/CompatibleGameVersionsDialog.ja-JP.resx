@@ -117,17 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="ListHeaderLabel.Text" xml:space="preserve">
     <value>以下のゲームバージョンに対応するModを追加でインストールする:</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
+  <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>ゲームバージョン:</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
+  <data name="WarningLabel.Text" xml:space="preserve">
     <value>警告！ ここでそのModが本当に選択されたバージョンに対応しているか確認する方法がありません！ 慎重に選択してください。</value>
-  </data>
-  <data name="GameVersionLabel.Text" xml:space="preserve">
-    <value>&lt;バージョン&gt;</value>
   </data>
   <data name="ClearSelectionButton.Text" xml:space="preserve">
     <value>選択を消去</value>
@@ -135,23 +132,20 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>追加</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
+  <data name="AddVersionLabel.Text" xml:space="preserve">
     <value>バージョンをリストに追加:</value>
   </data>
-  <data name="label6.Text" xml:space="preserve">
+  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
     <value>注釈: "1.2"のようなバージョンを追加した場合はに1.2.xx (1.2.0, 1.2.1, etc) に対応する全てのModがこのゲームインスタンスに対応するものとされます。 </value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
     <value>ゲームがアップデートされる際には設定を調整できるようにこのダイアログが再び表示されます。</value>
   </data>
   <data name="SaveButton.Text" xml:space="preserve">
     <value>適用</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
+  <data name="InstancePathLabel.Text" xml:space="preserve">
     <value>インストール:</value>
-  </data>
-  <data name="GameLocationLabel.Text" xml:space="preserve">
-    <value>&lt;location&gt;</value>
   </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>取消</value>

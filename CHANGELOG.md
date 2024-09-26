@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Ability to clear auto-installed flag from changeset tab (#4033, #4143 by: HebaruSan)
 - [Multiple] New Crowdin updates (#4019 by: Olympic1, vinix38; reviewed: HebaruSan)
 - [Core] Support Windows KSP1 instances on Linux (#4044 by: HebaruSan)
-- [GUI] I18n updates from Crowdin (#4050 by: HebaruSan)
+- [GUI] I18n updates from Crowdin (#4050, #4196 by: HebaruSan)
 - [Multiple] Better version specific relationships at install and upgrade (#4023, #4152 by: HebaruSan)
 - [GUI] Proportional, granular progress updates (#4055, #4193 by: HebaruSan)
 - [GUI] Modpack compatibility prompt, GameComparator clean-up (#4056 by: HebaruSan)

@@ -117,17 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="ListHeaderLabel.Text" xml:space="preserve">
     <value>Проверять совместимость со следующими версиями игры:</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
+  <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>Версия игры:</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
+  <data name="WarningLabel.Text" xml:space="preserve">
     <value>Внимание! Невозможно убедиться в полной совместимости модификаций с выбранными версиями игры! Действуйте с осторожностью.</value>
-  </data>
-  <data name="GameVersionLabel.Text" xml:space="preserve">
-    <value>&lt;версия&gt;</value>
   </data>
   <data name="ClearSelectionButton.Text" xml:space="preserve">
     <value>Очистить выбор</value>
@@ -135,23 +132,20 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>Добавить</value>
   </data>
-  <data name="label5.Text" xml:space="preserve">
+  <data name="AddVersionLabel.Text" xml:space="preserve">
     <value>Добавить версию:</value>
   </data>
-  <data name="label6.Text" xml:space="preserve">
+  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
     <value>Пример: при выборе версии установки игры «1.x» с данной установкой будут совместимы все модификации, совместимые с версиями 1.x.0, 1.x.1 и т.д.</value>
   </data>
-  <data name="label7.Text" xml:space="preserve">
+  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
     <value>Для уточнения настроек это окно будет показываться после каждого обновления игры.</value>
   </data>
   <data name="SaveButton.Text" xml:space="preserve">
     <value>Принять</value>
   </data>
-  <data name="label8.Text" xml:space="preserve">
+  <data name="InstancePathLabel.Text" xml:space="preserve">
     <value>Папка:</value>
-  </data>
-  <data name="GameLocationLabel.Text" xml:space="preserve">
-    <value>&lt;путь к сборке&gt;</value>
   </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>Отмена</value>
