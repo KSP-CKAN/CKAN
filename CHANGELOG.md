@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.35.1
 
+### Bugfixes
 
+- [Core] Skip corrupted .acf files in Steam library (#4200 by: HebaruSan)
 
 ## v1.35.0 (Oberth)
 

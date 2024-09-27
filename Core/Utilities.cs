@@ -28,15 +28,23 @@ namespace CKAN
             "nl-NL",
         };
 
-        public static T? DefaultIfThrows<T>(Func<T?> func) where T : class
+        /// <summary>
+        /// Call a function and take a default action if it throws an exception
+        /// </summary>
+        /// <typeparam name="T">Return type of the function</typeparam>
+        /// <param name="func">Function to call</param>
+        /// <param name="onThrow">Function to call if an exception is thrown</param>
+        /// <returns>Return value of the function</returns>
+        public static T? DefaultIfThrows<T>(Func<T?>             func,
+                                            Func<Exception, T?>? onThrow = null) where T : class
         {
             try
             {
                 return func();
             }
-            catch
+            catch (Exception exc)
             {
-                return default;
+                return onThrow?.Invoke(exc) ?? default;
             }
         }
 

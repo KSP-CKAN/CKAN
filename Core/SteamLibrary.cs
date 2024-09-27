@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using log4net;
 using ValveKeyValue;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -57,8 +58,14 @@ namespace CKAN
         private static IEnumerable<GameBase> LibraryPathGames(KVSerializer acfParser,
                                                               string       appPath)
             => Directory.EnumerateFiles(appPath, "*.acf")
-                        .Select(acfFile => acfParser.Deserialize<SteamGame>(File.OpenRead(acfFile))
-                                                    .NormalizeDir(Path.Combine(appPath, "common")));
+                        .SelectWithCatch(acfFile => acfParser.Deserialize<SteamGame>(File.OpenRead(acfFile))
+                                                             .NormalizeDir(Path.Combine(appPath, "common")),
+                                         (acfFile, exc) =>
+                                         {
+                                             log.Warn($"Failed to parse {acfFile}:", exc);
+                                             return default;
+                                         })
+                        .OfType<GameBase>();
 
         private static IEnumerable<GameBase> ShortcutsFileGames(KVSerializer vdfParser,
                                                                 string       path)
