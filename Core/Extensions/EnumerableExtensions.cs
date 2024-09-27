@@ -262,6 +262,22 @@ namespace CKAN.Extensions
             => source.Select(val => pattern.TryMatch(val, out Match? match) ? match : null)
                      .OfType<Match>();
 
+        /// <summary>
+        /// Apply a function to a sequence and handle any exceptions that are thrown
+        /// </summary>
+        /// <typeparam name="TSrc">Type of source sequence</typeparam>
+        /// <typeparam name="TDest">Type of destination sequence</typeparam>
+        /// <param name="source">Source sequence</param>
+        /// <param name="func">Function to apply to each item</param>
+        /// <param name="onThrow">Function to call if there's an exception</param>
+        /// <returns>Sequence of return values of given function</returns>
+        public static IEnumerable<TDest?> SelectWithCatch<TSrc, TDest>(this IEnumerable<TSrc>       source,
+                                                                      Func<TSrc, TDest>             func,
+                                                                      Func<TSrc, Exception, TDest?> onThrow)
+                where TDest : class
+            => source.Select(item => Utilities.DefaultIfThrows(()  => func(item),
+                                                               exc => onThrow(item, exc)));
+
     }
 
     /// <summary>
