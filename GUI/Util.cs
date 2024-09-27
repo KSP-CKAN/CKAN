@@ -288,7 +288,10 @@ namespace CKAN.GUI
             => colors.Length <  1 ? Color.Empty
              //: colors is [var c] ? c
              : colors.Length == 1 && colors[0] is var c ? c
-             : colors.Aggregate((back, fore) => fore.AlphaBlendWith(1f / colors.Length, back));
+             : Color.FromArgb(colors.Sum(c => c.A) / colors.Length,
+                              colors.Sum(c => c.R) / colors.Length,
+                              colors.Sum(c => c.G) / colors.Length,
+                              colors.Sum(c => c.B) / colors.Length);
 
         public static Color AlphaBlendWith(this Color c1, float alpha, Color c2)
             => AddColors(c1.MultiplyBy(alpha),

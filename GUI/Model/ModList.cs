@@ -392,6 +392,8 @@ namespace CKAN.GUI
                                                                       .Where(l => l.ContainsModule(game, mod.Identifier))
                                                                       .Select(l => l.Color)
                                                                       .OfType<Color>()
+                                                                      // No transparent blending
+                                                                      .Where(c => c.A == byte.MaxValue)
                                                                       .ToArray())
              : Color.Transparent;
 

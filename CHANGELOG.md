@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Core] Skip corrupted .acf files in Steam library (#4200 by: HebaruSan)
+- [GUI] Fix label color blending (#4203 by: HebaruSan)
 
 ## v1.35.0 (Oberth)
 
