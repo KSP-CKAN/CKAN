@@ -538,19 +538,18 @@ namespace CKAN.GUI
         {
             WithFrozenChangeset(() =>
             {
-                foreach (var gmod in mainModList.full_list_of_mod_rows
-                                                .Values
-                                                .Select(row => row.Tag)
-                                                .OfType<GUIMod>())
+                var checkboxes = mainModList.full_list_of_mod_rows
+                                            .Values
+                                            .Where(row => row.Tag is GUIMod {Identifier: string ident}
+                                                          && (!Main.Instance?.LabelsHeld(ident) ?? false))
+                                            .SelectWithCatch(row => row.Cells[UpdateCol.Index],
+                                                             (row, exc) => null)
+                                            .OfType<DataGridViewCheckBoxCell>();
+                foreach (var checkbox in checkboxes)
                 {
-                    if (gmod?.HasUpdate ?? false)
-                    {
-                        if (!Main.Instance?.LabelsHeld(gmod.Identifier) ?? false)
-                        {
-                            gmod.SelectedMod = gmod.LatestCompatibleMod;
-                        }
-                    }
+                    checkbox.Value = true;
                 }
+                ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
 
                 // only sort by Update column if checkbox in settings checked
                 if (guiConfig?.AutoSortByUpdate ?? false)
