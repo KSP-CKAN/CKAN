@@ -564,8 +564,13 @@ namespace CKAN.GUI
                         full_list_of_mod_rows[ident] =
                             MakeRow(gmod, ChangeSet, inst.Name, inst.game);
                     var rowIndex = row.Index;
+                    var selected = row.Selected;
                     rows.Remove(row);
                     rows.Insert(rowIndex, newRow);
+                    if (selected)
+                    {
+                        rows[rowIndex].Selected = true;
+                    }
                 }
             }
         }
