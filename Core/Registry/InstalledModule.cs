@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
@@ -131,6 +132,13 @@ namespace CKAN
         }
 
         #endregion
+
+        public bool AllFilesExist(GameInstance    instance,
+                                  HashSet<string> filters)
+            // Don't make them reinstall files they've filtered out since installing
+            => Files.Where(f => !filters.Any(filt => f.Contains(filt)))
+                    .Select(instance.ToAbsoluteGameDir)
+                    .All(p => Directory.Exists(p) || File.Exists(p));
 
         public override string ToString()
             => string.Format(AutoInstalled ? Properties.Resources.InstalledModuleToStringAutoInstalled

@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -209,11 +208,7 @@ namespace CKAN
                               && (!checkMissingFiles
                                   || instance == null
                                   || (querier.InstalledModule(identifier)
-                                             ?.Files
-                                              // Don't make them reinstall files they've filtered out since installing
-                                              .Where(f => !filters.Any(filt => f.Contains(filt)))
-                                              .Select(instance.ToAbsoluteGameDir)
-                                              .All(p => Directory.Exists(p) || File.Exists(p))
+                                             ?.AllFilesExist(instance, filters)
                                              // Manually installed, consider up to date
                                              ?? true))))
             {
