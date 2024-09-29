@@ -934,7 +934,7 @@ namespace CKAN.GUI
                                             : gmod.LatestCompatibleMod
                                         : gmod.InstalledMod?.Module;
 
-                                    if (nowChecked && gmod.SelectedMod == gmod.LatestCompatibleMod)
+                                    if (gmod.SelectedMod == gmod.LatestCompatibleMod)
                                     {
                                         // Reinstall, force update without change
                                         UpdateChangeSetAndConflicts(currentInstance,
