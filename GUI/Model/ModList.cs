@@ -583,12 +583,12 @@ namespace CKAN.GUI
                           config?.HideEpochs ?? false, config?.HideV ?? false);
 
         private static IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
-                                               RepositoryDataManager repoData,
-                                               GameInstance          inst,
-                                               GameVersionCriteria   versionCriteria,
-                                               HashSet<string>       installedIdents,
-                                               bool                  hideEpochs,
-                                               bool                  hideV)
+                                                      RepositoryDataManager repoData,
+                                                      GameInstance          inst,
+                                                      GameVersionCriteria   versionCriteria,
+                                                      HashSet<string>       installedIdents,
+                                                      bool                  hideEpochs,
+                                                      bool                  hideV)
             => registry.CheckUpgradeable(inst,
                                          ModuleLabelList.ModuleLabels.HeldIdentifiers(inst)
                                                                      .ToHashSet())
