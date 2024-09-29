@@ -271,7 +271,7 @@ namespace Tests.Core.Registry
                 });
 
                 // Act
-                bool has = registry.HasUpdate(mod.identifier, gameInst, new HashSet<string>(), out _);
+                bool has = registry.HasUpdate(mod.identifier, gameInst, new HashSet<string>(), false, out _);
 
                 // Assert
                 Assert.IsTrue(has, "Can't upgrade manually installed DLL");
@@ -327,7 +327,8 @@ namespace Tests.Core.Registry
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod?.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(olderDepMod?.identifier!, gameInst, new HashSet<string>(), out _,
+                bool has = registry.HasUpdate(olderDepMod?.identifier!, gameInst, new HashSet<string>(), false,
+                                              out _,
                                               registry.InstalledModules
                                                       .Select(im => im.Module)
                                                       .ToList());

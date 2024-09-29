@@ -68,6 +68,11 @@ namespace CKAN.GUI
                 && ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                                                .Any(l => l.HoldVersion && l.ContainsModule(CurrentInstance.game, identifier));
 
+        public bool LabelsIgnoreMissing(string identifier)
+            => CurrentInstance != null
+                && ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
+                                               .Any(l => l.IgnoreMissingFiles && l.ContainsModule(CurrentInstance.game, identifier));
+
         #endregion
     }
 }

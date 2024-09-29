@@ -470,14 +470,17 @@ namespace CKAN.GUI
                                          // Skip reinstalls
                                          .Where(upg => upg.Mod != upg.targetMod)
                                          .ToArray();
-                if (upgrades.Length > 0)
+                if (upgrades.Length > 0 && instance != null)
                 {
                     var upgradeable = registry.CheckUpgradeable(instance,
                                                                 // Hold identifiers not chosen for upgrading
                                                                 registry.Installed(false)
                                                                         .Select(kvp => kvp.Key)
                                                                         .Except(upgrades.Select(ch => ch.Mod.identifier))
-                                                                        .ToHashSet())
+                                                                        .ToHashSet(),
+                                                                ModuleLabelList.ModuleLabels
+                                                                               .IgnoreMissingIdentifiers(instance)
+                                                                               .ToHashSet())
                                               [true]
                                               .ToDictionary(m => m.identifier,
                                                             m => m);
@@ -523,6 +526,8 @@ namespace CKAN.GUI
         {
             var upgGroups = registry.CheckUpgradeable(inst,
                                                       ModuleLabelList.ModuleLabels.HeldIdentifiers(inst)
+                                                                                  .ToHashSet(),
+                                                      ModuleLabelList.ModuleLabels.IgnoreMissingIdentifiers(inst)
                                                                                   .ToHashSet());
             var dlls = registry.InstalledDlls.ToList();
             foreach ((var upgradeable, var mods) in upgGroups)
@@ -591,6 +596,8 @@ namespace CKAN.GUI
                                                       bool                  hideV)
             => registry.CheckUpgradeable(inst,
                                          ModuleLabelList.ModuleLabels.HeldIdentifiers(inst)
+                                                                     .ToHashSet(),
+                                         ModuleLabelList.ModuleLabels.IgnoreMissingIdentifiers(inst)
                                                                      .ToHashSet())
                        .SelectMany(kvp => kvp.Value
                                              .Select(mod => registry.IsAutodetected(mod.identifier)

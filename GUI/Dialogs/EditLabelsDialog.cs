@@ -33,6 +33,7 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(AlertOnInstallCheckBox, Properties.Resources.EditLabelsToolTipAlertOnInstall);
             ToolTip.SetToolTip(RemoveOnInstallCheckBox, Properties.Resources.EditLabelsToolTipRemoveOnInstall);
             ToolTip.SetToolTip(HoldVersionCheckBox, Properties.Resources.EditLabelsToolTipHoldVersion);
+            ToolTip.SetToolTip(IgnoreMissingFilesCheckBox, Properties.Resources.EditLabelsToolTipIgnoreMissingFiles);
             ToolTip.SetToolTip(MoveUpButton, Properties.Resources.EditLabelsToolTipMoveUp);
             ToolTip.SetToolTip(MoveDownButton, Properties.Resources.EditLabelsToolTipMoveDown);
         }
@@ -204,6 +205,7 @@ namespace CKAN.GUI
             AlertOnInstallCheckBox.Checked       = lbl.AlertOnInstall;
             RemoveOnInstallCheckBox.Checked      = lbl.RemoveOnInstall;
             HoldVersionCheckBox.Checked          = lbl.HoldVersion;
+            IgnoreMissingFilesCheckBox.Checked   = lbl.IgnoreMissingFiles;
 
             DeleteButton.Enabled = labels.Labels.Contains(lbl);
             EnableDisableUpDownButtons();
@@ -300,12 +302,13 @@ namespace CKAN.GUI
                     || string.IsNullOrWhiteSpace(InstanceNameComboBox.SelectedItem.ToString())
                         ? null
                         : InstanceNameComboBox.SelectedItem.ToString();
-                currentlyEditing.Hide            = HideFromOtherFiltersCheckBox.Checked;
-                currentlyEditing.NotifyOnChange  = NotifyOnChangesCheckBox.Checked;
-                currentlyEditing.RemoveOnChange  = RemoveOnChangesCheckBox.Checked;
-                currentlyEditing.AlertOnInstall  = AlertOnInstallCheckBox.Checked;
-                currentlyEditing.RemoveOnInstall = RemoveOnInstallCheckBox.Checked;
-                currentlyEditing.HoldVersion     = HoldVersionCheckBox.Checked;
+                currentlyEditing.Hide               = HideFromOtherFiltersCheckBox.Checked;
+                currentlyEditing.NotifyOnChange     = NotifyOnChangesCheckBox.Checked;
+                currentlyEditing.RemoveOnChange     = RemoveOnChangesCheckBox.Checked;
+                currentlyEditing.AlertOnInstall     = AlertOnInstallCheckBox.Checked;
+                currentlyEditing.RemoveOnInstall    = RemoveOnInstallCheckBox.Checked;
+                currentlyEditing.HoldVersion        = HoldVersionCheckBox.Checked;
+                currentlyEditing.IgnoreMissingFiles = IgnoreMissingFilesCheckBox.Checked;
                 if (!labels.Labels.Contains(currentlyEditing))
                 {
                     labels.Labels = labels.Labels
@@ -367,16 +370,16 @@ namespace CKAN.GUI
                               ? null
                               : InstanceNameComboBox.SelectedItem.ToString();
             return EditDetailsPanel.Visible && currentlyEditing != null
-                && (   currentlyEditing.Name            != NameTextBox.Text
-                    || currentlyEditing.Color           != ColorButton.BackColor
-                    || currentlyEditing.InstanceName    != newInst
-                    || currentlyEditing.Hide            != HideFromOtherFiltersCheckBox.Checked
-                    || currentlyEditing.NotifyOnChange  != NotifyOnChangesCheckBox.Checked
-                    || currentlyEditing.RemoveOnChange  != RemoveOnChangesCheckBox.Checked
-                    || currentlyEditing.AlertOnInstall  != AlertOnInstallCheckBox.Checked
-                    || currentlyEditing.RemoveOnInstall != RemoveOnInstallCheckBox.Checked
-                    || currentlyEditing.HoldVersion     != HoldVersionCheckBox.Checked
-                );
+                && (   currentlyEditing.Name               != NameTextBox.Text
+                    || currentlyEditing.Color              != ColorButton.BackColor
+                    || currentlyEditing.InstanceName       != newInst
+                    || currentlyEditing.Hide               != HideFromOtherFiltersCheckBox.Checked
+                    || currentlyEditing.NotifyOnChange     != NotifyOnChangesCheckBox.Checked
+                    || currentlyEditing.RemoveOnChange     != RemoveOnChangesCheckBox.Checked
+                    || currentlyEditing.AlertOnInstall     != AlertOnInstallCheckBox.Checked
+                    || currentlyEditing.RemoveOnInstall    != RemoveOnInstallCheckBox.Checked
+                    || currentlyEditing.HoldVersion        != HoldVersionCheckBox.Checked
+                    || currentlyEditing.IgnoreMissingFiles != IgnoreMissingFilesCheckBox.Checked);
         }
 
         private          ModuleLabel?    currentlyEditing;

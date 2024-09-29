@@ -417,6 +417,7 @@ Are you sure you want to skip this change?</value></data>
   <data name="EditLabelsToolTipAlertOnInstall" xml:space="preserve"><value>If checked, the change set screen will alert you if this mod is about to be installed</value></data>
   <data name="EditLabelsToolTipRemoveOnInstall" xml:space="preserve"><value>If checked, modules will be removed from this label if they are installed</value></data>
   <data name="EditLabelsToolTipHoldVersion" xml:space="preserve"><value>If checked, modules will not be upgraded</value></data>
+  <data name="EditLabelsToolTipIgnoreMissingFiles" xml:space="preserve"><value>If checked, you will not be prompted to re-install missing files for modules with this label</value></data>
   <data name="EditLabelsToolTipMoveUp" xml:space="preserve"><value>Move up</value></data>
   <data name="EditLabelsToolTipMoveDown" xml:space="preserve"><value>Move down</value></data>
   <data name="MainLabelsUpdateMessage" xml:space="preserve"><value>Some of your watched mods have updated:

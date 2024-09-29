@@ -46,6 +46,7 @@ namespace CKAN.GUI
             this.AlertOnInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.RemoveOnInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.HoldVersionCheckBox = new System.Windows.Forms.CheckBox();
+            this.IgnoreMissingFilesCheckBox = new System.Windows.Forms.CheckBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.CloseButton = new System.Windows.Forms.Button();
             this.SaveButton = new System.Windows.Forms.Button();
@@ -67,6 +68,8 @@ namespace CKAN.GUI
             // 
             this.CreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.CreateButton.AutoSize = true;
+            this.CreateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CreateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CreateButton.Location = new System.Drawing.Point(10, 10);
             this.CreateButton.Name = "CreateButton";
@@ -121,6 +124,7 @@ namespace CKAN.GUI
             this.EditDetailsPanel.Controls.Add(this.AlertOnInstallCheckBox);
             this.EditDetailsPanel.Controls.Add(this.RemoveOnInstallCheckBox);
             this.EditDetailsPanel.Controls.Add(this.HoldVersionCheckBox);
+            this.EditDetailsPanel.Controls.Add(this.IgnoreMissingFilesCheckBox);
             this.EditDetailsPanel.Controls.Add(this.SaveButton);
             this.EditDetailsPanel.Controls.Add(this.CancelEditButton);
             this.EditDetailsPanel.Controls.Add(this.DeleteButton);
@@ -192,6 +196,8 @@ namespace CKAN.GUI
             // 
             this.ColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.ColorButton.AutoSize = true;
+            this.ColorButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ColorButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ColorButton.Location = new System.Drawing.Point(118, 40);
             this.ColorButton.Name = "ColorButton";
@@ -231,7 +237,7 @@ namespace CKAN.GUI
             // 
             this.NotifyOnChangesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.NotifyOnChangesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NotifyOnChangesCheckBox.Location = new System.Drawing.Point(118, 130);
+            this.NotifyOnChangesCheckBox.Location = new System.Drawing.Point(118, 124);
             this.NotifyOnChangesCheckBox.Name = "NotifyOnChangesCheckBox";
             this.NotifyOnChangesCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.NotifyOnChangesCheckBox, "NotifyOnChangesCheckBox");
@@ -240,7 +246,7 @@ namespace CKAN.GUI
             // 
             this.RemoveOnChangesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.RemoveOnChangesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RemoveOnChangesCheckBox.Location = new System.Drawing.Point(118, 160);
+            this.RemoveOnChangesCheckBox.Location = new System.Drawing.Point(118, 148);
             this.RemoveOnChangesCheckBox.Name = "RemoveOnChangesCheckBox";
             this.RemoveOnChangesCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.RemoveOnChangesCheckBox, "RemoveOnChangesCheckBox");
@@ -249,7 +255,7 @@ namespace CKAN.GUI
             // 
             this.AlertOnInstallCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.AlertOnInstallCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AlertOnInstallCheckBox.Location = new System.Drawing.Point(118, 190);
+            this.AlertOnInstallCheckBox.Location = new System.Drawing.Point(118, 172);
             this.AlertOnInstallCheckBox.Name = "AlertOnInstallCheckBox";
             this.AlertOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.AlertOnInstallCheckBox, "AlertOnInstallCheckBox");
@@ -258,7 +264,7 @@ namespace CKAN.GUI
             // 
             this.RemoveOnInstallCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.RemoveOnInstallCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RemoveOnInstallCheckBox.Location = new System.Drawing.Point(118, 220);
+            this.RemoveOnInstallCheckBox.Location = new System.Drawing.Point(118, 196);
             this.RemoveOnInstallCheckBox.Name = "RemoveOnInstallCheckBox";
             this.RemoveOnInstallCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.RemoveOnInstallCheckBox, "RemoveOnInstallCheckBox");
@@ -267,15 +273,26 @@ namespace CKAN.GUI
             // 
             this.HoldVersionCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.HoldVersionCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.HoldVersionCheckBox.Location = new System.Drawing.Point(118, 250);
+            this.HoldVersionCheckBox.Location = new System.Drawing.Point(118, 220);
             this.HoldVersionCheckBox.Name = "HoldVersionCheckBox";
             this.HoldVersionCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.HoldVersionCheckBox, "HoldVersionCheckBox");
+            //
+            // IgnoreMissingFilesCheckBox
+            //
+            this.IgnoreMissingFilesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
+            this.IgnoreMissingFilesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IgnoreMissingFilesCheckBox.Location = new System.Drawing.Point(118, 244);
+            this.IgnoreMissingFilesCheckBox.Name = "IgnoreMissingFilesCheckBox";
+            this.IgnoreMissingFilesCheckBox.Size = new System.Drawing.Size(200, 23);
+            resources.ApplyResources(this.IgnoreMissingFilesCheckBox, "IgnoreMissingFilesCheckBox");
             // 
             // SaveButton
             // 
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.SaveButton.AutoSize = true;
+            this.SaveButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveButton.Location = new System.Drawing.Point(38, 320);
             this.SaveButton.Name = "SaveButton";
@@ -289,6 +306,8 @@ namespace CKAN.GUI
             // 
             this.CancelEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.CancelEditButton.AutoSize = true;
+            this.CancelEditButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelEditButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelEditButton.Location = new System.Drawing.Point(118, 320);
             this.CancelEditButton.Name = "CancelEditButton";
@@ -302,6 +321,8 @@ namespace CKAN.GUI
             // 
             this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.DeleteButton.AutoSize = true;
+            this.DeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeleteButton.Location = new System.Drawing.Point(198, 320);
             this.DeleteButton.Name = "DeleteButton";
@@ -315,6 +336,8 @@ namespace CKAN.GUI
             // 
             this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Left));
+            this.CloseButton.AutoSize = true;
+            this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CloseButton.Location = new System.Drawing.Point(10, 397);
             this.CloseButton.Name = "CloseButton";
@@ -362,6 +385,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox AlertOnInstallCheckBox;
         private System.Windows.Forms.CheckBox RemoveOnInstallCheckBox;
         private System.Windows.Forms.CheckBox HoldVersionCheckBox;
+        private System.Windows.Forms.CheckBox IgnoreMissingFilesCheckBox;
         private System.Windows.Forms.Label ColorLabel;
         private System.Windows.Forms.Button ColorButton;
         private System.Windows.Forms.Button CreateButton;

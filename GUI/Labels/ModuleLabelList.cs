@@ -83,5 +83,10 @@ namespace CKAN.GUI
             => LabelsFor(inst.Name).Where(l => l.HoldVersion)
                                    .SelectMany(l => l.IdentifiersFor(inst.game))
                                    .Distinct();
+
+        public IEnumerable<string> IgnoreMissingIdentifiers(GameInstance inst)
+            => LabelsFor(inst.Name).Where(l => l.IgnoreMissingFiles)
+                                   .SelectMany(l => l.IdentifiersFor(inst.game))
+                                   .Distinct();
     }
 }

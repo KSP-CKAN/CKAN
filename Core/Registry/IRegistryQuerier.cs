@@ -177,6 +177,7 @@ namespace CKAN
                                      string                   identifier,
                                      GameInstance?            instance,
                                      HashSet<string>          filters,
+                                     bool                     checkMissingFiles,
                                      out CkanModule?          latestMod,
                                      ICollection<CkanModule>? installed = null)
         {
@@ -205,7 +206,8 @@ namespace CKAN
             if (comp == -1
                 || (comp == 0 && !querier.MetadataChanged(identifier)
                               // Check if any of the files or directories are missing
-                              && (instance == null
+                              && (!checkMissingFiles
+                                  || instance == null
                                   || (querier.InstalledModule(identifier)
                                              ?.Files
                                               // Don't make them reinstall files they've filtered out since installing
@@ -227,7 +229,8 @@ namespace CKAN
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
                                                                           GameInstance?         instance,
-                                                                          HashSet<string>       heldIdents)
+                                                                          HashSet<string>       heldIdents,
+                                                                          HashSet<string>?      ignoreMissingIdents = null)
         {
             var filters = ServiceLocator.Container.Resolve<IConfiguration>()
                                                   .GlobalInstallFilters
@@ -240,6 +243,7 @@ namespace CKAN
                                    .Keys
                                    .Select(ident => !heldIdents.Contains(ident)
                                                     && querier.HasUpdate(ident, instance, filters,
+                                                                         !ignoreMissingIdents?.Contains(ident) ?? true,
                                                                          out CkanModule? latest)
                                                     && latest is not null
                                                     && !latest.IsDLC
@@ -247,14 +251,15 @@ namespace CKAN
                                                         : querier.GetInstalledVersion(ident))
                                    .OfType<CkanModule>()
                                    .ToList();
-            return querier.CheckUpgradeable(instance, heldIdents, unlimited, filters);
+            return querier.CheckUpgradeable(instance, heldIdents, unlimited, filters, ignoreMissingIdents);
         }
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
                                                                           GameInstance?         instance,
                                                                           HashSet<string>       heldIdents,
                                                                           List<CkanModule>      initial,
-                                                                          HashSet<string>?      filters = null)
+                                                                          HashSet<string>?      filters             = null,
+                                                                          HashSet<string>?      ignoreMissingIdents = null)
         {
             filters ??= ServiceLocator.Container.Resolve<IConfiguration>()
                                                 .GlobalInstallFilters
@@ -268,6 +273,7 @@ namespace CKAN
             {
                 if (!heldIdents.Contains(ident)
                     && querier.HasUpdate(ident, instance, filters,
+                                         !ignoreMissingIdents?.Contains(ident) ?? true,
                                          out CkanModule? latest, initial)
                     && latest is not null
                     && !latest.IsDLC)
