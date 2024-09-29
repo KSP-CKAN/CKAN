@@ -190,10 +190,11 @@ namespace CKAN.GUI
                                                          dir, exists);
                                     }
                                     rootNode.ExpandAll();
-                                    var initialFocus = FirstMatching(rootNode,
-                                                                     n => n.ForeColor == Color.Red)
-                                                       ?? rootNode;
-                                    initialFocus.EnsureVisible();
+                                    // First scroll to the top
+                                    rootNode.EnsureVisible();
+                                    // Then scroll down to the first red node
+                                    FirstMatching(rootNode, n => n.ForeColor == Color.Red)
+                                        ?.EnsureVisible();
                                     ContentsPreviewTree.EndUpdate();
                                     UseWaitCursor = false;
                                 });
