@@ -170,8 +170,9 @@ namespace CKAN.Extensions
         /// <param name="getNext">Function to go from one node to the next</param>
         /// <returns>All the nodes in the list as a sequence</returns>
         public static IEnumerable<T> TraverseNodes<T>(this T start, Func<T, T?> getNext)
+            where T : class
         {
-            for (T? t = start; t != null; t = getNext(t))
+            for (T? t = start; t != null; t = Utilities.DefaultIfThrows(() => getNext(t)))
             {
                 yield return t;
             }

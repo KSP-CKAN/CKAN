@@ -45,10 +45,10 @@ namespace CKAN
         [JsonProperty]
         private Dictionary<string, InstalledModuleFile> installed_files;
 
-        public IEnumerable<string> Files       => installed_files.Keys;
-        public string              identifier  => source_module.identifier;
-        public CkanModule          Module      => source_module;
-        public DateTime            InstallTime => install_time;
+        public IReadOnlyCollection<string> Files       => installed_files.Keys;
+        public string                      identifier  => source_module.identifier;
+        public CkanModule                  Module      => source_module;
+        public DateTime                    InstallTime => install_time;
 
         public bool AutoInstalled
         {

@@ -32,7 +32,8 @@ namespace CKAN.GUI
                 if (value != selectedModule)
                 {
                     selectedModule = value;
-                    Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(selectedModule?.ToModule()));
+                    Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(selectedModule?.InstalledMod,
+                                                                                  selectedModule?.ToModule()));
                 }
             }
             get => selectedModule;
@@ -41,9 +42,11 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         public void RefreshModContentsTree()
         {
-            if (currentModContentsModule != null)
+            if (currentModContentsInstalledModule != null
+                || currentModContentsModule != null)
             {
-                Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(currentModContentsModule, true));
+                Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(currentModContentsInstalledModule,
+                                                                              currentModContentsModule, true));
             }
         }
 
@@ -51,9 +54,10 @@ namespace CKAN.GUI
 
         private static GameInstanceManager? manager => Main.Instance?.Manager;
 
-        private GUIMod?     selectedModule;
-        private CkanModule? currentModContentsModule;
-        private bool        cancelExpandCollapse;
+        private GUIMod?          selectedModule;
+        private InstalledModule? currentModContentsInstalledModule;
+        private CkanModule?      currentModContentsModule;
+        private bool             cancelExpandCollapse;
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object? sender, TreeNodeMouseClickEventArgs? e)
         {
@@ -104,7 +108,8 @@ namespace CKAN.GUI
             }
         }
 
-        private void _UpdateModContentsTree(CkanModule? module, bool force = false)
+        private void _UpdateModContentsTree(InstalledModule? instMod, CkanModule? module,
+                                            bool force = false)
         {
             if (module == null)
             {
@@ -126,6 +131,7 @@ namespace CKAN.GUI
                 else
                 {
                     currentModContentsModule = module;
+                    currentModContentsInstalledModule = instMod;
                 }
                 if (module.IsMetapackage)
                 {
@@ -165,13 +171,12 @@ namespace CKAN.GUI
                             var filters = ServiceLocator.Container.Resolve<IConfiguration>().GlobalInstallFilters
                                                                   .Concat(inst.InstallFilters)
                                                                   .ToHashSet();
-                            var tuples = ModuleInstaller.GetModuleContents(manager.Cache, inst, module, filters)
-                                                        .Select(f => (path:   inst.ToRelativeGameDir(f.destination),
-                                                                      dir:    f.source.IsDirectory,
-                                                                      exists: !selectedModule.IsInstalled
-                                                                              || File.Exists(f.destination)
-                                                                              || Directory.Exists(f.destination)))
-                                                        .ToArray();
+                            var tuples = (instMod != null
+                                              ? ModuleInstaller.GetModuleContents(inst, instMod.Files, filters)
+                                              : ModuleInstaller.GetModuleContents(manager.Cache, inst,
+                                                                                  module, filters))
+                                         // Load fully in bg
+                                         .ToArray();
                             // Stop if user switched to another mod
                             if (rootNode.TreeView != null)
                             {
