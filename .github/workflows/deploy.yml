@@ -98,15 +98,11 @@ jobs:
       - name: Install OSX build dependencies
         run: sudo apt-get install -y libplist-utils xorriso
       - uses: actions/checkout@v4
-      - name: Download signed artifact
+      - name: Download repack artifact
         uses: actions/download-artifact@v4
         with:
-          name: signed
-          path: _build/signed
-      - name: Put signed exe into repack path
-        run: |
-          mkdir -p _build/repack/Release
-          cp _build/signed/ckan.exe _build/repack/Release
+          name: Release-repack-unsigned
+          path: _build/repack/
       - name: Build dmg
         run: ./build osx --configuration=Release --exclusive
       - name: Push dmg to S3
