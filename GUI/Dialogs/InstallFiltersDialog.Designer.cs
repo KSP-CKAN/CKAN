@@ -75,6 +75,7 @@ namespace CKAN.GUI
             this.GlobalFiltersTextBox.Location = new System.Drawing.Point(6, 17);
             this.GlobalFiltersTextBox.Multiline = true;
             this.GlobalFiltersTextBox.Name = "GlobalFiltersTextBox";
+            this.GlobalFiltersTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.GlobalFiltersTextBox.Size = new System.Drawing.Size(219, 147);
             this.GlobalFiltersTextBox.TabIndex = 1;
             resources.ApplyResources(this.GlobalFiltersTextBox, "GlobalFiltersTextBox");
@@ -98,6 +99,7 @@ namespace CKAN.GUI
             this.InstanceFiltersTextBox.Location = new System.Drawing.Point(6, 19);
             this.InstanceFiltersTextBox.Multiline = true;
             this.InstanceFiltersTextBox.Name = "InstanceFiltersTextBox";
+            this.InstanceFiltersTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.InstanceFiltersTextBox.Size = new System.Drawing.Size(219, 134);
             this.InstanceFiltersTextBox.TabIndex = 4;
             resources.ApplyResources(this.InstanceFiltersTextBox, "InstanceFiltersTextBox");
@@ -120,7 +122,7 @@ namespace CKAN.GUI
             this.Controls.Add(this.GlobalFiltersGroupBox);
             this.Controls.Add(this.InstanceFiltersGroupBox);
             this.Controls.Add(this.WarningLabel);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
