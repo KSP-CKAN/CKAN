@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
@@ -45,10 +46,10 @@ namespace CKAN
         [JsonProperty]
         private Dictionary<string, InstalledModuleFile> installed_files;
 
-        public IEnumerable<string> Files       => installed_files.Keys;
-        public string              identifier  => source_module.identifier;
-        public CkanModule          Module      => source_module;
-        public DateTime            InstallTime => install_time;
+        public IReadOnlyCollection<string> Files       => installed_files.Keys;
+        public string                      identifier  => source_module.identifier;
+        public CkanModule                  Module      => source_module;
+        public DateTime                    InstallTime => install_time;
 
         public bool AutoInstalled
         {
@@ -131,6 +132,13 @@ namespace CKAN
         }
 
         #endregion
+
+        public bool AllFilesExist(GameInstance    instance,
+                                  HashSet<string> filters)
+            // Don't make them reinstall files they've filtered out since installing
+            => Files.Where(f => !filters.Any(filt => f.Contains(filt)))
+                    .Select(instance.ToAbsoluteGameDir)
+                    .All(p => Directory.Exists(p) || File.Exists(p));
 
         public override string ToString()
             => string.Format(AutoInstalled ? Properties.Resources.InstalledModuleToStringAutoInstalled

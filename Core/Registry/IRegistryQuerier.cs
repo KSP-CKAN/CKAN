@@ -1,11 +1,12 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using Autofac;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Games;
 #if NETSTANDARD2_0
@@ -174,6 +175,8 @@ namespace CKAN
         public static bool HasUpdate(this IRegistryQuerier    querier,
                                      string                   identifier,
                                      GameInstance?            instance,
+                                     HashSet<string>          filters,
+                                     bool                     checkMissingFiles,
                                      out CkanModule?          latestMod,
                                      ICollection<CkanModule>? installed = null)
         {
@@ -202,11 +205,10 @@ namespace CKAN
             if (comp == -1
                 || (comp == 0 && !querier.MetadataChanged(identifier)
                               // Check if any of the files or directories are missing
-                              && (instance == null
+                              && (!checkMissingFiles
+                                  || instance == null
                                   || (querier.InstalledModule(identifier)
-                                             ?.Files
-                                              .Select(instance.ToAbsoluteGameDir)
-                                              .All(p => Directory.Exists(p) || File.Exists(p))
+                                             ?.AllFilesExist(instance, filters)
                                              // Manually installed, consider up to date
                                              ?? true))))
             {
@@ -222,14 +224,21 @@ namespace CKAN
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
                                                                           GameInstance?         instance,
-                                                                          HashSet<string>       heldIdents)
+                                                                          HashSet<string>       heldIdents,
+                                                                          HashSet<string>?      ignoreMissingIdents = null)
         {
+            var filters = ServiceLocator.Container.Resolve<IConfiguration>()
+                                                  .GlobalInstallFilters
+                                                  .Concat(instance?.InstallFilters
+                                                                  ?? Enumerable.Empty<string>())
+                                                  .ToHashSet();
             // Get the absolute latest versions ignoring restrictions,
             // to break out of mutual version-depending deadlocks
             var unlimited = querier.Installed(false)
                                    .Keys
                                    .Select(ident => !heldIdents.Contains(ident)
-                                                    && querier.HasUpdate(ident, instance,
+                                                    && querier.HasUpdate(ident, instance, filters,
+                                                                         !ignoreMissingIdents?.Contains(ident) ?? true,
                                                                          out CkanModule? latest)
                                                     && latest is not null
                                                     && !latest.IsDLC
@@ -237,21 +246,29 @@ namespace CKAN
                                                         : querier.GetInstalledVersion(ident))
                                    .OfType<CkanModule>()
                                    .ToList();
-            return querier.CheckUpgradeable(instance, heldIdents, unlimited);
+            return querier.CheckUpgradeable(instance, heldIdents, unlimited, filters, ignoreMissingIdents);
         }
 
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
                                                                           GameInstance?         instance,
                                                                           HashSet<string>       heldIdents,
-                                                                          List<CkanModule>      initial)
+                                                                          List<CkanModule>      initial,
+                                                                          HashSet<string>?      filters             = null,
+                                                                          HashSet<string>?      ignoreMissingIdents = null)
         {
+            filters ??= ServiceLocator.Container.Resolve<IConfiguration>()
+                                                .GlobalInstallFilters
+                                                .Concat(instance?.InstallFilters
+                                                                ?? Enumerable.Empty<string>())
+                                                .ToHashSet();
             // Use those as the installed modules
             var upgradeable    = new List<CkanModule>();
             var notUpgradeable = new List<CkanModule>();
             foreach (var ident in initial.Select(module => module.identifier))
             {
                 if (!heldIdents.Contains(ident)
-                    && querier.HasUpdate(ident, instance,
+                    && querier.HasUpdate(ident, instance, filters,
+                                         !ignoreMissingIdents?.Contains(ident) ?? true,
                                          out CkanModule? latest, initial)
                     && latest is not null
                     && !latest.IsDLC)

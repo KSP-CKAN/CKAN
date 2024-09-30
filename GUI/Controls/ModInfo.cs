@@ -7,6 +7,7 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 
@@ -137,6 +138,19 @@ namespace CKAN.GUI
                 {
                     var pageToAlert = module.IsCompatible(crit) ? RelationshipTabPage : VersionsTabPage;
                     pageToAlert.ImageKey = "Stop";
+                }
+                if (manager?.CurrentInstance is GameInstance inst)
+                {
+                    var filters = ServiceLocator.Container.Resolve<IConfiguration>()
+                                                          .GlobalInstallFilters
+                                                          .Concat(inst.InstallFilters)
+                                                          .ToHashSet();
+                    ContentTabPage.ImageKey = ModuleLabels.IgnoreMissingIdentifiers(inst)
+                                                          .Contains(gmod.Identifier)
+                                              || (gmod.InstalledMod?.AllFilesExist(inst, filters)
+                                                                   ?? true)
+                                                  ? ""
+                                                  : "Stop";
                 }
 
                 ModInfoTabControl.ResumeLayout();

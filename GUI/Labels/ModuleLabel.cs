@@ -57,6 +57,10 @@ namespace CKAN.GUI
         [DefaultValue(false)]
         public bool    HoldVersion;
 
+        [JsonProperty("ignore_missing_files", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
+        public bool    IgnoreMissingFiles;
+
         [JsonProperty("module_identifiers_by_game", NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonToGamesDictionaryConverter))]
         private readonly Dictionary<string, HashSet<string>> ModuleIdentifiers =

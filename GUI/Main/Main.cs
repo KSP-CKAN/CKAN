@@ -724,6 +724,12 @@ namespace CKAN.GUI
                 var dlg = new InstallFiltersDialog(ServiceLocator.Container.Resolve<IConfiguration>(), CurrentInstance);
                 dlg.ShowDialog(this);
                 Enabled = true;
+                if (dlg.Changed)
+                {
+                    // The Update checkbox might appear or disappear if missing files were or are filtered out
+                    RefreshModList(false);
+                    ModInfo.RefreshModContentsTree();
+                }
             }
         }
 

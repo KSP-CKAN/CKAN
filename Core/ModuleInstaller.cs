@@ -583,22 +583,61 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Returns contents of an installed module
+        /// </summary>
+        public static IEnumerable<(string path, bool dir, bool exists)> GetModuleContents(
+                GameInstance                instance,
+                IReadOnlyCollection<string> installed,
+                HashSet<string>             filters)
+            => GetModuleContents(instance, installed,
+                                 installed.SelectMany(f => f.TraverseNodes(Path.GetDirectoryName)
+                                                            .Skip(1)
+                                                            .Where(s => s.Length > 0)
+                                                            .Select(CKANPathUtils.NormalizePath))
+                                          .ToHashSet(),
+                                 filters);
+
+        private static IEnumerable<(string path, bool dir, bool exists)> GetModuleContents(
+                GameInstance                instance,
+                IReadOnlyCollection<string> installed,
+                HashSet<string>             parents,
+                HashSet<string>             filters)
+            => installed.Where(f => !filters.Any(filt => f.Contains(filt)))
+                        .GroupBy(parents.Contains)
+                        .SelectMany(grp =>
+                            grp.Select(p => (path:   p,
+                                             dir:    grp.Key,
+                                             exists: grp.Key ? Directory.Exists(instance.ToAbsoluteGameDir(p))
+                                                             : File.Exists(instance.ToAbsoluteGameDir(p)))));
+
+        /// <summary>
         /// Returns the module contents if and only if we have it
         /// available in our cache, empty sequence otherwise.
         ///
         /// Intended for previews.
         /// </summary>
-        public static IEnumerable<InstallableFile> GetModuleContents(NetModuleCache  Cache,
-                                                                     GameInstance    instance,
-                                                                     CkanModule      module,
-                                                                     HashSet<string> filters)
+        public static IEnumerable<(string path, bool dir, bool exists)> GetModuleContents(
+                NetModuleCache  Cache,
+                GameInstance    instance,
+                CkanModule      module,
+                HashSet<string> filters)
             => (Cache.GetCachedFilename(module) is string filename
-                    ? Utilities.DefaultIfThrows(() => FindInstallableFiles(module, filename, instance)
-                                                          .Where(instF => !filters.Any(filt =>
-                                                                  instF.destination != null
-                                                                  && instF.destination.Contains(filt))))
+                    ? GetModuleContents(instance,
+                                        Utilities.DefaultIfThrows(
+                                            () => FindInstallableFiles(module, filename, instance)),
+                                        filters)
                     : null)
-               ?? Enumerable.Empty<InstallableFile>();
+               ?? Enumerable.Empty<(string path, bool dir, bool exists)>();
+
+        private static IEnumerable<(string path, bool dir, bool exists)>? GetModuleContents(
+                GameInstance                  instance,
+                IEnumerable<InstallableFile>? installable,
+                HashSet<string>               filters)
+            => installable?.Where(instF => !filters.Any(filt => instF.destination != null
+                                                                && instF.destination.Contains(filt)))
+                           .Select(f => (path:   instance.ToRelativeGameDir(f.destination),
+                                         dir:    f.source.IsDirectory,
+                                         exists: true));
 
         #endregion
 

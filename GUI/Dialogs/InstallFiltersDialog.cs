@@ -22,6 +22,8 @@ namespace CKAN.GUI
             this.instance     = instance;
         }
 
+        public bool Changed { get; private set; } = false;
+
         /// <summary>
         /// Open the user guide when the user presses F1
         /// </summary>
@@ -48,8 +50,12 @@ namespace CKAN.GUI
 
         private void InstallFiltersDialog_Closing(object? sender, CancelEventArgs? e)
         {
-            globalConfig.GlobalInstallFilters = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            instance.InstallFilters = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var newGlobal = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var newInstance = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            Changed = !globalConfig.GlobalInstallFilters.SequenceEqual(newGlobal)
+                      || !instance.InstallFilters.SequenceEqual(newInstance);
+            globalConfig.GlobalInstallFilters = newGlobal;
+            instance.InstallFilters = newInstance;
         }
 
         private void AddMiniAVCButton_Click(object? sender, EventArgs? e)
@@ -57,8 +63,7 @@ namespace CKAN.GUI
             GlobalFiltersTextBox.Text = string.Join(Environment.NewLine,
                 GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries)
                     .Concat(miniAVC)
-                    .Distinct()
-            );
+                    .Distinct());
         }
 
         private readonly IConfiguration globalConfig;
