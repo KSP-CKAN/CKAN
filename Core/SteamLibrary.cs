@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using log4net;
 using ValveKeyValue;
+
 using CKAN.Extensions;
 
 namespace CKAN
@@ -12,22 +13,21 @@ namespace CKAN
     public class SteamLibrary
     {
         public SteamLibrary()
+            : this(SteamPaths.Where(p => !string.IsNullOrEmpty(p))
+                             .FirstOrDefault(Directory.Exists))
         {
-            var libraryPath = SteamPaths.Where(p => !string.IsNullOrEmpty(p))
-                                        .FirstOrDefault(Directory.Exists);
-            if (libraryPath == null)
-            {
-                log.Info("Steam not found");
-                Games = Array.Empty<NonSteamGame>();
-            }
-            else
+        }
+
+        public SteamLibrary(string? libraryPath)
+        {
+            if (libraryPath != null
+                && OpenRead(Path.Combine(libraryPath,
+                                         "config",
+                                         "libraryfolders.vdf")) is FileStream stream)
             {
                 log.InfoFormat("Found Steam at {0}", libraryPath);
                 var txtParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
-                var appPaths      = txtParser.Deserialize<List<LibraryFolder>>(
-                                                  File.OpenRead(Path.Combine(libraryPath,
-                                                                             "config",
-                                                                             "libraryfolders.vdf")))
+                var appPaths      = txtParser.Deserialize<List<LibraryFolder>>(stream)
                                              .Select(lf => lf.Path is string libPath
                                                            ? appRelPaths.Select(p => Path.Combine(libPath, p))
                                                                         .FirstOrDefault(Directory.Exists)
@@ -47,7 +47,20 @@ namespace CKAN
                 log.DebugFormat("Games: {0}",
                                 string.Join(", ", Games.Select(g => $"{g.LaunchUrl} ({g.GameDir})")));
             }
+            else
+            {
+                log.Info("Steam not found");
+                Games = Array.Empty<NonSteamGame>();
+            }
         }
+
+        private static FileStream? OpenRead(string path)
+            => Utilities.DefaultIfThrows(() => File.OpenRead(path),
+                                         exc =>
+                                         {
+                                             log.Warn($"Failed to open {path}", exc);
+                                             return null;
+                                         });
 
         public IEnumerable<Uri> GameAppURLs(DirectoryInfo gameDir)
             => Games.Where(g => gameDir.FullName.Equals(g.GameDir?.FullName, Platform.PathComparison))
@@ -72,9 +85,9 @@ namespace CKAN
             => vdfParser.Deserialize<List<NonSteamGame>>(File.OpenRead(path))
                         .Select(nsg => nsg.NormalizeDir(path));
 
-        private const string registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
-        private const string registryValue = @"SteamPath";
-        private static string?[] SteamPaths
+        private const  string   registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
+        private const  string   registryValue = @"SteamPath";
+        private static string[] SteamPaths
             => Platform.IsWindows
                // First check the registry
                && Microsoft.Win32.Registry.GetValue(registryKey, registryValue, "") is string val
