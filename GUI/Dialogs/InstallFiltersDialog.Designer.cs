@@ -126,6 +126,7 @@ namespace CKAN.GUI
             this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(379, 390);
             this.HelpButton = true;
             this.Name = "InstallFiltersDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
