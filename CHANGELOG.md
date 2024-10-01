@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 - [Core] Skip corrupted .acf files in Steam library (#4200 by: HebaruSan)
 - [GUI] Fix label color blending (#4203 by: HebaruSan)
 
+### Internal
+
+- [Core] Use SHA256 for archive.org fallback if SHA1 absent (#4216 by: HebaruSan)
+
 ## v1.35.0 (Oberth)
 
 ### Features

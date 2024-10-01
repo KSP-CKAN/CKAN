@@ -691,22 +691,16 @@ namespace CKAN
             => StandardName(identifier, version);
 
         public static string StandardName(string identifier, ModuleVersion version)
-        {
-            // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
-            // slashes, and heaven knows what use mod authors try to smoosh into them.
-            // We'll reduce this down to "friendly" characters, replacing everything else with
-            // dashes. This doesn't change look-ups, as we use the hash prefix for that.
-            string version_string = Regex.Replace(version.ToString(), "[^A-Za-z0-9_.-]", "-");
-
-            return identifier + "-" + version_string + ".zip";
-        }
+            => $"{identifier}-{sanitizerPattern.Replace(version.ToString(), "-")}.zip";
 
         public override string ToString()
             => string.Format("{0} {1}", identifier, version);
 
         public string DescribeInstallStanzas(IGame game)
-            => install == null ? ModuleInstallDescriptor.DefaultInstallStanza(game, identifier).DescribeMatch()
-                               : string.Join(", ", install.Select(mid => mid.DescribeMatch()));
+            => install == null
+                ? ModuleInstallDescriptor.DefaultInstallStanza(game, identifier)
+                                         .DescribeMatch()
+                : string.Join(", ", install.Select(mid => mid.DescribeMatch()));
 
         /// <summary>
         /// Return an archive.org URL for this download, or null if it's not there.
@@ -717,23 +711,31 @@ namespace CKAN
             => !license.Any(l => l.Redistributable)
                 ? null
                 : InternetArchiveURL(
-                    Truncate(bucketExcludePattern.Replace(identifier + "-"
-                                                                  + version.ToString()
-                                                                           .Replace(' ', '_')
-                                                                           .Replace(':', '-'),
-                                                                  ""),
+                    Truncate(bucketExcludePattern.Replace(identifier
+                                                              + "-"
+                                                              + version.ToString()
+                                                                       .Replace(' ', '_')
+                                                                       .Replace(':', '-'),
+                                                          ""),
                              100),
                     // Some alternate registry repositories don't set download_hash
-                    download_hash?.sha1);
+                    download_hash?.sha1 ?? download_hash?.sha256);
 
         private static string Truncate(string s, int len)
             => s.Length <= len ? s
                                : s[..len];
 
-        private static Uri? InternetArchiveURL(string bucket, string? sha1)
-            => string.IsNullOrEmpty(sha1)
+        private static Uri? InternetArchiveURL(string bucket, string? hash)
+            => hash == null || string.IsNullOrEmpty(hash)
                 ? null
-                : new Uri($"https://archive.org/download/{bucket}/{sha1?[..8]}-{bucket}.zip");
+                : new Uri($"https://archive.org/download/{bucket}/{hash[..8]}-{bucket}.zip");
+
+        // Versions can contain ALL SORTS OF WACKY THINGS! Colons, friggin newlines,
+        // slashes, and heaven knows what else mod authors try to smoosh into them.
+        // We'll reduce this down to "friendly" characters, replacing everything else with
+        // dashes. This doesn't change look-ups, as we use the hash prefix for that.
+        private static readonly Regex sanitizerPattern = new Regex("[^A-Za-z0-9_.-]",
+                                                                   RegexOptions.Compiled);
 
         // InternetArchive says:
         // Bucket names should be valid archive identifiers;
