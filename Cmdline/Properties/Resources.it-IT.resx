@@ -380,7 +380,6 @@ Assicurati di inserire almeno i valori di versione maggiore e minore nella forma
   </data>
   <data name="InstallTryAgain" xml:space="preserve">
     <value>Se sei fortunato, puoi fare un `ckan update` e riprovare.
-Prova `ckan install --no-recommends` per saltare l'installazione dei moduli consigliati.
 Oppure `ckan install --allow-incompatible` per ignorare la compatibilità dei moduli.</value>
   </data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">

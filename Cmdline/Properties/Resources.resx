@@ -218,9 +218,10 @@ Make sure to enter at least the version major and minor values in the form Maj.M
   <data name="ImportError" xml:space="preserve"><value>Import error: {0}</value></data>
   <data name="ImportNotFound" xml:space="preserve"><value>File not found: {0}</value></data>
   <data name="InstallNotFound" xml:space="preserve"><value>File not found, exiting: {0}</value></data>
-  <data name="InstallTryAgain" xml:space="preserve"><value>If you're lucky, you can do a `ckan update` and try again.
-Try `ckan install --no-recommends` to skip installation of recommended modules.
-Or `ckan install --allow-incompatible` to ignore module compatibility.</value></data>
+  <data name="InstallTryAgain" xml:space="preserve"><value>
+You can use the `ckan compat` commands to change which game versions are treated as compatible.
+If a newly compatible version was just released, you can do a `ckan update` and try again.
+Or `ckan install --allow-incompatible` to ignore compatibility of the modules on the command line (but not dependencies).</value></data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your version of {1}</value></data>
   <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve"><value>Module {0} {1} required but it is not listed in the index, or not available for your version of {2}</value></data>
   <data name="InstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for module {0}: {1}</value></data>
