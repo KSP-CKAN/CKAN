@@ -18,6 +18,7 @@ namespace Tests.Core.Relationships
     {
         private RelationshipResolverOptions? options;
         private RandomModuleGenerator? generator;
+        private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
 
         [SetUp]
         public void Setup()
@@ -34,7 +35,7 @@ namespace Tests.Core.Relationships
             var registry = CKAN.Registry.Empty();
             options = RelationshipResolverOptions.DefaultOpts();
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<CkanModule>(),
-                null, options, registry, null));
+                null, options, registry, crit));
         }
 
         [Test]
@@ -55,10 +56,10 @@ namespace Tests.Core.Relationships
 
                 var list = new List<CkanModule> { mod_a, mod_b };
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
 
                 options!.proceed_with_inconsistencies = true;
-                var resolver = new RelationshipResolver(list, null, options, registry, null);
+                var resolver = new RelationshipResolver(list, null, options, registry, crit);
 
                 Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_a)));
                 Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_b)));
@@ -85,7 +86,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -110,7 +111,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -135,7 +136,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -166,7 +167,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -191,7 +192,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -215,7 +216,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -239,7 +240,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -264,7 +265,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -297,7 +298,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_d };
 
                 Assert.Throws<TooManyModsProvideKraken>(() => new RelationshipResolver(
-                    list, null, options, registry, null));
+                    list, null, options, registry, crit));
             }
         }
 
@@ -316,7 +317,7 @@ namespace Tests.Core.Relationships
                 registry.RegisterModule(mod_a, new List<string>(), ksp.KSP, false);
 
                 var relationship_resolver = new RelationshipResolver(
-                    list, null, options!, registry, null);
+                    list, null, options!, registry, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), mod_a);
                 CollectionAssert.AreEquivalent(new List<SelectionReason>
                                           {
@@ -346,7 +347,7 @@ namespace Tests.Core.Relationships
                 registry.Installed().Add(suggested.identifier, suggested.version);
                 var list = new List<CkanModule> { suggester };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), suggested);
             }
         }
@@ -374,7 +375,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { suggester, mod };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), suggested);
             }
         }
@@ -402,7 +403,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { depender, conflicts_with_dependant };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -424,7 +425,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { suggester };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), suggested);
             }
         }
@@ -456,12 +457,12 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { suggester };
 
                 options!.with_all_suggests = true;
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), suggested2);
 
                 options.with_all_suggests = false;
 
-                relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), suggested2);
             }
         }
@@ -486,7 +487,7 @@ namespace Tests.Core.Relationships
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
 
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
@@ -513,7 +514,7 @@ namespace Tests.Core.Relationships
 
                 Assert.Throws<DependencyNotSatisfiedKraken>(() =>
                     new RelationshipResolver(new List<CkanModule> { depender },
-                                             null, options!, registry, null));
+                                             null, options!, registry, crit));
             }
         }
 
@@ -541,7 +542,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { depender };
 
                 Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -565,10 +566,10 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule>() { depender };
 
                 Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
                 list.Add(dependant);
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -592,7 +593,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { depender, dependant };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -622,7 +623,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { depender, dependant };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, null));
+                    list, null, options!, registry, crit));
             }
         }
 
@@ -649,7 +650,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
                     dependant,
@@ -682,7 +683,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
                     dependant,
@@ -715,7 +716,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
                     dependant,
@@ -753,7 +754,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
                     dependant,
@@ -810,7 +811,7 @@ namespace Tests.Core.Relationships
                 // Act
                 RelationshipResolver rr = new RelationshipResolver(
                     new CkanModule[] { depender }, null,
-                    options!, registry, null);
+                    options!, registry, crit);
 
                 // Assert
                 CollectionAssert.Contains(      rr.ModList(), olderDependency);
@@ -861,7 +862,7 @@ namespace Tests.Core.Relationships
                 // Act
                 RelationshipResolver rr = new RelationshipResolver(
                     new CkanModule[] { depender }, null,
-                    options!, registry, null);
+                    options!, registry, crit);
 
                 // Assert
                 CollectionAssert.Contains(      rr.ModList(), olderDependency);
@@ -880,7 +881,7 @@ namespace Tests.Core.Relationships
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod };
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
 
                 var mod_not_in_resolver_list = generator.GeneratorRandomModule();
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), mod_not_in_resolver_list);
@@ -900,7 +901,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
                 var reasons = relationship_resolver.ReasonsFor(mod);
                 Assert.That(reasons[0], Is.AssignableTo<SelectionReason.UserRequested>());
             }
@@ -923,7 +924,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod };
 
                 options!.with_all_suggests = true;
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 var reasons = relationship_resolver.ReasonsFor(suggested);
 
                 Assert.IsTrue(reasons[0] is SelectionReason.Suggested sug
@@ -961,7 +962,7 @@ namespace Tests.Core.Relationships
 
                 options!.with_all_suggests = true;
                 options.with_recommends = true;
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, null);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
                 var reasons = relationship_resolver.ReasonsFor(recommendedA);
                 Assert.IsTrue(reasons[0] is SelectionReason.Recommended rec
                               && rec.Parent.Equals(suggested));
@@ -1066,7 +1067,7 @@ namespace Tests.Core.Relationships
                 options!.proceed_with_inconsistencies = false;
                 var exception = Assert.Throws<InconsistentKraken>(() =>
                 {
-                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, crit);
                 });
                 Assert.AreEqual($"{avp} conflicts with {eveDefaultConfig}",
                                 exception?.ShortDescription);
@@ -1077,7 +1078,7 @@ namespace Tests.Core.Relationships
                 options.proceed_with_inconsistencies = true;
                 Assert.DoesNotThrow(() =>
                 {
-                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, crit);
                 });
                 CollectionAssert.AreEquivalent(modulesToInstall,
                                                resolver?.ConflictList.Keys);
@@ -1093,7 +1094,7 @@ namespace Tests.Core.Relationships
                 options.proceed_with_inconsistencies = false;
                 Assert.DoesNotThrow(() =>
                 {
-                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, null);
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, crit);
                 });
                 Assert.IsEmpty(resolver!.ConflictList);
                 CollectionAssert.AreEquivalent(new List<CkanModule> {avp, avp2kTextures}, resolver.ModList());

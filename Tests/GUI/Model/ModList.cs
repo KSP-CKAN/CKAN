@@ -13,6 +13,7 @@ using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
+using CKAN.Versioning;
 using CKAN.GUI;
 
 namespace Tests.GUI
@@ -23,11 +24,13 @@ namespace Tests.GUI
     [TestFixture]
     public class ModListTests
     {
+        private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
+
         [Test]
         public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList();
-            Assert.That(item.ComputeUserChangeSet(Registry.Empty(), null, null, null, null), Is.Empty);
+            Assert.That(item.ComputeUserChangeSet(Registry.Empty(), crit, null, null, null), Is.Empty);
         }
 
         [Test]
@@ -211,7 +214,7 @@ namespace Tests.GUI
                 {
                     // Install the "other" module
                     installer.InstallList(
-                        modList.ComputeUserChangeSet(Registry.Empty(), null, null, null, null).Select(change => change.Mod).ToList(),
+                        modList.ComputeUserChangeSet(Registry.Empty(), crit, null, null, null).Select(change => change.Mod).ToList(),
                         new RelationshipResolverOptions(),
                         registryManager,
                         ref possibleConfigOnlyDirs,

@@ -451,7 +451,7 @@ namespace CKAN.GUI
                : Enumerable.Empty<ModChange>();
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier     registry,
-                                                       GameVersionCriteria? crit,
+                                                       GameVersionCriteria  crit,
                                                        GameInstance?        instance,
                                                        DataGridViewColumn?  upgradeCol,
                                                        DataGridViewColumn?  replaceCol)

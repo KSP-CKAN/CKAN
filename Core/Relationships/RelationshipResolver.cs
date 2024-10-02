@@ -31,7 +31,7 @@ namespace CKAN
                                     IEnumerable<CkanModule>?    modulesToRemove,
                                     RelationshipResolverOptions options,
                                     IRegistryQuerier            registry,
-                                    GameVersionCriteria?        versionCrit)
+                                    GameVersionCriteria         versionCrit)
             : this(options, registry, versionCrit)
         {
             if (modulesToRemove != null)
@@ -52,7 +52,7 @@ namespace CKAN
         /// <param name="versionCrit">The current KSP version criteria to consider</param>
         private RelationshipResolver(RelationshipResolverOptions options,
                                      IRegistryQuerier            registry,
-                                     GameVersionCriteria?        versionCrit)
+                                     GameVersionCriteria         versionCrit)
         {
             this.options     = options;
             this.registry    = registry;
@@ -698,7 +698,7 @@ namespace CKAN
         private readonly HashSet<RelationshipDescriptor> suppressedRecommenders = new HashSet<RelationshipDescriptor>();
 
         private readonly IRegistryQuerier            registry;
-        private readonly GameVersionCriteria?        versionCrit;
+        private readonly GameVersionCriteria         versionCrit;
         private readonly RelationshipResolverOptions options;
 
         /// <summary>

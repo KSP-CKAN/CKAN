@@ -155,12 +155,13 @@ namespace CKAN.ConsoleUI {
 
         private void generateList(HashSet<CkanModule> inst)
         {
-            if (ModuleInstaller.FindRecommendations(
-                manager.CurrentInstance,
-                inst, new List<CkanModule>(inst), registry,
-                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
-                out Dictionary<CkanModule, List<string>> suggestions,
-                out Dictionary<CkanModule, HashSet<string>> supporters
+            if (manager.CurrentInstance is GameInstance instance
+                && ModuleInstaller.FindRecommendations(
+                    instance,
+                    inst, new List<CkanModule>(inst), registry,
+                    out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                    out Dictionary<CkanModule, List<string>> suggestions,
+                    out Dictionary<CkanModule, HashSet<string>> supporters
             )) {
                 foreach ((CkanModule mod, Tuple<bool, List<string>> checkedAndDependents) in recommendations) {
                     dependencies.Add(mod, new Dependency(

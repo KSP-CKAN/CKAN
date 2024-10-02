@@ -1433,7 +1433,7 @@ namespace CKAN
         /// <returns>
         /// true if anything found, false otherwise
         /// </returns>
-        public static bool FindRecommendations(GameInstance?                                         instance,
+        public static bool FindRecommendations(GameInstance                                          instance,
                                                HashSet<CkanModule>                                   sourceModules,
                                                List<CkanModule>                                      toInstall,
                                                Registry                                              registry,
@@ -1441,7 +1441,7 @@ namespace CKAN
                                                out Dictionary<CkanModule, List<string>>              suggestions,
                                                out Dictionary<CkanModule, HashSet<string>>           supporters)
         {
-            var crit     = instance?.VersionCriteria();
+            var crit     = instance.VersionCriteria();
             var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
                                                     null,
                                                     RelationshipResolverOptions.KitchenSinkOpts(),
@@ -1507,7 +1507,7 @@ namespace CKAN
         public static bool CanInstall(List<CkanModule>            toInstall,
                                       RelationshipResolverOptions opts,
                                       IRegistryQuerier            registry,
-                                      GameVersionCriteria?        crit)
+                                      GameVersionCriteria         crit)
         {
             string request = string.Join(", ", toInstall.Select(m => m.identifier));
             try

@@ -432,7 +432,7 @@ namespace CKAN
             List<InstalledModule>              installedModules,
             HashSet<string>                    dlls,
             IDictionary<string, ModuleVersion> dlc,
-            GameVersionCriteria?               crit)
+            GameVersionCriteria                crit)
         {
             log.DebugFormat("Finding removable autoInstalled for: {0}",
                             string.Join(", ", installedModules.Select(im => im.identifier)));
@@ -474,7 +474,7 @@ namespace CKAN
         public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
             this IRegistryQuerier querier,
             List<InstalledModule> installedModules,
-            GameVersionCriteria?  crit)
+            GameVersionCriteria   crit)
             => querier?.FindRemovableAutoInstalled(installedModules,
                                                    querier.InstalledDlls.ToHashSet(),
                                                    querier.InstalledDlc,
