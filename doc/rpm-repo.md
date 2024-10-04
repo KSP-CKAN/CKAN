@@ -5,13 +5,19 @@ We have created an RPM repository that you can add to your RPM-based OS to insta
 ## Stable builds
 
 These are [the main releases](https://github.com/KSP-CKAN/CKAN/releases), recommended for most users. You will have the same features at the same time as everyone else, but you will have the added conveniences of DNF managing the updates for you.
+Fedora begun an upgrade from DNF to DNF5 in 2024. If you are using DNF5 (some spins like Ultramarine 40+ come with it by default), you can add our RPM repository with this command:
+```
+sudo dnf config-manager addrepo --from-repofile https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/stable/ckan_stable.repo
+sudo dnf install ckan
+```
+If you're still using legacy DNF, you can instead run this command:
 
 ```
 sudo dnf config-manager --add-repo https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/stable/ckan_stable.repo
 sudo dnf install ckan
 ```
 
-### Or if you are on OpenSUSE
+### Or if you are on OpenSUSE:
 
 ```
 sudo zypper addrepo https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/stable/ckan_stable.repo
