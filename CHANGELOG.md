@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Core] Use SHA256 for archive.org fallback if SHA1 absent (#4216 by: HebaruSan)
+- [Docs] Update rpm-repo.md (#4222 by: ratemisia; reviewed: HebaruSan)
 
 ## v1.35.0 (Oberth)
 
