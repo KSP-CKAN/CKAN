@@ -13,17 +13,16 @@ namespace CKAN
     public class SteamLibrary
     {
         public SteamLibrary()
-            : this(SteamPaths.Where(p => !string.IsNullOrEmpty(p))
-                             .FirstOrDefault(Directory.Exists))
+            : this(SteamPaths.FirstOrDefault(p => !string.IsNullOrEmpty(p)
+                                                  && Directory.Exists(p)
+                                                  && File.Exists(LibraryFoldersConfigPath(p))))
         {
         }
 
         public SteamLibrary(string? libraryPath)
         {
             if (libraryPath != null
-                && OpenRead(Path.Combine(libraryPath,
-                                         "config",
-                                         "libraryfolders.vdf")) is FileStream stream)
+                && OpenRead(LibraryFoldersConfigPath(libraryPath)) is FileStream stream)
             {
                 log.InfoFormat("Found Steam at {0}", libraryPath);
                 var txtParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
@@ -54,6 +53,15 @@ namespace CKAN
             }
         }
 
+        public IEnumerable<Uri> GameAppURLs(DirectoryInfo gameDir)
+            => Games.Where(g => gameDir.FullName.Equals(g.GameDir?.FullName, Platform.PathComparison))
+                    .Select(g => g.LaunchUrl);
+
+        public readonly GameBase[] Games;
+
+        private static string LibraryFoldersConfigPath(string libraryPath)
+            => Path.Combine(libraryPath, "config", "libraryfolders.vdf");
+
         private static FileStream? OpenRead(string path)
             => Utilities.DefaultIfThrows(() => File.OpenRead(path),
                                          exc =>
@@ -61,12 +69,6 @@ namespace CKAN
                                              log.Warn($"Failed to open {path}", exc);
                                              return null;
                                          });
-
-        public IEnumerable<Uri> GameAppURLs(DirectoryInfo gameDir)
-            => Games.Where(g => gameDir.FullName.Equals(g.GameDir?.FullName, Platform.PathComparison))
-                    .Select(g => g.LaunchUrl);
-
-        public readonly GameBase[] Games;
 
         private static IEnumerable<GameBase> LibraryPathGames(KVSerializer acfParser,
                                                               string       appPath)
