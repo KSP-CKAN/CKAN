@@ -3,11 +3,14 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 using Tests.Data;
 
 using CKAN;
+using CKAN.Games;
+using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Versioning;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
 
@@ -18,6 +21,7 @@ namespace Tests.Core.Relationships
     {
         private RelationshipResolverOptions? options;
         private RandomModuleGenerator? generator;
+        private static readonly IGame               game = new KerbalSpaceProgram();
         private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
 
         [SetUp]
@@ -35,7 +39,7 @@ namespace Tests.Core.Relationships
             var registry = CKAN.Registry.Empty();
             options = RelationshipResolverOptions.DefaultOpts();
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<CkanModule>(),
-                null, options, registry, crit));
+                null, options, registry, game, crit));
         }
 
         [Test]
@@ -56,10 +60,10 @@ namespace Tests.Core.Relationships
 
                 var list = new List<CkanModule> { mod_a, mod_b };
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
 
                 options!.proceed_with_inconsistencies = true;
-                var resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var resolver = new RelationshipResolver(list, null, options, registry, game, crit);
 
                 Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_a)));
                 Assert.That(resolver.ConflictList.Any(s => Equals(s.Key, mod_b)));
@@ -74,7 +78,11 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule();
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, version=mod_a.version}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    version = mod_a.version
+                }
             });
 
             var user = new NullUser();
@@ -86,7 +94,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -99,7 +107,11 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    min_version = new ModuleVersion(conf_min)
+                }
             });
 
             var user = new NullUser();
@@ -111,7 +123,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -124,7 +136,11 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    max_version = new ModuleVersion(conf_max)
+                }
             });
 
             var user = new NullUser();
@@ -136,7 +152,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -167,7 +183,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -180,7 +196,11 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, version=new ModuleVersion(conf)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    version = new ModuleVersion(conf)
+                }
             });
 
             var user = new NullUser();
@@ -192,7 +212,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -204,7 +224,11 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    min_version = new ModuleVersion(conf_min)
+                }
             });
 
             var user = new NullUser();
@@ -216,7 +240,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -228,7 +252,11 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    max_version = new ModuleVersion(conf_max)
+                }
             });
 
             var user = new NullUser();
@@ -240,7 +268,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -253,7 +281,12 @@ namespace Tests.Core.Relationships
             var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier, min_version=new ModuleVersion(conf_min), max_version=new ModuleVersion(conf_max)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = mod_a.identifier,
+                    min_version = new ModuleVersion(conf_min),
+                    max_version = new ModuleVersion(conf_max)
+                }
             });
 
             var user = new NullUser();
@@ -265,7 +298,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_a, mod_b };
 
                 Assert.DoesNotThrow(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -285,7 +318,7 @@ namespace Tests.Core.Relationships
             });
             var mod_d = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=mod_a.identifier}
+                new ModuleRelationshipDescriptor {name = mod_a.identifier}
             });
 
             var user = new NullUser();
@@ -298,7 +331,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod_d };
 
                 Assert.Throws<TooManyModsProvideKraken>(() => new RelationshipResolver(
-                    list, null, options, registry, crit));
+                    list, null, options, registry, game, crit));
             }
         }
 
@@ -317,7 +350,7 @@ namespace Tests.Core.Relationships
                 registry.RegisterModule(mod_a, new List<string>(), ksp.KSP, false);
 
                 var relationship_resolver = new RelationshipResolver(
-                    list, null, options!, registry, crit);
+                    list, null, options!, registry, game, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), mod_a);
                 CollectionAssert.AreEquivalent(new List<SelectionReason>
                                           {
@@ -347,7 +380,7 @@ namespace Tests.Core.Relationships
                 registry.Installed().Add(suggested.identifier, suggested.version);
                 var list = new List<CkanModule> { suggester };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), suggested);
             }
         }
@@ -375,7 +408,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { suggester, mod };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), suggested);
             }
         }
@@ -383,27 +416,27 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_WithConflictingModulesInDependencies_ThrowUnderDefaultSettings()
         {
-            var dependant = generator!.GeneratorRandomModule();
+            var dependent = generator!.GeneratorRandomModule();
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier}
+                new ModuleRelationshipDescriptor {name = dependent.identifier}
             });
-            var conflicts_with_dependant = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var conflicts_with_dependent = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name=dependant.identifier}
+                new ModuleRelationshipDescriptor {name = dependent.identifier}
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant),
-                                                      CkanModule.ToJson(conflicts_with_dependant)))
+                                                      CkanModule.ToJson(dependent),
+                                                      CkanModule.ToJson(conflicts_with_dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                var list = new List<CkanModule> { depender, conflicts_with_dependant };
+                var list = new List<CkanModule> { depender, conflicts_with_dependent };
 
-                Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() => new RelationshipResolver(
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -425,13 +458,13 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { suggester };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), suggested);
             }
         }
 
         [Test]
-        public void Constructor_ContainsSugestedOfSuggested_When_With_all_suggests()
+        public void Constructor_WithAllSuggests_ContainsSuggestedOfSuggested()
         {
             var suggested2 = generator!.GeneratorRandomModule();
             var suggested = generator.GeneratorRandomModule(
@@ -457,12 +490,12 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { suggester };
 
                 options!.with_all_suggests = true;
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 CollectionAssert.Contains(relationship_resolver.ModList(), suggested2);
 
                 options.with_all_suggests = false;
 
-                relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), suggested2);
             }
         }
@@ -487,7 +520,7 @@ namespace Tests.Core.Relationships
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
 
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
@@ -498,12 +531,12 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
-        public void Constructor_WithMissingDependants_Throws()
+        public void Constructor_WithMissingDependents_Throws()
         {
-            var dependant = generator!.GeneratorRandomModule();
+            var dependent = generator!.GeneratorRandomModule();
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier}
+                new ModuleRelationshipDescriptor {name = dependent.identifier}
             });
 
             var user = new NullUser();
@@ -512,9 +545,9 @@ namespace Tests.Core.Relationships
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
 
-                Assert.Throws<DependencyNotSatisfiedKraken>(() =>
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
                     new RelationshipResolver(new List<CkanModule> { depender },
-                                             null, options!, registry, crit));
+                                             null, options!, registry, game, crit));
             }
         }
 
@@ -524,76 +557,88 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "0.2")]
         [TestCase("0",   "0.2")]
         [TestCase("1.0", "0")]
-        public void Constructor_WithMissingDependantsVersion_Throws(string ver, string dep)
+        public void Constructor_WithMissingDependentsVersion_Throws(string ver, string dep)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = dependent.identifier,
+                    version = new ModuleVersion(dep)
+                }
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant)))
+                                                      CkanModule.ToJson(dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
 
                 var list = new List<CkanModule> { depender };
 
-                Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() => new RelationshipResolver(
+                    list, null, options!, registry, game, crit));
             }
         }
 
         [Test]
         [Category("Version")]
         [TestCase("1.0", "2.0")]
-        public void Constructor_WithMissingDependantsVersionMin_Throws(string ver, string dep_min)
+        public void Constructor_WithMissingDependentsVersionMin_Throws(string ver, string dep_min)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = dependent.identifier,
+                    min_version = new ModuleVersion(dep_min)
+                }
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant)))
+                                                      CkanModule.ToJson(dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule>() { depender };
 
-                Assert.Throws<DependencyNotSatisfiedKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
-                list.Add(dependant);
-                Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() => new RelationshipResolver(
+                    list, null, options!, registry, game, crit));
+                list.Add(dependent);
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() => new RelationshipResolver(
+                    list, null, options!, registry, game, crit));
             }
         }
 
         [Test]
         [Category("Version")]
         [TestCase("1.0", "0.5")]
-        public void Constructor_WithMissingDependantsVersionMax_Throws(string ver, string dep_max)
+        public void Constructor_WithMissingDependentsVersionMax_Throws(string ver, string dep_max)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = dependent.identifier,
+                    max_version = new ModuleVersion(dep_max)
+                }
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant)))
+                                                      CkanModule.ToJson(dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                var list = new List<CkanModule> { depender, dependant };
+                var list = new List<CkanModule> { depender, dependent };
 
-                Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() => new RelationshipResolver(
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -601,14 +646,14 @@ namespace Tests.Core.Relationships
         [Category("Version")]
         [TestCase("1.0", "2.0", "3.0")]
         [TestCase("4.0", "2.0", "3.0")]
-        public void Constructor_WithMissingDependantsVersionMinMax_Throws(string ver, string dep_min, string dep_max)
+        public void Constructor_WithMissingDependentsVersionMinMax_Throws(string ver, string dep_min, string dep_max)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
-                    name = dependant.identifier,
+                    name = dependent.identifier,
                     min_version = new ModuleVersion(dep_min),
                     max_version = new ModuleVersion(dep_max)
                 }
@@ -616,14 +661,14 @@ namespace Tests.Core.Relationships
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant)))
+                                                      CkanModule.ToJson(dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                var list = new List<CkanModule> { depender, dependant };
+                var list = new List<CkanModule> { depender, dependent };
 
-                Assert.Throws<InconsistentKraken>(() => new RelationshipResolver(
-                    list, null, options!, registry, crit));
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() => new RelationshipResolver(
+                    list, null, options!, registry, game, crit));
             }
         }
 
@@ -631,29 +676,33 @@ namespace Tests.Core.Relationships
         [Category("Version")]
         [TestCase("1.0", "1.0", "2.0")]
         [TestCase("1.0", "1.0", "0.5")]//what to do if a mod is present twice with the same version ?
-        public void Constructor_WithDependantVersion_ChooseCorrectly(string ver, string dep, string other)
+        public void Constructor_WithDependentVersion_ChooseCorrectly(string ver, string dep, string other)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier, version = new ModuleVersion(dep)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = dependent.identifier,
+                    version = new ModuleVersion(dep)
+                }
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant),
-                                                      CkanModule.ToJson(other_dependant)))
+                                                      CkanModule.ToJson(dependent),
+                                                      CkanModule.ToJson(other_dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
-                    dependant,
+                    dependent,
                     depender
                 });
             }
@@ -664,29 +713,33 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "1.0", "0.5")]
         [TestCase("2.0", "1.0", "1.5")]
         [TestCase("2.0", "2.0", "0.5")]
-        public void Constructor_WithDependantVersionMin_ChooseCorrectly(string ver, string dep_min, string other)
+        public void Constructor_WithDependentVersionMin_ChooseCorrectly(string ver, string dep_min, string other)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier, min_version = new ModuleVersion(dep_min)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = dependent.identifier,
+                    min_version = new ModuleVersion(dep_min)
+                }
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant),
-                                                      CkanModule.ToJson(other_dependant)))
+                                                      CkanModule.ToJson(dependent),
+                                                      CkanModule.ToJson(other_dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
-                    dependant,
+                    dependent,
                     depender
                 });
             }
@@ -697,29 +750,33 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "2.0", "0.5")]
         [TestCase("2.0", "3.0", "0.5")]
         [TestCase("2.0", "3.0", "4.0")]
-        public void Constructor_WithDependantVersionMax_ChooseCorrectly(string ver, string dep_max, string other)
+        public void Constructor_WithDependentVersionMax_ChooseCorrectly(string ver, string dep_max, string other)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
-                new ModuleRelationshipDescriptor {name = dependant.identifier, max_version = new ModuleVersion(dep_max)}
+                new ModuleRelationshipDescriptor
+                {
+                    name = dependent.identifier,
+                    max_version = new ModuleVersion(dep_max)
+                }
             });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant),
-                                                      CkanModule.ToJson(other_dependant)))
+                                                      CkanModule.ToJson(dependent),
+                                                      CkanModule.ToJson(other_dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
-                    dependant,
+                    dependent,
                     depender
                 });
             }
@@ -730,16 +787,16 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "1.0", "3.0", "0.5")]
         [TestCase("2.0", "1.0", "3.0", "1.5")]
         [TestCase("2.0", "1.0", "3.0", "3.5")]
-        public void Constructor_WithDependantVersionMinMax_ChooseCorrectly(string ver, string dep_min, string dep_max, string other)
+        public void Constructor_WithDependentVersionMinMax_ChooseCorrectly(string ver, string dep_min, string dep_max, string other)
         {
-            var dependant = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependant = generator.GeneratorRandomModule(identifier: dependant.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
             var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
-                    name = dependant.identifier,
+                    name = dependent.identifier,
                     min_version = new ModuleVersion(dep_min),
                     max_version = new ModuleVersion(dep_max)
                 }
@@ -747,17 +804,17 @@ namespace Tests.Core.Relationships
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependant),
-                                                      CkanModule.ToJson(other_dependant)))
+                                                      CkanModule.ToJson(dependent),
+                                                      CkanModule.ToJson(other_dependent)))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { depender };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
                 CollectionAssert.AreEquivalent(relationship_resolver.ModList(), new List<CkanModule>
                 {
-                    dependant,
+                    dependent,
                     depender
                 });
             }
@@ -811,7 +868,7 @@ namespace Tests.Core.Relationships
                 // Act
                 RelationshipResolver rr = new RelationshipResolver(
                     new CkanModule[] { depender }, null,
-                    options!, registry, crit);
+                    options!, registry, game, crit);
 
                 // Assert
                 CollectionAssert.Contains(      rr.ModList(), olderDependency);
@@ -862,7 +919,7 @@ namespace Tests.Core.Relationships
                 // Act
                 RelationshipResolver rr = new RelationshipResolver(
                     new CkanModule[] { depender }, null,
-                    options!, registry, crit);
+                    options!, registry, game, crit);
 
                 // Assert
                 CollectionAssert.Contains(      rr.ModList(), olderDependency);
@@ -881,7 +938,7 @@ namespace Tests.Core.Relationships
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod };
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
 
                 var mod_not_in_resolver_list = generator.GeneratorRandomModule();
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), mod_not_in_resolver_list);
@@ -901,7 +958,7 @@ namespace Tests.Core.Relationships
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod };
 
-                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
                 var reasons = relationship_resolver.ReasonsFor(mod);
                 Assert.That(reasons[0], Is.AssignableTo<SelectionReason.UserRequested>());
             }
@@ -911,9 +968,14 @@ namespace Tests.Core.Relationships
         public void ReasonFor_WithSuggestedMods_GivesCorrectParent()
         {
             var suggested = generator!.GeneratorRandomModule();
-            var mod =
-                generator.GeneratorRandomModule(suggests:
-                    new List<RelationshipDescriptor> {new ModuleRelationshipDescriptor {name = suggested.identifier}});
+            var mod = generator.GeneratorRandomModule(suggests:
+                new List<RelationshipDescriptor>
+                {
+                    new ModuleRelationshipDescriptor
+                    {
+                        name = suggested.identifier
+                    }
+                });
 
             var user = new NullUser();
             using (var repo = new TemporaryRepository(CkanModule.ToJson(mod),
@@ -924,7 +986,7 @@ namespace Tests.Core.Relationships
                 var list = new List<CkanModule> { mod };
 
                 options!.with_all_suggests = true;
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 var reasons = relationship_resolver.ReasonsFor(suggested);
 
                 Assert.IsTrue(reasons[0] is SelectionReason.Suggested sug
@@ -962,7 +1024,7 @@ namespace Tests.Core.Relationships
 
                 options!.with_all_suggests = true;
                 options.with_recommends = true;
-                var relationship_resolver = new RelationshipResolver(list, null, options, registry, crit);
+                var relationship_resolver = new RelationshipResolver(list, null, options, registry, game, crit);
                 var reasons = relationship_resolver.ReasonsFor(recommendedA);
                 Assert.IsTrue(reasons[0] is SelectionReason.Recommended rec
                               && rec.Parent.Equals(suggested));
@@ -999,7 +1061,7 @@ namespace Tests.Core.Relationships
 
                 new RelationshipResolver(
                     new CkanModule[] { mod }, null, RelationshipResolverOptions.DefaultOpts(),
-                    registry, new GameVersionCriteria(GameVersion.Parse("1.0.0")));
+                    registry, game, new GameVersionCriteria(GameVersion.Parse("1.0.0")));
             }
         }
 
@@ -1067,7 +1129,7 @@ namespace Tests.Core.Relationships
                 options!.proceed_with_inconsistencies = false;
                 var exception = Assert.Throws<InconsistentKraken>(() =>
                 {
-                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, crit);
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, game, crit);
                 });
                 Assert.AreEqual($"{avp} conflicts with {eveDefaultConfig}",
                                 exception?.ShortDescription);
@@ -1078,7 +1140,7 @@ namespace Tests.Core.Relationships
                 options.proceed_with_inconsistencies = true;
                 Assert.DoesNotThrow(() =>
                 {
-                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, crit);
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, game, crit);
                 });
                 CollectionAssert.AreEquivalent(modulesToInstall,
                                                resolver?.ConflictList.Keys);
@@ -1094,11 +1156,220 @@ namespace Tests.Core.Relationships
                 options.proceed_with_inconsistencies = false;
                 Assert.DoesNotThrow(() =>
                 {
-                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, crit);
+                    resolver = new RelationshipResolver(modulesToInstall, modulesToRemove, options, registry, game, crit);
                 });
                 Assert.IsEmpty(resolver!.ConflictList);
                 CollectionAssert.AreEquivalent(new List<CkanModule> {avp, avp2kTextures}, resolver.ModList());
             }
         }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"":  ""PopularMod"",
+                          ""ksp_version"": ""1.10.0""
+                      }",
+                  },
+                  @"{
+                      ""identifier"": ""MyModpack"",
+                      ""kind"":       ""metapackage"",
+                      ""depends"":    [ { ""name"": ""PopularMod"" } ]
+                  }",
+                  "Unsatisfied dependency PopularMod (KSP 1.10.0) needed for: MyModpack 1.0"),
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"":  ""IncompatibleDependency"",
+                          ""ksp_version"": ""1.11.0""
+                      }",
+                      @"{
+                          ""identifier"":  ""CompatibleDepending1"",
+                          ""ksp_version"": ""1.12"",
+                          ""depends"":     [ { ""name"": ""IncompatibleDependency"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""CompatibleDepending2"",
+                          ""ksp_version"": ""1.12"",
+                          ""depends"":     [ { ""name"": ""IncompatibleDependency"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""CompatibleDepending3"",
+                          ""ksp_version"": ""1.12"",
+                          ""depends"":     [ { ""name"": ""CompatibleDepending2"" } ]
+                      }",
+                  },
+                  @"{
+                      ""identifier"": ""MyModpack"",
+                      ""kind"":       ""metapackage"",
+                      ""depends"":    [ { ""name"": ""CompatibleDepending1"" },
+                                        { ""name"": ""CompatibleDepending3"" } ]
+                  }",
+                  "Unsatisfied dependency IncompatibleDependency (KSP 1.11.0) needed for: CompatibleDepending1 1.0 (needed for MyModpack 1.0); CompatibleDepending2 1.0 (needed for CompatibleDepending3 1.0, needed for MyModpack 1.0)"),
+        ]
+        public void Constructor_ModpackWithIncompatibleDepends_Throws(string[] availableModules,
+                                                                      string   modpackModule,
+                                                                      string   exceptionMessage)
+        {
+            // Arrange
+            var user    = new NullUser();
+            var game    = new KerbalSpaceProgram();
+            var crit    = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            var modpack = CkanModule.FromJson(MergeWithDefaults(modpackModule));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act / Assert
+                var exc = Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+                {
+                    var rr = new RelationshipResolver(
+                        Enumerable.Repeat(modpack, 1), null,
+                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        registry, game, crit);
+                });
+                Assert.AreEqual(exceptionMessage, exc?.Message);
+            }
+        }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"":  ""WildBlueTools"",
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""WildBlue-PlayMode-CRP"",
+                          ""provides"":    [ ""WildBlue-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""WildBlue-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlueTools"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""WildBlue-PlayMode-ClassicStock"",
+                          ""provides"":    [ ""WildBlue-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""WildBlue-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlueTools"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""Heisenberg"",
+                          ""depends"":     [ { ""name"": ""Heisenberg-PlayMode"" },
+                                             { ""name"": ""WildBlueTools"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""Heisenberg-PlayMode-CRP"",
+                          ""provides"":    [ ""Heisenberg-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""Heisenberg-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode-CRP"" },
+                                             { ""name"": ""Heisenberg"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""Heisenberg-PlayMode-ClassicStock"",
+                          ""provides"":    [ ""Heisenberg-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""Heisenberg-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode-ClassicStock"" },
+                                             { ""name"": ""Heisenberg"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""DSEV"",
+                          ""depends"":     [ { ""name"": ""DSEV-PlayMode"" },
+                                             { ""name"": ""WildBlueTools"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""DSEV-PlayMode-CRP"",
+                          ""provides"":    [ ""DSEV-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""DSEV-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode-CRP"" },
+                                             { ""name"": ""DSEV"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""DSEV-PlayMode-ClassicStock"",
+                          ""provides"":    [ ""DSEV-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""DSEV-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode-ClassicStock"" },
+                                             { ""name"": ""DSEV"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""Pathfinder"",
+                          ""depends"":     [ { ""name"": ""Pathfinder-PlayMode"" },
+                                             { ""name"": ""WildBlueTools"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""Pathfinder-PlayMode-CRP"",
+                          ""provides"":    [ ""Pathfinder-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""Pathfinder-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode-CRP"" },
+                                             { ""name"": ""Pathfinder"" } ]
+                      }",
+                      @"{
+                          ""identifier"":  ""Pathfinder-PlayMode-ClassicStock"",
+                          ""provides"":    [ ""Pathfinder-PlayMode"" ],
+                          ""conflicts"":   [ { ""name"": ""Pathfinder-PlayMode"" } ],
+                          ""depends"":     [ { ""name"": ""WildBlue-PlayMode-ClassicStock"" },
+                                             { ""name"": ""Pathfinder"" } ]
+                      }",
+                  },
+                  new string[] { "Heisenberg-PlayMode-ClassicStock", "DSEV", "Pathfinder" },
+                  new string[] { "DSEV-PlayMode-", "Pathfinder-PlayMode-", "WildBlue-PlayMode-" },
+                  new string[] { "CRP" }),
+        ]
+        public void Constructor_WithPlayModes_DoesNotThrow(string[] availableModules,
+                                                           string[] installIdents,
+                                                           string[] goodSubstrings,
+                                                           string[] badSubstrings)
+        {
+            var user = new NullUser();
+            var game = new KerbalSpaceProgram();
+            var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    var rr = new RelationshipResolver(
+                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                     .OfType<CkanModule>(),
+                        null,
+                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        registry,
+                        game,
+                        crit);
+                    var idents = rr.ModList().Select(m => m.identifier).ToArray();
+                    foreach (var goodSubstring in goodSubstrings)
+                    {
+                        Assert.IsTrue(idents.Any(ident => ident.Contains(goodSubstring)),
+                                      $"Some identifier containing {goodSubstring} must be in resolver");
+                    }
+                    foreach (var ident in idents)
+                    {
+                        foreach (var badSubstring in badSubstrings)
+                        {
+                            Assert.IsFalse(ident.Contains(badSubstring),
+                                           $"No identifiers containing {badSubstring} should be in resolver");
+                        }
+                    }
+                });
+            }
+        }
+
+        private static string MergeWithDefaults(string json)
+        {
+            var incoming = JObject.Parse(json);
+            incoming.Merge(moduleDefaults);
+            return incoming.ToString();
+        }
+
+        // Unimportant required fields that we don't want to duplicate
+        private static readonly JObject moduleDefaults = JObject.Parse(
+            @"{
+                ""spec_version"": ""v1.34"",
+                ""name"":         ""A mod or modpack"",
+                ""author"":       ""An author"",
+                ""version"":      ""1.0"",
+                ""download"":     ""https://www.nonexistent.com/download""
+            }");
     }
 }

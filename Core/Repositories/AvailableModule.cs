@@ -100,11 +100,10 @@ namespace CKAN
         /// <param name="installed">Modules that are already installed</param>
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
-        public CkanModule? Latest(
-            GameVersionCriteria?     ksp_version  = null,
-            RelationshipDescriptor?  relationship = null,
-            ICollection<CkanModule>? installed    = null,
-            ICollection<CkanModule>? toInstall    = null)
+        public CkanModule? Latest(GameVersionCriteria?     ksp_version  = null,
+                                  RelationshipDescriptor?  relationship = null,
+                                  ICollection<CkanModule>? installed    = null,
+                                  ICollection<CkanModule>? toInstall    = null)
         {
             IEnumerable<CkanModule> modules = module_version.Values.Reverse();
             if (relationship != null)
@@ -126,7 +125,8 @@ namespace CKAN
             return modules.FirstOrDefault();
         }
 
-        private static bool DependsAndConflictsOK(CkanModule module, ICollection<CkanModule> others)
+        public static bool DependsAndConflictsOK(CkanModule              module,
+                                                 ICollection<CkanModule> others)
         {
             if (module.depends != null)
             {

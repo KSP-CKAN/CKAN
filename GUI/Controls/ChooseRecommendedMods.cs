@@ -42,6 +42,7 @@ namespace CKAN.GUI
             this.toUninstall = toUninstall;
             this.versionCrit = versionCrit;
             this.config      = config;
+            this.game        = game;
             Util.Invoke(this, () =>
             {
                 AlwaysUncheckAllButton.Checked = config?.SuppressRecommendations ?? false;
@@ -132,7 +133,7 @@ namespace CKAN.GUI
 
         private void MarkConflicts()
         {
-            if (registry != null && versionCrit != null)
+            if (registry != null && versionCrit != null && game != null)
             {
                 try
                 {
@@ -144,7 +145,7 @@ namespace CKAN.GUI
                                                .Concat(toInstall)
                                                .Distinct(),
                         toUninstall,
-                        RelationshipResolverOptions.ConflictsOpts(), registry, versionCrit);
+                        RelationshipResolverOptions.ConflictsOpts(), registry, game, versionCrit);
                     var conflicts = resolver.ConflictList;
                     foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
                         // Apparently ListView handes AddRange by:
@@ -160,12 +161,14 @@ namespace CKAN.GUI
                     RecommendedModsContinueButton.Enabled = conflicts.Count == 0;
                     OnConflictFound?.Invoke(string.Join("; ", resolver.ConflictDescriptions));
                 }
-                catch (DependencyNotSatisfiedKraken k)
+                catch (DependenciesNotSatisfiedKraken k)
                 {
-                    var row = RecommendedModsListView.Items
-                                                     .Cast<ListViewItem>()
-                                                     .FirstOrDefault(it => (it?.Tag as CkanModule) == k.parent);
-                    if (row != null)
+                    var rows = RecommendedModsListView.Items
+                                                      .OfType<ListViewItem>()
+                                                      .Where(item => item.Tag is CkanModule mod
+                                                                     && k.unsatisfied.Any(stack =>
+                                                                         stack.Any(rr => rr.Contains(mod))));
+                    foreach (var row in rows)
                     {
                         row.BackColor = Color.LightCoral;
                     }
@@ -307,7 +310,7 @@ namespace CKAN.GUI
         private HashSet<CkanModule>  toUninstall = new HashSet<CkanModule>();
         private GameVersionCriteria? versionCrit;
         private GUIConfiguration?    config;
-
+        private IGame?               game;
         private TaskCompletionSource<HashSet<CkanModule>?>? task;
     }
 }

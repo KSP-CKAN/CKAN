@@ -245,7 +245,7 @@ namespace CKAN.GUI
                             // Get full changeset (toInstall only includes user's selections, not dependencies)
                             var crit = CurrentInstance.VersionCriteria();
                             var fullChangeset = new RelationshipResolver(
-                                toInstall.Concat(toUpgrade), toUninstall, options, registry, crit
+                                toInstall.Concat(toUpgrade), toUninstall, options, registry, CurrentInstance.game, crit
                             ).ModList().ToList();
                             DownloadsFailedDialog? dfd = null;
                             Util.Invoke(this, () =>
@@ -385,8 +385,8 @@ namespace CKAN.GUI
             {
                 switch (e.Error)
                 {
-                    case DependencyNotSatisfiedKraken exc:
-                        currentUser.RaiseMessage(Properties.Resources.MainInstallDepNotSatisfied, exc.parent, exc.module);
+                    case DependenciesNotSatisfiedKraken exc:
+                        currentUser.RaiseMessage("{0}", exc.Message);
                         break;
 
                     case ModuleNotFoundKraken exc:

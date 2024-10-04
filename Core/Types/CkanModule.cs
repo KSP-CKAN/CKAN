@@ -496,7 +496,9 @@ namespace CKAN
         {
             var compat = _comparator.Compatible(version, this);
             log.DebugFormat("Checking compat of {0} with game versions {1}: {2}",
-                this, version.ToString(), compat ? "Compatible": "Incompatible");
+                            this,
+                            version.ToString(),
+                            compat ? "Compatible": "Incompatible");
             return compat;
         }
 

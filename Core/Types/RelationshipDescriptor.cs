@@ -5,19 +5,21 @@ using System.ComponentModel;
 
 using Newtonsoft.Json;
 
+using CKAN.Games;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
     public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
         public bool MatchesAny(ICollection<CkanModule>             modules,
-                               HashSet<string>?                    dlls,
+                               ICollection<string>?                dlls,
                                IDictionary<string, ModuleVersion>? dlc)
             => MatchesAny(modules, dlls, dlc, out CkanModule? _);
 
         public abstract bool MatchesAny(ICollection<CkanModule>             modules,
-                                        HashSet<string>?                    dlls,
+                                        ICollection<string>?                dlls,
                                         IDictionary<string, ModuleVersion>? dlc,
                                         out CkanModule?                     matched);
 
@@ -33,11 +35,28 @@ namespace CKAN
                                                ICollection<CkanModule>? installed = null,
             ICollection<CkanModule>? toInstall = null);
 
+        public override bool Equals(object? other)
+            => Equals(other as RelationshipDescriptor);
+
         public abstract bool Equals(RelationshipDescriptor? other);
+
+        public static bool operator ==(RelationshipDescriptor? left,
+                                       RelationshipDescriptor? right)
+            => Equals(left, right);
+
+        public static bool operator !=(RelationshipDescriptor? left,
+                                       RelationshipDescriptor? right)
+            => !Equals(left, right);
+
+        public abstract override int GetHashCode();
 
         public abstract bool ContainsAny(IEnumerable<string> identifiers);
 
         public abstract bool StartsWith(string prefix);
+
+        public virtual string ToStringWithCompat(IRegistryQuerier registry,
+                                                 IGame            game)
+            => ToString() ?? "";
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string? choice_help_text;
@@ -104,7 +123,7 @@ namespace CKAN
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>
         public override bool MatchesAny(ICollection<CkanModule>             modules,
-                                        HashSet<string>?                    dlls,
+                                        ICollection<string>?                dlls,
                                         IDictionary<string, ModuleVersion>? dlc,
                                         out CkanModule?                     matched)
         {
@@ -116,7 +135,7 @@ namespace CKAN
             }
 
             // .AsParallel() makes this slower, too many threads
-            matched = modules?.FirstOrDefault(WithinBounds);
+            matched = modules.FirstOrDefault(WithinBounds);
             if (matched != null)
             {
                 return true;
@@ -148,6 +167,9 @@ namespace CKAN
                 && min_version == other.min_version
                 && max_version == other.max_version;
 
+        public override int GetHashCode()
+            => (name, version, min_version, max_version).GetHashCode();
+
         public override bool ContainsAny(IEnumerable<string> identifiers)
             => identifiers.Contains(name);
 
@@ -174,6 +196,27 @@ namespace CKAN
                     ? string.Format(Properties.Resources.RelationshipDescriptorMaxVersionOnly, name, max_version)
                 : name;
 
+        public override string ToStringWithCompat(IRegistryQuerier registry,
+                                                  IGame            game)
+            => Utilities.DefaultIfThrows(() => registry.AllAvailableByProvides(name)
+                                                       .SelectMany(avail => avail.AllAvailable())
+                                                       .Where(WithinBounds)
+                                                       .ToArray())
+               is CkanModule[] { Length: >0 } modules
+                   ? string.Format("{0} ({1})", ToString(),
+                                                DescribeCompatibility(modules, game))
+                   : ToString();
+
+        private static string DescribeCompatibility(CkanModule[] modules,
+                                                    IGame        game)
+        {
+            CkanModule.GetMinMaxVersions(modules,
+                                         out _, out _,
+                                         out var minKsp, out var maxKsp);
+            return GameVersionRange.VersionSpan(game,
+                                                minKsp ?? GameVersion.Any,
+                                                maxKsp ?? GameVersion.Any);
+        }
     }
 
     public class AnyOfRelationshipDescriptor : RelationshipDescriptor
@@ -194,7 +237,7 @@ namespace CKAN
             => any_of?.Any(r => r.WithinBounds(otherModule)) ?? false;
 
         public override bool MatchesAny(ICollection<CkanModule>             modules,
-                                        HashSet<string>?                    dlls,
+                                        ICollection<string>?                dlls,
                                         IDictionary<string, ModuleVersion>? dlc,
                                         out CkanModule?                     matched)
         {
@@ -230,6 +273,9 @@ namespace CKAN
                 && (any_of?.SequenceEqual(other.any_of ?? Enumerable.Empty<RelationshipDescriptor>())
                           ?? other.any_of == null);
 
+        public override int GetHashCode()
+            => any_of?.ToSequenceHashCode() ?? 0;
+
         public override bool ContainsAny(IEnumerable<string> identifiers)
             => any_of?.Any(r => r.ContainsAny(identifiers)) ?? false;
 
@@ -238,6 +284,12 @@ namespace CKAN
 
         public override string ToString()
             => any_of?.Select(r => r.ToString())
+                .Aggregate((a, b) =>
+                    string.Format(Properties.Resources.RelationshipDescriptorAnyOfJoiner, a, b))
+                     ?? "";
+
+        public override string ToStringWithCompat(IRegistryQuerier registry, IGame game)
+            => any_of?.Select(r => r.ToStringWithCompat(registry, game))
                 .Aggregate((a, b) =>
                     string.Format(Properties.Resources.RelationshipDescriptorAnyOfJoiner, a, b))
                      ?? "";

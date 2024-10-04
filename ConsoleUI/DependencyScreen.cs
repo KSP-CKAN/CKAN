@@ -216,11 +216,12 @@ namespace CKAN.ConsoleUI {
                         plan.Remove.Select(ident => registry.InstalledModule(ident)?.Module)
                                    .OfType<CkanModule>(),
                         RelationshipResolverOptions.ConflictsOpts(), registry,
+                        manager.CurrentInstance.game,
                         manager.CurrentInstance.VersionCriteria());
                     descriptions = resolver.ConflictDescriptions.ToList();
                     return descriptions.Count > 0;
                 }
-                catch (DependencyNotSatisfiedKraken k)
+                catch (DependenciesNotSatisfiedKraken k)
                 {
                     descriptions = new List<string>() { k.Message };
                     return true;

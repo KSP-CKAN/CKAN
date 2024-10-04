@@ -4,7 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 
+using log4net;
+
+using CKAN.Games;
 using CKAN.Versioning;
+#if NETFRAMEWORK || NETSTANDARD
+using CKAN.Extensions;
+#endif
 
 namespace CKAN
 {
@@ -97,35 +103,60 @@ namespace CKAN
     /// <summary>
     /// Exception describing a missing dependency
     /// </summary>
-    public class DependencyNotSatisfiedKraken : ModuleNotFoundKraken
+    public class DependenciesNotSatisfiedKraken : Kraken
     {
         /// <summary>
-        /// The mod with an unmet dependency
+        /// Initialize the exception representing failed dependency resolution
         /// </summary>
-        public readonly CkanModule parent;
-
-        /// <summary>
-        /// Initialize the exceptions
-        /// </summary>
-        /// <param name="parentModule">The module with the unmet dependency</param>
-        /// <param name="module">The name of the missing dependency</param>
-        /// <param name="reason">Message parameter for base class</param>
+        /// <param name="unsatisfied">List of chain of relationships with last one unsatisfied</param>
         /// <param name="innerException">Originating exception parameter for base class</param>
-        public DependencyNotSatisfiedKraken(CkanModule parentModule,
-                                            string     module,
-                                            string?    version        = null,
-                                            string?    reason         = null,
-                                            Exception? innerException = null)
-            : base(module, version,
-                   reason ?? string.Format(
-                       Properties.Resources.KrakenParentDependencyNotSatisfied,
-                       parentModule.identifier,
-                       module,
-                       version ?? Properties.Resources.KrakenAny),
+        public DependenciesNotSatisfiedKraken(ICollection<ResolvedRelationship[]> unsatisfied,
+                                              IRegistryQuerier                    registry,
+                                              IGame                               game,
+                                              ResolvedRelationshipsTree           resolved,
+                                              Exception?                          innerException = null)
+            : base(string.Join(Environment.NewLine + Environment.NewLine,
+                               unsatisfied.GroupBy(rrs => rrs.Last().relationship)
+                                          .OrderByDescending(grp => grp.Count())
+                                          .ThenBy(grp => grp.Key.ToString())
+                                          .Select(grp => string.Format(Properties.Resources.KrakenMissingDependency,
+                                                                       string.Join("; ",
+                                                                                   grp.DistinctBy(rrs => rrs.Last().source)
+                                                                                      .Select(FormatDependsChain)),
+                                                                       grp.Key.ToStringWithCompat(registry, game)))),
                    innerException)
         {
-            parent = parentModule;
+            this.unsatisfied = unsatisfied;
+            log.DebugFormat("Resolved relationships tree:\r\n{0}",
+                            resolved);
         }
+
+        public DependenciesNotSatisfiedKraken(ResolvedRelationship      badOne,
+                                              IRegistryQuerier          registry,
+                                              IGame                     game,
+                                              ResolvedRelationshipsTree resolved,
+                                              Exception?                innerException = null)
+            : this(new ResolvedRelationship[][] { new ResolvedRelationship[] { badOne } },
+                   registry, game, resolved, innerException)
+        {
+        }
+
+        public readonly ICollection<ResolvedRelationship[]> unsatisfied;
+
+        private static string FormatDependsChain(ResolvedRelationship[] dependsChain)
+            => dependsChain.Length == 1
+                ? dependsChain.Last().source.ToString()
+                : string.Format("{0} ({1})",
+                                dependsChain.Last().source,
+                                string.Join(", ", dependsChain.Reverse()
+                                                              .Skip(1)
+                                                              .Select(FormatDependsLink)));
+
+        private static string FormatDependsLink(ResolvedRelationship rr)
+            => string.Format(Properties.Resources.KrakenMissingDependencyNeededFor,
+                             rr.source);
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(DependenciesNotSatisfiedKraken));
     }
 
     public class NotKSPDirKraken : Kraken

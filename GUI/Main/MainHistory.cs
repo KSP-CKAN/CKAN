@@ -26,6 +26,7 @@ namespace CKAN.GUI
                     RegistryManager.Instance(CurrentInstance, repoData).registry,
                     modules.Select(mod => new ModChange(mod, GUIModChangeType.Install))
                            .ToHashSet(),
+                    CurrentInstance.game,
                     CurrentInstance.VersionCriteria());
                 UpdateChangesDialog(tuple.Item1.ToList(), tuple.Item2);
                 tabController.ShowTab("ChangesetTabPage", 1);

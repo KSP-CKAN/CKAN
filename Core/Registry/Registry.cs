@@ -38,7 +38,7 @@ namespace CKAN
 
         // name => relative path
         [JsonProperty]
-        private Dictionary<string, string>? installed_dlls;
+        private Dictionary<string, string> installed_dlls;
 
         [JsonProperty]
         [JsonConverter(typeof(JsonParallelDictionaryConverter<InstalledModule>))]
@@ -118,25 +118,23 @@ namespace CKAN
         /// <summary>
         /// Returns the names of installed DLLs.
         /// </summary>
-        [JsonIgnore] public IEnumerable<string> InstalledDlls
-            => installed_dlls?.Keys ?? Enumerable.Empty<string>();
+        [JsonIgnore] public ICollection<string> InstalledDlls
+            => installed_dlls.Keys;
 
         /// <summary>
         /// Returns the file path of a DLL.
         /// null if not found.
         /// </summary>
         public string? DllPath(string identifier)
-            => installed_dlls == null
-                ? null
-                : installed_dlls.TryGetValue(identifier, out string? path)
-                    ? path
-                    : null;
+            => installed_dlls.TryGetValue(identifier, out string? path)
+                ? path
+                : null;
 
         /// <summary>
         /// A map between module identifiers and versions for official DLC that are installed.
         /// </summary>
         [JsonIgnore] public IDictionary<string, ModuleVersion> InstalledDlc
-            => installed_modules.Values
+            => installedDlc ??= installed_modules.Values
                 .Where(im => im.Module.IsDLC)
                 .ToDictionary(im => im.Module.identifier, im => im.Module.version);
 
@@ -332,6 +330,7 @@ namespace CKAN
             }
             installed_modules = new Dictionary<string, InstalledModule>();
             installed_files   = new Dictionary<string, string>();
+            installed_dlls    = new Dictionary<string, string>();
         }
 
         ~Registry()
@@ -531,6 +530,9 @@ namespace CKAN
         [JsonIgnore]
         private Dictionary<string, HashSet<AvailableModule>>? providers;
 
+        [JsonIgnore]
+        private IDictionary<string, ModuleVersion>? installedDlc;
+
         private void InvalidateAvailableModCaches()
         {
             log.Debug("Invalidating available mod caches");
@@ -550,8 +552,9 @@ namespace CKAN
             log.Debug("Invalidating installed mod caches");
             // These member variables hold references to data that depends on installed modules.
             // Clear them when the installed modules have changed.
-            sorter = null;
+            sorter            = null;
             installedProvides = null;
+            installedDlc      = null;
         }
 
         private void RepositoriesUpdated(Repository[] which)
@@ -588,7 +591,7 @@ namespace CKAN
                                                                      .ThenBy(r => r.name))
                                ?? Enumerable.Empty<Dictionary<string, AvailableModule>>(),
                     providers,
-                    installed_modules, InstalledDlls.ToHashSet(), InstalledDlc);
+                    installed_modules, InstalledDlls, InstalledDlc);
             }
             return sorter;
         }
@@ -766,6 +769,13 @@ namespace CKAN
             tags.Remove("");
         }
 
+        public IEnumerable<AvailableModule> AllAvailableByProvides(string identifier)
+            => (providers ?? BuildProvidesIndex())
+                    is Dictionary<string, HashSet<AvailableModule>> allProvs
+                && allProvs.TryGetValue(identifier, out HashSet<AvailableModule>? provs)
+                    ? provs
+                    : Enumerable.Empty<AvailableModule>();
+
         /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
@@ -848,7 +858,7 @@ namespace CKAN
             }
 
             // Make sure mod-owned files aren't in the manually installed DLL dict
-            installed_dlls?.RemoveWhere(kvp => relativeFiles.Contains(kvp.Value));
+            installed_dlls.RemoveWhere(kvp => relativeFiles.Contains(kvp.Value));
 
             // Finally register our module proper
             installed_modules.Add(mod.identifier,
@@ -964,7 +974,7 @@ namespace CKAN
         {
             var installed = new Dictionary<string, ModuleVersion>();
 
-            if (withDLLs && installed_dlls != null)
+            if (withDLLs)
             {
                 // Index our DLLs, as much as we dislike them.
                 foreach (var dllinfo in installed_dlls)
@@ -1046,7 +1056,7 @@ namespace CKAN
                                              out InstalledModule? installedModule)
                    ? installedModule.Module.version
                    // If it's in our autodetected registry, return that.
-                   : installed_dlls != null && installed_dlls.ContainsKey(modIdentifier)
+                   : installed_dlls.ContainsKey(modIdentifier)
                        ? new UnmanagedModuleVersion(null)
                    // Finally we have our provided checks. We'll skip these if
                    // withProvides is false.
@@ -1075,7 +1085,7 @@ namespace CKAN
         public void CheckSanity()
         {
             SanityChecker.EnforceConsistency(installed_modules.Select(pair => pair.Value.Module),
-                                             installed_dlls?.Keys, InstalledDlc);
+                                             installed_dlls.Keys, InstalledDlc);
         }
 
         /// <summary>
@@ -1092,7 +1102,7 @@ namespace CKAN
             List<string>                        modulesToRemove,
             List<CkanModule>?                   modulesToInstall,
             HashSet<CkanModule>                 origInstalled,
-            HashSet<string>?                    dlls,
+            ICollection<string>                 dlls,
             IDictionary<string, ModuleVersion>? dlc,
             Func<RelationshipDescriptor, bool>? satisfiedFilter = null)
         {
@@ -1175,7 +1185,7 @@ namespace CKAN
             => FindReverseDependencies(modulesToRemove,
                                        modulesToInstall,
                                        new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module)),
-                                       installed_dlls?.Keys.ToHashSet(),
+                                       installed_dlls.Keys,
                                        InstalledDlc,
                                        satisfiedFilter);
 

@@ -1997,7 +1997,7 @@ namespace CKAN.GUI
                        gmod.SelectedMod = ch.targetMod;
                     }
                 }
-                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, gameVersion);
+                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.game, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
                     item => new GUIMod(item.Key, repoData, registry, gameVersion, null,
@@ -2014,14 +2014,20 @@ namespace CKAN.GUI
                     ClearStatusBar?.Invoke();
                 }
             }
-            catch (DependencyNotSatisfiedKraken k)
+            catch (DependenciesNotSatisfiedKraken k)
             {
-                RaiseError?.Invoke(string.Format(Properties.Resources.MainDepNotSatisfied,
-                                                 k.parent, k.module));
-                // Uncheck the box
-                if (mainModList.full_list_of_mod_rows[k.parent.identifier].Tag is GUIMod gmod)
+                RaiseError?.Invoke(k.Message);
+                var identifiers = k.unsatisfied
+                                   .SelectMany(uns => uns.Select(rr => rr.source.identifier))
+                                   .Distinct();
+
+                foreach (var ident in identifiers)
                 {
-                    gmod.SelectedMod = null;
+                    // Uncheck the box
+                    if (mainModList.full_list_of_mod_rows[ident].Tag is GUIMod gmod)
+                    {
+                        gmod.SelectedMod = null;
+                    }
                 }
             }
 
