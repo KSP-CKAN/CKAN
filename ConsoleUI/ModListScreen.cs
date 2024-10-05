@@ -71,8 +71,8 @@ namespace CKAN.ConsoleUI {
                     new ConsoleListBoxColumn<CkanModule>(
                         Properties.Resources.ModListDownloadsHeader,
                         m => repoData.GetDownloadCount(registry.Repositories.Values, m.identifier)
-                                                ?.ToString()
-                                                ?? "",
+                                is int i and > 0
+                                    ? i.ToString() : "",
                         (a, b) => (repoData.GetDownloadCount(registry.Repositories.Values, a.identifier) ?? 0)
                                              .CompareTo(repoData.GetDownloadCount(registry.Repositories.Values, b.identifier) ?? 0),
                         12),
