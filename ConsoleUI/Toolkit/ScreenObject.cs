@@ -48,13 +48,20 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="val">String to process</param>
         /// <param name="w">Width to fit</param>
         /// <param name="pad">Character to use for padding</param>
+        /// <param name="ta">Alignment of text within the label</param>
         /// <returns>
         /// val{padding} or substring of val
         /// </returns>
-        public static string FormatExactWidth(string val, int w, char pad = ' ')
-        {
-            return val.PadRight(w, pad)[..w];
-        }
+        public static string FormatExactWidth(string    val,
+                                              int       w,
+                                              char      pad = ' ',
+                                              TextAlign ta  = TextAlign.Left)
+            => ta switch
+            {
+                TextAlign.Right     => val.PadLeft(w, pad)[..w],
+                TextAlign.Center    => PadCenter(val, w, pad),
+                TextAlign.Left or _ => val.PadRight(w, pad)[..w],
+            };
 
         /// <summary>
         /// Truncate a string if it's longer than the limit
