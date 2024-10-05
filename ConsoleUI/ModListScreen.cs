@@ -71,8 +71,8 @@ namespace CKAN.ConsoleUI {
                     new ConsoleListBoxColumn<CkanModule>(
                         Properties.Resources.ModListDownloadsHeader,
                         m => repoData.GetDownloadCount(registry.Repositories.Values, m.identifier)
-                                                ?.ToString()
-                                                ?? "",
+                                is int i and > 0
+                                    ? i.ToString() : "",
                         (a, b) => (repoData.GetDownloadCount(registry.Repositories.Values, a.identifier) ?? 0)
                                              .CompareTo(repoData.GetDownloadCount(registry.Repositories.Values, b.identifier) ?? 0),
                         12),
@@ -276,13 +276,13 @@ namespace CKAN.ConsoleUI {
             });
 
             // Abstract of currently selected mod under grid
-            AddObject(new ConsoleLabel(1, -1, -1,
+            AddObject(new ConsoleLabel(1, -1, -updatedWidth - 1,
                                        () => moduleList.Selection?.@abstract.Trim() ?? "",
                                        null,
                                        th => th.DimLabelFg));
 
             AddObject(new ConsoleLabel(
-                -searchWidth, -1, -2,
+                -updatedWidth, -1, -1,
                 () => {
                     var days = Math.Round(timeSinceUpdate.TotalDays);
                     return days <  1 ? ""
@@ -294,8 +294,8 @@ namespace CKAN.ConsoleUI {
                     return timeSinceUpdate < RepositoryDataManager.TimeTillStale     ? th.RegistryUpToDate
                         :  timeSinceUpdate < RepositoryDataManager.TimeTillVeryStale ? th.RegistryStale
                         :                                                              th.RegistryVeryStale;
-                }
-            ));
+                },
+                TextAlign.Right));
 
             var opts = new List<ConsoleMenuOption?>() {
                 new ConsoleMenuOption(Properties.Resources.ModListPlayMenu, "",
@@ -765,6 +765,10 @@ namespace CKAN.ConsoleUI {
             Properties.Resources.ModListSearchFocusedGhostText.Length,
             Properties.Resources.ModListSearchUnfocusedGhostText.Length
         ));
+
+        private static readonly int updatedWidth =
+            string.Format(Properties.Resources.ModListUpdatedDaysAgo, 9999)
+                  .Length;
 
         private static readonly string unavailable   = "!";
         private static readonly string notinstalled  = " ";

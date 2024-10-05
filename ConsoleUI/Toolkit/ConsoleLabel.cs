@@ -16,17 +16,20 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <param name="lf">Function returning the text to show in the label</param>
         /// <param name="bgFunc">Function returning the background color for the label</param>
         /// <param name="fgFunc">Function returning the foreground color for the label</param>
+        /// <param name="ta">Alignment of text within the label</param>
         public ConsoleLabel(int l,
                             int t,
                             int r,
                             Func<string> lf,
                             Func<ConsoleTheme, ConsoleColor>? bgFunc = null,
-                            Func<ConsoleTheme, ConsoleColor>? fgFunc = null)
+                            Func<ConsoleTheme, ConsoleColor>? fgFunc = null,
+                            TextAlign ta = TextAlign.Left)
             : base(l, t, r, t)
         {
             labelFunc  = lf;
             getBgColor = bgFunc;
             getFgColor = fgFunc;
+            textAlign  = ta;
         }
 
         /// <summary>
@@ -41,9 +44,9 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.BackgroundColor = getBgColor == null ? theme.LabelBg : getBgColor(theme);
             Console.ForegroundColor = getFgColor == null ? theme.LabelFg : getFgColor(theme);
             try {
-                Console.Write(FormatExactWidth(labelFunc(), w));
+                Console.Write(FormatExactWidth(labelFunc(), w, ta: textAlign));
             } catch (Exception ex) {
-                Console.Write(FormatExactWidth(ex.Message,  w));
+                Console.Write(FormatExactWidth(ex.Message,  w, ta: textAlign));
             }
         }
 
@@ -55,6 +58,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         private readonly Func<string>       labelFunc;
         private readonly Func<ConsoleTheme, ConsoleColor>? getBgColor;
         private readonly Func<ConsoleTheme, ConsoleColor>? getFgColor;
+        private readonly TextAlign                         textAlign;
     }
 
 }

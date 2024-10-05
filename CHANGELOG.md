@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 
 - [Core] Skip corrupted .acf files in Steam library (#4200 by: HebaruSan)
 - [GUI] Fix label color blending (#4203 by: HebaruSan)
+- [ConsoleUI] Label spacing and alignment, show zero download counts as blank in ConsoleUI (#4223 by: HebaruSan)
 
 ### Internal
 
