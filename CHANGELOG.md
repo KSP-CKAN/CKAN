@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.35.3
 
+### Internal
 
+- [Netkan] Tests for Newtonsoft.Json's handling of octal literals in version files (#4227 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 
