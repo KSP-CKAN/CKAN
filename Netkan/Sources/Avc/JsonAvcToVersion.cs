@@ -1,20 +1,20 @@
 using System;
+using System.Collections.Generic;
 
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
 
 using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Sources.Avc
 {
     /// <summary>
-    /// Converts AVC style KSP versions into CKAN ones.
+    /// Converts AVC style versions into CKAN ones.
     /// </summary>
-    public class JsonAvcToGameVersion : JsonConverter
+    public class JsonAvcToVersion : JsonConverter
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof (JsonAvcToGameVersion));
-        private const int AvcWildcard = -1;
 
         public override bool CanConvert(Type objectType)
         {
@@ -27,9 +27,10 @@ namespace CKAN.NetKAN.Sources.Avc
                                          object?         existingValue,
                                          JsonSerializer? serializer)
         {
-            string? major = null;
-            string? minor = null;
-            string? patch = null;
+            var major = "0";
+            var minor = "0";
+            var patch = "0";
+            string? build = null;
 
             var token = JToken.Load(reader);
             Log.DebugFormat("Read Token: {0}, {1}", new object[] {token.Type, token.ToString()});
@@ -52,40 +53,36 @@ namespace CKAN.NetKAN.Sources.Avc
                                 && tokenArray[2] is var patchToken)
                             {
                                 patch = patchToken;
+                                if (//tokenArray is [_, _, _, var buildToken, ..]
+                                    tokenArray.Length > 3
+                                    && tokenArray[3] is var buildToken)
+                                {
+                                    build = buildToken;
+                                }
                             }
                         }
                     }
                     break;
                 case JTokenType.Object:
-                    major = token.Value<string>("MAJOR");
-                    minor = token.Value<string>("MINOR");
-                    patch = token.Value<string>("PATCH");
+                    major = token.Value<string>("MAJOR") ?? major;
+                    minor = token.Value<string>("MINOR") ?? minor;
+                    patch = token.Value<string>("PATCH") ?? patch;
+                    build = token.Value<string>("BUILD") ?? build;
                     break;
                 default:
                     throw new InvalidCastException("Trying to convert non-JSON object to Version object");
             }
 
-            //AVC uses -1 to indicate a wildcard.
-            string version;
-            if (major == null || (int.TryParse(major, out int integer) && integer == AvcWildcard))
+            var components = new List<string>() { major, minor, patch };
+
+            if (build != null && !string.IsNullOrWhiteSpace(build))
             {
-                return GameVersion.Any;
-            }
-            else if (minor == null || (int.TryParse(minor, out integer) && integer == AvcWildcard))
-            {
-                version = major;
-            }
-            else if (patch == null || (int.TryParse(patch, out integer) && integer == AvcWildcard))
-            {
-                version = string.Join(".", major, minor);
-            }
-            else
-            {
-                version = string.Join(".", major, minor, patch);
+                components.Add(build);
             }
 
+            var version = string.Join(".", components);
             Log.DebugFormat("  extracted version: {0}", version);
-            var result = GameVersion.Parse(version);
+            var result = new ModuleVersion(version);
             Log.DebugFormat("  generated result: {0}", result);
             return result;
         }
@@ -97,5 +94,4 @@ namespace CKAN.NetKAN.Sources.Avc
             throw new NotImplementedException();
         }
     }
-
 }
