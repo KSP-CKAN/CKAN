@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.35.3
 
+### Bugfixes
+
+- [GUI] Set focus better on Ctrl+F (#4230 by: HebaruSan)
+
 ### Internal
 
 - [Netkan] Tests for Newtonsoft.Json's handling of octal literals in version files (#4227 by: HebaruSan)

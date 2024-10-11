@@ -63,7 +63,7 @@ namespace Tests
                                                 method.DeclaringType?.Name ?? "",
                                                 method.Name))
                 .ToList();
-            Assert.False(messages.Any(),
+            Assert.False(messages.Count != 0,
                 "Async void methods found!" + Environment.NewLine + string.Join(Environment.NewLine, messages));
         }
 

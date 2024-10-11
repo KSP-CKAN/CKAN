@@ -49,7 +49,7 @@ namespace CKAN.NetKAN.Validators
                                               StringComparer.InvariantCultureIgnoreCase))
                                          ?? Enumerable.Empty<string>())
                                           .ToList();
-                if (missingDeps.Any())
+                if (missingDeps.Count != 0)
                 {
                     log.WarnFormat("Dependencies from swinfo.json missing from module: {0}",
                                    string.Join(", ", missingDeps));

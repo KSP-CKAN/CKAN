@@ -70,8 +70,8 @@ namespace CKAN.CmdLine
             }
 
             // Present the results.
-            if (!matching_compatible.Any()
-                && (!options.all || !matching_incompatible.Any()))
+            if (matching_compatible.Count == 0
+                && (!options.all || matching_incompatible.Count == 0))
             {
                 return Exit.OK;
             }
@@ -89,7 +89,7 @@ namespace CKAN.CmdLine
                                       mod.@abstract);
                 }
 
-                if (matching_incompatible.Any())
+                if (matching_incompatible.Count != 0)
                 {
                     user.RaiseMessage(Properties.Resources.SearchIncompatibleModsHeader);
                     foreach (CkanModule mod in matching_incompatible)

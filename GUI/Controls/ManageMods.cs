@@ -19,7 +19,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class ManageMods : UserControl
+    public partial class ManageMods : UserControl, ISearchableControl
     {
         public ManageMods()
         {
@@ -144,7 +144,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                if (ChangeSet != null && ChangeSet.Any())
+                if (ChangeSet != null && ChangeSet.Count != 0)
                 {
                     ApplyToolButton.Enabled = true;
                 }
@@ -1900,17 +1900,8 @@ namespace CKAN.GUI
         {
             switch (keyData)
             {
-                case Keys.Control | Keys.F:
-                    ActiveControl = EditModSearches;
-                    return true;
-
-                case Keys.Control | Keys.Shift | Keys.F:
-                    EditModSearches.ExpandCollapse();
-                    ActiveControl = EditModSearches;
-                    return true;
-
                 case Keys.Control | Keys.S:
-                    if (ChangeSet != null && ChangeSet.Any())
+                    if (ChangeSet != null && ChangeSet.Count != 0)
                     {
                         ApplyToolButton_Click(null, null);
                     }
@@ -1921,9 +1912,19 @@ namespace CKAN.GUI
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
+        public void FocusSearch(bool expandCollapse = false)
+        {
+            ActiveControl = EditModSearches;
+            EditModSearches.Focus();
+            if (expandCollapse)
+            {
+                EditModSearches.ExpandCollapse();
+            }
+        }
+
         public bool AllowClose()
         {
-            if (Conflicts != null && Conflicts.Any())
+            if (Conflicts != null && Conflicts.Count != 0)
             {
                 // Ask if they want to resolve conflicts
                 string confDescrip = Conflicts

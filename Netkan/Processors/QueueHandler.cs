@@ -92,7 +92,7 @@ namespace CKAN.NetKAN.Processors
                 VisibilityTimeout     = (int)TimeSpan.FromMinutes(timeoutMinutes).TotalSeconds,
                 MessageAttributeNames = new List<string>() { "All" },
             }).Result;
-            if (!resp.Messages.Any())
+            if (resp.Messages.Count == 0)
             {
                 log.Debug("No metadata in queue");
             }
@@ -261,7 +261,7 @@ namespace CKAN.NetKAN.Processors
                     }
                 );
             }
-            if (warningAppender.Warnings.Any())
+            if (warningAppender.Warnings.Count != 0)
             {
                 attribs.Add(
                     "WarningMessages",

@@ -133,7 +133,7 @@ namespace CKAN
             // If we know of no instances, try to find one.
             // Otherwise, we know of too many instances!
             // We don't know which one to pick, so we return null.
-            return !instances.Any() ? FindAndRegisterDefaultInstances() : null;
+            return instances.Count == 0 ? FindAndRegisterDefaultInstances() : null;
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace CKAN
         /// </summary>
         public GameInstance? FindAndRegisterDefaultInstances()
         {
-            if (instances.Any())
+            if (instances.Count != 0)
             {
                 throw new KSPManagerKraken("Attempted to scan for defaults with instances");
             }

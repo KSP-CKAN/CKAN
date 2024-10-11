@@ -35,7 +35,7 @@ namespace CKAN.NetKAN.Validators
                         .Where(f => !AllowedCraftPath(inst.ToRelativeGameDir(f.destination)))
                         .ToList();
 
-                    if (badCrafts.Any())
+                    if (badCrafts.Count != 0)
                     {
                         Log.WarnFormat(
                             "Craft files installed outside Ships folder: {0}",

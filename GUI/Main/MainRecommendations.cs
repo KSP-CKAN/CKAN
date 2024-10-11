@@ -62,7 +62,7 @@ namespace CKAN.GUI
                         recommendations, suggestions, supporters);
                     var result = ChooseRecommendedMods.Wait();
                     tabController.HideTab("ChooseRecommendedModsTabPage");
-                    if (result != null && result.Any())
+                    if (result != null && result.Count != 0)
                     {
                         Wait.StartWaiting(InstallMods, PostInstallMods, true,
                             new InstallArgument(

@@ -1164,7 +1164,7 @@ namespace CKAN
 
             // The empty list has no reverse dependencies
             // (Don't remove broken modules if we're only installing)
-            if (modulesToRemove.Any())
+            if (modulesToRemove.Count != 0)
             {
                 // All modules in the input are included in the output
                 foreach (string starter in modulesToRemove)

@@ -48,7 +48,7 @@ namespace CKAN.NetKAN.Validators
                                     && p.LastIndexOf($"/{dir}/", StringComparison.InvariantCultureIgnoreCase) > 0)
                         .OrderBy(f => f)
                         .ToList();
-                    if (gamedatas.Any())
+                    if (gamedatas.Count != 0)
                     {
                         var badPaths = string.Join("\r\n", gamedatas);
                         throw new Kraken($"{dir} directory found within {dir}:\r\n{badPaths}");
@@ -60,7 +60,7 @@ namespace CKAN.NetKAN.Validators
                     .GroupBy(f => f)
                     .SelectMany(grp => grp.Skip(1).OrderBy(f => f))
                     .ToList();
-                if (duplicates.Any())
+                if (duplicates.Count != 0)
                 {
                     var badPaths = string.Join("\r\n", duplicates);
                     throw new Kraken($"Multiple files attempted to install to:\r\n{badPaths}");
@@ -75,7 +75,7 @@ namespace CKAN.NetKAN.Validators
                         .Distinct()
                         .Where(incl => !allFiles.Any(f => f.Contains(incl)))
                         .ToList();
-                    if (unmatchedIncludeOnlys.Any())
+                    if (unmatchedIncludeOnlys.Count != 0)
                     {
                         log.WarnFormat("No matches for includes_only: {0}",
                                        string.Join(", ", unmatchedIncludeOnlys));

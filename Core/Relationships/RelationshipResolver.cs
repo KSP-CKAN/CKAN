@@ -307,7 +307,7 @@ namespace CKAN
                                   && reason is SelectionReason.RelationshipReason rel
                                   && MightBeInstallable(mod, rel.Parent, installed_modules))
                     .ToList();
-                if (!candidates.Any())
+                if (candidates.Count == 0)
                 {
                     // Nothing found, try again while simulating an empty mod list
                     // Necessary for e.g. proceed_with_inconsistencies, conflicts will still be caught below
@@ -319,7 +319,7 @@ namespace CKAN
                         .ToList();
                 }
 
-                if (!candidates.Any())
+                if (candidates.Count == 0)
                 {
                     if (!soft_resolve && reason is SelectionReason.RelationshipReason rel)
                     {
@@ -645,7 +645,7 @@ namespace CKAN
                             conflictingModDescription(kvp.Key,   null),
                             conflictingModDescription(kvp.Value, null)));
 
-        public bool IsConsistent => !conflicts.Any();
+        public bool IsConsistent => conflicts.Count == 0;
 
         public List<SelectionReason> ReasonsFor(CkanModule mod)
             => reasons.TryGetValue(mod, out List<SelectionReason>? r)

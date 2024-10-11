@@ -41,7 +41,7 @@ namespace CKAN.GUI
                 StartPosition = FormStartPosition.CenterScreen;
             }
 
-            if (!manager.Instances.Any())
+            if (manager.Instances.Count == 0)
             {
                 manager.FindAndRegisterDefaultInstances();
             }
