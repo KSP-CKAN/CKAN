@@ -157,7 +157,7 @@ namespace CKAN.GUI
                             ? Color.LightCoral
                             : Color.Empty;
                     }
-                    RecommendedModsContinueButton.Enabled = !conflicts.Any();
+                    RecommendedModsContinueButton.Enabled = conflicts.Count == 0;
                     OnConflictFound?.Invoke(string.Join("; ", resolver.ConflictDescriptions));
                 }
                 catch (DependencyNotSatisfiedKraken k)

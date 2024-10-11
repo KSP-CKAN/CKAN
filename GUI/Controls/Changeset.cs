@@ -34,7 +34,7 @@ namespace CKAN.GUI
                                   Dictionary<CkanModule, string>? conflicts)
         {
             changeset = changes;
-            ConfirmChangesButton.Enabled = conflicts == null || !conflicts.Any();
+            ConfirmChangesButton.Enabled = conflicts == null || conflicts.Count == 0;
             CloseTheGameLabel.Visible = changes?.Any(ch => DeletingChanges.Contains(ch.ChangeType))
                                         ?? false;
             ChangesGrid.DataSource = new BindingList<ChangesetRow>(

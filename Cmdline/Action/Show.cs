@@ -68,7 +68,7 @@ namespace CKAN.CmdLine
                     var matches = search.PerformSearch(instance, modName);
 
                     // Display the results of the search.
-                    if (!matches.Any())
+                    if (matches.Count == 0)
                     {
                         // No matches found.
                         user.RaiseMessage(Properties.Resources.ShowNoClose);

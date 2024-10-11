@@ -54,7 +54,7 @@ namespace CKAN
             var dllSet = dlls?.ToHashSet();
             UnmetDepends = FindUnsatisfiedDepends(modList, dllSet, dlc).ToList();
             Conflicts = FindConflicting(modList, dllSet, dlc);
-            return !UnmetDepends.Any() && !Conflicts.Any();
+            return UnmetDepends.Count == 0 && Conflicts.Count == 0;
         }
 
         /// <summary>

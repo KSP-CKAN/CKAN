@@ -107,7 +107,7 @@ namespace CKAN.NetKAN.Transformers
                 result.Add(transformers[i]);
             }
 
-            if (result.Any())
+            if (result.Count != 0)
             {
                 if (result.First() is VersionedOverrideTransformer firstVersionedOverride)
                 {

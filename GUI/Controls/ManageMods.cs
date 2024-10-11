@@ -144,7 +144,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                if (ChangeSet != null && ChangeSet.Any())
+                if (ChangeSet != null && ChangeSet.Count != 0)
                 {
                     ApplyToolButton.Enabled = true;
                 }
@@ -1923,7 +1923,7 @@ namespace CKAN.GUI
 
         public bool AllowClose()
         {
-            if (Conflicts != null && Conflicts.Any())
+            if (Conflicts != null && Conflicts.Count != 0)
             {
                 // Ask if they want to resolve conflicts
                 string confDescrip = Conflicts

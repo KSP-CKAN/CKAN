@@ -779,7 +779,7 @@ namespace CKAN
                 .ToList();
 
             // If there is nothing to uninstall, skip out.
-            if (!goners.Any())
+            if (goners.Count == 0)
             {
                 return;
             }

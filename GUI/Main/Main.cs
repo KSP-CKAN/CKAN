@@ -821,7 +821,7 @@ namespace CKAN.GUI
                                              .Select(gv => new GameVersion(gv.Major, gv.Minor))
                                              .Distinct()
                                              .ToList();
-                if (missing.Any()
+                if (missing.Count != 0
                     && YesNoDialog(string.Format(Properties.Resources.MetapackageAddCompatibilityPrompt,
                                                  filesRange.ToSummaryString(CurrentInstance.game),
                                                  crit.ToSummaryString(CurrentInstance.game)),
@@ -841,7 +841,7 @@ namespace CKAN.GUI
                 .ToHashSet();
             // Get incompatible mods we're installing
             var myIncompat = toInstall.Where(mod => allIncompat.Contains(mod.identifier)).ToList();
-            if (!myIncompat.Any()
+            if (myIncompat.Count == 0
                 // Confirm installation of incompatible like the Versions tab does
                 || YesNoDialog(string.Format(Properties.Resources.ModpackInstallIncompatiblePrompt,
                                              string.Join(Environment.NewLine, myIncompat),
@@ -943,7 +943,7 @@ namespace CKAN.GUI
 
         private void ManageMods_OnChangeSetChanged(List<ModChange> changeset, Dictionary<GUIMod, string> conflicts)
         {
-            if (changeset != null && changeset.Any())
+            if (changeset != null && changeset.Count != 0)
             {
                 tabController.ShowTab("ChangesetTabPage", 1, false);
                 UpdateChangesDialog(
@@ -1069,7 +1069,7 @@ namespace CKAN.GUI
                 var incomp = registry.IncompatibleInstalled(CurrentInstance.VersionCriteria())
                     .Where(m => !m.Module.IsDLC && !suppressedIdentifiers.Contains(m.identifier))
                     .ToList();
-                if (incomp.Any() && CurrentInstance.Version() is GameVersion gv)
+                if (incomp.Count != 0 && CurrentInstance.Version() is GameVersion gv)
                 {
                     // Warn that it might not be safe to run game with incompatible modules installed
                     string incompatDescrip = incomp

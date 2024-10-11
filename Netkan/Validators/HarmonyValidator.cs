@@ -41,7 +41,7 @@ namespace CKAN.NetKAN.Validators
                                               StringComparison.InvariantCultureIgnoreCase) != -1)
                         .OrderBy(f => f)
                         .ToList();
-                    bool bundlesHarmony   = harmonyDLLs.Any();
+                    bool bundlesHarmony   = harmonyDLLs.Count != 0;
                     bool providesHarmony1 = mod.ProvidesList.Contains("Harmony1");
                     if (bundlesHarmony && !providesHarmony1)
                     {

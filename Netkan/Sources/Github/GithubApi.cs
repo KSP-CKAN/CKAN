@@ -82,7 +82,7 @@ namespace CKAN.NetKAN.Sources.Github
                         ghRel.PreRelease == reference.UsePrerelease
                         // Skip releases without assets
                         && ghRel.Assets != null
-                        && ghRel.Assets.Any())
+                        && ghRel.Assets.Count != 0)
                     // Insurance against GitHub returning them in the wrong order
                     .OrderByDescending(ghRel => ghRel.PublishedAt)
                     .ToList();

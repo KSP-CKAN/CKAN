@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Validators
                     GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                     var plugins    = _moduleService.GetPlugins(mod, zip, inst).ToList();
-                    bool hasPlugin = plugins.Any();
+                    bool hasPlugin = plugins.Count != 0;
                     if (hasPlugin)
                     {
                         var dllPaths = plugins
@@ -45,7 +45,7 @@ namespace CKAN.NetKAN.Validators
                             .Where(ident => !string.IsNullOrEmpty(ident)
                                 && !identifiersToIgnore.Contains(ident))
                             .ToHashSet();
-                        if (dllIdentifiers.Any() && !dllIdentifiers.Contains(metadata.Identifier))
+                        if (dllIdentifiers.Count != 0 && !dllIdentifiers.Contains(metadata.Identifier))
                         {
                             Log.WarnFormat(
                                 "No plugin matching the identifier, manual installations won't be detected: {0}",
