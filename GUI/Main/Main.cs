@@ -611,6 +611,38 @@ namespace CKAN.GUI
             ManageMods?.ParentMoved();
         }
 
+        private IEnumerable<T> VisibleControls<T>()
+            => (MainTabControl?.SelectedTab
+                              ?.Controls
+                               .OfType<T>()
+                              ?? Enumerable.Empty<T>())
+                  .Concat(!splitContainer1.Panel2Collapsed
+                          && ModInfo is T t
+                              ? Enumerable.Repeat(t, 1)
+                              : Enumerable.Empty<T>());
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Control | Keys.F:
+                    VisibleControls<ISearchableControl>()
+                        .FirstOrDefault()
+                        ?.FocusSearch(false);
+                    e.Handled = true;
+                    break;
+                case Keys.Control | Keys.Shift | Keys.F:
+                    VisibleControls<ISearchableControl>()
+                        .FirstOrDefault()
+                        ?.FocusSearch(true);
+                    e.Handled = true;
+                    break;
+                default:
+                    base.OnKeyDown(e);
+                    break;
+            }
+        }
+
         private void SetupDefaultSearch()
         {
             if (CurrentInstance != null && configuration != null)
