@@ -38,11 +38,13 @@ namespace CKAN.GUI
                         // Remove our taskbar entry
                         Hide();
                     }
+                    openCKANToolStripMenuItem.Visible = true;
                 }
                 else
                 {
                     // Save the window state
                     configuration.IsWindowMaximised = WindowState == FormWindowState.Maximized;
+                    openCKANToolStripMenuItem.Visible = false;
                 }
             }
             else
@@ -65,6 +67,8 @@ namespace CKAN.GUI
                 updatesToolStripMenuItem.Enabled = true;
                 updatesToolStripMenuItem.Text = string.Format(Properties.Resources.MainTrayUpdatesAvailable, count);
             }
+            toolStripSeparator4.Visible = true;
+            updatesToolStripMenuItem.Visible = true;
         }
 
         /// <summary>
@@ -74,11 +78,23 @@ namespace CKAN.GUI
         {
             Show();
             WindowState = configuration?.IsWindowMaximised ?? false ? FormWindowState.Maximized : FormWindowState.Normal;
+            openCKANToolStripMenuItem.Visible = false;
+        }
+
+        private void minimizeNotifyIcon_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                OpenWindow();
+            }
         }
 
         private void minimizeNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            OpenWindow();
+            if (e.Button == MouseButtons.Left)
+            {
+                OpenWindow();
+            }
         }
 
         private void updatesToolStripMenuItem_Click(object? sender, EventArgs? e)
@@ -134,9 +150,9 @@ namespace CKAN.GUI
         {
             // The menu location can be partly off-screen by default.
             // Fix it.
-            minimizedContextMenuStrip.Location = Util.ClampedLocation(
-                minimizedContextMenuStrip.Location,
-                minimizedContextMenuStrip.Size);
+            minimizedContextMenuStrip.Location =
+                Util.ClampedLocation(minimizedContextMenuStrip.Location,
+                                     minimizedContextMenuStrip.Size);
         }
 
         private void minimizeNotifyIcon_BalloonTipClicked(object? sender, EventArgs? e)
@@ -149,11 +165,9 @@ namespace CKAN.GUI
 
             // Install
             Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                new InstallArgument(
-                    ManageMods.ComputeUserChangeSet()
-                              .ToList(),
-                    RelationshipResolverOptions.DependsOnlyOpts())
-            );
+                              new InstallArgument(ManageMods.ComputeUserChangeSet()
+                                                            .ToList(),
+                                                  RelationshipResolverOptions.DependsOnlyOpts()));
         }
         #endregion
     }

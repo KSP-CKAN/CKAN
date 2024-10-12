@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.35.3
 
+### Features
+
+- [GUI] Minor tray icon improvements (#4231 by: HebaruSan)
+
 ### Bugfixes
 
 - [GUI] Set focus better on Ctrl+F (#4230 by: HebaruSan)
