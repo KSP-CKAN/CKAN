@@ -713,6 +713,7 @@ namespace CKAN.GUI
             //
             this.minimizeNotifyIcon.ContextMenuStrip = this.minimizedContextMenuStrip;
             this.minimizeNotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.minimizeNotifyIcon_MouseDoubleClick);
+            this.minimizeNotifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.minimizeNotifyIcon_MouseClick);
             this.minimizeNotifyIcon.BalloonTipClicked += new System.EventHandler(this.minimizeNotifyIcon_BalloonTipClicked);
             this.minimizeNotifyIcon.Icon = EmbeddedImages.AppIcon;
             resources.ApplyResources(this.minimizeNotifyIcon, "minimizeNotifyIcon");
@@ -740,12 +741,14 @@ namespace CKAN.GUI
             this.updatesToolStripMenuItem.Name = "updatesToolStripMenuItem";
             this.updatesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.updatesToolStripMenuItem.Click += new System.EventHandler(this.updatesToolStripMenuItem_Click);
+            this.updatesToolStripMenuItem.Visible = false;
             resources.ApplyResources(this.updatesToolStripMenuItem, "updatesToolStripMenuItem");
             //
             // toolStripSeparator4
             //
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator4.Visible = false;
             //
             // refreshToolStripMenuItem
             //
@@ -771,6 +774,7 @@ namespace CKAN.GUI
             this.openCKANToolStripMenuItem.Name = "openCKANToolStripMenuItem";
             this.openCKANToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.openCKANToolStripMenuItem.Click += new System.EventHandler(this.openCKANToolStripMenuItem_Click);
+            this.openCKANToolStripMenuItem.Visible = false;
             resources.ApplyResources(this.openCKANToolStripMenuItem, "openCKANToolStripMenuItem");
             //
             // openGameToolStripMenuItem

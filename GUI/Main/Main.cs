@@ -416,7 +416,8 @@ namespace CKAN.GUI
 
             Util.Invoke(this, () =>
             {
-                Text = $"CKAN {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {Platform.FormatPath(CurrentInstance.GameDir())}";
+                Text = $"{Meta.GetProductName()} {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {Platform.FormatPath(CurrentInstance.GameDir())}";
+                minimizeNotifyIcon.Text = $"{Meta.GetProductName()} - {CurrentInstance.Name}";
                 UpdateStatusBar();
             });
 

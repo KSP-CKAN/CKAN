@@ -154,7 +154,6 @@
   <data name="UnmanagedFilesTabPage.Text" xml:space="preserve"><value>Unmanaged Files</value></data>
   <data name="InstallationHistoryTabPage.Text" xml:space="preserve"><value>Installation History</value></data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N available updates</value></data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>Refresh</value></data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>Pause</value></data>
   <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>Open CKAN</value></data>
