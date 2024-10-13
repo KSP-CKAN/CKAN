@@ -14,7 +14,6 @@ namespace CKAN.GUI
             {
                 InstallationHistory.LoadHistory(CurrentInstance, configuration, repoData);
                 tabController.ShowTab("InstallationHistoryTabPage", 2);
-                DisableMainWindow();
             }
         }
 
@@ -38,7 +37,6 @@ namespace CKAN.GUI
             UpdateStatusBar();
             tabController.ShowTab("ManageModsTabPage");
             tabController.HideTab("InstallationHistoryTabPage");
-            EnableMainWindow();
         }
 
         private void InstallationHistory_OnSelectedModuleChanged(CkanModule m)

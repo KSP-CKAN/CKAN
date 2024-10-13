@@ -13,7 +13,6 @@ namespace CKAN.GUI
             {
                 UnmanagedFiles.LoadFiles(Manager.CurrentInstance, repoData, currentUser);
                 tabController.ShowTab("UnmanagedFilesTabPage", 2);
-                DisableMainWindow();
             }
         }
 
@@ -22,7 +21,6 @@ namespace CKAN.GUI
             UpdateStatusBar();
             tabController.ShowTab("ManageModsTabPage");
             tabController.HideTab("UnmanagedFilesTabPage");
-            EnableMainWindow();
         }
     }
 }
