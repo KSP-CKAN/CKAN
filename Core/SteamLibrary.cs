@@ -169,7 +169,8 @@ namespace CKAN
         public override GameBase NormalizeDir(string appPath)
         {
             GameDir = StartDir == null ? null
-                                       : new DirectoryInfo(CKANPathUtils.NormalizePath(StartDir.Trim('"')));
+                                       : Utilities.DefaultIfThrows(() =>
+                                           new DirectoryInfo(CKANPathUtils.NormalizePath(StartDir.Trim('"'))));
             return this;
         }
     }
