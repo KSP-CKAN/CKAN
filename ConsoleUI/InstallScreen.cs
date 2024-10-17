@@ -167,8 +167,8 @@ namespace CKAN.ConsoleUI {
 
                         } catch (BadMetadataKraken ex) {
                             RaiseError(Properties.Resources.InstallBadMetadata, ex.module?.ToString() ?? "", ex.Message);
-                        } catch (DependencyNotSatisfiedKraken ex) {
-                            RaiseError(Properties.Resources.InstallUnsatisfiedDependency, ex.parent, ex.module, ex.Message);
+                        } catch (DependenciesNotSatisfiedKraken ex) {
+                            RaiseError("{0}", ex.Message);
                         } catch (ModuleNotFoundKraken ex) {
                             RaiseError(Properties.Resources.InstallModuleNotFound, ex.module, ex.Message);
                         } catch (ModNotInstalledKraken ex) {

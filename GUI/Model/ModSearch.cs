@@ -80,27 +80,17 @@ namespace CKAN.GUI
         {
             switch (filter)
             {
-                case GUIModFilter.Compatible:               Compatible      = true;  break;
-                case GUIModFilter.Incompatible:             Compatible      = false; break;
-                case GUIModFilter.Installed:                Installed       = true;  break;
-                case GUIModFilter.NotInstalled:             Installed       = false; break;
-                case GUIModFilter.InstalledUpdateAvailable: Upgradeable     = true;  break;
-                case GUIModFilter.Replaceable:              Replaceable     = true;  break;
-                case GUIModFilter.Cached:                   Cached          = true;  break;
-                case GUIModFilter.Uncached:                 Cached          = false; break;
-                case GUIModFilter.NewInRepository:          NewlyCompatible = true;  break;
-                case GUIModFilter.Tag:
-                    if (tag?.Name is string tn)
-                    {
-                        TagNames.Add(tn);
-                    }
-                    break;
-                case GUIModFilter.CustomLabel:
-                    if (label?.Name is string ln)
-                    {
-                        LabelNames.Add(ln);
-                    }
-                    break;
+                case GUIModFilter.Compatible:               Compatible      = true;            break;
+                case GUIModFilter.Incompatible:             Compatible      = false;           break;
+                case GUIModFilter.Installed:                Installed       = true;            break;
+                case GUIModFilter.NotInstalled:             Installed       = false;           break;
+                case GUIModFilter.InstalledUpdateAvailable: Upgradeable     = true;            break;
+                case GUIModFilter.Replaceable:              Replaceable     = true;            break;
+                case GUIModFilter.Cached:                   Cached          = true;            break;
+                case GUIModFilter.Uncached:                 Cached          = false;           break;
+                case GUIModFilter.NewInRepository:          NewlyCompatible = true;            break;
+                case GUIModFilter.Tag:                      TagNames.Add(tag?.Name ?? "");     break;
+                case GUIModFilter.CustomLabel:              LabelNames.Add(label?.Name ?? ""); break;
                 default:
                 case GUIModFilter.All:
                     break;

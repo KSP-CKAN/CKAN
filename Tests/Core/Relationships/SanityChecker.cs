@@ -83,7 +83,7 @@ namespace Tests.Core.Relationships
         public void CustomBiomesWithDlls()
         {
             var mods = new List<CkanModule>();
-            var dlls = new List<string> { "CustomBiomes" };
+            var dlls = new Dictionary<string, string> { { "CustomBiomes", "" } }.Keys;
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes dll by itself");
 
@@ -100,7 +100,7 @@ namespace Tests.Core.Relationships
         public void ConflictWithDll()
         {
             var mods = new List<CkanModule> { registry?.LatestAvailable("SRL", null)! };
-            var dlls = new List<string> { "QuickRevert" };
+            var dlls = new Dictionary<string, string> { { "QuickRevert", "" } }.Keys;
 
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
             Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "SRL conflicts with QuickRevert DLL");
@@ -110,7 +110,7 @@ namespace Tests.Core.Relationships
         public void FindUnsatisfiedDepends()
         {
             var mods = new List<CkanModule>();
-            var dlls = Enumerable.Empty<string>().ToHashSet();
+            var dlls = new Dictionary<string, string>().Keys;
             var dlc = new Dictionary<string, ModuleVersion>();
 
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "Empty list");
@@ -363,14 +363,14 @@ namespace Tests.Core.Relationships
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
         }
 
-        private static void TestDepends(List<string>                       to_remove,
-                                        HashSet<CkanModule>                mods,
-                                        HashSet<string>?                   dlls,
-                                        Dictionary<string, ModuleVersion>? dlc,
-                                        List<string>                       expected,
-                                        string                             message)
+        private static void TestDepends(List<string>                              to_remove,
+                                        HashSet<CkanModule>                       mods,
+                                        ICollection<string>?                      dlls,
+                                        Dictionary<string, ModuleVersion>?        dlc,
+                                        List<string>                              expected,
+                                        string                                    message)
         {
-            dlls ??= new HashSet<string>();
+            dlls ??= new Dictionary<string, string>().Keys;
 
             var remove_count = to_remove.Count;
             var dll_count = dlls.Count;

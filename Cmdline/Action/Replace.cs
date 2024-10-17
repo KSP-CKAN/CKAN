@@ -163,10 +163,9 @@ namespace CKAN.CmdLine
                                  regMgr);
                     user.RaiseMessage("");
                 }
-                catch (DependencyNotSatisfiedKraken ex)
+                catch (DependenciesNotSatisfiedKraken ex)
                 {
-                    user.RaiseMessage(Properties.Resources.ReplaceDependencyNotSatisfied,
-                        ex.parent, ex.module, ex.version ?? "", instance.game.ShortName);
+                    user.RaiseMessage("{0}", ex.Message);
                 }
             }
             else

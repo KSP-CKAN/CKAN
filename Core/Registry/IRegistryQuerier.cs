@@ -22,7 +22,7 @@ namespace CKAN
     {
         ReadOnlyDictionary<string, Repository> Repositories     { get; }
         IEnumerable<InstalledModule>           InstalledModules { get; }
-        IEnumerable<string>                    InstalledDlls    { get; }
+        ICollection<string>                    InstalledDlls    { get; }
         IDictionary<string, ModuleVersion>     InstalledDlc     { get; }
 
         /// <summary>
@@ -63,6 +63,8 @@ namespace CKAN
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
         IEnumerable<CkanModule> AvailableByIdentifier(string identifier);
+
+        IEnumerable<AvailableModule> AllAvailableByProvides(string identifier);
 
         /// <summary>
         /// Returns the latest available version of a module that satisfies the specified version and
@@ -427,12 +429,11 @@ namespace CKAN
         /// <returns>
         /// Sequence of removable auto-installed modules, if any
         /// </returns>
-        private static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
-            this IRegistryQuerier              querier,
-            List<InstalledModule>              installedModules,
-            HashSet<string>                    dlls,
-            IDictionary<string, ModuleVersion> dlc,
-            GameVersionCriteria?               crit)
+        public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            this IRegistryQuerier querier,
+            List<InstalledModule> installedModules,
+            IGame                 game,
+            GameVersionCriteria   crit)
         {
             log.DebugFormat("Finding removable autoInstalled for: {0}",
                             string.Join(", ", installedModules.Select(im => im.identifier)));
@@ -450,36 +451,17 @@ namespace CKAN
                 installedModules.Where(im => !im.Module.IsDLC)
                                 .Select(im => im.Module),
                 null,
-                opts, querier, crit);
+                opts, querier, game, crit);
 
             var mods = resolver.ModList().ToHashSet();
             return autoInstMods.Where(
                 im => autoInstIds.IsSupersetOf(
                     Registry.FindReverseDependencies(new List<string> { im.identifier },
                                                      new List<CkanModule>(),
-                                                     mods, dlls, dlc)));
+                                                     mods,
+                                                     querier.InstalledDlls,
+                                                     querier.InstalledDlc)));
         }
-
-        /// <summary>
-        /// Find auto-installed modules that have no depending modules
-        /// or only auto-installed depending modules.
-        /// installedModules is a parameter so we can experiment with
-        /// changes that have not yet been made, such as removing other modules.
-        /// </summary>
-        /// <param name="installedModules">The modules currently installed</param>
-        /// <param name="crit">Version criteria for resolving relationships</param>
-        /// <returns>
-        /// Sequence of removable auto-installed modules, if any
-        /// </returns>
-        public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
-            this IRegistryQuerier querier,
-            List<InstalledModule> installedModules,
-            GameVersionCriteria?  crit)
-            => querier?.FindRemovableAutoInstalled(installedModules,
-                                                   querier.InstalledDlls.ToHashSet(),
-                                                   querier.InstalledDlc,
-                                                   crit)
-                      ?? Enumerable.Empty<InstalledModule>();
 
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
     }

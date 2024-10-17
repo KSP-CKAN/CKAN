@@ -104,7 +104,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void AddContentPieces(TreeNode parent, IEnumerable<string> pieces)
+        private static void AddContentPieces(TreeNode parent, IEnumerable<string> pieces)
         {
             var firstPiece = pieces.FirstOrDefault();
             if (firstPiece != null)
@@ -116,7 +116,7 @@ namespace CKAN.GUI
                 // Key/Name needs to be the full relative path for double click to work
                 var key = string.IsNullOrEmpty(parent.Name)
                     ? firstPiece
-                    : $"{parent.Name}/{firstPiece}";
+                    : Path.Combine(parent.Name, firstPiece);
                 var node = parent.Nodes[key]
                         ?? parent.Nodes.Add(key, firstPiece, "file", "file");
                 AddContentPieces(node, pieces.Skip(1));
@@ -175,8 +175,12 @@ namespace CKAN.GUI
 
         private void ShowInFolderButton_Click(object? sender, EventArgs? e)
         {
-            Utilities.OpenFileBrowser(GameFolderTree.SelectedNode.Name);
-            GameFolderTree.Focus();
+            if (GameFolderTree.SelectedNode is TreeNode node
+                && inst != null)
+            {
+                Utilities.OpenFileBrowser(inst.ToAbsoluteGameDir(node.Name));
+                GameFolderTree.Focus();
+            }
         }
 
         private void DeleteButton_Click(object? sender, EventArgs? e)

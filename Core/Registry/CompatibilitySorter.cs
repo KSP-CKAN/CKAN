@@ -28,7 +28,7 @@ namespace CKAN
                                    IEnumerable<Dictionary<string, AvailableModule>> available,
                                    Dictionary<string, HashSet<AvailableModule>>     providers,
                                    Dictionary<string, InstalledModule>              installed,
-                                   HashSet<string>                                  dlls,
+                                   ICollection<string>                              dlls,
                                    IDictionary<string, ModuleVersion>               dlc)
         {
             CompatibleVersions = crit;
@@ -104,8 +104,8 @@ namespace CKAN
         }
 
         private readonly Dictionary<string, InstalledModule> installed;
-        private readonly HashSet<string> dlls;
-        private readonly IDictionary<string, ModuleVersion> dlc;
+        private readonly ICollection<string>                 dlls;
+        private readonly IDictionary<string, ModuleVersion>  dlc;
 
         private List<CkanModule>? latestCompatible;
         private List<CkanModule>? latestIncompatible;

@@ -123,7 +123,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("");
                     done = true;
                 }
-                catch (DependencyNotSatisfiedKraken ex)
+                catch (DependenciesNotSatisfiedKraken ex)
                 {
                     user.RaiseError("{0}", ex.Message);
                     user.RaiseMessage(Properties.Resources.InstallTryAgain);

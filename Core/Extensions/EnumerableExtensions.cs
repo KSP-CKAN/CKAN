@@ -279,6 +279,20 @@ namespace CKAN.Extensions
             => source.Select(item => Utilities.DefaultIfThrows(()  => func(item),
                                                                exc => onThrow(item, exc)));
 
+        /// <summary>
+        /// Get a hash code for a sequence with a variable number of elements
+        /// </summary>
+        /// <typeparam name="T">Type of the elements in the sequence</typeparam>
+        /// <param name="source">The sequence</param>
+        /// <returns></returns>
+        public static int ToSequenceHashCode<T>(this IEnumerable<T> source)
+            => source.Aggregate(new HashCode(),
+                                (hc, item) =>
+                                {
+                                    hc.Add(item);
+                                    return hc;
+                                },
+                                hc => hc.ToHashCode());
     }
 
     /// <summary>

@@ -125,7 +125,10 @@ namespace CKAN.GUI
         /// <param name="changeSet"></param>
         /// <param name="version">The version of the current game instance</param>
         public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
-            IRegistryQuerier registry, HashSet<ModChange> changeSet, GameVersionCriteria version)
+            IRegistryQuerier    registry,
+            HashSet<ModChange>  changeSet,
+            IGame               game,
+            GameVersionCriteria version)
         {
             var modules_to_install = new List<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
@@ -194,7 +197,7 @@ namespace CKAN.GUI
             }
 
             foreach (var im in registry.FindRemovableAutoInstalled(
-                InstalledAfterChanges(registry, changeSet).ToList(), version))
+                InstalledAfterChanges(registry, changeSet).ToList(), game, version))
             {
                 changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
                 modules_to_remove.Add(im.Module);
@@ -203,7 +206,7 @@ namespace CKAN.GUI
             // Get as many dependencies as we can, but leave decisions and prompts for installation time
             var resolver = new RelationshipResolver(
                 modules_to_install, modules_to_remove,
-                conflictOptions, registry, version);
+                conflictOptions, registry, game, version);
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
             return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>>(
@@ -451,8 +454,8 @@ namespace CKAN.GUI
                : Enumerable.Empty<ModChange>();
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier     registry,
-                                                       GameVersionCriteria? crit,
-                                                       GameInstance?        instance,
+                                                       GameVersionCriteria  crit,
+                                                       GameInstance         instance,
                                                        DataGridViewColumn?  upgradeCol,
                                                        DataGridViewColumn?  replaceCol)
         {
@@ -470,7 +473,7 @@ namespace CKAN.GUI
                                          // Skip reinstalls
                                          .Where(upg => upg.Mod != upg.targetMod)
                                          .ToArray();
-                if (upgrades.Length > 0 && instance != null)
+                if (upgrades.Length > 0)
                 {
                     var upgradeable = registry.CheckUpgradeable(instance,
                                                                 // Hold identifiers not chosen for upgrading
@@ -504,7 +507,7 @@ namespace CKAN.GUI
             return (registry == null
                 ? modChanges
                 : modChanges.Union(
-                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), crit)
+                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), instance.game, crit)
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
                             new SelectionReason.NoLongerUsed()))))

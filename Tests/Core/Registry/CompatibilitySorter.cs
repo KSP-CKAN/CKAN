@@ -80,7 +80,7 @@ namespace Tests.Core.Registry
                                         .ToDictionary(grp => grp.Key,
                                                       grp => grp.ToHashSet());
                 var installed = new Dictionary<string, InstalledModule>();
-                var dlls      = new HashSet<string>();
+                var dlls      = new Dictionary<string, string>().Keys;
                 var dlcs      = new Dictionary<string, ModuleVersion>();
                 var highPrio  = repoData.Manager
                                         .GetAvailableModules(Enumerable.Repeat(repo1.repo, 1),

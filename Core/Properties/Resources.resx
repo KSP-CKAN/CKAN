@@ -275,7 +275,8 @@ Which {0} provider would you like to install?</value></data>
 {1}
 
 If the game is still running, close it and try again. Otherwise check the permissions.</value></data>
-  <data name="KrakenMissingDependency" xml:space="preserve"><value>{0} missing dependency {1}</value></data>
+  <data name="KrakenMissingDependency" xml:space="preserve"><value>Unsatisfied dependency {1} needed for: {0}</value></data>
+  <data name="KrakenMissingDependencyNeededFor" xml:space="preserve"><value>needed for {0}</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Uh oh, the following things went wrong when downloading...</value></data>
   <data name="KrakenModuleDownloadErrorsHeader" xml:space="preserve"><value>One or more downloads were unsuccessful:</value></data>

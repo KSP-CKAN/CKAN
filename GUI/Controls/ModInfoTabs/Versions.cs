@@ -13,6 +13,7 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
+using CKAN.Games;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 
@@ -107,16 +108,18 @@ namespace CKAN.GUI
                                         IRegistryQuerier registry)
             => currentInstance != null
                 && installable(module, registry,
+                               currentInstance.game,
                                currentInstance.VersionCriteria());
 
         [ForbidGUICalls]
         private static bool installable(CkanModule          module,
                                         IRegistryQuerier    registry,
+                                        IGame               game,
                                         GameVersionCriteria crit)
             => module.IsCompatible(crit)
                 && ModuleInstaller.CanInstall(new List<CkanModule>() { module },
                                               RelationshipResolverOptions.DependsOnlyOpts(),
-                                              registry, crit);
+                                              registry, game, crit);
 
         private bool allowInstall(CkanModule module)
         {

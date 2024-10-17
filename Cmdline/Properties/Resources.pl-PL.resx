@@ -367,7 +367,6 @@ Upewnij się, że wprowadziłeś wersję w postaci Maj.Min - np. 1.5</value>
   </data>
   <data name="InstallTryAgain" xml:space="preserve">
     <value>Jeśli masz szczęście, możesz wykonać `ckan update` i spróbować ponownie.
-Spróbuj `ckan install --no-recommends` aby pominąć instalację zalecanych modułów.
 Lub `ckan install --allow-niecompatible` aby zignorować kompatybilność modułów.</value>
   </data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">

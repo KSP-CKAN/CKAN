@@ -13,7 +13,9 @@ using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
+using CKAN.Versioning;
 using CKAN.GUI;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.GUI
 {
@@ -23,11 +25,15 @@ namespace Tests.GUI
     [TestFixture]
     public class ModListTests
     {
+        private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
+
         [Test]
         public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList();
-            Assert.That(item.ComputeUserChangeSet(Registry.Empty(), null, null, null, null), Is.Empty);
+            var game = new KerbalSpaceProgram();
+            var inst = new GameInstance(game, "/", "dummy", new NullUser());
+            Assert.That(item.ComputeUserChangeSet(Registry.Empty(), crit, inst, null, null), Is.Empty);
         }
 
         [Test]
@@ -207,11 +213,14 @@ namespace Tests.GUI
                 Assert.IsTrue(otherModule.SelectedMod == otherModule.LatestAvailableMod);
                 Assert.IsFalse(otherModule.IsInstalled);
 
+                var game = new KerbalSpaceProgram();
+                var inst = new GameInstance(game, "/", "dummy", new NullUser());
+
                 Assert.DoesNotThrow(() =>
                 {
                     // Install the "other" module
                     installer.InstallList(
-                        modList.ComputeUserChangeSet(Registry.Empty(), null, null, null, null).Select(change => change.Mod).ToList(),
+                        modList.ComputeUserChangeSet(Registry.Empty(), crit, inst, null, null).Select(change => change.Mod).ToList(),
                         new RelationshipResolverOptions(),
                         registryManager,
                         ref possibleConfigOnlyDirs,

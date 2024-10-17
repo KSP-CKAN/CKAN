@@ -206,7 +206,6 @@
   <data name="ImportNotFound" xml:space="preserve"><value>Файл не найден: {0}</value></data>
   <data name="InstallNotFound" xml:space="preserve"><value>Файл не найден, выход: {0}</value></data>
   <data name="InstallTryAgain" xml:space="preserve"><value>Попробуйте совершить `ckan update` и попытайтесь заново.
-Используйте `ckan install --no-recommends`, чтобы пропустить установку рекомендуемых модулей.
 Либо используйте `ckan install --allow-incompatible`, чтобы игнорировать проблемы совместимости.</value></data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve"><value>Необходим модуль {0}, но он отсутствует в указателе либо недоступен для вашей версии {1}</value></data>
   <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve"><value>Необходим модуль {0} {1}, но он отсутствует в указателе либо недоступен для вашей версии {2}</value></data>

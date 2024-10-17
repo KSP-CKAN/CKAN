@@ -146,6 +146,7 @@ namespace CKAN
             }
             var resolver = new RelationshipResolver(modules, null, options,
                                                     registry_manager.registry,
+                                                    instance.game,
                                                     instance.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             var downloads = new List<CkanModule>();
@@ -774,6 +775,7 @@ namespace CKAN
                             .Where(im => !revdep.Contains(im.identifier))
                             .Concat(installing?.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)) ?? Array.Empty<InstalledModule>())
                             .ToList(),
+                        instance.game,
                         instance.VersionCriteria())
                     .Select(im => im.identifier))
                 .ToList();
@@ -1185,6 +1187,7 @@ namespace CKAN
                            .OfType<CkanModule>(),
                     RelationshipResolverOptions.DependsOnlyOpts(),
                     registry,
+                    instance.game,
                     instance.VersionCriteria());
                 modules = resolver.ModList().ToArray();
                 autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
@@ -1285,6 +1288,7 @@ namespace CKAN
                             .Where(im => !removingIdents.Contains(im.identifier))
                             .Concat(modules.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)))
                             .ToList(),
+                    instance.game,
                     instance.VersionCriteria())
                 .ToList();
             if (autoRemoving.Count > 0)
@@ -1318,7 +1322,7 @@ namespace CKAN
         /// Enacts listed Module Replacements to the specified versions for the user's KSP.
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// </summary>
-        /// <exception cref="DependencyNotSatisfiedKraken">Thrown if a dependency for a replacing module couldn't be satisfied.</exception>
+        /// <exception cref="DependenciesNotSatisfiedKraken">Thrown if a dependency for a replacing module couldn't be satisfied.</exception>
         /// <exception cref="ModuleNotFoundKraken">Thrown if a module that should be replaced is not installed.</exception>
         public void Replace(IEnumerable<ModuleReplacement> replacements,
                             RelationshipResolverOptions    options,
@@ -1401,7 +1405,8 @@ namespace CKAN
                     }
                 }
             }
-            var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry, instance.VersionCriteria());
+            var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry,
+                                                    instance.game, instance.VersionCriteria());
             var resolvedModsToInstall = resolver.ModList().ToList();
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
@@ -1433,7 +1438,7 @@ namespace CKAN
         /// <returns>
         /// true if anything found, false otherwise
         /// </returns>
-        public static bool FindRecommendations(GameInstance?                                         instance,
+        public static bool FindRecommendations(GameInstance                                          instance,
                                                HashSet<CkanModule>                                   sourceModules,
                                                List<CkanModule>                                      toInstall,
                                                Registry                                              registry,
@@ -1441,11 +1446,11 @@ namespace CKAN
                                                out Dictionary<CkanModule, List<string>>              suggestions,
                                                out Dictionary<CkanModule, HashSet<string>>           supporters)
         {
-            var crit     = instance?.VersionCriteria();
+            var crit     = instance.VersionCriteria();
             var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
                                                     null,
                                                     RelationshipResolverOptions.KitchenSinkOpts(),
-                                                    registry, crit);
+                                                    registry, instance.game, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
 
             var checkedRecs = resolver.Recommendations(recommenders)
@@ -1454,7 +1459,7 @@ namespace CKAN
                                       .ToHashSet();
             var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), null,
                                                        RelationshipResolverOptions.ConflictsOpts(),
-                                                       registry, crit)
+                                                       registry, instance.game, crit)
                                   .ConflictList.Keys;
             // Don't check recommendations that conflict with installed or installing mods
             checkedRecs.ExceptWith(conflicting);
@@ -1486,7 +1491,7 @@ namespace CKAN
                                              toInstall.Concat(recommendations.Keys)
                                                       .Concat(suggestions.Keys))
                                  .Where(kvp => CanInstall(toInstall.Append(kvp.Key).ToList(),
-                                                          opts, registry, crit))
+                                                          opts, registry, instance.game, crit))
                                  .ToDictionary();
 
             return recommendations.Count > 0
@@ -1507,14 +1512,15 @@ namespace CKAN
         public static bool CanInstall(List<CkanModule>            toInstall,
                                       RelationshipResolverOptions opts,
                                       IRegistryQuerier            registry,
-                                      GameVersionCriteria?        crit)
+                                      IGame                       game,
+                                      GameVersionCriteria         crit)
         {
             string request = string.Join(", ", toInstall.Select(m => m.identifier));
             try
             {
                 var installed = toInstall.Select(m => registry.InstalledModule(m.identifier)?.Module)
                                          .OfType<CkanModule>();
-                var resolver = new RelationshipResolver(toInstall, installed, opts, registry, crit);
+                var resolver = new RelationshipResolver(toInstall, installed, opts, registry, game, crit);
 
                 var resolverModList = resolver.ModList(false).ToList();
                 if (resolverModList.Count >= toInstall.Count(m => !m.IsMetapackage))
@@ -1536,7 +1542,7 @@ namespace CKAN
                 foreach (var mod in k.modules)
                 {
                     // Try each option recursively to see if any are successful
-                    if (CanInstall(toInstall.Append(mod).ToList(), opts, registry, crit))
+                    if (CanInstall(toInstall.Append(mod).ToList(), opts, registry, game, crit))
                     {
                         // Child call will emit debug output, so we don't need to here
                         return true;

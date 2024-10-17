@@ -390,7 +390,6 @@ Soyez sûr d'avoir saisi au moins les valeurs de version majeure et mineure au f
   </data>
   <data name="InstallTryAgain" xml:space="preserve">
     <value>Si vous êtes chanceux, vous pouvez taper `ckan update` et réessayer.
-Essayez `ckan install --no-recommends` pour ignorer l'installation des modules recommandés.
 Ou `ckan install --allow-incompatible` pour ignorer la compatibilité des modules.</value>
   </data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">

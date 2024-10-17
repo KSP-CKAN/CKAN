@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [GUI] Set focus better on Ctrl+F (#4230 by: HebaruSan)
+- [Multiple] Refactor relationship resolver to capture full resolved tree (#4232 by: HebaruSan)
 
 ### Internal
 

@@ -298,7 +298,7 @@ namespace CKAN.GUI
 
             // Check if this dependency is installed
             if (relDescr.MatchesAny(registry.InstalledModules.Select(im => im.Module).ToList(),
-                                    registry.InstalledDlls.ToHashSet(),
+                                    registry.InstalledDlls,
                                     // Maybe it's a DLC?
                                     registry.InstalledDlc,
                                     out CkanModule? matched))
