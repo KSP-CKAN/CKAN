@@ -117,23 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ListHeaderLabel.Text" xml:space="preserve">
-    <value>Inoltre, installa mod compatibili con le seguenti versioni del gioco:</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Versioni Del Gioco Compatibili</value>
+  </data>
+  <data name="InstancePathLabel.Text" xml:space="preserve">
+    <value>Installazione:</value>
   </data>
   <data name="GameVersionLabel.Text" xml:space="preserve">
     <value>Versione del gioco:</value>
   </data>
-  <data name="WarningLabel.Text" xml:space="preserve">
-    <value>Attenzione! Non c'è modo di verificare se la mod è veramente compatibile con le versioni qui selezionate! Ti preghiamo di agire con cautela.</value>
+  <data name="ListHeaderLabel.Text" xml:space="preserve">
+    <value>Inoltre, installa mod compatibili con le seguenti versioni del gioco:</value>
   </data>
   <data name="ClearSelectionButton.Text" xml:space="preserve">
     <value>Elimina selezione</value>
   </data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve">
-    <value>Aggiungi</value>
-  </data>
   <data name="AddVersionLabel.Text" xml:space="preserve">
     <value>Aggiungi la versione all'elenco:</value>
+  </data>
+  <data name="AddVersionToListButton.Text" xml:space="preserve">
+    <value>Aggiungi</value>
   </data>
   <data name="WildcardExplanationLabel.Text" xml:space="preserve">
     <value>Nota: se aggiungi una versione come "1.2" obbligherai tutte le mod compatibili con la 1.2.xx (1.2.0, 1.2.1, ecc.) a essere compatibili con questa istanza di gioco.</value>
@@ -141,16 +144,13 @@
   <data name="FutureUpdatesLabel.Text" xml:space="preserve">
     <value>Se il gioco viene aggiornato, questa finestra di dialogo verrà visualizzata nuovamente per permetterti di regolare le impostazioni.</value>
   </data>
-  <data name="SaveButton.Text" xml:space="preserve">
-    <value>Accetta</value>
-  </data>
-  <data name="InstancePathLabel.Text" xml:space="preserve">
-    <value>Installazione:</value>
+  <data name="WarningLabel.Text" xml:space="preserve">
+    <value>Attenzione! Non c'è modo di verificare se la mod è veramente compatibile con le versioni qui selezionate! Ti preghiamo di agire con cautela.</value>
   </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>Annulla</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Versioni Del Gioco Compatibili</value>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>Accetta</value>
   </data>
 </root>
