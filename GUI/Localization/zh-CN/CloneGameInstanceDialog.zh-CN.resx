@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelOldInstance.Text" xml:space="preserve">
-    <value>克隆的实例</value>
+    <value>复制的实例</value>
   </data>
   <data name="labelOldPath.Text" xml:space="preserve">
-    <value>克隆的路径</value>
+    <value>复制的路径</value>
   </data>
   <data name="buttonInstancePathSelection.Text" xml:space="preserve">
     <value>选择...</value>
@@ -141,13 +141,16 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>切换到新实例</value>
   </data>
+  <data name="checkBoxShareStock.Text" xml:space="preserve">
+    <value>分享库存文件</value>
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
-    <value>创建</value>
+    <value>复制</value>
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>取消</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>克隆或伪装KSP实例</value>
+    <value>复制游戏实例</value>
   </data>
 </root>

@@ -139,6 +139,6 @@
     <value>冲突</value>
   </data>
   <data name="ReverseRelationshipsCheckbox.Text" xml:space="preserve">
-    <value>逆向关系</value>
+    <value>依赖此Mod</value>
   </data>
 </root>

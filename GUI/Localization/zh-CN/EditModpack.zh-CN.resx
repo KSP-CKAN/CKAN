@@ -141,6 +141,9 @@
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve">
     <value>保存mod版本</value>
   </data>
+  <data name="IncludeOptRelsCheckbox.Text" xml:space="preserve">
+    <value>包含可选关系</value>
+  </data>
   <data name="ModNameColumn.Text" xml:space="preserve">
     <value>Mod</value>
   </data>

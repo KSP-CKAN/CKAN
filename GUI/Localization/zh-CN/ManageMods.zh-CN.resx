@@ -199,7 +199,7 @@
     <value>作者</value>
   </data>
   <data name="InstalledVersion.HeaderText" xml:space="preserve">
-    <value>已安装版本</value>
+    <value>当前版本</value>
   </data>
   <data name="LatestVersion.HeaderText" xml:space="preserve">
     <value>最新版本</value>

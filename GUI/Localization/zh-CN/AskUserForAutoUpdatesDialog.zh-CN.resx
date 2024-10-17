@@ -118,7 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>您希望CKAN在启动时自动检查更新吗？（可稍后在设置中修改）</value>
+    <value>您想要CKAN在启动时自动检查新版本的 CKAN吗？
+
+您可以手动检查CKAN的新版本，或稍后在设置窗口中更改此设置。</value>
   </data>
   <data name="YesButton.Text" xml:space="preserve">
     <value>是，检查更新</value>

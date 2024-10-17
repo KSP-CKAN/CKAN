@@ -121,22 +121,22 @@
     <value>32</value>
   </metadata>
   <data name="fileToolStripMenuItem.Text" xml:space="preserve">
-    <value>文件</value>
+    <value>&amp;文件</value>
   </data>
   <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
-    <value>管理游戏实例</value>
+    <value>&amp;管理游戏</value>
   </data>
   <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
-    <value>打开游戏目录</value>
+    <value>&amp;打开游戏目录</value>
   </data>
   <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
-    <value>从.ckan安装...</value>
+    <value>&amp;从.ckan文件安装Mod...</value>
   </data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;保存已安装的Mod列表...</value>
+    <value>&amp;保存已安装的模组列表 (无法重新导入)...</value>
   </data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
-    <value>导出Mod包...</value>
+    <value>&amp;导出mod包(可用于重新导入)...</value>
   </data>
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;导入已下载Mod...</value>
@@ -154,13 +154,13 @@
     <value>CKAN设置</value>
   </data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
-    <value>CKAN插件</value>
+    <value>&amp;插件</value>
   </data>
   <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
     <value>首选的 &amp;服务器</value>
   </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
-    <value>安装 &amp;过滤器</value>
+    <value>&amp;安装筛选</value>
   </data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;游戏启动选项</value>
@@ -172,10 +172,13 @@
     <value>帮助</value>
   </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;用户指南</value>
+    <value>CKAN &amp;用户指南</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Discord</value>
+    <value>CKAN &amp;Discord</value>
+  </data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
+    <value>获取有关游戏内mod问题的帮助</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
     <value>报告CKAN客户端的问题</value>
@@ -219,9 +222,6 @@
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
   </data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve">
-    <value>N 个可用更新</value>
-  </data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
     <value>刷新</value>
   </data>
@@ -244,12 +244,12 @@
     <value>退出</value>
   </data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
-    <value>游戏 &amp;时间...</value>
+    <value>&amp;游玩时间...</value>
   </data>
   <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;未被管理的文件...</value>
+    <value>&amp;未管理文件...</value>
   </data>
   <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
-    <value>安装 &amp;历史记录...</value>
+    <value>&amp;历史安装记录...</value>
   </data>
 </root>
