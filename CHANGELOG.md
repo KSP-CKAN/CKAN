@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Minor tray icon improvements (#4231 by: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4233 by: vixnig38, ambition, tinygrox; reviewed: HebaruSan)
 
 ### Bugfixes
 

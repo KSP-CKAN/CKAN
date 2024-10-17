@@ -161,11 +161,20 @@
   <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
     <value>成功创建游戏实例.</value>
   </data>
+  <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve">
+    <value>在 Windows 系统中创建联接点，或在 Unix 系统中创建符号链接到原始目录，而不是复制它们。
+如果选择此选项，请不要移动或删除旧的实例！</value>
+  </data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
     <value>&lt;NONE&gt;</value>
   </data>
-  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve">
-    <value>游戏已经在您设置被允许的模组兼容游戏版本之后更改版本. 请确认设置是否正确.</value>
+  <data name="CompatibleGameVersionsDialogDefaultedDetails" xml:space="preserve">
+    <value>默认兼容性已根据您安装的游戏版本设置。这些设置旨在为大多数用户提供尽可能多的可用模组，但某些旧模组仍可能出现问题。
+
+如果您想谨慎一些，可以点击“清除选择”取消勾选所有选项。</value>
+  </data>
+  <data name="CompatibleGameVersionsDialogGameUpdatedDetails" xml:space="preserve">
+    <value>游戏自您上次检查兼容的游戏版本以来已更新。请确保设置正确。</value>
   </data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve">
     <value>{0} (上一个游戏版本: {1})</value>
@@ -241,19 +250,19 @@
     <value>筛选 (不兼容的模组)</value>
   </data>
   <data name="MainFilterInstalled" xml:space="preserve">
-    <value>筛选 (已安装的模组)</value>
+    <value>筛选 (已安装)</value>
   </data>
   <data name="MainFilterUpgradeable" xml:space="preserve">
-    <value>筛选 (可更新的模组)</value>
+    <value>筛选 (可更新)</value>
   </data>
   <data name="MainFilterReplaceable" xml:space="preserve">
     <value>筛选 (可替换的模组)</value>
   </data>
   <data name="MainFilterCached" xml:space="preserve">
-    <value>筛选 (已缓存的模组)</value>
+    <value>筛选 (已缓存)</value>
   </data>
   <data name="MainFilterUncached" xml:space="preserve">
-    <value>筛选 (未缓存的模组)</value>
+    <value>筛选 (未缓存)</value>
   </data>
   <data name="MainFilterNew" xml:space="preserve">
     <value>筛选 (新)</value>
@@ -268,7 +277,7 @@
     <value>标签 ({0})</value>
   </data>
   <data name="MainFilterTag" xml:space="preserve">
-    <value>分类 ({0})</value>
+    <value>Tag ({0})</value>
   </data>
   <data name="MainFilterUntagged" xml:space="preserve">
     <value>分类 (未分类)</value>
@@ -356,6 +365,9 @@
   </data>
   <data name="MainChangesetReinstallMetadataChanged" xml:space="preserve">
     <value>重新安装 (元数据已更改)</value>
+  </data>
+  <data name="MainChangesetReinstallMissing" xml:space="preserve">
+    <value>重新安装 (缺少文件夹或文件)</value>
   </data>
   <data name="MainChangesetReinstallUser" xml:space="preserve">
     <value>重新安装 (用户请求)</value>
@@ -486,6 +498,12 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="ModInfoNoDownload" xml:space="preserve">
     <value>模组未下载</value>
   </data>
+  <data name="ModInfoFolderNotFound" xml:space="preserve">
+    <value>找不到文件夹！</value>
+  </data>
+  <data name="ModInfoFileNotFound" xml:space="preserve">
+    <value>找不到文件!</value>
+  </data>
   <data name="ModInfoHomepageLabel" xml:space="preserve">
     <value>主页:</value>
   </data>
@@ -500,6 +518,9 @@ CKAN Version(CKAN版本)   : {3}</value>
   </data>
   <data name="ModInfoBugTrackerLabel" xml:space="preserve">
     <value>Bug 跟踪：</value>
+  </data>
+  <data name="ModInfoDiscussionsLabel" xml:space="preserve">
+    <value>论坛页:</value>
   </data>
   <data name="ModInfoContinuousIntegrationLabel" xml:space="preserve">
     <value>持续集成：</value>
@@ -678,6 +699,15 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve">
     <value>{0} (锁定)</value>
   </data>
+  <data name="ManageGameInstancesInvalidFileSelected" xml:space="preserve">
+    <value>不是一个有效的游戏实例文件："{0}"
+
+如果您选择了一个快捷方式，请不要这样做； Windows系统不会让我们在此对话框中隐藏它们，即使它们无效。
+
+查找安装您的游戏的文件夹并选择其中一个文件：
+
+{1}</value>
+  </data>
   <data name="NewRepoDialogFailed" xml:space="preserve">
     <value>同步主列表失败.</value>
   </data>
@@ -724,10 +754,10 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>&amp;取消</value>
   </data>
   <data name="AddAuthTokenHostRequired" xml:space="preserve">
-    <value>主机字段是必填项。</value>
+    <value>需要输入Host.</value>
   </data>
   <data name="AddAuthTokenTokenRequired" xml:space="preserve">
-    <value>Token字段是必填项。</value>
+    <value>需要输入Token.</value>
   </data>
   <data name="AddAuthTokenInvalidHost" xml:space="preserve">
     <value>{0} 并非有效服务器名.</value>
@@ -846,6 +876,9 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="EditLabelsToolTipHoldVersion" xml:space="preserve">
     <value>如果选中此项，模组将不会升级</value>
   </data>
+  <data name="EditLabelsToolTipIgnoreMissingFiles" xml:space="preserve">
+    <value>如果选中此项，您将不会被提示重新安装带此标签模块的缺失文件</value>
+  </data>
   <data name="EditLabelsToolTipMoveUp" xml:space="preserve">
     <value>上移</value>
   </data>
@@ -899,6 +932,10 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="EditModpackTooltipIncludeVersions" xml:space="preserve">
     <value>如果勾选，Mod包将会包括特定版本的Mod，否则任何版本均可用</value>
   </data>
+  <data name="EditModpackTooltipIncludeOptRels" xml:space="preserve">
+    <value>如果勾选，安装此mod包的用户将看到来自包内mod的推荐和建议。
+如果未勾选，则只会安装包内的mod。</value>
+  </data>
   <data name="EditModpackTooltipDepends" xml:space="preserve">
     <value>移动选中Mod到依赖组. 这些Mod一定会被安装.</value>
   </data>
@@ -929,6 +966,9 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="ModSearchDescriptionPrefix" xml:space="preserve">
     <value>描述:</value>
   </data>
+  <data name="ModSearchLicensePrefix" xml:space="preserve">
+    <value>许可证：</value>
+  </data>
   <data name="ModSearchLanguagePrefix" xml:space="preserve">
     <value>语言:</value>
   </data>
@@ -948,16 +988,16 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>sup:</value>
   </data>
   <data name="ModSearchTagPrefix" xml:space="preserve">
-    <value>标记：</value>
+    <value>分类：</value>
   </data>
   <data name="ModSearchLabelPrefix" xml:space="preserve">
     <value>标签:</value>
   </data>
   <data name="ModSearchYesPrefix" xml:space="preserve">
-    <value>是：</value>
+    <value>匹配：</value>
   </data>
   <data name="ModSearchNoPrefix" xml:space="preserve">
-    <value>不是：</value>
+    <value>排除：</value>
   </data>
   <data name="ModSearchCompatibleSuffix" xml:space="preserve">
     <value>兼容</value>
@@ -996,10 +1036,20 @@ CKAN Version(CKAN版本)   : {3}</value>
     <value>隐藏标签：</value>
   </data>
   <data name="ManageModsHiddenTags" xml:space="preserve">
-    <value>隐藏标记：</value>
+    <value>隐藏分类：</value>
   </data>
   <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve">
-    <value>隐藏标记和标签：</value>
+    <value>隐藏标签和分类：</value>
+  </data>
+  <data name="ManageModsRefreshStaleToolTip" xml:space="preserve">
+    <value>您的模组列表上次更新于 {0} 天前。
+请定期点击“刷新”以保持最新状态。
+或者在设置中选择“启动时更新库”。</value>
+  </data>
+  <data name="ManageModsRefreshVeryStaleToolTip" xml:space="preserve">
+    <value>您的模组列表上次更新于 {0} 天前！
+请点击“刷新”来更新它。
+或者在设置中选择“启动时更新库”。</value>
   </data>
   <data name="TotalPlayTime" xml:space="preserve">
     <value>总游玩时间： {0} 小时</value>

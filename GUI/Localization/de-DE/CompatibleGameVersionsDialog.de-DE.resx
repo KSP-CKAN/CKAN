@@ -117,16 +117,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ListHeaderLabel.Text" xml:space="preserve"><value>Erlaube außerdem die Installation von Mods, die mit folgenden Spielversionen kompatibel sind:</value></data>
-  <data name="GameVersionLabel.Text" xml:space="preserve"><value>Spielversion:</value></data>
-  <data name="WarningLabel.Text" xml:space="preserve"><value>Achtung! Ob Mods tatsächlich mit den ausgewählten Versionen kompatibel sind, ist nicht überprüfbar! Sei vorsichtig.</value></data>
-  <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Auswahl löschen</value></data>
-  <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Hinzufügen</value></data>
-  <data name="AddVersionLabel.Text" xml:space="preserve"><value>Version hinzufügen:</value></data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve"><value>Beachte: Wenn du Versionen wie "1.2" hinzufügst, werden alle Versionen im Bereich 1.2.xx (also 1.2.0, 1.2.1, etc.) als kompatibel markiert.</value></data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve"><value>Nach jedem Spielupdate wird dir dieser Dialog wieder angezeigt, damit du deine Auswahl überprüfen kannst.</value></data>
-  <data name="SaveButton.Text" xml:space="preserve"><value>Annehmen</value></data>
-  <data name="InstancePathLabel.Text" xml:space="preserve"><value>Installationspfad:</value></data>
-  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Abbrechen</value></data>
-  <data name="$this.Text" xml:space="preserve"><value>Kompatible Spielversionen</value></data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Kompatible Spielversionen</value>
+  </data>
+  <data name="InstancePathLabel.Text" xml:space="preserve">
+    <value>Installationspfad:</value>
+  </data>
+  <data name="GameVersionLabel.Text" xml:space="preserve">
+    <value>Spielversion:</value>
+  </data>
+  <data name="ListHeaderLabel.Text" xml:space="preserve">
+    <value>Erlaube außerdem die Installation von Mods, die mit folgenden Spielversionen kompatibel sind:</value>
+  </data>
+  <data name="ClearSelectionButton.Text" xml:space="preserve">
+    <value>Auswahl löschen</value>
+  </data>
+  <data name="AddVersionLabel.Text" xml:space="preserve">
+    <value>Version hinzufügen:</value>
+  </data>
+  <data name="AddVersionToListButton.Text" xml:space="preserve">
+    <value>Hinzufügen</value>
+  </data>
+  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
+    <value>Beachte: Wenn du Versionen wie "1.2" hinzufügst, werden alle Versionen im Bereich 1.2.xx (also 1.2.0, 1.2.1, etc.) als kompatibel markiert.</value>
+  </data>
+  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
+    <value>Nach jedem Spielupdate wird dir dieser Dialog wieder angezeigt, damit du deine Auswahl überprüfen kannst.</value>
+  </data>
+  <data name="WarningLabel.Text" xml:space="preserve">
+    <value>Achtung! Ob Mods tatsächlich mit den ausgewählten Versionen kompatibel sind, ist nicht überprüfbar! Sei vorsichtig.</value>
+  </data>
+  <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
+  <data name="SaveButton.Text" xml:space="preserve">
+    <value>Annehmen</value>
+  </data>
 </root>

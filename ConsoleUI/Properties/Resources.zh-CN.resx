@@ -1,0 +1,969 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Accept" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="DefaultGhostText" xml:space="preserve">
+    <value>&lt;输入一个值&gt;</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>升序</value>
+  </data>
+  <data name="AscendingSortTip" xml:space="preserve">
+    <value>按升序排序</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>降序</value>
+  </data>
+  <data name="DescendingSortTip" xml:space="preserve">
+    <value>按降序排序</value>
+  </data>
+  <data name="ColumnNumber" xml:space="preserve">
+    <value>列 #{0}</value>
+  </data>
+  <data name="ColumnNumberSortTip" xml:space="preserve">
+    <value>按 #{0} 列排序列表</value>
+  </data>
+  <data name="ColumnNameSortTip" xml:space="preserve">
+    <value>按 {0} 列排序列表</value>
+  </data>
+  <data name="CursorKeys" xml:space="preserve">
+    <value>光标键</value>
+  </data>
+  <data name="Scroll" xml:space="preserve">
+    <value>滚动</value>
+  </data>
+  <data name="ScrollMessages" xml:space="preserve">
+    <value>滚动消息</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>菜单</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>确认</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>强制</value>
+  </data>
+  <data name="Tab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="Esc" xml:space="preserve">
+    <value>Esc</value>
+  </data>
+  <data name="Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>返回</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>排序</value>
+  </data>
+  <data name="Toggle" xml:space="preserve">
+    <value>开关</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>选择</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>全部选中</value>
+  </data>
+  <data name="DeselectAll" xml:space="preserve">
+    <value>取消全选</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>详情</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>上移</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>下移</value>
+  </data>
+  <data name="FileSelectDirectory" xml:space="preserve">
+    <value>目录:</value>
+  </data>
+  <data name="FileSelectCountFooter" xml:space="preserve">
+    <value>已选中 {0} ， {1}</value>
+  </data>
+  <data name="FileSelectNameHeader" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="FileSelectSizeHeader" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="FileSelectTimestampHeader" xml:space="preserve">
+    <value>访问日期</value>
+  </data>
+  <data name="FileSelectChangeDirectory" xml:space="preserve">
+    <value>更改目录</value>
+  </data>
+  <data name="FileSelectSelect" xml:space="preserve">
+    <value>选择</value>
+  </data>
+  <data name="FileSelectImport" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="FileSelectDirSize" xml:space="preserve">
+    <value>&lt;目录&gt;</value>
+  </data>
+  <data name="AuthTokenListTitle" xml:space="preserve">
+    <value>验证标记</value>
+  </data>
+  <data name="AuthTokenListGitHubLink" xml:space="preserve">
+    <value>创建 GitHub API token</value>
+  </data>
+  <data name="AuthTokenListGitHubLinkTip" xml:space="preserve">
+    <value>打开网页来创建 GitHub API 身份验证tokens</value>
+  </data>
+  <data name="AuthTokenListLabel" xml:space="preserve">
+    <value>下载身份验证tokens：</value>
+  </data>
+  <data name="AuthTokenListHostHeader" xml:space="preserve">
+    <value>服务器</value>
+  </data>
+  <data name="AuthTokenListTokenHeader" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AuthTokenListWarning" xml:space="preserve">
+    <value>注意：这些值是私有的！不要共享此屏幕的截图！</value>
+  </data>
+  <data name="AuthTokenListMissingToken" xml:space="preserve">
+    <value>&lt;错误&gt;</value>
+  </data>
+  <data name="AuthTokenAddTitle" xml:space="preserve">
+    <value>创建身份验证密钥</value>
+  </data>
+  <data name="AuthTokenAddHost" xml:space="preserve">
+    <value>服务器:</value>
+  </data>
+  <data name="AuthTokenAddHostGhostText" xml:space="preserve">
+    <value>&lt;输入服务器名&gt;</value>
+  </data>
+  <data name="AuthTokenAddToken" xml:space="preserve">
+    <value>Token:</value>
+  </data>
+  <data name="AuthTokenAddTokenGhostText" xml:space="preserve">
+    <value>&lt;输入身份验证token&gt;</value>
+  </data>
+  <data name="CompatibleVersionsTitle" xml:space="preserve">
+    <value>选择兼容版本</value>
+  </data>
+  <data name="CompatibleVersionsListHeader" xml:space="preserve">
+    <value>预定义版本</value>
+  </data>
+  <data name="CompatibleVersionsListAcceptTip" xml:space="preserve">
+    <value>选择版本</value>
+  </data>
+  <data name="CompatibleVersionsGhostText" xml:space="preserve">
+    <value>&lt;输入版本号&gt;</value>
+  </data>
+  <data name="CompatibleVersionsEntryAcceptTip" xml:space="preserve">
+    <value>接受值</value>
+  </data>
+  <data name="ThemeNotFound" xml:space="preserve">
+    <value>无此主题: {0}</value>
+  </data>
+  <data name="ThemeList" xml:space="preserve">
+    <value>可用主题: {0}</value>
+  </data>
+  <data name="RecommendationsLabel" xml:space="preserve">
+    <value>推荐或建议更多模组：</value>
+  </data>
+  <data name="RecommendationsInstallHeader" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="RecommendationsNameHeader" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="RecommendationsSourcesHeader" xml:space="preserve">
+    <value>源</value>
+  </data>
+  <data name="RecommendationsTitle" xml:space="preserve">
+    <value>推荐 &amp; 建议</value>
+  </data>
+  <data name="ImportSelectTitle" xml:space="preserve">
+    <value>导入下载</value>
+  </data>
+  <data name="ImportSelectHeader" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="ImportProgressTitle" xml:space="preserve">
+    <value>导入下载</value>
+  </data>
+  <data name="ImportProgressMessage" xml:space="preserve">
+    <value>正在计算...</value>
+  </data>
+  <data name="InstanceNameLabel" xml:space="preserve">
+    <value>按Mod名称筛选:</value>
+  </data>
+  <data name="InstanceNameGhostText" xml:space="preserve">
+    <value>&lt;输入用于此游戏实例的名称&gt;</value>
+  </data>
+  <data name="InstancePathGhostText" xml:space="preserve">
+    <value>&lt;输入该游戏实例在磁盘上的位置&gt;</value>
+  </data>
+  <data name="InstancePathLabel" xml:space="preserve">
+    <value>游戏实例路径：</value>
+  </data>
+  <data name="InstanceNameEmptyError" xml:space="preserve">
+    <value>名称不能为空 ！</value>
+  </data>
+  <data name="InstanceNameDuplicateError" xml:space="preserve">
+    <value>{0} 已经存在！</value>
+  </data>
+  <data name="InstancePathNotGameFolderError" xml:space="preserve">
+    <value>路径与游戏文件夹不对应！</value>
+  </data>
+  <data name="InstanceAddExample" xml:space="preserve">
+    <value>示例︰ {0}</value>
+  </data>
+  <data name="InstanceAddTitle" xml:space="preserve">
+    <value>添加游戏实例</value>
+  </data>
+  <data name="InstanceEditTitle" xml:space="preserve">
+    <value>编辑游戏实例</value>
+  </data>
+  <data name="InstanceEditRepoFrameTitle" xml:space="preserve">
+    <value>Mod 列表源</value>
+  </data>
+  <data name="InstanceEditCompatFrameTitle" xml:space="preserve">
+    <value>额外兼容版本</value>
+  </data>
+  <data name="InstanceEditRepoIndexHeader" xml:space="preserve">
+    <value>索引</value>
+  </data>
+  <data name="InstanceEditRepoNameHeader" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="InstanceEditRepoURLHeader" xml:space="preserve">
+    <value>网址</value>
+  </data>
+  <data name="InstanceEditCompatVersionHeader" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="InstanceEditRegistryParseError" xml:space="preserve">
+    <value>从 {0} 中提取模组列表源失败。</value>
+  </data>
+  <data name="InstanceListTitle" xml:space="preserve">
+    <value>游戏实例</value>
+  </data>
+  <data name="InstanceListLabel" xml:space="preserve">
+    <value>选择或添加游戏实例：</value>
+  </data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="InstanceListNameHeader" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="InstanceListVersionHeader" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="InstanceListPathHeader" xml:space="preserve">
+    <value>路径</value>
+  </data>
+  <data name="InstanceListLoadingInstance" xml:space="preserve">
+    <value>正在加载实例 {0}...</value>
+  </data>
+  <data name="InstanceListDefaultToggle" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="InstanceListLoadingError" xml:space="preserve">
+    <value>加载 {0} 出错：
+{1}</value>
+  </data>
+  <data name="InstanceListNoVersion" xml:space="preserve">
+    <value>&lt;NONE&gt;</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>安装、升级和删除模组</value>
+  </data>
+  <data name="InstallMessage" xml:space="preserve">
+    <value>正在计算...</value>
+  </data>
+  <data name="InstallOwnedFileConflict" xml:space="preserve">
+    <value>{0} 尝试安装 {1}，但 {2} 已安装。
+请在https://github.com/KSP-CKAN/NetKAN/issues/new/choose报告此问题</value>
+  </data>
+  <data name="InstallUnownedFileConflict" xml:space="preserve">
+    <value>{0} 尝试安装 {1}，但它已安装。
+请手动卸载拥有此文件的 mod 以安装 {2}。</value>
+  </data>
+  <data name="InstallFilesReverted" xml:space="preserve">
+    <value>游戏文件已恢复。</value>
+  </data>
+  <data name="InstallAuthTokenPrompt" xml:space="preserve">
+    <value>{0}
+
+现在编辑身份验证tokens吗？</value>
+  </data>
+  <data name="InstallTooManyModsNameHeader" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="InstallBadMetadata" xml:space="preserve">
+    <value>检测到 {0} 的元数据错误: {1}</value>
+  </data>
+  <data name="InstallUnsatisfiedDependency" xml:space="preserve">
+    <value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的游戏版本.
+{2}</value>
+  </data>
+  <data name="InstallModuleNotFound" xml:space="preserve">
+    <value>需要Mod {0} 但它未在索引中列出或不兼容您当前的游戏版本.
+{1}</value>
+  </data>
+  <data name="InstallNotInstalled" xml:space="preserve">
+    <value>{0} 未安装，无法删除</value>
+  </data>
+  <data name="InstallModInstalled" xml:space="preserve">
+    <value>{0} 成功安装 {1} {2}</value>
+  </data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>删除目录</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>在移除一些Mod后有以下目录残留. 它们包含并非由CKAN安装的文件（可能是Mod生成或者手动安装）. CKAN不会自动删除并非由自己安装的文件，但如果您觉得安全的话您可以删除它们（推荐）. 注意，如果您决定不删除这个目录，ModuleManager可能错误地认为这个Mod仍已安装.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>目录</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>目录内容</value>
+  </data>
+  <data name="DeleteDirectoriesDeleteDirTip" xml:space="preserve">
+    <value>删除文件夹</value>
+  </data>
+  <data name="DeleteDirectoriesKeepDirTip" xml:space="preserve">
+    <value>保留文件夹</value>
+  </data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve">
+    <value>保留全部</value>
+  </data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve">
+    <value>删除选中</value>
+  </data>
+  <data name="ModInfoTitle" xml:space="preserve">
+    <value>Mod详情</value>
+  </data>
+  <data name="ModInfoMenuTip" xml:space="preserve">
+    <value>链接</value>
+  </data>
+  <data name="ModInfoAuthors" xml:space="preserve">
+    <value>By {0}</value>
+  </data>
+  <data name="ModInfoLicence" xml:space="preserve">
+    <value>协议:</value>
+  </data>
+  <data name="ModInfoDownload" xml:space="preserve">
+    <value>下载:</value>
+  </data>
+  <data name="ModInfoDescriptionFrame" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="ModInfoUnavailableWarning" xml:space="preserve">
+    <value>
+注意：此模组已安装但不再可用。
+如果您卸载它，CKAN将无法重新安装它。</value>
+  </data>
+  <data name="ModInfoDownloadToCache" xml:space="preserve">
+    <value>下载内容</value>
+  </data>
+  <data name="ModInfoHomePage" xml:space="preserve">
+    <value>主页</value>
+  </data>
+  <data name="ModInfoHomePageTip" xml:space="preserve">
+    <value>在浏览器中打开主页网址</value>
+  </data>
+  <data name="ModInfoRepository" xml:space="preserve">
+    <value>仓库</value>
+  </data>
+  <data name="ModInfoRepositoryTip" xml:space="preserve">
+    <value>在浏览器中打开仓库网址</value>
+  </data>
+  <data name="ModInfoBugtracker" xml:space="preserve">
+    <value>错误跟踪器</value>
+  </data>
+  <data name="ModInfoBugtrackerTip" xml:space="preserve">
+    <value>在浏览器中打开错误追踪器网址</value>
+  </data>
+  <data name="ModInfoDiscussions" xml:space="preserve">
+    <value>论坛页</value>
+  </data>
+  <data name="ModInfoDiscussionsTip" xml:space="preserve">
+    <value>在浏览器中打开论坛页网址</value>
+  </data>
+  <data name="ModInfoSpaceDock" xml:space="preserve">
+    <value>SpaceDock</value>
+  </data>
+  <data name="ModInfoSpaceDockTip" xml:space="preserve">
+    <value>在浏览器中打开SpaceDock 网址</value>
+  </data>
+  <data name="ModInfoCurse" xml:space="preserve">
+    <value>Curse</value>
+  </data>
+  <data name="ModInfoCurseTip" xml:space="preserve">
+    <value>在浏览器中打开Curse 网址</value>
+  </data>
+  <data name="ModInfoStore" xml:space="preserve">
+    <value>商店</value>
+  </data>
+  <data name="ModInfoStoreTip" xml:space="preserve">
+    <value>在浏览器中打开商店网址</value>
+  </data>
+  <data name="ModInfoSteamStore" xml:space="preserve">
+    <value>Steam商店</value>
+  </data>
+  <data name="ModInfoSteamStoreTip" xml:space="preserve">
+    <value>在浏览器中打开 Steam 商店网址</value>
+  </data>
+  <data name="ModInfoViewMetadata" xml:space="preserve">
+    <value>DEBUG：查看元数据</value>
+  </data>
+  <data name="ModInfoViewMetadataTip" xml:space="preserve">
+    <value>显示此模组的完整注册表数据</value>
+  </data>
+  <data name="ModInfoViewMetadataTitle" xml:space="preserve">
+    <value>{0} 元数据</value>
+  </data>
+  <data name="ModInfoURLLaunching" xml:space="preserve">
+    <value>启动中...</value>
+  </data>
+  <data name="ModInfoDependenciesFrame" xml:space="preserve">
+    <value>依赖项</value>
+  </data>
+  <data name="ModInfoRequiredLabel" xml:space="preserve">
+    <value>必填({0})：</value>
+  </data>
+  <data name="ModInfoConflictsLabel" xml:space="preserve">
+    <value>冲突 ({0}):</value>
+  </data>
+  <data name="ModInfoReplacedBy" xml:space="preserve">
+    <value>被 {0} 替换：</value>
+  </data>
+  <data name="ModInfoInstalledOn" xml:space="preserve">
+    <value>已安装 {0}</value>
+  </data>
+  <data name="ModInfoInstalledManually" xml:space="preserve">
+    <value>手动安装</value>
+  </data>
+  <data name="ModInfoLatestInstalledOn" xml:space="preserve">
+    <value>最近/已安装 {0}</value>
+  </data>
+  <data name="ModInfoLatestInstalledManually" xml:space="preserve">
+    <value>最近/已手动安装</value>
+  </data>
+  <data name="ModInfoLatestVersion" xml:space="preserve">
+    <value>最新版本</value>
+  </data>
+  <data name="ModInfoOtherVersions" xml:space="preserve">
+    <value>其他版本</value>
+  </data>
+  <data name="ModInfoUnavailableInstalledOn" xml:space="preserve">
+    <value>不可用/已安装 {0}</value>
+  </data>
+  <data name="ModInfoUnavailableInstalledManually" xml:space="preserve">
+    <value>不可用/已手动安装</value>
+  </data>
+  <data name="ModInfoCompatibleWith" xml:space="preserve">
+    <value>兼容：</value>
+  </data>
+  <data name="ModInfoHostedOn" xml:space="preserve">
+    <value>在 {0} 托管的</value>
+  </data>
+  <data name="ModInfoReportBugsOn" xml:space="preserve">
+    <value>在 {0} 上报告 bug</value>
+  </data>
+  <data name="ModInfoRepositoryOn" xml:space="preserve">
+    <value>在 {0} 上的仓库</value>
+  </data>
+  <data name="ModInfoHomePageOn" xml:space="preserve">
+    <value>在 {0} 的主页</value>
+  </data>
+  <data name="ModInfoBuyFromKSPStore" xml:space="preserve">
+    <value>从 KSP 商店购买</value>
+  </data>
+  <data name="ModInfoBuyFromSteamStore" xml:space="preserve">
+    <value>从Steam商店购买</value>
+  </data>
+  <data name="ModInfoBuyFromKSPStoreOrSteamStore" xml:space="preserve">
+    <value>从 KSP 商店或 Steam 商店购买</value>
+  </data>
+  <data name="ModInfoDownloading" xml:space="preserve">
+    <value>正在下载 {0}</value>
+  </data>
+  <data name="ModInfoDownloadCorrupted" xml:space="preserve">
+    <value>下载失败，文件已损坏</value>
+  </data>
+  <data name="ModInfoDownloadFailed" xml:space="preserve">
+    <value>下载失败: {0}</value>
+  </data>
+  <data name="ProgressTitle" xml:space="preserve">
+    <value>进度</value>
+  </data>
+  <data name="ProgressMessages" xml:space="preserve">
+    <value>消息</value>
+  </data>
+  <data name="SplashLoading" xml:space="preserve">
+    <value>加载中...</value>
+  </data>
+  <data name="SplashPressAnyKey" xml:space="preserve">
+    <value>按任意键继续</value>
+  </data>
+  <data name="RepoNameLabel" xml:space="preserve">
+    <value>按Mod名称筛选:</value>
+  </data>
+  <data name="RepoNameGhostText" xml:space="preserve">
+    <value>&lt;输入此存储库的名称&gt;</value>
+  </data>
+  <data name="RepoURLLabel" xml:space="preserve">
+    <value>网址:</value>
+  </data>
+  <data name="RepoURLGhostText" xml:space="preserve">
+    <value>&lt;输入此存储库的网址&gt;</value>
+  </data>
+  <data name="RepoImportTip" xml:space="preserve">
+    <value>从默认模组列表源 {0} 导入值</value>
+  </data>
+  <data name="RepoTitle" xml:space="preserve">
+    <value>编辑模组列表源</value>
+  </data>
+  <data name="RepoNameEmptyError" xml:space="preserve">
+    <value>名称不能为空 ！</value>
+  </data>
+  <data name="RepoNameDuplicateError" xml:space="preserve">
+    <value>{0} 已经存在！</value>
+  </data>
+  <data name="RepoURLEmptyError" xml:space="preserve">
+    <value>网址不能为空 ！</value>
+  </data>
+  <data name="ModListNameHeader" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="ModListVersionHeader" xml:space="preserve">
+    <value>版本</value>
+  </data>
+  <data name="ModListMaxGameVersionHeader" xml:space="preserve">
+    <value>最高游戏版本</value>
+  </data>
+  <data name="ModListDownloadsHeader" xml:space="preserve">
+    <value>下载量</value>
+  </data>
+  <data name="ModListSearchFocusedGhostText" xml:space="preserve">
+    <value>&lt;输入以搜索&gt;</value>
+  </data>
+  <data name="ModListSearchUnfocusedGhostText" xml:space="preserve">
+    <value>&lt;按Ctrl+F以搜索&gt;</value>
+  </data>
+  <data name="ModListCount" xml:space="preserve">
+    <value>{0} 模组</value>
+  </data>
+  <data name="ModListSizeOnDisk" xml:space="preserve">
+    <value>{0} 已安装</value>
+  </data>
+  <data name="ModListInstallTip" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="ModListUpgradeTip" xml:space="preserve">
+    <value>升级</value>
+  </data>
+  <data name="ModListReplaceTip" xml:space="preserve">
+    <value>替换</value>
+  </data>
+  <data name="ModListRemoveTip" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="ModListAutoInstTip" xml:space="preserve">
+    <value>标记为自动安装的</value>
+  </data>
+  <data name="ModListUserSelectedTip" xml:space="preserve">
+    <value>标记为用户选中的</value>
+  </data>
+  <data name="ModListApplyChangesTip" xml:space="preserve">
+    <value>应用更改</value>
+  </data>
+  <data name="ModListUpdatedDayAgo" xml:space="preserve">
+    <value>{0} 天前更新</value>
+  </data>
+  <data name="ModListUpdatedDaysAgo" xml:space="preserve">
+    <value>{0} 天前更新</value>
+  </data>
+  <data name="ModListPlayMenu" xml:space="preserve">
+    <value>开始游戏</value>
+  </data>
+  <data name="ModListPlayMenuTip" xml:space="preserve">
+    <value>启动游戏</value>
+  </data>
+  <data name="ModListSortMenu" xml:space="preserve">
+    <value>排序...</value>
+  </data>
+  <data name="ModListSortMenuTip" xml:space="preserve">
+    <value>更改模组列表的排序</value>
+  </data>
+  <data name="ModListRefreshMenu" xml:space="preserve">
+    <value>刷新模组列表</value>
+  </data>
+  <data name="ModListRefreshMenuTip" xml:space="preserve">
+    <value>刷新模组列表</value>
+  </data>
+  <data name="ModListUpgradeMenu" xml:space="preserve">
+    <value>全部升级</value>
+  </data>
+  <data name="ModListUpgradeMenuTip" xml:space="preserve">
+    <value>标记所有可用的更新供安装</value>
+  </data>
+  <data name="ModListAuditRecsMenu" xml:space="preserve">
+    <value>检查推荐</value>
+  </data>
+  <data name="ModListAuditRecsMenuTip" xml:space="preserve">
+    <value>列出由已安装模组推荐的模组</value>
+  </data>
+  <data name="ModListImportMenu" xml:space="preserve">
+    <value>导入下载...</value>
+  </data>
+  <data name="ModListImportMenuTip" xml:space="preserve">
+    <value>选择手动下载的模组以导入到 CKAN</value>
+  </data>
+  <data name="ModListExportMenu" xml:space="preserve">
+    <value>导出已安装...</value>
+  </data>
+  <data name="ModListExportMenuTip" xml:space="preserve">
+    <value>保存您的模组列表</value>
+  </data>
+  <data name="ModListInstallFromCkanMenu" xml:space="preserve">
+    <value>从.ckan文件安装...</value>
+  </data>
+  <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
+    <value>安装modpacks或自定义模块</value>
+  </data>
+  <data name="ModListInstallFromCkanFailed" xml:space="preserve">
+    <value>从 .ckan 文件安装失败！</value>
+  </data>
+  <data name="CkanFileSelectTitle" xml:space="preserve">
+    <value>选择要安装的 .ckan 文件</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="ModListInstanceSettingsMenu" xml:space="preserve">
+    <value>游戏实例设置...</value>
+  </data>
+  <data name="ModListInstanceSettingsMenuTip" xml:space="preserve">
+    <value>配置当前游戏实例</value>
+  </data>
+  <data name="ModListSelectInstanceMenu" xml:space="preserve">
+    <value>选择游戏实例...</value>
+  </data>
+  <data name="ModListSelectInstanceMenuTip" xml:space="preserve">
+    <value>切换到另一个游戏实例</value>
+  </data>
+  <data name="ModListAuthTokenMenu" xml:space="preserve">
+    <value>身份验证tokens...</value>
+  </data>
+  <data name="ModListAuthTokenMenuTip" xml:space="preserve">
+    <value>编辑发送到下载服务器的身份验证tokens</value>
+  </data>
+  <data name="ModListFilterMenu" xml:space="preserve">
+    <value>安装筛选...</value>
+  </data>
+  <data name="ModListFilterMenuTip" xml:space="preserve">
+    <value>编辑要排除在安装范围之外的文件和文件夹列表</value>
+  </data>
+  <data name="ModListHelpMenu" xml:space="preserve">
+    <value>帮助</value>
+  </data>
+  <data name="ModListHelpMenuTip" xml:space="preserve">
+    <value>技巧与提示</value>
+  </data>
+  <data name="ModListQuitMenu" xml:space="preserve">
+    <value>退出</value>
+  </data>
+  <data name="ModListQuitMenuTip" xml:space="preserve">
+    <value>退出至DOS</value>
+  </data>
+  <data name="ModListCaptureKeyMenu" xml:space="preserve">
+    <value>DEBUG：捕获密钥...</value>
+  </data>
+  <data name="ModListCaptureKeyMenuTip" xml:space="preserve">
+    <value>打印系统如何报告按键以进行调试的详细信息。</value>
+  </data>
+  <data name="ModListPressAKey" xml:space="preserve">
+    <value>按下一个键</value>
+  </data>
+  <data name="ModListAuditNotFound" xml:space="preserve">
+    <value>已安装的模组没有不满意的建议或建议。</value>
+  </data>
+  <data name="ModListUpdateRegistryTitle" xml:space="preserve">
+    <value>更新注册表</value>
+  </data>
+  <data name="ModListUpdateRegistryMessage" xml:space="preserve">
+    <value>正在检查更新</value>
+  </data>
+  <data name="ModListNewMod" xml:space="preserve">
+    <value>自上次更新以来发现了{0} 个新的模组。要显示吗？</value>
+  </data>
+  <data name="ModListNewMods" xml:space="preserve">
+    <value>自上次更新以来发现了{0} 个新的模组。要显示吗？</value>
+  </data>
+  <data name="ModListScanBad" xml:space="preserve">
+    <value>{0} 仓库尚未保存。</value>
+  </data>
+  <data name="ModListExportPrefix" xml:space="preserve">
+    <value>安装</value>
+  </data>
+  <data name="ModListExported" xml:space="preserve">
+    <value>模组列表导出到 {0}</value>
+  </data>
+  <data name="ModListExportFailed" xml:space="preserve">
+    <value>导出失败: {0}</value>
+  </data>
+  <data name="ModListHelpSymbolHeader" xml:space="preserve">
+    <value>状态符号</value>
+  </data>
+  <data name="ModListHelpInstalled" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="ModListHelpAutoInstalled" xml:space="preserve">
+    <value>自动安装</value>
+  </data>
+  <data name="ModListHelpUpgradeable" xml:space="preserve">
+    <value>可升级</value>
+  </data>
+  <data name="ModListHelpManuallyInstalled" xml:space="preserve">
+    <value>手动安装</value>
+  </data>
+  <data name="ModListHelpReplaceable" xml:space="preserve">
+    <value>可替换</value>
+  </data>
+  <data name="ModListHelpUnavailable" xml:space="preserve">
+    <value>不可用</value>
+  </data>
+  <data name="ModListHelpBasicKeysHeader" xml:space="preserve">
+    <value>基本键</value>
+  </data>
+  <data name="ModListHelpMoveFocus" xml:space="preserve">
+    <value>移动焦点</value>
+  </data>
+  <data name="ModListHelpSelectRow" xml:space="preserve">
+    <value>选择行</value>
+  </data>
+  <data name="ModListHelpClearSearch" xml:space="preserve">
+    <value>取消搜索</value>
+  </data>
+  <data name="ModListHelpSpecialSearchesHeader" xml:space="preserve">
+    <value>特别搜索</value>
+  </data>
+  <data name="ModListHelpAuthor" xml:space="preserve">
+    <value>作者</value>
+  </data>
+  <data name="ModListHelpName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="ModListHelpSearchAuthor" xml:space="preserve">
+    <value>按作者显示模组</value>
+  </data>
+  <data name="ModListHelpSearchInstalled" xml:space="preserve">
+    <value>已安装模组</value>
+  </data>
+  <data name="ModListHelpSearchUpgradeable" xml:space="preserve">
+    <value>可升级模组</value>
+  </data>
+  <data name="ModListHelpSearchDepends" xml:space="preserve">
+    <value>依据名称</value>
+  </data>
+  <data name="ModListHelpSearchConflicts" xml:space="preserve">
+    <value>冲突 w/ 名称</value>
+  </data>
+  <data name="ModListHelpSearchNew" xml:space="preserve">
+    <value>新模组</value>
+  </data>
+  <data name="FiltersTitle" xml:space="preserve">
+    <value>安装筛选</value>
+  </data>
+  <data name="FiltersAddMiniAVCMenu" xml:space="preserve">
+    <value>添加 MiniAVC</value>
+  </data>
+  <data name="FiltersAddMiniAVCMenuTip" xml:space="preserve">
+    <value>阻止MiniAVC安装</value>
+  </data>
+  <data name="FiltersGlobalHeader" xml:space="preserve">
+    <value>全局筛选器</value>
+  </data>
+  <data name="FiltersInstanceHeader" xml:space="preserve">
+    <value>游戏筛选</value>
+  </data>
+  <data name="FilterAddGhostText" xml:space="preserve">
+    <value>&lt;输入一个筛选条件&gt;</value>
+  </data>
+  <data name="FilterAddAcceptTip" xml:space="preserve">
+    <value>接受值</value>
+  </data>
+  <data name="FilterAddTitle" xml:space="preserve">
+    <value>添加筛选器</value>
+  </data>
+  <data name="ExitTitle" xml:space="preserve">
+    <value>{0}，坎巴拉综合档案网络</value>
+  </data>
+  <data name="ExitBody" xml:space="preserve">
+    <value>您正在使用 {1}。
+
+非常感谢您下载 {0}。 我们希望您在使用它时能像我们在制作它时一样享受乐趣。
+
+如果您已为{0} 付款，请尝试退款，
+因为您可以从{2} 免费下载 {0}
+
+如果您使用 {0} 有任何问题 ，请通过以下地址向我们发送问题：
+{3}
+
+{0} 由 {0} 作者创建：
+{4}
+</value>
+  </data>
+</root>

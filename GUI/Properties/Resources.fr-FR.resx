@@ -882,6 +882,9 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   <data name="EditLabelsToolTipHoldVersion" xml:space="preserve">
     <value>Si cette case est cochée, les modules ne seront pas mis à jour</value>
   </data>
+  <data name="EditLabelsToolTipIgnoreMissingFiles" xml:space="preserve">
+    <value>Si coché, vous ne serez pas invité à réinstaller les fichiers manquants pour les modules avec ce label</value>
+  </data>
   <data name="EditLabelsToolTipMoveUp" xml:space="preserve">
     <value>Monter</value>
   </data>
