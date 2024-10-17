@@ -154,6 +154,9 @@
   <data name="HoldVersionCheckBox.Text" xml:space="preserve">
     <value>Ne pas mettre à jour</value>
   </data>
+  <data name="IgnoreMissingFilesCheckBox.Text" xml:space="preserve">
+    <value>Ignorer les fichiers manquants</value>
+  </data>
   <data name="CloseButton.Text" xml:space="preserve">
     <value>Fermer</value>
   </data>
