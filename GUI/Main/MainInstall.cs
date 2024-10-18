@@ -277,7 +277,10 @@ namespace CKAN.GUI
                                 // and any mods depending on them
                                 var dependers = Registry.FindReverseDependencies(
                                         skip.Select(s => s.identifier).ToList(),
-                                        fullChangeset, fullChangeset,
+                                        null,
+                                        registry.InstalledModules.Select(im => im.Module)
+                                                                 .Concat(fullChangeset)
+                                                                 .ToArray(),
                                         registry.InstalledDlls, registry.InstalledDlc,
                                         // Consider virtual dependencies satisfied so user can make a new choice if they skip
                                         rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
