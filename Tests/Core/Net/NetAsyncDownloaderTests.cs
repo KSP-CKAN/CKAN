@@ -5,6 +5,9 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
+#if NETFRAMEWORK || NETSTANDARD
+using CKAN.Extensions;
+#endif
 
 using Tests.Data;
 
@@ -189,11 +192,13 @@ namespace Tests.Core.Net
             var targets      = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
                                                                                                Path.GetTempFileName()))
                                         .ToArray();
-            var badIndices   = fromPaths.Select((p, i) => new Tuple<int, bool>(i, File.Exists(p)))
-                                        .Where(tuple => !tuple.Item2)
-                                        .Select(tuple => tuple.Item1)
-                                        .ToArray();
-            var validTargets = targets.Where((t, i) => !badIndices.Contains(i));
+            var badTargets   = targets.Zip(fromPaths)
+                                      #pragma warning disable IDE0033
+                                      .Where(tuple => !File.Exists(tuple.Item2))
+                                      .Select(tuple => tuple.Item1)
+                                      #pragma warning restore IDE0033
+                                      .ToArray();
+            var validTargets = targets.Except(badTargets);
 
             // Act / Assert
             var exception = Assert.Throws<DownloadErrorsKraken>(() =>
@@ -202,7 +207,8 @@ namespace Tests.Core.Net
             });
             Assert.Multiple(() =>
             {
-                CollectionAssert.AreEquivalent(badIndices, exception?.Exceptions.Select(kvp => kvp.Key).ToArray());
+                CollectionAssert.AreEquivalent(badTargets,
+                                               exception?.Exceptions.Select(kvp => kvp.Key).ToArray());
                 foreach (var kvp in exception?.Exceptions!)
                 {
                     var baseExc = kvp.Value.GetBaseException() as FileNotFoundException;
