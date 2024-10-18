@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Set focus better on Ctrl+F (#4230 by: HebaruSan)
 - [Multiple] Refactor relationship resolver to capture full resolved tree (#4232 by: HebaruSan)
 - [GUI] Fix skipping failed dependency downloads (#4235 by: HebaruSan)
+- [Core] Fix reporting of wrong download as failed (#4236 by: HebaruSan)
 
 ### Internal
 

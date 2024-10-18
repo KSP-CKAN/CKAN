@@ -137,7 +137,9 @@ namespace CKAN.GUI
                                     Properties.Resources.RepoDownloadsFailedColHdr,
                                     Properties.Resources.RepoDownloadsFailedAbortBtn,
                                     k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                        new object[] { repos[kvp.Key] }, kvp.Value)),
+                                        repos.Where(r => kvp.Key.urls.Contains(r.uri))
+                                             .ToArray(),
+                                        kvp.Value)),
                                     // Rows are only linked to themselves
                                     (r1, r2) => r1 == r2);
                                 dfd.ShowDialog(this);
