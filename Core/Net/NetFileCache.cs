@@ -339,7 +339,7 @@ namespace CKAN
             }
         }
 
-        private static int compareFiles(Dictionary<string, List<CkanModule>> hashMap, FileInfo a, FileInfo b)
+        private static int compareFiles(IReadOnlyDictionary<string, List<CkanModule>> hashMap, FileInfo a, FileInfo b)
         {
             // Compatible modules for file A
             hashMap.TryGetValue(a.Name[..8], out List<CkanModule>? modulesA);

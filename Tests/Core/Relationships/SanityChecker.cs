@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,6 +21,9 @@ namespace Tests.Core.Relationships
         private CKAN.Registry?           registry;
         private DisposableKSP?           ksp;
         private TemporaryRepositoryData? repoData;
+
+        private readonly string[] dlls = Array.Empty<string>();
+        private readonly IDictionary<string, ModuleVersion> dlc = new Dictionary<string, ModuleVersion>();
 
         [OneTimeSetUp]
         public void Setup()
@@ -53,7 +57,7 @@ namespace Tests.Core.Relationships
         [Test]
         public void Empty()
         {
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(new List<CkanModule>()));
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(new List<CkanModule>(), dlls, dlc));
         }
 
         [Test]
@@ -62,7 +66,7 @@ namespace Tests.Core.Relationships
             // Test with a module that depends and conflicts with nothing.
             var mods = new List<CkanModule?> { registry?.LatestAvailable("DogeCoinFlag", null) }.OfType<CkanModule>();
 
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "DogeCoinFlag");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "DogeCoinFlag");
         }
 
         [Test]
@@ -70,13 +74,13 @@ namespace Tests.Core.Relationships
         {
             var mods = Enumerable.Repeat(registry?.LatestAvailable("CustomBiomes", null), 1).OfType<CkanModule>().ToList();
 
-            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes without data");
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "CustomBiomes without data");
 
             mods.Add(registry?.LatestAvailable("CustomBiomesKerbal", null)!);
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with stock data");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "CustomBiomes with stock data");
 
             mods.Add(registry?.LatestAvailable("CustomBiomesRSS", null)!);
-            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods), "CustomBiomes with conflicting data");
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "CustomBiomes with conflicting data");
         }
 
         [Test]
@@ -85,15 +89,15 @@ namespace Tests.Core.Relationships
             var mods = new List<CkanModule>();
             var dlls = new Dictionary<string, string> { { "CustomBiomes", "" } }.Keys;
 
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes dll by itself");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "CustomBiomes dll by itself");
 
             // This would actually be a terrible thing for users to have, but it tests the
             // relationship we want.
             mods.Add(registry?.LatestAvailable("CustomBiomesKerbal", null)!);
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes DLL, with config added");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "CustomBiomes DLL, with config added");
 
             mods.Add(registry?.LatestAvailable("CustomBiomesRSS", null)!);
-            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "CustomBiomes with conflicting data");
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "CustomBiomes with conflicting data");
         }
 
         [Test]
@@ -102,8 +106,8 @@ namespace Tests.Core.Relationships
             var mods = new List<CkanModule> { registry?.LatestAvailable("SRL", null)! };
             var dlls = new Dictionary<string, string> { { "QuickRevert", "" } }.Keys;
 
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods), "SRL can be installed by itself");
-            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls), "SRL conflicts with QuickRevert DLL");
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(mods, this.dlls, dlc), "SRL can be installed by itself");
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(mods, dlls, dlc), "SRL conflicts with QuickRevert DLL");
         }
 
         [Test]
@@ -154,27 +158,27 @@ namespace Tests.Core.Relationships
 
             // Removing DCF should only remove itself.
             var to_remove = new List<string> {"DogeCoinFlag"};
-            TestDepends(to_remove, mods, null, null, to_remove, "DogeCoin Removal");
+            TestDepends(to_remove, mods, dlls, dlc, to_remove, "DogeCoin Removal");
 
             // Removing CB should remove its data, and vice-versa.
             to_remove.Clear();
             to_remove.Add("CustomBiomes");
             var expected = new List<string> {"CustomBiomes", "CustomBiomesKerbal"};
-            TestDepends(to_remove, mods, null, null, expected, "CustomBiomes removed");
+            TestDepends(to_remove, mods, dlls, dlc, expected, "CustomBiomes removed");
 
             // We expect the same result removing CBK
             to_remove.Clear();
             to_remove.Add("CustomBiomesKerbal");
-            TestDepends(to_remove, mods, null, null, expected, "CustomBiomesKerbal removed");
+            TestDepends(to_remove, mods, dlls, dlc, expected, "CustomBiomesKerbal removed");
 
             // And we expect the same result if we try to remove both.
             to_remove.Add("CustomBiomes");
-            TestDepends(to_remove, mods, null, null, expected, "CustomBiomesKerbal and data removed");
+            TestDepends(to_remove, mods, dlls, dlc, expected, "CustomBiomesKerbal and data removed");
 
             // Finally, if we try to remove nothing, we shold get back the empty set.
             expected.Clear();
             to_remove.Clear();
-            TestDepends(to_remove, mods, null, null, expected, "Removing nothing");
+            TestDepends(to_remove, mods, dlls, dlc, expected, "Removing nothing");
         }
 
         [Test]
@@ -204,7 +208,7 @@ namespace Tests.Core.Relationships
             };
 
             // Act & Assert
-            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(modules));
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
         [Test]
@@ -234,7 +238,7 @@ namespace Tests.Core.Relationships
             };
 
             // Act & Assert
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
         [Test]
@@ -264,7 +268,7 @@ namespace Tests.Core.Relationships
             };
 
             // Act & Assert
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
         [Test]
@@ -294,7 +298,7 @@ namespace Tests.Core.Relationships
             };
 
             // Act & Assert
-            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(modules));
+            Assert.IsFalse(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
         [Test]
@@ -326,7 +330,7 @@ namespace Tests.Core.Relationships
             };
 
             // Act & Assert
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
         [Test]
@@ -360,15 +364,15 @@ namespace Tests.Core.Relationships
             };
 
             // Act & Assert
-            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules));
+            Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
-        private static void TestDepends(List<string>                              to_remove,
-                                        HashSet<CkanModule>                       mods,
-                                        ICollection<string>?                      dlls,
-                                        Dictionary<string, ModuleVersion>?        dlc,
-                                        List<string>                              expected,
-                                        string                                    message)
+        private static void TestDepends(List<string>                       to_remove,
+                                        HashSet<CkanModule>                mods,
+                                        ICollection<string>                dlls,
+                                        IDictionary<string, ModuleVersion> dlc,
+                                        List<string>                       expected,
+                                        string                             message)
         {
             dlls ??= new Dictionary<string, string>().Keys;
 

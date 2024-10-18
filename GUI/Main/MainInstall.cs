@@ -260,27 +260,27 @@ namespace CKAN.GUI
                                     (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
                                  dfd.ShowDialog(this);
                             });
-                            var skip  = dfd?.Wait()?.Select(m => m as CkanModule)
-                                                    .OfType<CkanModule>()
-                                                    .ToArray();
-                            var abort = dfd?.Abort;
+                            var skip  = (dfd?.Wait()?.OfType<CkanModule>() ?? Enumerable.Empty<CkanModule>())
+                                                     .ToArray();
+                            var abort = dfd?.Abort ?? false;
                             dfd?.Dispose();
-                            if (abort ?? false)
+                            if (abort)
                             {
                                 canceled = true;
                                 e.Result = new InstallResult(false, changes);
                                 throw new CancelledActionKraken();
                             }
 
-                            if (skip != null && skip.Length > 0)
+                            if (skip.Length > 0)
                             {
                                 // Remove mods from changeset that user chose to skip
                                 // and any mods depending on them
-                                var dependers = registry.FindReverseDependencies(
-                                    skip.Select(s => s.identifier).ToList(),
-                                    fullChangeset,
-                                    // Consider virtual dependencies satisfied so user can make a new choice if they skip
-                                    rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
+                                var dependers = Registry.FindReverseDependencies(
+                                        skip.Select(s => s.identifier).ToList(),
+                                        fullChangeset, fullChangeset,
+                                        registry.InstalledDlls, registry.InstalledDlc,
+                                        // Consider virtual dependencies satisfied so user can make a new choice if they skip
+                                        rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
                                     .ToHashSet();
                                 toInstall.RemoveAll(m => dependers.Contains(m.identifier));
                             }

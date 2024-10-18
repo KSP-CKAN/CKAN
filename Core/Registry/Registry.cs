@@ -1099,23 +1099,26 @@ namespace CKAN
         /// <param name="dlc">Installed DLCs</param>
         /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         public static IEnumerable<string> FindReverseDependencies(
-            List<string>                        modulesToRemove,
-            List<CkanModule>?                   modulesToInstall,
-            HashSet<CkanModule>                 origInstalled,
+            ICollection<string>                 modulesToRemove,
+            ICollection<CkanModule>?            modulesToInstall,
+            ICollection<CkanModule>             origInstalled,
             ICollection<string>                 dlls,
-            IDictionary<string, ModuleVersion>? dlc,
+            IDictionary<string, ModuleVersion>  dlc,
             Func<RelationshipDescriptor, bool>? satisfiedFilter = null)
         {
             log.DebugFormat("Finding reverse dependencies of: {0}", string.Join(", ", modulesToRemove));
             log.DebugFormat("From installed mods: {0}", string.Join(", ", origInstalled));
-            log.DebugFormat("Installing mods: {0}", string.Join(", ", modulesToInstall ?? new List<CkanModule>()));
+            if (modulesToInstall != null)
+            {
+                log.DebugFormat("Installing mods: {0}", string.Join(", ", modulesToInstall));
+            }
 
             // The empty list has no reverse dependencies
             // (Don't remove broken modules if we're only installing)
             if (modulesToRemove.Count != 0)
             {
                 // All modules in the input are included in the output
-                foreach (string starter in modulesToRemove)
+                foreach (var starter in modulesToRemove)
                 {
                     yield return starter;
                 }
@@ -1123,12 +1126,12 @@ namespace CKAN
                 {
                     // Make our hypothetical install, and remove the listed modules from it.
                     // Clone because we alter hypothetical.
-                    var hypothetical = new HashSet<CkanModule>(origInstalled);
+                    var hypothetical = origInstalled.ToHashSet();
                     if (modulesToInstall != null)
                     {
                         // Pretend the mods we are going to install are already installed, so that dependencies that will be
                         // satisfied by a mod that is going to be installed count as satisfied.
-                        hypothetical = hypothetical.Concat(modulesToInstall).ToHashSet();
+                        hypothetical.UnionWith(modulesToInstall);
                     }
                     hypothetical.RemoveWhere(mod => modulesToRemove.Contains(mod.identifier));
 
@@ -1136,13 +1139,15 @@ namespace CKAN
                     log.DebugFormat("Keeping: {0}", string.Join(", ", hypothetical));
 
                     // Find what would break with this configuration
-                    var brokenDeps = SanityChecker.FindUnsatisfiedDepends(hypothetical, dlls, dlc)
+                    var brokenDeps = SanityChecker.FindUnsatisfiedDepends(hypothetical,
+                                                                          dlls, dlc)
                                                   .ToList();
                     if (satisfiedFilter != null)
                     {
-                        brokenDeps.RemoveAll(kvp => satisfiedFilter(kvp.Item2));
+                        brokenDeps.RemoveAll(tuple => satisfiedFilter(tuple.Item2));
                     }
-                    var brokenIdents = brokenDeps.Select(x => x.Item1.identifier).ToHashSet();
+                    var brokenIdents = brokenDeps.Select(tuple => tuple.Item1.identifier)
+                                                 .ToHashSet();
 
                     if (modulesToInstall != null)
                     {
@@ -1153,24 +1158,23 @@ namespace CKAN
                     }
                     log.DebugFormat("Broken: {0}", string.Join(", ", brokenIdents));
                     // Lazily return each newly found rev dep
-                    foreach (string newFound in brokenIdents.Except(modulesToRemove))
+                    foreach (var newFound in brokenIdents.Except(modulesToRemove))
                     {
                         yield return newFound;
                     }
 
                     // If nothing else would break, it's just the list of modules we're removing
-                    var to_remove = new HashSet<string>(modulesToRemove);
-
-                    if (to_remove.IsSupersetOf(brokenIdents))
+                    var toRemove = modulesToRemove.ToHashSet();
+                    if (toRemove.IsSupersetOf(brokenIdents))
                     {
                         log.DebugFormat("{0} is a superset of {1}, work done",
-                                        string.Join(", ", to_remove),
+                                        string.Join(", ", toRemove),
                                         string.Join(", ", brokenIdents));
                         break;
                     }
 
                     // Otherwise, remove our broken modules as well, and recurse
-                    modulesToRemove = brokenIdents.Union(to_remove).ToList();
+                    modulesToRemove = brokenIdents.Union(toRemove).ToList();
                 }
             }
         }
@@ -1179,14 +1183,13 @@ namespace CKAN
         /// Return modules which are dependent on the modules passed in or modules in the return list
         /// </summary>
         public IEnumerable<string> FindReverseDependencies(
-            List<string>                        modulesToRemove,
-            List<CkanModule>?                   modulesToInstall = null,
-            Func<RelationshipDescriptor, bool>? satisfiedFilter = null)
-            => FindReverseDependencies(modulesToRemove,
-                                       modulesToInstall,
-                                       new HashSet<CkanModule>(installed_modules.Values.Select(x => x.Module)),
-                                       installed_dlls.Keys,
-                                       InstalledDlc,
+                List<string>                        modulesToRemove,
+                List<CkanModule>?                   modulesToInstall = null,
+                Func<RelationshipDescriptor, bool>? satisfiedFilter  = null)
+            => FindReverseDependencies(modulesToRemove, modulesToInstall,
+                                       installed_modules.Values.Select(im => im.Module)
+                                                               .ToHashSet(),
+                                       InstalledDlls, InstalledDlc,
                                        satisfiedFilter);
 
         /// <summary>
@@ -1196,7 +1199,7 @@ namespace CKAN
         /// <returns>
         /// dictionary[sha256 or sha1] = {mod1, mod2, mod3};
         /// </returns>
-        public Dictionary<string, List<CkanModule>> GetDownloadHashesIndex()
+        public IReadOnlyDictionary<string, List<CkanModule>> GetDownloadHashesIndex()
             => downloadHashesIndex ??=
                    (repoDataMgr?.GetAllAvailableModules(Repositories.Values)
                                 .SelectMany(availMod => availMod.module_version.Values)
@@ -1229,7 +1232,7 @@ namespace CKAN
         /// <returns>
         /// dictionary[urlHash] = {mod1, mod2, mod3};
         /// </returns>
-        public Dictionary<string, List<CkanModule>> GetDownloadUrlHashIndex()
+        public IReadOnlyDictionary<string, List<CkanModule>> GetDownloadUrlHashIndex()
             => downloadUrlHashIndex ??=
                    (repoDataMgr?.GetAllAvailableModules(Repositories.Values)
                                ?? Enumerable.Empty<AvailableModule>())
