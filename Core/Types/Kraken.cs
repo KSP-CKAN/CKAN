@@ -324,24 +324,23 @@ namespace CKAN
     /// </summary>
     public class DownloadErrorsKraken : Kraken
     {
-        public readonly List<KeyValuePair<int, Exception>> Exceptions
-            = new List<KeyValuePair<int, Exception>>();
-
-        public DownloadErrorsKraken(List<KeyValuePair<int, Exception>> errors)
+        public DownloadErrorsKraken(List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>> errors)
             : base(string.Join(Environment.NewLine,
                                new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
                                .Concat(errors.Select(e => e.Value.Message))))
         {
-            Exceptions = new List<KeyValuePair<int, Exception>>(errors);
+            Exceptions = new List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>>(errors);
         }
 
-        public DownloadErrorsKraken(int index, Exception exc)
+        public DownloadErrorsKraken(NetAsyncDownloader.DownloadTarget target, Exception exc)
         {
-            Exceptions = new List<KeyValuePair<int, Exception>>
+            Exceptions = new List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>>
             {
-                new KeyValuePair<int, Exception>(index, exc),
+                new KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>(target, exc),
             };
         }
+
+        public readonly List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>> Exceptions;
     }
 
     /// <summary>
@@ -350,9 +349,6 @@ namespace CKAN
     /// </summary>
     public class ModuleDownloadErrorsKraken : Kraken
     {
-        public readonly List<KeyValuePair<CkanModule, Exception>> Exceptions
-            = new List<KeyValuePair<CkanModule, Exception>>();
-
         /// <summary>
         /// Initialize the exception.
         /// </summary>
@@ -361,11 +357,16 @@ namespace CKAN
         public ModuleDownloadErrorsKraken(IList<CkanModule> modules, DownloadErrorsKraken kraken)
             : base()
         {
-            foreach (var kvp in kraken.Exceptions)
+            foreach ((NetAsyncDownloader.DownloadTarget target, Exception exc) in kraken.Exceptions)
             {
-                Exceptions.Add(new KeyValuePair<CkanModule, Exception>(
-                    modules[kvp.Key], kvp.Value.GetBaseException() ?? kvp.Value
-                ));
+                foreach (var module in modules.Where(m => m.download?.Intersect(target.urls)
+                                                                     .Any()
+                                                                    ?? false))
+                {
+                    Exceptions.Add(new KeyValuePair<CkanModule, Exception>(
+                        module,
+                        exc.GetBaseException() ?? exc));
+                }
             }
         }
 
@@ -393,6 +394,9 @@ namespace CKAN
             }
             return builder.ToString();
         }
+
+        public readonly List<KeyValuePair<CkanModule, Exception>> Exceptions
+            = new List<KeyValuePair<CkanModule, Exception>>();
 
         private StringBuilder? builder = null;
     }

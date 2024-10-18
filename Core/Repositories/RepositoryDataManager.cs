@@ -210,7 +210,7 @@ namespace CKAN
                     catch (UnsupportedKraken kraken)
                     {
                         // Show parsing errors in the Downloads Failed popup
-                        throw new DownloadErrorsKraken(Array.IndexOf(toUpdate, repo), kraken);
+                        throw new DownloadErrorsKraken(target, kraken);
                     }
                     progress.NextFile();
                 }
@@ -220,15 +220,10 @@ namespace CKAN
                 // Fire an event so affected registry objects can clear their caches
                 Updated?.Invoke(toUpdate);
             }
-            catch (DownloadErrorsKraken exc)
+            catch (DownloadErrorsKraken)
             {
                 loadETags();
-                throw new DownloadErrorsKraken(
-                    // Renumber the exceptions based on the original repo list
-                    exc.Exceptions.Select(kvp => new KeyValuePair<int, Exception>(
-                                                     Array.IndexOf(repos, toUpdate[kvp.Key]),
-                                                     kvp.Value))
-                                  .ToList());
+                throw;
             }
             catch (Exception exc)
             {

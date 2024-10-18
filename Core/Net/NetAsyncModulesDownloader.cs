@@ -81,24 +81,31 @@ namespace CKAN
             // Add all the requested modules
             this.modules.AddRange(moduleGroups.SelectMany(grp => grp));
 
+            var preferredHosts = ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts;
+            var targets = moduleGroups
+                // Skip any group that already has a URL in progress
+                .Where(grp => grp.All(mod => mod.download?.All(dlUri => !activeURLs.Contains(dlUri)) ?? false))
+                // Each group gets one target containing all the URLs
+                .Select(grp => TargetFromModuleGroup(grp, preferredHosts))
+                .ToArray();
             try
             {
                 cancelTokenSrc = new CancellationTokenSource();
-                var preferredHosts = ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts;
                 // Start the downloads!
-                downloader.DownloadAndWait(moduleGroups
-                    // Skip any group that already has a URL in progress
-                    .Where(grp => grp.All(mod => mod.download?.All(dlUri => !activeURLs.Contains(dlUri)) ?? false))
-                    // Each group gets one target containing all the URLs
-                    .Select(grp => TargetFromModuleGroup(grp, preferredHosts))
-                    .ToArray());
+                downloader.DownloadAndWait(targets);
                 this.modules.Clear();
                 AllComplete?.Invoke();
             }
             catch (DownloadErrorsKraken kraken)
             {
                 // Associate the errors with the affected modules
-                var exc = new ModuleDownloadErrorsKraken(this.modules.ToList(), kraken);
+                // Find a module for each target
+                var targetModules = targets.Select(t => this.modules
+                                                            .First(m => m.download?.Intersect(t.urls)
+                                                                                   .Any()
+                                                                                  ?? false))
+                                           .ToList();
+                var exc = new ModuleDownloadErrorsKraken(targetModules, kraken);
                 // Clear this.modules because we're done with these
                 this.modules.Clear();
                 throw exc;

@@ -206,7 +206,8 @@ namespace Tests.Core.Net
                 foreach (var kvp in exception?.Exceptions!)
                 {
                     var baseExc = kvp.Value.GetBaseException() as FileNotFoundException;
-                    Assert.AreEqual(fromPaths[kvp.Key], baseExc?.FileName);
+                    Assert.AreEqual(fromPaths[Array.IndexOf(targets, kvp.Key)],
+                                    baseExc?.FileName);
                 }
                 foreach (var t in validTargets)
                 {

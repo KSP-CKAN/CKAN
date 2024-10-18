@@ -134,10 +134,10 @@ namespace CKAN
             }
 
             // Check to see if we've had any errors. If so, then release the kraken!
-            var exceptions = downloads.Select((dl, i) => dl.error is Exception exc
-                                                         ? new KeyValuePair<int, Exception>(i, exc)
-                                                         : (KeyValuePair<int, Exception>?)null)
-                                      .OfType<KeyValuePair<int, Exception>>()
+            var exceptions = downloads.Select(dl => dl.error != null
+                                                        ? new KeyValuePair<DownloadTarget, Exception>(dl.target, dl.error)
+                                                        : (KeyValuePair<DownloadTarget, Exception>?)null)
+                                      .OfType<KeyValuePair<DownloadTarget, Exception>>()
                                       .ToList();
 
             if (exceptions.Select(kvp => kvp.Value)
@@ -153,7 +153,7 @@ namespace CKAN
                                                      && wex.Response is HttpWebResponse hresp
                                                      // Handle HTTP 403 used for throttling
                                                      && hresp.StatusCode == HttpStatusCode.Forbidden
-                                                     && downloads[kvp.Key].CurrentUri is Uri url
+                                                     && kvp.Key.urls.LastOrDefault() is Uri url
                                                      && url.IsAbsoluteUri
                                                      && Net.ThrottledHosts.TryGetValue(url.Host, out Uri? infoUrl)
                                                      && infoUrl is not null
