@@ -84,8 +84,9 @@ namespace CKAN
 
         private static IEnumerable<GameBase> ShortcutsFileGames(KVSerializer vdfParser,
                                                                 string       path)
-            => vdfParser.Deserialize<List<NonSteamGame>>(File.OpenRead(path))
-                        .Select(nsg => nsg.NormalizeDir(path));
+            => Utilities.DefaultIfThrows(() => vdfParser.Deserialize<List<NonSteamGame>>(File.OpenRead(path)))
+                        ?.Select(nsg => nsg.NormalizeDir(path))
+                        ?? Enumerable.Empty<NonSteamGame>();
 
         private const  string   registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
         private const  string   registryValue = @"SteamPath";
