@@ -80,7 +80,7 @@ namespace CKAN.GUI
             this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.HideVCheckbox = new System.Windows.Forms.CheckBox();
             this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.RepositoryGroupBox.SuspendLayout();
             this.AuthTokensGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
@@ -89,6 +89,13 @@ namespace CKAN.GUI
             this.BehaviourGroupBox.SuspendLayout();
             this.MoreSettingsGroupBox.SuspendLayout();
             this.SuspendLayout();
+            //
+            // ToolTip
+            //
+            this.ToolTip.AutoPopDelay = 10000;
+            this.ToolTip.InitialDelay = 250;
+            this.ToolTip.ReshowDelay = 250;
+            this.ToolTip.ShowAlways = true;
             //
             // RepositoryGroupBox
             //
@@ -523,7 +530,6 @@ namespace CKAN.GUI
             this.RefreshTextBox.Name = "RefreshTextBox";
             this.RefreshTextBox.Size = new System.Drawing.Size(25, 20);
             this.RefreshTextBox.TabIndex = 33;
-            this.toolTip1.SetToolTip(this.RefreshTextBox, "Setting to 0 will not refresh modlist");
             this.RefreshTextBox.TextChanged += new System.EventHandler(this.RefreshTextBox_TextChanged);
             this.RefreshTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.RefreshTextBox_KeyPress);
             //
@@ -630,7 +636,6 @@ namespace CKAN.GUI
             this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
             resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
             //
-            //
             // SettingsDialog
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -717,6 +722,6 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox HideEpochsCheckbox;
         private System.Windows.Forms.CheckBox HideVCheckbox;
         private System.Windows.Forms.CheckBox AutoSortUpdateCheckBox;
-        private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.ToolTip ToolTip;
     }
 }

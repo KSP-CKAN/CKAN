@@ -45,6 +45,9 @@ namespace CKAN.GUI
                               string?          userAgent)
         {
             InitializeComponent();
+
+            ToolTip.SetToolTip(RefreshTextBox, Properties.Resources.SettingsToolTipRefreshTextBox);
+
             this.coreConfig = coreConfig;
             this.guiConfig  = guiConfig;
             this.regMgr     = regMgr;
