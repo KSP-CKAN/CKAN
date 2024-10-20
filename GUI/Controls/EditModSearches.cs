@@ -133,12 +133,10 @@ namespace CKAN.GUI
             // Still need to be able to see the add button, without this it's covered up
             AddSearchButton.BringToFront();
 
-            Height = editors.Sum(ems => ems.Height);
-
             ResumeLayout(false);
             PerformLayout();
 
-            AddSearchButton.Top = editors[^1].Top;
+            Height = editors.Sum(ems => ems.Height);
 
             return ctl;
         }
@@ -147,6 +145,8 @@ namespace CKAN.GUI
         {
             if (editors.Count >= 2)
             {
+                SuspendLayout();
+
                 if (which == ActiveControl)
                 {
                     // Move focus to next control, or previous if last in list
@@ -166,7 +166,8 @@ namespace CKAN.GUI
                     editor.ShowLabel = true;
                 }
 
-                AddSearchButton.Top = editors[^1].Top;
+                ResumeLayout(false);
+                PerformLayout();
 
                 Height = editors.Sum(ems => ems.Height);
             }
