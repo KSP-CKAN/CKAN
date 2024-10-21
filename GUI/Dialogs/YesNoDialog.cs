@@ -78,11 +78,6 @@ namespace CKAN.GUI
             SuppressCheckbox.Visible = true;
         }
 
-        public void HideYesNoDialog()
-        {
-            Util.Invoke(this, Close);
-        }
-
         private const int maxHeight = 600;
         private TaskCompletionSource<Tuple<DialogResult, bool>>? task;
         private readonly string defaultYes;

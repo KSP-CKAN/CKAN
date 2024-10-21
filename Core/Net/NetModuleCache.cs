@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Threading;
+using System.Collections.Generic;
 
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -49,15 +50,16 @@ namespace CKAN
         public void Dispose()
         {
             cache.Dispose();
+            GC.SuppressFinalize(this);
         }
         public void RemoveAll()
         {
             cache.RemoveAll();
             ModPurged?.Invoke(null);
         }
-        public void MoveFrom(string fromDir)
+        public void MoveFrom(DirectoryInfo fromDir, IProgress<int> progress)
         {
-            cache.MoveFrom(fromDir);
+            cache.MoveFrom(fromDir, progress);
         }
         public bool IsCached(CkanModule m)
             => m.download?.Any(cache.IsCached)
@@ -96,7 +98,7 @@ namespace CKAN
             cache.CheckFreeSpace(bytesToStore);
         }
 
-        public string? GetInProgressFileName(CkanModule m)
+        public FileInfo? GetInProgressFileName(CkanModule m)
             => m.download == null
                 ? null
                 : cache.GetInProgressFileName(m.download, m.StandardName());
@@ -117,9 +119,7 @@ namespace CKAN
                 ? string.Format(Properties.Resources.NetModuleCacheMetapackage, m.name, m.version)
                 : IsMaybeCachedZip(m)
                     ? string.Format(Properties.Resources.NetModuleCacheModuleCached, m.name, m.version)
-                    : DescribeUncachedAvailability(m,
-                        GetInProgressFileName(m) is string s
-                            ? new FileInfo(s) : null);
+                    : DescribeUncachedAvailability(m, GetInProgressFileName(m));
 
         /// <summary>
         /// Calculate the SHA1 hash of a file
@@ -340,18 +340,25 @@ namespace CKAN
         /// </returns>
         public bool Purge(CkanModule module)
         {
-            if (module.download != null)
+            if (module.download != null
+                && cache.Remove(module.download))
             {
-                foreach (var dlUri in module.download)
-                {
-                    if (!cache.Remove(dlUri))
-                    {
-                        return false;
-                    }
-                }
+                ModPurged?.Invoke(module);
+                return true;
             }
-            ModPurged?.Invoke(module);
-            return true;
+            return false;
+        }
+
+        public bool Purge(ICollection<CkanModule> modules)
+        {
+            if (modules.Select(m => cache.Remove(m.download ?? Enumerable.Empty<Uri>()))
+                       .ToArray()
+                       .Any(removed => removed))
+            {
+                ModPurged?.Invoke(modules.First());
+                return true;
+            }
+            return false;
         }
 
         private readonly NetFileCache cache;

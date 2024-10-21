@@ -56,7 +56,16 @@ namespace CKAN.GUI
         /// <param name="args">Array of offered options.</param>
         [ForbidGUICalls]
         public int RaiseSelectionDialog(string message, params object[] args)
-            => main.SelectionDialog(message, args);
+        {
+            int result = 0;
+            Util.Invoke(main, () =>
+            {
+                var dlg = new SelectionDialog();
+                result = dlg.ShowSelectionDialog(message, args);
+                dlg.Dispose();
+            });
+            return result;
+        }
 
         /// <summary>
         /// Shows a message box containing the formatted error message.

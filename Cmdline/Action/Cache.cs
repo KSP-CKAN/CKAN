@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using CommandLine;
@@ -177,7 +178,9 @@ namespace CKAN.CmdLine
 
             if (manager != null)
             {
-                if (manager.TrySetupCache(options.Path, out string? failReason))
+                if (manager.TrySetupCache(options.Path,
+                                          new Progress<int>(p => {}),
+                                          out string? failReason))
                 {
                     IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                     user?.RaiseMessage(Properties.Resources.CacheSet, cfg.DownloadCacheDir ?? "");
@@ -205,7 +208,9 @@ namespace CKAN.CmdLine
         {
             if (manager != null)
             {
-                if (manager.TrySetupCache("", out string? failReason))
+                if (manager.TrySetupCache("",
+                                          new Progress<int>(p => {}),
+                                          out string? failReason))
                 {
                     IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                     user?.RaiseMessage(Properties.Resources.CacheReset, cfg.DownloadCacheDir ?? "");

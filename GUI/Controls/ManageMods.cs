@@ -1308,14 +1308,15 @@ namespace CKAN.GUI
             // Purge other versions as well since the user is likely to want that
             // and has no other way to achieve it
             var selected = SelectedModule;
-            if (selected != null && currentInstance != null)
+            if (selected != null
+                && currentInstance != null
+                && manager?.Cache != null)
             {
-                IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
-                var allAvail = registry.AvailableByIdentifier(selected.Identifier);
-                foreach (CkanModule mod in allAvail)
-                {
-                    manager?.Cache?.Purge(mod);
-                }
+                manager.Cache.Purge(
+                    RegistryManager.Instance(currentInstance, repoData)
+                                   .registry
+                                   .AvailableByIdentifier(selected.Identifier)
+                                   .ToArray());
             }
         }
 

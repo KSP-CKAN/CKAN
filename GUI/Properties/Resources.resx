@@ -360,6 +360,10 @@ Find the folder where your game is installed and choose one of these files:
   <data name="NewRepoDialogFailed" xml:space="preserve"><value>Failed to fetch master list.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKAN Plugins (*.dll)|*.dll</value></data>
   <data name="SettingsToolTipRefreshTextBox" xml:space="preserve"><value>Setting to 0 will not refresh modlist</value></data>
+  <data name="SettingsToolTipChangeCacheButton" xml:space="preserve"><value>Choose a new download cache folder</value></data>
+  <data name="SettingsToolTipResetCacheButton" xml:space="preserve"><value>Use the default download cache folder </value></data>
+  <data name="SettingsToolTipOpenCacheButton" xml:space="preserve"><value>Browse the cache folder</value></data>
+  <data name="SettingsToolTipClearCacheButton" xml:space="preserve"><value>Delete files from the cache</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}, {2} free</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Invalid path: {0}</value></data>
   <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choose a folder for storing CKAN's mod downloads:</value></data>
@@ -513,4 +517,5 @@ This action cannot be undone!</value></data>
   <data name="PreferredHostsTooltipMoveLeft" xml:space="preserve"><value>Remove selected host from preferences list</value></data>
   <data name="PreferredHostsTooltipMoveUp" xml:space="preserve"><value>Make selected host higher priority</value></data>
   <data name="PreferredHostsTooltipMoveDown" xml:space="preserve"><value>Make selected host lower priority</value></data>
+  <data name="SelectionDialogDefault" xml:space="preserve"><value>{0} (DEFAULT)</value></data>
 </root>

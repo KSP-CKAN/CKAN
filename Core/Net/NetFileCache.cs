@@ -35,7 +35,9 @@ namespace CKAN
         private readonly FileSystemWatcher watcher;
         // hash => full file path
         private Dictionary<string, string>? cachedFiles;
-        private readonly string cachePath;
+        private readonly DirectoryInfo cachePath;
+        // Files go here while they're downloading
+        private readonly DirectoryInfo inProgressPath;
         private readonly GameInstanceManager? manager;
         private static readonly Regex cacheFileRegex = new Regex("^[0-9A-F]{8}-", RegexOptions.Compiled);
         private static readonly ILog log = LogManager.GetLogger(typeof (NetFileCache));
@@ -44,7 +46,7 @@ namespace CKAN
         /// Initialize a cache given a GameInstanceManager
         /// </summary>
         /// <param name="mgr">GameInstanceManager object containing the Instances that might have old caches</param>
-        public NetFileCache(GameInstanceManager? mgr, string path)
+        public NetFileCache(GameInstanceManager mgr, string path)
             : this(path)
         {
             manager = mgr;
@@ -56,21 +58,23 @@ namespace CKAN
         /// <param name="path">Location of folder to use for caching</param>
         public NetFileCache(string path)
         {
-            cachePath = path;
-
+            cachePath = new DirectoryInfo(path);
             // Basic validation, our cache has to exist.
-            if (!Directory.Exists(cachePath))
+            if (!cachePath.Exists)
             {
-                throw new DirectoryNotFoundKraken(cachePath, string.Format(
-                    Properties.Resources.NetFileCacheCannotFind, cachePath));
+                throw new DirectoryNotFoundKraken(
+                    path,
+                    string.Format(Properties.Resources.NetFileCacheCannotFind,
+                                  path));
             }
+            inProgressPath = new DirectoryInfo(Path.Combine(path, "downloading"));
 
             // Make sure we can access it
-            var bytesFree = new DirectoryInfo(cachePath)?.GetDrive()?.AvailableFreeSpace ?? 0;
+            var bytesFree = cachePath.GetDrive().AvailableFreeSpace;
 
             // Establish a watch on our cache. This means we can cache the directory contents,
             // and discard that cache if we spot changes.
-            watcher = new FileSystemWatcher(cachePath, "*.zip")
+            watcher = new FileSystemWatcher(cachePath.FullName, "*.zip")
             {
                 NotifyFilter = NotifyFilters.LastWrite
                              | NotifyFilters.LastAccess
@@ -102,30 +106,29 @@ namespace CKAN
             // We disable its event raising capabilities first for good measure.
             watcher.EnableRaisingEvents = false;
             watcher.Dispose();
+            GC.SuppressFinalize(this);
         }
 
-        // Files go here while they're downloading
-        private string InProgressPath => Path.Combine(cachePath, "downloading");
-
-        private string GetInProgressFileName(string hash, string description)
+        private FileInfo GetInProgressFileName(string hash, string description)
         {
-            Directory.CreateDirectory(InProgressPath);
-            return Directory.EnumerateFiles(InProgressPath)
-                            .FirstOrDefault(path => new FileInfo(path).Name.StartsWith(hash))
-                   // If not found, return the name to create
-                   ?? Path.Combine(InProgressPath, $"{hash}-{description}");
+            inProgressPath.Create();
+            return inProgressPath.EnumerateFiles()
+                                 .FirstOrDefault(path => path.Name.StartsWith(hash))
+                                 // If not found, return the name to create
+                                 ?? new FileInfo(Path.Combine(inProgressPath.FullName,
+                                                              $"{hash}-{description}"));
         }
 
-        public string GetInProgressFileName(Uri url, string description)
+        public FileInfo GetInProgressFileName(Uri url, string description)
             => GetInProgressFileName(CreateURLHash(url),
                                      description);
 
-        public string? GetInProgressFileName(List<Uri> urls, string description)
+        public FileInfo? GetInProgressFileName(List<Uri> urls, string description)
         {
-            var filenames = urls?.Select(url => GetInProgressFileName(CreateURLHash(url), description))
-                                 .ToArray();
-            return filenames?.FirstOrDefault(File.Exists)
-                ?? filenames?.FirstOrDefault();
+            var filenames = urls.Select(url => GetInProgressFileName(CreateURLHash(url), description))
+                                .Memoize();
+            return filenames.FirstOrDefault(fi => fi.Exists)
+                ?? filenames.FirstOrDefault();
         }
 
         /// <summary>
@@ -256,40 +259,36 @@ namespace CKAN
         /// <param name="bytesFree">Output parameter set to number of bytes free</param>
         public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
         {
-            numFiles = 0;
-            numBytes = 0;
-            GetSizeInfo(cachePath, ref numFiles, ref numBytes);
-            bytesFree = new DirectoryInfo(cachePath)?.GetDrive()?.AvailableFreeSpace ?? 0;
-            foreach (var legacyDir in legacyDirs())
-            {
-                GetSizeInfo(legacyDir, ref numFiles, ref numBytes);
-            }
+            bytesFree = cachePath.GetDrive().AvailableFreeSpace;
+            (numFiles, numBytes) = Enumerable.Repeat(cachePath, 1)
+                                             .Concat(legacyDirs())
+                                             .Select(GetDirSizeInfo)
+                                             .Aggregate((numFiles: 0,
+                                                         numBytes: 0L),
+                                                        (total, next) => (numFiles: total.numFiles + next.numFiles,
+                                                                          numBytes: total.numBytes + next.numBytes));
         }
 
-        private static void GetSizeInfo(string path, ref int numFiles, ref long numBytes)
-        {
-            DirectoryInfo cacheDir = new DirectoryInfo(path);
-            foreach (var file in cacheDir.EnumerateFiles("*", SearchOption.AllDirectories))
-            {
-                ++numFiles;
-                numBytes += file.Length;
-            }
-        }
+        private static (int numFiles, long numBytes) GetDirSizeInfo(DirectoryInfo cacheDir)
+            => cacheDir.EnumerateFiles("*", SearchOption.AllDirectories)
+                       .Aggregate((numFiles: 0,
+                                   numBytes: 0L),
+                                  (tuple, fi) => (numFiles: tuple.numFiles + 1,
+                                                  numBytes: tuple.numBytes + fi.Length));
 
         public void CheckFreeSpace(long bytesToStore)
         {
-            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(cachePath),
+            CKANPathUtils.CheckFreeSpace(cachePath,
                                          bytesToStore,
                                          Properties.Resources.NotEnoughSpaceToCache);
         }
 
-        private HashSet<string> legacyDirs()
+        private IEnumerable<DirectoryInfo> legacyDirs()
             => manager?.Instances.Values
-                .Where(ksp => ksp.Valid)
-                .Select(ksp => ksp.DownloadCacheDir())
-                .Where(Directory.Exists)
-                .ToHashSet()
-                ?? new HashSet<string>();
+                       .Where(ksp => ksp.Valid)
+                       .Select(ksp => new DirectoryInfo(ksp.DownloadCacheDir()))
+                       .Where(dir => dir.Exists)
+                      ?? Enumerable.Empty<DirectoryInfo>();
 
         public void EnforceSizeLimit(long bytes, Registry registry)
         {
@@ -379,14 +378,12 @@ namespace CKAN
 
         private List<FileInfo> allFiles(bool includeInProgress = false)
         {
-            DirectoryInfo mainDir = new DirectoryInfo(cachePath);
-            var files = mainDir.EnumerateFiles("*",
-                                               includeInProgress ? SearchOption.AllDirectories
-                                                                 : SearchOption.TopDirectoryOnly);
-            foreach (string legacyDir in legacyDirs())
+            var files = cachePath.EnumerateFiles("*",
+                                                 includeInProgress ? SearchOption.AllDirectories
+                                                                   : SearchOption.TopDirectoryOnly);
+            foreach (var legacyDir in legacyDirs())
             {
-                DirectoryInfo legDir = new DirectoryInfo(legacyDir);
-                files = files.Union(legDir.EnumerateFiles());
+                files = files.Union(legacyDir.EnumerateFiles());
             }
             return files.Where(fi =>
                     // Require 8 digit hex prefix followed by dash; any else was not put there by CKAN
@@ -427,7 +424,7 @@ namespace CKAN
                 $"description {description} isn't as filesystem safe as we thought... (#1266)");
 
             string fullName = string.Format("{0}-{1}", hash, Path.GetFileName(description));
-            string targetPath = Path.Combine(cachePath, fullName);
+            string targetPath = Path.Combine(cachePath.FullName, fullName);
 
             // Purge hashes associated with the new file
             PurgeHashes(tx_file, targetPath);
@@ -459,7 +456,8 @@ namespace CKAN
         /// </summary>
         public bool Remove(Uri url)
         {
-            if (GetCachedFilename(url) is string file)
+            if (GetCachedFilename(url) is string file
+                && File.Exists(file))
             {
                 TxFileManager tx_file = new TxFileManager();
                 tx_file.Delete(file);
@@ -470,6 +468,12 @@ namespace CKAN
             }
             return false;
         }
+
+        public bool Remove(IEnumerable<Uri> urls)
+            => urls.Select(Remove)
+                   // Force all elements to be evaluated
+                   .ToArray()
+                   .Any(found => found);
 
         private void PurgeHashes(TxFileManager? tx_file, string file)
         {
@@ -493,15 +497,15 @@ namespace CKAN
         public void RemoveAll()
         {
             var dirs = Enumerable.Repeat(cachePath, 1)
-                .Concat(Enumerable.Repeat(InProgressPath, 1))
+                .Concat(Enumerable.Repeat(inProgressPath, 1))
                 .Concat(legacyDirs());
-            foreach (string dir in dirs)
+            foreach (var dir in dirs)
             {
-                foreach (string file in Directory.EnumerateFiles(dir))
+                foreach (var file in dir.EnumerateFiles())
                 {
                     try
                     {
-                        File.Delete(file);
+                        file.Delete();
                     }
                     catch { }
                 }
@@ -516,17 +520,26 @@ namespace CKAN
         /// May throw an IOException if disk is full!
         /// </summary>
         /// <param name="fromDir">Path from which to move files</param>
-        public void MoveFrom(string fromDir)
+        public void MoveFrom(DirectoryInfo  fromDir,
+                             IProgress<int> percentProgress)
         {
-            if (cachePath != fromDir && Directory.Exists(fromDir))
+            if (fromDir.Exists && !cachePath.PathEquals(fromDir))
             {
+                var files = fromDir.GetFiles("*", SearchOption.AllDirectories);
+                var bytesProgress = new ProgressScalePercentsByFileSizes(
+                                        percentProgress,
+                                        files.Select(f => f.Length));
                 bool hasAny = false;
-                foreach (string fromFile in Directory.EnumerateFiles(fromDir))
+                foreach (var fromFile in files)
                 {
-                    string toFile = Path.Combine(cachePath, Path.GetFileName(fromFile));
+                    bytesProgress.Report(0);
+
+                    var toFile = Path.Combine(cachePath.FullName,
+                                              CKANPathUtils.ToRelative(fromFile.FullName,
+                                                                       fromDir.FullName));
                     if (File.Exists(toFile))
                     {
-                        if (File.GetCreationTime(fromFile) == File.GetCreationTime(toFile))
+                        if (fromFile.CreationTimeUtc == File.GetCreationTimeUtc(toFile))
                         {
                             // Same filename with same timestamp, almost certainly the same
                             // actual file on disk via different paths thanks to symlinks.
@@ -536,14 +549,32 @@ namespace CKAN
                         else
                         {
                             // Don't need multiple copies of the same file
-                            File.Delete(fromFile);
+                            fromFile.Delete();
                         }
                     }
                     else
                     {
-                        File.Move(fromFile, toFile);
-                        hasAny = true;
+                        try
+                        {
+                            if (Path.GetDirectoryName(toFile) is string parent)
+                            {
+                                Directory.CreateDirectory(parent);
+                            }
+                            fromFile.MoveTo(toFile);
+                            hasAny = true;
+                        }
+                        catch (Exception exc)
+                        {
+                            // On Windows, FileInfo.MoveTo sometimes throws exceptions after it succeeds (!!).
+                            // Just log it and ignore.
+                            log.ErrorFormat("Couldn't move {0} to {1}: {2}",
+                                            fromFile.FullName,
+                                            toFile,
+                                            exc.Message);
+                        }
                     }
+                    bytesProgress.Report(100);
+                    bytesProgress.NextFile();
                 }
                 if (hasAny)
                 {
@@ -631,7 +662,7 @@ namespace CKAN
                 {
                     hash = BitConverter.ToString(hasher.ComputeHash(bs, progress, cancelToken)).Replace("-", "");
                     cache.Add(filePath, hash);
-                    if (Path.GetDirectoryName(hashFile) == Path.GetFullPath(cachePath))
+                    if (Path.GetDirectoryName(hashFile) == cachePath.FullName)
                     {
                         File.WriteAllText(hashFile, hash);
                     }

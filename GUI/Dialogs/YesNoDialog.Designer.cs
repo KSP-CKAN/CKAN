@@ -131,7 +131,7 @@ namespace CKAN.GUI
             this.panel1.ResumeLayout(false);
             this.BottomButtonPanel.ResumeLayout(false);
             this.BottomButtonPanel.PerformLayout();
-             this.ResumeLayout(false);
+            this.ResumeLayout(false);
             this.PerformLayout();
         }
 

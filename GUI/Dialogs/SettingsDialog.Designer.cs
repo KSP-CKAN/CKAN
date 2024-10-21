@@ -30,8 +30,9 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(SettingsDialog));
+            this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.RepositoryGroupBox = new System.Windows.Forms.GroupBox();
-            this.ReposListBox = new ThemedListView();
+            this.ReposListBox = new CKAN.GUI.ThemedListView();
             this.RepoNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.RepoURLHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NewRepoButton = new System.Windows.Forms.Button();
@@ -39,13 +40,16 @@ namespace CKAN.GUI
             this.DownRepoButton = new System.Windows.Forms.Button();
             this.DeleteRepoButton = new System.Windows.Forms.Button();
             this.AuthTokensGroupBox = new System.Windows.Forms.GroupBox();
-            this.AuthTokensListBox = new ThemedListView();
+            this.AuthTokensListBox = new CKAN.GUI.ThemedListView();
             this.AuthHostHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.AuthTokenHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.NewAuthTokenButton = new System.Windows.Forms.Button();
             this.DeleteAuthTokenButton = new System.Windows.Forms.Button();
             this.CacheGroupBox = new System.Windows.Forms.GroupBox();
-            this.CachePath = new System.Windows.Forms.TextBox();
+            this.CachePathTextBox = new System.Windows.Forms.TextBox();
+            this.CachePathEditButton = new System.Windows.Forms.Button();
+            this.CachePathSaveButton = new System.Windows.Forms.Button();
+            this.CachePathCancelButton = new System.Windows.Forms.Button();
             this.CacheSummary = new System.Windows.Forms.Label();
             this.CacheLimitPreLabel = new System.Windows.Forms.Label();
             this.CacheLimit = new System.Windows.Forms.TextBox();
@@ -57,6 +61,7 @@ namespace CKAN.GUI
             this.PurgeAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResetCacheButton = new System.Windows.Forms.Button();
             this.OpenCacheButton = new System.Windows.Forms.Button();
+            this.MoveCacheProgressBar = new System.Windows.Forms.ProgressBar();
             this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
             this.LocalVersionPreLabel = new System.Windows.Forms.Label();
             this.LocalVersionLabel = new System.Windows.Forms.Label();
@@ -80,7 +85,6 @@ namespace CKAN.GUI
             this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.HideVCheckbox = new System.Windows.Forms.CheckBox();
             this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
-            this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.RepositoryGroupBox.SuspendLayout();
             this.AuthTokensGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
@@ -341,7 +345,10 @@ namespace CKAN.GUI
             //
             // CacheGroupBox
             //
-            this.CacheGroupBox.Controls.Add(this.CachePath);
+            this.CacheGroupBox.Controls.Add(this.CachePathTextBox);
+            this.CacheGroupBox.Controls.Add(this.CachePathEditButton);
+            this.CacheGroupBox.Controls.Add(this.CachePathSaveButton);
+            this.CacheGroupBox.Controls.Add(this.CachePathCancelButton);
             this.CacheGroupBox.Controls.Add(this.CacheSummary);
             this.CacheGroupBox.Controls.Add(this.CacheLimitPreLabel);
             this.CacheGroupBox.Controls.Add(this.CacheLimit);
@@ -350,6 +357,7 @@ namespace CKAN.GUI
             this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
             this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
             this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
+            this.CacheGroupBox.Controls.Add(this.MoveCacheProgressBar);
             this.CacheGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CacheGroupBox.Location = new System.Drawing.Point(280, 144);
@@ -359,17 +367,59 @@ namespace CKAN.GUI
             this.CacheGroupBox.TabStop = false;
             resources.ApplyResources(this.CacheGroupBox, "CacheGroupBox");
             //
-            // CachePath
+            // CachePathTextBox
             //
-            this.CachePath.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.CachePath.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.CachePath.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.CachePath.Location = new System.Drawing.Point(12, 18);
-            this.CachePath.Margin = new System.Windows.Forms.Padding(2);
-            this.CachePath.Name = "CachePath";
-            this.CachePath.Size = new System.Drawing.Size(452, 20);
-            this.CachePath.TabIndex = 20;
-            this.CachePath.TextChanged += new System.EventHandler(this.CachePath_TextChanged);
+            this.CachePathTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.CachePathTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.CachePathTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CachePathTextBox.Enabled = false;
+            this.CachePathTextBox.Location = new System.Drawing.Point(12, 18);
+            this.CachePathTextBox.Name = "CachePathTextBox";
+            this.CachePathTextBox.Size = new System.Drawing.Size(402, 20);
+            this.CachePathTextBox.TabIndex = 20;
+            this.CachePathTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CachePathTextBox_KeyDown);
+            //
+            // CachePathEditButton
+            //
+            this.CachePathEditButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.CachePathEditButton.AutoSize = true;
+            this.CachePathEditButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.CachePathEditButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CachePathEditButton.Location = new System.Drawing.Point(414, 18);
+            this.CachePathEditButton.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.CachePathEditButton.Name = "CachePathEditButton";
+            this.CachePathEditButton.Size = new System.Drawing.Size(50, 12);
+            this.CachePathEditButton.TabIndex = 21;
+            this.CachePathEditButton.Click += new System.EventHandler(this.CachePathEditButton_Click);
+            resources.ApplyResources(this.CachePathEditButton, "CachePathEditButton");
+            //
+            // CachePathSaveButton
+            //
+            this.CachePathSaveButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.CachePathSaveButton.AutoSize = true;
+            this.CachePathSaveButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.CachePathSaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CachePathSaveButton.Location = new System.Drawing.Point(414, 18);
+            this.CachePathSaveButton.Name = "CachePathSaveButton";
+            this.CachePathSaveButton.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.CachePathSaveButton.Size = new System.Drawing.Size(50, 12);
+            this.CachePathSaveButton.TabIndex = 22;
+            this.CachePathSaveButton.Click += new System.EventHandler(this.CachePathSaveButton_Click);
+            resources.ApplyResources(this.CachePathSaveButton, "CachePathSaveButton");
+            //
+            // CachePathCancelButton
+            //
+            this.CachePathCancelButton.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.CachePathCancelButton.AutoSize = true;
+            this.CachePathCancelButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.CachePathCancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CachePathCancelButton.Location = new System.Drawing.Point(364, 18);
+            this.CachePathCancelButton.Name = "CachePathCancelButton";
+            this.CachePathCancelButton.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.CachePathCancelButton.Size = new System.Drawing.Size(50, 12);
+            this.CachePathCancelButton.TabIndex = 23;
+            this.CachePathCancelButton.Click += new System.EventHandler(this.CachePathCancelButton_Click);
+            resources.ApplyResources(this.CachePathCancelButton, "CachePathCancelButton");
             //
             // CacheSummary
             //
@@ -377,7 +427,7 @@ namespace CKAN.GUI
             this.CacheSummary.Location = new System.Drawing.Point(9, 44);
             this.CacheSummary.Name = "CacheSummary";
             this.CacheSummary.Size = new System.Drawing.Size(70, 13);
-            this.CacheSummary.TabIndex = 21;
+            this.CacheSummary.TabIndex = 24;
             resources.ApplyResources(this.CacheSummary, "CacheSummary");
             //
             // CacheLimitPreLabel
@@ -386,7 +436,7 @@ namespace CKAN.GUI
             this.CacheLimitPreLabel.Location = new System.Drawing.Point(9, 65);
             this.CacheLimitPreLabel.Name = "CacheLimitPreLabel";
             this.CacheLimitPreLabel.Size = new System.Drawing.Size(108, 13);
-            this.CacheLimitPreLabel.TabIndex = 22;
+            this.CacheLimitPreLabel.TabIndex = 25;
             resources.ApplyResources(this.CacheLimitPreLabel, "CacheLimitPreLabel");
             //
             // CacheLimit
@@ -398,7 +448,7 @@ namespace CKAN.GUI
             this.CacheLimit.Margin = new System.Windows.Forms.Padding(2);
             this.CacheLimit.Name = "CacheLimit";
             this.CacheLimit.Size = new System.Drawing.Size(50, 20);
-            this.CacheLimit.TabIndex = 23;
+            this.CacheLimit.TabIndex = 26;
             this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
             this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);
             //
@@ -408,7 +458,7 @@ namespace CKAN.GUI
             this.CacheLimitPostLabel.Location = new System.Drawing.Point(167, 65);
             this.CacheLimitPostLabel.Name = "CacheLimitPostLabel";
             this.CacheLimitPostLabel.Size = new System.Drawing.Size(119, 13);
-            this.CacheLimitPostLabel.TabIndex = 24;
+            this.CacheLimitPostLabel.TabIndex = 27;
             resources.ApplyResources(this.CacheLimitPostLabel, "CacheLimitPostLabel");
             //
             // ChangeCacheButton
@@ -417,7 +467,7 @@ namespace CKAN.GUI
             this.ChangeCacheButton.Location = new System.Drawing.Point(12, 89);
             this.ChangeCacheButton.Name = "ChangeCacheButton";
             this.ChangeCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.ChangeCacheButton.TabIndex = 25;
+            this.ChangeCacheButton.TabIndex = 28;
             this.ChangeCacheButton.Click += new System.EventHandler(this.ChangeCacheButton_Click);
             resources.ApplyResources(this.ChangeCacheButton, "ChangeCacheButton");
             //
@@ -428,7 +478,7 @@ namespace CKAN.GUI
             this.ClearCacheButton.Menu = this.ClearCacheMenu;
             this.ClearCacheButton.Name = "ClearCacheButton";
             this.ClearCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.ClearCacheButton.TabIndex = 26;
+            this.ClearCacheButton.TabIndex = 29;
             resources.ApplyResources(this.ClearCacheButton, "ClearCacheButton");
             //
             // ClearCacheMenu
@@ -459,7 +509,7 @@ namespace CKAN.GUI
             this.ResetCacheButton.Location = new System.Drawing.Point(174, 89);
             this.ResetCacheButton.Name = "ResetCacheButton";
             this.ResetCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.ResetCacheButton.TabIndex = 27;
+            this.ResetCacheButton.TabIndex = 30;
             this.ResetCacheButton.Click += new System.EventHandler(this.ResetCacheButton_Click);
             resources.ApplyResources(this.ResetCacheButton, "ResetCacheButton");
             //
@@ -469,9 +519,20 @@ namespace CKAN.GUI
             this.OpenCacheButton.Location = new System.Drawing.Point(255, 89);
             this.OpenCacheButton.Name = "OpenCacheButton";
             this.OpenCacheButton.Size = new System.Drawing.Size(75, 25);
-            this.OpenCacheButton.TabIndex = 28;
+            this.OpenCacheButton.TabIndex = 31;
             this.OpenCacheButton.Click += new System.EventHandler(this.OpenCacheButton_Click);
             resources.ApplyResources(this.OpenCacheButton, "OpenCacheButton");
+            //
+            // MoveCacheProgressBar
+            //
+            this.MoveCacheProgressBar.Location = new System.Drawing.Point(12, 123);
+            this.MoveCacheProgressBar.Name = "MoveCacheProgressBar";
+            this.MoveCacheProgressBar.Size = new System.Drawing.Size(452, 20);
+            this.MoveCacheProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.MoveCacheProgressBar.TabStop = false;
+            this.MoveCacheProgressBar.Minimum = 0;
+            this.MoveCacheProgressBar.Maximum = 100;
+            this.MoveCacheProgressBar.Visible = false;
             //
             // BehaviourGroupBox
             //
@@ -486,7 +547,7 @@ namespace CKAN.GUI
             this.BehaviourGroupBox.Location = new System.Drawing.Point(12, 310);
             this.BehaviourGroupBox.Name = "BehaviourGroupBox";
             this.BehaviourGroupBox.Size = new System.Drawing.Size(254, 150);
-            this.BehaviourGroupBox.TabIndex = 29;
+            this.BehaviourGroupBox.TabIndex = 32;
             this.BehaviourGroupBox.TabStop = false;
             resources.ApplyResources(this.BehaviourGroupBox, "BehaviourGroupBox");
             //
@@ -497,7 +558,7 @@ namespace CKAN.GUI
             this.EnableTrayIconCheckBox.Location = new System.Drawing.Point(12, 18);
             this.EnableTrayIconCheckBox.Name = "EnableTrayIconCheckBox";
             this.EnableTrayIconCheckBox.Size = new System.Drawing.Size(102, 17);
-            this.EnableTrayIconCheckBox.TabIndex = 30;
+            this.EnableTrayIconCheckBox.TabIndex = 33;
             this.EnableTrayIconCheckBox.CheckedChanged += new System.EventHandler(this.EnableTrayIconCheckBox_CheckedChanged);
             resources.ApplyResources(this.EnableTrayIconCheckBox, "EnableTrayIconCheckBox");
             //
@@ -508,7 +569,7 @@ namespace CKAN.GUI
             this.MinimizeToTrayCheckBox.Location = new System.Drawing.Point(12, 41);
             this.MinimizeToTrayCheckBox.Name = "MinimizeToTrayCheckBox";
             this.MinimizeToTrayCheckBox.Size = new System.Drawing.Size(98, 17);
-            this.MinimizeToTrayCheckBox.TabIndex = 31;
+            this.MinimizeToTrayCheckBox.TabIndex = 34;
             this.MinimizeToTrayCheckBox.CheckedChanged += new System.EventHandler(this.MinimizeToTrayCheckBox_CheckedChanged);
             resources.ApplyResources(this.MinimizeToTrayCheckBox, "MinimizeToTrayCheckBox");
             //
@@ -518,7 +579,7 @@ namespace CKAN.GUI
             this.RefreshPreLabel.Location = new System.Drawing.Point(9, 66);
             this.RefreshPreLabel.Name = "RefreshPreLabel";
             this.RefreshPreLabel.Size = new System.Drawing.Size(114, 26);
-            this.RefreshPreLabel.TabIndex = 32;
+            this.RefreshPreLabel.TabIndex = 35;
             resources.ApplyResources(this.RefreshPreLabel, "RefreshPreLabel");
             //
             // RefreshTextBox
@@ -529,7 +590,7 @@ namespace CKAN.GUI
             this.RefreshTextBox.Location = new System.Drawing.Point(125, 64);
             this.RefreshTextBox.Name = "RefreshTextBox";
             this.RefreshTextBox.Size = new System.Drawing.Size(25, 20);
-            this.RefreshTextBox.TabIndex = 33;
+            this.RefreshTextBox.TabIndex = 36;
             this.RefreshTextBox.TextChanged += new System.EventHandler(this.RefreshTextBox_TextChanged);
             this.RefreshTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.RefreshTextBox_KeyPress);
             //
@@ -539,7 +600,7 @@ namespace CKAN.GUI
             this.RefreshPostLabel.Location = new System.Drawing.Point(153, 66);
             this.RefreshPostLabel.Name = "RefreshPostLabel";
             this.RefreshPostLabel.Size = new System.Drawing.Size(49, 13);
-            this.RefreshPostLabel.TabIndex = 34;
+            this.RefreshPostLabel.TabIndex = 37;
             resources.ApplyResources(this.RefreshPostLabel, "RefreshPostLabel");
             //
             // PauseRefreshCheckBox
@@ -549,7 +610,7 @@ namespace CKAN.GUI
             this.PauseRefreshCheckBox.Location = new System.Drawing.Point(12, 103);
             this.PauseRefreshCheckBox.Name = "PauseRefreshCheckBox";
             this.PauseRefreshCheckBox.Size = new System.Drawing.Size(105, 17);
-            this.PauseRefreshCheckBox.TabIndex = 35;
+            this.PauseRefreshCheckBox.TabIndex = 38;
             this.PauseRefreshCheckBox.CheckedChanged += new System.EventHandler(this.PauseRefreshCheckBox_CheckedChanged);
             resources.ApplyResources(this.PauseRefreshCheckBox, "PauseRefreshCheckBox");
             //
@@ -566,7 +627,7 @@ namespace CKAN.GUI
             this.MoreSettingsGroupBox.Location = new System.Drawing.Point(280, 310);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
             this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 150);
-            this.MoreSettingsGroupBox.TabIndex = 36;
+            this.MoreSettingsGroupBox.TabIndex = 39;
             this.MoreSettingsGroupBox.TabStop = false;
             resources.ApplyResources(this.MoreSettingsGroupBox, "MoreSettingsGroupBox");
             //
@@ -585,7 +646,7 @@ namespace CKAN.GUI
             this.LanguageSelectionComboBox.Location = new System.Drawing.Point(244, 18);
             this.LanguageSelectionComboBox.Name = "LanguageSelectionComboBox";
             this.LanguageSelectionComboBox.Size = new System.Drawing.Size(220, 17);
-            this.LanguageSelectionComboBox.TabIndex = 37;
+            this.LanguageSelectionComboBox.TabIndex = 40;
             this.LanguageSelectionComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.LanguageSelectionComboBox.SelectionChangeCommitted += new System.EventHandler(this.LanguageSelectionComboBox_SelectionChanged);
             this.LanguageSelectionComboBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.LanguageSelectionComboBox_MouseWheel);
@@ -597,7 +658,7 @@ namespace CKAN.GUI
             this.RefreshOnStartupCheckbox.Location = new System.Drawing.Point(12, 41);
             this.RefreshOnStartupCheckbox.Name = "RefreshOnStartupCheckbox";
             this.RefreshOnStartupCheckbox.Size = new System.Drawing.Size(167, 17);
-            this.RefreshOnStartupCheckbox.TabIndex = 38;
+            this.RefreshOnStartupCheckbox.TabIndex = 41;
             this.RefreshOnStartupCheckbox.CheckedChanged += new System.EventHandler(this.RefreshOnStartupCheckbox_CheckedChanged);
             resources.ApplyResources(this.RefreshOnStartupCheckbox, "RefreshOnStartupCheckbox");
             //
@@ -608,7 +669,7 @@ namespace CKAN.GUI
             this.HideEpochsCheckbox.Location = new System.Drawing.Point(12, 64);
             this.HideEpochsCheckbox.Name = "HideEpochsCheckbox";
             this.HideEpochsCheckbox.Size = new System.Drawing.Size(261, 17);
-            this.HideEpochsCheckbox.TabIndex = 39;
+            this.HideEpochsCheckbox.TabIndex = 42;
             this.HideEpochsCheckbox.CheckedChanged += new System.EventHandler(this.HideEpochsCheckbox_CheckedChanged);
             resources.ApplyResources(this.HideEpochsCheckbox, "HideEpochsCheckbox");
             //
@@ -619,7 +680,7 @@ namespace CKAN.GUI
             this.HideVCheckbox.Location = new System.Drawing.Point(12, 87);
             this.HideVCheckbox.Name = "HideVCheckbox";
             this.HideVCheckbox.Size = new System.Drawing.Size(204, 17);
-            this.HideVCheckbox.TabIndex = 40;
+            this.HideVCheckbox.TabIndex = 43;
             this.HideVCheckbox.CheckedChanged += new System.EventHandler(this.HideVCheckbox_CheckedChanged);
             resources.ApplyResources(this.HideVCheckbox, "HideVCheckbox");
             //
@@ -632,7 +693,7 @@ namespace CKAN.GUI
             this.AutoSortUpdateCheckBox.Location = new System.Drawing.Point(12, 110);
             this.AutoSortUpdateCheckBox.Name = "AutoSortUpdateCheckBox";
             this.AutoSortUpdateCheckBox.Size = new System.Drawing.Size(452, 32);
-            this.AutoSortUpdateCheckBox.TabIndex = 41;
+            this.AutoSortUpdateCheckBox.TabIndex = 44;
             this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
             resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
             //
@@ -672,6 +733,7 @@ namespace CKAN.GUI
 
         #endregion
 
+        private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
         private System.Windows.Forms.ListView ReposListBox;
         private System.Windows.Forms.ColumnHeader RepoNameHeader;
@@ -687,7 +749,10 @@ namespace CKAN.GUI
         private System.Windows.Forms.Button NewAuthTokenButton;
         private System.Windows.Forms.Button DeleteAuthTokenButton;
         private System.Windows.Forms.GroupBox CacheGroupBox;
-        private System.Windows.Forms.TextBox CachePath;
+        private System.Windows.Forms.TextBox CachePathTextBox;
+        private System.Windows.Forms.Button CachePathEditButton;
+        private System.Windows.Forms.Button CachePathSaveButton;
+        private System.Windows.Forms.Button CachePathCancelButton;
         private System.Windows.Forms.Label CacheSummary;
         private System.Windows.Forms.Label CacheLimitPreLabel;
         private System.Windows.Forms.TextBox CacheLimit;
@@ -699,6 +764,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem PurgeAllMenuItem;
         private System.Windows.Forms.Button ResetCacheButton;
         private System.Windows.Forms.Button OpenCacheButton;
+        private System.Windows.Forms.ProgressBar MoveCacheProgressBar;
         private System.Windows.Forms.GroupBox AutoUpdateGroupBox;
         private System.Windows.Forms.Label LocalVersionPreLabel;
         private System.Windows.Forms.Label LocalVersionLabel;
@@ -722,6 +788,5 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox HideEpochsCheckbox;
         private System.Windows.Forms.CheckBox HideVCheckbox;
         private System.Windows.Forms.CheckBox AutoSortUpdateCheckBox;
-        private System.Windows.Forms.ToolTip ToolTip;
     }
 }

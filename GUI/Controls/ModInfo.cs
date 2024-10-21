@@ -53,6 +53,11 @@ namespace CKAN.GUI
             Contents.RefreshModContentsTree();
         }
 
+        public void SwitchTab(string name)
+        {
+            ModInfoTabControl.SelectedTab = ModInfoTabControl.TabPages[name];
+        }
+
         public event Action<GUIMod>?            OnDownloadClick;
         public event Action<SavedSearch, bool>? OnChangeFilter;
         public event Action<CkanModule>?        ModuleDoubleClicked;

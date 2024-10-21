@@ -106,7 +106,7 @@ namespace CKAN.NetKAN.Processors
             {
                 log.InfoFormat("Using main CKAN meta-cache at {0}", cfg.DownloadCacheDir);
                 // Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(null, cfg.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
+                return new NetFileCache(cfg.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
             }
             catch
             {

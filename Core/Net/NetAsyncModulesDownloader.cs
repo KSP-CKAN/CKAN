@@ -60,7 +60,7 @@ namespace CKAN
                      .OrderBy(u => u,
                               new PreferredHostUriComparer(preferredHosts))
                      .ToList(),
-                cache.GetInProgressFileName(first),
+                cache.GetInProgressFileName(first)?.FullName,
                 first.download_size,
                 string.IsNullOrEmpty(first.download_content_type)
                     ? defaultMimeType
