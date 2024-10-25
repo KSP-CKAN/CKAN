@@ -477,15 +477,14 @@ namespace CKAN
         /// Each mod is after its dependencies and before its reverse dependencies.
         /// </summary>
         public IEnumerable<CkanModule> ModList(bool parallel = true)
-            => modlist.Values
-                      .Distinct()
-                      .AsParallelIf(parallel)
-                      // Put user choices at the bottom; .OrderBy(bool) -> false first
-                      .OrderBy(m => ReasonsFor(m).Any(r => r is SelectionReason.UserRequested))
-                      // Put dependencies before dependers
-                      .ThenByDescending(totalDependers)
-                      // Resolve ties in name order
-                      .ThenBy(m => m.name);
+            => modlist.Values.Distinct()
+                             .AsParallelIf(parallel)
+                             // Put user choices at the bottom; .OrderBy(bool) -> false first
+                             .OrderBy(m => ReasonsFor(m).Any(r => r is SelectionReason.UserRequested))
+                             // Put dependencies before dependers
+                             .ThenByDescending(totalDependers)
+                             // Resolve ties in name order
+                             .ThenBy(m => m.name);
 
         // The more nodes of the reverse-dependency graph we can paint, the higher up in the list it goes
         private int totalDependers(CkanModule module)
@@ -509,7 +508,7 @@ namespace CKAN
             }
         }
 
-        private IEnumerable<CkanModule> allDependers(CkanModule                   module)
+        private IEnumerable<CkanModule> allDependers(CkanModule module)
             => BreadthFirstSearch(Enumerable.Repeat(module, 1),
                                   (searching, found) =>
                                       ReasonsFor(searching).OfType<SelectionReason.RelationshipReason>()
@@ -541,7 +540,7 @@ namespace CKAN
                                                                          .ToArray()))
                              .OrderByDescending(totalDependers);
 
-        private bool ValidRecSugReasons(HashSet<CkanModule>   dependencies,
+        private bool ValidRecSugReasons(HashSet<CkanModule>                  dependencies,
                                         SelectionReason.RelationshipReason[] recSugReasons)
             => recSugReasons.OfType<SelectionReason.RelationshipReason>()
                             .Any(r => dependencies.Contains(r.Parent))

@@ -120,16 +120,15 @@ namespace CKAN
         {
             if (bytesToStore > 0)
             {
-                var bytesFree = where.GetDrive()?.AvailableFreeSpace;
-                if (bytesFree.HasValue && bytesToStore > bytesFree.Value) {
+                var bytesFree = where.GetDrive().AvailableFreeSpace;
+                if (bytesToStore > bytesFree) {
                     throw new NotEnoughSpaceKraken(errorDescription, where,
-                                                   bytesFree.Value, bytesToStore);
+                                                   bytesFree, bytesToStore);
                 }
                 log.DebugFormat("Storing {0} to {1} ({2} free)...",
                                 CkanModule.FmtSize(bytesToStore),
                                 where.FullName,
-                                bytesFree.HasValue ? CkanModule.FmtSize(bytesFree.Value)
-                                                   : "unknown bytes");
+                                CkanModule.FmtSize(bytesFree));
             }
         }
 
