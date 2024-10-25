@@ -30,76 +30,76 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Wait));
-            this.TopPanel = new System.Windows.Forms.Panel();
-            this.MessageTextBox = new System.Windows.Forms.TextBox();
-            this.DialogProgressBar = new System.Windows.Forms.ProgressBar();
+            this.VerticalSplitter = new System.Windows.Forms.SplitContainer();
+            this.DialogProgressBar = new CKAN.GUI.LabeledProgressBar();
             this.ProgressBarTable = new System.Windows.Forms.TableLayoutPanel();
             this.LogTextBox = new System.Windows.Forms.TextBox();
             this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.CancelCurrentActionButton = new System.Windows.Forms.Button();
             this.RetryCurrentActionButton = new System.Windows.Forms.Button();
             this.OkButton = new System.Windows.Forms.Button();
+            this.VerticalSplitter.Panel1.SuspendLayout();
+            this.VerticalSplitter.Panel2.SuspendLayout();
+            this.VerticalSplitter.SuspendLayout();
             this.ProgressBarTable.SuspendLayout();
             this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
-            // TopPanel
+            // VerticalSplitter
             //
-            this.TopPanel.Controls.Add(this.MessageTextBox);
-            this.TopPanel.Controls.Add(this.DialogProgressBar);
-            this.TopPanel.Controls.Add(this.ProgressBarTable);
-            this.TopPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.TopPanel.Name = "TopPanel";
-            this.TopPanel.Size = new System.Drawing.Size(500, 85);
+            this.VerticalSplitter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.VerticalSplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.VerticalSplitter.Location = new System.Drawing.Point(0, 35);
+            this.VerticalSplitter.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.VerticalSplitter.Name = "VerticalSplitter";
+            this.VerticalSplitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.VerticalSplitter.Size = new System.Drawing.Size(500, 500);
+            this.VerticalSplitter.SplitterDistance = 50;
+            this.VerticalSplitter.SplitterWidth = 10;
+            this.VerticalSplitter.TabStop = false;
             //
-            // MessageTextBox
+            // VerticalSplitter.Panel1
             //
-            this.MessageTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.MessageTextBox.BackColor = System.Drawing.SystemColors.Control;
-            this.MessageTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.MessageTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.MessageTextBox.Enabled = false;
-            this.MessageTextBox.Location = new System.Drawing.Point(5, 5);
-            this.MessageTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.MessageTextBox.Multiline = true;
-            this.MessageTextBox.Name = "MessageTextBox";
-            this.MessageTextBox.ReadOnly = true;
-            this.MessageTextBox.Size = new System.Drawing.Size(490, 30);
-            this.MessageTextBox.TabIndex = 0;
-            this.MessageTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            resources.ApplyResources(this.MessageTextBox, "MessageTextBox");
+            this.VerticalSplitter.Panel1.Controls.Add(this.DialogProgressBar);
+            this.VerticalSplitter.Panel1.Controls.Add(this.ProgressBarTable);
+            this.VerticalSplitter.Panel1MinSize = 50;
+            //
+            // VerticalSplitter.Panel2
+            //
+            this.VerticalSplitter.Panel2.Controls.Add(this.LogTextBox);
+            this.VerticalSplitter.Panel2MinSize = 100;
             //
             // DialogProgressBar
             //
             this.DialogProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.DialogProgressBar.Location = new System.Drawing.Point(5, 45);
+            this.DialogProgressBar.Location = new System.Drawing.Point(5, 7);
             this.DialogProgressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.DialogProgressBar.Font = new System.Drawing.Font(System.Drawing.SystemFonts.MessageBoxFont.Name, 12, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.DialogProgressBar.Minimum = 0;
             this.DialogProgressBar.Maximum = 100;
             this.DialogProgressBar.Name = "DialogProgressBar";
-            this.DialogProgressBar.Size = new System.Drawing.Size(490, 25);
+            this.DialogProgressBar.Size = new System.Drawing.Size(490, 28);
             this.DialogProgressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.DialogProgressBar.TabIndex = 1;
+            this.DialogProgressBar.TabIndex = 0;
             //
             // ProgressBarTable
             //
-            this.ProgressBarTable.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProgressBarTable.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Bottom;
             this.ProgressBarTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ProgressBarTable.AutoScroll = true;
+            this.ProgressBarTable.AutoSize = false;
             this.ProgressBarTable.ColumnCount = 2;
             this.ProgressBarTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.ProgressBarTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
-            this.ProgressBarTable.Location = new System.Drawing.Point(0, 70);
+            this.ProgressBarTable.Location = new System.Drawing.Point(0, 40);
             this.ProgressBarTable.Name = "ProgressBarTable";
-            this.ProgressBarTable.Padding = new System.Windows.Forms.Padding(0, 6, 0, 6);
-            this.ProgressBarTable.Size = new System.Drawing.Size(500, 0);
-            this.ProgressBarTable.AutoSize = false;
-            this.ProgressBarTable.AutoScroll = false;
-            this.ProgressBarTable.VerticalScroll.Visible = false;
+            this.ProgressBarTable.Padding = new System.Windows.Forms.Padding(1);
+            this.ProgressBarTable.Size = new System.Drawing.Size(490, 10);
+            this.ProgressBarTable.VerticalScroll.Visible = true;
+            this.ProgressBarTable.VerticalScroll.SmallChange = 22;
             this.ProgressBarTable.HorizontalScroll.Visible = false;
-            this.ProgressBarTable.TabIndex = 0;
+            this.ProgressBarTable.TabIndex = 1;
             //
             // LogTextBox
             //
@@ -107,6 +107,7 @@ namespace CKAN.GUI
             this.LogTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LogTextBox.Location = new System.Drawing.Point(14, 89);
             this.LogTextBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.LogTextBox.Padding = new System.Windows.Forms.Padding(4);
             this.LogTextBox.Multiline = true;
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
@@ -160,8 +161,7 @@ namespace CKAN.GUI
             // Wait
             //
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Controls.Add(this.LogTextBox);
-            this.Controls.Add(this.TopPanel);
+            this.Controls.Add(this.VerticalSplitter);
             this.Controls.Add(this.BottomButtonPanel);
             this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -172,15 +172,18 @@ namespace CKAN.GUI
             this.ProgressBarTable.PerformLayout();
             this.BottomButtonPanel.ResumeLayout(false);
             this.BottomButtonPanel.PerformLayout();
+            this.VerticalSplitter.Panel1.ResumeLayout(false);
+            this.VerticalSplitter.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.VerticalSplitter)).EndInit();
+            this.VerticalSplitter.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Panel TopPanel;
-        private System.Windows.Forms.TextBox MessageTextBox;
-        private System.Windows.Forms.ProgressBar DialogProgressBar;
+        private System.Windows.Forms.SplitContainer VerticalSplitter;
+        private CKAN.GUI.LabeledProgressBar DialogProgressBar;
         private System.Windows.Forms.TableLayoutPanel ProgressBarTable;
         private System.Windows.Forms.TextBox LogTextBox;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;

@@ -87,8 +87,12 @@ namespace CKAN.GUI
                 var registry = registry_manager.registry;
                 var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent);
                 // Avoid accumulating multiple event handlers
-                installer.onReportModInstalled -= OnModInstalled;
-                installer.onReportModInstalled += OnModInstalled;
+                installer.OneComplete     -= OnModInstalled;
+                installer.InstallProgress -= OnModInstalling;
+                installer.OneComplete     += OnModInstalled;
+                installer.InstallProgress += OnModInstalling;
+                installer.RemoveProgress  -= OnModRemoving;
+                installer.RemoveProgress  += OnModRemoving;
 
                 // this will be the final list of mods we want to install
                 var toInstall   = new List<CkanModule>();
@@ -191,12 +195,9 @@ namespace CKAN.GUI
                 });
                 tabController.SetTabLock(true);
 
-                IDownloader downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
-                downloader.Progress      += Wait.SetModuleProgress;
-                downloader.AllComplete   += Wait.DownloadsComplete;
-                downloader.StoreProgress += (module, remaining, total) =>
-                    Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload, module),
-                        remaining, total);
+                var downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
+                downloader.DownloadProgress += OnModDownloading;
+                downloader.StoreProgress    += OnModValidating;
 
                 Wait.OnCancel += () =>
                 {
@@ -230,7 +231,7 @@ namespace CKAN.GUI
                             }
                             if (!canceled && toUpgrade.Count > 0)
                             {
-                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, true, false);
+                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, false);
                                 toUpgrade.Clear();
                             }
                             if (canceled)
@@ -375,10 +376,54 @@ namespace CKAN.GUI
             }
         }
 
+        /// <summary>
+        /// React to data received for a module
+        /// </summary>
+        /// <param name="mod">The module that is being downloaded</param>
+        /// <param name="remaining">Number of bytes left to download</param>
+        /// <param name="total">Number of bytes in complete download</param>
+        public void OnModDownloading(CkanModule mod, long remaining, long total)
+        {
+            if (total > 0)
+            {
+                Wait.SetProgress(string.Format(Properties.Resources.Downloading,
+                                               mod.name),
+                                 remaining, total);
+            }
+        }
+
+        private void OnModValidating(CkanModule mod, long remaining, long total)
+        {
+            if (total > 0)
+            {
+                Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload,
+                                               mod.name),
+                                 remaining, total);
+            }
+        }
+
+        private void OnModInstalling(CkanModule mod, long remaining, long total)
+        {
+            if (total > 0)
+            {
+                Wait.SetProgress(string.Format(Properties.Resources.MainInstallInstallingMod,
+                                               mod.name),
+                                 remaining, total);
+            }
+        }
+
+        private void OnModRemoving(InstalledModule instMod, long remaining, long total)
+        {
+            if (total > 0)
+            {
+                Wait.SetProgress(string.Format(Properties.Resources.MainInstallRemovingMod,
+                                               instMod.Module.name),
+                                 remaining, total);
+            }
+        }
+
         private void OnModInstalled(CkanModule mod)
         {
-            currentUser.RaiseMessage(Properties.Resources.MainInstallModSuccess,
-                                     mod);
             LabelsAfterInstall(mod);
         }
 
@@ -491,7 +536,7 @@ namespace CKAN.GUI
                         break;
 
                     default:
-                        currentUser.RaiseMessage("{0}", e.Error.Message);
+                        currentUser.RaiseMessage("{0}", e.Error.ToString());
                         break;
                 }
 

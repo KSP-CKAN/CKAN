@@ -406,7 +406,7 @@ namespace Tests.Core
 
                 var cache_path = manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
                                                       TestData.DogeCoinFlagZip(),
-                                                      new Progress<int>(percent => {}));
+                                                      new Progress<long>(bytes => {}));
 
                 Assert.IsTrue(manager.Cache?.IsCached(TestData.DogeCoinFlag_101_module()));
                 Assert.IsTrue(File.Exists(cache_path));
@@ -455,7 +455,7 @@ namespace Tests.Core
                 registry.RepositoriesAdd(repo.repo);
                 manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
                                      TestData.DogeCoinFlagZip(),
-                                     new Progress<int>(percent => {}));
+                                     new Progress<long>(bytes => {}));
 
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
@@ -503,7 +503,7 @@ namespace Tests.Core
                 registry.RepositoriesAdd(repo.repo);
                 manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
                                      TestData.DogeCoinFlagZip(),
-                                     new Progress<int>(percent => {}));
+                                     new Progress<long>(bytes => {}));
 
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
@@ -519,7 +519,7 @@ namespace Tests.Core
                 // Install the plugin test mod.
                 manager.Cache?.Store(TestData.DogeCoinPlugin_module(),
                                      TestData.DogeCoinPluginZip(),
-                                     new Progress<int>(percent => {}));
+                                     new Progress<long>(bytes => {}));
 
                 modules.Add(TestData.DogeCoinPlugin_module());
 
@@ -711,7 +711,7 @@ namespace Tests.Core
                     // Copy the zip file to the cache directory.
                     manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
                                          TestData.DogeCoinFlagZip(),
-                                         new Progress<int>(percent => {}));
+                                         new Progress<long>(bytes => {}));
 
                     // Attempt to install it.
                     var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
@@ -970,7 +970,7 @@ namespace Tests.Core
                 // Copy the zip file to the cache directory.
                 manager.Cache?.Store(TestData.DogeCoinFlag_101ZipSlip_module(),
                                      TestData.DogeCoinFlagZipSlipZip(),
-                                     new Progress<int>(percent => {}));
+                                     new Progress<long>(bytes => {}));
 
                 // Attempt to install it.
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101ZipSlip_module() };
@@ -1012,7 +1012,7 @@ namespace Tests.Core
                 // Copy the zip file to the cache directory.
                 manager.Cache?.Store(TestData.DogeCoinFlag_101ZipBomb_module(),
                                      TestData.DogeCoinFlagZipBombZip(),
-                                     new Progress<int>(percent => {}));
+                                     new Progress<long>(bytes => {}));
 
                 // Attempt to install it.
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101ZipBomb_module() };
@@ -1081,7 +1081,7 @@ namespace Tests.Core
 
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
-                manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<int>(percent => {}));
+                manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
                 var replacement = querier.GetReplacement(replaced.identifier,
                                                          new GameVersionCriteria(new GameVersion(1, 12)))!;
                 installer.Replace(Enumerable.Repeat(replacement, 1),
@@ -1149,7 +1149,7 @@ namespace Tests.Core
 
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
-                manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<int>(percent => {}));
+                manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
                 var replacement = querier.GetReplacement(replaced.identifier,
                                                          new GameVersionCriteria(new GameVersion(1, 11)));
 
@@ -1307,7 +1307,7 @@ namespace Tests.Core
                     var module = CkanModule.FromJson(m);
                     manager.Cache?.Store(module,
                                          TestData.DogeCoinFlagZip(),
-                                         new Progress<int>(percent => {}));
+                                         new Progress<long>(bytes => {}));
                     if (!querier.IsInstalled(module.identifier, false))
                     {
                         registry.RegisterModule(module,
@@ -1381,7 +1381,7 @@ namespace Tests.Core
                 File.WriteAllText(inst.KSP.ToAbsoluteGameDir(unmanaged),
                                   "Not really a DLL, are we?");
                 regMgr.ScanUnmanagedFiles();
-                manager.Cache?.Store(module, zipPath, new Progress<int>(percent => {}));
+                manager.Cache?.Store(module, zipPath, new Progress<long>(bytes => {}));
 
                 // Act
                 HashSet<string>? possibleConfigOnlyDirs = null;

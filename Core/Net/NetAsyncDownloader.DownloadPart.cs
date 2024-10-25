@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Security.Cryptography;
 
 using Autofac;
@@ -15,11 +14,8 @@ namespace CKAN
         {
             public readonly DownloadTarget target;
 
-            public DateTime  lastProgressUpdateTime;
-            public long      lastProgressUpdateSize;
-            public long      bytesLeft;
-            public long      size;
-            public long      bytesPerSecond;
+            public long       bytesLeft;
+            public long       size;
             public Exception? error;
 
             // Number of target URLs already tried and failed
@@ -28,8 +24,8 @@ namespace CKAN
             /// <summary>
             /// Percentage, bytes received, total bytes to receive
             /// </summary>
-            public event Action<int, long, long>?                                   Progress;
-            public event Action<object?, AsyncCompletedEventArgs, string?, string>? Done;
+            public event Action<DownloadPart, long, long>?                        Progress;
+            public event Action<DownloadPart, Exception?, bool, string?, string>? Done;
 
             private          string             mimeType => target.mimeType;
             private readonly string             userAgent;
@@ -44,7 +40,6 @@ namespace CKAN
                 this.userAgent = userAgent ?? "";
                 this.hasher    = hasher;
                 size = bytesLeft = target.size;
-                lastProgressUpdateTime = DateTime.Now;
                 triedDownloads = 0;
             }
 
@@ -103,20 +98,22 @@ namespace CKAN
                 // Forward progress and completion events to our listeners
                 agent.DownloadProgressChanged += (sender, args) =>
                 {
-                    Progress?.Invoke(args.ProgressPercentage, args.BytesReceived, args.TotalBytesToReceive);
+                    Progress?.Invoke(this, args.BytesReceived, args.TotalBytesToReceive);
                 };
                 agent.DownloadProgress += (percent, bytesReceived, totalBytesToReceive) =>
                 {
-                    Progress?.Invoke(percent, bytesReceived, totalBytesToReceive);
+                    Progress?.Invoke(this, bytesReceived, totalBytesToReceive);
                 };
                 agent.DownloadFileCompleted += (sender, args) =>
                 {
-                    Done?.Invoke(sender, args,
+                    Done?.Invoke(this, args.Error, args.Cancelled,
                                  args.Cancelled || args.Error != null
                                      ? null
                                      : agent.ResponseHeaders?.Get("ETag")?.Replace("\"", ""),
-                                 BitConverter.ToString(hasher?.Hash ?? Array.Empty<byte>())
-                                             .Replace("-", ""));
+                                 args.Cancelled || args.Error != null
+                                     ? ""
+                                     : BitConverter.ToString(hasher?.Hash ?? Array.Empty<byte>())
+                                                   .Replace("-", ""));
                 };
             }
         }

@@ -14,10 +14,12 @@ namespace CKAN
         /// </summary>
         void DownloadModules(IEnumerable<CkanModule> modules);
 
+        public event Action<ByteRateCounter> OverallDownloadProgress;
+
         /// <summary>
         /// Raised when data arrives for a module
         /// </summary>
-        event Action<CkanModule, long, long> Progress;
+        event Action<CkanModule, long, long> DownloadProgress;
 
         /// <summary>
         /// Raised while we are checking that a ZIP is valid
@@ -25,9 +27,17 @@ namespace CKAN
         event Action<CkanModule, long, long> StoreProgress;
 
         /// <summary>
+        /// Raised when one module finishes
+        /// </summary>
+        event Action<CkanModule> OneComplete;
+
+        /// <summary>
         /// Raised when a batch of downloads is all done
         /// </summary>
         event Action AllComplete;
+
+        IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule> cached,
+                                                    ICollection<CkanModule> toDownload);
 
         /// <summary>
         /// Cancel any running downloads.

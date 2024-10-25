@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -18,8 +20,10 @@ namespace CKAN
     /// </summary>
     public class NetAsyncModulesDownloader : IDownloader
     {
-        public event Action<CkanModule, long, long>? Progress;
+        public event Action<CkanModule, long, long>? DownloadProgress;
+        public event Action<ByteRateCounter>?        OverallDownloadProgress;
         public event Action<CkanModule, long, long>? StoreProgress;
+        public event Action<CkanModule>?             OneComplete;
         public event Action?                         AllComplete;
 
         /// <summary>
@@ -31,19 +35,18 @@ namespace CKAN
             downloader = new NetAsyncDownloader(user, SHA256.Create, userAgent);
             // Schedule us to process each module on completion.
             downloader.onOneCompleted += ModuleDownloadComplete;
-            downloader.Progress += (target, remaining, total) =>
+            downloader.TargetProgress += (target, remaining, total) =>
             {
-                var mod = modules.FirstOrDefault(m => m.download?.Any(dlUri => target.urls.Contains(dlUri))
-                                                      ?? false);
-                if (mod != null && Progress != null)
+                if (targetModules?[target].First() is CkanModule mod)
                 {
-                    Progress(mod, remaining, total);
+                    DownloadProgress?.Invoke(mod, remaining, total);
                 }
             };
+            downloader.OverallProgress += brc => OverallDownloadProgress?.Invoke(brc);
             this.cache = cache;
         }
 
-        internal NetAsyncDownloader.DownloadTargetFile TargetFromModuleGroup(
+        internal NetAsyncDownloader.DownloadTarget TargetFromModuleGroup(
                 HashSet<CkanModule> group,
                 string?[]           preferredHosts)
             => TargetFromModuleGroup(group, group.OrderBy(m => m.identifier).First(), preferredHosts);
@@ -83,32 +86,33 @@ namespace CKAN
             this.modules.AddRange(moduleGroups.SelectMany(grp => grp));
 
             var preferredHosts = ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts;
-            var targets = moduleGroups
+            targetModules = moduleGroups
                 // Skip any group that already has a URL in progress
                 .Where(grp => grp.All(mod => mod.download?.All(dlUri => !activeURLs.Contains(dlUri)) ?? false))
                 // Each group gets one target containing all the URLs
-                .Select(grp => TargetFromModuleGroup(grp, preferredHosts))
-                .ToArray();
+                .ToDictionary(grp => TargetFromModuleGroup(grp, preferredHosts),
+                              grp => grp.ToArray());
             try
             {
                 cancelTokenSrc = new CancellationTokenSource();
                 // Start the downloads!
-                downloader.DownloadAndWait(targets);
+                downloader.DownloadAndWait(targetModules.Keys);
                 this.modules.Clear();
+                targetModules.Clear();
                 AllComplete?.Invoke();
             }
             catch (DownloadErrorsKraken kraken)
             {
                 // Associate the errors with the affected modules
-                // Find a module for each target
-                var targetModules = targets.Select(t => this.modules
-                                                            .First(m => m.download?.Intersect(t.urls)
-                                                                                   .Any()
-                                                                                  ?? false))
-                                           .ToList();
-                var exc = new ModuleDownloadErrorsKraken(targetModules, kraken);
+                var exc = new ModuleDownloadErrorsKraken(
+                    kraken.Exceptions
+                          .SelectMany(kvp => targetModules[kvp.Key]
+                                             .Select(m => new KeyValuePair<CkanModule, Exception>(
+                                                              m, kvp.Value.GetBaseException() ?? kvp.Value)))
+                          .ToList());
                 // Clear this.modules because we're done with these
                 this.modules.Clear();
+                targetModules.Clear();
                 throw exc;
             }
         }
@@ -124,22 +128,52 @@ namespace CKAN
             cancelTokenSrc?.Cancel();
         }
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
+        public IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule> cached,
+                                                           ICollection<CkanModule> toDownload)
+        {
+            var (dlTask, blockingQueue) = DownloadsCollection(toDownload);
+            return ModulesAsTheyFinish(cached, dlTask, blockingQueue);
+        }
 
-        private const    string                  defaultMimeType = "application/octet-stream";
+        private static IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule>        cached,
+                                                                   Task                           dlTask,
+                                                                   BlockingCollection<CkanModule> blockingQueue)
+        {
+            foreach (var m in cached)
+            {
+                yield return m;
+            }
+            foreach (var m in blockingQueue.GetConsumingEnumerable())
+            {
+                yield return m;
+            }
+            blockingQueue.Dispose();
+            if (dlTask.Exception is AggregateException { InnerException: Exception exc })
+            {
+                throw exc;
+            }
+        }
 
-        private readonly List<CkanModule>         modules;
-        private readonly NetAsyncDownloader       downloader;
-        private          IUser                    User => downloader.User;
-        private readonly NetModuleCache           cache;
-        private          CancellationTokenSource? cancelTokenSrc;
+        private (Task dlTask, BlockingCollection<CkanModule> blockingQueue) DownloadsCollection(ICollection<CkanModule> toDownload)
+        {
+            var blockingQueue = new BlockingCollection<CkanModule>(new ConcurrentQueue<CkanModule>());
+            Action<CkanModule> oneComplete = m => blockingQueue.Add(m);
+            OneComplete += oneComplete;
+            return (Task.Factory.StartNew(() => DownloadModules(toDownload))
+                                .ContinueWith(t =>
+                                              {
+                                                  blockingQueue.CompleteAdding();
+                                                  OneComplete -= oneComplete;
+                                              }),
+                    blockingQueue);
+        }
 
         private void ModuleDownloadComplete(NetAsyncDownloader.DownloadTarget target,
                                             Exception?                        error,
                                             string?                           etag,
                                             string?                           sha256)
         {
-            if (target is NetAsyncDownloader.DownloadTargetFile fileTarget)
+            if (target is NetAsyncDownloader.DownloadTargetFile fileTarget && targetModules != null)
             {
                 var url      = fileTarget.urls.First();
                 var filename = fileTarget.filename;
@@ -157,9 +191,8 @@ namespace CKAN
                     CkanModule? module = null;
                     try
                     {
-                        module = modules.First(m => (m.download?.Any(dlUri => dlUri == url)
-                                                     ?? false)
-                                                    || m.InternetArchiveDownload == url);
+                        var completedMods = targetModules[fileTarget];
+                        module = completedMods.First();
 
                         // Check hash if defined in module
                         if (module.download_hash?.sha256 != null
@@ -172,17 +205,24 @@ namespace CKAN
                                               sha256, module.download_hash.sha256));
                         }
 
-                        User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
+                        User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating,
+                                          module.name);
+                        var fileSize = new FileInfo(filename).Length;
                         cache.Store(module, filename,
-                                    new ProgressImmediate<int>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),
+                                    new ProgressImmediate<long>(bytes => StoreProgress?.Invoke(module,
+                                                                                               fileSize - bytes,
+                                                                                               fileSize)),
                                     module.StandardName(),
                                     false,
                                     cancelTokenSrc?.Token);
                         File.Delete(filename);
+                        foreach (var m in completedMods)
+                        {
+                            OneComplete?.Invoke(m);
+                        }
                     }
                     catch (InvalidModuleFileKraken kraken)
                     {
-                        User.RaiseError("{0}", kraken.ToString());
                         if (module != null)
                         {
                             // Finish out the progress bar
@@ -192,7 +232,7 @@ namespace CKAN
                         File.Delete(filename);
 
                         // Tell downloader there is a problem with this file
-                        throw;
+                        throw new DownloadErrorsKraken(target, kraken);
                     }
                     catch (OperationCanceledException exc)
                     {
@@ -217,5 +257,15 @@ namespace CKAN
             }
         }
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(NetAsyncModulesDownloader));
+
+        private const    string                  defaultMimeType = "application/octet-stream";
+
+        private readonly List<CkanModule>         modules;
+        private          IDictionary<NetAsyncDownloader.DownloadTarget, CkanModule[]>? targetModules;
+        private readonly NetAsyncDownloader       downloader;
+        private          IUser                    User => downloader.User;
+        private readonly NetModuleCache           cache;
+        private          CancellationTokenSource? cancelTokenSrc;
     }
 }

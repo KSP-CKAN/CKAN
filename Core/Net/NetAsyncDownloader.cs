@@ -24,14 +24,15 @@ namespace CKAN
         /// <summary>
         /// Raised when data arrives for a download
         /// </summary>
-        public event Action<DownloadTarget, long, long>? Progress;
+        public event Action<DownloadTarget, long, long>? TargetProgress;
+        public event Action<ByteRateCounter>?            OverallProgress;
 
         private readonly object dlMutex = new object();
-        // NOTE: Never remove anything from this, because closures have indexes into it!
-        // (Clearing completely after completion is OK)
         private readonly List<DownloadPart> downloads       = new List<DownloadPart>();
         private readonly List<DownloadPart> queuedDownloads = new List<DownloadPart>();
         private int completed_downloads;
+
+        private readonly ByteRateCounter rateCounter = new ByteRateCounter();
 
         // For inter-thread communication
         private volatile bool download_canceled;
@@ -77,7 +78,7 @@ namespace CKAN
         /// Start a new batch of downloads
         /// </summary>
         /// <param name="targets">The downloads to begin</param>
-        public void DownloadAndWait(IList<DownloadTarget> targets)
+        public void DownloadAndWait(ICollection<DownloadTarget> targets)
         {
             lock (dlMutex)
             {
@@ -102,8 +103,12 @@ namespace CKAN
                 Download(targets);
             }
 
+            rateCounter.Start();
+
             log.Debug("Waiting for downloads to finish...");
             complete_or_canceled.WaitOne();
+
+            rateCounter.Stop();
 
             log.Debug("Downloads finished");
 
@@ -211,38 +216,33 @@ namespace CKAN
             {
                 if (!queuedDownloads.Contains(dl))
                 {
-                    log.DebugFormat("Enqueuing download of {0}", string.Join(", ", dl.target.urls));
+                    log.DebugFormat("Enqueuing download of {0}", dl.CurrentUri);
                     // Throttled host already downloading, we will get back to this later
                     queuedDownloads.Add(dl);
                 }
             }
             else
             {
-                log.DebugFormat("Beginning download of {0}", string.Join(", ", dl.target.urls));
+                log.DebugFormat("Beginning download of {0}", dl.CurrentUri);
 
                 lock (dlMutex)
                 {
                     if (!downloads.Contains(dl))
                     {
-                        // We need a new variable for our closure/lambda, hence index = 1+prev max
-                        int index = downloads.Count;
-
                         downloads.Add(dl);
 
                         // Schedule for us to get back progress reports.
-                        dl.Progress += (ProgressPercentage, BytesReceived, TotalBytesToReceive) =>
-                            FileProgressReport(index, BytesReceived, TotalBytesToReceive);
+                        dl.Progress += FileProgressReport;
 
                         // And schedule a notification if we're done (or if something goes wrong)
-                        dl.Done += (sender, args, etag, hash) =>
-                            FileDownloadComplete(index, args.Error, args.Cancelled, etag, hash);
+                        dl.Done += FileDownloadComplete;
                     }
                     queuedDownloads.Remove(dl);
                 }
 
                 // Encode spaces to avoid confusing URL parsers
                 User.RaiseMessage(Properties.Resources.NetAsyncDownloaderDownloading,
-                    dl.CurrentUri.ToString().Replace(" ", "%20"));
+                                  dl.CurrentUri.ToString().Replace(" ", "%20"));
 
                 // Start the download!
                 dl.Download();
@@ -279,65 +279,24 @@ namespace CKAN
         /// <summary>
         /// Generates a download progress report.
         /// </summary>
-        /// <param name="index">Index of the file being downloaded</param>
+        /// <param name="download">The download that progressed</param>
         /// <param name="percent">The percent complete</param>
         /// <param name="bytesDownloaded">The bytes downloaded</param>
         /// <param name="bytesToDownload">The total amount of bytes we expect to download</param>
-        private void FileProgressReport(int index, long bytesDownloaded, long bytesToDownload)
+        private void FileProgressReport(DownloadPart download, long bytesDownloaded, long bytesToDownload)
         {
-            DownloadPart download = downloads[index];
-
-            DateTime now = DateTime.Now;
-            TimeSpan timeSpan = now - download.lastProgressUpdateTime;
-            if (timeSpan.Seconds >= 3.0)
-            {
-                long bytesChange = bytesDownloaded - download.lastProgressUpdateSize;
-                download.lastProgressUpdateSize = bytesDownloaded;
-                download.lastProgressUpdateTime = now;
-                download.bytesPerSecond = bytesChange / timeSpan.Seconds;
-            }
-
-            download.size = bytesToDownload;
+            download.size      = bytesToDownload;
             download.bytesLeft = download.size - bytesDownloaded;
-
-            Progress?.Invoke(download.target, download.bytesLeft, download.size);
-
-            long totalBytesPerSecond = 0;
-            long totalBytesLeft = 0;
-            long totalSize = 0;
+            TargetProgress?.Invoke(download.target, download.bytesLeft, download.size);
 
             lock (dlMutex)
             {
-                foreach (var t in downloads)
-                {
-                    if (t == null)
-                    {
-                        continue;
-                    }
-
-                    if (t.bytesLeft > 0)
-                    {
-                        totalBytesPerSecond += t.bytesPerSecond;
-                    }
-
-                    totalBytesLeft += t.bytesLeft;
-                    totalSize += t.size;
-                }
-                foreach (var dl in queuedDownloads)
-                {
-                    // Somehow managed to get a NullRef for dl here
-                    if (dl == null)
-                    {
-                        continue;
-                    }
-
-                    totalBytesLeft += dl.target.size;
-                    totalSize += dl.target.size;
-                }
+                var queuedSize = queuedDownloads.Sum(dl => dl.target.size);
+                rateCounter.Size      = queuedSize + downloads.Sum(dl => dl.size);
+                rateCounter.BytesLeft = queuedSize + downloads.Sum(dl => dl.bytesLeft);
             }
 
-            int totalPercentage = (int)(((totalSize - totalBytesLeft) * 100) / (totalSize));
-            User.RaiseProgress(totalPercentage, totalBytesPerSecond, totalBytesLeft);
+            OverallProgress?.Invoke(rateCounter);
         }
 
         private void PopFromQueue(string host)
@@ -360,13 +319,12 @@ namespace CKAN
         /// This method gets called back by `WebClient` when a download is completed.
         /// It in turncalls the onCompleted hook when *all* downloads are finished.
         /// </summary>
-        private void FileDownloadComplete(int        index,
-                                          Exception? error,
-                                          bool       canceled,
-                                          string?    etag,
-                                          string     hash)
+        private void FileDownloadComplete(DownloadPart dl,
+                                          Exception?   error,
+                                          bool         canceled,
+                                          string?      etag,
+                                          string       hash)
         {
-            var dl      = downloads[index];
             var doneUri = dl.CurrentUri;
             if (error != null)
             {

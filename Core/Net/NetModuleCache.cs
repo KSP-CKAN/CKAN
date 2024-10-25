@@ -157,7 +157,7 @@ namespace CKAN
         /// </returns>
         public string Store(CkanModule         module,
                             string             path,
-                            IProgress<int>?    progress,
+                            IProgress<long>?   progress,
                             string?            description = null,
                             bool               move        = false,
                             CancellationToken? cancelToken = default,
@@ -184,8 +184,7 @@ namespace CKAN
                 cancelToken?.ThrowIfCancellationRequested();
 
                 // Check valid CRC
-                if (!ZipValid(path, out string invalidReason,
-                              new ProgressImmediate<int>(percent => progress?.Report(percent))))
+                if (!ZipValid(path, out string invalidReason, progress))
                 {
                     throw new InvalidModuleFileKraken(
                         module, path,
@@ -205,7 +204,7 @@ namespace CKAN
                                           move)
                             : "";
             // Make sure completion is signalled so progress bars go away
-            progress?.Report(100);
+            progress?.Report(new FileInfo(path).Length);
             ModStored?.Invoke(module);
             return success;
         }
@@ -219,9 +218,9 @@ namespace CKAN
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
         /// </returns>
-        public static bool ZipValid(string          filename,
-                                    out string      invalidReason,
-                                    IProgress<int>? progress)
+        public static bool ZipValid(string           filename,
+                                    out string       invalidReason,
+                                    IProgress<long>? progress)
         {
             try
             {
@@ -231,7 +230,9 @@ namespace CKAN
                     {
                         string? zipErr = null;
                         // Limit progress updates to 100 per ZIP file
-                        long highestPercent = -1;
+                        long totalBytesValidated = 0;
+                        long previousBytesValidated = 0;
+                        long onePercent = new FileInfo(filename).Length / 100;
                         // Perform CRC and other checks
                         if (zip.TestArchive(true, TestStrategy.FindFirstError,
                             (TestStatus st, string msg) =>
@@ -248,14 +249,16 @@ namespace CKAN
                                             Properties.Resources.NetFileCacheZipError,
                                             st.Operation, st.Entry?.Name, msg);
                                     }
-                                    else if (st.Entry != null && progress != null)
+                                    else if (st is { Operation: TestOperation.EntryComplete,
+                                                     Entry:     ZipEntry entry }
+                                             && progress != null)
                                     {
                                         // Report progress
-                                        var percent = (int)(100 * st.Entry.ZipFileIndex / zip.Count);
-                                        if (percent > highestPercent)
+                                        totalBytesValidated += entry.CompressedSize;
+                                        if (totalBytesValidated - previousBytesValidated > onePercent)
                                         {
-                                            progress.Report(percent);
-                                            highestPercent = percent;
+                                            progress.Report(totalBytesValidated);
+                                            previousBytesValidated = totalBytesValidated;
                                         }
                                     }
                                 }

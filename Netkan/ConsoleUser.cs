@@ -276,18 +276,15 @@ namespace CKAN.NetKAN
             Console.Write("\r\n{0}", message);
         }
 
-        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
+        public void RaiseProgress(ByteRateCounter rateCounter)
         {
             // In headless mode, only print a new message if the percent has changed,
             // to reduce clutter in logs for large downloads
-            if (!Headless || percent != previousPercent)
+            if (!Headless || rateCounter.Percent != previousPercent)
             {
-                var fullMsg = string.Format(Properties.Resources.NetAsyncDownloaderProgress,
-                                            CkanModule.FmtSize(bytesPerSecond),
-                                            CkanModule.FmtSize(bytesLeft));
-                // The \r at the front here causes download messages to *overwrite* each other.
-                Console.Write("\r{0} - {1}%           ", fullMsg, percent);
-                previousPercent = percent;
+                // The \r at the start causes download messages to *overwrite* each other.
+                Console.Write("\r{0}           ", rateCounter.Summary);
+                previousPercent = rateCounter.Percent;
             }
         }
 

@@ -47,12 +47,9 @@ namespace CKAN.GUI
                 && Manager?.Cache != null)
             {
                 downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
-                downloader.Progress      += Wait.SetModuleProgress;
-                downloader.AllComplete   += Wait.DownloadsComplete;
-                downloader.StoreProgress += (module, remaining, total) =>
-                    Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload,
-                                                   module),
-                                     remaining, total);
+                downloader.DownloadProgress += OnModDownloading;
+                downloader.StoreProgress    += OnModValidating;
+                downloader.OverallDownloadProgress += currentUser.RaiseProgress;
                 Wait.OnCancel += downloader.CancelDownload;
                 downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
                 e.Result = e.Argument;

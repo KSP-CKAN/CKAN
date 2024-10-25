@@ -1,10 +1,9 @@
 using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using Timer = System.Windows.Forms.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -21,18 +20,16 @@ namespace CKAN.GUI
         public Wait()
         {
             InitializeComponent();
-            progressTimer.Tick += (sender, evt) => ReflowProgressBars();
-
+            emptyHeight = VerticalSplitter.SplitterDistance;
             bgWorker.DoWork             += DoWork;
             bgWorker.RunWorkerCompleted += RunWorkerCompleted;
         }
 
-
         [ForbidGUICalls]
         public void StartWaiting(Action<object?, DoWorkEventArgs?>             mainWork,
                                  Action<object?, RunWorkerCompletedEventArgs?> postWork,
-                                 bool cancelable,
-                                 object? param)
+                                 bool                                          cancelable,
+                                 object?                                       param)
         {
             bgLogic   = mainWork;
             postLogic = postWork;
@@ -53,8 +50,7 @@ namespace CKAN.GUI
             [ForbidGUICalls]
             set
             {
-                Util.Invoke(this, () =>
-                    RetryCurrentActionButton.Visible = value);
+                Util.Invoke(this, () => RetryCurrentActionButton.Visible = value);
             }
         }
 
@@ -62,10 +58,10 @@ namespace CKAN.GUI
         {
             set
             {
-                Util.Invoke(this, () =>
-                    DialogProgressBar.Value =
-                        Math.Max(DialogProgressBar.Minimum,
-                            Math.Min(DialogProgressBar.Maximum, value)));
+                Util.Invoke(this,
+                            () => DialogProgressBar.Value = Math.Max(DialogProgressBar.Minimum,
+                                                                     Math.Min(DialogProgressBar.Maximum,
+                                                                              value)));
             }
         }
 
@@ -74,29 +70,71 @@ namespace CKAN.GUI
             [ForbidGUICalls]
             set
             {
-                Util.Invoke(this, () =>
-                    DialogProgressBar.Style = value
-                        ? ProgressBarStyle.Marquee
-                        : ProgressBarStyle.Continuous);
+                Util.Invoke(this,
+                            () => DialogProgressBar.Style = value ? ProgressBarStyle.Marquee
+                                                                  : ProgressBarStyle.Continuous);
             }
         }
 
         #pragma warning restore IDE0027
 
-        public void SetProgress(string label, long remaining, long total)
+        public void SetProgress(string label,
+                                long remaining, long total)
         {
+            // download_size is allowed to be 0
             if (total > 0)
             {
                 Util.Invoke(this, () =>
                 {
-                    if (progressBars.TryGetValue(label, out ProgressBar? pb))
+                    if (progressBars.TryGetValue(label, out LabeledProgressBar? pb))
                     {
+                        var rateCounter = rateCounters[label];
+                        rateCounter.BytesLeft = remaining;
+                        rateCounter.Size      = total;
+
                         // download_size is allowed to be 0
-                        pb.Value = Math.Max(pb.Minimum, Math.Min(pb.Maximum,
-                            (int) (100 * (total - remaining) / total)));
+                        var newVal = Math.Max(pb.Minimum,
+                                              Math.Min(pb.Maximum,
+                                                       (int)(100 * (total - remaining) / total)));
+                        pb.Value = newVal;
+                        pb.Text = rateCounter.Summary;
+                        if (newVal >= 100)
+                        {
+                            rateCounter.Stop();
+                            for (int row = ProgressBarTable.GetPositionFromControl(pb).Row; row > 0; --row)
+                            {
+                                if (ProgressBarTable.GetControlFromPosition(1, row - 1)    is LabeledProgressBar prevPb
+                                    && ProgressBarTable.GetControlFromPosition(0, row)     is Label myLbl
+                                    && ProgressBarTable.GetControlFromPosition(0, row - 1) is Label prevLbl)
+                                {
+                                    if (prevPb.Value >= 100)
+                                    {
+                                        // Previous row is completed, done
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // Previous row is in progress, swap
+                                        ProgressBarTable.SetRow(myLbl,   row - 1);
+                                        ProgressBarTable.SetRow(pb,      row - 1);
+                                        ProgressBarTable.SetRow(prevLbl, row);
+                                        ProgressBarTable.SetRow(prevPb,  row);
+                                    }
+                                }
+                            }
+                        }
                     }
                     else
                     {
+                        var rateCounter = new ByteRateCounter
+                        {
+                            BytesLeft = remaining,
+                            Size      = total
+                        };
+                        rateCounters.Add(label, rateCounter);
+                        rateCounter.Start();
+
+                        var scrollToBottom = AtEnd(ProgressBarTable);
                         var newLb = new Label()
                         {
                             AutoSize = true,
@@ -104,34 +142,60 @@ namespace CKAN.GUI
                             Margin   = new Padding(0, 8, 0, 0),
                         };
                         progressLabels.Add(label, newLb);
-                        var newPb = new ProgressBar()
+                        // download_size is allowed to be 0
+                        var newVal = Math.Max(0,
+                                              Math.Min(100,
+                                                       (int)(100 * (total - remaining) / total)));
+                        var newPb = new LabeledProgressBar()
                         {
                             Anchor  = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
                             Minimum = 0,
                             Maximum = 100,
-                            // download_size is allowed to be 0
-                            Value   = Math.Max(0, Math.Min(100,
-                                           (int) (100 * (total - remaining) / total))),
+                            Value   = newVal,
                             Style   = ProgressBarStyle.Continuous,
+                            Text    = rateCounter.Summary,
                         };
                         progressBars.Add(label, newPb);
+                        // Make room before adding
+                        var newHeight = progressBars.Values
+                                                    .Take(1)
+                                                    .Concat(progressBars.Count == 1
+                                                                // If 1 row, show 1
+                                                                ? Enumerable.Empty<LabeledProgressBar>()
+                                                                // If >1 rows, show 1 + active
+                                                                : progressBars.Values
+                                                                              .Where(pb => pb.Value < 100))
+                                                    .Sum(pb => pb.GetPreferredSize(Size.Empty).Height
+                                                               + pb.Margin.Vertical);
+                        if (ProgressBarTable.Height < newHeight)
+                        {
+                            VerticalSplitter.SplitterDistance = ProgressBarTable.Top
+                                                                + newHeight
+                                                                + ProgressBarTable.Margin.Vertical;
+                            // Never show the horizontal scrollbar
+                            ProgressBarTable.HorizontalScroll.Visible = false;
+                        }
+                        // Now add the new row
+                        ProgressBarTable.Controls.Add(newLb, 0, -1);
+                        ProgressBarTable.Controls.Add(newPb, 1, -1);
+                        ProgressBarTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                        ProgressBarTable.HorizontalScroll.Visible = false;
+                        // If previously scrolled to the bottom, stay there, otherwise let user scroll up without interrupting
+                        if (scrollToBottom)
+                        {
+                            ProgressBarTable.ScrollControlIntoView(newLb);
+                            ProgressBarTable.ScrollControlIntoView(newPb);
+                        }
                     }
-                    progressTimer.Start();
                 });
             }
         }
 
-        /// <summary>
-        /// React to data received for a module,
-        /// adds or updates a label and progress bar so user can see how each download is going
-        /// </summary>
-        /// <param name="module">The module that is being downloaded</param>
-        /// <param name="remaining">Number of bytes left to download</param>
-        /// <param name="total">Number of bytes in complete download</param>
-        public void SetModuleProgress(CkanModule module, long remaining, long total)
-        {
-            SetProgress(module.ToString(), remaining, total);
-        }
+        private static bool AtEnd(ScrollableControl control)
+            => control.DisplayRectangle.Height < control.Height
+                || control.DisplayRectangle.Height
+                   + control.DisplayRectangle.Y
+                   - control.VerticalScroll.LargeChange < control.Height;
 
         private Action<object?, DoWorkEventArgs?>?             bgLogic;
         private Action<object?, RunWorkerCompletedEventArgs?>? postLogic;
@@ -152,85 +216,24 @@ namespace CKAN.GUI
             postLogic?.Invoke(sender, e);
         }
 
-        private const int padding     = 5;
-        private const int emptyHeight = 85;
+        private readonly int emptyHeight;
 
-        private readonly Dictionary<string, Label>       progressLabels = new Dictionary<string, Label>();
-        private readonly Dictionary<string, ProgressBar> progressBars   = new Dictionary<string, ProgressBar>();
-        private readonly Timer progressTimer = new Timer() { Interval = 3000 };
-
-        /// <summary>
-        /// Add new progress bars and remove completed ones (100%) in a single scheduled pass,
-        /// so they don't constantly flicker and jump around.
-        /// </summary>
-        private void ReflowProgressBars()
-        {
-            Util.Invoke(this, () =>
-            {
-                foreach (var kvp in progressBars)
-                {
-                    var lbl = progressLabels[kvp.Key];
-                    var pb  = kvp.Value;
-
-                    if (pb.Value >= 100)
-                    {
-                        if (ProgressBarTable.Controls.Contains(pb))
-                        {
-                            // Finished, remove in this pass
-                            ProgressBarTable.Controls.Remove(lbl);
-                            ProgressBarTable.Controls.Remove(pb);
-                            ProgressBarTable.RowStyles.RemoveAt(0);
-                        }
-                    }
-                    else if (!ProgressBarTable.Controls.Contains(pb))
-                    {
-                        // Just started, add it in this pass
-                        ProgressBarTable.Controls.Add(lbl, 0, -1);
-                        ProgressBarTable.Controls.Add(pb,  1, -1);
-                        ProgressBarTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
-                    }
-                }
-
-                // Remove completed rows from our dicts
-                var removedKeys = progressBars
-                    .Where(kvp => !ProgressBarTable.Controls.Contains(kvp.Value))
-                    .Select(kvp => kvp.Key)
-                    .ToList();
-                foreach (var key in removedKeys)
-                {
-                    progressLabels.Remove(key);
-                    progressBars.Remove(key);
-                }
-
-                // Fit table to its contents (it assumes we will give it a size)
-                var cellPadding = ProgressBarTable.Padding.Vertical;
-                ProgressBarTable.Height = progressBars.Values
-                    .Select(pb => pb.GetPreferredSize(Size.Empty).Height + cellPadding)
-                    .Sum();
-                TopPanel.Height = ProgressBarTable.Top + ProgressBarTable.Height + padding;
-            });
-        }
-
-        /// <summary>
-        /// React to completion of all downloads,
-        /// removes all the module progress bars since we don't need them anymore
-        /// </summary>
-        public void DownloadsComplete()
-        {
-            ClearProgressBars();
-            progressTimer.Stop();
-        }
+        private readonly Dictionary<string, Label>              progressLabels = new Dictionary<string, Label>();
+        private readonly Dictionary<string, LabeledProgressBar> progressBars   = new Dictionary<string, LabeledProgressBar>();
+        private readonly Dictionary<string, ByteRateCounter>    rateCounters   = new Dictionary<string, ByteRateCounter>();
 
         private void ClearProgressBars()
         {
-            Util.Invoke(this, () =>
+            ProgressBarTable.Controls.Clear();
+            ProgressBarTable.RowStyles.Clear();
+            progressLabels.Clear();
+            progressBars.Clear();
+            foreach (var rc in rateCounters.Values)
             {
-                ProgressBarTable.Controls.Clear();
-                ProgressBarTable.RowStyles.Clear();
-                progressLabels.Clear();
-                progressBars.Clear();
-                TopPanel.Height = emptyHeight;
-            });
+                rc.Stop();
+            }
+            rateCounters.Clear();
+            VerticalSplitter.SplitterDistance = emptyHeight;
         }
 
         [ForbidGUICalls]
@@ -244,7 +247,7 @@ namespace CKAN.GUI
                 CancelCurrentActionButton.Visible = cancelable;
                 CancelCurrentActionButton.Enabled = true;
                 OkButton.Enabled = false;
-                MessageTextBox.Text = Properties.Resources.MainWaitPleaseWait;
+                DialogProgressBar.Text = Properties.Resources.MainWaitPleaseWait;
             });
         }
 
@@ -253,7 +256,7 @@ namespace CKAN.GUI
             OnCancel = null;
             Util.Invoke(this, () =>
             {
-                MessageTextBox.Text = Properties.Resources.MainWaitDone;
+                DialogProgressBar.Text = Properties.Resources.MainWaitDone;
                 ProgressValue = 100;
                 ProgressIndeterminate = false;
                 CancelCurrentActionButton.Enabled = false;
@@ -263,15 +266,14 @@ namespace CKAN.GUI
 
         public void SetDescription(string message)
         {
-            Util.Invoke(this, () =>
-                MessageTextBox.Text = "(" + message + ")");
+            Util.Invoke(this, () => DialogProgressBar.Text = "(" + message + ")");
         }
 
         public void SetMainProgress(string message, int percent)
         {
             Util.Invoke(this, () =>
             {
-                MessageTextBox.Text = $"{message} - {percent}%";
+                DialogProgressBar.Text = $"{message} - {percent}%";
                 ProgressIndeterminate = false;
                 ProgressValue = percent;
                 if (message != lastProgressMessage)
@@ -282,16 +284,13 @@ namespace CKAN.GUI
             });
         }
 
-        public void SetMainProgress(int percent, long bytesPerSecond, long bytesLeft)
+        public void SetMainProgress(ByteRateCounter rateCounter)
         {
-            var fullMsg = string.Format(CKAN.Properties.Resources.NetAsyncDownloaderProgress,
-                                        CkanModule.FmtSize(bytesPerSecond),
-                                        CkanModule.FmtSize(bytesLeft));
             Util.Invoke(this, () =>
             {
-                MessageTextBox.Text = $"{fullMsg} - {percent}%";
-                ProgressIndeterminate = false;
-                ProgressValue = percent;
+                DialogProgressBar.Text = rateCounter.Summary;
+                ProgressIndeterminate  = false;
+                ProgressValue          = rateCounter.Percent;
             });
         }
 
@@ -300,8 +299,7 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private void ClearLog()
         {
-            Util.Invoke(this, () =>
-                LogTextBox.Text = "");
+            Util.Invoke(this, () => LogTextBox.Text = "");
         }
 
         public void AddLogMessage(string message)
@@ -320,8 +318,7 @@ namespace CKAN.GUI
             if (OnCancel != null)
             {
                 OnCancel.Invoke();
-                Util.Invoke(this, () =>
-                    CancelCurrentActionButton.Enabled = false);
+                Util.Invoke(this, () => CancelCurrentActionButton.Enabled = false);
             }
         }
 

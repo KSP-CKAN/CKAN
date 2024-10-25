@@ -258,29 +258,21 @@ namespace CKAN.CmdLine
         {
             if (message != lastProgressMessage)
             {
-                // The percent looks weird on non-download messages.
-                // The leading newline makes sure we don't end up with a mess from previous
-                // download messages.
                 GoToStartOfLine();
-                Console.Write("{0}", message);
+                // The percent looks weird on non-download messages
+                Console.WriteLine("{0}", message);
                 lastProgressMessage = message;
             }
-
-            // This message leaves the cursor at the end of a line of text
-            atStartOfLine = false;
+            atStartOfLine = true;
         }
 
-        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
+        public void RaiseProgress(ByteRateCounter rateCounter)
         {
-            if (!Headless || percent != previousPercent)
+            if (!Headless || rateCounter.Percent != previousPercent)
             {
-                GoToStartOfLine();
-                var fullMsg = string.Format(CKAN.Properties.Resources.NetAsyncDownloaderProgress,
-                                            CkanModule.FmtSize(bytesPerSecond),
-                                            CkanModule.FmtSize(bytesLeft));
                 // The \r at the front here causes download messages to *overwrite* each other.
-                Console.Write("\r{0} - {1}%           ", fullMsg, percent);
-                previousPercent = percent;
+                Console.Write("\r{0}           ", rateCounter.Summary);
+                previousPercent = rateCounter.Percent;
 
                 // This message leaves the cursor at the end of a line of text
                 atStartOfLine = false;

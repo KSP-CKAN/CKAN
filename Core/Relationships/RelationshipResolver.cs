@@ -481,6 +481,15 @@ namespace CKAN
                              // Resolve ties in name order
                              .ThenBy(m => m.name);
 
+        public bool ReadyToInstall(CkanModule mod, ICollection<CkanModule> installed)
+            => !modlist.Values.Distinct()
+                              .Where(m => m != mod)
+                              .Except(installed)
+                              // Ignore circular dependencies
+                              .Except(allDependers(mod))
+                              .SelectMany(allDependers)
+                              .Contains(mod);
+
         // The more nodes of the reverse-dependency graph we can paint, the higher up in the list it goes
         private int totalDependers(CkanModule module)
             => allDependers(module).Count();

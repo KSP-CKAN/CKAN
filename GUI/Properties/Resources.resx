@@ -222,6 +222,8 @@ Are you sure you want to install them? Cancelling will abort the entire installa
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Status log</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Status log</value></data>
+  <data name="MainInstallInstallingMod" xml:space="preserve"><value>Installing {0}</value></data>
+  <data name="MainInstallRemovingMod" xml:space="preserve"><value>Removing {0}</value></data>
   <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} requires {1} but it is not listed in the index, or not available for your game version.</value></data>
   <data name="MainInstallNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your game version.</value></data>
   <data name="MainInstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for module {0}: {1}</value></data>
@@ -299,6 +301,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam store:</value></data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve"><value>Ctrl-click or Shift-click to make sticky</value></data>
   <data name="DownloadFailed" xml:space="preserve"><value>Download failed!</value></data>
+  <data name="Downloading" xml:space="preserve"><value>Downloading {0}</value></data>
   <data name="ValidatingDownload" xml:space="preserve"><value>Validating {0}</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Loading modules</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Loading registry...</value></data>

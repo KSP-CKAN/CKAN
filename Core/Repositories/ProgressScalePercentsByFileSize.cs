@@ -42,6 +42,11 @@ namespace CKAN
             }
         }
 
+        public void StartFile(long size)
+        {
+            sizes[currentIndex] = size;
+        }
+
         /// <summary>
         /// Call this when you move on from one file to the next
         /// </summary>

@@ -91,11 +91,11 @@ namespace CKAN.GUI
                         {
                             bool canceled = false;
                             var downloader = new NetAsyncDownloader(currentUser, () => null, userAgent);
-                            downloader.Progress += (target, remaining, total) =>
+                            downloader.TargetProgress += (target, remaining, total) =>
                             {
                                 var repo = repos.Where(r => target.urls.Contains(r.uri))
                                                 .FirstOrDefault();
-                                if (repo != null)
+                                if (repo != null && total > 0)
                                 {
                                     Wait.SetProgress(repo.name, remaining, total);
                                 }
