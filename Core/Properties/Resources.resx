@@ -205,6 +205,14 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="GameInstanceManagerPortable" xml:space="preserve"><value>portable</value></data>
   <data name="GameInstanceManagerAuto" xml:space="preserve"><value>Auto {0}</value></data>
   <data name="GameInstanceManagerSelectGamePrompt" xml:space="preserve"><value>Please select the game that is installed at {0}</value></data>
+  <data name="GameInstanceManagerCacheMigrationPrompt" xml:space="preserve"><value>Old cache folder contains {0}. New cache folder has {1} free.
+What would you like to do?</value></data>
+  <data name="GameInstanceManagerCacheMigrationMove" xml:space="preserve"><value>Move old cached files to new cache folder</value></data>
+  <data name="GameInstanceManagerCacheMigrationDelete" xml:space="preserve"><value>Delete cached files</value></data>
+  <data name="GameInstanceManagerCacheMigrationOpen" xml:space="preserve"><value>Open old and new cache folders in file browsers</value></data>
+  <data name="GameInstanceManagerCacheMigrationNothing" xml:space="preserve"><value>Do nothing</value></data>
+  <data name="GameInstanceManagerCacheMigrationRevert" xml:space="preserve"><value>Revert back to using the old cache folder</value></data>
+  <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve"><value>Not enough space to move files!</value></data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve"><value>The specified instance is not a valid {0} instance</value></data>
   <data name="GameInstanceFakeBadVersion" xml:space="preserve"><value>The specified {0} version is not a known version: {1}</value></data>
   <data name="GameInstanceFakeNotEmpty" xml:space="preserve"><value>The specified folder already exists and is not empty</value></data>

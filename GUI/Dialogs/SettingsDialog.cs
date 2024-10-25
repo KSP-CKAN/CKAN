@@ -19,21 +19,6 @@ namespace CKAN.GUI
     #endif
     public partial class SettingsDialog : Form
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
-
-        public bool RepositoryAdded   { get; private set; } = false;
-        public bool RepositoryRemoved { get; private set; } = false;
-        public bool RepositoryMoved   { get; private set; } = false;
-
-        private static GameInstanceManager? manager => Main.Instance?.Manager;
-
-        private readonly IConfiguration   coreConfig;
-        private readonly GUIConfiguration guiConfig;
-        private readonly RegistryManager  regMgr;
-        private readonly AutoUpdate       updater;
-        private readonly IUser            user;
-        private readonly string?          userAgent;
-
         /// <summary>
         /// Initialize a settings window
         /// </summary>
@@ -45,6 +30,13 @@ namespace CKAN.GUI
                               string?          userAgent)
         {
             InitializeComponent();
+
+            ToolTip.SetToolTip(RefreshTextBox,    Properties.Resources.SettingsToolTipRefreshTextBox);
+            ToolTip.SetToolTip(ChangeCacheButton, Properties.Resources.SettingsToolTipChangeCacheButton);
+            ToolTip.SetToolTip(ResetCacheButton,  Properties.Resources.SettingsToolTipResetCacheButton);
+            ToolTip.SetToolTip(OpenCacheButton,   Properties.Resources.SettingsToolTipOpenCacheButton);
+            ToolTip.SetToolTip(ClearCacheButton,  Properties.Resources.SettingsToolTipClearCacheButton);
+
             this.coreConfig = coreConfig;
             this.guiConfig  = guiConfig;
             this.regMgr     = regMgr;
@@ -55,6 +47,8 @@ namespace CKAN.GUI
             {
                 ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             }
+            CachePathEditButton.Height = CachePathSaveButton.Height =
+                CachePathCancelButton.Height = CachePathTextBox.Height;
         }
 
         private void SettingsDialog_Load(object? sender, EventArgs? e)
@@ -81,40 +75,14 @@ namespace CKAN.GUI
 
             UpdateRefreshRate();
 
-            if (coreConfig.DownloadCacheDir != null)
-            {
-                UpdateCacheInfo(coreConfig.DownloadCacheDir);
-            }
-        }
-
-        private void UpdateAutoUpdate()
-        {
-            LocalVersionLabel.Text = Meta.GetVersion();
-            try
-            {
-                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false, userAgent)
-                                           .Version;
-                LatestVersionLabel.Text = latestVersion?.ToString() ?? "";
-                // Allow downgrading in case they want to stop using dev builds
-                InstallUpdateButton.Enabled = !latestVersion?.Equals(new ModuleVersion(Meta.GetVersion())) ?? false;
-            }
-            catch
-            {
-                // Can't get the version, reset the label
-                var resources = new SingleAssemblyComponentResourceManager(typeof(SettingsDialog));
-                resources.ApplyResources(LatestVersionLabel,
-                                         LatestVersionLabel.Name);
-                InstallUpdateButton.Enabled = false;
-            }
+            UpdateCacheInfo(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
-            if (CachePath.Text != coreConfig.DownloadCacheDir
-                && manager != null
-                && !manager.TrySetupCache(CachePath.Text, out string? failReason))
+            if (!RepositoryGroupBox.Enabled)
             {
-                user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
+                // Don't close the window if still editing the cache path
                 e.Cancel = true;
             }
             else
@@ -123,17 +91,265 @@ namespace CKAN.GUI
             }
         }
 
-        private void UpdateRefreshRate()
+        #region Cache path and limit
+
+        private void UpdateCacheInfo(string newPath)
         {
-            if (Main.Instance != null)
+            CachePathTextBox.Text = newPath;
+            EnableDisableCachePath(false);
+            if (manager?.Cache != null)
             {
-                int rate = coreConfig.RefreshRate;
-                RefreshTextBox.Text = rate.ToString();
-                PauseRefreshCheckBox.Enabled = rate != 0;
-                Main.Instance.pauseToolStripMenuItem.Enabled = coreConfig.RefreshRate != 0;
-                Main.Instance.UpdateRefreshTimer();
+                // Background thread in case GetSizeInfo takes a while
+                Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        manager.Cache.GetSizeInfo(out int  cacheFileCount,
+                                                  out long cacheSize,
+                                                  out long cacheFreeSpace);
+
+                        Util.Invoke(this, () =>
+                        {
+                            if (coreConfig.CacheSizeLimit.HasValue)
+                            {
+                                // Show setting in MiB
+                                CacheLimit.Text = (coreConfig.CacheSizeLimit.Value / 1024 / 1024).ToString();
+                            }
+                            CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary,
+                                                              cacheFileCount,
+                                                              CkanModule.FmtSize(cacheSize),
+                                                              CkanModule.FmtSize(cacheFreeSpace));
+                            CacheSummary.ForeColor   = SystemColors.ControlText;
+                            OpenCacheButton.Enabled  = true;
+                            ClearCacheButton.Enabled = (cacheSize > 0);
+                            PurgeToLimitMenuItem.Enabled = (coreConfig.CacheSizeLimit.HasValue
+                                                            && cacheSize > coreConfig.CacheSizeLimit.Value);
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        Util.Invoke(this, () =>
+                        {
+                            CacheSummary.Text        = string.Format(Properties.Resources.SettingsDialogSummaryInvalid,
+                                                                     ex.Message);
+                            CacheSummary.ForeColor   = Color.Red;
+                            OpenCacheButton.Enabled  = false;
+                            ClearCacheButton.Enabled = false;
+                        });
+                    }
+                });
             }
         }
+
+        private async void CachePathTextBox_KeyDown(object? sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Escape:
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    UpdateCacheInfo(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
+                    break;
+
+                case Keys.Enter:
+                    e.Handled = true;
+                    e.SuppressKeyPress = true;
+                    await TrySaveCachePath(CachePathTextBox.Text);
+                    break;
+            }
+        }
+
+        private void CachePathEditButton_Click(object? sender, EventArgs? e)
+        {
+            EnableDisableCachePath(true);
+            CachePathTextBox.Focus();
+        }
+
+        private async void CachePathSaveButton_Click(object? sender, EventArgs? e)
+        {
+            await TrySaveCachePath(CachePathTextBox.Text);
+        }
+
+        private void CachePathCancelButton_Click(object? sender, EventArgs? e)
+        {
+            UpdateCacheInfo(coreConfig.DownloadCacheDir
+                            ?? JsonConfiguration.DefaultDownloadCacheDir);
+        }
+
+        private async Task<bool> TrySaveCachePath(string newPath)
+        {
+            CachePathTextBox.Enabled      = false;
+            CachePathSaveButton.Enabled   = false;
+            CachePathCancelButton.Enabled = false;
+            return await Task.Run(() =>
+            {
+                if (newPath != coreConfig.DownloadCacheDir
+                    && manager != null
+                    && !manager.TrySetupCache(newPath,
+                                              new Progress<int>(UpdateCacheProgress),
+                                              out string? failReason))
+                {
+                    Util.Invoke(this, () =>
+                    {
+                        MoveCacheProgressBar.Visible = false;
+                        if (failReason.Length > 0)
+                        {
+                            user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid,
+                                            failReason);
+                        }
+                        else
+                        {
+                            // User cancelled the choice popup, reset UI
+                            UpdateCacheInfo(coreConfig.DownloadCacheDir
+                                            ?? JsonConfiguration.DefaultDownloadCacheDir);
+                        }
+                    });
+                    return false;
+                }
+                else
+                {
+                    Util.Invoke(this, () =>
+                    {
+                        MoveCacheProgressBar.Visible = false;
+                        UpdateCacheInfo(newPath);
+                    });
+                    return true;
+                }
+            });
+        }
+
+        private void UpdateCacheProgress(int percent)
+        {
+            Util.Invoke(CachePathTextBox, () =>
+            {
+                MoveCacheProgressBar.Visible = true;
+                MoveCacheProgressBar.Value = percent;
+            });
+        }
+
+        private void EnableDisableCachePath(bool enable)
+        {
+            ControlBox                    = !enable;
+            BehaviourGroupBox.Enabled     = !enable;
+            AuthTokensGroupBox.Enabled    = !enable;
+            AutoUpdateGroupBox.Enabled    = !enable;
+            RepositoryGroupBox.Enabled    = !enable;
+            MoreSettingsGroupBox.Enabled  = !enable;
+            CachePathTextBox.Enabled      = enable;
+            CachePathEditButton.Visible   = !enable;
+            CachePathSaveButton.Enabled   = true;
+            CachePathSaveButton.Visible   = enable;
+            CachePathCancelButton.Enabled = true;
+            CachePathCancelButton.Visible = enable;
+            ChangeCacheButton.Enabled     = !enable;
+            ResetCacheButton.Enabled      = !enable
+                                            && CachePathTextBox.Text != JsonConfiguration.DefaultDownloadCacheDir;
+            ClearCacheButton.Enabled      = !enable;
+            if (enable)
+            {
+                CachePathCancelButton.Left = CachePathSaveButton.Left - CachePathCancelButton.Width;
+            }
+            CachePathTextBox.Width = enable ? CachePathCancelButton.Left - CachePathTextBox.Left
+                                     : CachePathEditButton.Left   - CachePathTextBox.Left;
+        }
+
+        private void CacheLimit_TextChanged(object? sender, EventArgs? e)
+        {
+            if (string.IsNullOrEmpty(CacheLimit.Text))
+            {
+                coreConfig.CacheSizeLimit = null;
+            }
+            else
+            {
+                // Translate from MB to bytes
+                coreConfig.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
+            }
+            UpdateCacheInfo(CachePathTextBox.Text);
+        }
+
+        private void CacheLimit_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private async void ChangeCacheButton_Click(object? sender, EventArgs? e)
+        {
+            var cacheChooser = new FolderBrowserDialog()
+            {
+                Description         = Properties.Resources.SettingsDialogCacheDescrip,
+                RootFolder          = Environment.SpecialFolder.MyComputer,
+                SelectedPath        = coreConfig.DownloadCacheDir
+                                      ?? JsonConfiguration.DefaultDownloadCacheDir,
+                ShowNewFolderButton = true
+            };
+            if (cacheChooser.ShowDialog(this) == DialogResult.OK)
+            {
+                await TrySaveCachePath(cacheChooser.SelectedPath);
+            }
+        }
+
+        private void PurgeToLimitMenuItem_Click(object? sender, EventArgs? e)
+        {
+            // Purge old downloads if we're over the limit
+            if (coreConfig.CacheSizeLimit.HasValue
+                && manager?.Cache != null
+                && coreConfig.DownloadCacheDir != null)
+            {
+                manager.Cache.EnforceSizeLimit(coreConfig.CacheSizeLimit.Value,
+                                               regMgr.registry);
+                UpdateCacheInfo(coreConfig.DownloadCacheDir);
+            }
+        }
+
+        private void PurgeAllMenuItem_Click(object? sender, EventArgs? e)
+        {
+            if (manager?.Cache != null)
+            {
+                manager.Cache.GetSizeInfo(out int cacheFileCount,
+                                          out long cacheSize,
+                                          out _);
+
+                var deleteConfirmationDialog = new YesNoDialog();
+                var confirmationText = string.Format(
+                    Properties.Resources.SettingsDialogDeleteConfirm,
+                    cacheFileCount,
+                    CkanModule.FmtSize(cacheSize));
+
+                if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
+                {
+                    // Tell the cache object to nuke itself
+                    manager.Cache.RemoveAll();
+
+                    if (coreConfig.DownloadCacheDir != null)
+                    {
+                        UpdateCacheInfo(coreConfig.DownloadCacheDir);
+                    }
+                }
+            }
+        }
+
+        private async void ResetCacheButton_Click(object? sender, EventArgs? e)
+        {
+            // Reset to default cache path
+            await TrySaveCachePath(JsonConfiguration.DefaultDownloadCacheDir);
+        }
+
+        private void OpenCacheButton_Click(object? sender, EventArgs? e)
+        {
+            Utilities.ProcessStartURL(coreConfig.DownloadCacheDir
+                                      ?? JsonConfiguration.DefaultDownloadCacheDir);
+        }
+
+        #endregion
+
+        #region Repositories
+
+        public bool RepositoryAdded   { get; private set; } = false;
+        public bool RepositoryRemoved { get; private set; } = false;
+        public bool RepositoryMoved   { get; private set; } = false;
 
         private void RefreshReposListBox(bool        saveChanges = true,
                                          Repository? toSelect    = null)
@@ -169,167 +385,6 @@ namespace CKAN.GUI
                     Util.Invoke(this, () => UseWaitCursor = false);
                 });
             }
-        }
-
-        private void UpdateLanguageSelectionComboBox()
-        {
-            LanguageSelectionComboBox.Items.Clear();
-            LanguageSelectionComboBox.Items.AddRange(Utilities.AvailableLanguages);
-            // If the current language is supported by CKAN, set is as selected.
-            // Else display a blank field.
-            LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(coreConfig.Language);
-        }
-
-        private void UpdateCacheInfo(string newPath)
-        {
-            CachePath.Text = newPath;
-            // Background thread in case GetSizeInfo takes a while
-            Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    // Make a temporary cache object to validate the path without changing the setting till close
-                    var cache = new NetModuleCache(newPath);
-                    cache.GetSizeInfo(out int cacheFileCount, out long cacheSize, out long cacheFreeSpace);
-
-                    Util.Invoke(this, () =>
-                    {
-                        if (coreConfig.CacheSizeLimit.HasValue)
-                        {
-                            // Show setting in MiB
-                            CacheLimit.Text = (coreConfig.CacheSizeLimit.Value / 1024 / 1024).ToString();
-                        }
-                        CacheSummary.Text = string.Format(
-                            Properties.Resources.SettingsDialogSummmary,
-                            cacheFileCount, CkanModule.FmtSize(cacheSize), CkanModule.FmtSize(cacheFreeSpace));
-                        CacheSummary.ForeColor   = SystemColors.ControlText;
-                        OpenCacheButton.Enabled  = true;
-                        ClearCacheButton.Enabled = (cacheSize > 0);
-                        PurgeToLimitMenuItem.Enabled = (coreConfig.CacheSizeLimit.HasValue
-                            && cacheSize > coreConfig.CacheSizeLimit.Value);
-                    });
-
-                }
-                catch (Exception ex)
-                {
-                    Util.Invoke(this, () =>
-                    {
-                        CacheSummary.Text        = string.Format(Properties.Resources.SettingsDialogSummaryInvalid,
-                                                                 ex.Message);
-                        CacheSummary.ForeColor   = Color.Red;
-                        OpenCacheButton.Enabled  = false;
-                        ClearCacheButton.Enabled = false;
-                    });
-                }
-            });
-        }
-
-        private void CachePath_TextChanged(object? sender, EventArgs? e)
-        {
-            UpdateCacheInfo(CachePath.Text);
-        }
-
-        private void CacheLimit_TextChanged(object? sender, EventArgs? e)
-        {
-            if (string.IsNullOrEmpty(CacheLimit.Text))
-            {
-                coreConfig.CacheSizeLimit = null;
-            }
-            else
-            {
-                // Translate from MB to bytes
-                coreConfig.CacheSizeLimit = Convert.ToInt64(CacheLimit.Text) * 1024 * 1024;
-            }
-            UpdateCacheInfo(CachePath.Text);
-        }
-
-        private void CacheLimit_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void ChangeCacheButton_Click(object? sender, EventArgs? e)
-        {
-            var cacheChooser = new FolderBrowserDialog()
-            {
-                Description         = Properties.Resources.SettingsDialogCacheDescrip,
-                RootFolder          = Environment.SpecialFolder.MyComputer,
-                SelectedPath        = coreConfig.DownloadCacheDir
-                                      ?? JsonConfiguration.DefaultDownloadCacheDir,
-                ShowNewFolderButton = true
-            };
-            if (cacheChooser.ShowDialog(this) == DialogResult.OK)
-            {
-                UpdateCacheInfo(cacheChooser.SelectedPath);
-            }
-        }
-
-        private void PurgeToLimitMenuItem_Click(object? sender, EventArgs? e)
-        {
-            // Purge old downloads if we're over the limit
-            if (coreConfig.CacheSizeLimit.HasValue && manager != null && coreConfig.DownloadCacheDir != null)
-            {
-                // Switch main cache since user seems committed to this path
-                if (CachePath.Text != coreConfig.DownloadCacheDir
-                    && !manager.TrySetupCache(CachePath.Text, out string? failReason))
-                {
-                    user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
-                    return;
-                }
-
-                manager.Cache?.EnforceSizeLimit(
-                    coreConfig.CacheSizeLimit.Value,
-                    regMgr.registry);
-                UpdateCacheInfo(coreConfig.DownloadCacheDir);
-            }
-        }
-
-        private void PurgeAllMenuItem_Click(object? sender, EventArgs? e)
-        {
-            if (manager?.Cache != null)
-            {
-                // Switch main cache since user seems committed to this path
-                if (CachePath.Text != coreConfig.DownloadCacheDir
-                    && !manager.TrySetupCache(CachePath.Text, out string? failReason))
-                {
-                    user.RaiseError(Properties.Resources.SettingsDialogSummaryInvalid, failReason);
-                    return;
-                }
-
-                manager.Cache.GetSizeInfo(
-                    out int cacheFileCount, out long cacheSize, out _);
-
-                YesNoDialog deleteConfirmationDialog = new YesNoDialog();
-                string confirmationText = string.Format(
-                    Properties.Resources.SettingsDialogDeleteConfirm,
-                    cacheFileCount,
-                    CkanModule.FmtSize(cacheSize));
-
-                if (deleteConfirmationDialog.ShowYesNoDialog(this, confirmationText) == DialogResult.Yes)
-                {
-                    // Tell the cache object to nuke itself
-                    manager.Cache.RemoveAll();
-
-                    if (coreConfig.DownloadCacheDir != null)
-                    {
-                        UpdateCacheInfo(coreConfig.DownloadCacheDir);
-                    }
-                }
-            }
-        }
-
-        private void ResetCacheButton_Click(object? sender, EventArgs? e)
-        {
-            // Reset to default cache path
-            UpdateCacheInfo(JsonConfiguration.DefaultDownloadCacheDir);
-        }
-
-        private void OpenCacheButton_Click(object? sender, EventArgs? e)
-        {
-            Utilities.ProcessStartURL(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
         }
 
         private void ReposListBox_SelectedIndexChanged(object? sender, EventArgs? e)
@@ -459,6 +514,10 @@ namespace CKAN.GUI
             }
         }
 
+        #endregion
+
+        #region Auth tokens
+
         private void RefreshAuthTokensListBox()
         {
             AuthTokensListBox.Items.Clear();
@@ -473,6 +532,8 @@ namespace CKAN.GUI
                     });
                 }
             }
+            AuthTokensListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            AuthTokensListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         private void AuthTokensListBox_SelectedIndexChanged(object? sender, EventArgs? e)
@@ -608,6 +669,31 @@ namespace CKAN.GUI
             }
         }
 
+        #endregion
+
+        #region CKAN updates
+
+        private void UpdateAutoUpdate()
+        {
+            LocalVersionLabel.Text = Meta.GetVersion();
+            try
+            {
+                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false, userAgent)
+                                           .Version;
+                LatestVersionLabel.Text = latestVersion?.ToString() ?? "";
+                // Allow downgrading in case they want to stop using dev builds
+                InstallUpdateButton.Enabled = !latestVersion?.Equals(new ModuleVersion(Meta.GetVersion())) ?? false;
+            }
+            catch
+            {
+                // Can't get the version, reset the label
+                var resources = new SingleAssemblyComponentResourceManager(typeof(SettingsDialog));
+                resources.ApplyResources(LatestVersionLabel,
+                                         LatestVersionLabel.Name);
+                InstallUpdateButton.Enabled = false;
+            }
+        }
+
         private void CheckForUpdatesButton_Click(object? sender, EventArgs? e)
         {
             try
@@ -644,6 +730,19 @@ namespace CKAN.GUI
             UpdateAutoUpdate();
         }
 
+        #endregion
+
+        #region More settings
+
+        private void UpdateLanguageSelectionComboBox()
+        {
+            LanguageSelectionComboBox.Items.Clear();
+            LanguageSelectionComboBox.Items.AddRange(Utilities.AvailableLanguages);
+            // If the current language is supported by CKAN, set is as selected.
+            // Else display a blank field.
+            LanguageSelectionComboBox.SelectedIndex = LanguageSelectionComboBox.FindStringExact(coreConfig.Language);
+        }
+
         private void RefreshOnStartupCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.RefreshOnStartup = RefreshOnStartupCheckbox.Checked;
@@ -676,6 +775,22 @@ namespace CKAN.GUI
         private void AutoSortUpdateCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.AutoSortByUpdate = AutoSortUpdateCheckBox.Checked;
+        }
+
+        #endregion
+
+        #region Tray icon
+
+        private void UpdateRefreshRate()
+        {
+            if (Main.Instance != null)
+            {
+                int rate = coreConfig.RefreshRate;
+                RefreshTextBox.Text = rate.ToString();
+                PauseRefreshCheckBox.Enabled = rate != 0;
+                Main.Instance.pauseToolStripMenuItem.Enabled = coreConfig.RefreshRate != 0;
+                Main.Instance.UpdateRefreshTimer();
+            }
         }
 
         private void EnableTrayIconCheckBox_CheckedChanged(object? sender, EventArgs? e)
@@ -717,5 +832,18 @@ namespace CKAN.GUI
                 Main.Instance?.refreshTimer?.Start();
             }
         }
+
+        #endregion
+
+        private static GameInstanceManager? manager => Main.Instance?.Manager;
+
+        private readonly IConfiguration   coreConfig;
+        private readonly GUIConfiguration guiConfig;
+        private readonly RegistryManager  regMgr;
+        private readonly AutoUpdate       updater;
+        private readonly IUser            user;
+        private readonly string?          userAgent;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(SettingsDialog));
     }
 }

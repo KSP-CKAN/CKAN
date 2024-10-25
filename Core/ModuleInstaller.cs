@@ -1210,9 +1210,8 @@ namespace CKAN
                 if (installed_mod == null)
                 {
                     if (!Cache.IsMaybeCachedZip(module)
-                        && Cache.GetInProgressFileName(module) is string p)
+                        && Cache.GetInProgressFileName(module) is FileInfo inProgressFile)
                     {
-                        var inProgressFile = new FileInfo(p);
                         if (inProgressFile.Exists)
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
@@ -1253,9 +1252,8 @@ namespace CKAN
                     else
                     {
                         if (!Cache.IsMaybeCachedZip(module)
-                            && Cache.GetInProgressFileName(module) is string p)
+                            && Cache.GetInProgressFileName(module) is FileInfo inProgressFile)
                         {
-                            var inProgressFile = new FileInfo(p);
                             if (inProgressFile.Exists)
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,

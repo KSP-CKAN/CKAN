@@ -8,21 +8,19 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        public ControlFactory   controlFactory;
+        public  ControlFactory  controlFactory;
         private ErrorDialog     errorDialog;
         private PluginsDialog   pluginsDialog;
         private YesNoDialog     yesNoDialog;
-        private SelectionDialog selectionDialog;
 
         [MemberNotNull(nameof(controlFactory), nameof(errorDialog), nameof(pluginsDialog),
-                       nameof(yesNoDialog),   nameof(selectionDialog))]
+                       nameof(yesNoDialog))]
         public void RecreateDialogs()
         {
             controlFactory ??= new ControlFactory();
-            errorDialog = controlFactory.CreateControl<ErrorDialog>();
+            errorDialog   = controlFactory.CreateControl<ErrorDialog>();
             pluginsDialog = controlFactory.CreateControl<PluginsDialog>();
-            yesNoDialog = controlFactory.CreateControl<YesNoDialog>();
-            selectionDialog = controlFactory.CreateControl<SelectionDialog>();
+            yesNoDialog   = controlFactory.CreateControl<YesNoDialog>();
         }
 
         [ForbidGUICalls]
@@ -43,9 +41,5 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         public Tuple<DialogResult, bool> SuppressableYesNoDialog(string text, string suppressText, string? yesText = null, string? noText = null)
             => yesNoDialog.ShowSuppressableYesNoDialog(this, text, suppressText, yesText, noText);
-
-        [ForbidGUICalls]
-        public int SelectionDialog(string message, params object[] args)
-            => selectionDialog.ShowSelectionDialog(message, args);
     }
 }

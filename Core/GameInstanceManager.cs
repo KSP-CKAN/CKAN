@@ -33,6 +33,7 @@ namespace CKAN
         public GameInstance?  CurrentInstance { get; set; }
 
         public NetModuleCache? Cache { get; private set; }
+        public event Action<NetModuleCache>? CacheChanged;
 
         public readonly SteamLibrary SteamLibrary = new SteamLibrary();
 
@@ -580,11 +581,14 @@ namespace CKAN
                 }
             }
 
-            if (!TrySetupCache(Configuration.DownloadCacheDir, out string? failReason))
+            var progress = new Progress<int>(p => {});
+            if (!TrySetupCache(Configuration.DownloadCacheDir,
+                               progress,
+                               out string? failReason))
             {
                 log.ErrorFormat("Cache not found at configured path {0}: {1}", Configuration.DownloadCacheDir, failReason);
                 // Fall back to default path to minimize chance of ending up in an invalid state at startup
-                TrySetupCache("", out _);
+                TrySetupCache("", progress, out _);
             }
         }
 
@@ -597,9 +601,11 @@ namespace CKAN
         /// true if successful, false otherwise
         /// </returns>
         public bool TrySetupCache(string? path,
+                                  IProgress<int> progress,
                                   [NotNullWhen(returnValue: false)] out string? failureReason)
         {
-            var origPath = Configuration.DownloadCacheDir;
+            var origPath  = Configuration.DownloadCacheDir;
+            var origCache = Cache;
             try
             {
                 if (path == null || string.IsNullOrEmpty(path))
@@ -614,17 +620,81 @@ namespace CKAN
                     Cache = new NetModuleCache(this, path);
                     Configuration.DownloadCacheDir = path;
                 }
+                if (origPath != null && origCache != null)
+                {
+                    origCache.GetSizeInfo(out _, out long oldNumBytes, out _);
+                    Cache.GetSizeInfo(out _, out _, out long bytesFree);
+
+                    if (oldNumBytes > 0)
+                    {
+                        switch (User.RaiseSelectionDialog(
+                                    string.Format(Properties.Resources.GameInstanceManagerCacheMigrationPrompt,
+                                                  CkanModule.FmtSize(oldNumBytes),
+                                                  CkanModule.FmtSize(bytesFree)),
+                                    oldNumBytes < bytesFree ? 0 : 2,
+                                    Properties.Resources.GameInstanceManagerCacheMigrationMove,
+                                    Properties.Resources.GameInstanceManagerCacheMigrationDelete,
+                                    Properties.Resources.GameInstanceManagerCacheMigrationOpen,
+                                    Properties.Resources.GameInstanceManagerCacheMigrationNothing,
+                                    Properties.Resources.GameInstanceManagerCacheMigrationRevert))
+                        {
+                            case 0:
+                                if (oldNumBytes < bytesFree)
+                                {
+                                    Cache.MoveFrom(new DirectoryInfo(origPath), progress);
+                                    CacheChanged?.Invoke(origCache);
+                                }
+                                else
+                                {
+                                    User.RaiseError(Properties.Resources.GameInstanceManagerCacheMigrationNotEnoughFreeSpace);
+                                    // Abort since the user picked an option that doesn't work
+                                    Cache = origCache;
+                                    Configuration.DownloadCacheDir = origPath;
+                                    failureReason = "";
+                                }
+                                break;
+
+                            case 1:
+                                origCache.RemoveAll();
+                                CacheChanged?.Invoke(origCache);
+                                break;
+
+                            case 2:
+                                Utilities.OpenFileBrowser(origPath);
+                                Utilities.OpenFileBrowser(Configuration.DownloadCacheDir);
+                                CacheChanged?.Invoke(origCache);
+                                break;
+
+                            case 3:
+                                CacheChanged?.Invoke(origCache);
+                                break;
+
+                            case -1:
+                            case 4:
+                                Cache = origCache;
+                                Configuration.DownloadCacheDir = origPath;
+                                failureReason = "";
+                                return false;
+                        }
+                    }
+                    else
+                    {
+                        CacheChanged?.Invoke(origCache);
+                    }
+                }
                 failureReason = null;
                 return true;
             }
             catch (DirectoryNotFoundKraken)
             {
+                Cache = origCache;
                 Configuration.DownloadCacheDir = origPath;
                 failureReason = string.Format(Properties.Resources.GameInstancePathNotFound, path);
                 return false;
             }
             catch (Exception ex)
             {
+                Cache = origCache;
                 Configuration.DownloadCacheDir = origPath;
                 failureReason = ex.Message;
                 return false;
@@ -647,6 +717,7 @@ namespace CKAN
             }
 
             // Attempting to dispose of the related RegistryManager object here is a bad idea, it cause loads of failures
+            GC.SuppressFinalize(this);
         }
 
         public static bool IsGameInstanceDir(DirectoryInfo path)

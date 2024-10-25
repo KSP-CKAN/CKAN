@@ -114,7 +114,9 @@ namespace CKAN
             return NormalizePath(Path.Combine(root, path));
         }
 
-        public static void CheckFreeSpace(DirectoryInfo where, long bytesToStore, string errorDescription)
+        public static void CheckFreeSpace(DirectoryInfo where,
+                                          long          bytesToStore,
+                                          string        errorDescription)
         {
             if (bytesToStore > 0)
             {
@@ -130,6 +132,11 @@ namespace CKAN
                                                    : "unknown bytes");
             }
         }
+
+        public static bool PathEquals(this FileSystemInfo a,
+                                      FileSystemInfo      b)
+            => NormalizePath(a.FullName).Equals(NormalizePath(b.FullName),
+                                                Platform.PathComparison);
 
     }
 }

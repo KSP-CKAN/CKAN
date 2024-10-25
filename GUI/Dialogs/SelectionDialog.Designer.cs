@@ -34,50 +34,57 @@ namespace CKAN.GUI
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(SelectionDialog));
             this.panel1 = new System.Windows.Forms.Panel();
             this.MessageLabel = new System.Windows.Forms.Label();
-            this.SelectButton = new System.Windows.Forms.Button();
-            this.DefaultButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
             this.OptionsList = new System.Windows.Forms.ListBox();
+            this.CancelSelectionButton = new System.Windows.Forms.Button();
+            this.DefaultButton = new System.Windows.Forms.Button();
+            this.SelectButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             //
-            // panel1
-            //
-            this.panel1.Controls.Add(this.MessageLabel);
-            this.panel1.Controls.Add(this.OptionsList);
-            this.panel1.Controls.Add(this.CancelButton);
-            this.panel1.Controls.Add(this.DefaultButton);
-            this.panel1.Controls.Add(this.SelectButton);
-            this.panel1.Location = new System.Drawing.Point(10, 10);
-            this.panel1.Size = new System.Drawing.Size(400, 400);
-            this.panel1.Name = "panel1";
-            this.OptionsList.TabStop = false;
-            this.DefaultButton.UseVisualStyleBackColor = true;
-            //
             // MessageLabel
             //
+            this.MessageLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.MessageLabel.Location = new System.Drawing.Point(5, 5);
             this.MessageLabel.Size = new System.Drawing.Size(390, 40);
             this.MessageLabel.Name = "MessageLabel";
-            this.OptionsList.TabStop = false;
+            this.MessageLabel.TabStop = false;
             this.MessageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.DefaultButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.MessageLabel, "MessageLabel");
+            //
+            // panel1
+            //
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Controls.Add(this.OptionsList);
+            this.panel1.Controls.Add(this.CancelSelectionButton);
+            this.panel1.Controls.Add(this.DefaultButton);
+            this.panel1.Controls.Add(this.SelectButton);
+            this.panel1.Margin = new System.Windows.Forms.Padding(10);
+            this.panel1.Padding = new System.Windows.Forms.Padding(10);
+            this.panel1.Location = new System.Drawing.Point(10, 10);
+            this.panel1.Size = new System.Drawing.Size(400, 300);
+            this.panel1.Name = "panel1";
+            this.panel1.TabStop = false;
             //
             // OptionsList
             //
-            this.OptionsList.Location = new System.Drawing.Point(5, 55);
-            this.OptionsList.Size = new System.Drawing.Size(390, 315);
+            this.OptionsList.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.OptionsList.Location = new System.Drawing.Point(5, 5);
+            this.OptionsList.Size = new System.Drawing.Size(390, 265);
             this.OptionsList.SelectionMode = System.Windows.Forms.SelectionMode.One;
             this.OptionsList.MultiColumn = false;
-            this.OptionsList.SelectedIndexChanged += new System.EventHandler(OptionsList_SelectedIndexChanged);
             this.OptionsList.Name = "OptionsList";
-            this.DefaultButton.UseVisualStyleBackColor = true;
+            this.OptionsList.SelectedIndexChanged += new System.EventHandler(OptionsList_SelectedIndexChanged);
+            this.OptionsList.DoubleClick += new System.EventHandler(this.OptionsList_DoubleClick);
+            this.OptionsList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OptionsList_KeyDown);
+            resources.ApplyResources(this.OptionsList, "OptionsList");
             //
             // SelectButton
             //
+            this.SelectButton.AutoSize = true;
+            this.SelectButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.SelectButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SelectButton.Location = new System.Drawing.Point(325, 375);
+            this.SelectButton.Location = new System.Drawing.Point(325, 275);
             this.SelectButton.Size = new System.Drawing.Size(60, 20);
             this.SelectButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.SelectButton.Name = "SelectButton";
@@ -87,8 +94,11 @@ namespace CKAN.GUI
             //
             // DefaultButton
             //
+            this.DefaultButton.AutoSize = true;
+            this.DefaultButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.DefaultButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.DefaultButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DefaultButton.Location = new System.Drawing.Point(160, 375);
+            this.DefaultButton.Location = new System.Drawing.Point(175, 275);
             this.DefaultButton.Size = new System.Drawing.Size(60, 20);
             this.DefaultButton.DialogResult = System.Windows.Forms.DialogResult.Yes;
             this.DefaultButton.Name = "SelectButton";
@@ -96,27 +106,35 @@ namespace CKAN.GUI
             this.DefaultButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.DefaultButton, "DefaultButton");
             //
-            // CancelButton
+            // CancelSelectionButton
             //
-            this.CancelButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelButton.Location = new System.Drawing.Point(5, 375);
-            this.CancelButton.Size = new System.Drawing.Size(60, 20);
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.TabIndex = 2;
-            this.CancelButton.UseVisualStyleBackColor = true;
-            resources.ApplyResources(this.CancelButton, "CancelButton");
+            this.CancelSelectionButton.AutoSize = true;
+            this.CancelSelectionButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.CancelSelectionButton.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.CancelSelectionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CancelSelectionButton.Location = new System.Drawing.Point(5, 275);
+            this.CancelSelectionButton.Size = new System.Drawing.Size(60, 20);
+            this.CancelSelectionButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelSelectionButton.Name = "CancelSelectionButton";
+            this.CancelSelectionButton.TabIndex = 2;
+            this.CancelSelectionButton.UseVisualStyleBackColor = true;
+            resources.ApplyResources(this.CancelSelectionButton, "CancelSelectionButton");
             //
             // SelectionDialog
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(420, 420);
+            this.MinimumSize = new System.Drawing.Size(300, 200);
+            this.AcceptButton = this.SelectButton;
+            this.CancelButton = this.CancelSelectionButton;
+            this.ControlBox = false;
             this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Controls.Add(this.MessageLabel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
             this.Icon = EmbeddedImages.AppIcon;
             this.Name = "SelectionDialog";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -125,11 +143,11 @@ namespace CKAN.GUI
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label MessageLabel;
-        private System.Windows.Forms.Button SelectButton;
-        private System.Windows.Forms.Button DefaultButton;
-        private new System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ListBox OptionsList;
+        private System.Windows.Forms.Button CancelSelectionButton;
+        private System.Windows.Forms.Button DefaultButton;
+        private System.Windows.Forms.Button SelectButton;
     }
 }

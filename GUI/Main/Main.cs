@@ -158,11 +158,8 @@ namespace CKAN.GUI
                 Manager = new GameInstanceManager(currentUser);
             }
 
-            if (Manager.Cache != null)
-            {
-                Manager.Cache.ModStored += OnModStoredOrPurged;
-                Manager.Cache.ModPurged += OnModStoredOrPurged;
-            }
+            Manager.CacheChanged += OnCacheChanged;
+            OnCacheChanged(null);
 
             tabController = new TabController(MainTabControl);
             tabController.ShowTab("ManageModsTabPage");

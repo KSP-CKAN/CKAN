@@ -91,6 +91,7 @@ namespace CKAN.GUI
                 // Close progress tab and switch back to mod list
                 HideWaitDialog();
                 EnableMainWindow();
+                ModInfo.SwitchTab("ContentTabPage");
             }
         }
 
@@ -103,11 +104,28 @@ namespace CKAN.GUI
                                                     .Select(guiMod => guiMod.ToModule())
                                                     .OfType<CkanModule>())
                        .Select(other => allGuiMods[other.identifier])
-                ?? allGuiMods.Values;
+                      ?? allGuiMods.Values;
             foreach (var otherMod in affectedMods)
             {
                 otherMod.UpdateIsCached();
             }
+        }
+
+        [ForbidGUICalls]
+        private void OnCacheChanged(NetModuleCache? prev)
+        {
+            if (prev != null)
+            {
+                prev.ModStored -= OnModStoredOrPurged;
+                prev.ModPurged -= OnModStoredOrPurged;
+            }
+            if (Manager.Cache != null)
+            {
+                Manager.Cache.ModStored += OnModStoredOrPurged;
+                Manager.Cache.ModPurged += OnModStoredOrPurged;
+            }
+            UpdateCachedByDownloads(null);
+            ModInfo.RefreshModContentsTree();
         }
 
         [ForbidGUICalls]

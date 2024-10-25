@@ -64,8 +64,8 @@ namespace CKAN.NetKAN.Services
                     ? GetFilesBySuffix(module, zip, ".ckan", inst)
                         .Select(instF => instF.source)
                     // Find embedded .ckan files anywhere in the ZIP
-                    : zip.Cast<ZipEntry>()
-                        .Where(entry => entry.Name.EndsWith(".ckan", StringComparison.InvariantCultureIgnoreCase)))
+                    : zip.OfType<ZipEntry>()
+                         .Where(entry => entry.Name.EndsWith(".ckan", StringComparison.InvariantCultureIgnoreCase)))
                 .Select(entry => DeserializeFromStream(
                                     zip.GetInputStream(entry)))
                 .FirstOrDefault();

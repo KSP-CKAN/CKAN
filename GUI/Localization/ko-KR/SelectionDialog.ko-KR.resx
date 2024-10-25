@@ -126,7 +126,7 @@
   <data name="DefaultButton.Text" xml:space="preserve">
     <value>기본</value>
   </data>
-  <data name="CancelButton.Text" xml:space="preserve">
+  <data name="CancelSelectionButton.Text" xml:space="preserve">
     <value>취소하기</value>
   </data>
   <data name="$this.Text" xml:space="preserve">

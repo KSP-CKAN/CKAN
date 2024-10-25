@@ -44,7 +44,7 @@ namespace CKAN.GUI
             // AddSearchButton
             //
             this.AddSearchButton.Anchor = (System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Right
-            | System.Windows.Forms.AnchorStyles.Top);
+            | System.Windows.Forms.AnchorStyles.Bottom);
             this.AddSearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddSearchButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AddSearchButton.Enabled = false;
@@ -52,6 +52,7 @@ namespace CKAN.GUI
             this.AddSearchButton.Location = new System.Drawing.Point(426, 2);
             this.AddSearchButton.Name = "AddSearchButton";
             this.AddSearchButton.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.AddSearchButton.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.AddSearchButton.Size = new System.Drawing.Size(22, 22);
             this.AddSearchButton.TabIndex = 1;
             this.AddSearchButton.Text = "+";
@@ -63,7 +64,7 @@ namespace CKAN.GUI
             //
             this.Controls.Add(this.AddSearchButton);
             this.Name = "EditModSearches";
-            this.Size = new System.Drawing.Size(500, 54);
+            this.Size = new System.Drawing.Size(500, 29);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
