@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.ComponentModel;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,14 +24,19 @@ namespace CKAN
         /// </summary>
         /// <param name="url">What to download</param>
         /// <param name="path">Where to save it</param>
-        public void DownloadFileAsyncWithResume(Uri url, string path)
+        public void DownloadFileAsyncWithResume(Uri url, string path, HashAlgorithm? hasher)
         {
+            this.hasher = hasher;
             contentLength = 0;
             Task.Factory.StartNew(() =>
             {
                 var fi = new FileInfo(path);
                 if (fi.Exists)
                 {
+                    using (var stream = fi.OpenRead())
+                    {
+                        hasher?.PartialHash(stream, null);
+                    }
                     log.DebugFormat("File exists at {0}, {1} bytes", path, fi.Length);
                     bytesToSkip = fi.Length;
                 }
@@ -43,8 +49,9 @@ namespace CKAN
             });
         }
 
-        public void DownloadFileAsyncWithResume(Uri url, Stream stream)
+        public void DownloadFileAsyncWithResume(Uri url, Stream stream, HashAlgorithm? hasher)
         {
+            this.hasher = hasher;
             contentLength = 0;
             Task.Factory.StartNew(() =>
             {
@@ -129,6 +136,7 @@ namespace CKAN
                         if (!string.IsNullOrEmpty(destination)
                             && File.Exists(destination))
                         {
+                            hasher?.TransformFinalBlock(new byte[16], 0, 0);
                             var fi = new FileInfo(destination);
                             DownloadProgress?.Invoke(100, fi.Length, fi.Length);
                         }
@@ -192,6 +200,7 @@ namespace CKAN
                                              bytesDownloaded, contentLength);
                 }),
                 TimeSpan.FromSeconds(5),
+                hasher,
                 token);
         }
 
@@ -202,6 +211,7 @@ namespace CKAN
         private long bytesToSkip   = 0;
         private long contentLength = 0;
         private CancellationTokenSource? cancelTokenSrc;
+        private HashAlgorithm?           hasher;
 
         private const int timeoutMs = 30 * 1000;
         private static readonly ILog log = LogManager.GetLogger(typeof(ResumingWebClient));

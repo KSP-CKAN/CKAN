@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Security.Cryptography;
 
 using Autofac;
 
@@ -27,17 +28,21 @@ namespace CKAN
             /// <summary>
             /// Percentage, bytes received, total bytes to receive
             /// </summary>
-            public event Action<int, long, long>?                           Progress;
-            public event Action<object?, AsyncCompletedEventArgs, string?>? Done;
+            public event Action<int, long, long>?                                   Progress;
+            public event Action<object?, AsyncCompletedEventArgs, string?, string>? Done;
 
-            private string mimeType => target.mimeType;
-            private readonly string userAgent;
-            private ResumingWebClient? agent;
+            private          string             mimeType => target.mimeType;
+            private readonly string             userAgent;
+            private readonly HashAlgorithm?     hasher;
+            private          ResumingWebClient? agent;
 
-            public DownloadPart(DownloadTarget target, string userAgent)
+            public DownloadPart(DownloadTarget target,
+                                string         userAgent,
+                                HashAlgorithm? hasher)
             {
-                this.target = target;
+                this.target    = target;
                 this.userAgent = userAgent ?? "";
+                this.hasher    = hasher;
                 size = bytesLeft = target.size;
                 lastProgressUpdateTime = DateTime.Now;
                 triedDownloads = 0;
@@ -58,7 +63,7 @@ namespace CKAN
                         // Send our auth token to the GitHub API (or whoever else needs one)
                         agent.Headers.Add("Authorization", $"token {token}");
                     }
-                    target.DownloadWith(agent, url);
+                    target.DownloadWith(agent, url, hasher);
                 }
             }
 
@@ -109,7 +114,9 @@ namespace CKAN
                     Done?.Invoke(sender, args,
                                  args.Cancelled || args.Error != null
                                      ? null
-                                     : agent.ResponseHeaders?.Get("ETag")?.Replace("\"", ""));
+                                     : agent.ResponseHeaders?.Get("ETag")?.Replace("\"", ""),
+                                 BitConverter.ToString(hasher?.Hash ?? Array.Empty<byte>())
+                                             .Replace("-", ""));
                 };
             }
         }

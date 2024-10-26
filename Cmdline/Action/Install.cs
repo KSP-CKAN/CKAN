@@ -55,7 +55,7 @@ namespace CKAN.CmdLine
                                          .Select(arg => new NetAsyncDownloader.DownloadTargetFile(getUri(arg)))
                                          .ToArray();
                     log.DebugFormat("Urls: {0}", targets.SelectMany(t => t.urls));
-                    new NetAsyncDownloader(new NullUser(), options.NetUserAgent).DownloadAndWait(targets);
+                    new NetAsyncDownloader(new NullUser(), () => null, options.NetUserAgent).DownloadAndWait(targets);
                     log.DebugFormat("Files: {0}", targets.Select(t => t.filename));
                     modules = targets.Select(t => MainClass.LoadCkanFromFile(t.filename))
                                      .ToList();

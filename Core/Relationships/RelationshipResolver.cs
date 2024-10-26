@@ -537,8 +537,7 @@ namespace CKAN
 
         private bool ValidRecSugReasons(HashSet<CkanModule>                  dependencies,
                                         SelectionReason.RelationshipReason[] recSugReasons)
-            => recSugReasons.OfType<SelectionReason.RelationshipReason>()
-                            .Any(r => dependencies.Contains(r.Parent))
+            => recSugReasons.Any(r => dependencies.Contains(r.Parent))
                && !suppressedRecommenders.Any(rel => recSugReasons.Any(r => r.Parent != null
                                                                             && rel.WithinBounds(r.Parent)));
 

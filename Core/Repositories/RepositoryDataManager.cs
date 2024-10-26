@@ -277,7 +277,8 @@ namespace CKAN
 
         private void setETag(NetAsyncDownloader.DownloadTarget target,
                              Exception?                        error,
-                             string?                           etag)
+                             string?                           etag,
+                             string                            sha256)
         {
             var url = target.urls.First();
             if (etag != null)

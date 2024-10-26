@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading;
 
 using Autofac;
@@ -18,6 +19,7 @@ namespace CKAN
 
         public  readonly IUser  User;
         private readonly string userAgent;
+        private readonly Func<HashAlgorithm?> getHashAlgo;
 
         /// <summary>
         /// Raised when data arrives for a download
@@ -41,15 +43,18 @@ namespace CKAN
         /// <param>The download that is done</param>
         /// <param>Exception thrown if failed</param>
         /// <param>ETag of the URL</param>
-        public event Action<DownloadTarget, Exception?, string?>? onOneCompleted;
+        public event Action<DownloadTarget, Exception?, string?, string>? onOneCompleted;
 
         /// <summary>
         /// Returns a perfectly boring NetAsyncDownloader
         /// </summary>
-        public NetAsyncDownloader(IUser user, string? userAgent = null)
+        public NetAsyncDownloader(IUser user,
+                                  Func<HashAlgorithm?> getHashAlgo,
+                                  string? userAgent = null)
         {
             User = user;
             this.userAgent = userAgent ?? Net.UserAgentString;
+            this.getHashAlgo = getHashAlgo;
             complete_or_canceled = new ManualResetEvent(false);
         }
 
@@ -57,8 +62,8 @@ namespace CKAN
                                                 string?               userAgent,
                                                 IUser?                user = null)
         {
-            var downloader = new NetAsyncDownloader(user ?? new NullUser(), userAgent);
-            downloader.onOneCompleted += (target, error, etag) =>
+            var downloader = new NetAsyncDownloader(user ?? new NullUser(), () => null, userAgent);
+            downloader.onOneCompleted += (target, error, etag, hash) =>
             {
                 if (error != null)
                 {
@@ -81,7 +86,7 @@ namespace CKAN
                     // Some downloads are still in progress, add to the current batch
                     foreach (var target in targets)
                     {
-                        DownloadModule(new DownloadPart(target, userAgent));
+                        DownloadModule(new DownloadPart(target, userAgent, SHA256.Create()));
                     }
                     // Wait for completion along with original caller
                     // so we can handle completion tasks for the added mods
@@ -196,7 +201,7 @@ namespace CKAN
             queuedDownloads.Clear();
             foreach (var t in targets)
             {
-                DownloadModule(new DownloadPart(t, userAgent));
+                DownloadModule(new DownloadPart(t, userAgent, getHashAlgo?.Invoke()));
             }
         }
 
@@ -229,8 +234,8 @@ namespace CKAN
                             FileProgressReport(index, BytesReceived, TotalBytesToReceive);
 
                         // And schedule a notification if we're done (or if something goes wrong)
-                        dl.Done += (sender, args, etag) =>
-                            FileDownloadComplete(index, args.Error, args.Cancelled, etag);
+                        dl.Done += (sender, args, etag, hash) =>
+                            FileDownloadComplete(index, args.Error, args.Cancelled, etag, hash);
                     }
                     queuedDownloads.Remove(dl);
                 }
@@ -355,7 +360,11 @@ namespace CKAN
         /// This method gets called back by `WebClient` when a download is completed.
         /// It in turncalls the onCompleted hook when *all* downloads are finished.
         /// </summary>
-        private void FileDownloadComplete(int index, Exception? error, bool canceled, string? etag)
+        private void FileDownloadComplete(int        index,
+                                          Exception? error,
+                                          bool       canceled,
+                                          string?    etag,
+                                          string     hash)
         {
             var dl      = downloads[index];
             var doneUri = dl.CurrentUri;
@@ -392,7 +401,7 @@ namespace CKAN
             try
             {
                 // Tell calling code that this file is ready
-                onOneCompleted?.Invoke(dl.target, dl.error, etag);
+                onOneCompleted?.Invoke(dl.target, dl.error, etag, hash);
             }
             catch (Exception exc)
             {

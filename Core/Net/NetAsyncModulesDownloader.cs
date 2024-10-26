@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Security.Cryptography;
 
 using log4net;
 using Autofac;
@@ -27,7 +28,7 @@ namespace CKAN
         public NetAsyncModulesDownloader(IUser user, NetModuleCache cache, string? userAgent = null)
         {
             modules    = new List<CkanModule>();
-            downloader = new NetAsyncDownloader(user, userAgent);
+            downloader = new NetAsyncDownloader(user, SHA256.Create, userAgent);
             // Schedule us to process each module on completion.
             downloader.onOneCompleted += ModuleDownloadComplete;
             downloader.Progress += (target, remaining, total) =>
@@ -135,7 +136,8 @@ namespace CKAN
 
         private void ModuleDownloadComplete(NetAsyncDownloader.DownloadTarget target,
                                             Exception?                        error,
-                                            string?                           etag)
+                                            string?                           etag,
+                                            string?                           sha256)
         {
             if (target is NetAsyncDownloader.DownloadTargetFile fileTarget)
             {
@@ -158,6 +160,18 @@ namespace CKAN
                         module = modules.First(m => (m.download?.Any(dlUri => dlUri == url)
                                                      ?? false)
                                                     || m.InternetArchiveDownload == url);
+
+                        // Check hash if defined in module
+                        if (module.download_hash?.sha256 != null
+                            && sha256 != module.download_hash.sha256)
+                        {
+                            throw new InvalidModuleFileKraken(
+                                module, filename,
+                                string.Format(Properties.Resources.NetModuleCacheMismatchSHA256,
+                                              module, filename,
+                                              sha256, module.download_hash.sha256));
+                        }
+
                         User.RaiseMessage(Properties.Resources.NetAsyncDownloaderValidating, module);
                         cache.Store(module, filename,
                                     new ProgressImmediate<int>(percent => StoreProgress?.Invoke(module, 100 - percent, 100)),

@@ -90,7 +90,7 @@ namespace CKAN.GUI
                         try
                         {
                             bool canceled = false;
-                            var downloader = new NetAsyncDownloader(currentUser, userAgent);
+                            var downloader = new NetAsyncDownloader(currentUser, () => null, userAgent);
                             downloader.Progress += (target, remaining, total) =>
                             {
                                 var repo = repos.Where(r => target.urls.Contains(r.uri))
