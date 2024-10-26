@@ -150,9 +150,12 @@ namespace CKAN
                     providers.ToDictionary(prov => prov,
                                            prov => ResolvedRelationshipsTree.ResolveModule(
                                                        prov, definitelyInstalling, allInstalling, registry, installed, crit,
-                                                       (optRels & OptionalRelationships.AllSuggestions) == 0
-                                                           ? optRels & ~OptionalRelationships.Suggestions
-                                                           : optRels,
+                                                       relationship.suppress_recommendations
+                                                           ? optRels & ~OptionalRelationships.Recommendations
+                                                                     & ~OptionalRelationships.Suggestions
+                                                           : (optRels & OptionalRelationships.AllSuggestions) == 0
+                                                               ? optRels & ~OptionalRelationships.Suggestions
+                                                               : optRels,
                                                        relationshipCache)
                                                        .ToArray()))
         {
