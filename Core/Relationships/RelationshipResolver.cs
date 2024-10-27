@@ -429,11 +429,6 @@ namespace CKAN
         /// </summary>
         private void Add(CkanModule module, SelectionReason reason)
         {
-            if (module.IsDLC)
-            {
-                throw new ModuleIsDLCKraken(module);
-            }
-
             log.DebugFormat("Adding {0} {1}", module.identifier, module.version);
 
             if (modlist.TryGetValue(module.identifier, out CkanModule? possibleDup))

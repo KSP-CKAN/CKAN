@@ -171,11 +171,13 @@ namespace CKAN
             => resolved.Any(rr => rr.Key == mod || rr.Value.Any(rrr => rrr.Contains(mod)));
 
         public override bool Unsatisfied()
-            => reason is SelectionReason.Depends && resolved.Count == 0;
+            => reason is SelectionReason.Depends
+               && resolved.Keys.Count(m => !m.IsDLC) == 0;
 
         public override bool Unsatisfied(ICollection<CkanModule> installing)
             => reason is SelectionReason.Depends
-               && !resolved.Any(kvp => AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
+               && !resolved.Any(kvp => !kvp.Key.IsDLC
+                                       && AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
                                        && kvp.Value.All(rr => !rr.Unsatisfied(installing)));
 
         public override string ToString()

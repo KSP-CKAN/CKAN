@@ -1437,8 +1437,8 @@ namespace CKAN
         /// true if anything found, false otherwise
         /// </returns>
         public static bool FindRecommendations(GameInstance                                          instance,
-                                               HashSet<CkanModule>                                   sourceModules,
-                                               List<CkanModule>                                      toInstall,
+                                               ICollection<CkanModule>                               sourceModules,
+                                               ICollection<CkanModule>                               toInstall,
                                                Registry                                              registry,
                                                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                                out Dictionary<CkanModule, List<string>>              suggestions,

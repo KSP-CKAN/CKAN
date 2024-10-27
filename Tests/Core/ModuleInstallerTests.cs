@@ -847,6 +847,107 @@ namespace Tests.Core
                 "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
         }
 
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""MyDLC"",
+                          ""kind"": ""dlc""
+                      }",
+                      @"{
+                          ""identifier"": ""InstallingMod"",
+                          ""recommends"": [ { ""name"": ""MyDLC"" } ]
+                      }",
+                  },
+                  new string[] { "InstallingMod" },
+                  new string[] { "MyDLC" })
+        ]
+        public void FindRecommendations_WithDLCRecommendationsUnsatisfied_DLCRecommended(
+                string[] availableModules,
+                string[] installIdents,
+                string[] dlcIdents)
+        {
+            // Arrange
+            var user = new NullUser();
+            var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(Relationships.RelationshipResolverTests.MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var inst     = new DisposableKSP())
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act
+                var result = ModuleInstaller.FindRecommendations(inst.KSP,
+                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                                                              .OfType<CkanModule>()
+                                                                              .ToHashSet(),
+                                                                 new List<CkanModule>(),
+                                                                 registry,
+                                                                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                                                                 out Dictionary<CkanModule, List<string>> suggestions,
+                                                                 out Dictionary<CkanModule, HashSet<string>> supporters);
+
+                // Assert
+                Assert.IsTrue(result, "Should return something");
+                CollectionAssert.IsNotEmpty(recommendations, "Should return recommendations");
+                CollectionAssert.AreEquivalent(dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)),
+                                               recommendations.Keys,
+                                               "The DLC should be recommended");
+            }
+        }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""MyDLC"",
+                          ""kind"": ""dlc""
+                      }",
+                      @"{
+                          ""identifier"": ""InstallingMod"",
+                          ""recommends"": [ { ""name"": ""MyDLC"" } ]
+                      }",
+                  },
+                  new string[] { "InstallingMod" },
+                  new string[] { "MyDLC" })
+        ]
+        public void FindRecommendations_WithDLCRecommendationsSatisfied_DLCNotRecommended(
+                string[] availableModules,
+                string[] installIdents,
+                string[] dlcIdents)
+        {
+            // Arrange
+            var user = new NullUser();
+            var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(Relationships.RelationshipResolverTests.MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var inst     = new DisposableKSP())
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlcs(dlcIdents.ToDictionary(ident => ident,
+                                                        ident => new ModuleVersion("1.0.0")));
+
+                // Act
+                var result = ModuleInstaller.FindRecommendations(inst.KSP,
+                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                                                              .OfType<CkanModule>()
+                                                                              .ToHashSet(),
+                                                                 new List<CkanModule>(),
+                                                                 registry,
+                                                                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                                                                 out Dictionary<CkanModule, List<string>> suggestions,
+                                                                 out Dictionary<CkanModule, HashSet<string>> supporters);
+
+                // Assert
+                Assert.IsFalse(result, "Should return nothing");
+                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)))
+                {
+                    CollectionAssert.DoesNotContain(recommendations, mod,
+                                                    "DLC should not be recommended");
+                }
+            }
+        }
+
         [Test]
         public void InstallList_RealZipSlip_Throws()
         {
