@@ -455,8 +455,7 @@ namespace CKAN.GUI
 
         private void FilterAllButton_Click(object? sender, EventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.All), merge);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.All), false);
         }
 
         /// <summary>
