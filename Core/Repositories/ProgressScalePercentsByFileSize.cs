@@ -33,10 +33,11 @@ namespace CKAN
             {
                 var percent = basePercent + (int)(currentFilePercent * sizes[currentIndex] / totalSize);
                 // Only report each percentage once, to avoid spamming UI calls
-                if (percent > lastPercent)
+                if (percent > lastPercent || lastFile != currentIndex)
                 {
                     percentProgress?.Report(percent);
                     lastPercent = percent;
+                    lastFile    = currentIndex;
                 }
             }
         }
@@ -66,5 +67,6 @@ namespace CKAN
         private          int             currentIndex = 0;
         private          int             basePercent  = 0;
         private          int             lastPercent  = -1;
+        private          int             lastFile     = -1;
     }
 }
