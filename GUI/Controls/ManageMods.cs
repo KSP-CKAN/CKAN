@@ -1007,6 +1007,18 @@ namespace CKAN.GUI
                         UpdateChangeSetAndConflicts(currentInstance,
                             RegistryManager.Instance(currentInstance, repoData).registry);
                         break;
+
+                    case "IsCached":
+                        row.Visible = mainModList.IsVisible(gmod,
+                                                            currentInstance.Name,
+                                                            currentInstance.game,
+                                                            RegistryManager.Instance(currentInstance, repoData).registry);
+                        if (row.Visible && !ModGrid.Rows.Contains(row))
+                        {
+                            // UpdateFilters only adds visible rows, so we may need to add if newly visible
+                            ModGrid.Rows.Add(row);
+                        }
+                        break;
                 }
             }
         }
@@ -1340,7 +1352,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void UpdateFilters()
+        private void UpdateFilters()
         {
             Util.Invoke(this, _UpdateFilters);
         }

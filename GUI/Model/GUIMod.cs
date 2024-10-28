@@ -68,7 +68,20 @@ namespace CKAN.GUI
         public string DownloadSize { get; private set; }
         public string InstallSize { get; private set; }
         public int? DownloadCount { get; private set; }
-        public bool IsCached { get; private set; }
+
+        private bool isCached;
+        public bool IsCached
+        {
+            get => isCached;
+            private set
+            {
+                if (value != isCached)
+                {
+                    isCached = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         // These indicate the maximum game version that the maximum available
         // version of this mod can handle. The "Long" version also indicates

@@ -133,9 +133,6 @@ namespace CKAN.GUI
         {
             UpdateCachedByDownloads(module);
 
-            // Reapply searches in case is:cached or not:cached is active
-            ManageMods.UpdateFilters();
-
             if (module == null
                 || ModInfo.SelectedModule?.Identifier == module.identifier)
             {
