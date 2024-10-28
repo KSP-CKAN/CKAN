@@ -32,7 +32,7 @@ namespace CKAN.ConsoleUI {
             if (ksp != null
                 && !GameInstanceListScreen.TryGetInstance(theme, ksp, repoData,
                                                           (ConsoleTheme th) => Draw(th, false),
-                                                          new Progress<int>(p => drawProgressBar(theme, 22, 20, p)))) {
+                                                          new ProgressImmediate<int>(p => drawProgressBar(theme, 22, 20, p)))) {
                 Console.ResetColor();
                 Console.Clear();
                 Console.CursorVisible = true;

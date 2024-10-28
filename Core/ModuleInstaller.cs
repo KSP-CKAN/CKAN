@@ -71,7 +71,7 @@ namespace CKAN
                 .First(),
                 userAgent);
 
-            return cache.Store(module, tmp_file, new Progress<int>(percent => {}), filename, true);
+            return cache.Store(module, tmp_file, new ProgressImmediate<int>(percent => {}), filename, true);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace CKAN
             {
                 CkanModule? installing = null;
                 var progress = new ProgressScalePercentsByFileSizes(
-                    new Progress<int>(p => User.RaiseProgress(
+                    new ProgressImmediate<int>(p => User.RaiseProgress(
                                                string.Format(Properties.Resources.ModuleInstallerInstallingMod,
                                                              installing),
                                                // The post-install steps start at 90%,
@@ -805,7 +805,7 @@ namespace CKAN
                 var registry = registry_manager.registry;
                 var progDescr = "";
                 var progress = new ProgressScalePercentsByFileSizes(
-                                   new Progress<int>(percent => User.RaiseProgress(progDescr, percent)),
+                                   new ProgressImmediate<int>(percent => User.RaiseProgress(progDescr, percent)),
                                    goners.Select(id => (long?)registry.InstalledModule(id)?.Files.Count()
                                                                                           ?? 0));
                 foreach (string ident in goners)
@@ -1127,7 +1127,7 @@ namespace CKAN
 
                 string progDescr = "";
                 var rmProgress = new ProgressScalePercentsByFileSizes(
-                                     new Progress<int>(percent =>
+                                     new ProgressImmediate<int>(percent =>
                                          User.RaiseProgress(progDescr,
                                                             percent * add.Count / totSteps)),
                                      remove.Select(instMod => (long)instMod.Files.Count()));
@@ -1139,7 +1139,7 @@ namespace CKAN
                 }
 
                 var addProgress = new ProgressScalePercentsByFileSizes(
-                                      new Progress<int>(percent =>
+                                      new ProgressImmediate<int>(percent =>
                                           User.RaiseProgress(progDescr,
                                                              ((100 * add.Count) + (percent * remove.Count)) / totSteps)),
                                       add.Select(m => m.install_size));
@@ -1612,7 +1612,7 @@ namespace CKAN
             if (!TryGetFileHashMatches(files, registry, Cache,
                                        out Dictionary<FileInfo, List<CkanModule>> matched,
                                        out List<FileInfo> notFound,
-                                       new Progress<int>(p =>
+                                       new ProgressImmediate<int>(p =>
                                            user.RaiseProgress(Properties.Resources.ModuleInstallerImportScanningFiles,
                                                               p))))
             {
@@ -1660,7 +1660,7 @@ namespace CKAN
                 user.RaiseMessage(" ");
                 var description = "";
                 var progress = new ProgressScalePercentsByFileSizes(
-                                   new Progress<int>(p =>
+                                   new ProgressImmediate<int>(p =>
                                        user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting,
                                                                         description),
                                                           p)),

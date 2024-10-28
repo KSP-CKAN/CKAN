@@ -1413,7 +1413,7 @@ namespace CKAN.GUI
 
             repoData.Prepopulate(
                 registry.Repositories.Values.ToList(),
-                new Progress<int>(p => user?.RaiseProgress(
+                new ProgressImmediate<int>(p => user?.RaiseProgress(
                     Properties.Resources.LoadingCachedRepoData, p)));
 
             if (!regMgr.registry.HasAnyAvailable())

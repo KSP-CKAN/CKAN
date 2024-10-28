@@ -186,7 +186,7 @@ namespace CKAN
 
         private void ToStream(Stream netStream, Stream outStream, CancellationToken token)
         {
-            netStream.CopyTo(outStream, new Progress<long>(bytesDownloaded =>
+            netStream.CopyTo(outStream, new ProgressImmediate<long>(bytesDownloaded =>
                 {
                     DownloadProgress?.Invoke((int)(100 * bytesDownloaded / contentLength),
                                              bytesDownloaded, contentLength);

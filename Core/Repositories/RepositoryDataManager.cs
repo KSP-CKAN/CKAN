@@ -188,7 +188,7 @@ namespace CKAN
                 // Load them
                 string msg = "";
                 var progress = new ProgressFilesOffsetsToPercent(
-                    new Progress<int>(p => user.RaiseProgress(msg, p)),
+                    new ProgressImmediate<int>(p => user.RaiseProgress(msg, p)),
                     targets.Select(t => t.size));
                 foreach ((var repo, var target) in toUpdate.Zip(targets))
                 {

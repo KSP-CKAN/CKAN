@@ -581,7 +581,7 @@ namespace CKAN
                 }
             }
 
-            var progress = new Progress<int>(p => {});
+            var progress = new ProgressImmediate<int>(p => {});
             if (!TrySetupCache(Configuration.DownloadCacheDir,
                                progress,
                                out string? failReason))

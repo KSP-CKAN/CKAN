@@ -187,8 +187,8 @@ namespace CKAN
                 cancelToken?.ThrowIfCancellationRequested();
 
                 // Check valid CRC
-                if (!ZipValid(path, out string invalidReason, new Progress<int>(percent =>
-                    progress?.Report(percent * zipValidPercent / 100))))
+                if (!ZipValid(path, out string invalidReason,
+                              new ProgressImmediate<int>(percent => progress?.Report(percent * zipValidPercent / 100))))
                 {
                     throw new InvalidModuleFileKraken(module, path, string.Format(
                         Properties.Resources.NetModuleCacheNotValidZIP,

@@ -71,7 +71,7 @@ namespace CKAN.GUI
                 // We need the old data to alert the user of newly compatible modules after update.
                 repoData.Prepopulate(
                     registry.Repositories.Values.ToList(),
-                    new Progress<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
+                    new ProgressImmediate<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
 
                 var versionCriteria = CurrentInstance.VersionCriteria();
                 var oldModules = registry.CompatibleModules(versionCriteria)
