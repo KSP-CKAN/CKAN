@@ -19,10 +19,10 @@ namespace CKAN.ConsoleUI.Toolkit {
             : base(theme)
         {
             AddTip(
-                "F10", MenuTip(),
+                MainMenuKeyTip, MenuTip(),
                 () => mainMenu != null
             );
-            AddBinding(new ConsoleKeyInfo[] {Keys.F10, Keys.Apps}, (object sender) => {
+            AddBinding(MainMenuKeys, (object sender) => {
                 bool val = true;
                 if (mainMenu != null) {
                     DrawSelectedHamburger();
@@ -46,6 +46,21 @@ namespace CKAN.ConsoleUI.Toolkit {
             DrawBackground();
             Draw();
         }
+
+        /// <summary>
+        /// String that describes which key to press to open the main menu
+        /// MacOS has a conflicting default key bind for F10 (the CUA standard for opening the menu)
+        /// </summary>
+        public static readonly string MainMenuKeyTip = Platform.IsMac ? "Ctrl+T" : "F10";
+
+        /// <summary>
+        /// Keys that open the main menu
+        /// </summary>
+        public static readonly ConsoleKeyInfo[] MainMenuKeys = new ConsoleKeyInfo[] {
+            Keys.F10,
+            Keys.CtrlT,
+            Keys.Apps,
+        };
 
         /// <summary>
         /// Function returning text to be shown at the left edge of the top header bar
