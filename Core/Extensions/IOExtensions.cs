@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
+using System.Security.Cryptography;
 using Timer = System.Timers.Timer;
 
 namespace CKAN.Extensions
@@ -27,7 +28,8 @@ namespace CKAN.Extensions
                                   Stream            dest,
                                   IProgress<long>   progress,
                                   TimeSpan?         idleInterval = null,
-                                  CancellationToken cancelToken = default)
+                                  HashAlgorithm?    hasher       = null,
+                                  CancellationToken cancelToken  = default)
         {
             // CopyTo says its default buffer is 81920, but we want more than 1 update for a 100 KiB file
             const int bufSize = 16384;
@@ -58,9 +60,11 @@ namespace CKAN.Extensions
                 var bytesRead = src.Read(buffer, 0, bufSize);
                 if (bytesRead == 0)
                 {
+                    hasher?.TransformFinalBlock(buffer, 0, 0);
                     break;
                 }
                 dest.Write(buffer, 0, bytesRead);
+                hasher?.TransformBlock(buffer, 0, bytesRead, buffer, 0);
                 total += bytesRead;
                 cancelToken.ThrowIfCancellationRequested();
                 var now = DateTime.Now;

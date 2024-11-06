@@ -101,15 +101,14 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void RaiseProgress(int percent,
-                                  long bytesPerSecond, long bytesLeft)
+        public void RaiseProgress(ByteRateCounter rateCounter)
         {
             Util.Invoke(main, () =>
             {
-                wait.SetMainProgress(percent, bytesPerSecond, bytesLeft);
+                wait.SetMainProgress(rateCounter);
                 statBarProgBar.Value =
                     Math.Max(statBarProgBar.Minimum,
-                        Math.Min(statBarProgBar.Maximum, percent));
+                        Math.Min(statBarProgBar.Maximum, rateCounter.Percent));
                 statBarProgBar.Style = ProgressBarStyle.Continuous;
             });
         }

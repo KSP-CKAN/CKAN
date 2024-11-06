@@ -23,7 +23,7 @@ namespace Tests.Data
             if (repos.Length > 0)
             {
                 Manager.Update(repos, new KerbalSpaceProgram(),
-                               false, new NetAsyncDownloader(user), user);
+                               false, new NetAsyncDownloader(user, () => null), user);
             }
         }
 

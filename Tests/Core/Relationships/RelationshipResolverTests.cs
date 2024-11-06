@@ -1166,6 +1166,182 @@ namespace Tests.Core.Relationships
         [Test,
          TestCase(new string[] {
                       @"{
+                          ""identifier"": ""MyDLC"",
+                          ""kind"": ""dlc""
+                      }",
+                      @"{
+                          ""identifier"": ""InstallingMod"",
+                          ""recommends"": [ { ""name"": ""MyDLC"" } ]
+                      }",
+                  },
+                  new string[] { "InstallingMod" },
+                  new string[] { "MyDLC" }),
+        ]
+        public void Recommendations_WithDLCRecommendationUnsatisfied_ContainsDLC(string[] availableModules,
+                                                                                 string[] installIdents,
+                                                                                 string[] dlcIdents)
+        {
+            // Arrange
+            var user    = new NullUser();
+            var game    = new KerbalSpaceProgram();
+            var crit    = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act
+                var rr = new RelationshipResolver(
+                    installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                 .OfType<CkanModule>(),
+                    null,
+                    RelationshipResolverOptions.KitchenSinkOpts(),
+                    registry, game, crit);
+                var deps = rr.Dependencies().ToHashSet();
+                var recs = rr.Recommendations(deps).ToArray();
+                var dlcs = dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)).ToArray();
+
+                // Assert
+                CollectionAssert.IsSubsetOf(dlcs, rr.ModList(false));
+                CollectionAssert.IsSubsetOf(dlcs, recs);
+            }
+        }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""MyDLC"",
+                          ""kind"": ""dlc""
+                      }",
+                      @"{
+                          ""identifier"": ""InstallingMod"",
+                          ""recommends"": [ { ""name"": ""MyDLC"" } ]
+                      }",
+                  },
+                  new string[] { "InstallingMod" },
+                  new string[] { "MyDLC" }),
+        ]
+        public void Recommendations_WithDLCRecommendationSatisfied_OmitsDLC(string[] availableModules,
+                                                                            string[] installIdents,
+                                                                            string[] dlcIdents)
+        {
+            // Arrange
+            var user    = new NullUser();
+            var game    = new KerbalSpaceProgram();
+            var crit    = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlcs(dlcIdents.ToDictionary(ident => ident,
+                                                        ident => new ModuleVersion("1.0.0")));
+
+                // Act
+                var rr = new RelationshipResolver(
+                    installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                 .OfType<CkanModule>(),
+                    null,
+                    RelationshipResolverOptions.KitchenSinkOpts(),
+                    registry, game, crit);
+                var deps = rr.Dependencies().ToHashSet();
+                var recs = rr.Recommendations(deps).ToArray();
+
+                // Assert
+                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)))
+                {
+                    CollectionAssert.DoesNotContain(rr.ModList(false), mod);
+                    CollectionAssert.DoesNotContain(recs,              mod);
+                }
+            }
+        }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""MyDLC"",
+                          ""kind"": ""dlc""
+                      }",
+                      @"{
+                          ""identifier"": ""InstallingMod"",
+                          ""depends"": [ { ""name"": ""MyDLC"" } ]
+                      }",
+                  },
+                  new string[] { "InstallingMod" }),
+        ]
+        public void Constructor_WithDLCDependsUnsatisfied_Throws(string[] availableModules,
+                                                                 string[] installIdents)
+        {
+            // Arrange
+            var user    = new NullUser();
+            var game    = new KerbalSpaceProgram();
+            var crit    = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act / Assert
+                Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+                {
+                    var rr = new RelationshipResolver(
+                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                     .OfType<CkanModule>(),
+                        null,
+                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        registry, game, crit);
+                });
+            }
+        }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""MyDLC"",
+                          ""kind"": ""dlc""
+                      }",
+                      @"{
+                          ""identifier"": ""InstallingMod"",
+                          ""depends"": [ { ""name"": ""MyDLC"" } ]
+                      }",
+                  },
+                  new string[] { "InstallingMod" },
+                  new string[] { "MyDLC" }),
+        ]
+        public void Constructor_WithDLCDependsSatisfied_DoesNotThrow(string[] availableModules,
+                                                                     string[] installIdents,
+                                                                     string[] dlcIdents)
+        {
+            // Arrange
+            var user    = new NullUser();
+            var game    = new KerbalSpaceProgram();
+            var crit    = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlcs(dlcIdents.ToDictionary(ident => ident,
+                                                        ident => new ModuleVersion("1.0.0")));
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    var rr = new RelationshipResolver(
+                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                     .OfType<CkanModule>(),
+                        null,
+                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        registry, game, crit);
+                });
+            }
+        }
+
+        [Test,
+         TestCase(new string[] {
+                      @"{
                           ""identifier"":  ""PopularMod"",
                           ""ksp_version"": ""1.10.0""
                       }",
@@ -1355,7 +1531,7 @@ namespace Tests.Core.Relationships
             }
         }
 
-        private static string MergeWithDefaults(string json)
+        public static string MergeWithDefaults(string json)
         {
             var incoming = JObject.Parse(json);
             incoming.Merge(moduleDefaults);
@@ -1371,5 +1547,6 @@ namespace Tests.Core.Relationships
                 ""version"":      ""1.0"",
                 ""download"":     ""https://www.nonexistent.com/download""
             }");
+
     }
 }

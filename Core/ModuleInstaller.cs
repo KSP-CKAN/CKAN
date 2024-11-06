@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using ICSharpCode.SharpZipLib.Core;
@@ -28,7 +28,9 @@ namespace CKAN
     {
         public IUser User { get; set; }
 
-        public event Action<CkanModule>? onReportModInstalled = null;
+        public event Action<CkanModule, long, long>?      InstallProgress;
+        public event Action<InstalledModule, long, long>? RemoveProgress;
+        public event Action<CkanModule>?                  OneComplete;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
@@ -71,7 +73,7 @@ namespace CKAN
                 .First(),
                 userAgent);
 
-            return cache.Store(module, tmp_file, new Progress<int>(percent => {}), filename, true);
+            return cache.Store(module, tmp_file, new ProgressImmediate<long>(bytes => {}), filename, true);
         }
 
         /// <summary>
@@ -105,19 +107,6 @@ namespace CKAN
             return full_path;
         }
 
-        /// <summary>
-        /// Makes sure all the specified mods are downloaded.
-        /// </summary>
-        private void DownloadModules(IEnumerable<CkanModule> mods, IDownloader downloader)
-        {
-            var downloads = mods.Where(module => !module.IsMetapackage && !Cache.IsCached(module))
-                                .ToList();
-            if (downloads.Count > 0)
-            {
-                downloader.DownloadModules(downloads);
-            }
-        }
-
         #endregion
 
         #region Installation
@@ -138,7 +127,6 @@ namespace CKAN
                                 IDownloader?                downloader    = null,
                                 bool                        ConfirmPrompt = true)
         {
-            // TODO: Break this up into smaller pieces! It's huge!
             if (modules.Count == 0)
             {
                 User.RaiseProgress(Properties.Resources.ModuleInstallerNothingToInstall, 100);
@@ -149,73 +137,85 @@ namespace CKAN
                                                     instance.game,
                                                     instance.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
-            var downloads = new List<CkanModule>();
+            // Alert about attempts to install DLC before downloading or installing anything
+            if (modsToInstall.Any(m => m.IsDLC))
+            {
+                throw new BadCommandKraken(Properties.Resources.ModuleInstallerDLC);
+            }
 
             // Make sure we have enough space to install this stuff
+            var installBytes = modsToInstall.Sum(m => m.install_size);
             CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
-                                         modsToInstall.Select(m => m.install_size)
-                                                      .OfType<long>()
-                                                      .Sum(),
+                                         installBytes,
                                          Properties.Resources.NotEnoughSpaceToInstall);
 
-            // TODO: All this user-stuff should be happening in another method!
-            // We should just be installing mods as a transaction.
-
+            var cached    = new List<CkanModule>();
+            var downloads = new List<CkanModule>();
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToInstall);
             User.RaiseMessage("");
-
             foreach (var module in modsToInstall)
             {
                 User.RaiseMessage(" * {0}", Cache.DescribeAvailability(module));
-                // Alert about attempts to install DLC before downloading or installing anything
-                CheckKindInstallationKraken(module);
                 if (!module.IsMetapackage && !Cache.IsMaybeCachedZip(module))
                 {
                     downloads.Add(module);
                 }
+                else
+                {
+                    cached.Add(module);
+                }
             }
-
             if (ConfirmPrompt && !User.RaiseYesNoDialog(Properties.Resources.ModuleInstallerContinuePrompt))
             {
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUserDeclined);
             }
 
+            var downloadBytes = CkanModule.GroupByDownloads(downloads)
+                                          .Sum(grp => grp.First().download_size);
+            var rateCounter = new ByteRateCounter()
+            {
+                Size      = downloadBytes + installBytes,
+                BytesLeft = downloadBytes + installBytes,
+            };
+            rateCounter.Start();
+            long downloadedBytes = 0;
+            long installedBytes  = 0;
             if (downloads.Count > 0)
             {
                 downloader ??= new NetAsyncModulesDownloader(User, Cache, userAgent);
-                downloader.DownloadModules(downloads);
+                downloader.OverallDownloadProgress += brc =>
+                {
+                    downloadedBytes = downloadBytes - brc.BytesLeft;
+                    rateCounter.BytesLeft = downloadBytes - downloadedBytes
+                                          + installBytes  - installedBytes;
+                    User.RaiseProgress(rateCounter);
+                };
             }
-
-            // Make sure we STILL have enough space to install this stuff
-            // now that the downloads have been stored to the cache
-            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
-                                         modsToInstall.Select(m => m.install_size)
-                                                      .OfType<long>()
-                                                      .Sum(),
-                                         Properties.Resources.NotEnoughSpaceToInstall);
 
             // We're about to install all our mods; so begin our transaction.
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                CkanModule? installing = null;
-                var progress = new ProgressScalePercentsByFileSizes(
-                    new Progress<int>(p => User.RaiseProgress(
-                                               string.Format(Properties.Resources.ModuleInstallerInstallingMod,
-                                                             installing),
-                                               // The post-install steps start at 90%,
-                                               // so count up to 85% for installation
-                                               p * 85 / 100)),
-                    modsToInstall.Select(m => m.install_size));
-                for (int i = 0; i < modsToInstall.Count; i++)
+                var gameDir = new DirectoryInfo(instance.GameDir());
+                long modInstallCompletedBytes = 0;
+                foreach (var mod in ModsInDependencyOrder(resolver, cached, downloads, downloader))
                 {
-                    installing = modsToInstall[i];
-                    Install(installing,
-                            resolver.IsAutoInstalled(installing),
+                    // Re-check that there's enough free space in case game dir and cache are on same drive
+                    CKANPathUtils.CheckFreeSpace(gameDir, mod.install_size,
+                                                 Properties.Resources.NotEnoughSpaceToInstall);
+                    Install(mod, resolver.IsAutoInstalled(mod),
                             registry_manager.registry,
                             ref possibleConfigOnlyDirs,
-                            progress);
-                    progress?.NextFile();
+                            new ProgressImmediate<long>(bytes =>
+                            {
+                                InstallProgress?.Invoke(mod, mod.install_size - bytes, mod.install_size);
+                                installedBytes = modInstallCompletedBytes + bytes;
+                                rateCounter.BytesLeft = downloadBytes - downloadedBytes
+                                                      + installBytes  - installedBytes;
+                                User.RaiseProgress(rateCounter);
+                            }));
+                    modInstallCompletedBytes += mod.install_size;
                 }
+                rateCounter.Stop();
 
                 User.RaiseProgress(Properties.Resources.ModuleInstallerUpdatingRegistry, 90);
                 registry_manager.Save(!options.without_enforce_consistency);
@@ -226,6 +226,66 @@ namespace CKAN
 
             EnforceCacheSizeLimit(registry_manager.registry, Cache);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
+        }
+
+        private static IEnumerable<CkanModule> ModsInDependencyOrder(RelationshipResolver    resolver,
+                                                                     ICollection<CkanModule> cached,
+                                                                     ICollection<CkanModule> toDownload,
+                                                                     IDownloader?            downloader)
+
+            => ModsInDependencyOrder(resolver, cached,
+                                     downloader != null && toDownload.Count > 0
+                                         ? downloader.ModulesAsTheyFinish(cached, toDownload)
+                                         : null);
+
+        private static IEnumerable<CkanModule> ModsInDependencyOrder(RelationshipResolver     resolver,
+                                                                     ICollection<CkanModule>  cached,
+                                                                     IEnumerable<CkanModule>? downloading)
+        {
+            var waiting = new HashSet<CkanModule>();
+            var done    = new HashSet<CkanModule>();
+            if (downloading != null)
+            {
+                foreach (var newlyCached in downloading)
+                {
+                    waiting.Add(newlyCached);
+                    foreach (var m in OnePass(resolver, waiting, done))
+                    {
+                        yield return m;
+                    }
+                }
+            }
+            else
+            {
+                waiting.UnionWith(cached);
+                foreach (var m in OnePass(resolver, waiting, done))
+                {
+                    yield return m;
+                }
+            }
+        }
+
+        private static IEnumerable<CkanModule> OnePass(RelationshipResolver resolver,
+                                                       HashSet<CkanModule>  waiting,
+                                                       HashSet<CkanModule>  done)
+        {
+            while (true)
+            {
+                var newlyDone = waiting.Where(m => resolver.ReadyToInstall(m, done))
+                                       .OrderBy(m => m.identifier)
+                                       .ToArray();
+                if (newlyDone.Length == 0)
+                {
+                    // No mods ready to install
+                    break;
+                }
+                foreach (var m in newlyDone)
+                {
+                    waiting.Remove(m);
+                    done.Add(m);
+                    yield return m;
+                }
+            }
         }
 
         /// <summary>
@@ -245,7 +305,7 @@ namespace CKAN
                              bool                 autoInstalled,
                              Registry             registry,
                              ref HashSet<string>? possibleConfigOnlyDirs,
-                             IProgress<int>?      progress)
+                             IProgress<long>?     progress)
         {
             CheckKindInstallationKraken(module);
             var version = registry.InstalledVersion(module.identifier);
@@ -254,7 +314,7 @@ namespace CKAN
             if (version is not null and not UnmanagedModuleVersion)
             {
                 User.RaiseMessage(Properties.Resources.ModuleInstallerAlreadyInstalled,
-                                  module.identifier, version);
+                                  module.name, version);
                 return;
             }
 
@@ -273,6 +333,9 @@ namespace CKAN
                 }
             }
 
+            User.RaiseMessage(Properties.Resources.ModuleInstallerInstallingMod,
+                              module.name);
+
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 // Install all the things!
@@ -289,8 +352,11 @@ namespace CKAN
                 transaction.Complete();
             }
 
+            User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
+                              module.name);
+
             // Fire our callback that we've installed a module, if we have one.
-            onReportModInstalled?.Invoke(module);
+            OneComplete?.Invoke(module);
         }
 
         /// <summary>
@@ -317,7 +383,7 @@ namespace CKAN
                                            string?              zip_filename,
                                            Registry             registry,
                                            ref HashSet<string>? possibleConfigOnlyDirs,
-                                           IProgress<int>?      moduleProgress)
+                                           IProgress<long>?     moduleProgress)
         {
             var createdPaths = new List<string>();
             if (module.IsMetapackage || zip_filename == null)
@@ -394,16 +460,14 @@ namespace CKAN
                             }
                         }
                     }
-                    var fileProgress = moduleProgress != null
-                        ? new ProgressFilesOffsetsToPercent(moduleProgress,
-                                                            files.Select(f => f.source.Size))
-                        : null;
+                    long installedBytes = 0;
+                    var fileProgress = new ProgressImmediate<long>(bytes => moduleProgress?.Report(installedBytes + bytes));
                     foreach (InstallableFile file in files)
                     {
                         log.DebugFormat("Copying {0}", file.source.Name);
                         var path = CopyZipEntry(zipfile, file.source, file.destination, file.makedir,
                                                 fileProgress);
-                        fileProgress?.NextFile();
+                        installedBytes += file.source.Size;
                         if (path != null)
                         {
                             createdPaths.Add(path);
@@ -803,18 +867,38 @@ namespace CKAN
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 var registry = registry_manager.registry;
-                var progDescr = "";
-                var progress = new ProgressScalePercentsByFileSizes(
-                                   new Progress<int>(percent => User.RaiseProgress(progDescr, percent)),
-                                   goners.Select(id => (long?)registry.InstalledModule(id)?.Files.Count()
-                                                                                          ?? 0));
+                long removeBytes = goners.Select(registry.InstalledModule)
+                                         .OfType<InstalledModule>()
+                                         .Sum(m => m.Module.install_size);
+                var rateCounter = new ByteRateCounter()
+                {
+                    Size      = removeBytes,
+                    BytesLeft = removeBytes,
+                };
+                rateCounter.Start();
+
+                long modRemoveCompletedBytes = 0;
                 foreach (string ident in goners)
                 {
-                    progDescr = string.Format(Properties.Resources.ModuleInstallerRemovingMod,
-                                                         registry.InstalledModule(ident)?.Module.ToString()
-                                                                                        ?? ident);
-                    Uninstall(ident, ref possibleConfigOnlyDirs, registry, progress);
-                    progress.NextFile();
+                    if (registry.InstalledModule(ident) is InstalledModule instMod)
+                    {
+                        User.RaiseMessage(Properties.Resources.ModuleInstallerRemovingMod,
+                                          registry.InstalledModule(ident)?.Module.name
+                                                                         ?? ident);
+                        Uninstall(ident, ref possibleConfigOnlyDirs, registry,
+                                  new ProgressImmediate<long>(bytes =>
+                                  {
+                                      RemoveProgress?.Invoke(instMod,
+                                                             instMod.Module.install_size - bytes,
+                                                             instMod.Module.install_size);
+                                      rateCounter.BytesLeft = removeBytes - (modRemoveCompletedBytes + bytes);
+                                      User.RaiseProgress(rateCounter);
+                                  }));
+                        modRemoveCompletedBytes += instMod?.Module.install_size ?? 0;
+                        User.RaiseMessage(Properties.Resources.ModuleInstallerRemovedMod,
+                                          registry.InstalledModule(ident)?.Module.name
+                                                                         ?? ident);
+                    }
                 }
 
                 // Enforce consistency if we're not installing anything,
@@ -837,7 +921,7 @@ namespace CKAN
         private void Uninstall(string               identifier,
                                ref HashSet<string>? possibleConfigOnlyDirs,
                                Registry             registry,
-                               IProgress<int>       progress)
+                               IProgress<long>      progress)
         {
             var file_transaction = new TxFileManager();
 
@@ -860,11 +944,10 @@ namespace CKAN
                 // Files that Windows refused to delete due to locking (probably)
                 var undeletableFiles = new List<string>();
 
-                int i = 0;
+                long bytesDeleted = 0;
                 foreach (string relPath in modFiles)
                 {
                     string absPath = instance.ToAbsoluteGameDir(relPath);
-                    progress?.Report(100 * i++ / modFiles.Length);
 
                     try
                     {
@@ -884,6 +967,8 @@ namespace CKAN
                                 directoriesToDelete.Add(p);
                             }
 
+                            bytesDeleted += new FileInfo(absPath).Length;
+                            progress.Report(bytesDeleted);
                             log.DebugFormat("Removing {0}", relPath);
                             file_transaction.Delete(absPath);
                         }
@@ -1111,50 +1196,92 @@ namespace CKAN
         /// <param name="autoInstalled">true or false for each item in `add`</param>
         /// <param name="remove">Modules to remove</param>
         /// <param name="newModulesAreAutoInstalled">true if newly installed modules should be marked auto-installed, false otherwise</param>
-        private void AddRemove(ref HashSet<string>?         possibleConfigOnlyDirs,
-                               RegistryManager              registry_manager,
-                               ICollection<CkanModule>      add,
-                               ICollection<bool>            autoInstalled,
-                               ICollection<InstalledModule> remove,
-                               bool                         enforceConsistency)
+        private void AddRemove(ref HashSet<string>?          possibleConfigOnlyDirs,
+                               RegistryManager               registry_manager,
+                               RelationshipResolver          resolver,
+                               ICollection<CkanModule>       add,
+                               IDictionary<CkanModule, bool> autoInstalled,
+                               ICollection<InstalledModule>  remove,
+                               IDownloader                   downloader,
+                               bool                          enforceConsistency)
         {
-            // TODO: We should do a consistency check up-front, rather than relying
-            // upon our registry catching inconsistencies at the end.
-
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-                int totSteps = remove.Count + add.Count;
+                var groups = add.GroupBy(m => m.IsMetapackage || Cache.IsCached(m));
+                var cached = groups.FirstOrDefault(grp => grp.Key)?.ToArray()
+                                                                  ?? Array.Empty<CkanModule>();
+                var toDownload = groups.FirstOrDefault(grp => !grp.Key)?.ToArray()
+                                                                       ?? Array.Empty<CkanModule>();
 
-                string progDescr = "";
-                var rmProgress = new ProgressScalePercentsByFileSizes(
-                                     new Progress<int>(percent =>
-                                         User.RaiseProgress(progDescr,
-                                                            percent * add.Count / totSteps)),
-                                     remove.Select(instMod => (long)instMod.Files.Count()));
-                foreach (InstalledModule instMod in remove)
+                long removeBytes     = remove.Sum(m => m.Module.install_size);
+                long removedBytes    = 0;
+                long downloadBytes   = toDownload.Sum(m => m.download_size);
+                long downloadedBytes = 0;
+                long installBytes    = add.Sum(m => m.install_size);
+                long installedBytes  = 0;
+                var rateCounter = new ByteRateCounter()
                 {
-                    progDescr = string.Format(Properties.Resources.ModuleInstallerRemovingMod, instMod.Module);
-                    Uninstall(instMod.Module.identifier, ref possibleConfigOnlyDirs, registry_manager.registry, rmProgress);
-                    rmProgress.NextFile();
+                    Size      = removeBytes + downloadBytes + installBytes,
+                    BytesLeft = removeBytes + downloadBytes + installBytes,
+                };
+                rateCounter.Start();
+
+                downloader.OverallDownloadProgress += brc =>
+                {
+                    downloadedBytes = downloadBytes - brc.BytesLeft;
+                    rateCounter.BytesLeft = removeBytes   - removedBytes
+                                          + downloadBytes - downloadedBytes
+                                          + installBytes  - installedBytes;
+                    User.RaiseProgress(rateCounter);
+                };
+                var toInstall = ModsInDependencyOrder(resolver, cached, toDownload, downloader);
+
+                long modRemoveCompletedBytes = 0;
+                foreach (var instMod in remove)
+                {
+                    Uninstall(instMod.Module.identifier,
+                              ref possibleConfigOnlyDirs,
+                              registry_manager.registry,
+                              new ProgressImmediate<long>(bytes =>
+                              {
+                                  RemoveProgress?.Invoke(instMod,
+                                                         instMod.Module.install_size - bytes,
+                                                         instMod.Module.install_size);
+                                  removedBytes = modRemoveCompletedBytes + bytes;
+                                  rateCounter.BytesLeft = removeBytes   - removedBytes
+                                                        + downloadBytes - downloadedBytes
+                                                        + installBytes  - installedBytes;
+                                  User.RaiseProgress(rateCounter);
+                              }));
+                     modRemoveCompletedBytes += instMod.Module.install_size;
                 }
 
-                var addProgress = new ProgressScalePercentsByFileSizes(
-                                      new Progress<int>(percent =>
-                                          User.RaiseProgress(progDescr,
-                                                             ((100 * add.Count) + (percent * remove.Count)) / totSteps)),
-                                      add.Select(m => m.install_size));
-                foreach ((CkanModule module, bool autoInst) in add.Zip(autoInstalled))
+                var gameDir = new DirectoryInfo(instance.GameDir());
+                long modInstallCompletedBytes = 0;
+                foreach (var mod in toInstall)
                 {
-                    progDescr = string.Format(Properties.Resources.ModuleInstallerInstallingMod, module);
-                    var previous = remove?.FirstOrDefault(im => im.Module.identifier == module.identifier);
-                    // For upgrading, new modules are dependencies and should be marked auto-installed,
-                    // for replacing, new modules are the replacements and should not be marked auto-installed
-                    Install(module,
-                            previous?.AutoInstalled ?? autoInst,
+                    CKANPathUtils.CheckFreeSpace(gameDir, mod.install_size,
+                                                 Properties.Resources.NotEnoughSpaceToInstall);
+                    Install(mod,
+                            // For upgrading, new modules are dependencies and should be marked auto-installed,
+                            // for replacing, new modules are the replacements and should not be marked auto-installed
+                            remove?.FirstOrDefault(im => im.Module.identifier == mod.identifier)
+                                  ?.AutoInstalled
+                                  ?? autoInstalled[mod],
                             registry_manager.registry,
                             ref possibleConfigOnlyDirs,
-                            addProgress);
-                    addProgress.NextFile();
+                            new ProgressImmediate<long>(bytes =>
+                            {
+                                InstallProgress?.Invoke(mod,
+                                                        mod.install_size - bytes,
+                                                        mod.install_size);
+                                installedBytes = modInstallCompletedBytes + bytes;
+                                rateCounter.BytesLeft = removeBytes   - removedBytes
+                                                      + downloadBytes - downloadedBytes
+                                                      + installBytes  - installedBytes;
+                                User.RaiseProgress(rateCounter);
+                            }));
+                    modInstallCompletedBytes += mod.install_size;
                 }
 
                 registry_manager.Save(enforceConsistency);
@@ -1169,29 +1296,24 @@ namespace CKAN
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
         public void Upgrade(ICollection<CkanModule> modules,
-                            IDownloader             netAsyncDownloader,
+                            IDownloader             downloader,
                             ref HashSet<string>?    possibleConfigOnlyDirs,
                             RegistryManager         registry_manager,
                             bool                    enforceConsistency   = true,
-                            bool                    resolveRelationships = false,
                             bool                    ConfirmPrompt        = true)
         {
             var registry = registry_manager.registry;
-            var autoInstalled = modules.ToDictionary(m => m, m => true);
 
-            if (resolveRelationships)
-            {
-                var resolver = new RelationshipResolver(
-                    modules,
-                    modules.Select(m => registry.InstalledModule(m.identifier)?.Module)
-                           .OfType<CkanModule>(),
-                    RelationshipResolverOptions.DependsOnlyOpts(),
-                    registry,
-                    instance.game,
-                    instance.VersionCriteria());
-                modules = resolver.ModList().ToArray();
-                autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
-            }
+            var resolver = new RelationshipResolver(
+                modules,
+                modules.Select(m => registry.InstalledModule(m.identifier)?.Module)
+                       .OfType<CkanModule>(),
+                RelationshipResolverOptions.DependsOnlyOpts(),
+                registry,
+                instance.game,
+                instance.VersionCriteria());
+            modules = resolver.ModList().ToArray();
+            var autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToUpgrade);
             User.RaiseMessage("");
@@ -1304,14 +1426,13 @@ namespace CKAN
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUpgradeUserDeclined);
             }
 
-            // Start by making sure we've downloaded everything.
-            DownloadModules(modules, netAsyncDownloader);
-
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
+                      resolver,
                       modules,
-                      modules.Select(m => autoInstalled[m]).ToArray(),
+                      autoInstalled,
                       to_remove,
+                      downloader,
                       enforceConsistency);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
@@ -1324,7 +1445,7 @@ namespace CKAN
         /// <exception cref="ModuleNotFoundKraken">Thrown if a module that should be replaced is not installed.</exception>
         public void Replace(IEnumerable<ModuleReplacement> replacements,
                             RelationshipResolverOptions    options,
-                            IDownloader                    netAsyncDownloader,
+                            IDownloader                    downloader,
                             ref HashSet<string>?           possibleConfigOnlyDirs,
                             RegistryManager                registry_manager,
                             bool                           enforceConsistency = true)
@@ -1338,13 +1459,10 @@ namespace CKAN
                 modsToInstall.Add(repl.ReplaceWith);
                 log.DebugFormat("We want to install {0} as a replacement for {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
             }
-            // Start by making sure we've downloaded everything.
-            DownloadModules(modsToInstall, netAsyncDownloader);
 
             // Our replacement involves removing the currently installed mods, then
             // adding everything that needs installing (which may involve new mods to
             // satisfy dependencies).
-
 
             // Let's discover what we need to do with each module!
             foreach (ModuleReplacement repl in replacements)
@@ -1406,11 +1524,14 @@ namespace CKAN
             var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry,
                                                     instance.game, instance.VersionCriteria());
             var resolvedModsToInstall = resolver.ModList().ToList();
+
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
+                      resolver,
                       resolvedModsToInstall,
-                      resolvedModsToInstall.Select(m => false).ToArray(),
+                      resolvedModsToInstall.ToDictionary(m => m, m => false),
                       modsToRemove,
+                      downloader,
                       enforceConsistency);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
@@ -1437,8 +1558,8 @@ namespace CKAN
         /// true if anything found, false otherwise
         /// </returns>
         public static bool FindRecommendations(GameInstance                                          instance,
-                                               HashSet<CkanModule>                                   sourceModules,
-                                               List<CkanModule>                                      toInstall,
+                                               ICollection<CkanModule>                               sourceModules,
+                                               ICollection<CkanModule>                               toInstall,
                                                Registry                                              registry,
                                                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                                out Dictionary<CkanModule, List<string>>              suggestions,
@@ -1612,7 +1733,7 @@ namespace CKAN
             if (!TryGetFileHashMatches(files, registry, Cache,
                                        out Dictionary<FileInfo, List<CkanModule>> matched,
                                        out List<FileInfo> notFound,
-                                       new Progress<int>(p =>
+                                       new ProgressImmediate<int>(p =>
                                            user.RaiseProgress(Properties.Resources.ModuleInstallerImportScanningFiles,
                                                               p))))
             {
@@ -1659,12 +1780,18 @@ namespace CKAN
                 // Store any new files
                 user.RaiseMessage(" ");
                 var description = "";
-                var progress = new ProgressScalePercentsByFileSizes(
-                                   new Progress<int>(p =>
-                                       user.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerImporting,
-                                                                        description),
-                                                          p)),
-                                   toStore.Select(tuple => tuple.File.Length));
+                long installedBytes = 0;
+                var rateCounter = new ByteRateCounter()
+                {
+                    Size      = toStore.Sum(tuple => tuple.File.Length),
+                    BytesLeft = toStore.Sum(tuple => tuple.File.Length),
+                };
+                rateCounter.Start();
+                var progress = new ProgressImmediate<long>(bytes =>
+                {
+                    rateCounter.BytesLeft = rateCounter.Size - (installedBytes + bytes);
+                    user.RaiseProgress(rateCounter);
+                });
                 foreach ((FileInfo fi, CkanModule module) in toStore)
                 {
 
@@ -1675,8 +1802,9 @@ namespace CKAN
                                 move: delete && toStore.Last(tuple => tuple.File == fi).Module == module,
                                 // Skip revalidation because we had to check the hashes to get here!
                                 validate: false);
-                    progress.NextFile();
+                    installedBytes += fi.Length;
                 }
+                rateCounter.Stop();
             }
 
             // Here we have installable containing mods that can be installed, and the importable files have been stored in cache.

@@ -47,12 +47,9 @@ namespace CKAN.GUI
                 && Manager?.Cache != null)
             {
                 downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
-                downloader.Progress      += Wait.SetModuleProgress;
-                downloader.AllComplete   += Wait.DownloadsComplete;
-                downloader.StoreProgress += (module, remaining, total) =>
-                    Wait.SetProgress(string.Format(Properties.Resources.ValidatingDownload,
-                                                   module),
-                                     remaining, total);
+                downloader.DownloadProgress += OnModDownloading;
+                downloader.StoreProgress    += OnModValidating;
+                downloader.OverallDownloadProgress += currentUser.RaiseProgress;
                 Wait.OnCancel += downloader.CancelDownload;
                 downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
                 e.Result = e.Argument;
@@ -132,9 +129,6 @@ namespace CKAN.GUI
         private void OnModStoredOrPurged(CkanModule? module)
         {
             UpdateCachedByDownloads(module);
-
-            // Reapply searches in case is:cached or not:cached is active
-            ManageMods.UpdateFilters();
 
             if (module == null
                 || ModInfo.SelectedModule?.Identifier == module.identifier)

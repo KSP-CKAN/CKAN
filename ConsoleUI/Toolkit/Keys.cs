@@ -198,6 +198,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of Ctrl+R for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo CtrlT = new ConsoleKeyInfo(
+            (char)20, ConsoleKey.T, false, false, true
+        );
+
+        /// <summary>
         /// Representation of Ctrl+U for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo CtrlU = new ConsoleKeyInfo(

@@ -581,7 +581,7 @@ namespace CKAN
                 }
             }
 
-            var progress = new Progress<int>(p => {});
+            var progress = new ProgressImmediate<int>(p => {});
             if (!TrySetupCache(Configuration.DownloadCacheDir,
                                progress,
                                out string? failReason))
@@ -616,7 +616,7 @@ namespace CKAN
                 else
                 {
                     // Make sure we can access it
-                    var bytesFree = new DirectoryInfo(path).GetDrive()?.AvailableFreeSpace;
+                    var bytesFree = new DirectoryInfo(path).GetDrive().AvailableFreeSpace;
                     Cache = new NetModuleCache(this, path);
                     Configuration.DownloadCacheDir = path;
                 }

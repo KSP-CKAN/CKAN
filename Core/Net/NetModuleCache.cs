@@ -157,7 +157,7 @@ namespace CKAN
         /// </returns>
         public string Store(CkanModule         module,
                             string             path,
-                            IProgress<int>?    progress,
+                            IProgress<long>?   progress,
                             string?            description = null,
                             bool               move        = false,
                             CancellationToken? cancelToken = default,
@@ -165,9 +165,6 @@ namespace CKAN
         {
             if (validate)
             {
-                // ZipValid takes a lot longer than the hash check, so scale them 70:30 if hashes are present
-                int zipValidPercent = module.download_hash == null ? 100 : 70;
-
                 progress?.Report(0);
                 // Check file exists
                 FileInfo fi = new FileInfo(path);
@@ -187,45 +184,12 @@ namespace CKAN
                 cancelToken?.ThrowIfCancellationRequested();
 
                 // Check valid CRC
-                if (!ZipValid(path, out string invalidReason, new Progress<int>(percent =>
-                    progress?.Report(percent * zipValidPercent / 100))))
+                if (!ZipValid(path, out string invalidReason, progress))
                 {
-                    throw new InvalidModuleFileKraken(module, path, string.Format(
-                        Properties.Resources.NetModuleCacheNotValidZIP,
-                        module, path, invalidReason));
-                }
-
-                cancelToken?.ThrowIfCancellationRequested();
-
-                // Some older metadata doesn't have hashes
-                if (module.download_hash != null)
-                {
-                    int hashPercent = 100 - zipValidPercent;
-                    // Only check one hash, sha256 if it's set, sha1 otherwise
-                    if (!string.IsNullOrEmpty(module.download_hash.sha256))
-                    {
-                        // Check SHA256 match
-                        string sha256 = GetFileHashSha256(path, new Progress<int>(percent =>
-                            progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
-                        if (sha256 != module.download_hash.sha256)
-                        {
-                            throw new InvalidModuleFileKraken(module, path, string.Format(
-                                Properties.Resources.NetModuleCacheMismatchSHA256,
-                                module, path, sha256, module.download_hash.sha256));
-                        }
-                    }
-                    else if (!string.IsNullOrEmpty(module.download_hash.sha1))
-                    {
-                        // Check SHA1 match
-                        string sha1 = GetFileHashSha1(path, new Progress<int>(percent =>
-                            progress?.Report(zipValidPercent + (percent * hashPercent / 100))), cancelToken);
-                        if (sha1 != module.download_hash.sha1)
-                        {
-                            throw new InvalidModuleFileKraken(module, path, string.Format(
-                                Properties.Resources.NetModuleCacheMismatchSHA1,
-                                module, path, sha1, module.download_hash.sha1));
-                        }
-                    }
+                    throw new InvalidModuleFileKraken(
+                        module, path,
+                        string.Format(Properties.Resources.NetModuleCacheNotValidZIP,
+                                      module, path, invalidReason));
                 }
 
                 cancelToken?.ThrowIfCancellationRequested();
@@ -240,7 +204,7 @@ namespace CKAN
                                           move)
                             : "";
             // Make sure completion is signalled so progress bars go away
-            progress?.Report(100);
+            progress?.Report(new FileInfo(path).Length);
             ModStored?.Invoke(module);
             return success;
         }
@@ -254,9 +218,9 @@ namespace CKAN
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
         /// </returns>
-        public static bool ZipValid(string          filename,
-                                    out string      invalidReason,
-                                    IProgress<int>? progress)
+        public static bool ZipValid(string           filename,
+                                    out string       invalidReason,
+                                    IProgress<long>? progress)
         {
             try
             {
@@ -266,7 +230,9 @@ namespace CKAN
                     {
                         string? zipErr = null;
                         // Limit progress updates to 100 per ZIP file
-                        long highestPercent = -1;
+                        long totalBytesValidated = 0;
+                        long previousBytesValidated = 0;
+                        long onePercent = new FileInfo(filename).Length / 100;
                         // Perform CRC and other checks
                         if (zip.TestArchive(true, TestStrategy.FindFirstError,
                             (TestStatus st, string msg) =>
@@ -283,14 +249,16 @@ namespace CKAN
                                             Properties.Resources.NetFileCacheZipError,
                                             st.Operation, st.Entry?.Name, msg);
                                     }
-                                    else if (st.Entry != null && progress != null)
+                                    else if (st is { Operation: TestOperation.EntryComplete,
+                                                     Entry:     ZipEntry entry }
+                                             && progress != null)
                                     {
                                         // Report progress
-                                        var percent = (int)(100 * st.Entry.ZipFileIndex / zip.Count);
-                                        if (percent > highestPercent)
+                                        totalBytesValidated += entry.CompressedSize;
+                                        if (totalBytesValidated - previousBytesValidated > onePercent)
                                         {
-                                            progress.Report(percent);
-                                            highestPercent = percent;
+                                            progress.Report(totalBytesValidated);
+                                            previousBytesValidated = totalBytesValidated;
                                         }
                                     }
                                 }

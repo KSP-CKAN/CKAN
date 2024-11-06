@@ -121,9 +121,14 @@
   <data name="NetDownloading" xml:space="preserve"><value>Downloading {0}</value></data>
   <data name="NetMissingCertFailed" xml:space="preserve"><value>Failed downloading {0}</value></data>
   <data name="NetInvalidLocation" xml:space="preserve"><value>Invalid URL in Location header: {0}</value></data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sec - {1} ({2}) left - {3}%</value></data>
+  <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} left - {1}%</value></data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} hrs, {1} min, {2} sec</value></data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} min, {1} sec</value></data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} sec</value></data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve"><value>Downloading {0} ...</value></data>
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve"><value>Download cancelled by user</value></data>
-  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/sec - downloading - {1} left</value></data>
+  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/sec - {1} left</value></data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve"><value>Failed to download "{0}", trying fallback "{1}"</value></data>
   <data name="NetAsyncDownloaderValidating" xml:space="preserve"><value>Finished downloading {0}, validating and storing to cache...</value></data>
   <data name="NetFileCacheCannotFind" xml:space="preserve"><value>Cannot find cache directory: {0}</value></data>
@@ -228,6 +233,7 @@ What would you like to do?</value></data>
   <data name="ModuleInstallerAboutToInstall" xml:space="preserve"><value>About to install:</value></data>
   <data name="ModuleInstallerUserDeclined" xml:space="preserve"><value>User declined install list</value></data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve"><value>Installing {0}...</value></data>
+  <data name="ModuleInstallerInstalledMod" xml:space="preserve"><value>Finished installing {0}</value></data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve"><value>Updating registry</value></data>
   <data name="ModuleInstallerCommitting" xml:space="preserve"><value>Committing filesystem changes</value></data>
   <data name="ModuleInstallerRescanning" xml:space="preserve"><value>Rescanning {0}</value></data>
@@ -250,6 +256,7 @@ Overwrite?</value></data>
   <data name="ModuleInstallerContinuePrompt" xml:space="preserve"><value>Continue?</value></data>
   <data name="ModuleInstallerRemoveAborted" xml:space="preserve"><value>Mod removal aborted at user request</value></data>
   <data name="ModuleInstallerRemovingMod" xml:space="preserve"><value>Removing {0}...</value></data>
+  <data name="ModuleInstallerRemovedMod" xml:space="preserve"><value>Finished removing {0}</value></data>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve"><value>About to upgrade:</value></data>
   <data name="ModuleInstallerUpgradeInstallingResuming" xml:space="preserve"><value> * Install: {0} {1} ({2}, {3} remaining)</value></data>
   <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve"><value> * Install: {0} {1} ({2}, {3})</value></data>

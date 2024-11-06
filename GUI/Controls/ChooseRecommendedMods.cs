@@ -227,7 +227,7 @@ namespace CKAN.GUI
             })
             {
                 Tag     = module,
-                Checked = check,
+                Checked = check && !module.IsDLC,
                 Group   = group
             };
 
@@ -266,7 +266,7 @@ namespace CKAN.GUI
             RecommendedModsListView.ItemChecked -= RecommendedModsListView_ItemChecked;
             foreach (ListViewItem item in items)
             {
-                if (item.Checked != check)
+                if (item.Checked != check && NotDLC(item))
                 {
                     item.Checked = check;
                 }
@@ -281,11 +281,16 @@ namespace CKAN.GUI
         {
             CheckAllButton.Enabled = RecommendedModsListView.Items
                                                             .OfType<ListViewItem>()
+                                                            .Where(NotDLC)
                                                             .Any(lvi => !lvi.Checked);
             CheckRecommendationsButton.Enabled = RecommendationsGroup.Items
                                                                      .OfType<ListViewItem>()
+                                                                     .Where(NotDLC)
                                                                      .Any(lvi => !lvi.Checked);
         }
+
+        private bool NotDLC(ListViewItem item)
+            => item.Tag is CkanModule mod && !mod.IsDLC;
 
         private void RecommendedModsCancelButton_Click(object? sender, EventArgs? e)
         {

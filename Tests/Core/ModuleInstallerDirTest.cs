@@ -58,7 +58,7 @@ namespace Tests.Core
             _gameDir = _instance.KSP.GameDir();
             _gameDataDir = _instance.KSP.game.PrimaryModDirectory(_instance.KSP);
             var testModFile = TestData.DogeCoinFlagZip();
-            _manager.Cache?.Store(_testModule!, testModFile, new Progress<int>(percent => {}));
+            _manager.Cache?.Store(_testModule!, testModFile, new Progress<long>(bytes => {}));
             HashSet<string>? possibleConfigOnlyDirs = null;
             _installer.InstallList(
                 new List<CkanModule>() { _testModule! },

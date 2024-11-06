@@ -76,7 +76,7 @@ namespace CKAN.ConsoleUI {
                             HashSet<string>? possibleConfigOnlyDirs = null;
 
                             ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this, userAgent);
-                            inst.onReportModInstalled += OnModInstalled;
+                            inst.OneComplete += OnModInstalled;
                             if (plan.Remove.Count > 0) {
                                 inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                                 plan.Remove.Clear();
@@ -113,7 +113,7 @@ namespace CKAN.ConsoleUI {
                             }
 
                             trans.Complete();
-                            inst.onReportModInstalled -= OnModInstalled;
+                            inst.OneComplete -= OnModInstalled;
                             // Don't let the installer re-use old screen references
                             inst.User = new NullUser();
 

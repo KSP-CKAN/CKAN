@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Collections.Generic;
 
 using log4net;
@@ -333,6 +332,10 @@ namespace CKAN
         }
 
         public DownloadErrorsKraken(NetAsyncDownloader.DownloadTarget target, Exception exc)
+            : base(string.Join(Environment.NewLine,
+                               new string[] { Properties.Resources.KrakenDownloadErrorsHeader,
+                                              "",
+                                              exc.Message }))
         {
             Exceptions = new List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>>
             {
@@ -349,56 +352,17 @@ namespace CKAN
     /// </summary>
     public class ModuleDownloadErrorsKraken : Kraken
     {
-        /// <summary>
-        /// Initialize the exception.
-        /// </summary>
-        /// <param name="modules">List of modules that we tried to download</param>
-        /// <param name="kraken">Download errors from URL-level downloader</param>
-        public ModuleDownloadErrorsKraken(IList<CkanModule> modules, DownloadErrorsKraken kraken)
-            : base()
+        public ModuleDownloadErrorsKraken(List<KeyValuePair<CkanModule, Exception>> errors)
+            : base(string.Join(Environment.NewLine,
+                               new string[] { Properties.Resources.KrakenModuleDownloadErrorsHeader, "" }
+                               .Concat(errors.Select(kvp => string.Format(Properties.Resources.KrakenModuleDownloadError,
+                                                                          kvp.Key.ToString(),
+                                                                          kvp.Value.Message)))))
         {
-            foreach ((NetAsyncDownloader.DownloadTarget target, Exception exc) in kraken.Exceptions)
-            {
-                foreach (var module in modules.Where(m => m.download?.Intersect(target.urls)
-                                                                     .Any()
-                                                                    ?? false))
-                {
-                    Exceptions.Add(new KeyValuePair<CkanModule, Exception>(
-                        module,
-                        exc.GetBaseException() ?? exc));
-                }
-            }
+            Exceptions = new List<KeyValuePair<CkanModule, Exception>>(errors);
         }
 
-        /// <summary>
-        /// Generate a user friendly description of this error.
-        /// </summary>
-        /// <returns>
-        /// One or more downloads were unsuccessful:
-        ///
-        /// Error downloading Astrogator v0.7.8: The remote server returned an error: (404) Not Found.
-        /// Etc.
-        /// </returns>
-        public override string ToString()
-        {
-            if (builder == null)
-            {
-                builder = new StringBuilder();
-                builder.AppendLine(Properties.Resources.KrakenModuleDownloadErrorsHeader);
-                builder.AppendLine("");
-                foreach (KeyValuePair<CkanModule, Exception> kvp in Exceptions)
-                {
-                    builder.AppendLine(string.Format(
-                        Properties.Resources.KrakenModuleDownloadError, kvp.Key.ToString(), kvp.Value.Message));
-                }
-            }
-            return builder.ToString();
-        }
-
-        public readonly List<KeyValuePair<CkanModule, Exception>> Exceptions
-            = new List<KeyValuePair<CkanModule, Exception>>();
-
-        private StringBuilder? builder = null;
+        public readonly List<KeyValuePair<CkanModule, Exception>> Exceptions;
     }
 
     /// <summary>

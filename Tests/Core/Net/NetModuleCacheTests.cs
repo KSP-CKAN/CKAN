@@ -50,14 +50,14 @@ namespace Tests.Core
             Assert.Throws<FileNotFoundKraken>(() =>
                 module_cache?.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    "/DoesNotExist.zip", new Progress<int>(percent => {})));
+                    "/DoesNotExist.zip", new Progress<long>(bytes => {})));
 
             // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
             // and expect an InvalidModuleFileKraken
             Assert.Throws<InvalidModuleFileKraken>(() =>
                 module_cache?.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZipLZMA, new Progress<int>(percent => {})));
+                    TestData.DogeCoinFlagZipLZMA, new Progress<long>(bytes => {})));
 
             // Try to store the normal DogeCoin zip into a NetModuleCache
             // using the WRONG metadata (file size and hashes)
@@ -65,7 +65,7 @@ namespace Tests.Core
             Assert.Throws<InvalidModuleFileKraken>(() =>
                 module_cache?.Store(
                     TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZip(), new Progress<int>(percent => {})));
+                    TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {})));
         }
 
         [Test]

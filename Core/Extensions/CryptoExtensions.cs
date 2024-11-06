@@ -25,6 +25,17 @@ namespace CKAN.Extensions
                                          IProgress<int>?    progress,
                                          CancellationToken? cancelToken = default)
         {
+            PartialHash(hashAlgo, stream, progress, cancelToken);
+            var buffer = new byte[16];
+            hashAlgo.TransformFinalBlock(buffer, 0, 0);
+            return hashAlgo.Hash ?? Array.Empty<byte>();
+        }
+
+        public static void PartialHash(this HashAlgorithm hashAlgo,
+                                       Stream             stream,
+                                       IProgress<int>?    progress,
+                                       CancellationToken? cancelToken = default)
+        {
             const int bufSize = 1024 * 1024;
             var buffer = new byte[bufSize];
             long totalBytesRead = 0;
@@ -36,7 +47,7 @@ namespace CKAN.Extensions
                 if (bytesRead < bufSize)
                 {
                     // Done!
-                    hashAlgo.TransformFinalBlock(buffer, 0, bytesRead);
+                    hashAlgo.TransformBlock(buffer, 0, bytesRead, buffer, 0);
                     progress?.Report(100);
                     break;
                 }
@@ -48,7 +59,6 @@ namespace CKAN.Extensions
                 totalBytesRead += bytesRead;
                 progress?.Report((int)(100 * totalBytesRead / stream.Length));
             }
-            return hashAlgo.Hash ?? Array.Empty<byte>();
         }
     }
 }

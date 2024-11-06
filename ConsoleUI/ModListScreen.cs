@@ -491,7 +491,7 @@ namespace CKAN.ConsoleUI {
                         repoData.Update(registry.Repositories.Values.ToArray(),
                                         manager.CurrentInstance.game,
                                         false,
-                                        new NetAsyncDownloader(ps, userAgent),
+                                        new NetAsyncDownloader(ps, () => null, userAgent),
                                         ps,
                                         userAgent);
                     } catch (Exception ex) {

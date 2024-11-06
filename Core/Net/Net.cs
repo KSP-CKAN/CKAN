@@ -121,16 +121,21 @@ namespace CKAN
             }
             catch (Exception exc)
             {
-                var wexc = exc as WebException;
-                if (wexc?.Status == WebExceptionStatus.ProtocolError)
+                // Get redirect if redirected.
+                // This is needed when redirecting from HTTPS to HTTP on .NET Core.
+                if (exc is WebException
+                           {
+                               Status:   WebExceptionStatus.ProtocolError,
+                               Response: HttpWebResponse
+                                         {
+                                             StatusCode: HttpStatusCode.Redirect
+                                         }
+                                         response,
+                           })
                 {
-                    // Get redirect if redirected.
-                    // This is needed when redirecting from HTTPS to HTTP on .NET Core.
-                    var response = wexc.Response as HttpWebResponse;
-                    if (response?.StatusCode == HttpStatusCode.Redirect)
-                    {
-                        return Download(response.GetResponseHeader("Location"), out etag, userAgent, filename, user);
-                    }
+                    var loc = response.GetResponseHeader("Location");
+                    log.InfoFormat("Redirected to {0}", loc);
+                    return Download(loc, out etag, userAgent, filename, user);
                     // Otherwise it's a valid failure from the server (probably a 404), keep it
                 }
 

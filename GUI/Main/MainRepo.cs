@@ -71,7 +71,7 @@ namespace CKAN.GUI
                 // We need the old data to alert the user of newly compatible modules after update.
                 repoData.Prepopulate(
                     registry.Repositories.Values.ToList(),
-                    new Progress<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
+                    new ProgressImmediate<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
 
                 var versionCriteria = CurrentInstance.VersionCriteria();
                 var oldModules = registry.CompatibleModules(versionCriteria)
@@ -90,12 +90,12 @@ namespace CKAN.GUI
                         try
                         {
                             bool canceled = false;
-                            var downloader = new NetAsyncDownloader(currentUser, userAgent);
-                            downloader.Progress += (target, remaining, total) =>
+                            var downloader = new NetAsyncDownloader(currentUser, () => null, userAgent);
+                            downloader.TargetProgress += (target, remaining, total) =>
                             {
                                 var repo = repos.Where(r => target.urls.Contains(r.uri))
                                                 .FirstOrDefault();
-                                if (repo != null)
+                                if (repo != null && total > 0)
                                 {
                                     Wait.SetProgress(repo.name, remaining, total);
                                 }

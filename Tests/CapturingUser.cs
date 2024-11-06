@@ -40,10 +40,10 @@ namespace Tests
             RaisedProgresses.Add(new Tuple<string, int>(message, percent));
         }
 
-        public void RaiseProgress(int percent, long bytesPerSecond, long bytesLeft)
+        public void RaiseProgress(ByteRateCounter rateCounter)
         {
-            RaisedProgresses.Add(new Tuple<string, int>($"{bytesPerSecond} {bytesLeft}",
-                                                        percent));
+            RaisedProgresses.Add(new Tuple<string, int>($"{rateCounter.BytesPerSecond} {rateCounter.BytesLeft}",
+                                                        rateCounter.Percent));
         }
 
         public void RaiseMessage(string message, params object[] args)

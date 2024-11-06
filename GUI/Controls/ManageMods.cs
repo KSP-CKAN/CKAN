@@ -455,8 +455,7 @@ namespace CKAN.GUI
 
         private void FilterAllButton_Click(object? sender, EventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.All), merge);
+            Filter(ModList.FilterToSavedSearch(GUIModFilter.All), false);
         }
 
         /// <summary>
@@ -1008,6 +1007,18 @@ namespace CKAN.GUI
                         UpdateChangeSetAndConflicts(currentInstance,
                             RegistryManager.Instance(currentInstance, repoData).registry);
                         break;
+
+                    case "IsCached":
+                        row.Visible = mainModList.IsVisible(gmod,
+                                                            currentInstance.Name,
+                                                            currentInstance.game,
+                                                            RegistryManager.Instance(currentInstance, repoData).registry);
+                        if (row.Visible && !ModGrid.Rows.Contains(row))
+                        {
+                            // UpdateFilters only adds visible rows, so we may need to add if newly visible
+                            ModGrid.Rows.Add(row);
+                        }
+                        break;
                 }
             }
         }
@@ -1341,7 +1352,7 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void UpdateFilters()
+        private void UpdateFilters()
         {
             Util.Invoke(this, _UpdateFilters);
         }
@@ -1413,7 +1424,7 @@ namespace CKAN.GUI
 
             repoData.Prepopulate(
                 registry.Repositories.Values.ToList(),
-                new Progress<int>(p => user?.RaiseProgress(
+                new ProgressImmediate<int>(p => user?.RaiseProgress(
                     Properties.Resources.LoadingCachedRepoData, p)));
 
             if (!regMgr.registry.HasAnyAvailable())

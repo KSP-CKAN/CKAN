@@ -184,18 +184,18 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="modules">List of modules to upgrade</param>
-        private void UpgradeModules(NetModuleCache      cache,
-                                    string?             userAgent,
-                                    IUser               user,
-                                    CKAN.GameInstance   instance,
-                                    List<CkanModule>    modules)
+        private void UpgradeModules(NetModuleCache    cache,
+                                    string?           userAgent,
+                                    IUser             user,
+                                    CKAN.GameInstance instance,
+                                    List<CkanModule>  modules)
         {
             UpgradeModules(
                 cache, userAgent, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs) =>
                     installer.Upgrade(modules, downloader,
                                       ref possibleConfigOnlyDirs,
-                                      regMgr, true, true, true),
+                                      regMgr, true, true),
                 modules.Add);
         }
 
@@ -206,11 +206,11 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
-        private void UpgradeModules(NetModuleCache      cache,
-                                    string?             userAgent,
-                                    IUser               user,
-                                    CKAN.GameInstance   instance,
-                                    List<string>        identsAndVersions)
+        private void UpgradeModules(NetModuleCache    cache,
+                                    string?           userAgent,
+                                    IUser             user,
+                                    CKAN.GameInstance instance,
+                                    List<string>      identsAndVersions)
         {
             UpgradeModules(
                 cache, userAgent, user, instance, repoData,

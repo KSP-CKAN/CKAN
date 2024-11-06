@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace CKAN
 {
@@ -22,7 +23,8 @@ namespace CKAN
             }
 
             public abstract long CalculateSize();
-            public abstract void DownloadWith(ResumingWebClient wc, Uri url);
+            public abstract void DownloadWith(ResumingWebClient wc, Uri url,
+                                              HashAlgorithm? hasher);
 
             public override string ToString() => string.Join(", ", urls);
         }
@@ -54,9 +56,10 @@ namespace CKAN
                 return size;
             }
 
-            public override void DownloadWith(ResumingWebClient wc, Uri url)
+            public override void DownloadWith(ResumingWebClient wc, Uri url,
+                                              HashAlgorithm? hasher)
             {
-                wc.DownloadFileAsyncWithResume(url, filename);
+                wc.DownloadFileAsyncWithResume(url, filename, hasher);
             }
 
             public override string ToString() => $"{base.ToString()} => {filename}";
@@ -87,9 +90,10 @@ namespace CKAN
                 return size;
             }
 
-            public override void DownloadWith(ResumingWebClient wc, Uri url)
+            public override void DownloadWith(ResumingWebClient wc, Uri url,
+                                              HashAlgorithm? hasher)
             {
-                wc.DownloadFileAsyncWithResume(url, contents);
+                wc.DownloadFileAsyncWithResume(url, contents, hasher);
             }
 
             public void Dispose()

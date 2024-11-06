@@ -182,7 +182,7 @@ namespace CKAN.CmdLine
             var registry = RegistryManager.Instance(instance, repoData).registry;
             var result = repoData.Update(registry.Repositories.Values.ToArray(),
                                          instance.game, force,
-                                         new NetAsyncDownloader(user, userAgent), user, userAgent);
+                                         new NetAsyncDownloader(user, () => null, userAgent), user, userAgent);
             if (result == RepositoryDataManager.UpdateResult.Updated)
             {
                 user.RaiseMessage(Properties.Resources.UpdateSummary,
@@ -197,7 +197,9 @@ namespace CKAN.CmdLine
         /// <param name="repos">Repositories to update</param>
         private void UpdateRepositories(IGame game, Repository[] repos, string? userAgent, bool force = false)
         {
-            var result = repoData.Update(repos, game, force, new NetAsyncDownloader(user, userAgent), user, userAgent);
+            var result = repoData.Update(repos, game, force,
+                                         new NetAsyncDownloader(user, () => null, userAgent),
+                                         user, userAgent);
             if (result == RepositoryDataManager.UpdateResult.Updated)
             {
                 user.RaiseMessage(Properties.Resources.UpdateSummary,

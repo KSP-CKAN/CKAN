@@ -25,7 +25,7 @@ namespace Tests.Core.Net
         public void DownloadAndWait_WithValidFileUrl_SetsTargetSize(string pathWithinTestData)
         {
             // Arrange
-            var downloader = new NetAsyncDownloader(new NullUser());
+            var downloader = new NetAsyncDownloader(new NullUser(), () => null);
             var fromPath   = TestData.DataDir(pathWithinTestData);
             var target     = new NetAsyncDownloader.DownloadTargetFile(new Uri(fromPath),
                                                                        Path.GetTempFileName());
@@ -71,7 +71,7 @@ namespace Tests.Core.Net
         public void DownloadAndWait_WithValidFileUrls_SetsTargetsSize(params string[] pathsWithinTestData)
         {
             // Arrange
-            var downloader = new NetAsyncDownloader(new NullUser());
+            var downloader = new NetAsyncDownloader(new NullUser(), () => null);
             var fromPaths  = pathsWithinTestData.Select(TestData.DataDir).ToArray();
             var targets    = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
                                                                                              Path.GetTempFileName()))
@@ -187,7 +187,7 @@ namespace Tests.Core.Net
             params string[] pathsWithinTestData)
         {
             // Arrange
-            var downloader   = new NetAsyncDownloader(new NullUser());
+            var downloader   = new NetAsyncDownloader(new NullUser(), () => null);
             var fromPaths    = pathsWithinTestData.Select(p => Path.GetFullPath(TestData.DataDir(p))).ToArray();
             var targets      = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
                                                                                                Path.GetTempFileName()))

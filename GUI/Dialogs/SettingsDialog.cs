@@ -186,7 +186,7 @@ namespace CKAN.GUI
                 if (newPath != coreConfig.DownloadCacheDir
                     && manager != null
                     && !manager.TrySetupCache(newPath,
-                                              new Progress<int>(UpdateCacheProgress),
+                                              new ProgressImmediate<int>(UpdateCacheProgress),
                                               out string? failReason))
                 {
                     Util.Invoke(this, () =>

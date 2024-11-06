@@ -51,13 +51,10 @@ namespace CKAN.GUI
         /// <param name="description">Message displayed above the DialogProgress bar</param>
         public void FailWaitDialog(string statusMsg, string logMsg, string description)
         {
-            Util.Invoke(statusStrip1, () =>
+            Util.Invoke(this, () =>
             {
                 StatusProgress.Visible = false;
                 currentUser.RaiseMessage("{0}", statusMsg);
-            });
-            Util.Invoke(WaitTabPage, () =>
-            {
                 RecreateDialogs();
                 Wait.Finish();
             });

@@ -97,8 +97,8 @@ namespace CKAN.ConsoleUI.Toolkit {
                 return false;
             });
 
-            AddTip("F10", Properties.Resources.Sort);
-            AddBinding(Keys.F10, (object sender) => {
+            AddTip(ConsoleScreen.MainMenuKeyTip, Properties.Resources.Sort);
+            AddBinding(ConsoleScreen.MainMenuKeys, (object sender) => {
                 fileList.SortMenu().Run(theme, right - 2, top + 2);
                 DrawBackground();
                 return true;

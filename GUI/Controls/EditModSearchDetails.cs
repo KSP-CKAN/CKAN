@@ -179,23 +179,5 @@ namespace CKAN.GUI
             }
             return base.ProcessCmdKey(ref msg, keyData);
         }
-
-        // https://docs.microsoft.com/en-us/windows/win32/winmsg/window-styles
-        private enum WindowStyles : uint
-        {
-            WS_VISIBLE = 0x10000000,
-            WS_CHILD   = 0x40000000,
-            WS_POPUP   = 0x80000000,
-        }
-
-        // https://docs.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
-        private enum WindowExStyles : uint
-        {
-            WS_EX_TOPMOST       =        0x8,
-            WS_EX_TOOLWINDOW    =       0x80,
-            WS_EX_CONTROLPARENT =    0x10000,
-            WS_EX_NOACTIVATE    = 0x08000000,
-        }
-
     }
 }

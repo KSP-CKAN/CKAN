@@ -175,10 +175,12 @@ namespace CKAN.CmdLine
                     case "import":
                         yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] path [path2 ...]";
                         break;
+                    case "available":
+                        yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}] [glob ...]";
+                        break;
 
                     // Commands with only --flag type options
                     case "gui":
-                    case "available":
                     case "list":
                     case "update":
                     case "scan":
