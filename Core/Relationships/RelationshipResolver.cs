@@ -50,7 +50,11 @@ namespace CKAN
             }
 
             var toInst = modulesToInstall.ToArray();
-            resolved = new ResolvedRelationshipsTree(toInst, registry,
+            // DLLs that we are upgrading to full modules should be excluded
+            dlls = registry.InstalledDlls
+                           .Except(modulesToInstall.Select(m => m.identifier))
+                           .ToHashSet();
+            resolved = new ResolvedRelationshipsTree(toInst, registry, dlls,
                                                      installed_modules, versionCrit,
                                                      options.OptionalHandling());
             if (!options.proceed_with_inconsistencies)
@@ -127,7 +131,7 @@ namespace CKAN
             {
                 // Check that our solution is actually sane
                 SanityChecker.EnforceConsistency(modlist.Values.Concat(installed_modules),
-                                                 registry.InstalledDlls,
+                                                 dlls,
                                                  registry.InstalledDlc);
             }
             catch (BadRelationshipsKraken k) when (options.without_enforce_consistency)
@@ -276,7 +280,7 @@ namespace CKAN
 
                 // If it's already installed, skip.
                 if (descriptor.MatchesAny(installed_modules,
-                                          registry.InstalledDlls,
+                                          dlls,
                                           registry.InstalledDlc,
                                           out CkanModule? installedCandidate))
                 {
@@ -648,6 +652,8 @@ namespace CKAN
         private readonly List<ModPair> conflicts = new List<ModPair>();
         private readonly Dictionary<CkanModule, List<SelectionReason>> reasons =
             new Dictionary<CkanModule, List<SelectionReason>>();
+
+        private readonly HashSet<string> dlls;
 
         /// <summary>
         /// Depends relationships with suppress_recommendations=true,

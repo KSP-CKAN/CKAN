@@ -142,6 +142,7 @@ namespace CKAN
                              ICollection<CkanModule> definitelyInstalling,
                              ICollection<CkanModule> allInstalling,
                              IRegistryQuerier        registry,
+                             ICollection<string>     dlls,
                              ICollection<CkanModule> installed,
                              GameVersionCriteria     crit,
                              OptionalRelationships   optRels,
@@ -149,7 +150,7 @@ namespace CKAN
              : this(source, relationship, reason,
                     providers.ToDictionary(prov => prov,
                                            prov => ResolvedRelationshipsTree.ResolveModule(
-                                                       prov, definitelyInstalling, allInstalling, registry, installed, crit,
+                                                       prov, definitelyInstalling, allInstalling, registry, dlls, installed, crit,
                                                        relationship.suppress_recommendations
                                                            ? optRels & ~OptionalRelationships.Recommendations
                                                                      & ~OptionalRelationships.Suggestions

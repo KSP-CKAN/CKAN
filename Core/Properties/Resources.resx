@@ -333,7 +333,6 @@ Free up space on that device or change your settings to use another location.
   <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>Dependency of {0}</value></data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Recommended by {0}</value></data>
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} has an unsatisfied dependency: {1} is not installed</value></data>
-  <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
   <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
   <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>

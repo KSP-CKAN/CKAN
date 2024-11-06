@@ -81,6 +81,14 @@ namespace CKAN.NetKAN.Extensions
             }
         }
 
+        public static void SafeMerge(this JObject jobject, JObject other)
+        {
+            foreach (var property in other.Properties())
+            {
+                jobject.SafeAdd(property.Name, property.Value);
+            }
+        }
+
         public static JToken? ToJValueOrJArray<T>(this IEnumerable<T?> source) where T: notnull
         {
             var items = source.OfType<T>()
