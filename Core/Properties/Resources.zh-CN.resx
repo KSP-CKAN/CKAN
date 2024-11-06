@@ -650,9 +650,6 @@
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
     <value>{0} 有一个未满足的依赖项: {1} 未安装</value>
   </data>
-  <data name="SanityCheckerConflictsWith" xml:space="preserve">
-    <value>{0} 与 {1} 冲突</value>
-  </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapackage)</value>
   </data>

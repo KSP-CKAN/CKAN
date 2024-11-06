@@ -618,9 +618,6 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
     <value>{0} ma niespełnioną zależność: {1} nie jest zainstalowany</value>
   </data>
-  <data name="SanityCheckerConflictsWith" xml:space="preserve">
-    <value>{0} koliduje z {1}</value>
-  </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapackage)</value>
   </data>

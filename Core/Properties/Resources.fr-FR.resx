@@ -596,7 +596,7 @@ Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bri
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
@@ -662,9 +662,6 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
     <value>{0} a une dépendance insatisfaite : {1} n'est pas installé</value>
-  </data>
-  <data name="SanityCheckerConflictsWith" xml:space="preserve">
-    <value>{0} est en conflit avec {1}</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (méta-paquet)</value>

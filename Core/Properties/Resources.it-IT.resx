@@ -647,9 +647,6 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
     <value>{0} ha una dipendenza non soddisfatta: {1} non è installata</value>
   </data>
-  <data name="SanityCheckerConflictsWith" xml:space="preserve">
-    <value>{0} conflitti con {1}</value>
-  </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapacchetto)</value>
   </data>

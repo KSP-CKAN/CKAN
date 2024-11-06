@@ -290,7 +290,6 @@ https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
   <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>Для удовлетворения зависимости {0}</value></data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Рекомендуется {0}</value></data>
   <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve"><value>{0} имеет неудовлетворённую зависимость: {1} не установлен</value></data>
-  <data name="SanityCheckerConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (метапакет)</value></data>
   <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (кэшировано)</value></data>
   <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
