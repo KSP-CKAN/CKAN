@@ -13,6 +13,7 @@ using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Versioning;
 using RelationshipDescriptor = CKAN.RelationshipDescriptor;
+using CKAN.NetKAN.Extensions;
 
 namespace Tests.Core.Relationships
 {
@@ -1065,6 +1066,55 @@ namespace Tests.Core.Relationships
             }
         }
 
+        [Test,
+         TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""Deferred"",
+                          ""conflicts"": [
+                              {
+                                  ""name"":        ""RasterPropMonitor"",
+                                  ""max_version"": ""1:v0.31.13.4""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""RasterPropMonitor"",
+                          ""version"":    ""1:v1.0.2""
+                      }",
+                  },
+                  new string[] { "Deferred", "RasterPropMonitor" })]
+        public void Constructor_UpgradeVersionSpecificConflictedAutoDetected_DoesNotThrow(
+                string[] availableModules,
+                string[] installIdents)
+        {
+            var user = new NullUser();
+            var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var inst     = new DisposableKSP())
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                registry.SetDlls(new Dictionary<string, string>()
+                {
+                    {
+                        "RasterPropMonitor",
+                        inst.KSP.ToRelativeGameDir(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
+                                                               "RasterPropMonitor.dll"))
+                    }
+                });
+                Assert.DoesNotThrow(() =>
+                {
+                    var rr = new RelationshipResolver(
+                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                     .OfType<CkanModule>(),
+                        null,
+                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        registry, inst.KSP.game, crit);
+                });
+            }
+        }
+
         // Models the EVE - EVE-Config - AVP - AVP-Textures relationship
         [Test]
         public void UninstallingConflictingModule_InstallingRecursiveDependencies_ResolvesSuccessfully()
@@ -1510,9 +1560,7 @@ namespace Tests.Core.Relationships
                                      .OfType<CkanModule>(),
                         null,
                         RelationshipResolverOptions.DependsOnlyOpts(),
-                        registry,
-                        game,
-                        crit);
+                        registry, game, crit);
                     var idents = rr.ModList().Select(m => m.identifier).ToArray();
                     foreach (var goodSubstring in goodSubstrings)
                     {
@@ -1534,7 +1582,7 @@ namespace Tests.Core.Relationships
         public static string MergeWithDefaults(string json)
         {
             var incoming = JObject.Parse(json);
-            incoming.Merge(moduleDefaults);
+            incoming.SafeMerge(moduleDefaults);
             return incoming.ToString();
         }
 
