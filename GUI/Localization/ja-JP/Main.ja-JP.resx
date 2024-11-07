@@ -146,7 +146,6 @@
   <data name="DeleteDirectoriesTabPage.Text" xml:space="preserve"><value>フォルダの削除</value></data>
   <data name="EditModpackTabPage.Text" xml:space="preserve"><value>Modパックの編集</value></data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve"><value>CKAN</value></data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve"><value>N個の利用可能な更新</value></data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve"><value>更新</value></data>
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>ポーズ</value></data>
   <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>CKANを開く</value></data>

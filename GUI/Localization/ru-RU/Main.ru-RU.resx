@@ -210,9 +210,6 @@
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
   </data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve">
-    <value>N доступных обновлений</value>
-  </data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
     <value>Обновить</value>
   </data>

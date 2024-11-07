@@ -129,6 +129,11 @@
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Nieprawidłowy adres URL w nagłówku lokalizacji: {0}</value>
   </data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sek - {1} ({2}) pozostało - {3}%</value></data>
+  <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} pozostało - {1}%</value></data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} godz, {1} min, {2} sek</value></data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} min, {1} sek</value></data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} sek</value></data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
     <value>Pobieranie "{0}"</value>
   </data>
@@ -136,7 +141,7 @@
     <value>Pobieranie anulowane przez użytkownika</value>
   </data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/sek - pobieranie - {1} pozostało</value>
+    <value>{0}/sek - {1} pozostało</value>
   </data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>Nie udało się pobrać "{0}", próbuje ponownie z "{1}"</value>

@@ -129,6 +129,11 @@
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Adresse invalide dans l'en-tête d'emplacement : {0}</value>
   </data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sec - {1} ({2}) restant - {3}%</value></data>
+  <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} restant - {1}%</value></data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} hrs, {1} min, {2} sec</value></data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} min, {1} sec</value></data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} sec</value></data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
     <value>Téléchargement de {0} ...</value>
   </data>
@@ -136,7 +141,7 @@
     <value>Téléchargement annulé par l'utilisateur</value>
   </data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/sec - téléchargement en cours - {1} restant</value>
+    <value>{0}/sec - {1} restant</value>
   </data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>Échec du téléchargement de "{0}", essai du lien de secours "{1}"</value>

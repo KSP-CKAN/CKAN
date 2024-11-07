@@ -219,9 +219,6 @@
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>
   </data>
-  <data name="updatesToolStripMenuItem.Text" xml:space="preserve">
-    <value>Non sono disponibili aggiornamenti</value>
-  </data>
   <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
     <value>Ricarica</value>
   </data>

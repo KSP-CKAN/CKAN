@@ -129,6 +129,11 @@
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Location Header含有无效URL: {0}</value>
   </data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/s - 剩余 {1} ({2}) - {3}%</value></data>
+  <data name="ByteRateCounterSummary" xml:space="preserve"><value>剩余 {0} - {1}%</value></data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} h, {1} m, {2} s</value></data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} m, {1} s</value></data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} s</value></data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
     <value>正在下载 "{0}" </value>
   </data>
@@ -136,7 +141,7 @@
     <value>用户取消下载</value>
   </data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/s - 下载中 - 剩余 {1} </value>
+    <value>{0}/s - 剩余 {1} </value>
   </data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>下载 "{0}" 失败，尝试回滚到 "{1}"</value>

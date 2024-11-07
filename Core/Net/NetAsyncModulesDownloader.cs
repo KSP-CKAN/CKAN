@@ -258,6 +258,6 @@ namespace CKAN
         private readonly NetAsyncDownloader       downloader;
         private          IUser                    User => downloader.User;
         private readonly NetModuleCache           cache;
-        private          CancellationToken        cancelToken;
+        private readonly CancellationToken        cancelToken;
     }
 }

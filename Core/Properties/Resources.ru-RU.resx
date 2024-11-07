@@ -121,9 +121,14 @@
   <data name="NetDownloading" xml:space="preserve"><value>Загрузка {0}</value></data>
   <data name="NetMissingCertFailed" xml:space="preserve"><value>Не удалось загрузить {0}</value></data>
   <data name="NetInvalidLocation" xml:space="preserve"><value>Неверный URL в заголовке расположения: {0}</value></data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/сек - осталось {1} ({2}) - {3}%</value></data>
+  <data name="ByteRateCounterSummary" xml:space="preserve"><value>осталось {0} - {1}%</value></data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} часа, {1} мин, {2} сек</value></data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} мин, {1} сек</value></data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} сек</value></data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve"><value>Загрузка «{0}»</value></data>
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve"><value>Загрузка отменена пользователем</value></data>
-  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/сек — загружается — осталось {1}</value></data>
+  <data name="NetAsyncDownloaderProgress" xml:space="preserve"><value>{0}/сек — осталось {1}</value></data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve"><value>Не удалось загрузить «{0}», будет использоваться альтернативный источник "{1}"</value></data>
   <data name="NetFileCacheCannotFind" xml:space="preserve"><value>Не удалось найти папку кэша: {0}</value></data>
   <data name="NetFileCacheZipError" xml:space="preserve"><value>Ошибка в шаге {0} для {1}: {2}</value></data>
