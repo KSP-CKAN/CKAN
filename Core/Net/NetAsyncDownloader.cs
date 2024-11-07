@@ -37,6 +37,7 @@ namespace CKAN
         // For inter-thread communication
         private volatile bool download_canceled;
         private readonly ManualResetEvent complete_or_canceled;
+        private readonly CancellationToken cancelToken;
 
         /// <summary>
         /// Invoked when a download completes or fails.
@@ -51,17 +52,19 @@ namespace CKAN
         /// </summary>
         public NetAsyncDownloader(IUser user,
                                   Func<HashAlgorithm?> getHashAlgo,
-                                  string? userAgent = null)
+                                  string? userAgent = null,
+                                  CancellationToken cancelToken = default)
         {
             User = user;
             this.userAgent = userAgent ?? Net.UserAgentString;
             this.getHashAlgo = getHashAlgo;
+            this.cancelToken = cancelToken;
             complete_or_canceled = new ManualResetEvent(false);
         }
 
         public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets,
                                                 string?               userAgent,
-                                                IUser?                user = null)
+                                                IUser?                user        = null)
         {
             var downloader = new NetAsyncDownloader(user ?? new NullUser(), () => null, userAgent);
             downloader.onOneCompleted += (target, error, etag, hash) =>
@@ -123,7 +126,7 @@ namespace CKAN
             log.Debug("Completion signal reset");
 
             // If the user cancelled our progress, then signal that.
-            if (old_download_canceled)
+            if (old_download_canceled || cancelToken.IsCancellationRequested)
             {
                 log.DebugFormat("User clicked cancel, discarding {0} queued downloads: {1}", queuedDownloads.Count, string.Join(", ", queuedDownloads.SelectMany(dl => dl.target.urls)));
                 // Ditch anything we haven't started
@@ -183,17 +186,6 @@ namespace CKAN
 
             // Yay! Everything worked!
             log.Debug("Done downloading");
-        }
-
-        /// <summary>
-        /// <see cref="IDownloader.CancelDownload()"/>
-        /// This will also call onCompleted with all null arguments.
-        /// </summary>
-        public void CancelDownload()
-        {
-            log.Info("Cancelling download");
-            download_canceled = true;
-            triggerCompleted();
         }
 
         /// <summary>
@@ -297,6 +289,12 @@ namespace CKAN
             }
 
             OverallProgress?.Invoke(rateCounter);
+
+            if (cancelToken.IsCancellationRequested)
+            {
+                download_canceled = true;
+                triggerCompleted();
+            }
         }
 
         private void PopFromQueue(string host)

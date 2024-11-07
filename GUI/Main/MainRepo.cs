@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Timers;
+using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
 using System.Transactions;
@@ -66,6 +67,9 @@ namespace CKAN.GUI
                 // Note the current mods' compatibility for the NewlyCompatible filter
                 var registry = regMgr.registry;
 
+                var cancelTokenSrc = new CancellationTokenSource();
+                Wait.OnCancel += cancelTokenSrc.Cancel;
+
                 // Load cached data with progress bars instead of without if not already loaded
                 // (which happens if auto-update is enabled, otherwise this is a no-op).
                 // We need the old data to alert the user of newly compatible modules after update.
@@ -89,7 +93,6 @@ namespace CKAN.GUI
                         var repos = registry.Repositories.Values.ToArray();
                         try
                         {
-                            bool canceled = false;
                             var downloader = new NetAsyncDownloader(currentUser, () => null, userAgent);
                             downloader.TargetProgress += (target, remaining, total) =>
                             {
@@ -100,18 +103,13 @@ namespace CKAN.GUI
                                     Wait.SetProgress(repo.name, remaining, total);
                                 }
                             };
-                            Wait.OnCancel += () =>
-                            {
-                                canceled = true;
-                                downloader.CancelDownload();
-                            };
 
                             currentUser.RaiseMessage(Properties.Resources.MainRepoUpdating);
 
                             var updateResult = repoData.Update(repos, CurrentInstance.game,
                                                                forceFullRefresh, downloader, currentUser, userAgent);
 
-                            if (canceled)
+                            if (cancelTokenSrc.Token.IsCancellationRequested)
                             {
                                 throw new CancelledActionKraken();
                             }

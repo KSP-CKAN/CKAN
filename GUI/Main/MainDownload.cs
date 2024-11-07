@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CKAN.GUI.Attributes;
@@ -46,11 +47,13 @@ namespace CKAN.GUI
                 && e.Argument is GUIMod gm
                 && Manager?.Cache != null)
             {
-                downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
+                var cancelTokenSrc = new CancellationTokenSource();
+                Wait.OnCancel += cancelTokenSrc.Cancel;
+                downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent,
+                                                           cancelTokenSrc.Token);
                 downloader.DownloadProgress += OnModDownloading;
                 downloader.StoreProgress    += OnModValidating;
                 downloader.OverallDownloadProgress += currentUser.RaiseProgress;
-                Wait.OnCancel += downloader.CancelDownload;
                 downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
                 e.Result = e.Argument;
             }
@@ -60,7 +63,6 @@ namespace CKAN.GUI
         {
             if (downloader != null)
             {
-                Wait.OnCancel -= downloader.CancelDownload;
                 downloader = null;
             }
             // Can't access e.Result if there's an error
@@ -69,7 +71,7 @@ namespace CKAN.GUI
                 switch (e.Error)
                 {
 
-                    case CancelledActionKraken exc:
+                    case CancelledActionKraken:
                         // User already knows they cancelled, get out
                         HideWaitDialog();
                         EnableMainWindow();

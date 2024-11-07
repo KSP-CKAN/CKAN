@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Transactions;
+using System.Threading;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -83,9 +84,17 @@ namespace CKAN.GUI
                 && Manager.Cache != null
                 && e?.Argument is (List<ModChange> changes, RelationshipResolverOptions options))
             {
+                var cancelTokenSrc = new CancellationTokenSource();
+                Wait.OnCancel += () =>
+                {
+                    canceled = true;
+                    cancelTokenSrc.Cancel();
+                };
+
                 var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
                 var registry = registry_manager.registry;
-                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent);
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent,
+                                                    cancelTokenSrc.Token);
                 // Avoid accumulating multiple event handlers
                 installer.OneComplete     -= OnModInstalled;
                 installer.InstallProgress -= OnModInstalling;
@@ -195,15 +204,10 @@ namespace CKAN.GUI
                 });
                 tabController.SetTabLock(true);
 
-                var downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent);
+                var downloader = new NetAsyncModulesDownloader(currentUser, Manager.Cache, userAgent,
+                                                               cancelTokenSrc.Token);
                 downloader.DownloadProgress += OnModDownloading;
                 downloader.StoreProgress    += OnModValidating;
-
-                Wait.OnCancel += () =>
-                {
-                    canceled = true;
-                    downloader.CancelDownload();
-                };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
 

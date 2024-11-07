@@ -14,6 +14,7 @@ using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
+using System.Threading;
 
 namespace CKAN
 {
@@ -34,17 +35,23 @@ namespace CKAN
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
 
-        private readonly GameInstance   instance;
-        private readonly NetModuleCache Cache;
-        private readonly string?        userAgent;
+        private readonly GameInstance      instance;
+        private readonly NetModuleCache    Cache;
+        private readonly string?           userAgent;
+        private readonly CancellationToken cancelToken;
 
         // Constructor
-        public ModuleInstaller(GameInstance inst, NetModuleCache cache, IUser user, string? userAgent = null)
+        public ModuleInstaller(GameInstance      inst,
+                               NetModuleCache    cache,
+                               IUser             user,
+                               string?           userAgent   = null,
+                               CancellationToken cancelToken = default)
         {
             User     = user;
             Cache    = cache;
             instance = inst;
             this.userAgent = userAgent;
+            this.cancelToken = cancelToken;
             log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir());
         }
 
@@ -182,7 +189,7 @@ namespace CKAN
             long installedBytes  = 0;
             if (downloads.Count > 0)
             {
-                downloader ??= new NetAsyncModulesDownloader(User, Cache, userAgent);
+                downloader ??= new NetAsyncModulesDownloader(User, Cache, userAgent, cancelToken);
                 downloader.OverallDownloadProgress += brc =>
                 {
                     downloadedBytes = downloadBytes - brc.BytesLeft;
@@ -464,6 +471,10 @@ namespace CKAN
                     var fileProgress = new ProgressImmediate<long>(bytes => moduleProgress?.Report(installedBytes + bytes));
                     foreach (InstallableFile file in files)
                     {
+                        if (cancelToken.IsCancellationRequested)
+                        {
+                            throw new CancelledActionKraken();
+                        }
                         log.DebugFormat("Copying {0}", file.source.Name);
                         var path = CopyZipEntry(zipfile, file.source, file.destination, file.makedir,
                                                 fileProgress);
@@ -947,6 +958,11 @@ namespace CKAN
                 long bytesDeleted = 0;
                 foreach (string relPath in modFiles)
                 {
+                    if (cancelToken.IsCancellationRequested)
+                    {
+                        throw new CancelledActionKraken();
+                    }
+
                     string absPath = instance.ToAbsoluteGameDir(relPath);
 
                     try
