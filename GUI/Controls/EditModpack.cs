@@ -103,6 +103,7 @@ namespace CKAN.GUI
                         && !module.recommends.Any(rel => rel.ContainsAny(ids))
                         && !module.suggests.Any(rel => rel.ContainsAny(ids));
                 })
+                .OrderBy(kvp => kvp.Key)
                 .Select(kvp => (RelationshipDescriptor) new ModuleRelationshipDescriptor()
                     {
                         name    = kvp.Key,
@@ -141,7 +142,6 @@ namespace CKAN.GUI
             {
                 RelationshipsListView.Items.AddRange(
                     relationships.OfType<ModuleRelationshipDescriptor>()
-                                 .OrderBy(r => r.name)
                                  .Select(r => new ListViewItem(new string[]
                                      {
                                          r.name,
