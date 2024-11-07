@@ -29,10 +29,13 @@ namespace CKAN
         /// <summary>
         /// Returns a perfectly boring NetAsyncModulesDownloader.
         /// </summary>
-        public NetAsyncModulesDownloader(IUser user, NetModuleCache cache, string? userAgent = null)
+        public NetAsyncModulesDownloader(IUser             user,
+                                         NetModuleCache    cache,
+                                         string?           userAgent   = null,
+                                         CancellationToken cancelToken = default)
         {
             modules    = new List<CkanModule>();
-            downloader = new NetAsyncDownloader(user, SHA256.Create, userAgent);
+            downloader = new NetAsyncDownloader(user, SHA256.Create, userAgent, cancelToken);
             // Schedule us to process each module on completion.
             downloader.onOneCompleted += ModuleDownloadComplete;
             downloader.TargetProgress += (target, remaining, total) =>
@@ -44,6 +47,7 @@ namespace CKAN
             };
             downloader.OverallProgress += brc => OverallDownloadProgress?.Invoke(brc);
             this.cache = cache;
+            this.cancelToken = cancelToken;
         }
 
         internal NetAsyncDownloader.DownloadTarget TargetFromModuleGroup(
@@ -94,7 +98,6 @@ namespace CKAN
                               grp => grp.ToArray());
             try
             {
-                cancelTokenSrc = new CancellationTokenSource();
                 // Start the downloads!
                 downloader.DownloadAndWait(targetModules.Keys);
                 this.modules.Clear();
@@ -115,17 +118,6 @@ namespace CKAN
                 targetModules.Clear();
                 throw exc;
             }
-        }
-
-        /// <summary>
-        /// <see cref="IDownloader.CancelDownload()"/>
-        /// </summary>
-        public void CancelDownload()
-        {
-            // Cancel downloads
-            downloader.CancelDownload();
-            // Cancel validation/store
-            cancelTokenSrc?.Cancel();
         }
 
         public IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule> cached,
@@ -214,7 +206,7 @@ namespace CKAN
                                                                                                fileSize)),
                                     module.StandardName(),
                                     false,
-                                    cancelTokenSrc?.Token);
+                                    cancelToken);
                         File.Delete(filename);
                         foreach (var m in completedMods)
                         {
@@ -266,6 +258,6 @@ namespace CKAN
         private readonly NetAsyncDownloader       downloader;
         private          IUser                    User => downloader.User;
         private readonly NetModuleCache           cache;
-        private          CancellationTokenSource? cancelTokenSrc;
+        private          CancellationToken        cancelToken;
     }
 }

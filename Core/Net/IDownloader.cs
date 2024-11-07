@@ -38,10 +38,5 @@ namespace CKAN
 
         IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule> cached,
                                                     ICollection<CkanModule> toDownload);
-
-        /// <summary>
-        /// Cancel any running downloads.
-        /// </summary>
-        void CancelDownload();
     }
 }
