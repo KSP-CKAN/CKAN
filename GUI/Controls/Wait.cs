@@ -100,12 +100,13 @@ namespace CKAN.GUI
                         pb.Text = rateCounter.Summary;
                         if (newVal >= 100)
                         {
+                            var myLbl = progressLabels[label];
                             rateCounter.Stop();
+                            ProgressBarTable.SuspendLayout();
                             for (int row = ProgressBarTable.GetPositionFromControl(pb).Row; row > 0; --row)
                             {
-                                if (ProgressBarTable.GetControlFromPosition(1, row - 1)    is LabeledProgressBar prevPb
-                                    && ProgressBarTable.GetControlFromPosition(0, row)     is Label myLbl
-                                    && ProgressBarTable.GetControlFromPosition(0, row - 1) is Label prevLbl)
+                                if (ProgressBarTable.GetControlFromPosition(0, row - 1) is Label prevLbl
+                                    && ProgressBarTable.GetControlFromPosition(1, row - 1) is LabeledProgressBar prevPb)
                                 {
                                     if (prevPb.Value >= 100)
                                     {
@@ -122,6 +123,7 @@ namespace CKAN.GUI
                                     }
                                 }
                             }
+                            ProgressBarTable.ResumeLayout();
                         }
                     }
                     else

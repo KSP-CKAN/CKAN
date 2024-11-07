@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Translation updates from Crowdin (#4233 by: vixnig38, ambition, tinygrox; reviewed: HebaruSan)
 - [Multiple] Cache migration and other fixes (#4240 by: HebaruSan)
 - [Multiple] Start installing mods while downloads are still in progress (#4249 by: HebaruSan)
+- [Multiple] Sort dependencies first in modpacks (#4252 by: HebaruSan)
 
 ### Bugfixes
 

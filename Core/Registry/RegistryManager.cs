@@ -501,12 +501,20 @@ namespace CKAN
                 release_date          = DateTime.Now,
             };
 
-            var rels = registry.InstalledModules
-                .Where(inst => !inst.Module.IsDLC && !inst.AutoInstalled && IsAvailable(inst))
-                .OrderBy(inst => inst.identifier, StringComparer.OrdinalIgnoreCase)
-                .Select(with_versions ? (Func<InstalledModule, RelationshipDescriptor>) RelationshipWithVersion
-                                      : RelationshipWithoutVersion)
-                .ToList();
+            var mods = registry.InstalledModules
+                               .Where(inst => !inst.Module.IsDLC && !inst.AutoInstalled && IsAvailable(inst))
+                               .Select(inst => inst.Module)
+                               .ToHashSet();
+            // Sort dependencies before dependers
+            var resolver = new RelationshipResolver(mods, null,
+                                                    RelationshipResolverOptions.ConflictsOpts(),
+                                                    registry, gameInstance.game, gameInstance.VersionCriteria());
+            var rels = resolver.ModList()
+                               .Intersect(mods)
+                               .Select(with_versions ? (Func<CkanModule, RelationshipDescriptor>)
+                                                       RelationshipWithVersion
+                                                     : RelationshipWithoutVersion)
+                               .ToList();
 
             if (recommends)
             {
@@ -535,17 +543,17 @@ namespace CKAN
             }
         }
 
-        private RelationshipDescriptor RelationshipWithVersion(InstalledModule inst)
+        private RelationshipDescriptor RelationshipWithVersion(CkanModule mod)
             => new ModuleRelationshipDescriptor()
             {
-                name    = inst.identifier,
-                version = inst.Module.version,
+                name    = mod.identifier,
+                version = mod.version,
             };
 
-        private RelationshipDescriptor RelationshipWithoutVersion(InstalledModule inst)
+        private RelationshipDescriptor RelationshipWithoutVersion(CkanModule mod)
             => new ModuleRelationshipDescriptor()
             {
-                name = inst.identifier,
+                name = mod.identifier,
             };
 
         /// <summary>
