@@ -743,6 +743,9 @@ If a mod is hosted on multiple servers, a `.netkan` file may contain multiple me
 These will all be checked for new releases and the results merged based on the value of their `version` properties,
 resulting in a `download` property containing an array of multiple download URLs.
 
+A [JSON Schema](NetKAN.schema) is provided for validation purposes.
+Any .netkan file *must* conform to this schema to be considered valid.
+
 ##### YAML Option
 
 A `.netkan` file may be in either JSON or YAML format. All examples shown below assume YAML, but the JSON equivalents will work the same way.
@@ -907,7 +910,7 @@ $kref: '#/ckan/sourceforge/ksre'
 
 ###### `#/ckan/jenkins/:joburl`
 
-Indicates data should be fetched from a [Jenkins CI server](https://jenkins-ci.org/) using the `:joburl` provided. For
+Indicates that data should be fetched from a [Jenkins CI server](https://jenkins-ci.org/) using the `:joburl` provided. For
 example: `#/ckan/jenkins/https://jenkins.kspmods.example/job/AwesomeMod/`.
 
 The following fields will be auto-filled if not already present:
@@ -950,7 +953,7 @@ x_netkan_jenkins:
 
 ###### `#/ckan/http/:url`
 
-Indicates data should be fetched from a HTTP server, using the `:url` provided. For example:
+Indicates that data should be fetched from an HTTP server, using the `:url` provided. For example:
 
 ```yaml
 $kref: '#/ckan/http/https://mysite.com/download_my_mod'
@@ -1152,7 +1155,7 @@ The `x_netkan_override` field is used to override field values based on the valu
   which case it is treated as an array with a single element equal to the value of the string.
 - `before` (type: `string`, transformation name)<br/>
   The name of a transformation this override to happen directly before.
-- `after` (type: `string:, transformation name)<br/>
+- `after` (type: `string`, transformation name)<br/>
   The name of a transformation this override to happen directly after.
 - `override` (type: `object`)<br/>
   An object whose fields will override the fields already present if a match occurs. No merging of values occurs, the
