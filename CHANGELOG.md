@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Minor tray icon improvements (#4231 by: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#4233 by: vixnig38, ambition, tinygrox; reviewed: HebaruSan)
 - [Multiple] Cache migration and other fixes (#4240 by: HebaruSan)
-- [Multiple] Start installing mods while downloads are still in progress (#4249 by: HebaruSan)
+- [Multiple] Start installing mods while downloads are still in progress (#4249, #4255 by: HebaruSan)
 - [Multiple] Sort dependencies first in modpacks (#4252 by: HebaruSan)
 - [Multiple] Allow installs and removals to be cancelled (#4253 by: HebaruSan)
 
