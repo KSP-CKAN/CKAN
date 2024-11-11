@@ -1,0 +1,271 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "NetKAN JSON Schema",
+    "description": "Schema for validating NetKAN files",
+    "type": "object",
+    "properties": {
+        "abstract": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/abstract" },
+        "author": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/author" },
+        "comment": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/comment" },
+        "conflicts": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/conflicts" },
+        "depends": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/depends" },
+        "description": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/description" },
+        "download": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/download" },
+        "download_content_type": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/download_content_type" },
+        "download_hash": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/download_hash" },
+        "download_size": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/download_size" },
+        "identifier": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/identifier" },
+        "install": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/install" },
+        "install_size": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/install_size" },
+        "kind": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/kind" },
+        "ksp_version": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/ksp_version" },
+        "ksp_version_max": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/ksp_version_max" },
+        "ksp_version_min": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/ksp_version_min" },
+        "ksp_version_strict": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/ksp_version_strict" },
+        "license": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/license" },
+        "localizations": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/localizations" },
+        "name": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/name" },
+        "provides": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/provides" },
+        "recommends": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/recommends" },
+        "release_date": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/release_date" },
+        "release_status": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/release_status" },
+        "replaced_by": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/replaced_by" },
+        "resources": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/resources" },
+        "spec_version": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/spec_version" },
+        "suggests": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/suggests" },
+        "supports": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/supports" },
+        "tags": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/tags" },
+        "version": { "$ref": "https://raw.githubusercontent.com/KSP-CKAN/CKAN/master/CKAN.schema#/properties/version" },
+
+        "$kref": {
+            "description": "Indicates that data should be filled in from an external service provider",
+            "type": "string",
+            "oneOf": [
+                {
+                    "pattern": "^#/ckan/spacedock/[0-9]+",
+                    "description": "Indicates that data should be fetched from SpaceDock"
+                },
+                {
+                    "pattern": "^#/ckan/curse/[A-Za-z0-9_-]+",
+                    "description": "Deprecated format, no longer supported"
+                },
+                {
+                    "pattern": "^#/ckan/github/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+(/asset_match/.+|/version_from_asset/.+)?",
+                    "description": "Indicates that data should be fetched from the GitHub user and repo provided"
+                },
+                {
+                    "pattern": "^#/ckan/gitlab/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+",
+                    "description": "Indicates that data should be fetched from the GitLab the user and repo provided"
+                },
+                {
+                    "pattern": "^#/ckan/sourceforge/.+",
+                    "description": "Indicates that data should be fetched from SourceForge using the repo provided"
+                },
+                {
+                    "pattern": "^#/ckan/jenkins/.+",
+                    "description": "Indicates that data should be fetched from a Jenkins CI server using the joburl provided"
+                },
+                {
+                    "pattern": "^#/ckan/http/.+",
+                    "description": "Indicates data should be fetched from an HTTP server, using the URL provided"
+                },
+                {
+                    "pattern": "^#/ckan/ksp-avc/.+",
+                    "description": "Indicates that data should be fetched from a KSP-AVC .version file at the URL provided"
+                },
+                {
+                    "pattern": "^#/ckan/netkan/.+",
+                    "description": "Indicates that data should be fetched from the .netkan file at the given URL"
+                }
+            ]
+        },
+        "$vref": {
+            "description": "Indicates that version data should be filled in from an external service provider",
+            "type": "string",
+            "oneOf": [
+                {
+                    "pattern": "^#/ckan/ksp-avc(/.*)?",
+                    "description": "Version information should be retrieved from an embedded KSP-AVC .version file inside the downloaded file"
+                },
+                {
+                    "pattern": "^#/ckan/space-warp(/.*)?",
+                    "description": "Version information should be retrieved from an embedded SpaceWarp swinfo.json file inside the downloaded file"
+                }
+            ]
+        },
+        "x_netkan_epoch": {
+            "description": "Specifies a minimum epoch number manually in the version field",
+            "type": "integer"
+        },
+        "x_netkan_allow_out_of_order": {
+            "description": "If true, then this module allows a freshly released version to have a version number smaller than previously existing releases",
+            "type": "boolean"
+        },
+        "x_netkan_force_v": {
+            "description": "If true, then a v is prepended to the version field if not already present",
+            "type": "boolean"
+        },
+        "x_netkan_version_edit": {
+            "oneOf": [
+                {
+                    "description": "Regex to match against the existing version field",
+                    "type": "string"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "find": {
+                            "description": "Regex to match against the existing version field",
+                            "type": "string"
+                        },
+                        "replace": {
+                            "description": "Regex substitution string to use as the value of the new version field",
+                            "type": "string"
+                        },
+                        "strict": {
+                            "description": "If true, produce an error if the find regex fails to match",
+                            "type": "boolean"
+                        }
+                    },
+                    "required": [
+                        "find"
+                    ]
+                }
+            ]
+        },
+        "x_netkan_override": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "oneOf": [
+                            {
+                                "description": "Version comparison string to match against version",
+                                "type": "string"
+                            },
+                            {
+                                "description": "Version comparison strings to match against version",
+                                "type": "array",
+                                "items": {
+                                    "description": "Version comparison string to match against version",
+                                    "type": "string"
+                                }
+                            }
+                        ]
+                    },
+                    "before": {
+                        "description": "Name of a transformation for this override to happen directly before",
+                        "$ref": "#/definitions/inflation_steps"
+                    },
+                    "after": {
+                        "description": "Name of a transformation for this override to happen directly after",
+                        "$ref": "#/definitions/inflation_steps"
+                    },
+                    "override": {
+                        "description": "An object whose fields will replace the fields already present if a match occurs",
+                        "type": "object"
+                    },
+                    "delete": {
+                        "description": "Array of names of fields to remove if a match occurs",
+                        "type": "array",
+                        "items": {
+                            "description": "Name of field to remove if a match occurs",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "x_netkan_staging": {
+            "type": "boolean",
+            "description": "If true, changed metadata files for this module will be committed to a separate module-specific branch and a pull request will be created to merge this branch"
+        },
+        "x_netkan_staging_reason": {
+            "type": "string",
+            "description": "Explanation of why staging is enabled for this module to be pasted into the pull request"
+        },
+        "x_netkan_jenkins": {
+            "description": "Customizes how the metadata is fetched from the Jenkins server",
+            "type": "object",
+            "properties": {
+                "build": {
+                    "description": "Type of build to use",
+                    "enum": [
+                        "any",
+                        "completed",
+                        "failed",
+                        "stable",
+                        "successful",
+                        "unstable",
+                        "unsuccessful"
+                    ]
+                },
+                "asset_match": {
+                    "description": "Regex to select which artifact to use by filename",
+                    "type": "string"
+                },
+                "use_filename_version": {
+                    "description": "If true, use the filename of the matched artifact as the value of the version property",
+                    "type": "boolean"
+                }
+            }
+        },
+        "x_netkan_github": {
+            "description": "Customizes how the metadata is fetched from GitHub",
+            "type": "object",
+            "properties": {
+                "use_source_archive": {
+                    "description": "If true, the release's source ZIP will be used instead of an asset",
+                    "type": "boolean"
+                }
+            }
+        },
+        "x_netkan_gitlab": {
+            "description": "Customizes how the metadata is fetched from GitLab",
+            "type": "object",
+            "properties": {
+                "use_source_archive": {
+                    "description": "If true, the release's source ZIP will be used instead of an asset",
+                    "type": "boolean"
+                }
+            }
+        }
+    },
+    "required" : [
+        "identifier"
+    ],
+    "oneOf": [
+        {
+            "required": [ "$kref" ]
+        },
+        {
+            "required": [ "download" ]
+        }
+    ],
+    "definitions": {
+        "inflation_steps": {
+            "enum": [
+                "$none",
+                "$all",
+                "avc",
+                "download_attributes",
+                "epoch",
+                "forced_v",
+                "generated_by",
+                "github",
+                "http",
+                "internal_ckan",
+                "jenkins",
+                "metanetkan",
+                "optimus_prime",
+                "property_sort",
+                "spacedock",
+                "curse",
+                "strip_netkan_metadata",
+                "version_edit",
+                "versioned_override"
+            ]
+        }
+    }
+}
