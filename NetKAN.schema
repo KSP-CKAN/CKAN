@@ -42,39 +42,39 @@
             "type": "string",
             "oneOf": [
                 {
-                    "pattern": "^#/ckan/spacedock/[0-9]+",
+                    "pattern": "^#/ckan/spacedock/[0-9]+$",
                     "description": "Indicates that data should be fetched from SpaceDock"
                 },
                 {
-                    "pattern": "^#/ckan/curse/[A-Za-z0-9_-]+",
+                    "pattern": "^#/ckan/curse/[A-Za-z0-9_-]+$",
                     "description": "Deprecated format, no longer supported"
                 },
                 {
-                    "pattern": "^#/ckan/github/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+(/asset_match/.+|/version_from_asset/.+)?",
+                    "pattern": "^#/ckan/github/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+(/asset_match/.+|/version_from_asset/.+)?$",
                     "description": "Indicates that data should be fetched from the GitHub user and repo provided"
                 },
                 {
-                    "pattern": "^#/ckan/gitlab/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+",
+                    "pattern": "^#/ckan/gitlab/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+$",
                     "description": "Indicates that data should be fetched from the GitLab the user and repo provided"
                 },
                 {
-                    "pattern": "^#/ckan/sourceforge/.+",
+                    "pattern": "^#/ckan/sourceforge/.+$",
                     "description": "Indicates that data should be fetched from SourceForge using the repo provided"
                 },
                 {
-                    "pattern": "^#/ckan/jenkins/.+",
+                    "pattern": "^#/ckan/jenkins/.+$",
                     "description": "Indicates that data should be fetched from a Jenkins CI server using the joburl provided"
                 },
                 {
-                    "pattern": "^#/ckan/http/.+",
+                    "pattern": "^#/ckan/http/.+$",
                     "description": "Indicates data should be fetched from an HTTP server, using the URL provided"
                 },
                 {
-                    "pattern": "^#/ckan/ksp-avc/.+",
+                    "pattern": "^#/ckan/ksp-avc/.+$",
                     "description": "Indicates that data should be fetched from a KSP-AVC .version file at the URL provided"
                 },
                 {
-                    "pattern": "^#/ckan/netkan/.+",
+                    "pattern": "^#/ckan/netkan/.+$",
                     "description": "Indicates that data should be fetched from the .netkan file at the given URL"
                 }
             ]
@@ -84,11 +84,11 @@
             "type": "string",
             "oneOf": [
                 {
-                    "pattern": "^#/ckan/ksp-avc(/.*)?",
+                    "pattern": "^#/ckan/ksp-avc(/.*)?$",
                     "description": "Version information should be retrieved from an embedded KSP-AVC .version file inside the downloaded file"
                 },
                 {
-                    "pattern": "^#/ckan/space-warp(/.*)?",
+                    "pattern": "^#/ckan/space-warp(/.*)?$",
                     "description": "Version information should be retrieved from an embedded SpaceWarp swinfo.json file inside the downloaded file"
                 }
             ]

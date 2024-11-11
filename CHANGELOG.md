@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Tests for Newtonsoft.Json's handling of octal literals in version files (#4227 by: HebaruSan)
-- [Netkan] Create netkan schema (#4254 by: HebaruSan)
+- [Netkan] Create netkan schema (#4254, #4258 by: HebaruSan, Danny2462; reviewed: HebaruSan)
 
 ## v1.35.2 (Penrose)
 
