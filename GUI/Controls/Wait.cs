@@ -226,16 +226,18 @@ namespace CKAN.GUI
 
         private void ClearProgressBars()
         {
-            ProgressBarTable.Controls.Clear();
-            ProgressBarTable.RowStyles.Clear();
-            progressLabels.Clear();
-            progressBars.Clear();
+            VerticalSplitter.SplitterDistance = emptyHeight;
             foreach (var rc in rateCounters.Values)
             {
                 rc.Stop();
             }
             rateCounters.Clear();
-            VerticalSplitter.SplitterDistance = emptyHeight;
+            ProgressBarTable.SuspendLayout();
+            ProgressBarTable.Controls.Clear();
+            ProgressBarTable.RowStyles.Clear();
+            ProgressBarTable.ResumeLayout();
+            progressLabels.Clear();
+            progressBars.Clear();
         }
 
         [ForbidGUICalls]

@@ -14,7 +14,10 @@ namespace CKAN
 
         public static ModuleVersion MinimumSpecVersion(JObject json)
             // Add new stuff at the top, versions in this function should be in descending order
-            => json["download_hash"] is JObject hashes
+            => json.TryGetValue("release_status", out JToken? relStat)
+               && (string?)relStat is string and not "stable" ? v1p36
+
+             : json["download_hash"] is JObject hashes
                && (!hashes.ContainsKey("sha256") || !hashes.ContainsKey("sha1")) ? v1p35
 
              : json["download"] is JArray ? v1p34
@@ -123,5 +126,6 @@ namespace CKAN
         private static readonly ModuleVersion v1p31 = new ModuleVersion("v1.31");
         private static readonly ModuleVersion v1p34 = new ModuleVersion("v1.34");
         private static readonly ModuleVersion v1p35 = new ModuleVersion("v1.35");
+        private static readonly ModuleVersion v1p36 = new ModuleVersion("v1.36");
     }
 }

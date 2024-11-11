@@ -93,7 +93,7 @@ namespace CKAN.CmdLine
     public class RepoPriorityOptions : InstanceSpecificOptions
     {
         [ValueOption(0)] public string? name     { get; set; }
-        [ValueOption(1)] public int    priority { get; set; }
+        [ValueOption(1)] public int     priority { get; set; }
     }
 
     public class RepoDefaultOptions : InstanceSpecificOptions
@@ -459,6 +459,6 @@ namespace CKAN.CmdLine
         private readonly RepositoryDataManager repoData;
         private          IUser?                user;
 
-        private static readonly ILog log = LogManager.GetLogger(typeof (Repo));
+        private static readonly ILog log = LogManager.GetLogger(typeof(Repo));
     }
 }

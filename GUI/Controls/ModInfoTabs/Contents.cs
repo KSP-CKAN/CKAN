@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
@@ -23,6 +24,8 @@ namespace CKAN.GUI
         public Contents()
         {
             InitializeComponent();
+            var coreCfg = ServiceLocator.Container.Resolve<IConfiguration>();
+            coreCfg.PropertyChanged += Configuration_PropertyChanged;
         }
 
         public GUIMod? SelectedModule
@@ -31,22 +34,32 @@ namespace CKAN.GUI
             {
                 if (value != selectedModule)
                 {
+                    if (selectedModule != null)
+                    {
+                        selectedModule.PropertyChanged -= SelectedMod_PropertyChanged;
+                    }
                     selectedModule = value;
-                    Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(selectedModule?.InstalledMod,
-                                                                                  selectedModule?.ToModule()));
+                    if (selectedModule != null)
+                    {
+                        selectedModule.PropertyChanged += SelectedMod_PropertyChanged;
+                    }
+                    Util.Invoke(ContentsPreviewTree,
+                                () => _UpdateModContentsTree(selectedModule?.InstalledMod,
+                                                             selectedModule?.ToModule()));
                 }
             }
             get => selectedModule;
         }
 
         [ForbidGUICalls]
-        public void RefreshModContentsTree()
+        private void RefreshModContentsTree()
         {
             if (currentModContentsInstalledModule != null
                 || currentModContentsModule != null)
             {
-                Util.Invoke(ContentsPreviewTree, () => _UpdateModContentsTree(currentModContentsInstalledModule,
-                                                                              currentModContentsModule, true));
+                Util.Invoke(ContentsPreviewTree,
+                            () => _UpdateModContentsTree(currentModContentsInstalledModule,
+                                                         currentModContentsModule, true));
             }
         }
 
@@ -108,11 +121,33 @@ namespace CKAN.GUI
             }
         }
 
+        private void SelectedMod_PropertyChanged(object? sender, PropertyChangedEventArgs? e)
+        {
+            switch (e?.PropertyName)
+            {
+                case nameof(GUIMod.IsCached):
+                    RefreshModContentsTree();
+                    break;
+            }
+        }
+
+        private void Configuration_PropertyChanged(object? sender, PropertyChangedEventArgs? e)
+        {
+            switch (e?.PropertyName)
+            {
+                case nameof(IConfiguration.GlobalInstallFilters):
+                    RefreshModContentsTree();
+                    break;
+            }
+        }
+
         private void _UpdateModContentsTree(InstalledModule? instMod, CkanModule? module,
                                             bool force = false)
         {
             if (module == null)
             {
+                currentModContentsModule = null;
+                currentModContentsInstalledModule = null;
                 NotCachedLabel.Text = "";
                 ContentsPreviewTree.Enabled = false;
                 ContentsDownloadButton.Enabled = false;

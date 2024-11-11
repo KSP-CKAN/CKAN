@@ -226,7 +226,7 @@ namespace CKAN.CmdLine
                     // The modules we'll have after upgrading as aggressively as possible
                     var limiters = identsAndVersions.Select(req => CkanModule.FromIDandVersion(registry, req, crit)
                                                                    ?? Utilities.DefaultIfThrows(
-                                                                       () => registry.LatestAvailable(req, crit))
+                                                                       () => registry.LatestAvailable(req, instance.StabilityToleranceConfig, crit))
                                                                    ?? registry.GetInstalledVersion(req))
                                                     .Concat(heldIdents.Select(ident => registry.GetInstalledVersion(ident)))
                                                     .OfType<CkanModule>()

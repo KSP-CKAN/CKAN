@@ -23,6 +23,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing instances</param>
+        /// <param name="instance">The game instance</param>
         /// <param name="reg">Registry of the current instance for finding mods</param>
         /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="cp">Plan of mods to add and remove</param>
@@ -30,6 +31,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public DependencyScreen(ConsoleTheme        theme,
                                 GameInstanceManager mgr,
+                                GameInstance        instance,
                                 Registry            reg,
                                 string?             userAgent,
                                 ChangePlan          cp,
@@ -106,7 +108,7 @@ namespace CKAN.ConsoleUI {
             dependencyList.AddTip(Properties.Resources.Enter, Properties.Resources.Details);
             dependencyList.AddBinding(Keys.Enter, (object sender) => {
                 if (dependencyList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(theme, manager, reg, userAgent, plan,
+                    LaunchSubScreen(new ModInfoScreen(theme, manager, instance, reg, userAgent, plan,
                                                              dependencyList.Selection.module,
                                                              null,
                                                              debug));
@@ -186,9 +188,14 @@ namespace CKAN.ConsoleUI {
 
         private IEnumerable<CkanModule> ReplacementModules(IEnumerable<string> replaced_identifiers,
                                                            GameVersionCriteria crit)
-            => replaced_identifiers.Select(replaced => registry.GetReplacement(replaced, crit))
-                                   .OfType<ModuleReplacement>()
-                                   .Select(repl => repl.ReplaceWith);
+            => manager.CurrentInstance == null
+                   ? Enumerable.Empty<CkanModule>()
+                   : replaced_identifiers.Select(replaced => registry.GetReplacement(
+                                                                 replaced,
+                                                                 manager.CurrentInstance.StabilityToleranceConfig,
+                                                                 crit))
+                                         .OfType<ModuleReplacement>()
+                                         .Select(repl => repl.ReplaceWith);
 
         private string StatusSymbol(CkanModule mod)
             => accepted.Contains(mod) ? installing
@@ -215,7 +222,7 @@ namespace CKAN.ConsoleUI {
                         plan.Install.Concat(toAdd).Distinct(),
                         plan.Remove.Select(ident => registry.InstalledModule(ident)?.Module)
                                    .OfType<CkanModule>(),
-                        RelationshipResolverOptions.ConflictsOpts(), registry,
+                        RelationshipResolverOptions.ConflictsOpts(manager.CurrentInstance.StabilityToleranceConfig), registry,
                         manager.CurrentInstance.game,
                         manager.CurrentInstance.VersionCriteria());
                     descriptions = resolver.ConflictDescriptions.ToList();

@@ -591,19 +591,7 @@ namespace CKAN.Versioning
         /// particular instance will be returned.
         /// </remarks>
         public static ModuleVersion Max(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            if (ver1 == null)
-            {
-                throw new ArgumentNullException(nameof(ver1));
-            }
-
-            if (ver2 == null)
-            {
-                throw new ArgumentNullException(nameof(ver2));
-            }
-
-            return ver1.IsGreaterThan(ver2) ? ver1 : ver2;
-        }
+            => ver1.IsGreaterThan(ver2) ? ver1 : ver2;
 
         /// <summary>
         /// Returns the smaller of two <see cref="ModuleVersion"/> objects.
@@ -616,19 +604,7 @@ namespace CKAN.Versioning
         /// particular instance will be returned.
         /// </remarks>
         public static ModuleVersion Min(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            if (ver1 == null)
-            {
-                throw new ArgumentNullException(nameof(ver1));
-            }
-
-            if (ver2 == null)
-            {
-                throw new ArgumentNullException(nameof(ver2));
-            }
-
-            return ver1.IsLessThan(ver2) ? ver1 : ver2;
-        }
+            => ver1.IsLessThan(ver2) ? ver1 : ver2;
 
         /// <summary>
         /// Converts the specified string to a new instance of the <see cref="ModuleVersion"/> class.

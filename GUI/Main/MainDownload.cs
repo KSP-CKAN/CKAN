@@ -124,19 +124,12 @@ namespace CKAN.GUI
                 Manager.Cache.ModPurged += OnModStoredOrPurged;
             }
             UpdateCachedByDownloads(null);
-            ModInfo.RefreshModContentsTree();
         }
 
         [ForbidGUICalls]
         private void OnModStoredOrPurged(CkanModule? module)
         {
             UpdateCachedByDownloads(module);
-
-            if (module == null
-                || ModInfo.SelectedModule?.Identifier == module.identifier)
-            {
-                ModInfo.RefreshModContentsTree();
-            }
         }
     }
 }

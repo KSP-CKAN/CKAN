@@ -162,6 +162,7 @@
   <data name="HideEpochsCheckbox.Text" xml:space="preserve"><value>Hide epoch numbers in mod list (requires restart)</value></data>
   <data name="HideVCheckbox.Text" xml:space="preserve"><value>Hide "v" in mod list (requires restart)</value></data>
   <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve"><value>Automatically sort by "Update"-column when clicking "Add available updates"</value></data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve"><value>Stability tolerance:</value></data>
   <data name="RepoNameHeader.Text" xml:space="preserve"><value>Name</value></data>
   <data name="RepoURLHeader.Text" xml:space="preserve"><value>URL</value></data>
   <data name="AuthHostHeader.Text" xml:space="preserve"><value>Host</value></data>

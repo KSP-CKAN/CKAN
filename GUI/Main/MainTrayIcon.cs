@@ -163,11 +163,14 @@ namespace CKAN.GUI
             // Check all the upgrade checkboxes
             ManageMods.MarkAllUpdates();
 
-            // Install
-            Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                              new InstallArgument(ManageMods.ComputeUserChangeSet()
-                                                            .ToList(),
-                                                  RelationshipResolverOptions.DependsOnlyOpts()));
+            if (CurrentInstance != null)
+            {
+                // Install
+                Wait.StartWaiting(InstallMods, PostInstallMods, true,
+                                  new InstallArgument(ManageMods.ComputeUserChangeSet()
+                                                                .ToList(),
+                                                      RelationshipResolverOptions.DependsOnlyOpts(CurrentInstance.StabilityToleranceConfig)));
+            }
         }
         #endregion
     }

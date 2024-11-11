@@ -68,7 +68,7 @@ namespace CKAN.GUI
                             new InstallArgument(
                                 result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
                                       .ToList(),
-                                RelationshipResolverOptions.DependsOnlyOpts()));
+                                RelationshipResolverOptions.DependsOnlyOpts(CurrentInstance.StabilityToleranceConfig)));
                     }
                 }
                 else

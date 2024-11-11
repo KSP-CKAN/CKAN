@@ -11,6 +11,7 @@ using Autofac;
 using Newtonsoft.Json;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.Extensions;
 using CKAN.Versioning;
 
@@ -575,15 +576,19 @@ namespace CKAN
         /// compatible and incompatible groups.
         /// </summary>
         /// <param name="versCrit">Version criteria to determine compatibility</param>
-        public CompatibilitySorter SetCompatibleVersion(GameVersionCriteria versCrit)
+        public CompatibilitySorter SetCompatibleVersion(StabilityToleranceConfig stabilityTolerance,
+                                                        GameVersionCriteria      versCrit)
         {
-            if (!versCrit.Equals(sorter?.CompatibleVersions))
+            if (sorter == null
+                || stabilityTolerance != sorter.StabilityTolerance
+                || !versCrit.Equals(sorter.CompatibleVersions))
             {
                 if (providers == null)
                 {
                     BuildProvidesIndex();
                 }
                 sorter = new CompatibilitySorter(
+                    stabilityTolerance,
                     versCrit,
                     repoDataMgr?.GetAllAvailDicts(Repositories.Values.OrderBy(r => r.priority)
                                                                      // Break ties alphanumerically
@@ -598,20 +603,22 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.CompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> CompatibleModules(GameVersionCriteria? crit)
+        public IEnumerable<CkanModule> CompatibleModules(StabilityToleranceConfig stabilityTolerance,
+                                                         GameVersionCriteria?     crit)
             // Set up our compatibility partition
-            => crit != null ? SetCompatibleVersion(crit).LatestCompatible
+            => crit != null ? SetCompatibleVersion(stabilityTolerance, crit).LatestCompatible
                             : repoDataMgr?.GetAllAvailableModules(Repositories.Values)
-                                          .Select(am => am.Latest())
+                                          .Select(am => am.Latest(stabilityTolerance))
                                           .OfType<CkanModule>()
                                          ?? Enumerable.Empty<CkanModule>();
 
         /// <summary>
         /// <see cref="IRegistryQuerier.IncompatibleModules"/>
         /// </summary>
-        public IEnumerable<CkanModule> IncompatibleModules(GameVersionCriteria crit)
+        public IEnumerable<CkanModule> IncompatibleModules(StabilityToleranceConfig stabilityTolerance,
+                                                           GameVersionCriteria      crit)
             // Set up our compatibility partition
-            => SetCompatibleVersion(crit).LatestIncompatible;
+            => SetCompatibleVersion(stabilityTolerance, crit).LatestIncompatible;
 
         /// <summary>
         /// Check whether any versions of this mod are installable (including dependencies) on the given game versions.
@@ -620,9 +627,11 @@ namespace CKAN
         /// <param name="identifier">Identifier of mod</param>
         /// <param name="crit">Game versions</param>
         /// <returns>true if any version is recursively compatible, false otherwise</returns>
-        public bool IdentifierCompatible(string identifier, GameVersionCriteria crit)
+        public bool IdentifierCompatible(string                   identifier,
+                                         StabilityToleranceConfig stabilityTolerance,
+                                         GameVersionCriteria      crit)
             // Set up our compatibility partition
-            => SetCompatibleVersion(crit).Compatible.ContainsKey(identifier);
+            => SetCompatibleVersion(stabilityTolerance, crit).Compatible.ContainsKey(identifier);
 
         private AvailableModule[] getAvail(string identifier)
         {
@@ -641,11 +650,12 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
         public CkanModule? LatestAvailable(string                   identifier,
+                                           StabilityToleranceConfig stabilityTolerance,
                                            GameVersionCriteria?     gameVersion,
                                            RelationshipDescriptor?  relationshipDescriptor = null,
                                            ICollection<CkanModule>? installed              = null,
                                            ICollection<CkanModule>? toInstall              = null)
-            => getAvail(identifier)?.Select(am => am.Latest(gameVersion, relationshipDescriptor,
+            => getAvail(identifier)?.Select(am => am.Latest(stabilityTolerance, gameVersion, relationshipDescriptor,
                                                             installed, toInstall))
                                     .OfType<CkanModule>()
                                     .OrderByDescending(m => m.version)
@@ -779,6 +789,7 @@ namespace CKAN
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
         public List<CkanModule> LatestAvailableWithProvides(string                   identifier,
+                                                            StabilityToleranceConfig stabilityTolerance,
                                                             GameVersionCriteria?     gameVersion,
                                                             RelationshipDescriptor?  relationship = null,
                                                             ICollection<CkanModule>? installed    = null,
@@ -788,7 +799,7 @@ namespace CKAN
                 && Repositories.Values.ToArray() is Repository[] repos
                 && allProvs.TryGetValue(identifier, out AvailableModule[]? provs)
                     // For each AvailableModule, we want the latest one matching our constraints
-                    ? provs.Select(am => am.Latest(gameVersion, relationship, installed, toInstall))
+                    ? provs.Select(am => am.Latest(stabilityTolerance, gameVersion, relationship, installed, toInstall))
                            .OfType<CkanModule>()
                            .Where(m => m.ProvidesList.Contains(identifier))
                            .Distinct()
@@ -1257,9 +1268,9 @@ namespace CKAN
             => repoDataMgr?.GetAllAvailableModules(Repositories.Values)
                            // Pick all latest modules where download is not null
                            // Merge all the URLs into one sequence
-                           .SelectMany(availMod => (availMod?.Latest()?.download
+                           .SelectMany(availMod => (availMod?.Latest(ReleaseStatus.development)?.download
                                                     ?? Enumerable.Empty<Uri>())
-                                                   .Append(availMod?.Latest()?.InternetArchiveDownload))
+                                                   .Append(availMod?.Latest(ReleaseStatus.development)?.InternetArchiveDownload))
                            .OfType<Uri>()
                            // Skip relative URLs because they don't have hosts
                            .Where(dlUri => dlUri.IsAbsoluteUri)

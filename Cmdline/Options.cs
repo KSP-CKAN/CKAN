@@ -123,6 +123,9 @@ namespace CKAN.CmdLine
         [VerbOption("filter", HelpText = "View or edit installation filters")]
         public FilterSubOptions? Filter { get; set; }
 
+        [VerbOption("stability", HelpText = "View or edit stability settings")]
+        public StabilitySubOptions? Stability { get; set; }
+
         [HelpVerbOption]
         public string GetUsage(string verb)
         {

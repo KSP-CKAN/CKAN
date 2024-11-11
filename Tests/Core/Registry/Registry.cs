@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Tests.Data;
 
 using CKAN;
+using CKAN.Configuration;
 using CKAN.Versioning;
 
 namespace Tests.Core.Registry
@@ -16,6 +17,7 @@ namespace Tests.Core.Registry
     public class RegistryTests
     {
         private string? repoDataDir;
+        private readonly StabilityToleranceConfig stabilityTolerance = new StabilityToleranceConfig("");
 
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
         private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
@@ -55,15 +57,15 @@ namespace Tests.Core.Registry
                 var module = registry.GetModuleByVersion(identifier, "0.14");
 
                 // Make sure it's there for 0.24.2
-                Assert.AreEqual(module?.ToString(), registry.LatestAvailable(identifier, v0_24_2)?.ToString());
+                Assert.AreEqual(module?.ToString(), registry.LatestAvailable(identifier, stabilityTolerance, v0_24_2)?.ToString());
 
                 // But not for 0.25.0
-                Assert.IsNull(registry.LatestAvailable(identifier, v0_25_0));
+                Assert.IsNull(registry.LatestAvailable(identifier, stabilityTolerance, v0_25_0));
 
                 // And that we fail if we ask for something we don't know.
                 Assert.Throws<ModuleNotFoundKraken>(delegate
                 {
-                    registry.LatestAvailable("ToTheMun", v0_24_2);
+                    registry.LatestAvailable("ToTheMun", stabilityTolerance, v0_24_2);
                 });
             }
         }
@@ -89,7 +91,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
+                var avail = registry.CompatibleModules(stabilityTolerance, v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsFalse(avail.Contains(DLCDepender));
@@ -121,7 +123,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
+                var avail = registry.CompatibleModules(stabilityTolerance, v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsTrue(avail.Contains(DLCDepender));
@@ -154,7 +156,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
+                var avail = registry.CompatibleModules(stabilityTolerance, v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsTrue(avail.Contains(DLCDepender));
@@ -187,7 +189,7 @@ namespace Tests.Core.Registry
                 var DLCDepender = registry.GetModuleByVersion("DLC-Depender", "1.0.0");
 
                 // Act
-                var avail = registry.CompatibleModules(v0_24_2).OfType<CkanModule?>().ToList();
+                var avail = registry.CompatibleModules(stabilityTolerance, v0_24_2).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsFalse(avail.Contains(DLCDepender));
@@ -232,7 +234,7 @@ namespace Tests.Core.Registry
 
                 // Act
                 GameVersionCriteria v173 = new GameVersionCriteria(GameVersion.Parse("1.7.3"));
-                var compat = registry.CompatibleModules(v173).OfType<CkanModule?>().ToList();
+                var compat = registry.CompatibleModules(stabilityTolerance, v173).OfType<CkanModule?>().ToList();
 
                 // Assert
                 Assert.IsFalse(compat.Contains(modFor161));
@@ -271,7 +273,7 @@ namespace Tests.Core.Registry
                 });
 
                 // Act
-                bool has = registry.HasUpdate(mod.identifier, gameInst, new HashSet<string>(), false, out _);
+                bool has = registry.HasUpdate(mod.identifier, stabilityTolerance, gameInst, new HashSet<string>(), false, out _);
 
                 // Assert
                 Assert.IsTrue(has, "Can't upgrade manually installed DLL");
@@ -327,7 +329,7 @@ namespace Tests.Core.Registry
                 GameVersionCriteria crit = new GameVersionCriteria(olderDepMod?.ksp_version);
 
                 // Act
-                bool has = registry.HasUpdate(olderDepMod?.identifier!, gameInst, new HashSet<string>(), false,
+                bool has = registry.HasUpdate(olderDepMod?.identifier!, stabilityTolerance, gameInst, new HashSet<string>(), false,
                                               out _,
                                               registry.InstalledModules
                                                       .Select(im => im.Module)

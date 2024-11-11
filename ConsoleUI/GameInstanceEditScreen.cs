@@ -18,19 +18,19 @@ namespace CKAN.ConsoleUI {
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing the instances</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
-        /// <param name="k">Instance to edit</param>
+        /// <param name="inst">Instance to edit</param>
         /// <param name="userAgent">HTTP useragent string to use</param>
-        public GameInstanceEditScreen(ConsoleTheme theme,
+        public GameInstanceEditScreen(ConsoleTheme          theme,
                                       GameInstanceManager   mgr,
                                       RepositoryDataManager repoData,
-                                      GameInstance          k,
+                                      GameInstance          inst,
                                       string?               userAgent)
-            : base(theme, mgr, k.Name, Platform.FormatPath(k.GameDir()))
+            : base(theme, mgr, inst.Name, Platform.FormatPath(inst.GameDir()))
         {
-            ksp = k;
+            instance = inst;
             try {
                 // If we can't parse the registry, just leave the repo list blank
-                regMgr   = RegistryManager.Instance(ksp, repoData);
+                regMgr   = RegistryManager.Instance(instance, repoData);
                 registry = regMgr.registry;
             } catch { }
 
@@ -48,7 +48,14 @@ namespace CKAN.ConsoleUI {
                 }
 
                 // Also edit copy of the compatible versions
-                compatEditList = new List<GameVersion>(ksp.GetCompatibleVersions());
+                compatEditList = new List<GameVersion>(instance.GetCompatibleVersions());
+
+                stabilityToleranceButtons = new ReleaseStatusComboButtons(
+                    1, stabilityToleranceTop,
+                    Properties.Resources.InstanceEditStabilityToleranceHeader,
+                    null,
+                    instance.StabilityToleranceConfig.OverallStabilityTolerance);
+                AddObject(stabilityToleranceButtons);
 
                 // I'm not a huge fan of this layout, but I think it's better than just a label
                 AddObject(new ConsoleDoubleFrame(
@@ -83,7 +90,7 @@ namespace CKAN.ConsoleUI {
                 AddObject(repoList);
                 repoList.AddTip("A", Properties.Resources.Add);
                 repoList.AddBinding(Keys.A, (object sender) => {
-                    LaunchSubScreen(new RepoAddScreen(theme, ksp.game, repoEditList, userAgent));
+                    LaunchSubScreen(new RepoAddScreen(theme, instance.game, repoEditList, userAgent));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
@@ -107,7 +114,7 @@ namespace CKAN.ConsoleUI {
                 repoList.AddBinding(Keys.E, (object sender) => {
                     if (repoList.Selection is Repository repo)
                     {
-                        LaunchSubScreen(new RepoEditScreen(theme, ksp.game, repoEditList, repo, userAgent));
+                        LaunchSubScreen(new RepoEditScreen(theme, instance.game, repoEditList, repo, userAgent));
                         repoList.SetData(new List<Repository>(repoEditList.Values));
                     }
                     return true;
@@ -159,7 +166,7 @@ namespace CKAN.ConsoleUI {
 
                 compatList.AddTip("A", Properties.Resources.Add);
                 compatList.AddBinding(Keys.A, (object sender) => {
-                    CompatibleVersionDialog vd = new CompatibleVersionDialog(theme, ksp.game);
+                    CompatibleVersionDialog vd = new CompatibleVersionDialog(theme, instance.game);
                     var newVersion = vd.Run();
                     DrawBackground();
                     if (newVersion != null && !compatEditList.Contains(newVersion)) {
@@ -183,7 +190,7 @@ namespace CKAN.ConsoleUI {
                 // Notify the user that the registry doesn't parse
                 AddObject(new ConsoleLabel(
                     1, repoFrameTop, -1,
-                    () => string.Format(Properties.Resources.InstanceEditRegistryParseError, ksp.Name)
+                    () => string.Format(Properties.Resources.InstanceEditRegistryParseError, instance.Name)
                 ));
 
             }
@@ -210,8 +217,8 @@ namespace CKAN.ConsoleUI {
         /// Similar to adding, except leaving the fields unchanged is allowed.
         /// </summary>
         protected override bool Valid()
-            => (name.Value == ksp.Name || nameValid())
-                && (path.Value == ksp.GameDir() || pathValid());
+            => (name.Value == instance.Name || nameValid())
+                && (path.Value == instance.GameDir() || pathValid());
 
         /// <summary>
         /// Save the changes.
@@ -220,28 +227,33 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override void Save()
         {
+            if (stabilityToleranceButtons?.Selection != null)
+            {
+                instance.StabilityToleranceConfig.OverallStabilityTolerance =
+                    stabilityToleranceButtons.Selection.Value;
+            }
             if (repoEditList != null) {
                 // Copy the temp list of repositories to the registry
                 registry?.RepositoriesSet(repoEditList);
                 regMgr?.Save();
             }
             if (compatEditList != null) {
-                ksp.SetCompatibleVersions(compatEditList);
+                instance.SetCompatibleVersions(compatEditList);
             }
 
-            string oldName = ksp.Name;
-            if (path.Value != ksp.GameDir()) {
+            string oldName = instance.Name;
+            if (path.Value != instance.GameDir()) {
                 // If the path is changed, then we have to remove the old instance
                 // and replace it with a new one, whether or not the name is changed.
                 manager.RemoveInstance(oldName);
                 manager.AddInstance(path.Value, name.Value, new NullUser());
             } else if (name.Value != oldName) {
                 // If only the name changed, there's an API for that.
-                manager.RenameInstance(ksp.Name, name.Value);
+                manager.RenameInstance(instance.Name, name.Value);
             }
         }
 
-        private readonly GameInstance     ksp;
+        private readonly GameInstance     instance;
         private readonly RegistryManager? regMgr;
         private readonly Registry?        registry;
 
@@ -249,8 +261,11 @@ namespace CKAN.ConsoleUI {
         private readonly ConsoleListBox<Repository>?           repoList;
         private readonly List<GameVersion>?                    compatEditList;
         private readonly ConsoleListBox<GameVersion>?          compatList;
+        private readonly ReleaseStatusComboButtons?            stabilityToleranceButtons;
 
-        private const int repoFrameTop      = pathRow           + 2;
+        private const int stabilityToleranceTop    = pathRow + 2;
+        private const int stabilityToleranceHeight = 4;
+        private const int repoFrameTop      = stabilityToleranceTop + stabilityToleranceHeight + 1;
         private const int repoListTop       = repoFrameTop      + 2;
         private const int repoFrameHeight   = 9;
         private const int repoFrameBottom   = repoFrameTop      + repoFrameHeight - 1;

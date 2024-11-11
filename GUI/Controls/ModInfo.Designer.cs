@@ -44,6 +44,7 @@ namespace CKAN.GUI
             this.Contents = new CKAN.GUI.Contents();
             this.VersionsTabPage = new System.Windows.Forms.TabPage();
             this.Versions = new CKAN.GUI.Versions();
+            this.ModInfoTable.SuspendLayout();
             this.SuspendLayout();
             //
             // ModInfoTable
@@ -214,6 +215,8 @@ namespace CKAN.GUI
             this.Padding = new System.Windows.Forms.Padding(0);
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.ModInfoTable.ResumeLayout(false);
+            this.ModInfoTable.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }

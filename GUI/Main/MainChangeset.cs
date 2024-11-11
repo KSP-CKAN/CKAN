@@ -41,22 +41,25 @@ namespace CKAN.GUI
 
         private void Changeset_OnConfirmChanges(List<ModChange> changeset)
         {
-            DisableMainWindow();
-            try
+            if (CurrentInstance != null)
             {
-                Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                    new InstallArgument(
-                        // Only pass along user requested mods, so auto-installed can be determined
-                        changeset.Where(ch => ch.Reasons.Any(r => r is SelectionReason.UserRequested)
-                                              // Include all removes and upgrades
-                                              || ch.ChangeType != GUIModChangeType.Install)
-                                 .ToList(),
-                        RelationshipResolverOptions.DependsOnlyOpts()));
-            }
-            catch (InvalidOperationException)
-            {
-                // Thrown if it's already busy, can happen if the user double-clicks the button. Ignore it.
-                // More thread-safe than checking installWorker.IsBusy beforehand.
+                DisableMainWindow();
+                try
+                {
+                    Wait.StartWaiting(InstallMods, PostInstallMods, true,
+                        new InstallArgument(
+                            // Only pass along user requested mods, so auto-installed can be determined
+                            changeset.Where(ch => ch.Reasons.Any(r => r is SelectionReason.UserRequested)
+                                                  // Include all removes and upgrades
+                                                  || ch.ChangeType != GUIModChangeType.Install)
+                                     .ToList(),
+                            RelationshipResolverOptions.DependsOnlyOpts(CurrentInstance.StabilityToleranceConfig)));
+                }
+                catch (InvalidOperationException)
+                {
+                    // Thrown if it's already busy, can happen if the user double-clicks the button. Ignore it.
+                    // More thread-safe than checking installWorker.IsBusy beforehand.
+                }
             }
         }
     }

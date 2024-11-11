@@ -185,21 +185,25 @@ namespace CKAN.GUI
         // Registry.LatestAvailable without exceptions
         private CkanModule? SaneLatestAvail(string identifier)
         {
-            try
+            if (inst != null)
             {
-                return registry?.LatestAvailable(identifier, inst?.VersionCriteria());
-            }
-            catch
-            {
+                var stabilityTolerance = inst.StabilityToleranceConfig;
                 try
                 {
-                    return registry?.LatestAvailable(identifier, null);
+                    return registry?.LatestAvailable(identifier, stabilityTolerance, inst.VersionCriteria());
                 }
                 catch
                 {
-                    return null;
+                    try
+                    {
+                        return registry?.LatestAvailable(identifier, stabilityTolerance, null);
+                    }
+                    catch
+                    {
+                    }
                 }
             }
+            return null;
         }
 
         private void ModsListView_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs? e)

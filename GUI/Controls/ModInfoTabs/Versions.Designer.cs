@@ -30,33 +30,36 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Versions));
-            this.label1 = new System.Windows.Forms.Label();
+            this.OverallSummaryLabel = new System.Windows.Forms.Label();
             this.VersionsListView = new ThemedListView();
             this.ModVersion = new System.Windows.Forms.ColumnHeader();
             this.CompatibleGameVersion = new System.Windows.Forms.ColumnHeader();
             this.ReleaseDate = new System.Windows.Forms.ColumnHeader();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
+            this.LabelTable = new System.Windows.Forms.TableLayoutPanel();
+            this.LatestCompatibleLabel = new System.Windows.Forms.Label();
+            this.CompatibleLabel = new System.Windows.Forms.Label();
+            this.InstalledLabel = new System.Windows.Forms.Label();
+            this.PrereleaseLabel = new System.Windows.Forms.Label();
+            this.StabilityToleranceLabel = new System.Windows.Forms.Label();
+            this.StabilityToleranceComboBox = new System.Windows.Forms.ComboBox();
+            this.LabelTable.SuspendLayout();
             this.SuspendLayout();
             //
-            // label1
+            // OverallSummaryLabel
             //
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(183, 13);
-            this.label1.TabIndex = 0;
-            resources.ApplyResources(this.label1, "label1");
+            this.OverallSummaryLabel.AutoSize = true;
+            this.OverallSummaryLabel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.OverallSummaryLabel.Location = new System.Drawing.Point(0, 0);
+            this.OverallSummaryLabel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.OverallSummaryLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.OverallSummaryLabel.Name = "OverallSummaryLabel";
+            this.OverallSummaryLabel.Size = new System.Drawing.Size(183, 13);
+            this.OverallSummaryLabel.TabIndex = 0;
+            resources.ApplyResources(this.OverallSummaryLabel, "OverallSummaryLabel");
             //
             // VersionsListView
             //
-            this.VersionsListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.VersionsListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.VersionsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.ModVersion,
@@ -64,13 +67,15 @@ namespace CKAN.GUI
             this.ReleaseDate});
             this.VersionsListView.CheckBoxes = true;
             this.VersionsListView.FullRowSelect = true;
-            this.VersionsListView.Location = new System.Drawing.Point(6, 76);
+            this.VersionsListView.Location = new System.Drawing.Point(6, 95);
             this.VersionsListView.Name = "VersionsListView";
-            this.VersionsListView.Size = new System.Drawing.Size(488, 416);
+            this.VersionsListView.Size = new System.Drawing.Size(488, 397);
             this.VersionsListView.TabIndex = 1;
+            this.VersionsListView.ShowItemToolTips = true;
             this.VersionsListView.UseCompatibleStateImageBehavior = false;
             this.VersionsListView.View = System.Windows.Forms.View.Details;
             this.VersionsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.VersionsListView_ItemCheck);
+            this.VersionsListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.VersionsListView_ItemSelectionChanged);
             //
             // ModVersion
             //
@@ -87,93 +92,142 @@ namespace CKAN.GUI
             this.ReleaseDate.Width = 140;
             resources.ApplyResources(this.ReleaseDate, "ReleaseDate");
             //
-            // label2
+            // LabelTable
             //
-            this.label2.AutoSize = true;
-            this.label2.BackColor = System.Drawing.Color.Green;
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(4, 17);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 13);
-            this.label2.TabIndex = 2;
-            resources.ApplyResources(this.label2, "label2");
+            this.LabelTable.AutoSize = true;
+            this.LabelTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.LabelTable.ColumnCount = 1;
+            this.LabelTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.LabelTable.Controls.Add(this.PrereleaseLabel, 0, 0);
+            this.LabelTable.Controls.Add(this.InstalledLabel, 0, 1);
+            this.LabelTable.Controls.Add(this.LatestCompatibleLabel, 0, 2);
+            this.LabelTable.Controls.Add(this.CompatibleLabel, 0, 3);
+            this.LabelTable.Controls.Add(this.StabilityToleranceLabel, 0, 4);
+            this.LabelTable.Controls.Add(this.StabilityToleranceComboBox, 0, 5);
+            this.LabelTable.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.LabelTable.Location = new System.Drawing.Point(0, 0);
+            this.LabelTable.Name = "LabelTable";
+            this.LabelTable.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.LabelTable.RowCount = 6;
+            this.LabelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LabelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LabelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LabelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LabelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LabelTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LabelTable.Size = new System.Drawing.Size(346, 255);
+            this.LabelTable.TabIndex = 0;
             //
-            // label3
+            // LatestCompatibleLabel
             //
-            this.label3.AutoSize = true;
-            this.label3.BackColor = System.Drawing.Color.LightGreen;
-            this.label3.Location = new System.Drawing.Point(4, 36);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(60, 13);
-            this.label3.TabIndex = 3;
-            resources.ApplyResources(this.label3, "label3");
+            this.LatestCompatibleLabel.AutoSize = true;
+            this.LatestCompatibleLabel.BackColor = System.Drawing.Color.Green;
+            this.LatestCompatibleLabel.ForeColor = System.Drawing.Color.White;
+            this.LatestCompatibleLabel.Location = new System.Drawing.Point(0, 17);
+            this.LatestCompatibleLabel.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.LatestCompatibleLabel.Padding = new System.Windows.Forms.Padding(6, 1, 6, 1);
+            this.LatestCompatibleLabel.Name = "LatestCompatibleLabel";
+            this.LatestCompatibleLabel.Size = new System.Drawing.Size(229, 13);
+            this.LatestCompatibleLabel.TabIndex = 5;
+            resources.ApplyResources(this.LatestCompatibleLabel, "LatestCompatibleLabel");
             //
-            // label4
+            // CompatibleLabel
             //
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label4.Location = new System.Drawing.Point(0, 56);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 13);
-            this.label4.TabIndex = 4;
-            resources.ApplyResources(this.label4, "label4");
+            this.CompatibleLabel.AutoSize = true;
+            this.CompatibleLabel.BackColor = System.Drawing.Color.LightGreen;
+            this.CompatibleLabel.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.CompatibleLabel.Location = new System.Drawing.Point(0, 36);
+            this.CompatibleLabel.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.CompatibleLabel.Padding = new System.Windows.Forms.Padding(6, 1, 6, 1);
+            this.CompatibleLabel.Name = "CompatibleLabel";
+            this.CompatibleLabel.Size = new System.Drawing.Size(180, 13);
+            this.CompatibleLabel.TabIndex = 6;
+            resources.ApplyResources(this.CompatibleLabel, "CompatibleLabel");
             //
-            // label5
+            // InstalledLabel
             //
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(65, 17);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(229, 13);
-            this.label5.TabIndex = 5;
-            resources.ApplyResources(this.label5, "label5");
+            this.InstalledLabel.AutoSize = true;
+            this.InstalledLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8F, System.Drawing.FontStyle.Bold);
+            this.InstalledLabel.BackColor = System.Drawing.SystemColors.Window;
+            this.InstalledLabel.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.InstalledLabel.Location = new System.Drawing.Point(0, 55);
+            this.InstalledLabel.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.InstalledLabel.Padding = new System.Windows.Forms.Padding(6, 1, 6, 1);
+            this.InstalledLabel.Name = "InstalledLabel";
+            this.InstalledLabel.Size = new System.Drawing.Size(131, 13);
+            this.InstalledLabel.TabIndex = 7;
+            this.InstalledLabel.Visible = false;
+            resources.ApplyResources(this.InstalledLabel, "InstalledLabel");
             //
-            // label6
+            // PrereleaseLabel
             //
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(65, 36);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(180, 13);
-            this.label6.TabIndex = 6;
-            resources.ApplyResources(this.label6, "label6");
+            this.PrereleaseLabel.AutoSize = true;
+            this.PrereleaseLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8F, System.Drawing.FontStyle.Italic);
+            this.PrereleaseLabel.BackColor = System.Drawing.Color.Gold;
+            this.PrereleaseLabel.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.PrereleaseLabel.Location = new System.Drawing.Point(0, 74);
+            this.PrereleaseLabel.Margin = new System.Windows.Forms.Padding(0, 2, 0, 2);
+            this.PrereleaseLabel.Padding = new System.Windows.Forms.Padding(6, 1, 6, 1);
+            this.PrereleaseLabel.Name = "PrereleaseLabel";
+            this.PrereleaseLabel.Size = new System.Drawing.Size(131, 13);
+            this.PrereleaseLabel.TabIndex = 7;
+            this.PrereleaseLabel.Visible = false;
+            resources.ApplyResources(this.PrereleaseLabel, "PrereleaseLabel");
             //
-            // label7
+            // StabilityToleranceLabel
             //
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(65, 56);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(131, 13);
-            this.label7.TabIndex = 7;
-            resources.ApplyResources(this.label7, "label7");
+            this.StabilityToleranceLabel.AutoSize = true;
+            this.StabilityToleranceLabel.Location = new System.Drawing.Point(0, 146);
+            this.StabilityToleranceLabel.Name = "StabilityToleranceLabel";
+            this.StabilityToleranceLabel.Margin = new System.Windows.Forms.Padding(0, 2, 0, 0);
+            this.StabilityToleranceLabel.Padding = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.StabilityToleranceLabel.Size = new System.Drawing.Size(220, 17);
+            this.StabilityToleranceLabel.TabStop = false;
+            resources.ApplyResources(this.StabilityToleranceLabel, "StabilityToleranceLabel");
+            //
+            // StabilityToleranceComboBox
+            //
+            this.StabilityToleranceComboBox.AutoSize = false;
+            this.StabilityToleranceComboBox.Location = new System.Drawing.Point(0, 146);
+            this.StabilityToleranceComboBox.Margin = new System.Windows.Forms.Padding(0, 1, 0, 1);
+            this.StabilityToleranceComboBox.Padding = new System.Windows.Forms.Padding(0);
+            this.StabilityToleranceComboBox.Name = "StabilityToleranceComboBox";
+            this.StabilityToleranceComboBox.Size = new System.Drawing.Size(220, 17);
+            this.StabilityToleranceComboBox.TabIndex = 8;
+            this.StabilityToleranceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.StabilityToleranceComboBox.SelectionChangeCommitted += new System.EventHandler(this.StabilityToleranceComboBox_SelectionChanged);
+            this.StabilityToleranceComboBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.StabilityToleranceComboBox_MouseWheel);
             //
             // Versions
             //
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.VersionsListView);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.OverallSummaryLabel);
+            this.Controls.Add(this.LabelTable);
             this.Name = "Versions";
+            this.Padding = new System.Windows.Forms.Padding(6);
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.LabelTable.ResumeLayout(false);
+            this.LabelTable.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label OverallSummaryLabel;
         private System.Windows.Forms.ListView VersionsListView;
         private System.Windows.Forms.ColumnHeader ModVersion;
         private System.Windows.Forms.ColumnHeader CompatibleGameVersion;
         private System.Windows.Forms.ColumnHeader ReleaseDate;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TableLayoutPanel LabelTable;
+        private System.Windows.Forms.Label LatestCompatibleLabel;
+        private System.Windows.Forms.Label CompatibleLabel;
+        private System.Windows.Forms.Label InstalledLabel;
+        private System.Windows.Forms.Label PrereleaseLabel;
+        private System.Windows.Forms.Label StabilityToleranceLabel;
+        private System.Windows.Forms.ComboBox StabilityToleranceComboBox;
     }
 }

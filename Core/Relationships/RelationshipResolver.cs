@@ -4,6 +4,7 @@ using System.Linq;
 
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Versioning;
 using CKAN.Extensions;
@@ -55,7 +56,9 @@ namespace CKAN
                            .Except(modulesToInstall.Select(m => m.identifier))
                            .ToHashSet();
             resolved = new ResolvedRelationshipsTree(toInst, registry, dlls,
-                                                     installed_modules, versionCrit,
+                                                     installed_modules,
+                                                     options.stability_tolerance ?? new StabilityToleranceConfig(""),
+                                                     versionCrit,
                                                      options.OptionalHandling());
             if (!options.proceed_with_inconsistencies)
             {
@@ -557,7 +560,8 @@ namespace CKAN
         public ParallelQuery<KeyValuePair<CkanModule, HashSet<string>>> Supporters(
             HashSet<CkanModule>     supported,
             IEnumerable<CkanModule> toExclude)
-            => registry.CompatibleModules(versionCrit)
+            => registry.CompatibleModules(options.stability_tolerance ?? new StabilityToleranceConfig(""),
+                                          versionCrit)
                        .Except(toExclude)
                        .AsParallel()
                        // Find installable modules with "supports" relationships

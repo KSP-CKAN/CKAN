@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -190,6 +192,10 @@ namespace CKAN.Configuration
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
         public bool? DevBuilds { get; set; }
+
+        #pragma warning disable CS0067
+        public event PropertyChangedEventHandler? PropertyChanged;
+        #pragma warning restore CS0067
 
         public static bool DoesRegistryConfigurationExist()
         {

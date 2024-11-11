@@ -238,16 +238,36 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
         }
 
-        /// <summary>
-        /// Tell the container we can't receive focus
-        /// </summary>
-        public override bool Focusable() { return false; }
+        /// <inheritdoc/>
+        public override bool Focusable() => needScroll;
 
-        private bool         needScroll = false;
-        private int          prevTextW;
-        private readonly bool         scrollToBottom;
-        private int          topLine;
-        private readonly TextAlign    align;
+        /// <inheritdoc/>
+        public override void PlaceCursor()
+        {
+            Console.SetCursorPosition(GetLeft(), GetTop());
+        }
+
+        /// <inheritdoc/>
+        public override void OnKeyPress(ConsoleKeyInfo k)
+        {
+            switch (k.Key) {
+                case ConsoleKey.Home:      ScrollToTop();    break;
+                case ConsoleKey.End:       ScrollToBottom(); break;
+                case ConsoleKey.PageUp:    ScrollUp();       break;
+                case ConsoleKey.PageDown:  ScrollDown();     break;
+                case ConsoleKey.UpArrow:   ScrollUp(1);      break;
+                case ConsoleKey.DownArrow: ScrollDown(1);    break;
+                case ConsoleKey.Tab:
+                    Blur(!k.Modifiers.HasFlag(ConsoleModifiers.Shift));
+                    break;
+            }
+        }
+
+        private          bool      needScroll = false;
+        private          int       prevTextW;
+        private readonly bool      scrollToBottom;
+        private          int       topLine;
+        private readonly TextAlign align;
         private readonly SynchronizedCollection<string> lines = new SynchronizedCollection<string>();
         private readonly SynchronizedCollection<string> displayLines = new SynchronizedCollection<string>();
         private readonly Func<ConsoleTheme, ConsoleColor>? getBgColor;

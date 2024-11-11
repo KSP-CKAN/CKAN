@@ -30,47 +30,39 @@ namespace CKAN.NetKAN.Transformers
             yield return new Metadata(json);
         }
 
-        private static void Strip(JObject metadata)
+        private static bool IsNetkanProperty(string propertyName)
+            => propertyName.StartsWith("x_netkan") || propertyName is "$kref" or "$vref";
+
+        public static JObject Strip(JObject json)
         {
             var propertiesToRemove = new List<string>();
-
-            foreach (var property in metadata.Properties())
+            foreach (var property in json.Properties())
             {
-                if (property.Name.StartsWith("x_netkan"))
+                if (IsNetkanProperty(property.Name))
                 {
                     propertiesToRemove.Add(property.Name);
                 }
                 else
                 {
-                    switch (property.Value.Type)
+                    switch (property.Value)
                     {
-                        case JTokenType.Object:
-                            Strip((JObject)property.Value);
+                        case JObject jobj:
+                            Strip(jobj);
                             break;
-                        case JTokenType.Array:
-                            foreach (var element in ((JArray)property.Value).Where(i => i.Type == JTokenType.Object))
+                        case JArray jarr:
+                            foreach (var element in jarr.OfType<JObject>())
                             {
-                                Strip((JObject)element);
+                                Strip(element);
                             }
                             break;
                     }
                 }
             }
-
-            foreach (var property in propertiesToRemove)
+            foreach (var propertyName in propertiesToRemove)
             {
-                metadata.Remove(property);
+                json.Remove(propertyName);
             }
-
-            if (metadata["$kref"] != null)
-            {
-                metadata.Remove("$kref");
-            }
-
-            if (metadata["$vref"] != null)
-            {
-                metadata.Remove("$vref");
-            }
+            return json;
         }
     }
 }

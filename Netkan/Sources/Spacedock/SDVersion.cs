@@ -32,33 +32,22 @@ namespace CKAN.NetKAN.Sources.Spacedock
         /// </summary>
         internal class JsonConvertGameVersion : JsonConverter
         {
-            public override object? ReadJson(
-                JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer
-            )
-            {
-                if (reader.Value == null)
-                {
-                    return null;
-                }
-
-                var raw_version = reader.Value.ToString();
-
-                return GameVersion.Parse(ExpandVersionIfNeeded(raw_version));
-            }
+            public override object? ReadJson(JsonReader     reader,
+                                             Type           objectType,
+                                             object?        existingValue,
+                                             JsonSerializer serializer)
+                => reader.Value?.ToString() is string s
+                       ? GameVersion.Parse(ExpandVersionIfNeeded(s))
+                       : null;
 
             /// <summary>
             /// Actually expand the KSP version. It's way easier to test this than the override. :)
             /// </summary>
-            public static string? ExpandVersionIfNeeded(string? version)
-            {
-                if (Regex.IsMatch(version ?? "", @"^\d+\.\d+$"))
-                {
-                    // Two part string, add our .0
-                    return version + ".0";
-                }
-
-                return version;
-            }
+            public static string ExpandVersionIfNeeded(string version)
+                => Regex.IsMatch(version, @"^\d+\.\d+$")
+                       // Two part string, add our .0
+                       ? version + ".0"
+                       : version;
 
             public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
             {

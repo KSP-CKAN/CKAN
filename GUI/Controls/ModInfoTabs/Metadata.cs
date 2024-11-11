@@ -28,6 +28,7 @@ namespace CKAN.GUI
 
             Util.Invoke(this, () =>
             {
+                MetadataTable.SuspendLayout();
                 MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString();
                 MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license);
 
@@ -35,7 +36,7 @@ namespace CKAN.GUI
 
                 MetadataIdentifierTextBox.Text = module.identifier;
 
-                if (module.release_status == null)
+                if (module.release_status is null or ReleaseStatus.stable)
                 {
                     ReleaseLabel.Visible = false;
                     MetadataModuleReleaseStatusTextBox.Visible = false;
@@ -46,7 +47,7 @@ namespace CKAN.GUI
                     ReleaseLabel.Visible = true;
                     MetadataModuleReleaseStatusTextBox.Visible = true;
                     MetadataTable.LayoutSettings.RowStyles[3].Height = 30;
-                    MetadataModuleReleaseStatusTextBox.Text = module.release_status.ToString();
+                    MetadataModuleReleaseStatusTextBox.Text = module.release_status.LocalizeName();
                 }
 
                 var compatMod = gui_module.LatestCompatibleMod
@@ -90,6 +91,7 @@ namespace CKAN.GUI
                     AddResourceLink(Properties.Resources.ModInfoStoreLabel,                 res.store);
                     AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel,            res.steamstore);
                 }
+                MetadataTable.ResumeLayout();
             });
         }
 
@@ -235,6 +237,7 @@ namespace CKAN.GUI
         {
             if (staticRowCount > 0)
             {
+                MetadataTable.SuspendLayout();
                 var rWidth = RightColumnWidth;
                 for (int row = staticRowCount; row < MetadataTable.RowStyles.Count; ++row)
                 {
@@ -247,6 +250,7 @@ namespace CKAN.GUI
                             LinkLabelStringHeight(link, rWidth));
                     }
                 }
+                MetadataTable.ResumeLayout();
             }
         }
 

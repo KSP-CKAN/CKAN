@@ -50,7 +50,7 @@ namespace Tests.NetKAN.Sources.Github
             var sut = new GithubApi(new CachingHttpService(_cache!));
 
             // Act
-            var githubRelease = sut.GetLatestRelease(new GithubRef("#/ckan/github/KSP-CKAN/Test", false, false));
+            var githubRelease = sut.GetLatestRelease(new GithubRef("#/ckan/github/KSP-CKAN/Test", false), false);
 
             // Assert
             Assert.IsNotNull(githubRelease?.Author);

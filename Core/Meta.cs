@@ -20,6 +20,11 @@ namespace CKAN
 
         public static readonly ModuleVersion ReleaseVersion = new ModuleVersion(GetVersion());
 
+        public static bool IsNetKAN
+            => Assembly.GetExecutingAssembly()
+                       .GetAssemblyAttribute<AssemblyTitleAttribute>()
+                       .Title.Contains("NetKAN");
+
         public static string GetVersion(VersionFormat format = VersionFormat.Normal)
         {
             var version = Assembly

@@ -28,7 +28,7 @@ namespace Tests.NetKAN.Transformers
                     HtmlUrl = "https://github.com/ExampleAccount/ExampleProject"
                 });
 
-            mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>()))
+            mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>(), false))
                 .Returns(new GithubRelease(
                     "ExampleProject",
                     new ModuleVersion("1.0"),
@@ -42,7 +42,7 @@ namespace Tests.NetKAN.Transformers
                     }
                 ));
 
-            mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>()))
+            mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>(), false))
                 .Returns(new GithubRelease[] {
                     new GithubRelease(
                         "ExampleProject",
@@ -137,7 +137,7 @@ namespace Tests.NetKAN.Transformers
                     HtmlUrl = "https://github.com/jrodrigv/DestructionEffects"
                 });
 
-            mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>()))
+            mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>(), false))
                 .Returns(new GithubRelease(
                     "DestructionEffects",
                     new ModuleVersion("v1.8,0"),
@@ -151,7 +151,7 @@ namespace Tests.NetKAN.Transformers
                     }
                 ));
 
-            mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>()))
+            mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>(), false))
                 .Returns(new GithubRelease[] { new GithubRelease(
                     "DestructionEffects",
                     new ModuleVersion("v1.8,0"),

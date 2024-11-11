@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Processors
                         string? githubToken,
                         string? gitlabToken,
                         string? userAgent,
-                        bool    prerelease,
+                        bool?   prerelease,
                         IGame   game)
         {
             log.Debug("Initializing inflator");
@@ -36,13 +36,25 @@ namespace CKAN.NetKAN.Processors
                                                   githubToken, gitlabToken, userAgent, prerelease, game, netkanValidator);
         }
 
-        internal IEnumerable<Metadata> Inflate(string filename, Metadata[] netkans, TransformOptions? opts)
+        internal IEnumerable<Metadata> Inflate(string           filename,
+                                               Metadata[]       netkans,
+                                               TransformOptions opts)
         {
             log.DebugFormat("Inflating {0}", filename);
             try
             {
                 // Tell the downloader that we're starting a new request
                 http.ClearRequestedURLs();
+
+                if (netkans.Length > 1)
+                {
+                    // Mix properties between sections if they don't start with x_netkan
+                    var stripped = netkans.Select(nk => nk.Json())
+                                          .Select(StripNetkanMetadataTransformer.Strip)
+                                          .ToArray();
+                    netkans = netkans.Select(nk => nk.MergeFrom(stripped))
+                                     .ToArray();
+                }
 
                 foreach (var netkan in netkans)
                 {
@@ -55,16 +67,19 @@ namespace CKAN.NetKAN.Processors
                                    .Select(grp => Metadata.Merge(grp.ToArray()))
                                    .SelectMany(merged => specVersionTransformer.Transform(merged, opts))
                                    .SelectMany(withSpecVersion => sortTransformer.Transform(withSpecVersion, opts))
+                                   .OrderBy(m => !m.Prerelease)
                                    .ToList();
                 log.Debug("Finished transformation");
 
-                if (ckans.Count > (opts?.Releases ?? 1))
+                if (ckans.Count(m => !m.Prerelease) > (opts?.Releases ?? 1))
                 {
                     throw new Kraken(string.Format("Generated {0} modules but only {1} requested: {2}",
                                                    ckans.Count,
                                                    opts?.Releases ?? 1,
                                                    string.Join("; ", ckans.Select(DescribeHosting))));
                 }
+
+                ckans = ckans.Take(opts?.Releases ?? 1).ToList();
 
                 foreach (Metadata ckan in ckans)
                 {

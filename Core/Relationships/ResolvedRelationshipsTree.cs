@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Extensions;
 
@@ -21,35 +22,37 @@ namespace CKAN
 
     public class ResolvedRelationshipsTree
     {
-        public ResolvedRelationshipsTree(ICollection<CkanModule> modules,
-                                         IRegistryQuerier        registry,
-                                         ICollection<string>     dlls,
-                                         ICollection<CkanModule> installed,
-                                         GameVersionCriteria     crit,
-                                         OptionalRelationships   optRels)
+        public ResolvedRelationshipsTree(ICollection<CkanModule>  modules,
+                                         IRegistryQuerier         registry,
+                                         ICollection<string>      dlls,
+                                         ICollection<CkanModule>  installed,
+                                         StabilityToleranceConfig stabilityTolerance,
+                                         GameVersionCriteria      crit,
+                                         OptionalRelationships    optRels)
         {
-            resolved = ResolveManyCached(modules, registry, dlls, installed, crit, optRels, relationshipCache).ToArray();
+            resolved = ResolveManyCached(modules, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache).ToArray();
         }
 
-        public static IEnumerable<ResolvedRelationship> ResolveModule(CkanModule              module,
-                                                                      ICollection<CkanModule> definitelyInstalling,
-                                                                      ICollection<CkanModule> allInstalling,
-                                                                      IRegistryQuerier        registry,
-                                                                      ICollection<string>     dlls,
-                                                                      ICollection<CkanModule> installed,
-                                                                      GameVersionCriteria     crit,
-                                                                      OptionalRelationships   optRels,
-                                                                      RelationshipCache       relationshipCache)
+        public static IEnumerable<ResolvedRelationship> ResolveModule(CkanModule               module,
+                                                                      ICollection<CkanModule>  definitelyInstalling,
+                                                                      ICollection<CkanModule>  allInstalling,
+                                                                      IRegistryQuerier         registry,
+                                                                      ICollection<string>      dlls,
+                                                                      ICollection<CkanModule>  installed,
+                                                                      StabilityToleranceConfig stabilityTolerance,
+                                                                      GameVersionCriteria      crit,
+                                                                      OptionalRelationships    optRels,
+                                                                      RelationshipCache        relationshipCache)
             => ResolveRelationships(module, module.depends, new SelectionReason.Depends(module),
-                                    definitelyInstalling, allInstalling, registry, dlls, installed, crit, optRels, relationshipCache)
+                                    definitelyInstalling, allInstalling, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache)
                 .Concat((optRels & OptionalRelationships.Recommendations) == 0
                     ? Enumerable.Empty<ResolvedRelationship>()
                     : ResolveRelationships(module, module.recommends, new SelectionReason.Recommended(module, 0),
-                                           definitelyInstalling, allInstalling, registry, dlls, installed, crit, optRels, relationshipCache))
+                                           definitelyInstalling, allInstalling, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache))
                 .Concat((optRels & OptionalRelationships.Suggestions) == 0
                     ? Enumerable.Empty<ResolvedRelationship>()
                     : ResolveRelationships(module, module.suggests, new SelectionReason.Suggested(module),
-                                           definitelyInstalling, allInstalling, registry, dlls, installed, crit, optRels, relationshipCache));
+                                           definitelyInstalling, allInstalling, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache));
 
         public IEnumerable<ResolvedRelationship[]> Unsatisfied()
             => resolved.SelectMany(UnsatisfiedFrom);
@@ -102,14 +105,15 @@ namespace CKAN
             => string.Join(Environment.NewLine,
                            resolved.Select(rr => rr.ToString()));
 
-        private static IEnumerable<ResolvedRelationship> ResolveManyCached(ICollection<CkanModule> modules,
-                                                                           IRegistryQuerier        registry,
-                                                                           ICollection<string>     dlls,
-                                                                           ICollection<CkanModule> installed,
-                                                                           GameVersionCriteria     crit,
-                                                                           OptionalRelationships   optRels,
-                                                                           RelationshipCache       relationshipCache)
-            => modules.SelectMany(m => ResolveModule(m, modules, modules, registry, dlls, installed, crit, optRels,
+        private static IEnumerable<ResolvedRelationship> ResolveManyCached(ICollection<CkanModule>  modules,
+                                                                           IRegistryQuerier         registry,
+                                                                           ICollection<string>      dlls,
+                                                                           ICollection<CkanModule>  installed,
+                                                                           StabilityToleranceConfig stabilityTolerance,
+                                                                           GameVersionCriteria      crit,
+                                                                           OptionalRelationships    optRels,
+                                                                           RelationshipCache        relationshipCache)
+            => modules.SelectMany(m => ResolveModule(m, modules, modules, registry, dlls, installed, stabilityTolerance, crit, optRels,
                                                      relationshipCache));
 
         private static IEnumerable<ResolvedRelationship> ResolveRelationships(CkanModule                    module,
@@ -120,25 +124,27 @@ namespace CKAN
                                                                               IRegistryQuerier              registry,
                                                                               ICollection<string>           dlls,
                                                                               ICollection<CkanModule>       installed,
+                                                                              StabilityToleranceConfig      stabilityTolerance,
                                                                               GameVersionCriteria           crit,
                                                                               OptionalRelationships         optRels,
                                                                               RelationshipCache             relationshipCache)
             => relationships?.Select(dep => Resolve(module, dep, reason,
                                                     definitelyInstalling, allInstalling, registry, dlls, installed,
-                                                    crit, optRels, relationshipCache))
+                                                    stabilityTolerance, crit, optRels, relationshipCache))
                             ?? Enumerable.Empty<ResolvedRelationship>();
 
-        private static ResolvedRelationship Resolve(CkanModule              source,
-                                                    RelationshipDescriptor  relationship,
-                                                    SelectionReason         reason,
-                                                    ICollection<CkanModule> definitelyInstalling,
-                                                    ICollection<CkanModule> allInstalling,
-                                                    IRegistryQuerier        registry,
-                                                    ICollection<string>     dlls,
-                                                    ICollection<CkanModule> installed,
-                                                    GameVersionCriteria     crit,
-                                                    OptionalRelationships   optRels,
-                                                    RelationshipCache       relationshipCache)
+        private static ResolvedRelationship Resolve(CkanModule               source,
+                                                    RelationshipDescriptor   relationship,
+                                                    SelectionReason          reason,
+                                                    ICollection<CkanModule>  definitelyInstalling,
+                                                    ICollection<CkanModule>  allInstalling,
+                                                    IRegistryQuerier         registry,
+                                                    ICollection<string>      dlls,
+                                                    ICollection<CkanModule>  installed,
+                                                    StabilityToleranceConfig stabilityTolerance,
+                                                    GameVersionCriteria      crit,
+                                                    OptionalRelationships    optRels,
+                                                    RelationshipCache        relationshipCache)
             => relationshipCache.TryGetValue(relationship,
                                              out ResolvedRelationship? cachedRel)
                 ? cachedRel.WithSource(source, reason)
@@ -157,11 +163,11 @@ namespace CKAN
                             : relationshipCache.GetOrAdd(
                                 relationship,
                                 new ResolvedByNew(source, relationship, reason,
-                                                  relationship.LatestAvailableWithProvides(registry, crit,
+                                                  relationship.LatestAvailableWithProvides(registry, stabilityTolerance, crit,
                                                                                            installed, definitelyInstalling),
                                                   definitelyInstalling,
                                                   allInstalling.Append(source).ToArray(),
-                                                  registry, dlls, installed, crit, optRels,
+                                                  registry, dlls, installed, stabilityTolerance, crit, optRels,
                                                   relationshipCache));
 
         private readonly ResolvedRelationship[] resolved;

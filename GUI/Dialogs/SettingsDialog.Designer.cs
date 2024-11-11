@@ -85,6 +85,8 @@ namespace CKAN.GUI
             this.HideEpochsCheckbox = new System.Windows.Forms.CheckBox();
             this.HideVCheckbox = new System.Windows.Forms.CheckBox();
             this.AutoSortUpdateCheckBox = new System.Windows.Forms.CheckBox();
+            this.StabilityToleranceLabel = new System.Windows.Forms.Label();
+            this.StabilityToleranceComboBox = new System.Windows.Forms.ComboBox();
             this.RepositoryGroupBox.SuspendLayout();
             this.AuthTokensGroupBox.SuspendLayout();
             this.CacheGroupBox.SuspendLayout();
@@ -546,7 +548,7 @@ namespace CKAN.GUI
             this.BehaviourGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BehaviourGroupBox.Location = new System.Drawing.Point(12, 310);
             this.BehaviourGroupBox.Name = "BehaviourGroupBox";
-            this.BehaviourGroupBox.Size = new System.Drawing.Size(254, 150);
+            this.BehaviourGroupBox.Size = new System.Drawing.Size(254, 173);
             this.BehaviourGroupBox.TabIndex = 32;
             this.BehaviourGroupBox.TabStop = false;
             resources.ApplyResources(this.BehaviourGroupBox, "BehaviourGroupBox");
@@ -618,15 +620,17 @@ namespace CKAN.GUI
             //
             this.MoreSettingsGroupBox.Controls.Add(this.LanguageSelectionLabel);
             this.MoreSettingsGroupBox.Controls.Add(this.LanguageSelectionComboBox);
-            this.MoreSettingsGroupBox.Controls.Add(this.AutoSortUpdateCheckBox);
             this.MoreSettingsGroupBox.Controls.Add(this.RefreshOnStartupCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideEpochsCheckbox);
             this.MoreSettingsGroupBox.Controls.Add(this.HideVCheckbox);
+            this.MoreSettingsGroupBox.Controls.Add(this.AutoSortUpdateCheckBox);
+            this.MoreSettingsGroupBox.Controls.Add(this.StabilityToleranceLabel);
+            this.MoreSettingsGroupBox.Controls.Add(this.StabilityToleranceComboBox);
             this.MoreSettingsGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.MoreSettingsGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoreSettingsGroupBox.Location = new System.Drawing.Point(280, 310);
             this.MoreSettingsGroupBox.Name = "MoreSettingsGroupBox";
-            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 150);
+            this.MoreSettingsGroupBox.Size = new System.Drawing.Size(476, 173);
             this.MoreSettingsGroupBox.TabIndex = 39;
             this.MoreSettingsGroupBox.TabStop = false;
             resources.ApplyResources(this.MoreSettingsGroupBox, "MoreSettingsGroupBox");
@@ -697,11 +701,31 @@ namespace CKAN.GUI
             this.AutoSortUpdateCheckBox.CheckedChanged += new System.EventHandler(this.AutoSortUpdateCheckBox_CheckedChanged);
             resources.ApplyResources(this.AutoSortUpdateCheckBox, "AutoSortUpdateCheckBox");
             //
+            // StabilityToleranceLabel
+            //
+            this.StabilityToleranceLabel.AutoSize = true;
+            this.StabilityToleranceLabel.Location = new System.Drawing.Point(12, 146);
+            this.StabilityToleranceLabel.Name = "StabilityToleranceLabel";
+            this.StabilityToleranceLabel.Size = new System.Drawing.Size(220, 17);
+            this.StabilityToleranceLabel.TabStop = false;
+            resources.ApplyResources(this.StabilityToleranceLabel, "StabilityToleranceLabel");
+            //
+            // StabilityToleranceComboBox
+            //
+            this.StabilityToleranceComboBox.AutoSize = true;
+            this.StabilityToleranceComboBox.Location = new System.Drawing.Point(244, 146);
+            this.StabilityToleranceComboBox.Name = "StabilityToleranceComboBox";
+            this.StabilityToleranceComboBox.Size = new System.Drawing.Size(220, 17);
+            this.StabilityToleranceComboBox.TabIndex = 45;
+            this.StabilityToleranceComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.StabilityToleranceComboBox.SelectionChangeCommitted += new System.EventHandler(this.StabilityToleranceComboBox_SelectionChanged);
+            this.StabilityToleranceComboBox.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.StabilityToleranceComboBox_MouseWheel);
+            //
             // SettingsDialog
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(768, 470);
+            this.ClientSize = new System.Drawing.Size(768, 493);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.AuthTokensGroupBox);
             this.Controls.Add(this.CacheGroupBox);
@@ -788,5 +812,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox HideEpochsCheckbox;
         private System.Windows.Forms.CheckBox HideVCheckbox;
         private System.Windows.Forms.CheckBox AutoSortUpdateCheckBox;
+        private System.Windows.Forms.Label StabilityToleranceLabel;
+        private System.Windows.Forms.ComboBox StabilityToleranceComboBox;
     }
 }

@@ -1,8 +1,10 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+using CKAN;
 using CKAN.Configuration;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
@@ -12,7 +14,7 @@ namespace Tests.Core.Configuration
 {
     public class FakeConfiguration : IConfiguration, IDisposable
     {
-        public FakeConfiguration(CKAN.GameInstance instance, string autostart)
+        public FakeConfiguration(GameInstance instance, string autostart)
             : this(new List<Tuple<string, string, string>>
                    {
                        new Tuple<string, string, string>("test", instance.GameDir(), "KSP")
@@ -93,7 +95,7 @@ namespace Tests.Core.Configuration
         /// <returns>
         /// Returns
         /// </returns>
-        public void SetRegistryToInstances(SortedList<string, CKAN.GameInstance> instances)
+        public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
             Instances =
                 instances.Select(kvpair => new Tuple<string, string, string>(kvpair.Key, kvpair.Value.GameDir(), "KSP")).ToList();
@@ -152,6 +154,10 @@ namespace Tests.Core.Configuration
         public string?[] PreferredHosts { get; set; } = Array.Empty<string>();
 
         public bool? DevBuilds { get; set; }
+
+        #pragma warning disable CS0067
+        public event PropertyChangedEventHandler? PropertyChanged;
+        #pragma warning restore CS0067
 
         public void Dispose()
         {

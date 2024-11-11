@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Runtime.Versioning;
 #endif
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 using Newtonsoft.Json;
 
@@ -69,6 +71,8 @@ namespace CKAN.Configuration
             configFile = newConfig ?? defaultConfigFile;
             LoadConfig();
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         // The standard location of the config file. Where this actually points is platform dependent,
         // but it's the same place as the downloads folder. The location can be overwritten with the
@@ -216,6 +220,8 @@ namespace CKAN.Configuration
             {
                 config.GlobalInstallFilters = value;
                 SaveConfig();
+                // Refresh the Contents tab
+                OnPropertyChanged();
             }
         }
 
@@ -240,6 +246,11 @@ namespace CKAN.Configuration
                 config.DevBuilds = value;
                 SaveConfig();
             }
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string? name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
         // <summary>

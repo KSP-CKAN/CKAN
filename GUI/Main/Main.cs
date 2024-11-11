@@ -357,6 +357,10 @@ namespace CKAN.GUI
                     {
                         ManageMods.ModGrid.ClearSelection();
                         CurrentInstanceUpdated();
+                        if (old_instance != null)
+                        {
+                            old_instance.StabilityToleranceConfig.Changed -= StabilityToleranceConfig_Changed;
+                        }
                         done = true;
                     }
                     catch (RegistryInUseKraken kraken)
@@ -378,6 +382,15 @@ namespace CKAN.GUI
                         }
                     }
                 }
+            }
+        }
+
+        private void StabilityToleranceConfig_Changed(string? identifier, ReleaseStatus? relStat)
+        {
+            // null represents the overall setting, for which we'll refresh when the settings dialog closes
+            if (identifier != null)
+            {
+                RefreshModList(false);
             }
         }
 
@@ -407,6 +420,7 @@ namespace CKAN.GUI
             {
                 return;
             }
+            CurrentInstance.StabilityToleranceConfig.Changed += StabilityToleranceConfig_Changed;
             // This will throw RegistryInUseKraken if locked by another process
             var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
             log.Debug("Current instance updated, scanning");
@@ -719,7 +733,8 @@ namespace CKAN.GUI
                 {
                     UpdateRepo(refreshWithoutChanges: true);
                 }
-                else if (dialog.RepositoryRemoved || dialog.RepositoryMoved)
+                else if (dialog.RepositoryRemoved || dialog.RepositoryMoved
+                         || dialog.StabilityToleranceChanged)
                 {
                     RefreshModList(false);
                 }
@@ -758,7 +773,6 @@ namespace CKAN.GUI
                 {
                     // The Update checkbox might appear or disappear if missing files were or are filtered out
                     RefreshModList(false);
-                    ModInfo.RefreshModContentsTree();
                 }
             }
         }
@@ -785,6 +799,7 @@ namespace CKAN.GUI
             }
             // We'll need to make some registry changes to do this.
             var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
+            var stabilityTolerance = CurrentInstance.StabilityToleranceConfig;
             var crit = CurrentInstance.VersionCriteria();
 
             var installed = registry_manager.registry.InstalledModules.Select(inst => inst.Module).ToList();
@@ -804,9 +819,9 @@ namespace CKAN.GUI
                             .Select(rel =>
                                 // If there's a compatible match, return it
                                 // Metapackages aren't intending to prompt users to choose providing mods
-                                rel.ExactMatch(registry_manager.registry, crit, installed, toInstall)
+                                rel.ExactMatch(registry_manager.registry, stabilityTolerance, crit, installed, toInstall)
                                 // Otherwise look for incompatible
-                                ?? rel.ExactMatch(registry_manager.registry, null, installed, toInstall))
+                                ?? rel.ExactMatch(registry_manager.registry, stabilityTolerance, null, installed, toInstall))
                             .OfType<CkanModule>());
                     }
                     toInstall.Add(module);
@@ -866,7 +881,7 @@ namespace CKAN.GUI
             }
 
             // Get all recursively incompatible module identifiers (quickly)
-            var allIncompat = registry_manager.registry.IncompatibleModules(crit)
+            var allIncompat = registry_manager.registry.IncompatibleModules(stabilityTolerance, crit)
                 .Select(mod => mod.identifier)
                 .ToHashSet();
             // Get incompatible mods we're installing
@@ -945,8 +960,8 @@ namespace CKAN.GUI
                     {
                         splitContainer1.Panel2Collapsed = false;
                     }
-                    ModInfo.SelectedModule = value;
                 }
+                ModInfo.SelectedModule = value;
             }
         }
 
@@ -958,6 +973,7 @@ namespace CKAN.GUI
                     module,
                     repoData,
                     RegistryManager.Instance(CurrentInstance, repoData).registry,
+                    CurrentInstance.StabilityToleranceConfig,
                     CurrentInstance.VersionCriteria(),
                     null,
                     configuration.HideEpochs,
@@ -1144,6 +1160,7 @@ namespace CKAN.GUI
             tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();
             DisableMainWindow();
+            ActiveModInfo = null;
             Wait.StartWaiting(
                 ManageMods.Update,
                 (sender, e) =>

@@ -790,6 +790,7 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.x_screenshot`
 - `ksp_version`
 - `release_date`
+- `release_status`
 
 ###### `#/ckan/curse/:cid`
 
@@ -833,6 +834,7 @@ When used, the following fields will be auto-filled if not already present:
 - `resources.repository`
 - `resources.bugtracker`
 - `release_date`
+- `release_status`
 
 Optionally, one of `asset_match` with `:filter_regexp` *or* `version_from_asset` with `:version_regexp` *may* be provided:
 
@@ -852,6 +854,8 @@ An `x_netkan_github` field may be provided to customize how the metadata is fetc
 
 - `use_source_archive` (type: `boolean`) (default: `false`)<br/>
   Specifies that the source ZIP of the repository itself will be used instead of any assets in the release.
+- `prereleases` (type: `boolean`) (default: `null`)<br/>
+  Skip prereleases if `false`, skip regular releases if `true`, use both if absent.
 
 ###### `#/ckan/gitlab/:user/:repo`
 

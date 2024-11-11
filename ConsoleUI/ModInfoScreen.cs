@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 
@@ -18,6 +19,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         /// <param name="theme">The visual theme to use to draw the dialog</param>
         /// <param name="mgr">Game instance manager containing game instances</param>
+        /// <param name="instance">Game instance</param>
         /// <param name="registry">Registry of the current instance for finding mods</param>
         /// <param name="userAgent">HTTP useragent string to use</param>
         /// <param name="cp">Plan of other mods to be added or removed</param>
@@ -26,6 +28,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="dbg">True if debug options should be available, false otherwise</param>
         public ModInfoScreen(ConsoleTheme        theme,
                              GameInstanceManager mgr,
+                             GameInstance        instance,
                              Registry            registry,
                              string?             userAgent,
                              ChangePlan          cp,
@@ -41,8 +44,7 @@ namespace CKAN.ConsoleUI {
             this.registry = registry;
             this.userAgent = userAgent;
             this.upgradeable = upgradeable
-                                ?? registry.CheckUpgradeable(manager.CurrentInstance,
-                                                             new HashSet<string>())
+                                ?? registry.CheckUpgradeable(instance, new HashSet<string>())
                                            [true];
 
             int midL = (Console.WindowWidth / 2) - 1;
@@ -89,7 +91,7 @@ namespace CKAN.ConsoleUI {
             {
                 AddObject(new ConsoleLabel(
                     midL / 2, 5, (midL / 2) + 9,
-                    () => "Install:",
+                    () => Properties.Resources.ModInfoInstall,
                     null,
                     th => th.DimLabelFg
                 ));
@@ -104,7 +106,21 @@ namespace CKAN.ConsoleUI {
             ));
 
             int depsBot = addDependencies();
-            int versBot = addVersionDisplay();
+            int versBot = addVersionDisplay(instance.StabilityToleranceConfig);
+
+            if (!mod.IsDLC)
+            {
+                stabilityToleranceButtons = new ReleaseStatusComboButtons(
+                    1, depsBot + 1,
+                    Properties.Resources.ModInfoStabilityToleranceHeader,
+                    Properties.Resources.ModInfoStabilityToleranceNull,
+                    instance.StabilityToleranceConfig.ModStabilityTolerance(mod.identifier));
+                stabilityToleranceButtons.SelectionChanged += () =>
+                    instance.StabilityToleranceConfig.SetModStabilityTolerance(
+                        mod.identifier, stabilityToleranceButtons.Selection);
+                AddObject(stabilityToleranceButtons);
+                depsBot += 5;
+            }
 
             AddObject(new ConsoleFrame(
                 1, Math.Max(depsBot, versBot) + 1, -1, -1,
@@ -124,10 +140,9 @@ namespace CKAN.ConsoleUI {
                 tb.AddLine(mod.description);
             }
             AddObject(tb);
-            if (!ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
+            if (!ChangePlan.IsAnyAvailable(registry, instance.StabilityToleranceConfig, mod.identifier)) {
                 tb.AddLine(Properties.Resources.ModInfoUnavailableWarning);
             }
-            tb.AddScrollBindings(this, theme);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Back);
             AddBinding(Keys.Escape, (object sender) => false);
@@ -342,7 +357,7 @@ namespace CKAN.ConsoleUI {
             // This can be null for manually installed mods
             => registry.InstalledModule(identifier)?.InstallTime;
 
-        private int addVersionDisplay()
+        private int addVersionDisplay(StabilityToleranceConfig stabilityTolerance)
         {
             int       boxLeft  = (Console.WindowWidth / 2) + 1,
                       boxTop   = 3;
@@ -350,10 +365,10 @@ namespace CKAN.ConsoleUI {
                       boxH     = 5;
 
             if (manager.CurrentInstance != null
-                && ChangePlan.IsAnyAvailable(registry, mod.identifier)) {
+                && ChangePlan.IsAnyAvailable(registry, stabilityTolerance, mod.identifier)) {
 
                 var  inst              = registry.GetInstalledVersion(mod.identifier);
-                var  latest            = registry.LatestAvailable(mod.identifier, null);
+                var  latest            = registry.LatestAvailable(mod.identifier, stabilityTolerance, null);
                 var  others            = registry.AvailableByIdentifier(mod.identifier)
                                                  .Except(new[] { inst, latest }.OfType<CkanModule>())
                                                  .OfType<CkanModule?>()
@@ -368,7 +383,7 @@ namespace CKAN.ConsoleUI {
 
                     if (latestIsInstalled) {
 
-                        if (registry.GetReplacement(mod.identifier,
+                        if (registry.GetReplacement(mod.identifier, stabilityTolerance,
                                                     manager.CurrentInstance.VersionCriteria())
                                 is ModuleReplacement mr) {
 
@@ -601,13 +616,14 @@ namespace CKAN.ConsoleUI {
             { "forum.kerbalspaceprogram.com", "KSP Forums"       }
         };
 
-        private readonly GameInstanceManager manager;
-        private readonly IRegistryQuerier    registry;
-        private readonly string?             userAgent;
-        private readonly List<CkanModule>    upgradeable;
-        private readonly ChangePlan          plan;
-        private readonly CkanModule          mod;
-        private readonly bool                debug;
+        private readonly GameInstanceManager        manager;
+        private readonly IRegistryQuerier           registry;
+        private readonly string?                    userAgent;
+        private readonly List<CkanModule>           upgradeable;
+        private readonly ChangePlan                 plan;
+        private readonly CkanModule                 mod;
+        private readonly ReleaseStatusComboButtons? stabilityToleranceButtons;
+        private readonly bool                       debug;
     }
 
 }

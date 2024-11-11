@@ -201,6 +201,7 @@
   <data name="InstanceAddExample" xml:space="preserve"><value>Example: {0}</value></data>
   <data name="InstanceAddTitle" xml:space="preserve"><value>Add Game Instance</value></data>
   <data name="InstanceEditTitle" xml:space="preserve"><value>Edit Game Instance</value></data>
+  <data name="InstanceEditStabilityToleranceHeader" xml:space="preserve"><value>Stability tolerance:</value></data>
   <data name="InstanceEditRepoFrameTitle" xml:space="preserve"><value>Mod List Sources</value></data>
   <data name="InstanceEditCompatFrameTitle" xml:space="preserve"><value>Additional Compatible Versions</value></data>
   <data name="InstanceEditRepoIndexHeader" xml:space="preserve"><value>Index</value></data>
@@ -251,6 +252,9 @@ Edit authentication tokens now?</value></data>
   <data name="ModInfoAuthors" xml:space="preserve"><value>By {0}</value></data>
   <data name="ModInfoLicence" xml:space="preserve"><value>Licence:</value></data>
   <data name="ModInfoDownload" xml:space="preserve"><value>Download:</value></data>
+  <data name="ModInfoInstall" xml:space="preserve"><value>Install:</value></data>
+  <data name="ModInfoStabilityToleranceHeader" xml:space="preserve"><value>Mod stability tolerance override:</value></data>
+  <data name="ModInfoStabilityToleranceNull" xml:space="preserve"><value>Do not override</value></data>
   <data name="ModInfoDescriptionFrame" xml:space="preserve"><value>Description</value></data>
   <data name="ModInfoUnavailableWarning" xml:space="preserve"><value>
 NOTE: This mod is installed but no longer available.

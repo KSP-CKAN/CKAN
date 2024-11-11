@@ -8,12 +8,20 @@ namespace CKAN.Extensions
     public static class I18nExtensions
     {
 
-        public static string Localize(this Enum val)
+        public static string LocalizeDescription(this Enum val)
             => val.GetType()
                   ?.GetMember(val.ToString())
                   ?.First()
                    .GetCustomAttribute<DisplayAttribute>()
                   ?.GetDescription()
+                  ?? "";
+
+        public static string LocalizeName(this Enum val)
+            => val.GetType()
+                  ?.GetMember(val.ToString())
+                  ?.First()
+                   .GetCustomAttribute<DisplayAttribute>()
+                  ?.GetName()
                   ?? "";
 
     }

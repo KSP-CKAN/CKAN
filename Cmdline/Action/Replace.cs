@@ -36,7 +36,7 @@ namespace CKAN.CmdLine
             }
 
             // Prepare options. Can these all be done in the new() somehow?
-            var replace_ops = new RelationshipResolverOptions
+            var replace_ops = new RelationshipResolverOptions(instance.StabilityToleranceConfig)
                 {
                     with_all_suggests  = options.with_all_suggests,
                     with_suggests      = options.with_suggests,
@@ -68,7 +68,9 @@ namespace CKAN.CmdLine
                             log.DebugFormat("Testing {0} {1} for possible replacement", mod.Key, mod.Value);
                             // Check if replacement is available
 
-                            var replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
+                            var replacement = registry.GetReplacement(mod.Key,
+                                                                      instance.StabilityToleranceConfig,
+                                                                      instance.VersionCriteria());
                             if (replacement != null)
                             {
                                 // Replaceable
@@ -100,7 +102,9 @@ namespace CKAN.CmdLine
                             try
                             {
                                 // Check if replacement is available
-                                var replacement = registry.GetReplacement(modToReplace.identifier, instance.VersionCriteria());
+                                var replacement = registry.GetReplacement(modToReplace.identifier,
+                                                                          instance.StabilityToleranceConfig,
+                                                                          instance.VersionCriteria());
                                 if (replacement != null)
                                 {
                                     // Replaceable

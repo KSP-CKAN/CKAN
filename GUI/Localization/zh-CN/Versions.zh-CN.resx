@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="OverallSummaryLabel.Text" xml:space="preserve">
     <value>选中Mod的所有可用版本</value>
   </data>
   <data name="ModVersion.Text" xml:space="preserve">
@@ -129,22 +129,13 @@
   <data name="ReleaseDate.Text" xml:space="preserve">
     <value>发布日期</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>绿色</value>
+  <data name="LatestCompatibleLabel.Text" xml:space="preserve">
+    <value>最新的兼容版本(将会被安装)</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>浅绿色</value>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>兼容您的游戏的版本</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>粗体</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>- 最新的兼容版本(将会被安装)</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>- 兼容您的游戏的版本</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>- 当前安装版本</value>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>当前安装版本</value>
   </data>
 </root>

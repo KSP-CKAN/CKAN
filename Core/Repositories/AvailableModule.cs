@@ -10,6 +10,7 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Extensions;
 
@@ -28,7 +29,7 @@ namespace CKAN
 
         /// <param name="identifier">The module to keep track of</param>
         [JsonConstructor]
-        public AvailableModule(string identifier)
+        private AvailableModule(string identifier)
         {
             this.identifier = identifier;
         }
@@ -100,12 +101,24 @@ namespace CKAN
         /// <param name="installed">Modules that are already installed</param>
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
-        public CkanModule? Latest(GameVersionCriteria?     ksp_version  = null,
+        public CkanModule? Latest(StabilityToleranceConfig stabilityTolerance,
+                                  GameVersionCriteria?     ksp_version  = null,
+                                  RelationshipDescriptor?  relationship = null,
+                                  ICollection<CkanModule>? installed    = null,
+                                  ICollection<CkanModule>? toInstall    = null)
+            => Latest(stabilityTolerance.ModStabilityTolerance(identifier)
+                      ?? stabilityTolerance.OverallStabilityTolerance,
+                      ksp_version, relationship, installed, toInstall);
+
+        public CkanModule? Latest(ReleaseStatus            stabilityTolerance,
+                                  GameVersionCriteria?     ksp_version  = null,
                                   RelationshipDescriptor?  relationship = null,
                                   ICollection<CkanModule>? installed    = null,
                                   ICollection<CkanModule>? toInstall    = null)
         {
-            IEnumerable<CkanModule> modules = module_version.Values.Reverse();
+            var modules = module_version.Values
+                                        .Where(m => m.release_status <= stabilityTolerance)
+                                        .Reverse();
             if (relationship != null)
             {
                 modules = modules.Where(relationship.WithinBounds);

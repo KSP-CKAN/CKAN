@@ -37,6 +37,7 @@ namespace CKAN.GUI
             this.AddButton = new System.Windows.Forms.Button();
             this.AcceptChangesButton = new System.Windows.Forms.Button();
             this.CancelChangesButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             //
             // CmdLineGrid
@@ -163,6 +164,8 @@ namespace CKAN.GUI
             this.Padding = new System.Windows.Forms.Padding(8, 8, 8, 0);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

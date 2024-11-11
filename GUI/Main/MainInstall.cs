@@ -45,34 +45,37 @@ namespace CKAN.GUI
         /// <param name="module">Module to install</param>
         public void InstallModuleDriver(IRegistryQuerier registry, IEnumerable<CkanModule> modules)
         {
-            try
+            if (CurrentInstance != null)
             {
-                DisableMainWindow();
-                var userChangeSet = new List<ModChange>();
-                foreach (var module in modules)
+                try
                 {
-                    var installed = registry.InstalledModule(module.identifier);
-                    if (installed != null)
+                    DisableMainWindow();
+                    var userChangeSet = new List<ModChange>();
+                    foreach (var module in modules)
                     {
-                        // Already installed, remove it first
-                        userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove));
+                        var installed = registry.InstalledModule(module.identifier);
+                        if (installed != null)
+                        {
+                            // Already installed, remove it first
+                            userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove));
+                        }
+                        // Install the selected mod
+                        userChangeSet.Add(new ModChange(module, GUIModChangeType.Install));
                     }
-                    // Install the selected mod
-                    userChangeSet.Add(new ModChange(module, GUIModChangeType.Install));
+                    if (userChangeSet.Count > 0)
+                    {
+                        // Resolve the provides relationships in the dependencies
+                        Wait.StartWaiting(InstallMods, PostInstallMods, true,
+                            new InstallArgument(userChangeSet,
+                                                RelationshipResolverOptions.DependsOnlyOpts(CurrentInstance.StabilityToleranceConfig)));
+                    }
                 }
-                if (userChangeSet.Count > 0)
+                catch
                 {
-                    // Resolve the provides relationships in the dependencies
-                    Wait.StartWaiting(InstallMods, PostInstallMods, true,
-                        new InstallArgument(userChangeSet,
-                                            RelationshipResolverOptions.DependsOnlyOpts()));
+                    // If we failed, do the clean-up normally done by PostInstallMods.
+                    HideWaitDialog();
+                    EnableMainWindow();
                 }
-            }
-            catch
-            {
-                // If we failed, do the clean-up normally done by PostInstallMods.
-                HideWaitDialog();
-                EnableMainWindow();
             }
         }
 
@@ -93,6 +96,7 @@ namespace CKAN.GUI
 
                 var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
                 var registry = registry_manager.registry;
+                var stabilityTolerance = CurrentInstance.StabilityToleranceConfig;
                 var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent,
                                                     cancelTokenSrc.Token);
                 // Avoid accumulating multiple event handlers
@@ -135,7 +139,7 @@ namespace CKAN.GUI
                             toInstall.Add(change.Mod);
                             break;
                         case GUIModChangeType.Replace:
-                            var repl = registry.GetReplacement(change.Mod, CurrentInstance.VersionCriteria());
+                            var repl = registry.GetReplacement(change.Mod, stabilityTolerance, CurrentInstance.VersionCriteria());
                             if (repl != null)
                             {
                                 toUninstall.Add(repl.ToReplace);
@@ -288,7 +292,7 @@ namespace CKAN.GUI
                                                                  .ToArray(),
                                         registry.InstalledDlls, registry.InstalledDlc,
                                         // Consider virtual dependencies satisfied so user can make a new choice if they skip
-                                        rel => rel.LatestAvailableWithProvides(registry, crit).Count > 1)
+                                        rel => rel.LatestAvailableWithProvides(registry, stabilityTolerance, crit).Count > 1)
                                     .ToHashSet();
                                 toInstall.RemoveAll(m => dependers.Contains(m.identifier));
                             }

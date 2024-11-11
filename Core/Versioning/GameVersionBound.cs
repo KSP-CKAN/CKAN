@@ -111,21 +111,11 @@ namespace CKAN.Versioning
         /// </summary>
         /// <param name="versionBounds">The set of <see cref="GameVersionBound"/> objects to compare.</param>
         /// <returns>The lowest value in <see cref="versionBounds"/>.</returns>
-        public static GameVersionBound Lowest(params GameVersionBound?[] versionBounds)
+        public static GameVersionBound Lowest(params GameVersionBound[] versionBounds)
         {
-            if (versionBounds == null)
-            {
-                throw new ArgumentNullException(nameof(versionBounds));
-            }
-
             if (!versionBounds.Any())
             {
                 throw new ArgumentException("Value cannot be empty.", nameof(versionBounds));
-            }
-
-            if (versionBounds.Contains(null))
-            {
-                throw new ArgumentException("Value cannot contain null.", nameof(versionBounds));
             }
 
             return versionBounds.OfType<GameVersionBound>()

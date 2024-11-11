@@ -14,6 +14,7 @@ using System.Runtime.Versioning;
 using Autofac;
 
 using CKAN.Games;
+using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 
@@ -39,7 +40,7 @@ namespace CKAN.GUI
             VersionsListView.EndUpdate();
         }
 
-        public GUIMod SelectedModule
+        public GUIMod? SelectedModule
         {
             set
             {
@@ -103,10 +104,21 @@ namespace CKAN.GUI
             }
         }
 
+        private void VersionsListView_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs? e)
+        {
+            if (e is {Item: {Selected: true}})
+            {
+                e.Item.Selected = false;
+                e.Item.Focused  = false;
+            }
+        }
+
         [ForbidGUICalls]
         private static bool installable(CkanModule       module,
-                                        IRegistryQuerier registry)
+                                        IRegistryQuerier registry,
+                                        ReleaseStatus    stabilityTolerance)
             => currentInstance != null
+                && module.release_status <= stabilityTolerance
                 && installable(module, registry,
                                currentInstance.game,
                                currentInstance.VersionCriteria());
@@ -117,9 +129,10 @@ namespace CKAN.GUI
                                         IGame               game,
                                         GameVersionCriteria crit)
             => module.IsCompatible(crit)
-                && ModuleInstaller.CanInstall(new List<CkanModule>() { module },
-                                              RelationshipResolverOptions.DependsOnlyOpts(),
-                                              registry, game, crit);
+               && currentInstance != null
+               && ModuleInstaller.CanInstall(new List<CkanModule>() { module },
+                                             RelationshipResolverOptions.DependsOnlyOpts(currentInstance.StabilityToleranceConfig),
+                                             registry, game, crit);
 
         private bool allowInstall(CkanModule module)
         {
@@ -127,13 +140,21 @@ namespace CKAN.GUI
             {
                 return false;
             }
+            var stabilityTolerance = currentInstance.StabilityToleranceConfig.ModStabilityTolerance(module.identifier)
+                                     ?? currentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
             IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
 
-            return installable(module, registry)
+            return installable(module, registry, stabilityTolerance)
                 || (Main.Instance?.YesNoDialog(
-                    string.Format(Properties.Resources.AllModVersionsInstallPrompt,
-                        module.ToString(),
-                        currentInstance.VersionCriteria().ToSummaryString(currentInstance.game)),
+                    module.release_status > stabilityTolerance
+                        ? string.Format(Properties.Resources.AllModVersionsPrereleasePrompt,
+                                        module,
+                                        module.release_status.LocalizeName(),
+                                        stabilityTolerance.LocalizeName())
+                        : string.Format(Properties.Resources.AllModVersionsInstallPrompt,
+                                        module,
+                                        currentInstance.VersionCriteria()
+                                                       .ToSummaryString(currentInstance.game)),
                     Properties.Resources.AllModVersionsInstallYes,
                     Properties.Resources.AllModVersionsInstallNo) ?? false);
         }
@@ -142,7 +163,7 @@ namespace CKAN.GUI
         {
             switch (e?.PropertyName)
             {
-                case "SelectedMod":
+                case nameof(GUIMod.SelectedMod):
                     UpdateSelection();
                     break;
             }
@@ -198,6 +219,8 @@ namespace CKAN.GUI
             {
                 var registry         = RegistryManager.Instance(currentInstance, repoData).registry;
                 var installedVersion = registry.InstalledVersion(gmod.Identifier);
+                var stabilityTolerance = currentInstance.StabilityToleranceConfig.ModStabilityTolerance(gmod.Identifier)
+                                         ?? currentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
 
                 var items = versions.OrderByDescending(module => module.version)
                     .Select(module =>
@@ -215,11 +238,23 @@ namespace CKAN.GUI
                         module.release_date?.ToString("g") ?? ""
                     })
                     {
-                        Tag = module
+                        Tag = module,
                     };
                     if (installedVersion != null && installedVersion.IsEqualTo(module.version))
                     {
-                        toRet.Font = new Font(toRet.Font, FontStyle.Bold);
+                        toRet.Font = new Font(toRet.Font,
+                                              module.release_status <= stabilityTolerance
+                                                  ? InstalledLabel.Font.Style
+                                                  : InstalledLabel.Font.Style
+                                                    | PrereleaseLabel.Font.Style);
+                    }
+                    else if (module.release_status > stabilityTolerance)
+                    {
+                        toRet.Font = new Font(toRet.Font, PrereleaseLabel.Font.Style);
+                    }
+                    if (module.release_status > stabilityTolerance)
+                    {
+                        toRet.BackColor = PrereleaseLabel.BackColor;
                     }
                     if (module.Equals(gmod.SelectedMod))
                     {
@@ -239,7 +274,9 @@ namespace CKAN.GUI
             if (currentInstance != null && manager?.Cache != null
                 && user != null && cancelTokenSrc != null && visibleGuiModule != null)
             {
-                var registry  = RegistryManager.Instance(currentInstance, repoData).registry;
+                var stabilityTolerance = currentInstance.StabilityToleranceConfig.ModStabilityTolerance(visibleGuiModule.Identifier)
+                                         ?? currentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
                 ListViewItem? latestCompatible = null;
                 // Load balance the items so they're processed roughly in-order instead of blocks
                 Partitioner.Create(items, true)
@@ -254,7 +291,7 @@ namespace CKAN.GUI
                                             && (item.Tag as CkanModule) != visibleGuiModule.SelectedMod)
                            // Slow step to be performed across multiple cores
                            .Where(item => item.Tag is CkanModule m
-                                          && installable(m, registry))
+                                          && installable(m, registry, stabilityTolerance))
                            // Jump back to GUI thread for the updates for each compatible item
                            .ForAll(item => Util.Invoke(this, () =>
                            {
@@ -264,17 +301,17 @@ namespace CKAN.GUI
                                    if (latestCompatible != null)
                                    {
                                        // Revert color of previous best guess
-                                       latestCompatible.BackColor = Color.LightGreen;
-                                       latestCompatible.ForeColor = SystemColors.ControlText;
+                                       latestCompatible.BackColor = CompatibleLabel.BackColor;
+                                       latestCompatible.ForeColor = CompatibleLabel.ForeColor;
                                    }
                                    latestCompatible = item;
-                                   item.BackColor = Color.Green;
-                                   item.ForeColor = Color.White;
+                                   item.BackColor = LatestCompatibleLabel.BackColor;
+                                   item.ForeColor = LatestCompatibleLabel.ForeColor;
                                    VersionsListView.EndUpdate();
                                }
                                else
                                {
-                                   item.BackColor = Color.LightGreen;
+                                   item.BackColor = CompatibleLabel.BackColor;
                                }
                            }));
                 Util.Invoke(this, () => UseWaitCursor = false);
@@ -283,28 +320,84 @@ namespace CKAN.GUI
 
         private void Refresh(GUIMod gmod)
         {
-            // checkInstallable needs this to stop background threads on switch to another mod
-            cancelTokenSrc     = new CancellationTokenSource();
-            var startingModule = gmod;
-            var items          = getItems(gmod, getVersions(gmod));
-            Util.AsyncInvoke(this, () =>
+            if (currentInstance != null)
             {
-                VersionsListView.BeginUpdate();
-                VersionsListView.Items.Clear();
-                // Make sure user hasn't switched to another mod while we were loading
-                if (startingModule.Equals(visibleGuiModule))
+                // checkInstallable needs this to stop background threads on switch to another mod
+                cancelTokenSrc     = new CancellationTokenSource();
+                var startingModule = gmod;
+                var versions       = getVersions(gmod);
+                var items          = getItems(gmod, versions);
+                var stabilityTolerance = currentInstance.StabilityToleranceConfig.ModStabilityTolerance(gmod.Identifier)
+                                         ?? currentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
+                Util.AsyncInvoke(this, () =>
                 {
-                    // Only show checkboxes for non-DLC modules
-                    VersionsListView.CheckBoxes = !gmod.ToModule().IsDLC;
-                    ignoreItemCheck = true;
-                    VersionsListView.Items.AddRange(items);
-                    ignoreItemCheck = false;
-                    VersionsListView.EndUpdate();
-                    // Check installability in the background because it's slow
-                    UseWaitCursor = true;
-                    Task.Factory.StartNew(() => checkInstallable(items));
-                }
-            });
+                    UpdateStabilityToleranceComboBox(gmod);
+                    LabelTable.SuspendLayout();
+                    InstalledLabel.Visible = gmod.IsInstalled;
+                    PrereleaseLabel.Visible = versions.Any(m => m.release_status > stabilityTolerance);
+                    LabelTable.ResumeLayout();
+                    VersionsListView.BeginUpdate();
+                    VersionsListView.Items.Clear();
+                    // Make sure user hasn't switched to another mod while we were loading
+                    if (startingModule.Equals(visibleGuiModule))
+                    {
+                        // Only show checkboxes for non-DLC modules
+                        VersionsListView.CheckBoxes = !gmod.ToModule().IsDLC;
+                        ignoreItemCheck = true;
+                        VersionsListView.Items.AddRange(items);
+                        VersionsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                        VersionsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                        ignoreItemCheck = false;
+                        VersionsListView.EndUpdate();
+                        // Check installability in the background because it's slow
+                        UseWaitCursor = true;
+                        Task.Factory.StartNew(() => checkInstallable(items));
+                    }
+                });
+            }
+        }
+
+        private void UpdateStabilityToleranceComboBox(GUIMod gmod)
+        {
+            if (currentInstance != null)
+            {
+                StabilityToleranceComboBox.Items.Clear();
+                StabilityToleranceComboBox.Items.AddRange(
+                    Enumerable.Repeat((ReleaseStatus?)null, 1)
+                              .Concat(Enum.GetValues(typeof(ReleaseStatus))
+                                          .OfType<ReleaseStatus>()
+                                          .OrderBy(relStat => (int)relStat)
+                                          .OfType<ReleaseStatus?>())
+                              .Select(relStat => new ReleaseStatusItem(relStat))
+                              .ToArray());
+                StabilityToleranceComboBox.SelectedIndex =
+                    StabilityToleranceComboBox.Items
+                                              .OfType<ReleaseStatusItem>()
+                                              .Select(item => item.Value)
+                                              .ToList()
+                                              .IndexOf(currentInstance.StabilityToleranceConfig
+                                                                      .ModStabilityTolerance(gmod.Identifier));
+            }
+        }
+
+        private void StabilityToleranceComboBox_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // Don't change values on scroll
+            if (e is HandledMouseEventArgs me)
+            {
+                me.Handled = true;
+            }
+        }
+
+        private void StabilityToleranceComboBox_SelectionChanged(object? sender, EventArgs? e)
+        {
+            if (currentInstance != null && visibleGuiModule != null
+                && StabilityToleranceComboBox.SelectedItem is ReleaseStatusItem item)
+            {
+                var ident = visibleGuiModule.Identifier;
+                currentInstance.StabilityToleranceConfig.SetModStabilityTolerance(
+                    ident, item.Value);
+            }
         }
     }
 }

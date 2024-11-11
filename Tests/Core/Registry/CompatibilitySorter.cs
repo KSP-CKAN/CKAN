@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Configuration;
 using CKAN.Versioning;
 #if NET45
 using CKAN.Extensions;
@@ -86,11 +87,11 @@ namespace Tests.Core.Registry
                                         .GetAvailableModules(Enumerable.Repeat(repo1.repo, 1),
                                                              identifier)
                                         .First()
-                                        .Latest();
+                                        .Latest(ReleaseStatus.stable);
 
                 // Act
                 var sorter = new CompatibilitySorter(
-                    versCrit,
+                    new StabilityToleranceConfig(""), versCrit,
                     repoData.Manager.GetAllAvailDicts(repos),
                     providers, installed, dlls, dlcs);
 

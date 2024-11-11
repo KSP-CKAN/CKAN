@@ -27,6 +27,7 @@ namespace CKAN.GUI
                     modules.Select(mod => new ModChange(mod, GUIModChangeType.Install))
                            .ToHashSet(),
                     CurrentInstance.game,
+                    CurrentInstance.StabilityToleranceConfig,
                     CurrentInstance.VersionCriteria());
                 UpdateChangesDialog(tuple.Item1.ToList(), tuple.Item2);
                 tabController.ShowTab("ChangesetTabPage", 1);
@@ -48,6 +49,7 @@ namespace CKAN.GUI
                     ? null
                     : new GUIMod(m, repoData,
                                  RegistryManager.Instance(CurrentInstance, repoData).registry,
+                                 CurrentInstance.StabilityToleranceConfig,
                                  CurrentInstance.VersionCriteria(),
                                  null,
                                  configuration?.HideEpochs ?? false,

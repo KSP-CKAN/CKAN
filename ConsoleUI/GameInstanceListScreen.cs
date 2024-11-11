@@ -210,7 +210,7 @@ namespace CKAN.ConsoleUI {
                     var regMgr = RegistryManager.Instance(ksp, repoData);
                     repoData.Prepopulate(regMgr.registry.Repositories.Values.ToList(),
                                          progress);
-                    var compat = regMgr.registry.CompatibleModules(ksp.VersionCriteria());
+                    var compat = regMgr.registry.CompatibleModules(ksp.StabilityToleranceConfig, ksp.VersionCriteria());
 
                 } catch (RegistryInUseKraken k) {
 

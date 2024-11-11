@@ -30,7 +30,7 @@ namespace CKAN.NetKAN.Transformers
                                  string?        githubToken,
                                  string?        gitlabToken,
                                  string?        userAgent,
-                                 bool           prerelease,
+                                 bool?          prerelease,
                                  IGame          game,
                                  IValidator     validator)
         {

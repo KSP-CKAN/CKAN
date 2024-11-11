@@ -4,6 +4,7 @@ using NUnit.Framework;
 using Tests.Data;
 
 using CKAN;
+using CKAN.Configuration;
 using CKAN.Versioning;
 
 namespace Tests.Core.Registry
@@ -32,7 +33,7 @@ namespace Tests.Core.Registry
                 registry.RepositoriesAdd(repo);
 
                 var module =
-                    registry.LatestAvailable("AGExt", new GameVersionCriteria(temp_ksp.KSP.Version()));
+                    registry.LatestAvailable("AGExt", new StabilityToleranceConfig(""), new GameVersionCriteria(temp_ksp.KSP.Version()));
 
                 Assert.AreEqual("AGExt", module?.identifier);
                 Assert.AreEqual("1.24a", module?.version.ToString());

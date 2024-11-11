@@ -147,19 +147,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <returns>
         /// X coordinate of left edge of dialog
         /// </returns>
-        protected int GetLeft()   { return Formatting.ConvertCoord(left,   Console.WindowWidth);  }
+        protected int GetLeft()   => Formatting.ConvertCoord(left,   Console.WindowWidth);
         /// <returns>
         /// Y coordinate of top edge of dialog
         /// </returns>
-        protected int GetTop()    { return Formatting.ConvertCoord(top,    Console.WindowHeight); }
+        protected int GetTop()    => Formatting.ConvertCoord(top,    Console.WindowHeight);
         /// <returns>
         /// X coordinate of right edge of dialog
         /// </returns>
-        protected int GetRight()  { return Formatting.ConvertCoord(right,  Console.WindowWidth);  }
+        protected int GetRight()  => Formatting.ConvertCoord(right,  Console.WindowWidth);
         /// <returns>
         /// Y coordinate of bottom edge of dialog
         /// </returns>
-        protected int GetBottom() { return Formatting.ConvertCoord(bottom, Console.WindowHeight); }
+        protected int GetBottom() => Formatting.ConvertCoord(bottom, Console.WindowHeight);
 
         /// <summary>
         /// Draw the UI element
@@ -171,7 +171,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// <summary>
         /// Return whether the UI element can accept focus
         /// </summary>
-        public virtual bool Focusable() { return true; }
+        public virtual bool Focusable() => true;
         /// <summary>
         /// Place focus based on the UI element's positioning
         /// </summary>

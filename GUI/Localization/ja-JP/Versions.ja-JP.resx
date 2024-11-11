@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="OverallSummaryLabel.Text" xml:space="preserve">
     <value>このModの全てのバージョン</value>
   </data>
   <data name="ModVersion.Text" xml:space="preserve">
@@ -129,22 +129,13 @@
   <data name="ReleaseDate.Text" xml:space="preserve">
     <value>リリース日時</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>緑</value>
+  <data name="LatestCompatibleLabel.Text" xml:space="preserve">
+    <value>最新の対応するバージョン (推奨)</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>黄緑</value>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>現在インストールされているゲームに対応するバージョン</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>太字</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>- 最新の対応するバージョン (推奨)</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>- 現在インストールされているゲームに対応するバージョン</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>- 現在インストールされているバージョン</value>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>現在インストールされているバージョン</value>
   </data>
 </root>

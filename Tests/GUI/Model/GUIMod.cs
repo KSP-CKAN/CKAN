@@ -22,6 +22,7 @@ namespace Tests.GUI
     [TestFixture]
     public class GUIModTests
     {
+
         [Test]
         public void NewGuiModsAreNotSelectedForUpgrade()
         {
@@ -38,7 +39,7 @@ namespace Tests.GUI
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("kOS", "0.14");
 
-                var mod = new GUIMod(ckan_mod!, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                var mod = new GUIMod(ckan_mod!, repoData.Manager, registry, manager.CurrentInstance.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
                                      null, false, false);
                 Assert.True(mod.SelectedMod == mod.InstalledMod?.Module);
             }
@@ -67,7 +68,7 @@ namespace Tests.GUI
                     var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP,
                                                                       new HashSet<string>());
 
-                    var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
+                    var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                          null, false, false)
                     {
                         HasUpdate = upgradeableGroups[true].Any(m => m.identifier == old_version.identifier),
@@ -108,7 +109,7 @@ namespace Tests.GUI
                 var prevVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.1.0");
 
                 // Act
-                GUIMod m = new GUIMod(mainVersion!, repoData.Manager, registry, tidy.KSP.VersionCriteria(),
+                GUIMod m = new GUIMod(mainVersion!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                       null, false, false);
 
                 // Assert

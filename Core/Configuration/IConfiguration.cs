@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -71,5 +72,7 @@ namespace CKAN.Configuration
         /// true if user wants to use nightly builds from S3, false to use releases from GitHub
         /// </summary>
         bool? DevBuilds { get; set; }
+
+        event PropertyChangedEventHandler? PropertyChanged;
     }
 }

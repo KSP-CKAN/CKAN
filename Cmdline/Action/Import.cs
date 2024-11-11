@@ -60,7 +60,7 @@ namespace CKAN.CmdLine
                     {
                         HashSet<string>? possibleConfigOnlyDirs = null;
                         installer.InstallList(toInstall,
-                                              new RelationshipResolverOptions(),
+                                              new RelationshipResolverOptions(instance.StabilityToleranceConfig),
                                               regMgr,
                                               ref possibleConfigOnlyDirs,
                                               opts?.NetUserAgent);

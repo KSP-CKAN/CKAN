@@ -9,7 +9,6 @@ using Autofac;
 
 using CKAN.Configuration;
 using CKAN.Versioning;
-using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
 {
@@ -40,17 +39,11 @@ namespace CKAN.GUI
                     {
                         ModInfoTabControl.Enabled = true;
                         UpdateHeaderInfo(value, crit);
-                        LoadTab(value);
                     }
+                    LoadTab(value);
                 }
             }
             get => selectedModule;
-        }
-
-        [ForbidGUICalls]
-        public void RefreshModContentsTree()
-        {
-            Contents.RefreshModContentsTree();
         }
 
         public void SwitchTab(string name)
@@ -77,12 +70,15 @@ namespace CKAN.GUI
 
         private GUIMod? selectedModule;
 
-        private void LoadTab(GUIMod gm)
+        private void LoadTab(GUIMod? gm)
         {
             switch (ModInfoTabControl.SelectedTab?.Name)
             {
                 case "MetadataTabPage":
-                    Metadata.UpdateModInfo(gm);
+                    if (gm != null)
+                    {
+                        Metadata.UpdateModInfo(gm);
+                    }
                     break;
 
                 case "ContentTabPage":

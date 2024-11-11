@@ -76,6 +76,7 @@ namespace CKAN.GUI
             UpdateRefreshRate();
 
             UpdateCacheInfo(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
+            UpdateStabilityToleranceComboBox();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)
@@ -775,6 +776,42 @@ namespace CKAN.GUI
         private void AutoSortUpdateCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             guiConfig.AutoSortByUpdate = AutoSortUpdateCheckBox.Checked;
+        }
+
+        private void UpdateStabilityToleranceComboBox()
+        {
+            StabilityToleranceComboBox.Items.Clear();
+            StabilityToleranceComboBox.Items.AddRange(Enum.GetValues(typeof(ReleaseStatus))
+                                                          .OfType<ReleaseStatus>()
+                                                          .OrderBy(relStat => (int)relStat)
+                                                          .Select(relStat => new ReleaseStatusItem(relStat))
+                                                          .ToArray());
+            if (manager?.CurrentInstance != null)
+            {
+                StabilityToleranceComboBox.SelectedIndex = (int)manager.CurrentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
+            }
+        }
+
+        public bool StabilityToleranceChanged { get; private set; } = false;
+
+        private void StabilityToleranceComboBox_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // Don't change values on scroll
+            if (e is HandledMouseEventArgs me)
+            {
+                me.Handled = true;
+            }
+        }
+
+        private void StabilityToleranceComboBox_SelectionChanged(object? sender, EventArgs? e)
+        {
+            if (manager?.CurrentInstance != null
+                && StabilityToleranceComboBox.SelectedItem is ReleaseStatusItem item
+                && item.Value is ReleaseStatus relStat)
+            {
+                manager.CurrentInstance.StabilityToleranceConfig.OverallStabilityTolerance = relStat;
+                StabilityToleranceChanged = true;
+            }
         }
 
         #endregion
