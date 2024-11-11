@@ -26,8 +26,8 @@ namespace CKAN
         /// <param name="dlc">Collection of installed DLCs</param>
         public CompatibilitySorter(GameVersionCriteria                              crit,
                                    IEnumerable<Dictionary<string, AvailableModule>> available,
-                                   Dictionary<string, HashSet<AvailableModule>>     providers,
-                                   Dictionary<string, InstalledModule>              installed,
+                                   IDictionary<string, HashSet<AvailableModule>>    providers,
+                                   IDictionary<string, InstalledModule>             installed,
                                    ICollection<string>                              dlls,
                                    IDictionary<string, ModuleVersion>               dlc)
         {
@@ -103,9 +103,9 @@ namespace CKAN
             }
         }
 
-        private readonly Dictionary<string, InstalledModule> installed;
-        private readonly ICollection<string>                 dlls;
-        private readonly IDictionary<string, ModuleVersion>  dlc;
+        private readonly IDictionary<string, InstalledModule> installed;
+        private readonly ICollection<string>                  dlls;
+        private readonly IDictionary<string, ModuleVersion>   dlc;
 
         private List<CkanModule>? latestCompatible;
         private List<CkanModule>? latestIncompatible;
@@ -119,8 +119,8 @@ namespace CKAN
         /// Mapping from identifiers to compatible mods providing those identifiers
         /// </returns>
         private static Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
-            GameVersionCriteria                          crit,
-            Dictionary<string, HashSet<AvailableModule>> providers)
+            GameVersionCriteria                           crit,
+            IDictionary<string, HashSet<AvailableModule>> providers)
             => providers
                 .AsParallel()
                 .Select(kvp => new KeyValuePair<string, HashSet<AvailableModule>>(

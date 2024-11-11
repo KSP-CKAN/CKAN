@@ -42,11 +42,11 @@ namespace CKAN
 
         [JsonProperty]
         [JsonConverter(typeof(JsonParallelDictionaryConverter<InstalledModule>))]
-        private readonly Dictionary<string, InstalledModule> installed_modules;
+        private readonly IDictionary<string, InstalledModule> installed_modules;
 
         // filename (case insensitive on Windows) => module
         [JsonProperty]
-        private Dictionary<string, string> installed_files;
+        private IDictionary<string, string> installed_files;
 
         /// <summary>
         /// Returns all the activated registries.
@@ -55,9 +55,8 @@ namespace CKAN
         /// </summary>
         [JsonIgnore]
         public ReadOnlyDictionary<string, Repository> Repositories
-            => repositories is not null
-                ? new ReadOnlyDictionary<string, Repository>(repositories)
-                : new ReadOnlyDictionary<string, Repository>(new Dictionary<string, Repository>());
+            => new ReadOnlyDictionary<string, Repository>(repositories
+                                                          ?? new SortedDictionary<string, Repository>());
 
         /// <summary>
         /// Wrapper around assignment to this.repositories that invalidates
@@ -342,9 +341,9 @@ namespace CKAN
         }
 
         public Registry(RepositoryDataManager?               repoData,
-                        Dictionary<string, InstalledModule>  installed_modules,
+                        IDictionary<string, InstalledModule> installed_modules,
                         Dictionary<string, string>           installed_dlls,
-                        Dictionary<string, string>           installed_files,
+                        IDictionary<string, string>          installed_files,
                         SortedDictionary<string, Repository> repositories)
             : this(repoData)
         {
@@ -857,8 +856,9 @@ namespace CKAN
                 installed_files[file] = mod.identifier;
             }
 
-            // Make sure mod-owned files aren't in the manually installed DLL dict
-            installed_dlls.RemoveWhere(kvp => relativeFiles.Contains(kvp.Value));
+            // Make sure this mod and its files aren't in the manually installed DLL dict
+            installed_dlls.RemoveWhere(kvp => kvp.Key == mod.identifier
+                                              || relativeFiles.Contains(kvp.Value));
 
             // Finally register our module proper
             installed_modules.Add(mod.identifier,
@@ -916,9 +916,12 @@ namespace CKAN
         /// Does nothing if we already have this data.
         /// </summary>
         /// <param name="dlls">Mapping from identifier to relative path</param>
-        public bool SetDlls(Dictionary<string, string> dlls)
+        public bool SetDlls(IDictionary<string, string> dlls)
         {
-            var unregistered = dlls.Where(kvp => !installed_files.ContainsKey(kvp.Value))
+            var instIdents = InstalledModules.Select(im => im.identifier)
+                                             .ToHashSet();
+            var unregistered = dlls.Where(kvp => !instIdents.Contains(kvp.Key)
+                                                 && !installed_files.ContainsKey(kvp.Value))
                                    .ToDictionary();
             if (!unregistered.DictionaryEquals(installed_dlls))
             {
@@ -930,7 +933,7 @@ namespace CKAN
             return false;
         }
 
-        public bool SetDlcs(Dictionary<string, ModuleVersion> dlcs)
+        public bool SetDlcs(IDictionary<string, ModuleVersion> dlcs)
         {
             var installed = InstalledDlc;
             if (!dlcs.DictionaryEquals(installed))

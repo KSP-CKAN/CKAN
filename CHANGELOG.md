@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix skipping failed dependency downloads (#4235 by: HebaruSan)
 - [Core] Fix reporting of wrong download as failed (#4236 by: HebaruSan)
 - [Core] Exclude DLLs being upgraded to full modules (#4250 by: HebaruSan)
+- [Core] Ignore manually installed duplicates of installed modules (#4257 by: HebaruSan)
 
 ### Internal
 
