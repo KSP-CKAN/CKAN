@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Start installing mods while downloads are still in progress (#4249, #4255 by: HebaruSan)
 - [Multiple] Sort dependencies first in modpacks (#4252 by: HebaruSan)
 - [Multiple] Allow installs and removals to be cancelled (#4253 by: HebaruSan)
+- [CLI] Include `supports` relationship in `ckan show` (#4262 by: HebaruSan)
 
 ### Bugfixes
 

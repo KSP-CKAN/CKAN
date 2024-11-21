@@ -217,7 +217,7 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage(Properties.Resources.ShowDependsHeader);
-                    foreach (RelationshipDescriptor dep in module.depends)
+                    foreach (var dep in module.depends)
                     {
                         user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
                     }
@@ -227,9 +227,9 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage(Properties.Resources.ShowRecommendsHeader);
-                    foreach (RelationshipDescriptor dep in module.recommends)
+                    foreach (var rec in module.recommends)
                     {
-                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(rec));
                     }
                 }
 
@@ -237,9 +237,19 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage(Properties.Resources.ShowSuggestsHeader);
-                    foreach (RelationshipDescriptor dep in module.suggests)
+                    foreach (var sug in module.suggests)
                     {
-                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(dep));
+                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(sug));
+                    }
+                }
+
+                if (module.supports != null && module.supports.Count > 0)
+                {
+                    user.RaiseMessage("");
+                    user.RaiseMessage(Properties.Resources.ShowSupportsHeader);
+                    foreach (var sup in module.supports)
+                    {
+                        user.RaiseMessage("  - {0}", RelationshipToPrintableString(sup));
                     }
                 }
 
@@ -247,7 +257,7 @@ namespace CKAN.CmdLine
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage(Properties.Resources.ShowProvidesHeader);
-                    foreach (string prov in module.provides)
+                    foreach (var prov in module.provides)
                     {
                         user.RaiseMessage("  - {0}", prov);
                     }
