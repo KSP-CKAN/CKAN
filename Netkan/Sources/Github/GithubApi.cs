@@ -40,7 +40,7 @@ namespace CKAN.NetKAN.Sources.Github
 
         // https://raw.githubusercontent.com/<OWNER>/<REPO>/<BRANCH>/<PATH>
         private static readonly Regex githubUserContentUrlRegex =
-            new Regex(@"^/(?<owner>[^/]+)/(?<repo>[^/]+)/(?<branch>[^/]+)/(?<path>.+)$",
+            new Regex(@"^/(?<owner>[^/]+)/(?<repo>[^/]+)/(refs/heads/)?(?<branch>[^/]+)/(?<path>.+)$",
                       RegexOptions.Compiled);
 
         public GithubApi(IHttpService http, string? oauthToken = null)
@@ -115,7 +115,8 @@ namespace CKAN.NetKAN.Sources.Github
                                       out string? ghBranch,
                                       out string? ghPath))
             {
-                Log.Info("Found GitHub URL, retrieving with API");
+                Log.InfoFormat("Found GitHub URL, retrieving with API: {0} {1} {2} {3}",
+                               ghOwner, ghRepo, ghBranch, ghPath);
                 return Call(
                     $"repos/{ghOwner}/{ghRepo}/contents/{ghPath}?ref={ghBranch}",
                     rawMediaType);
