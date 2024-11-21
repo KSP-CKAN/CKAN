@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix reporting of wrong download as failed (#4236 by: HebaruSan)
 - [Core] Exclude DLLs being upgraded to full modules (#4250 by: HebaruSan)
 - [Core] Ignore manually installed duplicates of installed modules (#4257 by: HebaruSan)
+- [Core] Exclude dependencies in the changeset from supported by list (#4261 by: HebaruSan)
 
 ### Internal
 
