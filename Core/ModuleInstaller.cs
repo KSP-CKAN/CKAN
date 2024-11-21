@@ -1623,8 +1623,8 @@ namespace CKAN
 
             var opts = RelationshipResolverOptions.DependsOnlyOpts();
             supporters = resolver.Supporters(recommenders,
-                                             toInstall.Concat(recommendations.Keys)
-                                                      .Concat(suggestions.Keys))
+                                             recommenders.Concat(recommendations.Keys)
+                                                         .Concat(suggestions.Keys))
                                  .Where(kvp => CanInstall(toInstall.Append(kvp.Key).ToList(),
                                                           opts, registry, instance.game, crit))
                                  .ToDictionary();
