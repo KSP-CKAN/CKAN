@@ -345,6 +345,7 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="ShowDependsHeader" xml:space="preserve"><value>Depends:</value></data>
   <data name="ShowRecommendsHeader" xml:space="preserve"><value>Recommends:</value></data>
   <data name="ShowSuggestsHeader" xml:space="preserve"><value>Suggests:</value></data>
+  <data name="ShowSupportsHeader" xml:space="preserve"><value>Supports:</value></data>
   <data name="ShowProvidesHeader" xml:space="preserve"><value>Provides:</value></data>
   <data name="ShowResourcesHeader" xml:space="preserve"><value>Resources:</value></data>
   <data name="ShowHomePage" xml:space="preserve"><value>  Home page:	{0}</value></data>
