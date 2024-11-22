@@ -173,7 +173,7 @@ namespace CKAN
 
         public override bool Unsatisfied()
             => reason is SelectionReason.Depends
-               && resolved.Keys.Count(m => !m.IsDLC) == 0;
+               && !resolved.Keys.Any(m => !m.IsDLC);
 
         public override bool Unsatisfied(ICollection<CkanModule> installing)
             => reason is SelectionReason.Depends

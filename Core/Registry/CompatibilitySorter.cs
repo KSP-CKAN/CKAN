@@ -26,7 +26,7 @@ namespace CKAN
         /// <param name="dlc">Collection of installed DLCs</param>
         public CompatibilitySorter(GameVersionCriteria                              crit,
                                    IEnumerable<Dictionary<string, AvailableModule>> available,
-                                   IDictionary<string, HashSet<AvailableModule>>    providers,
+                                   IDictionary<string, AvailableModule[]>           providers,
                                    IDictionary<string, InstalledModule>             installed,
                                    ICollection<string>                              dlls,
                                    IDictionary<string, ModuleVersion>               dlc)
@@ -119,8 +119,8 @@ namespace CKAN
         /// Mapping from identifiers to compatible mods providing those identifiers
         /// </returns>
         private static Dictionary<string, HashSet<AvailableModule>> CompatibleProviders(
-            GameVersionCriteria                           crit,
-            IDictionary<string, HashSet<AvailableModule>> providers)
+            GameVersionCriteria                    crit,
+            IDictionary<string, AvailableModule[]> providers)
             => providers
                 .AsParallel()
                 .Select(kvp => new KeyValuePair<string, HashSet<AvailableModule>>(

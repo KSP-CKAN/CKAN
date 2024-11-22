@@ -527,7 +527,7 @@ namespace CKAN
         //   providers[provided] = { provider1, provider2, ... }
         // Built by BuildProvidesIndex, makes LatestAvailableWithProvides much faster.
         [JsonIgnore]
-        private Dictionary<string, HashSet<AvailableModule>>? providers;
+        private Dictionary<string, AvailableModule[]>? providers;
 
         [JsonIgnore]
         private IDictionary<string, ModuleVersion>? installedDlc;
@@ -701,7 +701,7 @@ namespace CKAN
         /// Generate the providers index so we can find providing modules quicker
         /// </summary>
         [MemberNotNull(nameof(providers))]
-        private Dictionary<string, HashSet<AvailableModule>> BuildProvidesIndex()
+        private Dictionary<string, AvailableModule[]> BuildProvidesIndex()
             => providers = (repoDataMgr?.GetAllAvailableModules(Repositories.Values)
                                        ?? Enumerable.Empty<AvailableModule>())
                                         .SelectMany(am => am.AllAvailable()
@@ -711,7 +711,7 @@ namespace CKAN
                                         .GroupBy(tuple => tuple.provided,
                                                  tuple => tuple.am)
                                         .ToDictionary(grp => grp.Key,
-                                                      grp => grp.ToHashSet());
+                                                      grp => grp.ToArray());
 
         [JsonIgnore]
         public Dictionary<string, ModuleTag> Tags
@@ -770,8 +770,8 @@ namespace CKAN
 
         public IEnumerable<AvailableModule> AllAvailableByProvides(string identifier)
             => (providers ?? BuildProvidesIndex())
-                    is Dictionary<string, HashSet<AvailableModule>> allProvs
-                && allProvs.TryGetValue(identifier, out HashSet<AvailableModule>? provs)
+                    is Dictionary<string, AvailableModule[]> allProvs
+                && allProvs.TryGetValue(identifier, out AvailableModule[]? provs)
                     ? provs
                     : Enumerable.Empty<AvailableModule>();
 
@@ -784,13 +784,14 @@ namespace CKAN
                                                             ICollection<CkanModule>? installed    = null,
                                                             ICollection<CkanModule>? toInstall    = null)
             => ((providers ?? BuildProvidesIndex())
-                    is Dictionary<string, HashSet<AvailableModule>> allProvs
+                    is Dictionary<string, AvailableModule[]> allProvs
                 && Repositories.Values.ToArray() is Repository[] repos
-                && allProvs.TryGetValue(identifier, out HashSet<AvailableModule>? provs)
+                && allProvs.TryGetValue(identifier, out AvailableModule[]? provs)
                     // For each AvailableModule, we want the latest one matching our constraints
                     ? provs.Select(am => am.Latest(gameVersion, relationship, installed, toInstall))
                            .OfType<CkanModule>()
                            .Where(m => m.ProvidesList.Contains(identifier))
+                           .Distinct()
                            // Put the most popular one on top
                            .OrderByDescending(m => repoDataMgr?.GetDownloadCount(repos, m.identifier)
                                                               ?? 0)

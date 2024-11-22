@@ -78,7 +78,7 @@ namespace Tests.Core.Registry
                                         .GetAllAvailableModules(repos)
                                         .GroupBy(am => am.AllAvailable().First().identifier)
                                         .ToDictionary(grp => grp.Key,
-                                                      grp => grp.ToHashSet());
+                                                      grp => grp.ToArray());
                 var installed = new Dictionary<string, InstalledModule>();
                 var dlls      = new Dictionary<string, string>().Keys;
                 var dlcs      = new Dictionary<string, ModuleVersion>();
