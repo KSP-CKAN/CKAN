@@ -89,8 +89,9 @@ namespace CKAN.CmdLine
                                                         (options?.allow_incompatible ?? false)
                                                             ? null
                                                             : crit)
-                                                    ?? registry.LatestAvailable(arg, crit,
-                                                                                null, installed)
+                                                    ?? registry.LatestAvailable(arg,
+                                                                                instance.StabilityToleranceConfig,
+                                                                                crit, null, installed)
                                                     ?? registry.InstalledModule(arg)?.Module)
                                      .OfType<CkanModule>()
                                      .ToList();
@@ -102,7 +103,7 @@ namespace CKAN.CmdLine
             }
 
             var installer   = new ModuleInstaller(instance, manager.Cache, user, options?.NetUserAgent);
-            var install_ops = new RelationshipResolverOptions
+            var install_ops = new RelationshipResolverOptions(instance.StabilityToleranceConfig)
             {
                 with_all_suggests              = options?.with_all_suggests ?? false,
                 with_suggests                  = options?.with_suggests ?? false,

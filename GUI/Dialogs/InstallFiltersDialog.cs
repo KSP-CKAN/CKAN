@@ -50,12 +50,15 @@ namespace CKAN.GUI
 
         private void InstallFiltersDialog_Closing(object? sender, CancelEventArgs? e)
         {
-            var newGlobal = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+            var newGlobal   = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             var newInstance = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             Changed = !globalConfig.GlobalInstallFilters.SequenceEqual(newGlobal)
                       || !instance.InstallFilters.SequenceEqual(newInstance);
-            globalConfig.GlobalInstallFilters = newGlobal;
-            instance.InstallFilters = newInstance;
+            if (Changed)
+            {
+                globalConfig.GlobalInstallFilters = newGlobal;
+                instance.InstallFilters           = newInstance;
+            }
         }
 
         private void AddMiniAVCButton_Click(object? sender, EventArgs? e)

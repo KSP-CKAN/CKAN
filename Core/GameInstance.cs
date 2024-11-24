@@ -11,6 +11,7 @@ using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
 
+using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Versioning;
 
@@ -207,6 +208,14 @@ namespace CKAN
         }
 
         private string InstallFiltersFile => Path.Combine(CkanDir(), "install_filters.json");
+
+        public StabilityToleranceConfig StabilityToleranceConfig
+            => stabilityToleranceConfig ??= new StabilityToleranceConfig(StabilityToleranceFile);
+
+        private StabilityToleranceConfig? stabilityToleranceConfig;
+
+        private string StabilityToleranceFile
+            => Path.Combine(CkanDir(), "stability_tolerance.json");
 
         #endregion
 

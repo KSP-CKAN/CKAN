@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="OverallSummaryLabel.Text" xml:space="preserve">
     <value>Alle beschikbare versies van de geselecteerde mod</value>
   </data>
   <data name="ModVersion.Text" xml:space="preserve">
@@ -129,22 +129,13 @@
   <data name="ReleaseDate.Text" xml:space="preserve">
     <value>Release datum</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Groen</value>
+  <data name="LatestCompatibleLabel.Text" xml:space="preserve">
+    <value>nieuwste compatibele versie (waarschijnlijk geïnstalleerd)</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Lichtgroen</value>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>versie is compatibel met je spel</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>Dikgedrukt</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>- nieuwste compatibele versie (waarschijnlijk geïnstalleerd)</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>- versie is compatibel met je spel</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>- momenteel geïnstalleerde versie</value>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>momenteel geïnstalleerde versie</value>
   </data>
 </root>

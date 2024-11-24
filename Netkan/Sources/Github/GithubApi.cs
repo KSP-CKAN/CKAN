@@ -54,10 +54,14 @@ namespace CKAN.NetKAN.Sources.Github
                    ? JsonConvert.DeserializeObject<GithubRepo>(s)
                    : null;
 
-        public GithubRelease? GetLatestRelease(GithubRef reference)
-            => GetAllReleases(reference).FirstOrDefault();
+        public GithubRelease? GetLatestRelease(GithubRef reference, bool? usePrerelease)
+            => GetAllReleases(reference, usePrerelease).FirstOrDefault();
 
-        public IEnumerable<GithubRelease> GetAllReleases(GithubRef reference)
+        private static bool ReleaseTypeMatches(bool? UsePrerelease, bool isPreRelease)
+            => !UsePrerelease.HasValue
+               || UsePrerelease.Value == isPreRelease;
+
+        public IEnumerable<GithubRelease> GetAllReleases(GithubRef reference, bool? usePrerelease)
         {
             const int perPage = 10;
             for (int page = 1; true; ++page)
@@ -76,13 +80,10 @@ namespace CKAN.NetKAN.Sources.Github
                 }
                 var ghReleases = jsonReleases
                     .Select(rel => new GithubRelease(reference, rel))
-                    .Where(ghRel =>
-                        // Finding the most recent *stable* release means filtering
-                        // out on pre-releases.
-                        ghRel.PreRelease == reference.UsePrerelease
-                        // Skip releases without assets
-                        && ghRel.Assets != null
-                        && ghRel.Assets.Count != 0)
+                    .Where(ghRel => ReleaseTypeMatches(usePrerelease, ghRel.PreRelease)
+                                    // Skip releases without assets
+                                    && ghRel.Assets != null
+                                    && ghRel.Assets.Count != 0)
                     // Insurance against GitHub returning them in the wrong order
                     .OrderByDescending(ghRel => ghRel.PublishedAt)
                     .ToList();

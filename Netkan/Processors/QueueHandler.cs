@@ -31,7 +31,7 @@ namespace CKAN.NetKAN.Processors
                             string? githubToken,
                             string? gitlabToken,
                             string? userAgent,
-                            bool    prerelease,
+                            bool?   prerelease,
                             IGame   game)
         {
             this.outputDir = outputDir;

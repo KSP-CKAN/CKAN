@@ -185,7 +185,7 @@ namespace CKAN.CmdLine
             CKAN.GameInstance inst = MainClass.GetGameInstance(manager);
             return RegistryManager.Instance(inst, repoData)
                                   .registry
-                                  .CompatibleModules(inst.VersionCriteria())
+                                  .CompatibleModules(inst.StabilityToleranceConfig, inst.VersionCriteria())
                                   .Where(m => !m.IsDLC)
                                   .Select(m => m.identifier)
                                   .Where(ident => ident.StartsWith(prefix,

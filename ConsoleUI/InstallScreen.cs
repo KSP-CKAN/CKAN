@@ -4,6 +4,7 @@ using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
 
+using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -60,12 +61,13 @@ namespace CKAN.ConsoleUI {
 
                             var regMgr   = RegistryManager.Instance(manager.CurrentInstance, repoData);
                             var registry = regMgr.registry;
+                            var stabilityTolerance = manager.CurrentInstance.StabilityToleranceConfig;
 
                             // GUI prompts user to choose recs/sugs,
                             // CmdLine assumes recs and ignores sugs
                             if (plan.Install.Count > 0) {
                                 // Track previously rejected optional dependencies and don't prompt for them again.
-                                DependencyScreen ds = new DependencyScreen(theme, manager, registry, userAgent, plan, rejected, debug);
+                                DependencyScreen ds = new DependencyScreen(theme, manager, manager.CurrentInstance, registry, userAgent, plan, rejected, debug);
                                 if (ds.HaveOptions()) {
                                     LaunchSubScreen(ds);
                                 }
@@ -85,7 +87,7 @@ namespace CKAN.ConsoleUI {
                             if (plan.Install.Count > 0) {
                                 var iList = plan.Install
                                                 .Select(m => Utilities.DefaultIfThrows(() =>
-                                                                 registry.LatestAvailable(m.identifier,
+                                                                 registry.LatestAvailable(m.identifier, stabilityTolerance,
                                                                                           manager.CurrentInstance.VersionCriteria(),
                                                                                           null,
                                                                                           registry.InstalledModules
@@ -94,7 +96,7 @@ namespace CKAN.ConsoleUI {
                                                                                           plan.Install))
                                                              ?? m)
                                                 .ToArray();
-                                inst.InstallList(iList, resolvOpts, regMgr, ref possibleConfigOnlyDirs, userAgent, dl);
+                                inst.InstallList(iList, resolvOpts(stabilityTolerance), regMgr, ref possibleConfigOnlyDirs, userAgent, dl);
                                 plan.Install.Clear();
                             }
                             if (plan.Upgrade.Count > 0) {
@@ -109,7 +111,7 @@ namespace CKAN.ConsoleUI {
                                 plan.Upgrade.Clear();
                             }
                             if (plan.Replace.Count > 0) {
-                                inst.Replace(AllReplacements(plan.Replace), resolvOpts, dl, ref possibleConfigOnlyDirs, regMgr, true);
+                                inst.Replace(AllReplacements(plan.Replace), resolvOpts(stabilityTolerance), dl, ref possibleConfigOnlyDirs, regMgr, true);
                             }
 
                             trans.Complete();
@@ -214,7 +216,8 @@ namespace CKAN.ConsoleUI {
 
                 foreach (string id in identifiers) {
                     var repl = registry.GetReplacement(
-                        id, manager.CurrentInstance.VersionCriteria());
+                        id, manager.CurrentInstance.StabilityToleranceConfig,
+                        manager.CurrentInstance.VersionCriteria());
                     if (repl != null) {
                         yield return repl;
                     }
@@ -222,7 +225,8 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private static readonly RelationshipResolverOptions resolvOpts = new RelationshipResolverOptions() {
+        private static RelationshipResolverOptions resolvOpts(StabilityToleranceConfig stabTolCfg)
+            => new RelationshipResolverOptions(stabTolCfg) {
             with_all_suggests              = false,
             with_suggests                  = false,
             with_recommends                = false,

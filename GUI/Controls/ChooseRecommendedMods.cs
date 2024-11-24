@@ -133,7 +133,8 @@ namespace CKAN.GUI
 
         private void MarkConflicts()
         {
-            if (registry != null && versionCrit != null && game != null)
+            if (registry != null && versionCrit != null && game != null
+                && Main.Instance?.CurrentInstance is GameInstance inst)
             {
                 try
                 {
@@ -145,7 +146,8 @@ namespace CKAN.GUI
                                                .Concat(toInstall)
                                                .Distinct(),
                         toUninstall,
-                        RelationshipResolverOptions.ConflictsOpts(), registry, game, versionCrit);
+                        RelationshipResolverOptions.ConflictsOpts(inst.StabilityToleranceConfig),
+                        registry, game, versionCrit);
                     var conflicts = resolver.ConflictList;
                     foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
                         // Apparently ListView handes AddRange by:

@@ -66,6 +66,7 @@ namespace CKAN.GUI
 
                 // Note the current mods' compatibility for the NewlyCompatible filter
                 var registry = regMgr.registry;
+                var stabilityTolerance = CurrentInstance.StabilityToleranceConfig;
 
                 var cancelTokenSrc = new CancellationTokenSource();
                 Wait.OnCancel += cancelTokenSrc.Cancel;
@@ -78,9 +79,9 @@ namespace CKAN.GUI
                     new ProgressImmediate<int>(p => currentUser.RaiseProgress(Properties.Resources.LoadingCachedRepoData, p)));
 
                 var versionCriteria = CurrentInstance.VersionCriteria();
-                var oldModules = registry.CompatibleModules(versionCriteria)
+                var oldModules = registry.CompatibleModules(stabilityTolerance, versionCriteria)
                                          .ToDictionary(m => m.identifier, m => false);
-                registry.IncompatibleModules(versionCriteria)
+                registry.IncompatibleModules(stabilityTolerance, versionCriteria)
                         .Where(m => !oldModules.ContainsKey(m.identifier))
                         .ToList()
                         .ForEach(m => oldModules.Add(m.identifier, true));

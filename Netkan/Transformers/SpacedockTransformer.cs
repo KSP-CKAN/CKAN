@@ -87,7 +87,8 @@ namespace CKAN.NetKAN.Transformers
 
             json.SafeAdd("name", sdMod.name);
             json.SafeAdd("abstract", sdMod.short_description);
-            json.SafeAdd("version", latestVersion.friendly_version?.ToString());
+            var ver = latestVersion.friendly_version?.ToString();
+            json.SafeAdd("version", ver);
             json.Remove("$kref");
             json.SafeAdd("download", latestVersion.download_path?.OriginalString);
             json.SafeAdd(Metadata.UpdatedPropertyName, latestVersion.created);
@@ -97,25 +98,26 @@ namespace CKAN.NetKAN.Transformers
             // SD provides users with the following default selection of licenses. Let's convert them to CKAN
             // compatible license strings if possible.
             //
-            // "MIT" - OK
-            // "BSD" - Specific version is indeterminate
+            // "MIT"   - OK
+            // "BSD"   - Specific version is indeterminate
             // "GPLv2" - Becomes "GPL-2.0"
             // "GPLv3" - Becomes "GPL-3.0"
-            // "LGPL" - Specific version is indeterminate
+            // "LGPL"  - Specific version is indeterminate
+            json.SafeAdd("license",
+                         sdMod.license?.Trim().Replace(' ', '-') switch
+                         {
+                             "GPLv2"                        => "GPL-2.0",
+                             "GPLv3"                        => "GPL-3.0",
+                             "Other"                        => "unknown",
+                             "ARR" or "All Rights Reserved"
+                                   or "All rights reserved" => "restricted",
+                             var sdLicense                  => sdLicense,
+                         });
 
-            var sdLicense = sdMod.license?.Trim().Replace(' ', '-');
-
-            switch (sdLicense)
+            if (ver?.ToLower() is string lowerV
+                && preReleaseSubstrings.Any(substr => lowerV.Contains(substr)))
             {
-                case "GPLv2":
-                    json.SafeAdd("license", "GPL-2.0");
-                    break;
-                case "GPLv3":
-                    json.SafeAdd("license", "GPL-3.0");
-                    break;
-                default:
-                    json.SafeAdd("license", sdLicense);
-                    break;
+                json.SafeAdd("release_status", "testing");
             }
 
             // Make sure resources exist.
@@ -146,7 +148,7 @@ namespace CKAN.NetKAN.Transformers
                                 string.Format("#/ckan/github/{0}/{1}",
                                               match.Groups["owner"].Value,
                                               match.Groups["repo"].Value),
-                                false, false))
+                                false))
                             is GithubRepo repoInfo)
                         {
                             GithubTransformer.SetRepoResources(repoInfo, resourcesJson);
@@ -195,5 +197,9 @@ namespace CKAN.NetKAN.Transformers
             new Regex("^/(?<owner>[^/]+)/(?<repo>[^/]+)",
                       RegexOptions.Compiled);
 
+        private static readonly string[] preReleaseSubstrings = new string[]
+        {
+            "pre", "alpha", "beta",
+        };
     }
 }

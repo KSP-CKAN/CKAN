@@ -45,6 +45,10 @@ namespace CKAN.ConsoleUI {
             this.repoData = repoData;
             this.userAgent = userAgent;
 
+            if (manager.CurrentInstance != null) {
+                manager.CurrentInstance.StabilityToleranceConfig.Changed += StabilityToleranceConfig_Changed;
+            }
+
             moduleList = new ConsoleListBox<CkanModule>(
                 1, 4, -1, -2,
                 GetAllMods(),
@@ -199,8 +203,8 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null
             );
             moduleList.AddBinding(Keys.Enter, (object sender) => {
-                if (moduleList.Selection != null) {
-                    LaunchSubScreen(new ModInfoScreen(theme, manager, registry, userAgent,
+                if (moduleList.Selection != null && manager.CurrentInstance != null) {
+                    LaunchSubScreen(new ModInfoScreen(theme, manager, manager.CurrentInstance, registry, userAgent,
                                                       plan, moduleList.Selection, upgradeableGroups?[true], debug));
                 }
                 return true;
@@ -219,7 +223,9 @@ namespace CKAN.ConsoleUI {
             moduleList.AddTip("+", Properties.Resources.ModListReplaceTip,
                 () => moduleList.Selection != null
                       && manager.CurrentInstance != null
-                      && registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null
+                      && registry.GetReplacement(moduleList.Selection.identifier,
+                                                 manager.CurrentInstance.StabilityToleranceConfig,
+                                                 manager.CurrentInstance.VersionCriteria()) != null
             );
             moduleList.AddBinding(Keys.Plus, (object sender) => {
                 if (moduleList.Selection != null && !moduleList.Selection.IsDLC && manager.CurrentInstance != null) {
@@ -228,7 +234,9 @@ namespace CKAN.ConsoleUI {
                     } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
                             && (upgradeableGroups?[true].Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)) {
                         plan.ToggleUpgrade(moduleList.Selection);
-                    } else if (registry.GetReplacement(moduleList.Selection.identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                    } else if (registry.GetReplacement(moduleList.Selection.identifier,
+                                                       manager.CurrentInstance.StabilityToleranceConfig,
+                                                       manager.CurrentInstance.VersionCriteria()) != null) {
                         plan.ToggleReplace(moduleList.Selection.identifier);
                     }
                 }
@@ -425,37 +433,42 @@ namespace CKAN.ConsoleUI {
 
         private bool ViewSuggestions()
         {
-            ChangePlan reinstall = new ChangePlan();
-            foreach (InstalledModule im in registry.InstalledModules) {
-                // Only check mods that are still available
-                try {
-                    if (registry.LatestAvailable(im.identifier, manager.CurrentInstance?.VersionCriteria()) != null) {
-                        reinstall.Install.Add(im.Module);
-                    }
-                } catch {
-                    // The registry object badly needs an IsAvailable check
-                }
-            }
-            try {
-                DependencyScreen ds = new DependencyScreen(theme, manager, registry, userAgent, reinstall, new HashSet<string>(), debug);
-                if (ds.HaveOptions()) {
-                    LaunchSubScreen(ds);
-                    bool needRefresh = false;
-                    // Copy the right ones into our real plan
-                    foreach (CkanModule mod in reinstall.Install) {
-                        if (!registry.IsInstalled(mod.identifier, false)) {
-                            plan.Install.Add(mod);
-                            needRefresh = true;
+            if (manager.CurrentInstance != null)
+            {
+                ChangePlan reinstall = new ChangePlan();
+                foreach (InstalledModule im in registry.InstalledModules) {
+                    // Only check mods that are still available
+                    try {
+                        if (registry.LatestAvailable(im.identifier,
+                                                     manager.CurrentInstance.StabilityToleranceConfig,
+                                                     manager.CurrentInstance.VersionCriteria()) != null) {
+                            reinstall.Install.Add(im.Module);
                         }
+                    } catch {
+                        // The registry object badly needs an IsAvailable check
                     }
-                    if (needRefresh) {
-                        RefreshList();
-                    }
-                } else {
-                    RaiseError(Properties.Resources.ModListAuditNotFound);
                 }
-            } catch (ModuleNotFoundKraken k) {
-                RaiseError("{0} {1}: {2}", k.module, k.version ?? "", k.Message);
+                try {
+                    DependencyScreen ds = new DependencyScreen(theme, manager, manager.CurrentInstance, registry, userAgent, reinstall, new HashSet<string>(), debug);
+                    if (ds.HaveOptions()) {
+                        LaunchSubScreen(ds);
+                        bool needRefresh = false;
+                        // Copy the right ones into our real plan
+                        foreach (CkanModule mod in reinstall.Install) {
+                            if (!registry.IsInstalled(mod.identifier, false)) {
+                                plan.Install.Add(mod);
+                                needRefresh = true;
+                            }
+                        }
+                        if (needRefresh) {
+                            RefreshList();
+                        }
+                    } else {
+                        RaiseError(Properties.Resources.ModListAuditNotFound);
+                    }
+                } catch (ModuleNotFoundKraken k) {
+                    RaiseError("{0} {1}: {2}", k.module, k.version ?? "", k.Message);
+                }
             }
             return true;
         }
@@ -483,7 +496,8 @@ namespace CKAN.ConsoleUI {
             LaunchSubScreen(ps, () => {
                 if (manager.CurrentInstance != null)
                 {
-                    var availBefore = registry.CompatibleModules(manager.CurrentInstance.VersionCriteria())
+                    var availBefore = registry.CompatibleModules(manager.CurrentInstance.StabilityToleranceConfig,
+                                                                 manager.CurrentInstance.VersionCriteria())
                                               .Select(l => l.identifier)
                                               .ToHashSet();
                     recent.Clear();
@@ -499,9 +513,8 @@ namespace CKAN.ConsoleUI {
                         ps.RaiseError("{0}", ex.Message + ex.StackTrace);
                     }
                     // Update recent with mods that were updated in this pass
-                    foreach (CkanModule mod in registry.CompatibleModules(
-                            manager.CurrentInstance.VersionCriteria()
-                        )) {
+                    foreach (CkanModule mod in registry.CompatibleModules(manager.CurrentInstance.StabilityToleranceConfig,
+                                                                          manager.CurrentInstance.VersionCriteria())) {
                         if (!availBefore.Contains(mod.identifier)) {
                             recent.Add(mod.identifier);
                         }
@@ -551,6 +564,12 @@ namespace CKAN.ConsoleUI {
             return true;
         }
 
+        private void StabilityToleranceConfig_Changed(string?        identifier,
+                                                      ReleaseStatus? relStat)
+        {
+            RefreshList();
+        }
+
         private bool SelectInstall()
         {
             if (manager.CurrentInstance != null)
@@ -561,6 +580,8 @@ namespace CKAN.ConsoleUI {
                 LaunchSubScreen(new GameInstanceListScreen(theme, manager, repoData, userAgent));
                 if (!prevInst.Equals(manager.CurrentInstance)) {
                     // Game instance changed, reset everything
+                    prevInst.StabilityToleranceConfig.Changed -= StabilityToleranceConfig_Changed;
+                    manager.CurrentInstance.StabilityToleranceConfig.Changed += StabilityToleranceConfig_Changed;
                     plan.Reset();
                     regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData);
                     registry = regMgr.registry;
@@ -608,6 +629,7 @@ namespace CKAN.ConsoleUI {
         {
             if (manager.CurrentInstance != null)
             {
+                var stabilityTolerance = manager.CurrentInstance.StabilityToleranceConfig;
                 timeSinceUpdate = repoData.LastUpdate(registry.Repositories.Values);
                 ScanForMods();
                 if (allMods == null || force) {
@@ -616,9 +638,9 @@ namespace CKAN.ConsoleUI {
                         UpdateRegistry(false);
                     }
                     var crit = manager.CurrentInstance.VersionCriteria();
-                    allMods = new List<CkanModule>(registry.CompatibleModules(crit));
+                    allMods = new List<CkanModule>(registry.CompatibleModules(stabilityTolerance, crit));
                     foreach (InstalledModule im in registry.InstalledModules) {
-                        var m = Utilities.DefaultIfThrows(() => registry.LatestAvailable(im.identifier, crit));
+                        var m = Utilities.DefaultIfThrows(() => registry.LatestAvailable(im.identifier, stabilityTolerance, crit));
                         if (m == null) {
                             // Add unavailable installed mods to the list
                             allMods.Add(im.Module);
@@ -655,6 +677,7 @@ namespace CKAN.ConsoleUI {
         {
             if (manager.CurrentInstance != null)
             {
+                var stabilityTolerance = manager.CurrentInstance.StabilityToleranceConfig;
                 var modules = InstallFromCkanDialog.ChooseCkanFiles(theme, manager.CurrentInstance);
                 if (modules.Length > 0) {
                     var crit = manager.CurrentInstance.VersionCriteria();
@@ -667,9 +690,9 @@ namespace CKAN.ConsoleUI {
                                                               .Select(rel =>
                                                                   // If there's a compatible match, return it
                                                                   // Metapackages aren't intending to prompt users to choose providing mods
-                                                                  rel.ExactMatch(regMgr.registry, crit, installed, modules)
+                                                                  rel.ExactMatch(regMgr.registry, stabilityTolerance, crit, installed, modules)
                                                                   // Otherwise look for incompatible
-                                                                  ?? rel.ExactMatch(regMgr.registry, null, installed, modules))
+                                                                  ?? rel.ExactMatch(regMgr.registry, stabilityTolerance, null, installed, modules))
                                                               .OfType<CkanModule>()
                                                              ?? Enumerable.Empty<CkanModule>())));
                     LaunchSubScreen(new InstallScreen(theme, manager, repoData, userAgent, cp, debug));
@@ -872,7 +895,8 @@ namespace CKAN.ConsoleUI {
                                           string identifier,
                                           List<CkanModule> upgradeable)
         {
-            if (registry.IsInstalled(identifier, false)) {
+            if (manager.CurrentInstance != null
+                && registry.IsInstalled(identifier, false)) {
                 if (Remove.Contains(identifier)) {
                     return InstallStatus.Removing;
                 } else if (upgradeable.Any(m => m.identifier == identifier)) {
@@ -885,10 +909,11 @@ namespace CKAN.ConsoleUI {
                     return InstallStatus.AutoDetected;
                 } else if (Replace.Contains(identifier)) {
                     return InstallStatus.Replacing;
-                } else if (manager.CurrentInstance != null
-                           && registry.GetReplacement(identifier, manager.CurrentInstance.VersionCriteria()) != null) {
+                } else if (registry.GetReplacement(identifier,
+                                                   manager.CurrentInstance.StabilityToleranceConfig,
+                                                   manager.CurrentInstance.VersionCriteria()) != null) {
                     return InstallStatus.Replaceable;
-                } else if (!IsAnyAvailable(registry, identifier)) {
+                } else if (!IsAnyAvailable(registry, manager.CurrentInstance.StabilityToleranceConfig, identifier)) {
                     return InstallStatus.Unavailable;
                 } else if (registry.InstalledModule(identifier)?.AutoInstalled ?? false) {
                     return InstallStatus.AutoInstalled;
@@ -911,14 +936,15 @@ namespace CKAN.ConsoleUI {
         /// Check whether an identifier is anywhere in the registry.
         /// </summary>
         /// <param name="registry">Reference to registry to query</param>
+        /// <param name="stabilityTolerance">Mod stability settings</param>
         /// <param name="identifier">Mod name to Find</param>
         /// <returns>
         /// True if there are any versions of this mod available, false otherwise.
         /// </returns>
-        public static bool IsAnyAvailable(IRegistryQuerier registry, string identifier)
+        public static bool IsAnyAvailable(IRegistryQuerier registry, StabilityToleranceConfig stabilityTolerance, string identifier)
         {
             try {
-                registry.LatestAvailable(identifier, null);
+                registry.LatestAvailable(identifier, stabilityTolerance, null);
                 return true;
             } catch (ModuleNotFoundKraken) {
                 return false;

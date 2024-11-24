@@ -13,6 +13,7 @@ using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 #if !NET8_0_OR_GREATER
 using CKAN.Extensions;
@@ -502,12 +503,13 @@ namespace CKAN
             };
 
             var mods = registry.InstalledModules
-                               .Where(inst => !inst.Module.IsDLC && !inst.AutoInstalled && IsAvailable(inst))
+                               .Where(inst => !inst.Module.IsDLC && !inst.AutoInstalled
+                                              && IsAvailable(inst, gameInstance.StabilityToleranceConfig))
                                .Select(inst => inst.Module)
                                .ToHashSet();
             // Sort dependencies before dependers
             var resolver = new RelationshipResolver(mods, null,
-                                                    RelationshipResolverOptions.ConflictsOpts(),
+                                                    RelationshipResolverOptions.ConflictsOpts(gameInstance.StabilityToleranceConfig),
                                                     registry, gameInstance.game, gameInstance.VersionCriteria());
             var rels = resolver.ModList()
                                .Intersect(mods)
@@ -529,11 +531,11 @@ namespace CKAN
             return module;
         }
 
-        private bool IsAvailable(InstalledModule inst)
+        private bool IsAvailable(InstalledModule inst, StabilityToleranceConfig stabilityTolerance)
         {
             try
             {
-                var avail = registry.LatestAvailable(inst.identifier, null, null);
+                var avail = registry.LatestAvailable(inst.identifier, stabilityTolerance, null);
                 return true;
             }
             catch

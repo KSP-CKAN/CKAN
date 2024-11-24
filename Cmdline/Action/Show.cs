@@ -51,7 +51,8 @@ namespace CKAN.CmdLine
 
                 // Module was not installed, look for an exact match in the available modules,
                 // either by "name" (the user-friendly display name) or by identifier
-                var moduleToShow = registry.CompatibleModules(instance.VersionCriteria())
+                var moduleToShow = registry.CompatibleModules(instance.StabilityToleranceConfig,
+                                                              instance.VersionCriteria())
                                            .SingleOrDefault(
                                                  mod => mod.name       == modName
                                                      || mod.identifier == modName);

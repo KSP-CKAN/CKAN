@@ -37,8 +37,8 @@ namespace CKAN.NetKAN
         [Option("skip-releases", DefaultValue = "0", HelpText = "Number of releases to skip / index of release to inflate.")]
         public string? SkipReleases { get; set; }
 
-        [Option("prerelease", HelpText = "Index GitHub prereleases")]
-        public bool PreRelease { get; set; }
+        [Option("prerelease", DefaultValue = null, HelpText = "true to get only prereleases from GitHub, false to skip them, omit to get both")]
+        public bool? PreRelease { get; set; }
 
         [Option("overwrite-cache", HelpText = "Overwrite cached files")]
         public bool OverwriteCache { get; set; }

@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
+  <data name="OverallSummaryLabel.Text" xml:space="preserve">
     <value>Wszystkie dostępne wersje wybranej modyfikacji</value>
   </data>
   <data name="ModVersion.Text" xml:space="preserve">
@@ -129,22 +129,13 @@
   <data name="ReleaseDate.Text" xml:space="preserve">
     <value>Data wydania</value>
   </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Zielony</value>
+  <data name="LatestCompatibleLabel.Text" xml:space="preserve">
+    <value>najnowsza kompatybilna wersja (prawdopodobnie zostanie zainstalowana)</value>
   </data>
-  <data name="label3.Text" xml:space="preserve">
-    <value>Jasnozielony</value>
+  <data name="CompatibleLabel.Text" xml:space="preserve">
+    <value>wersja jest kompatybilna z Twoją grą</value>
   </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>Pogrubiony</value>
-  </data>
-  <data name="label5.Text" xml:space="preserve">
-    <value>- najnowsza kompatybilna wersja (prawdopodobnie zostanie zainstalowana)</value>
-  </data>
-  <data name="label6.Text" xml:space="preserve">
-    <value>- wersja jest kompatybilna z Twoją grą</value>
-  </data>
-  <data name="label7.Text" xml:space="preserve">
-    <value>- aktualnie zainstalowana wersja</value>
+  <data name="InstalledLabel.Text" xml:space="preserve">
+    <value>aktualnie zainstalowana wersja</value>
   </data>
 </root>

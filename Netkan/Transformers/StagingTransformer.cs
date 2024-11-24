@@ -37,8 +37,8 @@ namespace CKAN.NetKAN.Transformers
             JObject json = metadata.Json();
             var minStr = json["ksp_version_min"] ?? json["ksp_version"];
             var maxStr = json["ksp_version_max"] ?? json["ksp_version"];
-            var minVer = minStr == null ? GameVersion.Any : GameVersion.Parse((string?)minStr);
-            var maxVer = maxStr == null ? GameVersion.Any : GameVersion.Parse((string?)maxStr);
+            var minVer = (string?)minStr is string s1 ? GameVersion.Parse(s1) : GameVersion.Any;
+            var maxVer = (string?)maxStr is string s2 ? GameVersion.Parse(s2) : GameVersion.Any;
             if (currentRelease != null && currentRelease.IntersectWith(new GameVersionRange(minVer, maxVer)) == null)
             {
                 reason = $"Hard-coded game versions not compatible with current release: {GameVersionRange.VersionSpan(game, minVer, maxVer)}\r\nPlease check that they match the forum thread.";

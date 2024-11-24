@@ -15,7 +15,6 @@ using Tests.Data;
 using CKAN;
 using CKAN.Versioning;
 using CKAN.GUI;
-using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.GUI
 {
@@ -31,9 +30,10 @@ namespace Tests.GUI
         public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList();
-            var game = new KerbalSpaceProgram();
-            var inst = new GameInstance(game, "/", "dummy", new NullUser());
-            Assert.That(item.ComputeUserChangeSet(Registry.Empty(), crit, inst, null, null), Is.Empty);
+            using (var tidy = new DisposableKSP())
+            {
+                Assert.That(item.ComputeUserChangeSet(Registry.Empty(), crit, tidy.KSP, null, null), Is.Empty);
+            }
         }
 
         [Test]
@@ -55,7 +55,7 @@ namespace Tests.GUI
 
                 var item = new ModList();
                 Assert.That(item.IsVisible(
-                    new GUIMod(ckan_mod!, repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                    new GUIMod(ckan_mod!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
                                null, false, false),
                     manager.CurrentInstance.Name,
                     manager.CurrentInstance.game,
@@ -93,9 +93,9 @@ namespace Tests.GUI
                 var mod_list = main_mod_list.ConstructModList(
                     new List<GUIMod>
                     {
-                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
                                    null, false, false),
-                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, manager.CurrentInstance.VersionCriteria(),
+                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
                                    null, false, false)
                     },
                     manager.CurrentInstance.Name,
@@ -149,7 +149,10 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var instance = new DisposableKSP())
             using (var config = new FakeConfiguration(instance.KSP, instance.KSP.Name))
-            using (var manager = new GameInstanceManager(user, config))
+            using (var manager = new GameInstanceManager(user, config)
+                {
+                    CurrentInstance = instance.KSP
+                })
             {
                 var registryManager = RegistryManager.Instance(instance.KSP, repoData.Manager);
                 var registry = registryManager.registry;
@@ -172,7 +175,7 @@ namespace Tests.GUI
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 installer.InstallList(
                     new List<CkanModule> { anyVersionModule },
-                    new RelationshipResolverOptions(),
+                    new RelationshipResolverOptions(instance.KSP.StabilityToleranceConfig),
                     registryManager,
                     ref possibleConfigOnlyDirs,
                     null,
@@ -195,7 +198,7 @@ namespace Tests.GUI
                 Assert.IsNotNull(modList);
 
                 var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
-                    .Select(mod => new GUIMod(mod.Latest()!, repoData.Manager, registry, instance.KSP.VersionCriteria(),
+                    .Select(mod => new GUIMod(mod.Latest(instance.KSP.StabilityToleranceConfig)!, repoData.Manager, registry, instance.KSP.StabilityToleranceConfig, instance.KSP.VersionCriteria(),
                                               null, false, false))
                     .ToList();
 
@@ -213,24 +216,24 @@ namespace Tests.GUI
                 Assert.IsTrue(otherModule.SelectedMod == otherModule.LatestAvailableMod);
                 Assert.IsFalse(otherModule.IsInstalled);
 
-                var game = new KerbalSpaceProgram();
-                var inst = new GameInstance(game, "/", "dummy", new NullUser());
-
-                Assert.DoesNotThrow(() =>
+                using (var inst2 = new DisposableKSP())
                 {
-                    // Install the "other" module
-                    installer.InstallList(
-                        modList.ComputeUserChangeSet(Registry.Empty(), crit, inst, null, null).Select(change => change.Mod).ToList(),
-                        new RelationshipResolverOptions(),
-                        registryManager,
-                        ref possibleConfigOnlyDirs,
-                        null,
-                        downloader);
+                    Assert.DoesNotThrow(() =>
+                    {
+                        // Install the "other" module
+                        installer.InstallList(
+                            modList.ComputeUserChangeSet(Registry.Empty(), crit, inst2.KSP, null, null).Select(change => change.Mod).ToList(),
+                            new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),
+                            registryManager,
+                            ref possibleConfigOnlyDirs,
+                            null,
+                            downloader);
 
-                    // Now we need to sort
-                    // Make sure refreshing the GUI state does not throw a NullReferenceException
-                    listGui.Refresh();
-                });
+                        // Now we need to sort
+                        // Make sure refreshing the GUI state does not throw a NullReferenceException
+                        listGui.Refresh();
+                    });
+                }
             }
         }
     }

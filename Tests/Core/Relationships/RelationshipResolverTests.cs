@@ -9,6 +9,7 @@ using NUnit.Framework;
 using Tests.Data;
 
 using CKAN;
+using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Versioning;
@@ -24,11 +25,12 @@ namespace Tests.Core.Relationships
         private RandomModuleGenerator? generator;
         private static readonly IGame               game = new KerbalSpaceProgram();
         private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
+        private readonly StabilityToleranceConfig stabilityTolerance = new StabilityToleranceConfig("");
 
         [SetUp]
         public void Setup()
         {
-            options = RelationshipResolverOptions.DefaultOpts();
+            options = RelationshipResolverOptions.DefaultOpts(stabilityTolerance);
             generator = new RandomModuleGenerator(new Random(0451));
             //Sanity checker means even incorrect RelationshipResolver logic was passing
             options.without_enforce_consistency = true;
@@ -38,7 +40,7 @@ namespace Tests.Core.Relationships
         public void Constructor_WithoutModules_AlwaysReturns()
         {
             var registry = CKAN.Registry.Empty();
-            options = RelationshipResolverOptions.DefaultOpts();
+            options = RelationshipResolverOptions.DefaultOpts(stabilityTolerance);
             Assert.DoesNotThrow(() => new RelationshipResolver(new List<CkanModule>(),
                 null, options, registry, game, crit));
         }
@@ -1061,7 +1063,7 @@ namespace Tests.Core.Relationships
                 CkanModule mod = generator!.GeneratorRandomModule(depends: depends);
 
                 new RelationshipResolver(
-                    new CkanModule[] { mod }, null, RelationshipResolverOptions.DefaultOpts(),
+                    new CkanModule[] { mod }, null, RelationshipResolverOptions.DefaultOpts(stabilityTolerance),
                     registry, game, new GameVersionCriteria(GameVersion.Parse("1.0.0")));
             }
         }
@@ -1106,10 +1108,10 @@ namespace Tests.Core.Relationships
                 Assert.DoesNotThrow(() =>
                 {
                     var rr = new RelationshipResolver(
-                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                        installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
                                      .OfType<CkanModule>(),
                         null,
-                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
                         registry, inst.KSP.game, crit);
                 });
             }
@@ -1243,14 +1245,14 @@ namespace Tests.Core.Relationships
 
                 // Act
                 var rr = new RelationshipResolver(
-                    installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                    installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
                                  .OfType<CkanModule>(),
                     null,
-                    RelationshipResolverOptions.KitchenSinkOpts(),
+                    RelationshipResolverOptions.KitchenSinkOpts(stabilityTolerance),
                     registry, game, crit);
                 var deps = rr.Dependencies().ToHashSet();
                 var recs = rr.Recommendations(deps).ToArray();
-                var dlcs = dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)).ToArray();
+                var dlcs = dlcIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit)).ToArray();
 
                 // Assert
                 CollectionAssert.IsSubsetOf(dlcs, rr.ModList(false));
@@ -1290,16 +1292,16 @@ namespace Tests.Core.Relationships
 
                 // Act
                 var rr = new RelationshipResolver(
-                    installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                    installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
                                  .OfType<CkanModule>(),
                     null,
-                    RelationshipResolverOptions.KitchenSinkOpts(),
+                    RelationshipResolverOptions.KitchenSinkOpts(stabilityTolerance),
                     registry, game, crit);
                 var deps = rr.Dependencies().ToHashSet();
                 var recs = rr.Recommendations(deps).ToArray();
 
                 // Assert
-                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)))
+                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit)))
                 {
                     CollectionAssert.DoesNotContain(rr.ModList(false), mod);
                     CollectionAssert.DoesNotContain(recs,              mod);
@@ -1337,10 +1339,10 @@ namespace Tests.Core.Relationships
                 Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
                 {
                     var rr = new RelationshipResolver(
-                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                        installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
                                      .OfType<CkanModule>(),
                         null,
-                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
                         registry, game, crit);
                 });
             }
@@ -1380,10 +1382,10 @@ namespace Tests.Core.Relationships
                 Assert.DoesNotThrow(() =>
                 {
                     var rr = new RelationshipResolver(
-                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                        installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
                                      .OfType<CkanModule>(),
                         null,
-                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
                         registry, game, crit);
                 });
             }
@@ -1451,7 +1453,7 @@ namespace Tests.Core.Relationships
                 {
                     var rr = new RelationshipResolver(
                         Enumerable.Repeat(modpack, 1), null,
-                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
                         registry, game, crit);
                 });
                 Assert.AreEqual(exceptionMessage, exc?.Message);
@@ -1556,10 +1558,10 @@ namespace Tests.Core.Relationships
                 Assert.DoesNotThrow(() =>
                 {
                     var rr = new RelationshipResolver(
-                        installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                        installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
                                      .OfType<CkanModule>(),
                         null,
-                        RelationshipResolverOptions.DependsOnlyOpts(),
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
                         registry, game, crit);
                     var idents = rr.ModList().Select(m => m.identifier).ToArray();
                     foreach (var goodSubstring in goodSubstrings)

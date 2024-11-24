@@ -22,10 +22,6 @@ namespace CKAN.NetKAN.Transformers
         /// <param name="api">Object to use for accessing the GitLab API</param>
         public GitlabTransformer(IGitlabApi api)
         {
-            if (api == null)
-            {
-                throw new ArgumentNullException(nameof(api));
-            }
             this.api = api;
         }
 

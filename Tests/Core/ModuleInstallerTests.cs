@@ -415,7 +415,7 @@ namespace Tests.Core
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
 
-                Assert.AreEqual(1, registry.CompatibleModules(ksp.KSP.VersionCriteria()).Count());
+                Assert.AreEqual(1, registry.CompatibleModules(ksp.KSP.StabilityToleranceConfig, ksp.KSP.VersionCriteria()).Count());
 
                 // Attempt to install it.
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
@@ -423,7 +423,7 @@ namespace Tests.Core
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(),
+                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                  ref possibleConfigOnlyDirs);
 
@@ -461,7 +461,7 @@ namespace Tests.Core
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
-                    .InstallList(modules, new RelationshipResolverOptions(),
+                    .InstallList(modules, new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                  ref possibleConfigOnlyDirs);
 
@@ -510,7 +510,7 @@ namespace Tests.Core
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(),
+                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                  ref possibleConfigOnlyDirs);
 
@@ -525,7 +525,7 @@ namespace Tests.Core
 
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(),
+                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                  ref possibleConfigOnlyDirs);
 
@@ -719,7 +719,7 @@ namespace Tests.Core
                     HashSet<string>? possibleConfigOnlyDirs = null;
                     new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
                         .InstallList(modules,
-                                     new RelationshipResolverOptions(),
+                                     new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                      RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                      ref possibleConfigOnlyDirs);
 
@@ -878,7 +878,7 @@ namespace Tests.Core
 
                 // Act
                 var result = ModuleInstaller.FindRecommendations(inst.KSP,
-                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
                                                                  new List<CkanModule>(),
@@ -890,7 +890,7 @@ namespace Tests.Core
                 // Assert
                 Assert.IsTrue(result, "Should return something");
                 CollectionAssert.IsNotEmpty(recommendations, "Should return recommendations");
-                CollectionAssert.AreEquivalent(dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)),
+                CollectionAssert.AreEquivalent(dlcIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit)),
                                                recommendations.Keys,
                                                "The DLC should be recommended");
             }
@@ -929,7 +929,7 @@ namespace Tests.Core
 
                 // Act
                 var result = ModuleInstaller.FindRecommendations(inst.KSP,
-                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, crit))
+                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
                                                                  new List<CkanModule>(),
@@ -940,7 +940,7 @@ namespace Tests.Core
 
                 // Assert
                 Assert.IsFalse(result, "Should return nothing");
-                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, crit)))
+                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit)))
                 {
                     CollectionAssert.DoesNotContain(recommendations, mod,
                                                     "DLC should not be recommended");
@@ -982,7 +982,7 @@ namespace Tests.Core
                         HashSet<string>? possibleConfigOnlyDirs = null;
                         new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
                             .InstallList(modules,
-                                         new RelationshipResolverOptions(),
+                                         new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                          RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                          ref possibleConfigOnlyDirs);
                     },
@@ -1021,7 +1021,7 @@ namespace Tests.Core
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(),
+                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                  ref possibleConfigOnlyDirs);
             }
@@ -1082,10 +1082,10 @@ namespace Tests.Core
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
                 manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
-                var replacement = querier.GetReplacement(replaced.identifier,
+                var replacement = querier.GetReplacement(replaced.identifier, ksp.KSP.StabilityToleranceConfig,
                                                          new GameVersionCriteria(new GameVersion(1, 12)))!;
                 installer.Replace(Enumerable.Repeat(replacement, 1),
-                                  new RelationshipResolverOptions(),
+                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                   downloader, ref possibleConfigOnlyDirs, regMgr,
                                   false);
 
@@ -1150,7 +1150,7 @@ namespace Tests.Core
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
                 manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {}));
-                var replacement = querier.GetReplacement(replaced.identifier,
+                var replacement = querier.GetReplacement(replaced.identifier, ksp.KSP.StabilityToleranceConfig,
                                                          new GameVersionCriteria(new GameVersion(1, 11)));
 
                 // Assert
@@ -1326,7 +1326,7 @@ namespace Tests.Core
 
                 // Act
                 installer.Upgrade(upgradeIdentifiers.Select(ident =>
-                                      registry.LatestAvailable(ident, inst.KSP.VersionCriteria()))
+                                      registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, inst.KSP.VersionCriteria()))
                                                     .OfType<CkanModule>()
                                                     .ToArray(),
                                   downloader, ref possibleConfigOnlyDirs, regMgr, false);
@@ -1387,7 +1387,7 @@ namespace Tests.Core
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(inst.KSP, manager.Cache!, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(),
+                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  regMgr,
                                  ref possibleConfigOnlyDirs);
             }

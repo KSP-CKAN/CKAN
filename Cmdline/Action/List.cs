@@ -87,7 +87,9 @@ namespace CKAN.CmdLine
                         {
                             // Check if upgrades are available, and show appropriately.
                             log.DebugFormat("Check if upgrades are available for {0}", mod.Key);
-                            var latest = registry.LatestAvailable(mod.Key, instance.VersionCriteria());
+                            var latest = registry.LatestAvailable(mod.Key,
+                                                                  instance.StabilityToleranceConfig,
+                                                                  instance.VersionCriteria());
                             var current = registry.GetInstalledVersion(mod.Key);
                             var inst = registry.InstalledModule(mod.Key);
 
@@ -103,7 +105,9 @@ namespace CKAN.CmdLine
                                 // Check if mod is replaceable
                                 else if (current.replaced_by != null)
                                 {
-                                    var replacement = registry.GetReplacement(mod.Key, instance.VersionCriteria());
+                                    var replacement = registry.GetReplacement(mod.Key,
+                                                                              instance.StabilityToleranceConfig,
+                                                                              instance.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!
@@ -120,7 +124,9 @@ namespace CKAN.CmdLine
                                 // Check if mod is replaceable
                                 if (current?.replaced_by != null)
                                 {
-                                    var replacement = registry.GetReplacement(latest.identifier, instance.VersionCriteria());
+                                    var replacement = registry.GetReplacement(latest.identifier,
+                                                                              instance.StabilityToleranceConfig,
+                                                                              instance.VersionCriteria());
                                     if (replacement != null)
                                     {
                                         // Replaceable!

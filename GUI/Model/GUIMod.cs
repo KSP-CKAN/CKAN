@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 
 namespace CKAN.GUI
@@ -131,11 +132,12 @@ namespace CKAN.GUI
         public GUIMod(InstalledModule       instMod,
                       RepositoryDataManager repoDataMgr,
                       IRegistryQuerier      registry,
+                      StabilityToleranceConfig stabilityTolerance,
                       GameVersionCriteria   current_game_version,
                       bool? incompatible,
                       bool  hideEpochs,
                       bool  hideV)
-            : this(instMod.Module, repoDataMgr, registry, current_game_version, incompatible, hideEpochs, hideV)
+            : this(instMod.Module, repoDataMgr, registry, stabilityTolerance, current_game_version, incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
             InstalledMod     = instMod;
@@ -159,10 +161,11 @@ namespace CKAN.GUI
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(CkanModule            mod,
-                      RepositoryDataManager repoDataMgr,
-                      IRegistryQuerier      registry,
-                      GameVersionCriteria   current_game_version,
+        public GUIMod(CkanModule               mod,
+                      RepositoryDataManager    repoDataMgr,
+                      IRegistryQuerier         registry,
+                      StabilityToleranceConfig stabilityTolerance,
+                      GameVersionCriteria      current_game_version,
                       bool? incompatible,
                       bool  hideEpochs,
                       bool  hideV)
@@ -180,7 +183,7 @@ namespace CKAN.GUI
             {
                 try
                 {
-                    LatestCompatibleMod = registry.LatestAvailable(Identifier, current_game_version);
+                    LatestCompatibleMod = registry.LatestAvailable(Identifier, stabilityTolerance, current_game_version);
                     latest_version = LatestCompatibleMod?.version;
                 }
                 catch (ModuleNotFoundKraken)
@@ -199,7 +202,7 @@ namespace CKAN.GUI
 
             try
             {
-                LatestAvailableMod = registry.LatestAvailable(Identifier, null);
+                LatestAvailableMod = registry.LatestAvailable(Identifier, stabilityTolerance, null);
             }
             catch
             { }
@@ -242,7 +245,7 @@ namespace CKAN.GUI
                                            .OfType<char>()
                                            .ToArray());
 
-            HasReplacement = registry.GetReplacement(mod, current_game_version) != null;
+            HasReplacement = registry.GetReplacement(mod, stabilityTolerance, current_game_version) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
             InstallSize    = mod.install_size  == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
 

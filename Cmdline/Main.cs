@@ -115,6 +115,8 @@ namespace CKAN.CmdLine
                         case "filter":
                             return (new Filter()).RunSubCommand(manager, opts, new SubCommandOptions(args));
 
+                        case "stability":
+                            return (new Stability()).RunSubCommand(manager, opts, new SubCommandOptions(args));
                     }
                 }
             }

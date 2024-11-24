@@ -5,6 +5,7 @@ using System.Linq;
 
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.Extensions;
 using CKAN.Versioning;
 
@@ -24,13 +25,15 @@ namespace CKAN
         /// <param name="providers">Dictionary mapping every identifier to the modules providing it</param>
         /// <param name="dlls">Collection of found dlls</param>
         /// <param name="dlc">Collection of installed DLCs</param>
-        public CompatibilitySorter(GameVersionCriteria                              crit,
+        public CompatibilitySorter(StabilityToleranceConfig                         stabilityTolerance,
+                                   GameVersionCriteria                              crit,
                                    IEnumerable<Dictionary<string, AvailableModule>> available,
                                    IDictionary<string, AvailableModule[]>           providers,
                                    IDictionary<string, InstalledModule>             installed,
                                    ICollection<string>                              dlls,
                                    IDictionary<string, ModuleVersion>               dlc)
         {
+            StabilityTolerance = stabilityTolerance;
             CompatibleVersions = crit;
             this.installed = installed;
             this.dlls = dlls;
@@ -76,11 +79,16 @@ namespace CKAN
         /// </summary>
         public readonly ConcurrentDictionary<string, AvailableModule> Compatible;
 
+        /// <summary>
+        /// The least stable category of modules to consider
+        /// </summary>
+        public readonly StabilityToleranceConfig StabilityTolerance;
+
         public ICollection<CkanModule> LatestCompatible
         {
             get
             {
-                latestCompatible ??= Compatible.Values.Select(avail => avail.Latest(CompatibleVersions))
+                latestCompatible ??= Compatible.Values.Select(avail => avail.Latest(StabilityTolerance, CompatibleVersions))
                                                       .OfType<CkanModule>()
                                                       .ToList();
                 return latestCompatible;
@@ -96,7 +104,7 @@ namespace CKAN
         {
             get
             {
-                latestIncompatible ??= Incompatible.Values.Select(avail => avail.Latest(null))
+                latestIncompatible ??= Incompatible.Values.Select(avail => avail.Latest(StabilityTolerance))
                                                           .OfType<CkanModule>()
                                                           .ToList();
                 return latestIncompatible;

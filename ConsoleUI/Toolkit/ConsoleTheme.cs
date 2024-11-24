@@ -29,22 +29,22 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Background color for exit screen
         /// </summary>
         public ConsoleColor? ExitOuterBg;
-        
+
         /// <summary>
         /// Background color for info pane of exit screen
         /// </summary>
         public ConsoleColor ExitInnerBg;
-        
+
         /// <summary>
         /// Foreground color for normal text on exit screen
         /// </summary>
         public ConsoleColor ExitNormalFg;
-        
+
         /// <summary>
         /// Foreground color for highlighted text on exit screen
         /// </summary>
         public ConsoleColor ExitHighlightFg;
-        
+
         /// <summary>
         /// Foreground color for links on exit screen
         /// </summary>
@@ -135,6 +135,19 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Foreground for list box selected row
         /// </summary>
         public ConsoleColor ListBoxSelectedFg;
+
+        /// <summary>
+        /// Text color for the label above a radio buttons group
+        /// </summary>
+        public ConsoleColor RadioButtonsHeaderFg;
+        /// <summary>
+        /// Background for radio buttons group
+        /// </summary>
+        public ConsoleColor RadioButtonsGroupBg;
+        /// <summary>
+        /// Foreground for radio buttons group
+        /// </summary>
+        public ConsoleColor RadioButtonsGroupFg;
 
         /// <summary>
         /// Background for scroll bars
@@ -246,7 +259,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         /// Foreground for important/abnormal box frames
         /// </summary>
         public ConsoleColor AlertFrameFg;
-        
+
         /// <summary>
         /// Available themes
         /// </summary>
@@ -282,6 +295,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                     ListBoxUnselectedFg    = ConsoleColor.Black,
                     ListBoxSelectedBg      = ConsoleColor.DarkGreen,
                     ListBoxSelectedFg      = ConsoleColor.White,
+                    RadioButtonsHeaderFg   = ConsoleColor.Gray,
+                    RadioButtonsGroupBg    = ConsoleColor.DarkCyan,
+                    RadioButtonsGroupFg    = ConsoleColor.Black,
                     ScrollBarBg            = ConsoleColor.DarkBlue,
                     ScrollBarFg            = ConsoleColor.DarkCyan,
                     MenuBg                 = ConsoleColor.Gray,
@@ -340,6 +356,9 @@ namespace CKAN.ConsoleUI.Toolkit {
                     ListBoxUnselectedFg    = ConsoleColor.DarkGreen,
                     ListBoxSelectedBg      = ConsoleColor.Black,
                     ListBoxSelectedFg      = ConsoleColor.Green,
+                    RadioButtonsHeaderFg   = ConsoleColor.DarkGreen,
+                    RadioButtonsGroupBg    = ConsoleColor.Black,
+                    RadioButtonsGroupFg    = ConsoleColor.DarkGreen,
                     ScrollBarBg            = ConsoleColor.Black,
                     ScrollBarFg            = ConsoleColor.DarkGreen,
                     MenuBg                 = ConsoleColor.DarkGreen,

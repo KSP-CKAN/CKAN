@@ -11,9 +11,7 @@ namespace CKAN.Extensions
     public static class EnumerableExtensions
     {
         public static ICollection<T> AsCollection<T>(this IEnumerable<T> source)
-            => source == null
-                ? throw new ArgumentNullException(nameof(source))
-                : source is ICollection<T> collection ? collection : source.ToArray();
+            => source is ICollection<T> collection ? collection : source.ToArray();
 
 #if NET45 || NETSTANDARD2_0
 
@@ -23,14 +21,7 @@ namespace CKAN.Extensions
         internal
         #endif
         static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            return new HashSet<T>(source);
-        }
+            => new HashSet<T>(source);
 
         #if NET45
         public
@@ -38,15 +29,8 @@ namespace CKAN.Extensions
         internal
         #endif
         static HashSet<T> ToHashSet<T>(this IEnumerable<T>  source,
-                                              IEqualityComparer<T> comparer)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            return new HashSet<T>(source, comparer);
-        }
+                                       IEqualityComparer<T> comparer)
+            => new HashSet<T>(source, comparer);
 
 #endif
 
@@ -99,21 +83,10 @@ namespace CKAN.Extensions
         }
 
         public static IEnumerable<T> Memoize<T>(this IEnumerable<T> source)
-        {
-            if (source == null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-            else if (source is Memoized<T>)
-            {
-                // Already memoized, don't wrap another layer
-                return source;
-            }
-            else
-            {
-                return new Memoized<T>(source);
-            }
-        }
+            => source is Memoized<T>
+                   // Already memoized, don't wrap another layer
+                   ? source
+                   : new Memoized<T>(source);
 
         public static void RemoveWhere<K, V>(this Dictionary<K, V> source,
                                              Func<KeyValuePair<K, V>, bool> predicate) where K: class

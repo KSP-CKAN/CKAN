@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
@@ -87,7 +88,7 @@ namespace CKAN.GUI
         }
 
         private GUIMod?                        selectedModule;
-        private static GameInstanceManager?           manager => Main.Instance?.Manager;
+        private static GameInstanceManager?    Manager => Main.Instance?.Manager;
         private readonly RepositoryDataManager repoData;
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -132,20 +133,20 @@ namespace CKAN.GUI
 
         private void _UpdateModDependencyGraph(CkanModule module)
         {
-            if (manager?.CurrentInstance != null)
+            if (Manager?.CurrentInstance != null)
             {
                 DependsGraphTree.BeginUpdate();
                 DependsGraphTree.BackColor = SystemColors.Window;
                 DependsGraphTree.LineColor = SystemColors.WindowText;
                 DependsGraphTree.Nodes.Clear();
-                IRegistryQuerier registry = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
+                IRegistryQuerier registry = RegistryManager.Instance(Manager.CurrentInstance, repoData).registry;
                 TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
                 {
                     Name = module.identifier,
                     Tag  = module
                 };
                 DependsGraphTree.Nodes.Add(root);
-                AddChildren(registry, root);
+                AddChildren(registry, Manager.CurrentInstance.StabilityToleranceConfig, root);
                 root.Expand();
                 // Expand virtual depends nodes
                 foreach (var node in root.Nodes.OfType<TreeNode>()
@@ -160,9 +161,9 @@ namespace CKAN.GUI
 
         private void BeforeExpand(object? sender, TreeViewCancelEventArgs? args)
         {
-            if (manager?.CurrentInstance != null && args?.Node is TreeNode node)
+            if (Manager?.CurrentInstance != null && args?.Node is TreeNode node)
             {
-                IRegistryQuerier registry      = RegistryManager.Instance(manager.CurrentInstance, repoData).registry;
+                IRegistryQuerier registry      = RegistryManager.Instance(Manager.CurrentInstance, repoData).registry;
                 const int        modsPerUpdate = 10;
 
                 // Load in groups to reduce flickering
@@ -175,7 +176,8 @@ namespace CKAN.GUI
                     int nodesLeft   = node.Nodes.Count - start;
                     Task.Factory.StartNew(() =>
                         ExpandOnePage(
-                            registry, node, threadStart,
+                            registry, Manager.CurrentInstance.StabilityToleranceConfig,
+                            node, threadStart,
                             // If next page is small (last), add it to this one,
                             // so the final page will be slower rather than faster
                             nodesLeft >= 2 * modsPerUpdate ? modsPerUpdate : nodesLeft));
@@ -184,7 +186,11 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        private void ExpandOnePage(IRegistryQuerier registry, TreeNode parent, int start, int length)
+        private void ExpandOnePage(IRegistryQuerier         registry,
+                                   StabilityToleranceConfig stabilityTolerance,
+                                   TreeNode                 parent,
+                                   int                      start,
+                                   int                      length)
         {
             // Should already have children, since the user is expanding it
             var nodesAndChildren = parent.Nodes.Cast<TreeNode>()
@@ -196,7 +202,7 @@ namespace CKAN.GUI
                     && child.TreeView != null)
                 .Select(child => new KeyValuePair<TreeNode, TreeNode[]>(
                     child,
-                    GetChildren(registry, child).ToArray()))
+                    GetChildren(registry, stabilityTolerance, child).ToArray()))
                 .ToArray();
             // If user switched to another mod, stop loading
             if (parent.TreeView != null)
@@ -231,22 +237,26 @@ namespace CKAN.GUI
             RelationshipType.Conflicts
         };
 
-        private void AddChildren(IRegistryQuerier registry, TreeNode node)
+        private void AddChildren(IRegistryQuerier         registry,
+                                 StabilityToleranceConfig stabilityTolerance,
+                                 TreeNode                 node)
         {
-            var nodes = GetChildren(registry, node).ToArray();
+            var nodes = GetChildren(registry, stabilityTolerance, node).ToArray();
             Util.Invoke(this, () => node.Nodes.AddRange(nodes));
         }
 
         // Load one layer of grandchildren on demand
-        private IEnumerable<TreeNode> GetChildren(IRegistryQuerier registry, TreeNode node)
+        private IEnumerable<TreeNode> GetChildren(IRegistryQuerier         registry,
+                                                  StabilityToleranceConfig stabilityTolerance,
+                                                  TreeNode                 node)
             // Skip children of nodes from circular dependencies
             // Tag is null for non-indexed nodes
             => !ImMyOwnGrandpa(node)
                && node.Tag is CkanModule module
-               && manager?.CurrentInstance?.VersionCriteria() is GameVersionCriteria crit
+               && Manager?.CurrentInstance?.VersionCriteria() is GameVersionCriteria crit
                    ? ReverseRelationshipsCheckbox.CheckState == CheckState.Unchecked
-                       ? ForwardRelationships(registry, module, crit)
-                       : ReverseRelationships(registry, module, crit)
+                       ? ForwardRelationships(registry, module, stabilityTolerance, crit)
+                       : ReverseRelationships(registry, module, stabilityTolerance, crit)
                    : Enumerable.Empty<TreeNode>();
 
         private static IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule module, RelationshipType which)
@@ -272,28 +282,32 @@ namespace CKAN.GUI
             return Enumerable.Empty<RelationshipDescriptor>();
         }
 
-        private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier registry, CkanModule module, GameVersionCriteria crit)
-            => (module.provides?.Select(providedNode)
+        private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier         registry,
+                                                           CkanModule               module,
+                                                           StabilityToleranceConfig stabilityTolerance,
+                                                           GameVersionCriteria      crit)
+            => (module.provides?.Select(ProvidedNode)
                     ?? Enumerable.Empty<TreeNode>())
                 .Concat(kindsOfRelationships.SelectMany(relationship =>
                     GetModRelationships(module, relationship).Select(dependency =>
                         // Look for compatible mods
-                        findDependencyShallow(registry, dependency, relationship, crit)
+                        FindDependencyShallow(registry, dependency, relationship, stabilityTolerance, crit)
                         // Then incompatible mods
-                        ?? findDependencyShallow(registry, dependency, relationship, null)
+                        ?? FindDependencyShallow(registry, dependency, relationship, stabilityTolerance, null)
                         // Then give up and note the name without a module
-                        ?? nonindexedNode(dependency, relationship))));
+                        ?? NonindexedNode(dependency, relationship))));
 
-        private TreeNode? findDependencyShallow(IRegistryQuerier       registry,
-                                                RelationshipDescriptor relDescr,
-                                                RelationshipType       relationship,
-                                                GameVersionCriteria?   crit)
+        private TreeNode? FindDependencyShallow(IRegistryQuerier         registry,
+                                                RelationshipDescriptor   relDescr,
+                                                RelationshipType         relationship,
+                                                StabilityToleranceConfig stabilityTolerance,
+                                                GameVersionCriteria?     crit)
         {
             var childNodes = relDescr.LatestAvailableWithProvides(
-                                          registry, crit,
+                                          registry, stabilityTolerance, crit,
                                           // Ignore conflicts with installed mods
                                           new List<CkanModule>())
-                                     .Select(dep => indexedNode(registry, dep, relationship, relDescr, crit))
+                                     .Select(dep => IndexedNode(registry, dep, relationship, relDescr, stabilityTolerance, crit))
                                      .ToList();
 
             // Check if this dependency is installed
@@ -305,11 +319,11 @@ namespace CKAN.GUI
             {
                 if (matched == null)
                 {
-                    childNodes.Add(nonModuleNode(relDescr, null, relationship));
+                    childNodes.Add(NonModuleNode(relDescr, null, relationship));
                 }
                 else
                 {
-                    var newNode = indexedNode(registry, matched, relationship, relDescr, crit);
+                    var newNode = IndexedNode(registry, matched, relationship, relDescr, stabilityTolerance, crit);
                     if (childNodes.FindIndex(nd => (nd.Tag as CkanModule)?.identifier == matched.identifier)
                         is int index && index != -1)
                     {
@@ -344,25 +358,28 @@ namespace CKAN.GUI
             }
         }
 
-        private IEnumerable<TreeNode> ReverseRelationships(IRegistryQuerier registry, CkanModule module, GameVersionCriteria crit)
+        private IEnumerable<TreeNode> ReverseRelationships(IRegistryQuerier         registry,
+                                                           CkanModule               module,
+                                                           StabilityToleranceConfig stabilityTolerance,
+                                                           GameVersionCriteria      crit)
         {
-            var compat   = registry.CompatibleModules(crit).ToArray();
-            var incompat = registry.IncompatibleModules(crit).ToArray();
+            var compat   = registry.CompatibleModules(stabilityTolerance, crit).ToArray();
+            var incompat = registry.IncompatibleModules(stabilityTolerance, crit).ToArray();
             var toFind   = new CkanModule[] { module };
             return kindsOfRelationships.SelectMany(relationship =>
                 compat.SelectMany(otherMod =>
                     GetModRelationships(otherMod, relationship)
                         .Where(r => r.MatchesAny(toFind, null, null))
-                        .Select(r => indexedNode(registry, otherMod, relationship, r, crit)))
+                        .Select(r => IndexedNode(registry, otherMod, relationship, r, stabilityTolerance, crit)))
                 .Concat(incompat.SelectMany(otherMod =>
                     GetModRelationships(otherMod, relationship)
                         .Where(r => r.MatchesAny(toFind, null, null))
-                        .Select(r => indexedNode(registry, otherMod, relationship, r, crit)))));
+                        .Select(r => IndexedNode(registry, otherMod, relationship, r, stabilityTolerance, crit)))));
         }
 
         private static TreeNode providesNode(string           identifier,
-                                      RelationshipType relationship,
-                                      TreeNode[]       children)
+                                             RelationshipType relationship,
+                                             TreeNode[]       children)
         {
             int icon = (int)relationship + 1;
             var node = new TreeNode(string.Format(Properties.Resources.ModInfoVirtual,
@@ -370,28 +387,29 @@ namespace CKAN.GUI
                                     icon, icon, children)
             {
                 Name        = identifier,
-                ToolTipText = relationship.Localize(),
+                ToolTipText = relationship.LocalizeDescription(),
                 ForeColor   = SystemColors.GrayText,
             };
             return node;
         }
 
-        private TreeNode indexedNode(IRegistryQuerier       registry,
-                                     CkanModule             module,
-                                     RelationshipType       relationship,
-                                     RelationshipDescriptor relDescr,
-                                     GameVersionCriteria?   crit)
+        private TreeNode IndexedNode(IRegistryQuerier         registry,
+                                     CkanModule               module,
+                                     RelationshipType         relationship,
+                                     RelationshipDescriptor   relDescr,
+                                     StabilityToleranceConfig stabilityTolerance,
+                                     GameVersionCriteria?     crit)
         {
             int icon = (int)relationship + 1;
             bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
-            bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, crit);
-            string suffix = compatible || manager?.CurrentInstance == null
+            bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, stabilityTolerance, crit);
+            string suffix = compatible || Manager?.CurrentInstance == null
                 ? ""
-                : $" ({registry.CompatibleGameVersions(manager.CurrentInstance.game, module.identifier)})";
+                : $" ({registry.CompatibleGameVersions(Manager.CurrentInstance.game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
             {
                 Name        = module.identifier,
-                ToolTipText = $"{relationship.Localize()} {relDescr}",
+                ToolTipText = $"{relationship.LocalizeDescription()} {relDescr}",
                 Tag         = module,
                 ForeColor   = (compatible && !missingDLC)
                                   ? SystemColors.WindowText
@@ -403,7 +421,7 @@ namespace CKAN.GUI
             };
         }
 
-        private TreeNode nonModuleNode(RelationshipDescriptor relDescr,
+        private TreeNode NonModuleNode(RelationshipDescriptor relDescr,
                                        ModuleVersion?         version,
                                        RelationshipType       relationship)
         {
@@ -411,13 +429,13 @@ namespace CKAN.GUI
             return new TreeNode($"{relDescr} {version}", icon, icon)
             {
                 Name        = relDescr.ToString(),
-                ToolTipText = relationship.Localize(),
+                ToolTipText = relationship.LocalizeDescription(),
                 NodeFont    = new Font(DependsGraphTree.Font,
                                        FontStyle.Bold),
             };
         }
 
-        private static TreeNode nonindexedNode(RelationshipDescriptor relDescr,
+        private static TreeNode NonindexedNode(RelationshipDescriptor relDescr,
                                         RelationshipType       relationship)
         {
             // Completely nonexistent dependency, e.g. "AJE"
@@ -427,16 +445,16 @@ namespace CKAN.GUI
                                 icon, icon)
             {
                 Name        = relDescr.ToString(),
-                ToolTipText = relationship.Localize(),
+                ToolTipText = relationship.LocalizeDescription(),
                 ForeColor   = Color.Red
             };
         }
 
-        private TreeNode providedNode(string identifier)
+        private TreeNode ProvidedNode(string identifier)
             => new TreeNode(identifier, 1, 1)
             {
                 Name        = identifier,
-                ToolTipText = $"{RelationshipType.Provides.Localize()} {identifier}",
+                ToolTipText = $"{RelationshipType.Provides.LocalizeDescription()} {identifier}",
             };
 
     }

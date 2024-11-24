@@ -341,4 +341,10 @@ Free up space on that device or change your settings to use another location.
   <data name="ModpackName" xml:space="preserve"><value>installed-{0}</value></data>
   <data name="InstalledModuleToString" xml:space="preserve"><value>{0} (installed {1})</value></data>
   <data name="InstalledModuleToStringAutoInstalled" xml:space="preserve"><value>{0} (installed {1}, auto-installed)</value></data>
+  <data name="ReleaseStatusStableName" xml:space="preserve"><value>Stable</value></data>
+  <data name="ReleaseStatusStableDescription" xml:space="preserve"><value>Normal releases</value></data>
+  <data name="ReleaseStatusTestingName" xml:space="preserve"><value>Testing</value></data>
+  <data name="ReleaseStatusTestingDescription" xml:space="preserve"><value>Pre-releases for adventurous users</value></data>
+  <data name="ReleaseStatusDevelopmentName" xml:space="preserve"><value>Development</value></data>
+  <data name="ReleaseStatusDevelopmentDescription" xml:space="preserve"><value>Bleeding edge unstable</value></data>
 </root>

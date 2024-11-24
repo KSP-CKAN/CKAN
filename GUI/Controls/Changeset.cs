@@ -161,7 +161,7 @@ namespace CKAN.GUI
         public readonly string?      Conflict     = null;
 
         public string Mod         => Change.NameAndStatus ?? "";
-        public string ChangeType  => Change.ChangeType.Localize();
+        public string ChangeType  => Change.ChangeType.LocalizeDescription();
         public string Reasons     { get; private set; }
         public Bitmap DeleteImage => Change.IsRemovable ? EmbeddedImages.textClear ?? EmptyBitmap
                                                         : EmptyBitmap;

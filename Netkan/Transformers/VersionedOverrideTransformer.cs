@@ -160,14 +160,14 @@ namespace CKAN.NetKAN.Transformers
                     {
                         ModuleService.ApplyVersions(
                             metadata,
-                            overrides.ContainsKey("ksp_version")
-                                ? GameVersion.Parse((string?)overrides["ksp_version"])
+                            (string?)overrides["ksp_version"] is string v1
+                                ? GameVersion.Parse(v1)
                                 : null,
-                            overrides.ContainsKey("ksp_version_min")
-                                ? GameVersion.Parse((string?)overrides["ksp_version_min"])
+                            (string?)overrides["ksp_version_min"] is string v2
+                                ? GameVersion.Parse(v2)
                                 : null,
-                            overrides.ContainsKey("ksp_version_max")
-                                ? GameVersion.Parse((string?)overrides["ksp_version_max"])
+                            (string?)overrides["ksp_version_max"] is string v3
+                                ? GameVersion.Parse(v3)
                                 : null
                         );
                         foreach (var p in gameVersionProperties)

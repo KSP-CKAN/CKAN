@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
-namespace CKAN
+namespace CKAN.Configuration
 {
     [JsonConverter(typeof(CompatibleGameVersionsConverter))]
     public class CompatibleGameVersions

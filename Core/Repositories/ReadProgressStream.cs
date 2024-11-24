@@ -40,12 +40,6 @@ namespace CKAN
     {
         protected ContainerStream(Stream stream)
         {
-            if (stream == null)
-            {
-                #pragma warning disable IDE0016
-                throw new ArgumentNullException(nameof(stream));
-                #pragma warning restore IDE0016
-            }
             inner = stream;
         }
 

@@ -17,7 +17,7 @@ namespace CKAN.CmdLine
             this.user     = user;
         }
 
-        public int RunCommand(CKAN.GameInstance ksp, object raw_options)
+        public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             SearchOptions options = (SearchOptions)raw_options;
 
@@ -32,11 +32,11 @@ namespace CKAN.CmdLine
                 return Exit.BADOPT;
             }
 
-            var matching_compatible = PerformSearch(ksp, options.search_term, options.author_term, false);
+            var matching_compatible = PerformSearch(instance, options.search_term, options.author_term, false);
             var matching_incompatible = new List<CkanModule>();
             if (options.all)
             {
-                matching_incompatible = PerformSearch(ksp, options.search_term, options.author_term, true);
+                matching_incompatible = PerformSearch(instance, options.search_term, options.author_term, true);
             }
 
             // Show how many matches we have.
@@ -94,10 +94,10 @@ namespace CKAN.CmdLine
                     user.RaiseMessage(Properties.Resources.SearchIncompatibleModsHeader);
                     foreach (CkanModule mod in matching_incompatible)
                     {
-                        CkanModule.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var minKsp, out var maxKsp);
-                        var gv = GameVersionRange.VersionSpan(ksp.game,
-                                                              minKsp ?? GameVersion.Any,
-                                                              maxKsp ?? GameVersion.Any)
+                        CkanModule.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var mininstance, out var maxinstance);
+                        var gv = GameVersionRange.VersionSpan(instance.game,
+                                                              mininstance ?? GameVersion.Any,
+                                                              maxinstance ?? GameVersion.Any)
                                                  .ToString();
 
                         user.RaiseMessage(Properties.Resources.SearchIncompatibleMod,
@@ -125,15 +125,15 @@ namespace CKAN.CmdLine
         }
 
         /// <summary>
-        /// Searches for the term in the list of compatible or incompatible modules for the ksp instance.
+        /// Searches for the term in the list of compatible or incompatible modules for the instance instance.
         /// Looks in name, identifier and description fields, and if given, restricts to authors matching the author term.
         /// </summary>
         /// <returns>List of matching modules.</returns>
-        /// <param name="ksp">The KSP instance to perform the search for.</param>
+        /// <param name="instance">The instance instance to perform the search for.</param>
         /// <param name="term">The search term. Case insensitive.</param>
         /// <param name="author">Name of author to find</param>
         /// <param name="searchIncompatible">True to look for incompatible modules, false (default) to look for compatible</param>
-        public List<CkanModule> PerformSearch(CKAN.GameInstance ksp,
+        public List<CkanModule> PerformSearch(CKAN.GameInstance instance,
                                               string?           term,
                                               string?           author             = null,
                                               bool              searchIncompatible = false)
@@ -142,11 +142,12 @@ namespace CKAN.CmdLine
             term   = string.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
             author = string.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
 
-            var registry = RegistryManager.Instance(ksp, repoData).registry;
+            var registry = RegistryManager.Instance(instance, repoData).registry;
 
             return searchIncompatible
                 ? registry
-                    .IncompatibleModules(ksp.VersionCriteria())
+                    .IncompatibleModules(instance.StabilityToleranceConfig,
+                                         instance.VersionCriteria())
                     // Look for a match in each string.
                     .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
                             || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
@@ -155,7 +156,8 @@ namespace CKAN.CmdLine
                             && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
                     .ToList()
                 : registry
-                    .CompatibleModules(ksp.VersionCriteria())
+                    .CompatibleModules(instance.StabilityToleranceConfig,
+                                       instance.VersionCriteria())
                     // Look for a match in each string.
                     .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
                             || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
@@ -190,9 +192,10 @@ namespace CKAN.CmdLine
         /// <param name="modules">List of strings to convert, format 'identifier' or 'identifier=version'</param>
         public static void AdjustModulesCase(CKAN.GameInstance instance, Registry registry, List<string> modules)
         {
+            var stabilityTolerance = instance.StabilityToleranceConfig;
             // Get the list of all compatible and incompatible mods
-            List<CkanModule> mods = registry.CompatibleModules(instance.VersionCriteria()).ToList();
-            mods.AddRange(registry.IncompatibleModules(instance.VersionCriteria()));
+            var mods = registry.CompatibleModules(stabilityTolerance, instance.VersionCriteria()).ToList();
+            mods.AddRange(registry.IncompatibleModules(stabilityTolerance, instance.VersionCriteria()));
             for (int i = 0; i < modules.Count; ++i)
             {
                 Match match = CkanModule.idAndVersionMatcher.Match(modules[i]);

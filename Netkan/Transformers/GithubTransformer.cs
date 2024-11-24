@@ -18,17 +18,12 @@ namespace CKAN.NetKAN.Transformers
         private static readonly ILog Log = LogManager.GetLogger(typeof(GithubTransformer));
 
         private readonly IGithubApi _api;
-        private readonly bool       _matchPreleases;
+        private readonly bool?      _matchPreleases;
 
         public string Name => "github";
 
-        public GithubTransformer(IGithubApi api, bool matchPreleases)
+        public GithubTransformer(IGithubApi api, bool? matchPreleases)
         {
-            if (api == null)
-            {
-                throw new ArgumentNullException(nameof(api));
-            }
-
             _api            = api;
             _matchPreleases = matchPreleases;
         }
@@ -45,20 +40,12 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing GitHub transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
-                var useSourceAchive = false;
+                var conf = (json.TryGetValue("x_netkan_github", out JToken? jtok)
+                            && jtok is JObject jobj
+                                ? jobj.ToObject<GitHubConfig>() : null)
+                           ?? new GitHubConfig();
 
-                var githubMetadata = (JObject?)json["x_netkan_github"];
-                if (githubMetadata != null)
-                {
-                    var githubUseSourceArchive = (bool?)githubMetadata["use_source_archive"];
-
-                    if (githubUseSourceArchive != null)
-                    {
-                        useSourceAchive = githubUseSourceArchive.Value;
-                    }
-                }
-
-                var ghRef = new GithubRef(metadata.Kref, useSourceAchive, _matchPreleases);
+                var ghRef = new GithubRef(metadata.Kref, conf.UseSourceArchive);
 
                 // Get the GitHub repository
                 var ghRepo = _api.GetRepo(ghRef);
@@ -70,7 +57,7 @@ namespace CKAN.NetKAN.Transformers
                 {
                     Log.Warn("Repo is archived, consider freezing");
                 }
-                var releases = _api.GetAllReleases(ghRef);
+                var releases = _api.GetAllReleases(ghRef, _matchPreleases ?? conf.Prereleases);
                 if (opts.SkipReleases.HasValue)
                 {
                     releases = releases.Skip(opts.SkipReleases.Value);
@@ -210,6 +197,11 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("name", repoName);
                 }
 
+                if (ghRelease.PreRelease)
+                {
+                    json.SafeAdd("release_status", "testing");
+                }
+
                 json.SafeMerge(
                     "x_netkan_version_pieces",
                     JObject.FromObject(new Dictionary<string, string>{ {"tag", ghRelease.Tag.ToString()} }));
@@ -247,7 +239,7 @@ namespace CKAN.NetKAN.Transformers
             => repo.TraverseNodes(r => r.ParentRepo == null
                                            ? null
                                            : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}",
-                                                          false, _matchPreleases)))
+                                                          false)))
                    .Reverse()
                    .SelectMany(r => r.Owner?.Type switch
                                     {

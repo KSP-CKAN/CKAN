@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 
 namespace CKAN
@@ -135,22 +136,23 @@ namespace CKAN
         {
         }
 
-        public ResolvedByNew(CkanModule              source,
-                             RelationshipDescriptor  relationship,
-                             SelectionReason         reason,
-                             IEnumerable<CkanModule> providers,
-                             ICollection<CkanModule> definitelyInstalling,
-                             ICollection<CkanModule> allInstalling,
-                             IRegistryQuerier        registry,
-                             ICollection<string>     dlls,
-                             ICollection<CkanModule> installed,
-                             GameVersionCriteria     crit,
-                             OptionalRelationships   optRels,
-                             RelationshipCache       relationshipCache)
+        public ResolvedByNew(CkanModule               source,
+                             RelationshipDescriptor   relationship,
+                             SelectionReason          reason,
+                             IEnumerable<CkanModule>  providers,
+                             ICollection<CkanModule>  definitelyInstalling,
+                             ICollection<CkanModule>  allInstalling,
+                             IRegistryQuerier         registry,
+                             ICollection<string>      dlls,
+                             ICollection<CkanModule>  installed,
+                             StabilityToleranceConfig stabilityTolerance,
+                             GameVersionCriteria      crit,
+                             OptionalRelationships    optRels,
+                             RelationshipCache        relationshipCache)
              : this(source, relationship, reason,
                     providers.ToDictionary(prov => prov,
                                            prov => ResolvedRelationshipsTree.ResolveModule(
-                                                       prov, definitelyInstalling, allInstalling, registry, dlls, installed, crit,
+                                                       prov, definitelyInstalling, allInstalling, registry, dlls, installed, stabilityTolerance, crit,
                                                        relationship.suppress_recommendations
                                                            ? optRels & ~OptionalRelationships.Recommendations
                                                                      & ~OptionalRelationships.Suggestions

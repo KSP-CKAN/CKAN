@@ -112,7 +112,7 @@ namespace CKAN.GUI
                 : (((maxEnumVal + 1) * Mod.GetHashCode()) + (int)ChangeType);
 
         public override string ToString()
-            => $"{ChangeType.Localize()} {Mod} ({Description})";
+            => $"{ChangeType.LocalizeDescription()} {Mod} ({Description})";
 
         public virtual string? NameAndStatus
             => Main.Instance?.Manager?.Cache?.DescribeAvailability(Mod);

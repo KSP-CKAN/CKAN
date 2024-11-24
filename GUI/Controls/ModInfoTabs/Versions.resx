@@ -117,14 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve"><value>All available versions of selected mod</value></data>
+  <data name="OverallSummaryLabel.Text" xml:space="preserve"><value>All available versions of selected mod:</value></data>
   <data name="ModVersion.Text" xml:space="preserve"><value>Mod version</value></data>
   <data name="CompatibleGameVersion.Text" xml:space="preserve"><value>Game versions</value></data>
   <data name="ReleaseDate.Text" xml:space="preserve"><value>Release date</value></data>
-  <data name="label2.Text" xml:space="preserve"><value>Green</value></data>
-  <data name="label3.Text" xml:space="preserve"><value>Light green</value></data>
-  <data name="label4.Text" xml:space="preserve"><value>Bold</value></data>
-  <data name="label5.Text" xml:space="preserve"><value>- latest compatible version (likely to be installed)</value></data>
-  <data name="label6.Text" xml:space="preserve"><value>- version is compatible with your game</value></data>
-  <data name="label7.Text" xml:space="preserve"><value>- currently installed version</value></data>
+  <data name="LatestCompatibleLabel.Text" xml:space="preserve"><value>Latest compatible version (likely to be installed)</value></data>
+  <data name="CompatibleLabel.Text" xml:space="preserve"><value>Version is compatible with your game</value></data>
+  <data name="InstalledLabel.Text" xml:space="preserve"><value>Currently installed version</value></data>
+  <data name="PrereleaseLabel.Text" xml:space="preserve"><value>Less stable than stability tolerance setting</value></data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve"><value>Mod stability override:</value></data>
 </root>

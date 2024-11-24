@@ -46,13 +46,8 @@ namespace CKAN.NetKAN.Model
                 .Select(u => new Uri(u).Host)
                 .ToArray();
 
-        public Metadata(JObject? json)
+        public Metadata(JObject json)
         {
-            if (json == null)
-            {
-                throw new ArgumentNullException(nameof(json));
-            }
-
             _json = json;
 
             if (json.TryGetValue(KrefPropertyName, out JToken? krefToken))
@@ -130,7 +125,7 @@ namespace CKAN.NetKAN.Model
             }
         }
 
-        public Metadata(YamlMappingNode yaml) : this(yaml?.ToJObject())
+        public Metadata(YamlMappingNode yaml) : this(yaml.ToJObject())
         {
         }
 
@@ -142,6 +137,21 @@ namespace CKAN.NetKAN.Model
                    : PropertySortTransformer.SortProperties(
                        new Metadata(MergeJson(modules.Select(m => m._json)
                                                      .ToArray())));
+
+        public Metadata MergeFrom(JObject[] jsons)
+        {
+            var mergeSettings = new JsonMergeSettings()
+            {
+                MergeArrayHandling     = MergeArrayHandling.Replace,
+                MergeNullValueHandling = MergeNullValueHandling.Merge,
+            };
+            var main = Json();
+            foreach (var other in jsons)
+            {
+                main.Merge(other, mergeSettings);
+            }
+            return new Metadata(main);
+        }
 
         private static JObject MergeJson(JObject[] jsons)
         {
@@ -208,6 +218,8 @@ namespace CKAN.NetKAN.Model
             && (string?)hashes["sha1"] is string sha1
                 ? new Uri($"https://archive.org/download/{Identifier}-{verStr}/{sha1[..8]}-{Identifier}-{verStr}.zip")
                 : null;
+
+        public bool Prerelease => _json["release_status"]?.ToString() is "testing" or "development";
 
         public JObject Json() => (JObject)_json.DeepClone();
     }

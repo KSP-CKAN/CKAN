@@ -967,7 +967,7 @@ namespace CKAN.GUI
             {
                 switch (e?.PropertyName)
                 {
-                    case "SelectedMod":
+                    case nameof(GUIMod.SelectedMod):
                         Util.Invoke(this, () =>
                         {
                             if (row.Cells[Installed.Index] is DataGridViewCheckBoxCell instCell)
@@ -1002,13 +1002,13 @@ namespace CKAN.GUI
                         });
                         break;
 
-                    case "IsAutoInstalled":
+                    case nameof(GUIMod.IsAutoInstalled):
                         // Update the changeset
                         UpdateChangeSetAndConflicts(currentInstance,
                             RegistryManager.Instance(currentInstance, repoData).registry);
                         break;
 
-                    case "IsCached":
+                    case nameof(GUIMod.IsCached):
                         row.Visible = mainModList.IsVisible(gmod,
                                                             currentInstance.Name,
                                                             currentInstance.game,
@@ -2009,10 +2009,11 @@ namespace CKAN.GUI
                        gmod.SelectedMod = ch.targetMod;
                     }
                 }
-                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.game, gameVersion);
+                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.game,
+                                                                              inst.StabilityToleranceConfig, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
-                    item => new GUIMod(item.Key, repoData, registry, gameVersion, null,
+                    item => new GUIMod(item.Key, repoData, registry, inst.StabilityToleranceConfig, gameVersion, null,
                                        guiConfig?.HideEpochs ?? false,
                                        guiConfig?.HideV      ?? false),
                     item => item.Value);

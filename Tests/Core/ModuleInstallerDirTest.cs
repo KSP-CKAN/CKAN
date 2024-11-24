@@ -62,7 +62,7 @@ namespace Tests.Core
             HashSet<string>? possibleConfigOnlyDirs = null;
             _installer.InstallList(
                 new List<CkanModule>() { _testModule! },
-                new RelationshipResolverOptions(),
+                new RelationshipResolverOptions(_instance.KSP.StabilityToleranceConfig),
                 _registryManager,
                 ref possibleConfigOnlyDirs);
         }

@@ -19,7 +19,9 @@ namespace CKAN.GUI
         public LabeledProgressBar()
             : base()
         {
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            SetStyle(ControlStyles.OptimizedDoubleBuffer
+                     | ControlStyles.UserPaint,
+                     true);
             Font = SystemFonts.DefaultFont;
             Text = "";
         }
@@ -31,12 +33,12 @@ namespace CKAN.GUI
         [EditorBrowsable(EditorBrowsableState.Always)]
         // If we use override instead of new, the nullability never matches (!)
         public new string Text {
-            get => text;
-            [MemberNotNull(nameof(text), nameof(textSize))]
+            get => base.Text;
+            [MemberNotNull(nameof(textSize))]
             set
             {
-                text     = value;
-                textSize = TextRenderer.MeasureText(text, Font);
+                base.Text = value;
+                textSize  = TextRenderer.MeasureText(Text, Font);
             }
         }
 
@@ -45,18 +47,33 @@ namespace CKAN.GUI
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         [EditorBrowsable(EditorBrowsableState.Always)]
         // If we use override instead of new, the nullability never matches (!)
-        public new Font Font { get; set; }
+        public new Font Font
+        {
+            get => base.Font;
+            [MemberNotNull(nameof(textSize))]
+            set
+            {
+                base.Font = value;
+                textSize  = TextRenderer.MeasureText(Text, Font);
+            }
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
+            ProgressBarRenderer.DrawHorizontalBar(e.Graphics, ClientRectangle);
+            ProgressBarRenderer.DrawHorizontalChunks(e.Graphics,
+                                                     new Rectangle(ClientRectangle.X,
+                                                                   ClientRectangle.Y,
+                                                                   ClientRectangle.Width
+                                                                       * (Value - Minimum)
+                                                                       / (Maximum - Minimum),
+                                                                   ClientRectangle.Height));
             TextRenderer.DrawText(e.Graphics, Text, Font,
                                   new Point((Width  - textSize.Width)  / 2,
                                             (Height - textSize.Height) / 2),
                                   SystemColors.ControlText);
         }
 
-        private string text;
-        private Size   textSize;
+        private Size textSize;
     }
 }

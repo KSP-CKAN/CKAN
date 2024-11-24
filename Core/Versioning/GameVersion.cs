@@ -323,13 +323,8 @@ namespace CKAN.Versioning
         /// A <see cref="GameVersion"/> object that is equivalent to the version number specified in the
         /// <see cref="input"/> parameter.
         /// </returns>
-        public static GameVersion Parse(string? input)
+        public static GameVersion Parse(string input)
         {
-            if (input is null)
-            {
-                throw new ArgumentNullException(nameof(input));
-            }
-
             if (TryParse(input, out GameVersion? result) && result is not null)
             {
                 return result;

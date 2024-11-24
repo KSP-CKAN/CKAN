@@ -116,8 +116,11 @@ namespace CKAN
         [JsonConverter(typeof(JsonRelationshipConverter))]
         public List<RelationshipDescriptor>? recommends;
 
-        [JsonProperty("release_status", Order = 14, NullValueHandling = NullValueHandling.Ignore)]
-        public ReleaseStatus? release_status;
+        [JsonProperty("release_status", Order = 14,
+                      NullValueHandling = NullValueHandling.Ignore,
+                      DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(ReleaseStatus.stable)]
+        public ReleaseStatus? release_status = ReleaseStatus.stable;
 
         [JsonProperty("resources", Order = 15, NullValueHandling = NullValueHandling.Ignore)]
         public ResourcesDescriptor? resources;
@@ -354,6 +357,15 @@ namespace CKAN
                 throw new BadMetadataKraken(null,
                                             string.Format(Properties.Resources.CkanModuleMissingRequired,
                                                           identifier, "download"));
+            }
+            if (release_status is not (ReleaseStatus.stable
+                                       or ReleaseStatus.development
+                                       or ReleaseStatus.testing))
+            {
+                throw new BadMetadataKraken(
+                    null,
+                    string.Format(Properties.Resources.ReleaseStatusInvalid,
+                                  release_status));
             }
         }
 
@@ -668,7 +680,7 @@ namespace CKAN
         /// Returns true if we support at least spec_version of the CKAN spec.
         /// </summary>
         internal static bool IsSpecSupported(ModuleVersion spec_version)
-            => Meta.ReleaseVersion.IsGreaterThan(spec_version);
+            => Meta.IsNetKAN || Meta.ReleaseVersion.IsGreaterThan(spec_version);
 
         /// <summary>
         /// Returns true if we support the CKAN spec used by this module.

@@ -141,8 +141,7 @@ namespace CKAN
             }
             var resolver = new RelationshipResolver(modules, null, options,
                                                     registry_manager.registry,
-                                                    instance.game,
-                                                    instance.VersionCriteria());
+                                                    instance.game, instance.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             // Alert about attempts to install DLC before downloading or installing anything
             if (modsToInstall.Any(m => m.IsDLC))
@@ -850,8 +849,7 @@ namespace CKAN
                             .Where(im => !revdep.Contains(im.identifier))
                             .Concat(installing?.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)) ?? Array.Empty<InstalledModule>())
                             .ToList(),
-                        instance.game,
-                        instance.VersionCriteria())
+                        instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
                     .Select(im => im.identifier))
                 .ToList();
 
@@ -1324,10 +1322,9 @@ namespace CKAN
                 modules,
                 modules.Select(m => registry.InstalledModule(m.identifier)?.Module)
                        .OfType<CkanModule>(),
-                RelationshipResolverOptions.DependsOnlyOpts(),
+                RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
                 registry,
-                instance.game,
-                instance.VersionCriteria());
+                instance.game, instance.VersionCriteria());
             modules = resolver.ModList().ToArray();
             var autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
 
@@ -1424,8 +1421,7 @@ namespace CKAN
                             .Where(im => !removingIdents.Contains(im.identifier))
                             .Concat(modules.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)))
                             .ToList(),
-                    instance.game,
-                    instance.VersionCriteria())
+                    instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
                 .ToList();
             if (autoRemoving.Count > 0)
             {
@@ -1584,7 +1580,7 @@ namespace CKAN
             var crit     = instance.VersionCriteria();
             var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
                                                     null,
-                                                    RelationshipResolverOptions.KitchenSinkOpts(),
+                                                    RelationshipResolverOptions.KitchenSinkOpts(instance.StabilityToleranceConfig),
                                                     registry, instance.game, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
 
@@ -1593,7 +1589,7 @@ namespace CKAN
                                                           .Any(r => r is SelectionReason.Recommended { ProvidesIndex: 0 }))
                                       .ToHashSet();
             var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), null,
-                                                       RelationshipResolverOptions.ConflictsOpts(),
+                                                       RelationshipResolverOptions.ConflictsOpts(instance.StabilityToleranceConfig),
                                                        registry, instance.game, crit)
                                   .ConflictList.Keys;
             // Don't check recommendations that conflict with installed or installing mods
@@ -1621,7 +1617,7 @@ namespace CKAN
                                                              .Select(m => m.identifier)
                                                              .ToList());
 
-            var opts = RelationshipResolverOptions.DependsOnlyOpts();
+            var opts = RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig);
             supporters = resolver.Supporters(recommenders,
                                              recommenders.Concat(recommendations.Keys)
                                                          .Concat(suggestions.Keys))
@@ -1768,6 +1764,7 @@ namespace CKAN
             }
             var installable = matched.Values.SelectMany(modules => modules)
                                             .Where(m => registry.IdentifierCompatible(m.identifier,
+                                                                                      instance.StabilityToleranceConfig,
                                                                                       instance.VersionCriteria()))
                                             .ToHashSet();
 

@@ -38,6 +38,8 @@ namespace CKAN.CmdLine
 
             try
             {
+                var instance = MainClass.GetGameInstance(manager);
+                var stabilityTolerance = instance.StabilityToleranceConfig;
                 if (options.repositoryURLs != null || options.game != null)
                 {
                     var game  = options.game == null ? KnownGames.knownGames.First()
@@ -59,13 +61,13 @@ namespace CKAN.CmdLine
                     if (options.list_changes)
                     {
                         var availablePrior = repoData.GetAllAvailableModules(repos)
-                                                     .Select(am => am.Latest())
+                                                     .Select(am => am.Latest(stabilityTolerance))
                                                      .OfType<CkanModule>()
                                                      .ToList();
                         UpdateRepositories(game, repos, options.NetUserAgent, options.force);
                         PrintChanges(availablePrior,
                                      repoData.GetAllAvailableModules(repos)
-                                             .Select(am => am.Latest())
+                                             .Select(am => am.Latest(stabilityTolerance))
                                              .OfType<CkanModule>()
                                              .ToList());
                     }
@@ -76,16 +78,15 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    var instance = MainClass.GetGameInstance(manager);
                     if (options.list_changes)
                     {
                         // Get a list of compatible modules prior to the update.
                         var registry = RegistryManager.Instance(instance, repoData).registry;
                         var crit     = instance.VersionCriteria();
-                        var compatible_prior = registry.CompatibleModules(crit).ToList();
+                        var compatible_prior = registry.CompatibleModules(stabilityTolerance, crit).ToList();
                         UpdateRepositories(instance, options.NetUserAgent, options.force);
                         PrintChanges(compatible_prior,
-                                     registry.CompatibleModules(crit).ToList());
+                                     registry.CompatibleModules(stabilityTolerance, crit).ToList());
                     }
                     else
                     {
@@ -186,7 +187,9 @@ namespace CKAN.CmdLine
             if (result == RepositoryDataManager.UpdateResult.Updated)
             {
                 user.RaiseMessage(Properties.Resources.UpdateSummary,
-                                  registry.CompatibleModules(instance.VersionCriteria()).Count());
+                                  registry.CompatibleModules(instance.StabilityToleranceConfig,
+                                                             instance.VersionCriteria())
+                                          .Count());
             }
         }
 

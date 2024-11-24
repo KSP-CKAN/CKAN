@@ -218,6 +218,10 @@
                 "use_source_archive": {
                     "description": "If true, the release's source ZIP will be used instead of an asset",
                     "type": "boolean"
+                },
+                "prereleases": {
+                    "description": "Skip prereleases if false, skip regular releases if true, use both if absent",
+                    "type": "boolean"
                 }
             }
         },

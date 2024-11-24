@@ -9,8 +9,10 @@ using System.Windows.Forms;
 using System.Runtime.Versioning;
 #endif
 
+using Autofac;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 #if !NET8_0_OR_GREATER
 using CKAN.Extensions;
@@ -110,13 +112,14 @@ namespace CKAN.GUI
                 Values = new List<string>() { new ModSearch(filter, tag, label).Combined ?? "" },
             };
 
-        private static readonly RelationshipResolverOptions conflictOptions = new RelationshipResolverOptions()
-        {
-            without_toomanyprovides_kraken = true,
-            proceed_with_inconsistencies   = true,
-            without_enforce_consistency    = true,
-            with_recommends                = false
-        };
+        private static RelationshipResolverOptions conflictOptions(StabilityToleranceConfig stabilityTolerance)
+            => new RelationshipResolverOptions(stabilityTolerance)
+            {
+                without_toomanyprovides_kraken = true,
+                proceed_with_inconsistencies   = true,
+                without_enforce_consistency    = true,
+                with_recommends                = false
+            };
 
         /// <summary>
         /// Returns a changeset and conflicts based on the selections of the user.
@@ -125,17 +128,18 @@ namespace CKAN.GUI
         /// <param name="changeSet"></param>
         /// <param name="version">The version of the current game instance</param>
         public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
-            IRegistryQuerier    registry,
-            HashSet<ModChange>  changeSet,
-            IGame               game,
-            GameVersionCriteria version)
+            IRegistryQuerier         registry,
+            HashSet<ModChange>       changeSet,
+            IGame                    game,
+            StabilityToleranceConfig stabilityTolerance,
+            GameVersionCriteria      version)
         {
             var modules_to_install = new List<CkanModule>();
             var modules_to_remove = new HashSet<CkanModule>();
             var extraInstalls = new HashSet<CkanModule>();
 
             changeSet.UnionWith(changeSet.Where(ch => ch.ChangeType == GUIModChangeType.Replace)
-                                         .Select(ch => registry.GetReplacement(ch.Mod, version))
+                                         .Select(ch => registry.GetReplacement(ch.Mod, stabilityTolerance, version))
                                          .OfType<ModuleReplacement>()
                                          .GroupBy(repl => repl.ReplaceWith)
                                          .Select(grp => new ModChange(grp.Key, GUIModChangeType.Install,
@@ -160,7 +164,7 @@ namespace CKAN.GUI
                         modules_to_remove.Add(change.Mod);
                         break;
                     case GUIModChangeType.Replace:
-                        if (registry.GetReplacement(change.Mod, version) is ModuleReplacement repl)
+                        if (registry.GetReplacement(change.Mod, stabilityTolerance, version) is ModuleReplacement repl)
                         {
                             modules_to_remove.Add(repl.ToReplace);
                             extraInstalls.Add(repl.ReplaceWith);
@@ -197,7 +201,7 @@ namespace CKAN.GUI
             }
 
             foreach (var im in registry.FindRemovableAutoInstalled(
-                InstalledAfterChanges(registry, changeSet).ToList(), game, version))
+                InstalledAfterChanges(registry, changeSet).ToList(), game, stabilityTolerance, version))
             {
                 changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
                 modules_to_remove.Add(im.Module);
@@ -206,7 +210,7 @@ namespace CKAN.GUI
             // Get as many dependencies as we can, but leave decisions and prompts for installation time
             var resolver = new RelationshipResolver(
                 modules_to_install, modules_to_remove,
-                conflictOptions, registry, game, version);
+                conflictOptions(stabilityTolerance), registry, game, version);
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
             return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>>(
@@ -507,7 +511,7 @@ namespace CKAN.GUI
             return (registry == null
                 ? modChanges
                 : modChanges.Union(
-                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), instance.game, crit)
+                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), instance.game, instance.StabilityToleranceConfig, crit)
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
                             new SelectionReason.NoLongerUsed()))))
@@ -610,6 +614,7 @@ namespace CKAN.GUI
                        .SelectMany(kvp => kvp.Value
                                              .Select(mod => registry.IsAutodetected(mod.identifier)
                                                             ? new GUIMod(mod, repoData, registry,
+                                                                         inst.StabilityToleranceConfig,
                                                                          versionCriteria, null,
                                                                          hideEpochs, hideV)
                                                               {
@@ -619,6 +624,7 @@ namespace CKAN.GUI
                                                               is InstalledModule found
                                                                 ? new GUIMod(found,
                                                                          repoData, registry,
+                                                                         inst.StabilityToleranceConfig,
                                                                          versionCriteria, null,
                                                                          hideEpochs, hideV)
                                                               {
@@ -626,18 +632,20 @@ namespace CKAN.GUI
                                                               }
                                                               : null))
                        .OfType<GUIMod>()
-                       .Concat(registry.CompatibleModules(versionCriteria)
+                       .Concat(registry.CompatibleModules(inst.StabilityToleranceConfig, versionCriteria)
                                        .Where(m => !installedIdents.Contains(m.identifier))
                                        .AsParallel()
                                        .Where(m => !m.IsDLC)
                                        .Select(m => new GUIMod(m, repoData, registry,
+                                                               inst.StabilityToleranceConfig,
                                                                versionCriteria, null,
                                                                hideEpochs, hideV)))
-                       .Concat(registry.IncompatibleModules(versionCriteria)
+                       .Concat(registry.IncompatibleModules(inst.StabilityToleranceConfig, versionCriteria)
                                        .Where(m => !installedIdents.Contains(m.identifier))
                                        .AsParallel()
                                        .Where(m => !m.IsDLC)
                                        .Select(m => new GUIMod(m, repoData, registry,
+                                                               inst.StabilityToleranceConfig,
                                                                versionCriteria, true,
                                                                hideEpochs, hideV)));
 

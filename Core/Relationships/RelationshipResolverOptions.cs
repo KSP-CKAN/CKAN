@@ -1,3 +1,5 @@
+using CKAN.Configuration;
+
 namespace CKAN
 {
     // TODO: It would be lovely to get rid of the `without` fields,
@@ -5,17 +7,22 @@ namespace CKAN
     // cases in their heads.
     public class RelationshipResolverOptions
     {
+        public RelationshipResolverOptions(StabilityToleranceConfig stabTolCfg)
+        {
+            stability_tolerance = stabTolCfg;
+        }
+
         /// <summary>
         /// Default options for relationship resolution.
         /// </summary>
-        public static RelationshipResolverOptions DefaultOpts()
-            => new RelationshipResolverOptions();
+        public static RelationshipResolverOptions DefaultOpts(StabilityToleranceConfig stabTolCfg)
+            => new RelationshipResolverOptions(stabTolCfg);
 
         /// <summary>
         /// Options to install without recommendations.
         /// </summary>
-        public static RelationshipResolverOptions DependsOnlyOpts()
-            => new RelationshipResolverOptions()
+        public static RelationshipResolverOptions DependsOnlyOpts(StabilityToleranceConfig stabTolCfg)
+            => new RelationshipResolverOptions(stabTolCfg)
             {
                 with_recommends   = false,
                 with_suggests     = false,
@@ -27,8 +34,8 @@ namespace CKAN
         /// of anything in the changeset (except when suppress_recommendations==true),
         /// without throwing exceptions, so the calling code can decide what to do about conflicts
         /// </summary>
-        public static RelationshipResolverOptions KitchenSinkOpts()
-            => new RelationshipResolverOptions()
+        public static RelationshipResolverOptions KitchenSinkOpts(StabilityToleranceConfig stabTolCfg)
+            => new RelationshipResolverOptions(stabTolCfg)
             {
                 with_recommends                = true,
                 with_suggests                  = true,
@@ -38,8 +45,8 @@ namespace CKAN
                 get_recommenders               = true,
             };
 
-        public static RelationshipResolverOptions ConflictsOpts()
-            => new RelationshipResolverOptions()
+        public static RelationshipResolverOptions ConflictsOpts(StabilityToleranceConfig stabTolCfg)
+            => new RelationshipResolverOptions(stabTolCfg)
             {
                 without_toomanyprovides_kraken = true,
                 proceed_with_inconsistencies   = true,
@@ -100,6 +107,11 @@ namespace CKAN
         /// ModuleRelationshipDescriptor.suppress_recommendations==true
         /// </summary>
         public bool get_recommenders = false;
+
+        /// <summary>
+        /// The least stable category of mods to allow
+        /// </summary>
+        public StabilityToleranceConfig? stability_tolerance;
 
         public RelationshipResolverOptions OptionsFor(RelationshipDescriptor descr)
             => descr.suppress_recommendations ? WithoutRecommendations() : this;
