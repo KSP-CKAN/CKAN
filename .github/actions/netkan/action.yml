@@ -23,4 +23,4 @@ runs:
     AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
     AWS_DEFAULT_REGION:    ${{ inputs.AWS_DEFAULT_REGION    }}
   args:
-    - ${{ input.args }}
+    - ${{ inputs.args }}
