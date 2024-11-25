@@ -1,0 +1,26 @@
+name: NetKAN
+description: Run commands in the NetKAN container
+
+inputs:
+  AWS_ACCESS_KEY_ID:
+    description: Credentials for AWS
+    required: true
+  AWS_SECRET_ACCESS_KEY:
+    description: Credentials for AWS
+    required: true
+  AWS_DEFAULT_REGION:
+    description: Region for AWS
+    required: true
+  args:
+    description: The command to run
+    required: true
+
+runs:
+  using: docker
+  image: kspckan/netkan
+  env:
+    AWS_ACCESS_KEY_ID:     ${{ inputs.AWS_ACCESS_KEY_ID     }}
+    AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
+    AWS_DEFAULT_REGION:    ${{ inputs.AWS_DEFAULT_REGION    }}
+  args:
+    - ${{ input.args }}
