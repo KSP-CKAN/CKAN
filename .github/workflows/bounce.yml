@@ -1,0 +1,21 @@
+name: Bounce the Inflators
+on:
+  workflow_dispatch:
+
+jobs:
+  bounce:
+    strategy:
+      matrix:
+        game:
+          - Ksp
+          - Ksp2
+    name: Bounce the ${{ matrix.game }} Inflator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run NetKAN redeploy command for ${{ matrix.game }}
+        uses: ./.github/actions/netkan
+        with:
+          AWS_ACCESS_KEY_ID:     ${{ secrets.AWS_ACCESS_KEY_ID     }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION:    us-west-2
+          args: redeploy-service --cluster NetKANCluster --service-name Inflator${{ matrix.game }}
