@@ -12,6 +12,7 @@ jobs:
     name: Bounce the ${{ matrix.game }} Inflator
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Run NetKAN redeploy command for ${{ matrix.game }}
         uses: ./.github/actions/netkan
         with:
