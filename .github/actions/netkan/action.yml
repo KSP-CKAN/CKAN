@@ -1,5 +1,5 @@
-name: NetKAN
-description: Run commands in the NetKAN container
+name: Redeploy NetKAN Service
+description: Run commands in the NetKAN container to redeploy a given service
 
 inputs:
   AWS_ACCESS_KEY_ID:
@@ -11,8 +11,8 @@ inputs:
   AWS_DEFAULT_REGION:
     description: Region for AWS
     required: true
-  args:
-    description: The command to run
+  service-name:
+    description: The service to redeploy
     required: true
 
 runs:
@@ -22,4 +22,9 @@ runs:
     AWS_ACCESS_KEY_ID:     ${{ inputs.AWS_ACCESS_KEY_ID     }}
     AWS_SECRET_ACCESS_KEY: ${{ inputs.AWS_SECRET_ACCESS_KEY }}
     AWS_DEFAULT_REGION:    ${{ inputs.AWS_DEFAULT_REGION    }}
-  args: ${{ inputs.args }}
+  args:
+    - redeploy-service
+    - --cluster
+    - NetKANCluster
+    - --service-name
+    - ${{ inputs.service-name }}

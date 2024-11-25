@@ -19,4 +19,4 @@ jobs:
           AWS_ACCESS_KEY_ID:     ${{ secrets.AWS_ACCESS_KEY_ID     }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION:    us-west-2
-          args: redeploy-service --cluster NetKANCluster --service-name Inflator${{ matrix.game }}
+          service-name: Inflator${{ matrix.game }}
