@@ -1,6 +1,10 @@
 name: Bounce the Inflators
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types:
+      - bounce
+concurrency: bounce
 
 jobs:
   bounce:
