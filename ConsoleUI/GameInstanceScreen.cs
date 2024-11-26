@@ -56,7 +56,7 @@ namespace CKAN.ConsoleUI {
         /// Put CKAN 1.25.5 in top left corner
         /// </summary>
         protected override string LeftHeader()
-            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
+            => $"{Meta.ProductName} {Meta.GetVersion()}";
 
         /// <summary>
         /// Return whether the fields currently are valid.

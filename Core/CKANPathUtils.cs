@@ -15,7 +15,7 @@ namespace CKAN
         /// </summary>
         public static readonly string AppDataPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            Meta.GetProductName());
+            Meta.ProductName);
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CKANPathUtils));
 
