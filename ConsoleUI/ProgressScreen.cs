@@ -46,7 +46,7 @@ namespace CKAN.ConsoleUI {
         /// Put CKAN 1.25.5 in upper left corner
         /// </summary>
         protected override string LeftHeader()
-            => $"{Meta.GetProductName()} {Meta.GetVersion()}";
+            => $"{Meta.ProductName} {Meta.GetVersion()}";
 
         /// <summary>
         /// Put description of what we're doing in top center

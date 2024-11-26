@@ -142,8 +142,8 @@ namespace CKAN.GUI
             // Set the window name and class for X11
             if (Platform.IsX11)
             {
-                HandleCreated += (sender, e) => X11.SetWMClass(Meta.GetProductName(),
-                                                               Meta.GetProductName(), Handle);
+                HandleCreated += (sender, e) => X11.SetWMClass(Meta.ProductName,
+                                                               Meta.ProductName, Handle);
             }
 
             currentUser = new GUIUser(this, Wait, StatusLabel, StatusProgress);
@@ -427,8 +427,8 @@ namespace CKAN.GUI
 
             Util.Invoke(this, () =>
             {
-                Text = $"{Meta.GetProductName()} {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {Platform.FormatPath(CurrentInstance.GameDir())}";
-                minimizeNotifyIcon.Text = $"{Meta.GetProductName()} - {CurrentInstance.Name}";
+                Text = $"{Meta.ProductName} {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {Platform.FormatPath(CurrentInstance.GameDir())}";
+                minimizeNotifyIcon.Text = $"{Meta.ProductName} - {CurrentInstance.Name}";
                 UpdateStatusBar();
             });
 

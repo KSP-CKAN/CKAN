@@ -680,7 +680,7 @@ namespace CKAN
         /// Returns true if we support at least spec_version of the CKAN spec.
         /// </summary>
         internal static bool IsSpecSupported(ModuleVersion spec_version)
-            => Meta.IsNetKAN || Meta.ReleaseVersion.IsGreaterThan(spec_version);
+            => Meta.IsNetKAN || Meta.SpecVersion.IsGreaterThan(spec_version);
 
         /// <summary>
         /// Returns true if we support the CKAN spec used by this module.
