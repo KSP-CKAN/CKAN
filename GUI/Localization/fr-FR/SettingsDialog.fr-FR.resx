@@ -147,6 +147,15 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>Cache des Téléchargements</value>
   </data>
+  <data name="CachePathEditButton.Text" xml:space="preserve">
+    <value>Éditer</value>
+  </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>Sauvegarder</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N fichiers, M Mio</value>
   </data>
@@ -236,6 +245,9 @@
   </data>
   <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
     <value>Trier avec la colonne "MàJ" lorsque le bouton "Ajouter les mises à jour disponibles" est cliqué</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>Stabilité tolérée :</value>
   </data>
   <data name="RepoNameHeader.Text" xml:space="preserve">
     <value>Nom</value>

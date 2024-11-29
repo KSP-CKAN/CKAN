@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Allow installs and removals to be cancelled (#4253 by: HebaruSan)
 - [CLI] Include `supports` relationship in `ckan show` (#4262 by: HebaruSan)
 - [Multiple] Pre-release handling (#4260, #4266 by: HebaruSan)
+- [Multiple] French translation updates (#4268 by: HebaruSan)
 
 ### Bugfixes
 

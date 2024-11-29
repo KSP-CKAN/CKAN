@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OverallSummaryLabel.Text" xml:space="preserve">
-    <value>Toutes les versions disponibles du mod sélectionné</value>
+    <value>Toutes les versions disponibles du mod sélectionné :</value>
   </data>
   <data name="ModVersion.Text" xml:space="preserve">
     <value>Version du Mod</value>
@@ -130,12 +130,18 @@
     <value>Date de publication</value>
   </data>
   <data name="LatestCompatibleLabel.Text" xml:space="preserve">
-    <value>version compatible la plus récente (préférence)</value>
+    <value>Version compatible la plus récente (préférence)</value>
   </data>
   <data name="CompatibleLabel.Text" xml:space="preserve">
-    <value>versions compatibles avec votre jeu</value>
+    <value>Version compatible avec votre jeu</value>
   </data>
   <data name="InstalledLabel.Text" xml:space="preserve">
-    <value>version actuellement installée</value>
+    <value>Version actuellement installée</value>
+  </data>
+  <data name="PrereleaseLabel.Text" xml:space="preserve">
+    <value>Moins stable que votre paramètre de stabilité tolérée</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>Forcer la stabilité du mod :</value>
   </data>
 </root>

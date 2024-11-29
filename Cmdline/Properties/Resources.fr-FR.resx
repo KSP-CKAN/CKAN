@@ -389,8 +389,10 @@ Soyez sûr d'avoir saisi au moins les valeurs de version majeure et mineure au f
     <value>Fichier introuvable, sortie : {0}</value>
   </data>
   <data name="InstallTryAgain" xml:space="preserve">
-    <value>Si vous êtes chanceux, vous pouvez taper `ckan update` et réessayer.
-Ou `ckan install --allow-incompatible` pour ignorer la compatibilité des modules.</value>
+    <value>
+Vous pouvez utiliser la commande `ckan compat` pour changer les versions de jeu considérées compatibles.
+Si une version compatible a été récemment publiée, vous pouvez taper `ckan update` et réessayer.
+Ou `ckan install --allow-incompatible` pour ignorer la compatibilité des modules (mais pas de leurs dépendances).</value>
   </data>
   <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">
     <value>Le module {0} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de {1}</value>
@@ -689,6 +691,9 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="ShowSuggestsHeader" xml:space="preserve">
     <value>Suggère :</value>
   </data>
+  <data name="ShowSupportsHeader" xml:space="preserve">
+    <value>Supporte :</value>
+  </data>
   <data name="ShowProvidesHeader" xml:space="preserve">
     <value>Fournit :</value>
   </data>
@@ -829,6 +834,21 @@ Exécution de {0} au cas où cela réglerait le problème.</value>
   </data>
   <data name="FilterHelpSummary" xml:space="preserve">
     <value>Afficher ou modifier les filtres d'installation</value>
+  </data>
+  <data name="StabilityUnknownCommand" xml:space="preserve">
+    <value>Commande inconnue : stability {0}</value>
+  </data>
+  <data name="StabilityHelpSummary" xml:space="preserve">
+    <value>Voir ou modifier les paramètres de stabilité</value>
+  </data>
+  <data name="StabilityOverallLabel" xml:space="preserve">
+    <value>Stabilité tolérée globale : {0}</value>
+  </data>
+  <data name="StabilityListModHeader" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="StabilityListStabilityHeader" xml:space="preserve">
+    <value>Forcer</value>
   </data>
   <data name="CompletionNotAvailable" xml:space="preserve">
     <value>
