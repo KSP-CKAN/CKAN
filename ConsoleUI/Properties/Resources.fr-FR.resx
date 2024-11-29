@@ -369,6 +369,9 @@
   <data name="InstanceEditTitle" xml:space="preserve">
     <value>Éditer Instance de Jeu</value>
   </data>
+  <data name="InstanceEditStabilityToleranceHeader" xml:space="preserve">
+    <value>Stabilité tolérée :</value>
+  </data>
   <data name="InstanceEditRepoFrameTitle" xml:space="preserve">
     <value>Sources de la Liste de Mods</value>
   </data>
@@ -504,6 +507,15 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
   </data>
   <data name="ModInfoDownload" xml:space="preserve">
     <value>Taille :</value>
+  </data>
+  <data name="ModInfoInstall" xml:space="preserve">
+    <value>Installer :</value>
+  </data>
+  <data name="ModInfoStabilityToleranceHeader" xml:space="preserve">
+    <value>Forcer la stabilité tolérée des mods :</value>
+  </data>
+  <data name="ModInfoStabilityToleranceNull" xml:space="preserve">
+    <value>Ne pas forcer</value>
   </data>
   <data name="ModInfoDescriptionFrame" xml:space="preserve">
     <value>Description</value>

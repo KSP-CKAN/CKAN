@@ -332,6 +332,11 @@ Cela veut dire que CKAN a oublié tous les mods que vous avez installé, mais ce
   <data name="MainDeleteLockfileNo" xml:space="preserve">
     <value>Annuler</value>
   </data>
+  <data name="AllModVersionsPrereleasePrompt" xml:space="preserve">
+    <value>{0} a un statut de '{1}', qui est moins stable que votre paramètre de stabilité tolérée de '{2}'.
+
+Êtes-vous sûr de vouloir l'installer ?</value>
+  </data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} n'est pas supporté par vos versions de jeu compatibles ({1}) et pourrait ne pas marcher du tout. Si vous avez des problèmes avec, vous NE devez PAS demander de l'aide à ses développeurs.
 
@@ -384,6 +389,12 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   </data>
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>Registre</value>
+  </data>
+  <data name="MainInstallInstallingMod" xml:space="preserve">
+    <value>Installation de {0}</value>
+  </data>
+  <data name="MainInstallRemovingMod" xml:space="preserve">
+    <value>Suppression de {0}</value>
   </data>
   <data name="MainInstallDepNotSatisfied" xml:space="preserve">
     <value>{0} nécessite {1} mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.</value>
@@ -556,6 +567,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="DownloadFailed" xml:space="preserve">
     <value>Échec du téléchargement !</value>
   </data>
+  <data name="Downloading" xml:space="preserve">
+    <value>Téléchargement de {0}</value>
+  </data>
   <data name="ValidatingDownload" xml:space="preserve">
     <value>Validation de {0}</value>
   </data>
@@ -719,6 +733,21 @@ Trouvez le dossier où votre jeu est installé et sélectionnez l'un de ces fich
   </data>
   <data name="PluginsDialogFilter" xml:space="preserve">
     <value>Plugins CKAN (*.dll)|*.dll</value>
+  </data>
+  <data name="SettingsToolTipRefreshTextBox" xml:space="preserve">
+    <value>La valeur 0 empêche l'actualisation de la liste des mods</value>
+  </data>
+  <data name="SettingsToolTipChangeCacheButton" xml:space="preserve">
+    <value>Choisissez un nouveau dossier de cache pour les téléchargements</value>
+  </data>
+  <data name="SettingsToolTipResetCacheButton" xml:space="preserve">
+    <value>Utiliser le dossier de cache de téléchargement par défaut </value>
+  </data>
+  <data name="SettingsToolTipOpenCacheButton" xml:space="preserve">
+    <value>Parcourir le dossier de cache</value>
+  </data>
+  <data name="SettingsToolTipClearCacheButton" xml:space="preserve">
+    <value>Supprimer les fichiers du cache</value>
   </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
     <value>{0} fichiers, {1}, {2} libres</value>
@@ -1147,5 +1176,8 @@ Cette action est irréversible !</value>
   </data>
   <data name="PreferredHostsTooltipMoveDown" xml:space="preserve">
     <value>Diminuer la priorité de l'hôte sélectionné</value>
+  </data>
+  <data name="SelectionDialogDefault" xml:space="preserve">
+    <value>{0} (PAR DÉFAUT)</value>
   </data>
 </root>

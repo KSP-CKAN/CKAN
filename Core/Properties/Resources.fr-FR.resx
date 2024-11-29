@@ -129,11 +129,21 @@
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Adresse invalide dans l'en-tête d'emplacement : {0}</value>
   </data>
-  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sec - {1} ({2}) restant - {3}%</value></data>
-  <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} restant - {1}%</value></data>
-  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} hrs, {1} min, {2} sec</value></data>
-  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} min, {1} sec</value></data>
-  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} sec</value></data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve">
+    <value>{0}/s - {1} ({2}) restant - {3}%</value>
+  </data>
+  <data name="ByteRateCounterSummary" xml:space="preserve">
+    <value>{0} restant - {1}%</value>
+  </data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve">
+    <value>{0} heures, {1} min, {2} sec</value>
+  </data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve">
+    <value>{0} min, {1} sec</value>
+  </data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve">
+    <value>{0} s</value>
+  </data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
     <value>Téléchargement de {0} ...</value>
   </data>
@@ -141,7 +151,7 @@
     <value>Téléchargement annulé par l'utilisateur</value>
   </data>
   <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/sec - {1} restant</value>
+    <value>{0}/s - {1} restant</value>
   </data>
   <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
     <value>Échec du téléchargement de "{0}", essai du lien de secours "{1}"</value>
@@ -383,6 +393,28 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="GameInstanceManagerSelectGamePrompt" xml:space="preserve">
     <value>Veuillez sélectionner le jeu qui est installé sur {0}</value>
   </data>
+  <data name="GameInstanceManagerCacheMigrationPrompt" xml:space="preserve">
+    <value>L'ancien dossier de cache contient {0}. Le nouveau dossier de cache a {1} libres.
+Que voulez-vous faire ?</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationMove" xml:space="preserve">
+    <value>Déplacer les anciens fichiers mis en cache vers le nouveau dossier de cache</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationDelete" xml:space="preserve">
+    <value>Supprimer les fichiers du cache</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationOpen" xml:space="preserve">
+    <value>Ouvrir l'ancien et le nouveau dossier de cache dans le navigateur de fichiers</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNothing" xml:space="preserve">
+    <value>Ne rien faire</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationRevert" xml:space="preserve">
+    <value>Revenir à l'ancien dossier de cache</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve">
+    <value>Pas assez d'espace pour déplacer les fichiers !</value>
+  </data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve">
     <value>L'instance spécifiée n'est pas une instance {0} valide</value>
   </data>
@@ -423,6 +455,9 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   </data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve">
     <value>Installation de {0} ...</value>
+  </data>
+  <data name="ModuleInstallerInstalledMod" xml:space="preserve">
+    <value>Fin de l'installation de {0}</value>
   </data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve">
     <value>Mise à jour du registre</value>
@@ -481,6 +516,9 @@ Remplacer ?</value>
   </data>
   <data name="ModuleInstallerRemovingMod" xml:space="preserve">
     <value>Désinstallation de {0}...</value>
+  </data>
+  <data name="ModuleInstallerRemovedMod" xml:space="preserve">
+    <value>Suppression de {0} terminée</value>
   </data>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve">
     <value>Vont être mis à jour :</value>
@@ -568,7 +606,10 @@ Quel fournisseur {0} voulez-vous installer ?</value>
 Si le jeu est toujours en cours d'exécution, fermez-le et réessayez. Sinon, vérifiez les permissions.</value>
   </data>
   <data name="KrakenMissingDependency" xml:space="preserve">
-    <value>{0} n'a pas sa dépendance {1}</value>
+    <value>Dépendance {1} insatisfaite pour : {0}</value>
+  </data>
+  <data name="KrakenMissingDependencyNeededFor" xml:space="preserve">
+    <value>requis par {0}</value>
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} est en conflit avec {1}</value>
@@ -601,7 +642,7 @@ Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bri
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
@@ -691,5 +732,23 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="InstalledModuleToStringAutoInstalled" xml:space="preserve">
     <value>{0} ({1} installé en tant qu'auto-installé)</value>
+  </data>
+  <data name="ReleaseStatusStableName" xml:space="preserve">
+    <value>Stable</value>
+  </data>
+  <data name="ReleaseStatusStableDescription" xml:space="preserve">
+    <value>Versions normales</value>
+  </data>
+  <data name="ReleaseStatusTestingName" xml:space="preserve">
+    <value>En test</value>
+  </data>
+  <data name="ReleaseStatusTestingDescription" xml:space="preserve">
+    <value>Préversions pour les utilisateurs aventureux</value>
+  </data>
+  <data name="ReleaseStatusDevelopmentName" xml:space="preserve">
+    <value>Développement</value>
+  </data>
+  <data name="ReleaseStatusDevelopmentDescription" xml:space="preserve">
+    <value>À la pointe du développement, instable</value>
   </data>
 </root>
