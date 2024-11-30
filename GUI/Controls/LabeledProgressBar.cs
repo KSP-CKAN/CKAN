@@ -60,14 +60,31 @@ namespace CKAN.GUI
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            ProgressBarRenderer.DrawHorizontalBar(e.Graphics, ClientRectangle);
-            ProgressBarRenderer.DrawHorizontalChunks(e.Graphics,
-                                                     new Rectangle(ClientRectangle.X,
-                                                                   ClientRectangle.Y,
-                                                                   ClientRectangle.Width
-                                                                       * (Value - Minimum)
+            if (ProgressBarRenderer.IsSupported)
+            {
+                ProgressBarRenderer.DrawHorizontalBar(e.Graphics, ClientRectangle);
+                ProgressBarRenderer.DrawHorizontalChunks(e.Graphics,
+                                                         new Rectangle(ClientRectangle.X,
+                                                                       ClientRectangle.Y,
+                                                                       ClientRectangle.Width * (Value   - Minimum)
+                                                                                             / (Maximum - Minimum),
+                                                                       ClientRectangle.Height));
+            }
+            else
+            {
+                const int borderWidth = 1;
+                var innerRect = Rectangle.Inflate(ClientRectangle, -2 * borderWidth,
+                                                                   -2 * borderWidth);
+                innerRect.Offset(borderWidth, borderWidth);
+                e.Graphics.DrawRectangle(SystemPens.ControlDark, ClientRectangle);
+                e.Graphics.FillRectangle(SystemBrushes.Control, innerRect);
+                e.Graphics.FillRectangle(SystemBrushes.Highlight,
+                                         new Rectangle(innerRect.X,
+                                                       innerRect.Y,
+                                                       innerRect.Width * (Value   - Minimum)
                                                                        / (Maximum - Minimum),
-                                                                   ClientRectangle.Height));
+                                                       innerRect.Height));
+            }
             TextRenderer.DrawText(e.Graphics, Text, Font,
                                   new Point((Width  - textSize.Width)  / 2,
                                             (Height - textSize.Height) / 2),
