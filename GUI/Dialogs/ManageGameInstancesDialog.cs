@@ -402,7 +402,7 @@ namespace CKAN.GUI
                 // so we have to re-enforce the filter ourselves
                 var chosen  = Path.GetFileName(dlg.FileName);
                 var allowed = manager.AllInstanceAnchorFiles;
-                if (!allowed.Contains(chosen))
+                if (!allowed.Contains(chosen, Platform.PathComparer))
                 {
                     e.Cancel = true;
                     user.RaiseError(Properties.Resources.ManageGameInstancesInvalidFileSelected,
