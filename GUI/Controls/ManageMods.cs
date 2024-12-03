@@ -294,16 +294,18 @@ namespace CKAN.GUI
             if (currentInstance != null)
             {
                 FilterLabelsToolButton.DropDownItems.Clear();
-                foreach (ModuleLabel mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
-                {
-                    FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                        $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
-                        null, customFilterButton_Click)
-                    {
-                        Tag         = mlbl,
-                        ToolTipText = Properties.Resources.FilterLinkToolTip,
-                    });
-                }
+                FilterLabelsToolButton.DropDownItems.AddRange(
+                    ModuleLabelList.ModuleLabels
+                                   .LabelsFor(currentInstance.Name)
+                                   .Select(mlbl => new ToolStripMenuItem(
+                                                       $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
+                                                       null, customFilterButton_Click)
+                                                   {
+                                                       Tag         = mlbl,
+                                                       BackColor   = mlbl.Color ?? Color.Transparent,
+                                                       ToolTipText = Properties.Resources.FilterLinkToolTip,
+                                                   })
+                                   .ToArray());
             }
         }
 
