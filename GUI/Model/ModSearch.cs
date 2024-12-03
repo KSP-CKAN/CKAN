@@ -30,6 +30,7 @@ namespace CKAN.GUI
         /// <param name="conflicts">Identifier prefix to find in mod conflicts relationships</param>
         /// <param name="combined">Full formatted search string if known, will be auto generated otherwise</param>
         public ModSearch(
+            GameInstance instance,
             string byName, List<string> byAuthors, string byDescription,
             List<string>? licenses, List<string>? localizations,
             List<string>? depends, List<string>? recommends, List<string>? suggests, List<string>? conflicts,
@@ -39,6 +40,7 @@ namespace CKAN.GUI
             bool? upgradeable, bool? replaceable,
             string? combined = null)
         {
+            Instance = instance;
             Name = (ShouldNegateTerm(byName, out string subName) ? "-" : "")
                 + CkanModule.nonAlphaNums.Replace(subName, "");
             initStringList(Authors, byAuthors);
@@ -55,6 +57,7 @@ namespace CKAN.GUI
 
             initStringList(TagNames,   tagNames);
             initStringList(LabelNames, labelNames);
+            LabelsByNegation = FindLabels(instance, LabelNames);
 
             Compatible      = compatible;
             Installed       = installed;
@@ -74,10 +77,12 @@ namespace CKAN.GUI
             }
         }
 
-        public ModSearch(GUIModFilter filter,
+        public ModSearch(GameInstance instance,
+                         GUIModFilter filter,
                          ModuleTag?   tag   = null,
                          ModuleLabel? label = null)
         {
+            Instance = instance;
             switch (filter)
             {
                 case GUIModFilter.Compatible:               Compatible      = true;            break;
@@ -95,8 +100,11 @@ namespace CKAN.GUI
                 case GUIModFilter.All:
                     break;
             }
+            LabelsByNegation = FindLabels(instance, LabelNames);
             Combined = getCombined();
         }
+
+        private readonly GameInstance Instance;
 
         /// <summary>
         /// String to search for in mod names, identifiers, and abbreviations
@@ -155,6 +163,7 @@ namespace CKAN.GUI
 
         public readonly List<string> TagNames   = new List<string>();
         public readonly List<string> LabelNames = new List<string>();
+        private readonly IDictionary<(bool negate, bool exclude), ModuleLabel[]> LabelsByNegation;
 
         public readonly bool? Compatible;
         public readonly bool? Installed;
@@ -168,8 +177,9 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="authors">The authors for the search</param>
         /// <returns>A search for the authors</returns>
-        public static ModSearch FromAuthors(IEnumerable<string> authors)
+        public static ModSearch FromAuthors(GameInstance instance, IEnumerable<string> authors)
             => new ModSearch(
+                instance,
                 // Can't search for spaces, so massage them like SearchableAuthors
                 "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "",
                 null, null,
@@ -185,6 +195,7 @@ namespace CKAN.GUI
         /// <returns>A search containing all the search terms</returns>
         public ModSearch MergedWith(ModSearch other)
             => new ModSearch(
+                Instance,
                 Name + other.Name,
                 Authors.Concat(other.Authors).Distinct().ToList(),
                 Description + other.Description,
@@ -308,7 +319,7 @@ namespace CKAN.GUI
         /// <returns>
         /// New search object, or null if no search terms defined
         /// </returns>
-        public static ModSearch? Parse(string combined)
+        public static ModSearch? Parse(GameInstance instance, string combined)
         {
             if (string.IsNullOrWhiteSpace(combined))
             {
@@ -444,6 +455,7 @@ namespace CKAN.GUI
                 }
             }
             return new ModSearch(
+                instance,
                 byName, byAuthors, byDescription,
                 byLicenses, byLocalizations,
                 depends, recommends, suggests, conflicts, supports,
@@ -590,20 +602,14 @@ namespace CKAN.GUI
                                 : mod.ToModule().Tags?.Contains(subTag) ?? false));
 
         private bool MatchesLabels(GUIMod mod)
-            => LabelNames.Count < 1
-                || (Main.Instance?.CurrentInstance is GameInstance inst
-                    && ModuleLabelList.ModuleLabels.LabelsFor(inst.Name)
-                                                   .ToArray()
-                        is ModuleLabel[] instanceLabels
-                    && LabelNames.All(ln =>
-                        ShouldNegateTerm(ln, out string subLabel) ^ (
-                            string.IsNullOrEmpty(subLabel)
-                                ? instanceLabels.All(lbl => !lbl.ContainsModule(inst.game, mod.Identifier))
-                                : instanceLabels.Where(lbl => lbl.Name == subLabel)
-                                                .ToArray()
-                                       is ModuleLabel[] myLabels
-                                   && myLabels.Length > 0
-                                   && myLabels.All(lbl => lbl.ContainsModule(inst.game, mod.Identifier)))));
+            => LabelsByNegation.All(kvp =>
+                   kvp.Key.negate ^ (
+                       kvp.Key.exclude
+                           ? kvp.Value.All(lbl => !lbl.ContainsModule(Instance.game,
+                                                                      mod.Identifier))
+                           : kvp.Value.Length > 0
+                                 && kvp.Value.All(lbl => lbl.ContainsModule(Instance.game,
+                                                                            mod.Identifier))));
 
         private bool MatchesCompatible(GUIMod mod)
             => !Compatible.HasValue || Compatible.Value == !mod.IsIncompatible;
@@ -622,6 +628,37 @@ namespace CKAN.GUI
 
         private bool MatchesReplaceable(GUIMod mod)
             => !Replaceable.HasValue || Replaceable.Value == (mod.IsInstalled && mod.HasReplacement);
+
+        private static IDictionary<(bool negate, bool exclude), ModuleLabel[]> FindLabels(
+                GameInstance        inst,
+                IEnumerable<string> names)
+            => FindLabels(ModuleLabelList.ModuleLabels
+                                         .LabelsFor(inst.Name)
+                                         .ToArray(),
+                          names);
+
+        private static IDictionary<(bool negate, bool exclude), ModuleLabel[]> FindLabels(
+                ModuleLabel[]       instLabels,
+                IEnumerable<string> names)
+            => names.Select(ln => (negate:  ShouldNegateTerm(ln.Replace(" ", ""),
+                                                             out string subLabel),
+                                   exclude: string.IsNullOrEmpty(subLabel),
+                                   labels:  string.IsNullOrEmpty(subLabel)
+                                                ? instLabels
+                                                : instLabels.Where(lbl => lbl.Name
+                                                                             .Replace(" ", "")
+                                                                             .Equals(subLabel,
+                                                                                     StringComparison.OrdinalIgnoreCase))
+                                                            .ToArray()))
+                    .GroupBy(tuple => (tuple.negate, tuple.exclude),
+                             tuple => tuple.labels)
+                    .ToDictionary(grp => grp.Key,
+                                  grp => grp.Any(labels => labels.Length < 1)
+                                             // A name that matches no labels makes nothing match
+                                             ? Array.Empty<ModuleLabel>()
+                                             : grp.SelectMany(labels => labels)
+                                                       .Distinct()
+                                                       .ToArray());
 
         public bool Equals(ModSearch? other)
             => other != null

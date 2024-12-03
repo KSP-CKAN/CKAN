@@ -135,10 +135,10 @@ namespace CKAN.GUI
                         }
                         break;
                 }
-                if (Main.Instance?.CurrentInstance != null)
+                if (Main.Instance?.CurrentInstance is GameInstance inst)
                 {
                     // Sync the search boxes immediately
-                    currentSearch = ModSearch.Parse(FilterCombinedTextBox.Text);
+                    currentSearch = ModSearch.Parse(inst, FilterCombinedTextBox.Text);
                 }
                 SearchToEditor();
             }

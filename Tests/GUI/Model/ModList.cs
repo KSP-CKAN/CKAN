@@ -69,8 +69,11 @@ namespace Tests.GUI
         [TestCaseSource("GetFilters")]
         public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
-            var item = new ModList();
-            Assert.That(item.CountModsByFilter(filter), Is.EqualTo(0));
+            using (var tidy = new DisposableKSP())
+            {
+                var item = new ModList();
+                Assert.That(item.CountModsByFilter(tidy.KSP, filter), Is.EqualTo(0));
+            }
         }
 
         [Test]

@@ -45,6 +45,7 @@ namespace CKAN.GUI
 
         public ModSearch CurrentSearch()
             => new ModSearch(
+                Main.Instance!.CurrentInstance!,
                 FilterByNameTextBox.Text,
                 FilterByAuthorTextBox.Text.Split(Array.Empty<char>(), StringSplitOptions.RemoveEmptyEntries).ToList(),
                 FilterByDescriptionTextBox.Text,

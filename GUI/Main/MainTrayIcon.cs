@@ -55,17 +55,20 @@ namespace CKAN.GUI
 
         private void UpdateTrayInfo()
         {
-            var count = ManageMods.mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable);
-
-            if (count == 0)
+            if (CurrentInstance != null)
             {
-                updatesToolStripMenuItem.Enabled = false;
-                updatesToolStripMenuItem.Text = Properties.Resources.MainTrayNoUpdates;
-            }
-            else
-            {
-                updatesToolStripMenuItem.Enabled = true;
-                updatesToolStripMenuItem.Text = string.Format(Properties.Resources.MainTrayUpdatesAvailable, count);
+                var count = ManageMods.mainModList.CountModsByFilter(CurrentInstance,
+                                                                     GUIModFilter.InstalledUpdateAvailable);
+                if (count == 0)
+                {
+                    updatesToolStripMenuItem.Enabled = false;
+                    updatesToolStripMenuItem.Text = Properties.Resources.MainTrayNoUpdates;
+                }
+                else
+                {
+                    updatesToolStripMenuItem.Enabled = true;
+                    updatesToolStripMenuItem.Text = string.Format(Properties.Resources.MainTrayUpdatesAvailable, count);
+                }
             }
             toolStripSeparator4.Visible = true;
             updatesToolStripMenuItem.Visible = true;

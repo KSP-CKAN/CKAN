@@ -185,12 +185,14 @@ namespace CKAN.GUI
 
 
         private void tagsLabelsLinkList_TagClicked(ModuleTag tag, bool merge)
-            => OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.Tag,
+            => OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(Main.Instance!.CurrentInstance!,
+                                                                  GUIModFilter.Tag,
                                                                   tag, null),
                                       merge);
 
         private void tagsLabelsLinkList_LabelClicked(ModuleLabel label, bool merge)
-            => OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel,
+            => OnChangeFilter?.Invoke(ModList.FilterToSavedSearch(Main.Instance!.CurrentInstance!,
+                                                                  GUIModFilter.CustomLabel,
                                                                   null, label),
                                       merge);
 
