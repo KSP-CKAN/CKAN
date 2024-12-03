@@ -103,13 +103,14 @@ namespace CKAN.GUI
             return "";
         }
 
-        public static SavedSearch FilterToSavedSearch(GUIModFilter filter,
+        public static SavedSearch FilterToSavedSearch(GameInstance instance,
+                                                      GUIModFilter filter,
                                                       ModuleTag?   tag   = null,
                                                       ModuleLabel? label = null)
             => new SavedSearch()
             {
                 Name   = FilterName(filter, tag, label),
-                Values = new List<string>() { new ModSearch(filter, tag, label).Combined ?? "" },
+                Values = new List<string>() { new ModSearch(instance, filter, tag, label).Combined ?? "" },
             };
 
         private static RelationshipResolverOptions conflictOptions(StabilityToleranceConfig stabilityTolerance)
@@ -277,8 +278,8 @@ namespace CKAN.GUI
         public int CountModsBySearches(List<ModSearch> searches)
             => Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
 
-        public int CountModsByFilter(GUIModFilter filter)
-            => CountModsBySearches(new List<ModSearch>() { new ModSearch(filter, null, null) });
+        public int CountModsByFilter(GameInstance inst, GUIModFilter filter)
+            => CountModsBySearches(new List<ModSearch>() { new ModSearch(inst, filter, null, null) });
 
         /// <summary>
         /// Constructs the mod list suitable for display to the user.

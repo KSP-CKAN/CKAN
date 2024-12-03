@@ -666,6 +666,7 @@ namespace CKAN.GUI
                     // Fall back to old setting
                     ManageMods.Filter(
                         ModList.FilterToSavedSearch(
+                            CurrentInstance,
                             (GUIModFilter)configuration.ActiveFilter,
                             configuration.TagFilter == null
                                 ? null
@@ -678,7 +679,7 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    var searches = def.Select(s => ModSearch.Parse(s))
+                    var searches = def.Select(s => ModSearch.Parse(CurrentInstance, s))
                                       .OfType<ModSearch>()
                                       .ToList();
                     ManageMods.SetSearches(searches);

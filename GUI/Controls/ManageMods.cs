@@ -294,16 +294,18 @@ namespace CKAN.GUI
             if (currentInstance != null)
             {
                 FilterLabelsToolButton.DropDownItems.Clear();
-                foreach (ModuleLabel mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
-                {
-                    FilterLabelsToolButton.DropDownItems.Add(new ToolStripMenuItem(
-                        $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
-                        null, customFilterButton_Click)
-                    {
-                        Tag         = mlbl,
-                        ToolTipText = Properties.Resources.FilterLinkToolTip,
-                    });
-                }
+                FilterLabelsToolButton.DropDownItems.AddRange(
+                    ModuleLabelList.ModuleLabels
+                                   .LabelsFor(currentInstance.Name)
+                                   .Select(mlbl => new ToolStripMenuItem(
+                                                       $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
+                                                       null, customFilterButton_Click)
+                                                   {
+                                                       Tag         = mlbl,
+                                                       BackColor   = mlbl.Color ?? Color.Transparent,
+                                                       ToolTipText = Properties.Resources.FilterLinkToolTip,
+                                                   })
+                                   .ToArray());
             }
         }
 
@@ -389,73 +391,73 @@ namespace CKAN.GUI
         {
             var clicked = sender as ToolStripMenuItem;
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Tag, clicked?.Tag as ModuleTag, null), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Tag, clicked?.Tag as ModuleTag, null), merge);
         }
 
         private void customFilterButton_Click(object? sender, EventArgs? e)
         {
             var clicked = sender as ToolStripMenuItem;
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, clicked?.Tag as ModuleLabel), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.CustomLabel, null, clicked?.Tag as ModuleLabel), merge);
         }
 
         private void FilterCompatibleButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Compatible), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Compatible), merge);
         }
 
         private void FilterInstalledButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Installed), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Installed), merge);
         }
 
         private void FilterInstalledUpdateButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.InstalledUpdateAvailable), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.InstalledUpdateAvailable), merge);
         }
 
         private void FilterReplaceableButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Replaceable), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Replaceable), merge);
         }
 
         private void FilterCachedButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Cached), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Cached), merge);
         }
 
         private void FilterUncachedButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Uncached), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Uncached), merge);
         }
 
         private void FilterNewButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.NewInRepository), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.NewInRepository), merge);
         }
 
         private void FilterNotInstalledButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.NotInstalled), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.NotInstalled), merge);
         }
 
         private void FilterIncompatibleButton_Click(object? sender, EventArgs? e)
         {
             var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.Incompatible), merge);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Incompatible), merge);
         }
 
         private void FilterAllButton_Click(object? sender, EventArgs? e)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.All), false);
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.All), false);
         }
 
         /// <summary>
@@ -468,7 +470,7 @@ namespace CKAN.GUI
             if (currentInstance != null)
             {
                 var searches = search.Values
-                                     .Select(s => ModSearch.Parse(s))
+                                     .Select(s => ModSearch.Parse(currentInstance!, s))
                                      .OfType<ModSearch>()
                                      .ToList();
 
@@ -1501,25 +1503,25 @@ namespace CKAN.GUI
             Util.Invoke(menuStrip2, () =>
             {
                 FilterCompatibleButton.Text = string.Format(Properties.Resources.MainModListCompatible,
-                    mainModList.CountModsByFilter(GUIModFilter.Compatible));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.Compatible));
                 FilterInstalledButton.Text = string.Format(Properties.Resources.MainModListInstalled,
-                    mainModList.CountModsByFilter(GUIModFilter.Installed));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.Installed));
                 FilterInstalledUpdateButton.Text = string.Format(Properties.Resources.MainModListUpgradeable,
-                    mainModList.CountModsByFilter(GUIModFilter.InstalledUpdateAvailable));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.InstalledUpdateAvailable));
                 FilterReplaceableButton.Text = string.Format(Properties.Resources.MainModListReplaceable,
-                    mainModList.CountModsByFilter(GUIModFilter.Replaceable));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.Replaceable));
                 FilterCachedButton.Text = string.Format(Properties.Resources.MainModListCached,
-                    mainModList.CountModsByFilter(GUIModFilter.Cached));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.Cached));
                 FilterUncachedButton.Text = string.Format(Properties.Resources.MainModListUncached,
-                    mainModList.CountModsByFilter(GUIModFilter.Uncached));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.Uncached));
                 FilterNewButton.Text = string.Format(Properties.Resources.MainModListNewlyCompatible,
-                    mainModList.CountModsByFilter(GUIModFilter.NewInRepository));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.NewInRepository));
                 FilterNotInstalledButton.Text = string.Format(Properties.Resources.MainModListNotInstalled,
-                    mainModList.CountModsByFilter(GUIModFilter.NotInstalled));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.NotInstalled));
                 FilterIncompatibleButton.Text = string.Format(Properties.Resources.MainModListIncompatible,
-                    mainModList.CountModsByFilter(GUIModFilter.Incompatible));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.Incompatible));
                 FilterAllButton.Text = string.Format(Properties.Resources.MainModListAll,
-                    mainModList.CountModsByFilter(GUIModFilter.All));
+                    mainModList.CountModsByFilter(currentInstance, GUIModFilter.All));
 
                 UpdateAllToolButton.Enabled = has_unheld_updates;
             });
@@ -1851,7 +1853,7 @@ namespace CKAN.GUI
 
         private void hiddenTagsLabelsLinkList_LabelClicked(ModuleLabel label, bool merge)
         {
-            Filter(ModList.FilterToSavedSearch(GUIModFilter.CustomLabel, null, label),
+            Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.CustomLabel, null, label),
                    merge);
         }
 

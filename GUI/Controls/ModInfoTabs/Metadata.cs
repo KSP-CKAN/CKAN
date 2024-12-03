@@ -132,7 +132,8 @@ namespace CKAN.GUI
                     new SavedSearch()
                     {
                         Name   = string.Format(Properties.Resources.AuthorSearchName, author),
-                        Values = Enumerable.Repeat(ModSearch.FromAuthors(Enumerable.Repeat(author, 1)).Combined, 1)
+                        Values = Enumerable.Repeat(ModSearch.FromAuthors(Main.Instance!.CurrentInstance!,
+                                                   Enumerable.Repeat(author, 1)).Combined, 1)
                                            .OfType<string>()
                                            .ToList(),
                     },
