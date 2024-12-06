@@ -45,6 +45,14 @@ namespace CKAN.GUI
             this.VersionsTabPage = new System.Windows.Forms.TabPage();
             this.Versions = new CKAN.GUI.Versions();
             this.ModInfoTable.SuspendLayout();
+            this.MetadataTabPage.SuspendLayout();
+            this.RelationshipTabPage.SuspendLayout();
+            this.ContentTabPage.SuspendLayout();
+            this.VersionsTabPage.SuspendLayout();
+            this.Metadata.SuspendLayout();
+            this.Relationships.SuspendLayout();
+            this.Contents.SuspendLayout();
+            this.Versions.SuspendLayout();
             this.SuspendLayout();
             //
             // ModInfoTable
@@ -208,13 +216,29 @@ namespace CKAN.GUI
             //
             // ModInfo
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ModInfoTable);
             this.Name = "ModInfo";
             this.Padding = new System.Windows.Forms.Padding(0);
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.Metadata.ResumeLayout(false);
+            this.Metadata.PerformLayout();
+            this.Relationships.ResumeLayout(false);
+            this.Relationships.PerformLayout();
+            this.Contents.ResumeLayout(false);
+            this.Contents.PerformLayout();
+            this.Versions.ResumeLayout(false);
+            this.Versions.PerformLayout();
+            this.MetadataTabPage.ResumeLayout(false);
+            this.MetadataTabPage.PerformLayout();
+            this.RelationshipTabPage.ResumeLayout(false);
+            this.RelationshipTabPage.PerformLayout();
+            this.ContentTabPage.ResumeLayout(false);
+            this.ContentTabPage.PerformLayout();
+            this.VersionsTabPage.ResumeLayout(false);
+            this.VersionsTabPage.PerformLayout();
             this.ModInfoTable.ResumeLayout(false);
             this.ModInfoTable.PerformLayout();
             this.ResumeLayout(false);

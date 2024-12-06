@@ -133,7 +133,7 @@ namespace CKAN.GUI
             //
             // MainMenu
             //
-            this.MainMenu.ImageScalingSize = new System.Drawing.Size(16, 16);
+            this.MainMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
@@ -141,7 +141,7 @@ namespace CKAN.GUI
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.MainMenu.Size = new System.Drawing.Size(1544, 24);
+            this.MainMenu.Size = new System.Drawing.Size(1544, 35);
             this.MainMenu.TabIndex = 0;
             //
             // fileToolStripMenuItem
@@ -832,7 +832,7 @@ namespace CKAN.GUI
             //
             // Main
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1544, 1038);
             this.Controls.Add(this.splitContainer1);

@@ -60,6 +60,8 @@ namespace CKAN.GUI
             //
             // DismissButton
             //
+            this.DismissButton.AutoSize = true;
+            this.DismissButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DismissButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom));
             this.DismissButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DismissButton.Location = new System.Drawing.Point(387, 124);
@@ -72,7 +74,7 @@ namespace CKAN.GUI
             //
             // ErrorDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 160);
             this.ControlBox = true;

@@ -123,6 +123,8 @@ namespace CKAN.GUI
             //
             // SelectButton
             //
+            this.SelectButton.AutoSize = true;
+            this.SelectButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectButton.Enabled = false;
             this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -136,6 +138,8 @@ namespace CKAN.GUI
             //
             // AddNewButton
             //
+            this.AddNewButton.AutoSize = true;
+            this.AddNewButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNewButton.Location = new System.Drawing.Point(327, 320);
@@ -178,6 +182,8 @@ namespace CKAN.GUI
             //
             // RenameButton
             //
+            this.RenameButton.AutoSize = true;
+            this.RenameButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RenameButton.Location = new System.Drawing.Point(216, 320);
@@ -204,6 +210,8 @@ namespace CKAN.GUI
             //
             // ForgetButton
             //
+            this.ForgetButton.AutoSize = true;
+            this.ForgetButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ForgetButton.Location = new System.Drawing.Point(140, 320);

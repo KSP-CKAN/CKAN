@@ -327,6 +327,7 @@ namespace CKAN.GUI
             this.ModGrid.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.ModGrid.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ModGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ModGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModGrid.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -561,14 +562,15 @@ namespace CKAN.GUI
             this.hiddenTagsLabelsLinkList.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.hiddenTagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
             this.hiddenTagsLabelsLinkList.Name = "hiddenTagsLabelsLinkList";
-            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
+            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 22);
             this.hiddenTagsLabelsLinkList.TagClicked += this.hiddenTagsLabelsLinkList_TagClicked;
             this.hiddenTagsLabelsLinkList.LabelClicked += this.hiddenTagsLabelsLinkList_LabelClicked;
             resources.ApplyResources(this.hiddenTagsLabelsLinkList, "hiddenTagsLabelsLinkList");
             //
             // ManageMods
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.InstallAllCheckbox);
             this.Controls.Add(this.ModGrid);
             this.Controls.Add(this.hiddenTagsLabelsLinkList);

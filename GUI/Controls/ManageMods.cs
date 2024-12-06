@@ -62,7 +62,21 @@ namespace CKAN.GUI
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
+
+                ModGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+                ResizeColumnHeaders();
+                ModGrid.ColumnWidthChanged += (sender, e) => ResizeColumnHeaders();
             }
+        }
+
+        private void ResizeColumnHeaders()
+        {
+            var g = CreateGraphics();
+            ModGrid.ColumnHeadersHeight = ModGrid.Columns.OfType<DataGridViewColumn>().Max(col =>
+                ModGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical
+                + Util.StringHeight(g, col.HeaderText,
+                                    col.HeaderCell?.Style?.Font ?? ModGrid.ColumnHeadersDefaultCellStyle.Font,
+                                    col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));

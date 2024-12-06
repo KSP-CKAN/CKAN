@@ -44,6 +44,7 @@ namespace CKAN.GUI
             this.AuthorColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DescriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SelectInstallMessage = new System.Windows.Forms.ListViewItem();
+            this.LoadingMessage = new System.Windows.Forms.ListViewItem();
             this.NoModsMessage = new System.Windows.Forms.ListViewItem();
             this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.OKButton = new System.Windows.Forms.Button();
@@ -180,6 +181,10 @@ namespace CKAN.GUI
             //
             resources.ApplyResources(this.SelectInstallMessage, "SelectInstallMessage");
             //
+            // LoadingMessage
+            //
+            resources.ApplyResources(this.LoadingMessage, "LoadingMessage");
+            //
             // NoModsMessage
             //
             resources.ApplyResources(this.NoModsMessage, "NoModsMessage");
@@ -203,6 +208,8 @@ namespace CKAN.GUI
             //
             // InstallationHistory
             //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.Toolbar);
             this.Controls.Add(this.BottomButtonPanel);
@@ -231,6 +238,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ColumnHeader AuthorColumn;
         private System.Windows.Forms.ColumnHeader DescriptionColumn;
         private System.Windows.Forms.ListViewItem SelectInstallMessage;
+        private System.Windows.Forms.ListViewItem LoadingMessage;
         private System.Windows.Forms.ListViewItem NoModsMessage;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button OKButton;

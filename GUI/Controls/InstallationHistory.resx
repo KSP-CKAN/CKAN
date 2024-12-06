@@ -125,6 +125,7 @@
   <data name="AuthorColumn.Text" xml:space="preserve"><value>Authors</value></data>
   <data name="DescriptionColumn.Text" xml:space="preserve"><value>Description</value></data>
   <data name="SelectInstallMessage.Text" xml:space="preserve"><value>Click a timestamp at the left to see which mods were installed</value></data>
+  <data name="LoadingMessage.Text" xml:space="preserve"><value>Loading installation history...</value></data>
   <data name="NoModsMessage.Text" xml:space="preserve"><value>No mods were installed</value></data>
   <data name="InstallButton.Text" xml:space="preserve"><value>Install</value></data>
   <data name="OKButton.Text" xml:space="preserve"><value>OK</value></data>
