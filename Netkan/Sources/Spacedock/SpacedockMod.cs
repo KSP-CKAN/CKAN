@@ -20,22 +20,13 @@ namespace CKAN.NetKAN.Sources.Spacedock
         [JsonProperty] public Uri?             background;
 
         public SDVersion Latest()
-        {
-            // The version we want is specified by `default_version_id`, it's not just
-            // the latest. See GH #214. Thanks to @Starstrider42 for spotting this.
-
-            var latest =
-                from release in versions
-                where release.id == default_version_id
-                select release
-            ;
-
-            // There should only ever be one.
-            return latest.First();
-        }
+            => All().First();
 
         public IEnumerable<SDVersion> All()
-            => versions ?? Enumerable.Empty<SDVersion>();
+            // The version we want is specified by `default_version_id`, it's not just
+            // the latest. See GH #214. Thanks to @Starstrider42 for spotting this.
+            => versions?.OrderByDescending(v => v.id == default_version_id)
+                       ?? Enumerable.Empty<SDVersion>();
 
         /// <summary>
         /// Returns the path to the mod's home on SpaceDock
