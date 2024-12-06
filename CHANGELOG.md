@@ -32,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Tests for Newtonsoft.Json's handling of octal literals in version files (#4227 by: HebaruSan)
 - [Netkan] Create netkan schema (#4254, #4258 by: HebaruSan, Danny2462; reviewed: HebaruSan)
 - [Netkan] Handle raw GitHub URLs containing refs/heads/ (#4263 by: HebaruSan)
+- [Netkan] Restore default version support for SpaceDock (#4272 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 
