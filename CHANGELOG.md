@@ -33,6 +33,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Create netkan schema (#4254, #4258 by: HebaruSan, Danny2462; reviewed: HebaruSan)
 - [Netkan] Handle raw GitHub URLs containing refs/heads/ (#4263 by: HebaruSan)
 - [Netkan] Restore default version support for SpaceDock (#4272 by: HebaruSan)
+- [Netkan] Don't raise inflation errors for single-hosted prereleases of multi-hosted mods (#4273 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 

@@ -152,6 +152,12 @@ namespace CKAN.NetKAN.Processors
                 highVer = new ModuleVersion(highVerAttr.StringValue);
             }
 
+            ModuleVersion? highVerPre = null;
+            if (msg.MessageAttributes.TryGetValue("HighestVersionPrerelease", out MessageAttributeValue? highVerPreAttr))
+            {
+                highVerPre = new ModuleVersion(highVerPreAttr.StringValue);
+            }
+
             log.InfoFormat("Inflating {0}", netkans.First().Identifier);
             IEnumerable<Metadata>? ckans = null;
             bool    caught        = false;
@@ -159,6 +165,7 @@ namespace CKAN.NetKAN.Processors
             var     opts          = new TransformOptions(releases,
                                                          null,
                                                          highVer,
+                                                         highVerPre,
                                                          netkans.First().Staged,
                                                          netkans.First().StagingReason);
             try

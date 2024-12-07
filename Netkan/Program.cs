@@ -109,6 +109,7 @@ namespace CKAN.NetKAN
                                 ParseReleases(Options.Releases),
                                 ParseSkipReleases(Options.SkipReleases),
                                 ParseHighestVersion(Options.HighestVersion),
+                                ParseHighestVersion(Options.HighestVersionPrerelease),
                                 netkans.First().Staged,
                                 netkans.First().StagingReason))
                         .ToArray();
