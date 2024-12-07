@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Handle raw GitHub URLs containing refs/heads/ (#4263 by: HebaruSan)
 - [Netkan] Restore default version support for SpaceDock (#4272 by: HebaruSan)
 - [Netkan] Don't raise inflation errors for single-hosted prereleases of multi-hosted mods (#4273 by: HebaruSan)
+- [Netkan] Stop trying to get remote version files from the forum (#4274 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 
