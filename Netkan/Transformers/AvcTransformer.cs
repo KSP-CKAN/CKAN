@@ -88,10 +88,17 @@ namespace CKAN.NetKAN.Transformers
 
                         try
                         {
-                            if ((_github?.DownloadText(remoteUri)
-                                ?? _http.DownloadText(remoteUri)) is string remoteJson
-                                && JsonConvert.DeserializeObject<AvcVersion>(remoteJson) is AvcVersion remoteAvc
-                                && avc.version.CompareTo(remoteAvc.version) == 0)
+                            if (BadHosts.Contains(remoteUri.Host))
+                            {
+                                Log.WarnFormat("AVC host does not contain version files: {0}",
+                                               remoteUri.Host);
+                            }
+                            else if ((_github?.DownloadText(remoteUri)
+                                      ?? _http.DownloadText(remoteUri))
+                                     is string remoteJson
+                                     && JsonConvert.DeserializeObject<AvcVersion>(remoteJson)
+                                        is AvcVersion remoteAvc
+                                     && avc.version.Equals(remoteAvc.version))
                             {
                                 // Local AVC and Remote AVC describe the same version, prefer
                                 Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferentially.");
@@ -161,5 +168,10 @@ namespace CKAN.NetKAN.Transformers
 
             return Net.GetRawUri(remoteUri);
         }
+
+        private static readonly HashSet<string> BadHosts = new HashSet<string>()
+        {
+            "forum.kerbalspaceprogram.com",
+        };
     }
 }
