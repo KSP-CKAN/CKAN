@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Ignore manually installed duplicates of installed modules (#4257 by: HebaruSan)
 - [Core] Exclude dependencies in the changeset from supported by list (#4261 by: HebaruSan)
 - [GUI] Optimize label searches and handle spaces in names (#4270 by: HebaruSan)
+- [Core] Small performance tweaks for DLL scanning (#4275 by: HebaruSan)
 
 ### Internal
 

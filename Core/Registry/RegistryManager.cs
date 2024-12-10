@@ -570,9 +570,17 @@ namespace CKAN
             log.Info(Properties.Resources.GameInstanceScanning);
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-                var dlls = Enumerable.Repeat(gameInstance.game.PrimaryModDirectoryRelative, 1)
-                                     .Concat(gameInstance.game.AlternateModDirectoriesRelative)
-                                     .Select(gameInstance.ToAbsoluteGameDir)
+                var modFolders = Enumerable.Repeat(gameInstance.game.PrimaryModDirectoryRelative, 1)
+                                           .Concat(gameInstance.game.AlternateModDirectoriesRelative)
+                                           .Select(mf => $"{mf}/")
+                                           .ToArray();
+                var stockFolders = gameInstance.game.StockFolders
+                                                    // Folders outside GameData won't be scanned
+                                                    .Where(sf => modFolders.Any(mf => sf.StartsWith(mf)))
+                                                    // Precalculate the full prefix once for all files
+                                                    .Select(f => $"{f}/")
+                                                    .ToArray();
+                var dlls = modFolders.Select(gameInstance.ToAbsoluteGameDir)
                                      .Where(Directory.Exists)
                                      // EnumerateFiles is *case-sensitive* in its pattern, which causes
                                      // DLL files to be missed under Linux; we have to pick .dll, .DLL, or scanning
@@ -581,10 +589,12 @@ namespace CKAN
                                      // The least evil is to walk it once, and filter it ourselves.
                                      .SelectMany(absDir => Directory.EnumerateFiles(absDir, "*",
                                                                                     SearchOption.AllDirectories))
-                                     .Where(file => file.EndsWith(".dll", StringComparison.CurrentCultureIgnoreCase))
+                                     .Where(file => file.EndsWith(".dll",
+                                                                  StringComparison.CurrentCultureIgnoreCase))
                                      .Select(gameInstance.ToRelativeGameDir)
-                                     .Where(relPath => !gameInstance.game.StockFolders.Any(f => relPath.StartsWith($"{f}/")))
-                                     .GroupBy(relPath => gameInstance.DllPathToIdentifier(relPath) ?? "")
+                                     .Where(relPath => !stockFolders.Any(f => relPath.StartsWith(f)))
+                                     .GroupBy(gameInstance.DllPathToIdentifier)
+                                     .OfType<IGrouping<string, string>>()
                                      .ToDictionary(grp => grp.Key,
                                                    grp => grp.First());
                 log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values));
