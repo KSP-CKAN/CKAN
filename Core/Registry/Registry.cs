@@ -939,7 +939,7 @@ namespace CKAN
             {
                 EnlistWithTransaction();
                 InvalidateInstalledCaches();
-                installed_dlls = new Dictionary<string, string>(unregistered);
+                installed_dlls = unregistered;
                 return true;
             }
             return false;
