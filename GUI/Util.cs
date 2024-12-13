@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using Timer = System.Windows.Forms.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -131,21 +131,31 @@ namespace CKAN.GUI
         }
 
         /// <summary>
+        /// Show a link right-click menu under a control,
+        /// meant for keyboard access
+        /// </summary>
+        /// <param name="url">The URL of the link</param>
+        /// <param name="c">The menu will be shown below the bottom of this control</param>
+        public static void LinkContextMenu(string url, Control c)
+            => LinkContextMenu(url, c.PointToScreen(new Point(0, c.Height)));
+
+        /// <summary>
         /// Show a context menu when the user right clicks a link
         /// </summary>
         /// <param name="url">The URL of the link</param>
-        public static void LinkContextMenu(string url)
+        /// <param name="where">Screen coordinates for the menu</param>
+        public static void LinkContextMenu(string url, Point? where = null)
         {
-            ToolStripMenuItem copyLink = new ToolStripMenuItem(Properties.Resources.UtilCopyLink);
-            copyLink.Click += new EventHandler((sender, ev) => Clipboard.SetText(url));
+            var copyLink = new ToolStripMenuItem(Properties.Resources.UtilCopyLink);
+            copyLink.Click += (sender, ev) => Clipboard.SetText(url);
 
-            ContextMenuStrip menu = new ContextMenuStrip();
+            var menu = new ContextMenuStrip();
             if (Platform.IsMono)
             {
                 menu.Renderer = new FlatToolStripRenderer();
             }
             menu.Items.Add(copyLink);
-            menu.Show(Cursor.Position);
+            menu.Show(where ?? Cursor.Position);
         }
 
         /// <summary>
