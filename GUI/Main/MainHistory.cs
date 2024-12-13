@@ -13,7 +13,7 @@ namespace CKAN.GUI
             if (CurrentInstance != null && configuration != null)
             {
                 InstallationHistory.LoadHistory(CurrentInstance, configuration, repoData);
-                tabController.ShowTab("InstallationHistoryTabPage", 2);
+                tabController.ShowTab(InstallationHistoryTabPage.Name, 2);
             }
         }
 
@@ -30,15 +30,15 @@ namespace CKAN.GUI
                     CurrentInstance.StabilityToleranceConfig,
                     CurrentInstance.VersionCriteria());
                 UpdateChangesDialog(tuple.Item1.ToList(), tuple.Item2);
-                tabController.ShowTab("ChangesetTabPage", 1);
+                tabController.ShowTab(ChangesetTabPage.Name, 1);
             }
         }
 
         private void InstallationHistory_Done()
         {
             UpdateStatusBar();
-            tabController.ShowTab("ManageModsTabPage");
-            tabController.HideTab("InstallationHistoryTabPage");
+            tabController.ShowTab(ManageModsTabPage.Name);
+            tabController.HideTab(InstallationHistoryTabPage.Name);
         }
 
         private void InstallationHistory_OnSelectedModuleChanged(CkanModule m)

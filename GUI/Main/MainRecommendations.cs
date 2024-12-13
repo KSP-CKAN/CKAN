@@ -50,7 +50,7 @@ namespace CKAN.GUI
                     out Dictionary<CkanModule, List<string>> suggestions,
                     out Dictionary<CkanModule, HashSet<string>> supporters))
                 {
-                    tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                    tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                     ChooseRecommendedMods.LoadRecommendations(
                         registry, new List<CkanModule>(), new HashSet<CkanModule>(),
                         versionCriteria, Manager.Cache,
@@ -61,7 +61,7 @@ namespace CKAN.GUI
                         configuration,
                         recommendations, suggestions, supporters);
                     var result = ChooseRecommendedMods.Wait();
-                    tabController.HideTab("ChooseRecommendedModsTabPage");
+                    tabController.HideTab(ChooseRecommendedModsTabPage.Name);
                     if (result != null && result.Count != 0)
                     {
                         Wait.StartWaiting(InstallMods, PostInstallMods, true,

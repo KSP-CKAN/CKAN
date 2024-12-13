@@ -10,15 +10,15 @@ namespace CKAN.GUI
         private void viewPlayTimeStripMenuItem_Click(object? sender, EventArgs? e)
         {
             PlayTime.loadAllPlayTime(Manager);
-            tabController.ShowTab("PlayTimeTabPage", 2);
+            tabController.ShowTab(PlayTimeTabPage.Name, 2);
             DisableMainWindow();
         }
 
         private void PlayTime_Done()
         {
             UpdateStatusBar();
-            tabController.ShowTab("ManageModsTabPage");
-            tabController.HideTab("PlayTimeTabPage");
+            tabController.ShowTab(ManageModsTabPage.Name);
+            tabController.HideTab(PlayTimeTabPage.Name);
             EnableMainWindow();
         }
     }

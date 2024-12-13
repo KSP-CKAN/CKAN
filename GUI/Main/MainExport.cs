@@ -26,14 +26,14 @@ namespace CKAN.GUI
                 Task.Factory.StartNew(() =>
                 {
                     currentUser.RaiseMessage("");
-                    tabController.ShowTab("EditModpackTabPage", 2);
+                    tabController.ShowTab(EditModpackTabPage.Name, 2);
                     DisableMainWindow();
                     var mgr = RegistryManager.Instance(CurrentInstance, repoData);
                     EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
                     // This will block till the user is done
                     EditModpack.Wait(currentUser);
-                    tabController.ShowTab("ManageModsTabPage");
-                    tabController.HideTab("EditModpackTabPage");
+                    tabController.ShowTab(ManageModsTabPage.Name);
+                    tabController.HideTab(EditModpackTabPage.Name);
                     EnableMainWindow();
                 });
             }

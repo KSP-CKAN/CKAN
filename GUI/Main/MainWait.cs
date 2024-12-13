@@ -20,7 +20,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                tabController.ShowTab("WaitTabPage", 2);
+                tabController.ShowTab(WaitTabPage.Name, 2);
                 StatusProgress.Value = 0;
                 StatusProgress.Style = ProgressBarStyle.Marquee;
                 StatusProgress.Visible = true;
@@ -34,8 +34,8 @@ namespace CKAN.GUI
                 Wait.Finish();
                 RecreateDialogs();
 
-                tabController.HideTab("WaitTabPage");
-                tabController.SetActiveTab("ManageModsTabPage");
+                tabController.HideTab(WaitTabPage.Name);
+                tabController.SetActiveTab(ManageModsTabPage.Name);
 
                 StatusProgress.Value = 0;
                 StatusProgress.Style = ProgressBarStyle.Continuous;
@@ -65,7 +65,7 @@ namespace CKAN.GUI
         public void Wait_OnRetry()
         {
             EnableMainWindow();
-            tabController.ShowTab("ChangesetTabPage", 1);
+            tabController.ShowTab(ChangesetTabPage.Name, 1);
         }
 
         public void Wait_OnOk()

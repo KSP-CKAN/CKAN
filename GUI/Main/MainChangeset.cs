@@ -36,7 +36,7 @@ namespace CKAN.GUI
             {
                 ManageMods.ClearChangeSet();
             }
-            tabController.ShowTab("ManageModsTabPage");
+            tabController.ShowTab(ManageModsTabPage.Name);
         }
 
         private void Changeset_OnConfirmChanges(List<ModChange> changeset)

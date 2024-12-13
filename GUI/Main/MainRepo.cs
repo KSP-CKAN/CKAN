@@ -34,7 +34,7 @@ namespace CKAN.GUI
 
         public void UpdateRepo(bool forceFullRefresh = false, bool refreshWithoutChanges = false)
         {
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainRepoWaitTitle);
+            tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainRepoWaitTitle);
 
             try
             {

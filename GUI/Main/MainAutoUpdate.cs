@@ -82,7 +82,7 @@ namespace CKAN.GUI
         {
             ShowWaitDialog();
             DisableMainWindow();
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainUpgradingWaitTitle);
+            tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainUpgradingWaitTitle);
             var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
             var update = updater.GetUpdate(mainConfig.DevBuilds ?? false, userAgent);
             Wait.SetDescription(string.Format(Properties.Resources.MainUpgradingTo,

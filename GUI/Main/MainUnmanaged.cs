@@ -12,15 +12,15 @@ namespace CKAN.GUI
             if (Manager.CurrentInstance != null)
             {
                 UnmanagedFiles.LoadFiles(Manager.CurrentInstance, repoData, currentUser);
-                tabController.ShowTab("UnmanagedFilesTabPage", 2);
+                tabController.ShowTab(UnmanagedFilesTabPage.Name, 2);
             }
         }
 
         private void UnmanagedFiles_Done()
         {
             UpdateStatusBar();
-            tabController.ShowTab("ManageModsTabPage");
-            tabController.HideTab("UnmanagedFilesTabPage");
+            tabController.ShowTab(ManageModsTabPage.Name);
+            tabController.HideTab(UnmanagedFilesTabPage.Name);
         }
     }
 }
