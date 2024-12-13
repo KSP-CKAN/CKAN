@@ -36,7 +36,7 @@ namespace CKAN.GUI
                         && dlg.FileNames.Length > 0)
                 {
                     // Show WaitTabPage (status page) and lock it.
-                    tabController.RenameTab("WaitTabPage", Properties.Resources.MainImportWaitTitle);
+                    tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainImportWaitTitle);
                     ShowWaitDialog();
                     DisableMainWindow();
                     Wait.StartWaiting(

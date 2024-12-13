@@ -162,7 +162,7 @@ namespace CKAN.GUI
             OnCacheChanged(null);
 
             tabController = new TabController(MainTabControl);
-            tabController.ShowTab("ManageModsTabPage");
+            tabController.ShowTab(ManageModsTabPage.Name);
 
             // Disable the modinfo controls until a mod has been choosen. This has an effect if the modlist is empty.
             ActiveModInfo = null;
@@ -235,7 +235,7 @@ namespace CKAN.GUI
         {
             actuallyVisible = true;
 
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainLoadingGameInstance);
+            tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainLoadingGameInstance);
             ShowWaitDialog();
             DisableMainWindow();
             Wait.StartWaiting(
@@ -898,7 +898,7 @@ namespace CKAN.GUI
                 UpdateChangesDialog(toInstall.Select(m => new ModChange(m, GUIModChangeType.Install))
                                              .ToList(),
                                     null);
-                tabController.ShowTab("ChangesetTabPage", 1);
+                tabController.ShowTab(ChangesetTabPage.Name, 1);
             }
         }
 
@@ -992,7 +992,7 @@ namespace CKAN.GUI
         {
             if (changeset != null && changeset.Count != 0)
             {
-                tabController.ShowTab("ChangesetTabPage", 1, false);
+                tabController.ShowTab(ChangesetTabPage.Name, 1, false);
                 UpdateChangesDialog(
                     changeset,
                     conflicts.ToDictionary(item => item.Key.ToCkanModule(),
@@ -1001,7 +1001,7 @@ namespace CKAN.GUI
             }
             else
             {
-                tabController.HideTab("ChangesetTabPage");
+                tabController.HideTab(ChangesetTabPage.Name);
                 auditRecommendationsMenuItem.Enabled = true;
             }
         }
@@ -1153,12 +1153,12 @@ namespace CKAN.GUI
             UpdateChangesDialog(changeset,
                                 conflicts?.ToDictionary(item => item.Key.ToCkanModule(),
                                                         item => item.Value));
-            tabController.ShowTab("ChangesetTabPage", 1);
+            tabController.ShowTab(ChangesetTabPage.Name, 1);
         }
 
         private void RefreshModList(bool allowAutoUpdate, Dictionary<string, bool>? oldModules = null)
         {
-            tabController.RenameTab("WaitTabPage", Properties.Resources.MainModListWaitTitle);
+            tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();
             DisableMainWindow();
             ActiveModInfo = null;

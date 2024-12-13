@@ -1,6 +1,3 @@
-using System;
-using System.Windows.Forms;
-
 namespace CKAN.GUI
 {
     partial class AboutDialog
@@ -48,6 +45,7 @@ namespace CKAN.GUI
             //
             // projectNameLabel
             //
+            this.projectNameLabel.AutoSize = true;
             this.projectNameLabel.Location = new System.Drawing.Point(6, 5);
             this.projectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.projectNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -59,6 +57,7 @@ namespace CKAN.GUI
             //
             // versionLabel
             //
+            this.versionLabel.AutoSize = true;
             this.versionLabel.Location = new System.Drawing.Point(6, 25);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(100, 13);
@@ -68,6 +67,7 @@ namespace CKAN.GUI
             //
             // licenseLabel
             //
+            this.licenseLabel.AutoSize = true;
             this.licenseLabel.Location = new System.Drawing.Point(6, 55);
             this.licenseLabel.Name = "licenseLabel";
             this.licenseLabel.Size = new System.Drawing.Size(100, 13);
@@ -77,10 +77,12 @@ namespace CKAN.GUI
             //
             // licenseLinkLabel
             //
+            this.licenseLinkLabel.AutoSize = true;
             this.licenseLinkLabel.Location = new System.Drawing.Point(110, 55);
             this.licenseLinkLabel.Name = "licenseLinkLabel";
             this.licenseLinkLabel.Text = "https://github.com/KSP-CKAN/CKAN/blob/master/LICENSE.md";
             this.licenseLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 56);
+            this.licenseLinkLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.licenseLinkLabel.Size = new System.Drawing.Size(380, 13);
             this.licenseLinkLabel.TabIndex = 1;
             this.licenseLinkLabel.TabStop = true;
@@ -91,6 +93,7 @@ namespace CKAN.GUI
             //
             // authorsLabel
             //
+            this.authorsLabel.AutoSize = true;
             this.authorsLabel.Location = new System.Drawing.Point(6, 75);
             this.authorsLabel.Name = "authorsLabel";
             this.authorsLabel.Size = new System.Drawing.Size(100, 13);
@@ -100,10 +103,12 @@ namespace CKAN.GUI
             //
             // authorsLinkLabel
             //
+            this.authorsLinkLabel.AutoSize = true;
             this.authorsLinkLabel.Location = new System.Drawing.Point(110, 75);
             this.authorsLinkLabel.Name = "authorsLinkLabel";
             this.authorsLinkLabel.Text = "https://github.com/KSP-CKAN/CKAN/graphs/contributors";
             this.authorsLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 52);
+            this.authorsLinkLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.authorsLinkLabel.Size = new System.Drawing.Size(380, 13);
             this.authorsLinkLabel.TabIndex = 2;
             this.authorsLinkLabel.TabStop = true;
@@ -113,6 +118,7 @@ namespace CKAN.GUI
             //
             // sourceLabel
             //
+            this.sourceLabel.AutoSize = true;
             this.sourceLabel.Location = new System.Drawing.Point(6, 95);
             this.sourceLabel.Name = "sourceLabel";
             this.sourceLabel.Size = new System.Drawing.Size(100, 13);
@@ -122,10 +128,12 @@ namespace CKAN.GUI
             //
             // sourceLinkLabel
             //
+            this.sourceLinkLabel.AutoSize = true;
             this.sourceLinkLabel.Location = new System.Drawing.Point(110, 95);
             this.sourceLinkLabel.Name = "sourceLinkLabel";
             this.sourceLinkLabel.Text = "https://github.com/KSP-CKAN/CKAN/";
             this.sourceLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 33);
+            this.sourceLinkLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.sourceLinkLabel.Size = new System.Drawing.Size(380, 13);
             this.sourceLinkLabel.TabIndex = 3;
             this.sourceLinkLabel.TabStop = true;
@@ -135,6 +143,7 @@ namespace CKAN.GUI
             //
             // forumthreadLabel
             //
+            this.forumthreadLabel.AutoSize = true;
             this.forumthreadLabel.Location = new System.Drawing.Point(6, 115);
             this.forumthreadLabel.Name = "forumthreadLinkLabel";
             this.forumthreadLabel.Size = new System.Drawing.Size(100, 13);
@@ -144,10 +153,12 @@ namespace CKAN.GUI
             //
             // forumthreadLinkLabel
             //
+            this.forumthreadLinkLabel.AutoSize = true;
             this.forumthreadLinkLabel.Location = new System.Drawing.Point(110, 115);
             this.forumthreadLinkLabel.Name = "forumthreadLinkLabel";
             this.forumthreadLinkLabel.Text = "http://forum.kerbalspaceprogram.com/index.php?/topic/197082-ckan";
             this.forumthreadLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 64);
+            this.forumthreadLinkLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.forumthreadLinkLabel.Size = new System.Drawing.Size(380, 13);
             this.forumthreadLinkLabel.TabIndex = 4;
             this.forumthreadLinkLabel.TabStop = true;
@@ -158,6 +169,7 @@ namespace CKAN.GUI
             //
             // homepageLabel
             //
+            this.homepageLabel.AutoSize = true;
             this.homepageLabel.Location = new System.Drawing.Point(6, 135);
             this.homepageLabel.Name = "homepageLinkLabel";
             this.homepageLabel.Size = new System.Drawing.Size(100, 13);
@@ -167,10 +179,12 @@ namespace CKAN.GUI
             //
             // homepageLinkLabel
             //
+            this.homepageLinkLabel.AutoSize = true;
             this.homepageLinkLabel.Location = new System.Drawing.Point(110, 135);
             this.homepageLinkLabel.Name = "homepageLinkLabel";
             this.homepageLinkLabel.Text = "http://ksp-ckan.space";
             this.homepageLinkLabel.LinkArea = new System.Windows.Forms.LinkArea(0, 21);
+            this.homepageLinkLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.homepageLinkLabel.Size = new System.Drawing.Size(380, 13);
             this.homepageLinkLabel.TabIndex = 5;
             this.homepageLinkLabel.TabStop = true;
@@ -197,9 +211,11 @@ namespace CKAN.GUI
             this.Controls.Add(this.homepageLinkLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = EmbeddedImages.AppIcon;
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AboutDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();

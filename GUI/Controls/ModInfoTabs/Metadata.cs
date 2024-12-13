@@ -153,10 +153,10 @@ namespace CKAN.GUI
         {
             if (sender is LinkLabel lbl)
             {
-                switch (e?.KeyCode)
+                switch (e)
                 {
-                    case Keys.Apps:
-                        Util.LinkContextMenu(lbl.Text);
+                    case {KeyCode: Keys.Apps}:
+                        Util.LinkContextMenu(lbl.Text, lbl);
                         e.Handled = true;
                         break;
                 }

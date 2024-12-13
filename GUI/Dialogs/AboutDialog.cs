@@ -14,7 +14,6 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             ApplyFormCompatibilityFixes();
-            StartPosition = FormStartPosition.CenterScreen;
             versionLabel.Text = string.Format(Properties.Resources.AboutDialogLabel2Text, Meta.GetVersion());
         }
 
@@ -30,10 +29,10 @@ namespace CKAN.GUI
         {
             if (sender is LinkLabel l)
             {
-                switch (e?.KeyCode)
+                switch (e)
                 {
-                    case Keys.Apps:
-                        Util.LinkContextMenu(l.Text);
+                    case {KeyCode: Keys.Apps}:
+                        Util.LinkContextMenu(l.Text, l);
                         e.Handled = true;
                         break;
                 }

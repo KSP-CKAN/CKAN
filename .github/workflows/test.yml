@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/build.yml
   test-build:
     needs: build-debug
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - name: Install runtime dependencies

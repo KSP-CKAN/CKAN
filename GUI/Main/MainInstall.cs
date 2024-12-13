@@ -167,7 +167,7 @@ namespace CKAN.GUI
                         out Dictionary<CkanModule, List<string>> suggestions,
                         out Dictionary<CkanModule, HashSet<string>> supporters))
                     {
-                        tabController.ShowTab("ChooseRecommendedModsTabPage", 3);
+                        tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                         ChooseRecommendedMods.LoadRecommendations(
                             registry, toInstall, toUninstall,
                             CurrentInstance.VersionCriteria(), Manager.Cache,
@@ -181,7 +181,7 @@ namespace CKAN.GUI
                         Util.Invoke(this, () => UseWaitCursor = false);
                         var result = ChooseRecommendedMods.Wait();
                         tabController.SetTabLock(false);
-                        tabController.HideTab("ChooseRecommendedModsTabPage");
+                        tabController.HideTab(ChooseRecommendedModsTabPage.Name);
                         if (result == null)
                         {
                             e.Result = new InstallResult(false, changes);
@@ -204,7 +204,7 @@ namespace CKAN.GUI
                 Util.Invoke(this, () =>
                 {
                     // Need to be on the GUI thread to get the translated string
-                    tabController.RenameTab("WaitTabPage", Properties.Resources.MainInstallWaitTitle);
+                    tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainInstallWaitTitle);
                 });
                 tabController.SetTabLock(true);
 
@@ -302,7 +302,7 @@ namespace CKAN.GUI
                         catch (TooManyModsProvideKraken k)
                         {
                             // Prompt user to choose which mod to use
-                            tabController.ShowTab("ChooseProvidedModsTabPage", 3);
+                            tabController.ShowTab(ChooseProvidedModsTabPage.Name, 3);
                             Util.Invoke(this, () => StatusProgress.Visible = false);
                             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                             ChooseProvidedMods.LoadProviders(
@@ -318,13 +318,13 @@ namespace CKAN.GUI
                             var chosen = ChooseProvidedMods.Wait();
                             // Close the selection prompt
                             tabController.SetTabLock(false);
-                            tabController.HideTab("ChooseProvidedModsTabPage");
+                            tabController.HideTab(ChooseProvidedModsTabPage.Name);
                             if (chosen != null)
                             {
                                 // User picked a mod, queue it up for installation
                                 toInstall.Add(chosen);
                                 // DON'T return so we can loop around and try the above InstallList call again
-                                tabController.ShowTab("WaitTabPage");
+                                tabController.ShowTab(WaitTabPage.Name);
                                 Util.Invoke(this, () => StatusProgress.Visible = true);
                             }
                             else
@@ -356,7 +356,7 @@ namespace CKAN.GUI
                 if (possibleConfigOnlyDirs.Count > 0)
                 {
                     Util.Invoke(this, () => StatusLabel.ToolTipText = StatusLabel.Text = "");
-                    tabController.ShowTab("DeleteDirectoriesTabPage", 4);
+                    tabController.ShowTab(DeleteDirectoriesTabPage.Name, 4);
                     tabController.SetTabLock(true);
 
                     DeleteDirectories.LoadDirs(CurrentInstance, possibleConfigOnlyDirs);
@@ -377,8 +377,8 @@ namespace CKAN.GUI
                         }
                     }
 
-                    tabController.ShowTab("WaitTabPage");
-                    tabController.HideTab("DeleteDirectoriesTabPage");
+                    tabController.ShowTab(WaitTabPage.Name);
+                    tabController.HideTab(DeleteDirectoriesTabPage.Name);
                     tabController.SetTabLock(false);
                 }
             }
