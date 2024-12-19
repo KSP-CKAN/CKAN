@@ -22,17 +22,26 @@ namespace CKAN
         public SteamLibrary(string? libraryPath)
         {
             if (libraryPath != null
-                && OpenRead(LibraryFoldersConfigPath(libraryPath)) is FileStream stream)
+                && LibraryFoldersConfigPath(libraryPath) is string libFoldersConfigPath
+                && OpenRead(libFoldersConfigPath) is FileStream stream)
             {
                 log.InfoFormat("Found Steam at {0}", libraryPath);
                 var txtParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
-                var appPaths      = txtParser.Deserialize<List<LibraryFolder>>(stream)
-                                             .Select(lf => lf.Path is string libPath
-                                                           ? appRelPaths.Select(p => Path.Combine(libPath, p))
-                                                                        .FirstOrDefault(Directory.Exists)
-                                                           : null)
-                                             .OfType<string>()
-                                             .ToArray();
+                var appPaths      = (Utilities.DefaultIfThrows(
+                                                   () => txtParser.Deserialize<Dictionary<int, LibraryFolder>>(stream),
+                                                   exc =>
+                                                   {
+                                                       log.Warn($"Failed to parse {libFoldersConfigPath}", exc);
+                                                       return null;
+                                                   })
+                                              ?.Values
+                                               .Select(lf => lf.Path is string libPath
+                                                             ? appRelPaths.Select(p => Path.Combine(libPath, p))
+                                                                          .FirstOrDefault(Directory.Exists)
+                                                             : null)
+                                               .OfType<string>()
+                                              ?? Enumerable.Empty<string>())
+                                    .ToArray();
                 var steamGames    = appPaths.SelectMany(p => LibraryPathGames(txtParser, p));
                 var binParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Binary);
                 var nonSteamGames = Directory.EnumerateDirectories(Path.Combine(libraryPath, "userdata"))
@@ -84,8 +93,14 @@ namespace CKAN
 
         private static IEnumerable<GameBase> ShortcutsFileGames(KVSerializer vdfParser,
                                                                 string       path)
-            => Utilities.DefaultIfThrows(() => vdfParser.Deserialize<List<NonSteamGame>>(File.OpenRead(path)))
-                        ?.Select(nsg => nsg.NormalizeDir(path))
+            => Utilities.DefaultIfThrows(() => vdfParser.Deserialize<Dictionary<int, NonSteamGame>>(File.OpenRead(path)),
+                                         exc =>
+                                         {
+                                             log.Warn($"Failed to parse {path}", exc);
+                                             return null;
+                                         })
+                        ?.Values
+                         .Select(nsg => nsg.NormalizeDir(path))
                         ?? Enumerable.Empty<NonSteamGame>();
 
         private const  string   registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";

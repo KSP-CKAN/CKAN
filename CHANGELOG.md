@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Optimize label searches and handle spaces in names (#4270 by: HebaruSan)
 - [Core] Small performance tweaks for DLL scanning (#4275 by: HebaruSan)
 - [GUI] Fix broken version label in About dialog (#4277 by: HebaruSan)
+- [Core] Handle missing indexes in Steam vdf file lists (#4279 by: HebaruSan)
 
 ### Internal
 
