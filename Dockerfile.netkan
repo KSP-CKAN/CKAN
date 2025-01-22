@@ -3,6 +3,9 @@ FROM ubuntu:22.04
 # Don't prompt for time zone
 ENV DEBIAN_FRONTEND noninteractive
 
+# Properly handle Unicode
+ENV LANG C.utf-8
+
 # Set up Mono's APT repo
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates gnupg \
