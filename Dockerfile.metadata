@@ -4,6 +4,9 @@ FROM ubuntu:22.04 AS base
 # Don't prompt for time zone
 ENV DEBIAN_FRONTEND noninteractive
 
+# Properly handle Unicode
+ENV LANG C.utf-8
+
 # Put user-installed Python code in path
 ENV PATH "$PATH:/root/.local/bin"
 
