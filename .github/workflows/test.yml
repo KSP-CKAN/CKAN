@@ -29,13 +29,13 @@ jobs:
       - name: Run tests
         run: xvfb-run ./build test+only --configuration=Debug --where="Category!=FlakyNetwork"
 
-  notify:
-    needs:
-      - build-debug
-      - test-build
-    if: failure()
-    uses: ./.github/workflows/notify.yml
-    with:
-      name: ${{ github.workflow }}
-      success: ${{ !contains(needs.*.result, 'failure') }}
-    secrets: inherit
+  # notify:
+  #   needs:
+  #     - build-debug
+  #     - test-build
+  #   if: failure()
+  #   uses: ./.github/workflows/notify.yml
+  #   with:
+  #     name: ${{ github.workflow }}
+  #     success: ${{ !contains(needs.*.result, 'failure') }}
+  #   secrets: inherit

@@ -53,13 +53,13 @@ jobs:
         with:
           name: inflator-image
           path: /tmp/inflator-image.tar
-  notify:
-    needs:
-      - build-release
-      - smoke-test-inflator
-    if: failure()
-    uses: ./.github/workflows/notify.yml
-    with:
-      name: ${{ github.workflow }}
-      success: ${{ !contains(needs.*.result, 'failure') }}
-    secrets: inherit
+  # notify:
+  #   needs:
+  #     - build-release
+  #     - smoke-test-inflator
+  #   if: failure()
+  #   uses: ./.github/workflows/notify.yml
+  #   with:
+  #     name: ${{ github.workflow }}
+  #     success: ${{ !contains(needs.*.result, 'failure') }}
+  #   secrets: inherit
