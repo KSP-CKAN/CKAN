@@ -273,18 +273,18 @@ jobs:
           tags: kspckan/metadata
           push: true
 
-  notify-discord:
-    needs:
-      - sign-assets
-      - upload-release-s3
-      - upload-dmg
-      - upload-deb
-      - upload-rpm
-      - upload-inflator
-      - upload-metadata-tester
-    if: always()
-    uses: ./.github/workflows/notify.yml
-    with:
-      name: ${{ github.workflow }}
-      success: ${{ !contains(needs.*.result, 'failure') }}
-    secrets: inherit
+  # notify-discord:
+  #   needs:
+  #     - sign-assets
+  #     - upload-release-s3
+  #     - upload-dmg
+  #     - upload-deb
+  #     - upload-rpm
+  #     - upload-inflator
+  #     - upload-metadata-tester
+  #   if: always()
+  #   uses: ./.github/workflows/notify.yml
+  #   with:
+  #     name: ${{ github.workflow }}
+  #     success: ${{ !contains(needs.*.result, 'failure') }}
+  #   secrets: inherit
