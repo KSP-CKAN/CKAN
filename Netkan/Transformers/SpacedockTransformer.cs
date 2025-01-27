@@ -114,12 +114,6 @@ namespace CKAN.NetKAN.Transformers
                              var sdLicense                  => sdLicense,
                          });
 
-            if (ver?.ToLower() is string lowerV
-                && preReleaseSubstrings.Any(substr => lowerV.Contains(substr)))
-            {
-                json.SafeAdd("release_status", "testing");
-            }
-
             // Make sure resources exist.
             if (json["resources"] == null)
             {
@@ -196,10 +190,5 @@ namespace CKAN.NetKAN.Transformers
         private static readonly Regex githubUrlPathPattern =
             new Regex("^/(?<owner>[^/]+)/(?<repo>[^/]+)",
                       RegexOptions.Compiled);
-
-        private static readonly string[] preReleaseSubstrings = new string[]
-        {
-            "pre", "alpha", "beta",
-        };
     }
 }
