@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
@@ -71,7 +73,7 @@ namespace CKAN
                         {
                             if (junctionInfo.ReparseTag == IO_REPARSE_TAG_MOUNT_POINT)
                             {
-                                target = junctionInfo.PathBuffer.TrimStart("\\\\?\\");
+                                target = junctionInfo.PathBuffer.TrimStart(WindowsPathPrefixes);
                             }
                         }
                         h.Close();
@@ -203,9 +205,18 @@ namespace CKAN
                                                         [MarshalAs(UnmanagedType.U4)]     uint      flagsAndAttributes,
                                                         IntPtr templateFile);
 
-        private static string TrimStart(this string orig, string toRemove)
-            => orig.StartsWith(toRemove) ? orig.Remove(0, toRemove.Length)
-                                         : orig;
+        private static string TrimStart(this string orig, IEnumerable<string> toRemove)
+            => toRemove.FirstOrDefault(orig.StartsWith) switch
+               {
+                   string s => orig[s.Length..],
+                   null     => orig,
+               };
 
+        private static readonly string[] WindowsPathPrefixes = new string[]
+        {
+            @"\\?\",
+            @"\??\",
+            @"\\.\",
+        };
     }
 }
