@@ -489,8 +489,8 @@ namespace CKAN.GUI
                         currentUser.RaiseMessage("{0}", exc.ToString());
                         break;
 
-                    case DownloadThrottledKraken exc:
-                        string msg = exc.ToString();
+                    case RequestThrottledKraken exc:
+                        string msg = exc.Message;
                         currentUser.RaiseMessage("{0}", msg);
                         if (configuration != null && CurrentInstance != null
                             && YesNoDialog(string.Format(Properties.Resources.MainInstallOpenSettingsPrompt, msg),

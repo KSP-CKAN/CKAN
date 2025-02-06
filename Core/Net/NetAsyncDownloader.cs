@@ -170,9 +170,9 @@ namespace CKAN
                                                      && url.IsAbsoluteUri
                                                      && Net.ThrottledHosts.TryGetValue(url.Host, out Uri? infoUrl)
                                                      && infoUrl is not null
-                                                         ? new DownloadThrottledKraken(url, infoUrl)
+                                                         ? new RequestThrottledKraken(url, infoUrl, wex)
                                                          : null)
-                                      .OfType<DownloadThrottledKraken>()
+                                      .OfType<RequestThrottledKraken>()
                                       .FirstOrDefault();
             if (throttled is not null)
             {

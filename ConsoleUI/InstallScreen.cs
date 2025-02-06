@@ -139,8 +139,8 @@ namespace CKAN.ConsoleUI {
                             RaiseError("{0}", ex.ToString());
                         } catch (ModuleDownloadErrorsKraken ex) {
                             RaiseError("{0}", ex.ToString());
-                        } catch (DownloadThrottledKraken ex) {
-                            if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.ToString()))) {
+                        } catch (RequestThrottledKraken ex) {
+                            if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.Message))) {
                                 if (ex.infoUrl != null) {
                                     ModInfoScreen.LaunchURL(theme, ex.infoUrl);
                                 }

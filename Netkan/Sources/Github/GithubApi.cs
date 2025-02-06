@@ -181,9 +181,12 @@ namespace CKAN.NetKAN.Sources.Github
             catch (WebException k)
             {
                 if (((HttpWebResponse?)k.Response)?.StatusCode == HttpStatusCode.Forbidden
-                    && k.Response.Headers["X-RateLimit-Remaining"] == "0")
+                    && k.Response.Headers["X-RateLimit-Remaining"] == "0"
+                    && Net.ThrottledHosts.TryGetValue(url.Host, out Uri? infoUrl)
+                    && infoUrl is not null)
                 {
-                    throw new Kraken($"GitHub API rate limit exceeded: {path}");
+                    throw new RequestThrottledKraken(url, infoUrl, k,
+                                                     $"GitHub API rate limit exceeded: {path}");
                 }
                 throw;
             }

@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -181,6 +182,13 @@ namespace CKAN.NetKAN.Processors
                 // error CS1631: Cannot yield a value in the body of a catch clause
                 caught        = true;
                 caughtMessage = e.Message;
+                if (e is RequestThrottledKraken k && k.retryTime is DateTime dt)
+                {
+                    // Let the API credits recharge
+                    var span = dt.Subtract(DateTime.UtcNow);
+                    caughtMessage += $"; sleeping {span}";
+                    Thread.Sleep(span);
+                }
             }
             if (caught)
             {

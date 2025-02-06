@@ -49,14 +49,13 @@ namespace CKAN.NetKAN
                 if (!string.IsNullOrEmpty(Options.ValidateCkan))
                 {
                     var ckan = new Metadata(JObject.Parse(File.ReadAllText(Options.ValidateCkan)));
-                    var inf = new Inflator(
-                        Options.CacheDir,
-                        Options.OverwriteCache,
-                        Options.GitHubToken,
-                        Options.GitLabToken,
-                        Options.NetUserAgent,
-                        Options.PreRelease,
-                        game);
+                    var inf = new Inflator(Options.CacheDir,
+                                           Options.OverwriteCache,
+                                           Options.GitHubToken,
+                                           Options.GitLabToken,
+                                           Options.NetUserAgent,
+                                           Options.PreRelease,
+                                           game);
                     inf.ValidateCkan(ckan);
                     Console.WriteLine(QueueHandler.serializeCkan(
                         PropertySortTransformer.SortProperties(ckan)));
@@ -72,17 +71,16 @@ namespace CKAN.NetKAN
                     && array[0] is var input
                     && array[1] is var output)
                 {
-                    var qh = new QueueHandler(
-                        input,
-                        output,
-                        Options.CacheDir,
-                        Options.OutputDir,
-                        Options.OverwriteCache,
-                        Options.GitHubToken,
-                        Options.GitLabToken,
-                        Options.NetUserAgent,
-                        Options.PreRelease,
-                        game);
+                    var qh = new QueueHandler(input,
+                                              output,
+                                              Options.CacheDir,
+                                              Options.OutputDir,
+                                              Options.OverwriteCache,
+                                              Options.GitHubToken,
+                                              Options.GitLabToken,
+                                              Options.NetUserAgent,
+                                              Options.PreRelease,
+                                              game);
                     qh.Process();
                     return ExitOk;
                 }
@@ -94,14 +92,13 @@ namespace CKAN.NetKAN
                     var netkans = ReadNetkans(Options);
                     Log.Info("Finished reading input");
 
-                    var inf = new Inflator(
-                        Options.CacheDir,
-                        Options.OverwriteCache,
-                        Options.GitHubToken,
-                        Options.GitLabToken,
-                        Options.NetUserAgent,
-                        Options.PreRelease,
-                        game);
+                    var inf = new Inflator(Options.CacheDir,
+                                           Options.OverwriteCache,
+                                           Options.GitHubToken,
+                                           Options.GitLabToken,
+                                           Options.NetUserAgent,
+                                           Options.PreRelease,
+                                           game);
                     var ckans = inf.Inflate(
                             Options.File,
                             netkans,
@@ -177,7 +174,8 @@ namespace CKAN.NetKAN
 
         private static Metadata[] ReadNetkans(CmdLineOptions Options)
         {
-            if (!Options.File?.EndsWith(".netkan") ?? false)
+            if (!Options.File?.EndsWith(".netkan", StringComparison.OrdinalIgnoreCase)
+                             ?? false)
             {
                 Log.WarnFormat("Input is not a .netkan file");
             }

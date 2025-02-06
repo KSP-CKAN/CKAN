@@ -213,9 +213,9 @@ namespace CKAN.CmdLine
                     user.RaiseError("{0}", kraken.ToString());
                     return Exit.ERROR;
                 }
-                catch (DownloadThrottledKraken kraken)
+                catch (RequestThrottledKraken kraken)
                 {
-                    user.RaiseError("{0}", kraken.ToString());
+                    user.RaiseError("{0}", kraken.Message);
                     user.RaiseMessage(Properties.Resources.InstallTryAuthToken, kraken.infoUrl);
                     return Exit.ERROR;
                 }
