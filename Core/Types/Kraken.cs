@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.Net;
 
 using log4net;
 
@@ -452,21 +453,51 @@ namespace CKAN
         }
     }
 
-    public class DownloadThrottledKraken : Kraken
+    public class RequestThrottledKraken : Kraken
     {
-        public readonly Uri throttledUrl;
-        public readonly Uri infoUrl;
+        public readonly Uri       throttledUrl;
+        public readonly Uri       infoUrl;
+        public readonly DateTime? retryTime;
 
-        public DownloadThrottledKraken(Uri url, Uri info) : base()
+        public RequestThrottledKraken(Uri url, Uri info, WebException exc, string? reason = null)
+            : this(url, info, ExceptionRetryTimes(exc).Max(), reason)
         {
-            throttledUrl = url;
-            infoUrl      = info;
         }
 
-        public override string ToString()
+        public RequestThrottledKraken(Uri url, Uri info,
+                                      DateTime? retryTime, string? reason = null)
+            : base(reason
+                   ?? string.Format(Properties.Resources.KrakenDownloadThrottled,
+                                    url.Host))
         {
-            return string.Format(Properties.Resources.KrakenDownloadThrottled, throttledUrl.Host);
+            throttledUrl   = url;
+            infoUrl        = info;
+            this.retryTime = retryTime;
         }
+
+        // https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#handle-rate-limit-errors-appropriately
+        private static IEnumerable<DateTime> ExceptionRetryTimes(WebException exc)
+        {
+            // If the retry-after response header is present, you should not retry your request
+            // until after that many seconds has elapsed.
+            if (exc.Response?.Headers["Retry-After"] is string waitString
+                && int.TryParse(waitString, out int waitSeconds))
+            {
+                yield return DateTime.UtcNow + TimeSpan.FromSeconds(waitSeconds);
+            }
+            // If the x-ratelimit-remaining header is 0, you should not make another request
+            // until after the time specified by the x-ratelimit-reset header.
+            // The x-ratelimit-reset header is in UTC epoch seconds.
+            if (exc.Response?.Headers["X-RateLimit-Reset"] is string epochString
+                && int.TryParse(epochString, out int epochSeconds))
+            {
+                yield return UnixEpoch + TimeSpan.FromSeconds(epochSeconds);
+            }
+            // Otherwise, wait for at least one minute before retrying.
+            yield return DateTime.UtcNow + TimeSpan.FromMinutes(1);
+        }
+
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
     }
 
     public class RegistryInUseKraken : Kraken

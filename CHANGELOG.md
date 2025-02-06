@@ -41,6 +41,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Stop trying to get remote version files from the forum (#4274 by: HebaruSan)
 - [Build] ci: Bumping Signing request tag (#4280 by: techman83; reviewed: HebaruSan)
 - [Netkan] Set unicode-aware locale in containers (#4289 by: HebaruSan)
+- [Netkan] Handle GitHub API rate limit errors appropriately (#4299 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 

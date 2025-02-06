@@ -302,8 +302,7 @@ If the game is still running, close it and try again. Otherwise check the permis
 Consult this page for help:
 {0}</value></data>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>Oh no! Our download failed with a certificate error!</value></data>
-  <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Download from {0} was throttled.
-Consider adding an authentication token to increase the throttling limit.</value></data>
+  <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Request to {0} throttled</value></data>
   <data name="KrakenAlreadyRunning" xml:space="preserve"><value>Lock file with live process ID found at:
 {0}
 

@@ -153,9 +153,14 @@ namespace CKAN.NetKAN.Transformers
                         }
                     }
                 }
+                catch (RequestThrottledKraken)
+                {
+                    // Treat rate limiting as a real error to avoid temporary metadata degradation
+                    throw;
+                }
                 catch
                 {
-                    // Just give up, it's fine
+                    // Just give up, invalid URLs are fine
                 }
             }
             TryAddResourceURL(metadata.Identifier, resourcesJson, "repository", sdMod.source_code);
