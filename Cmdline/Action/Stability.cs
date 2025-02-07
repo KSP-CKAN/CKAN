@@ -19,7 +19,7 @@ namespace CKAN.CmdLine
             int exitCode = Exit.OK;
             Parser.Default.ParseArgumentsStrict(options.options.ToArray(),
                                                 new StabilitySubOptions(),
-                                                (string option, object suboptions) =>
+                                                (option, suboptions) =>
             {
                 // ParseArgumentsStrict calls us unconditionally, even with bad arguments
                 if (!string.IsNullOrEmpty(option) && suboptions != null)

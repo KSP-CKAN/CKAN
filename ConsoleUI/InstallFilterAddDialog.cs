@@ -28,13 +28,15 @@ namespace CKAN.ConsoleUI {
             };
             AddObject(manualEntry);
             manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.FilterAddAcceptTip);
-            manualEntry.AddBinding(Keys.Enter, (object sender) => {
+            manualEntry.AddBinding(Keys.Enter, sender =>
+            {
                 choice = manualEntry.Value;
                 return false;
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, sender =>
+            {
                 choice = null;
                 return false;
             });

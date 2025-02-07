@@ -142,8 +142,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             }
 
             var remainingWidth = contentR - l - 1
-                                 - columns.Select(col => col.Width ?? 0)
-                                          .Sum()
+                                 - columns.Sum(col => col.Width ?? 0)
                                  - (padding.Length * (columns.Count - 1));
             var autoWidthCount = columns.Count(col => !col.Width.HasValue);
             var autoWidth = autoWidthCount > 0 && remainingWidth > 0

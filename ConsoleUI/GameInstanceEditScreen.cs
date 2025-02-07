@@ -89,13 +89,15 @@ namespace CKAN.ConsoleUI {
                 );
                 AddObject(repoList);
                 repoList.AddTip("A", Properties.Resources.Add);
-                repoList.AddBinding(Keys.A, (object sender) => {
+                repoList.AddBinding(Keys.A, sender =>
+                {
                     LaunchSubScreen(new RepoAddScreen(theme, instance.game, repoEditList, userAgent));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
                 repoList.AddTip("R", Properties.Resources.Remove);
-                repoList.AddBinding(Keys.R, (object sender) => {
+                repoList.AddBinding(Keys.R, sender =>
+                {
                     if (repoList.Selection is Repository repo)
                     {
                         int oldPrio = repo.priority;
@@ -111,7 +113,8 @@ namespace CKAN.ConsoleUI {
                     return true;
                 });
                 repoList.AddTip("E", Properties.Resources.Edit);
-                repoList.AddBinding(Keys.E, (object sender) => {
+                repoList.AddBinding(Keys.E, sender =>
+                {
                     if (repoList.Selection is Repository repo)
                     {
                         LaunchSubScreen(new RepoEditScreen(theme, instance.game, repoEditList, repo, userAgent));
@@ -120,7 +123,8 @@ namespace CKAN.ConsoleUI {
                     return true;
                 });
                 repoList.AddTip("-", Properties.Resources.Up);
-                repoList.AddBinding(Keys.Minus, (object sender) => {
+                repoList.AddBinding(Keys.Minus, sender =>
+                {
                     if (repoList.Selection is Repository repo)
                     {
                         if (repo.priority > 0) {
@@ -136,7 +140,8 @@ namespace CKAN.ConsoleUI {
                     return true;
                 });
                 repoList.AddTip("+", Properties.Resources.Down);
-                repoList.AddBinding(Keys.Plus, (object sender) => {
+                repoList.AddBinding(Keys.Plus, sender =>
+                {
                     if (repoList.Selection is Repository repo)
                     {
                         var next = SortedDictFind(repoEditList,
@@ -165,7 +170,8 @@ namespace CKAN.ConsoleUI {
                 AddObject(compatList);
 
                 compatList.AddTip("A", Properties.Resources.Add);
-                compatList.AddBinding(Keys.A, (object sender) => {
+                compatList.AddBinding(Keys.A, sender =>
+                {
                     CompatibleVersionDialog vd = new CompatibleVersionDialog(theme, instance.game);
                     var newVersion = vd.Run();
                     DrawBackground();
@@ -176,7 +182,8 @@ namespace CKAN.ConsoleUI {
                     return true;
                 });
                 compatList.AddTip("R", Properties.Resources.Remove, () => compatList.Selection != null);
-                compatList.AddBinding(Keys.R, (object sender) => {
+                compatList.AddBinding(Keys.R, sender =>
+                {
                     if (compatList.Selection is GameVersion gv)
                     {
                         compatEditList.Remove(gv);

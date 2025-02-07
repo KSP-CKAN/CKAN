@@ -56,12 +56,14 @@ namespace CKAN.ConsoleUI.Toolkit {
             );
 
             choices.AddTip(Properties.Resources.Enter, Properties.Resources.Accept);
-            choices.AddBinding(Keys.Enter, (object sender) => {
+            choices.AddBinding(Keys.Enter, sender =>
+            {
                 return false;
             });
 
             choices.AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            choices.AddBinding(Keys.Escape, (object sender) => {
+            choices.AddBinding(Keys.Escape, sender =>
+            {
                 cancelled = true;
                 return false;
             });

@@ -371,6 +371,7 @@ Find the folder where your game is installed and choose one of these files:
   <data name="SettingsToolTipOpenCacheButton" xml:space="preserve"><value>Browse the cache folder</value></data>
   <data name="SettingsToolTipClearCacheButton" xml:space="preserve"><value>Delete files from the cache</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}, {2} free</value></data>
+  <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve"><value>{0} files, {1}, free space unknown</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Invalid path: {0}</value></data>
   <data name="SettingsDialogCacheDescrip" xml:space="preserve"><value>Choose a folder for storing CKAN's mod downloads:</value></data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve"><value>Do you really want to delete {0} cached files, freeing {1}?</value></data>

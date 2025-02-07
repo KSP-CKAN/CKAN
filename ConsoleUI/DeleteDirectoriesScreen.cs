@@ -51,7 +51,8 @@ namespace CKAN.ConsoleUI {
             directories.AddTip("D", Properties.Resources.DeleteDirectoriesDeleteDirTip,
                                () => directories.Selection is not null
                                      && !toDelete.Contains(directories.Selection));
-            directories.AddBinding(Keys.D, (object sender) => {
+            directories.AddBinding(Keys.D, sender =>
+            {
                 if (directories.Selection is not null)
                 {
                     toDelete.Add(directories.Selection);
@@ -61,7 +62,8 @@ namespace CKAN.ConsoleUI {
             directories.AddTip("K", Properties.Resources.DeleteDirectoriesKeepDirTip,
                                () => directories.Selection is not null
                                      && toDelete.Contains(directories.Selection));
-            directories.AddBinding(Keys.K, (object sender) => {
+            directories.AddBinding(Keys.K, sender =>
+            {
                 if (directories.Selection is not null)
                 {
                     toDelete.Remove(directories.Selection);
@@ -90,10 +92,11 @@ namespace CKAN.ConsoleUI {
                    Properties.Resources.DeleteDirectoriesCancelTip);
             AddBinding(Keys.Escape,
                        // Discard changes
-                       (object sender) => false);
+                       sender => false);
 
             AddTip("F9", Properties.Resources.DeleteDirectoriesApplyTip);
-            AddBinding(Keys.F9, (object sender) => {
+            AddBinding(Keys.F9, sender =>
+            {
                 foreach (var d in toDelete) {
                     try {
                         Directory.Delete(d, true);

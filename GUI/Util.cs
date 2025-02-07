@@ -272,7 +272,7 @@ namespace CKAN.GUI
                 doneFunc(receivedFrom, received);
             };
 
-            return (object? sender, EventT evt) =>
+            return (sender, evt) =>
             {
                 if (!abortFunc(sender, evt))
                 {

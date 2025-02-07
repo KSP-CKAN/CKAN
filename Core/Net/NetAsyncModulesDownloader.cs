@@ -84,8 +84,7 @@ namespace CKAN
                                          .ToHashSet();
             var moduleGroups = CkanModule.GroupByDownloads(modules);
             // Make sure we have enough space to download and cache
-            cache.CheckFreeSpace(moduleGroups.Select(grp => grp.First().download_size)
-                                             .Sum());
+            cache.CheckFreeSpace(moduleGroups.Sum(grp => grp.First().download_size));
             // Add all the requested modules
             this.modules.AddRange(moduleGroups.SelectMany(grp => grp));
 

@@ -79,7 +79,7 @@ namespace CKAN
             }
 
             // Strip off the root, then remove any slashes at the beginning
-            return path.Remove(0, root.Length).TrimStart('/');
+            return path[root.Length..].TrimStart('/');
         }
 
         /// <summary>
@@ -118,9 +118,9 @@ namespace CKAN
                                           long          bytesToStore,
                                           string        errorDescription)
         {
-            if (bytesToStore > 0)
+            if (bytesToStore > 0
+                && where.GetDrive()?.AvailableFreeSpace is long bytesFree)
             {
-                var bytesFree = where.GetDrive().AvailableFreeSpace;
                 if (bytesToStore > bytesFree) {
                     throw new NotEnoughSpaceKraken(errorDescription, where,
                                                    bytesFree, bytesToStore);

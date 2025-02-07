@@ -43,7 +43,8 @@ namespace CKAN.ConsoleUI {
             AddObject(url);
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender) => {
+            AddBinding(Keys.F2, sender =>
+            {
                 if (Valid()) {
                     Save();
                     return false;
@@ -53,7 +54,7 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, sender => false);
 
             // mainMenu = list of default options
             mainMenu = (RepositoryList.DefaultRepositories(game, userAgent) is RepositoryList repoList)

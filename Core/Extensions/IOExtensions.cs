@@ -14,8 +14,8 @@ namespace CKAN.Extensions
         /// </summary>
         /// <param name="dir">Any DirectoryInfo object</param>
         /// <returns>The DriveInfo associated with this directory, if any, else null</returns>
-        public static DriveInfo GetDrive(this DirectoryInfo dir)
-            => new DriveInfo(dir.FullName);
+        public static DriveInfo? GetDrive(this DirectoryInfo dir)
+            => Utilities.DefaultIfThrows(() => new DriveInfo(dir.FullName));
 
         /// <summary>
         /// A version of Stream.CopyTo with progress updates.

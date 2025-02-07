@@ -105,9 +105,9 @@ namespace CKAN.GUI
                 {
                     try
                     {
-                        manager.Cache.GetSizeInfo(out int  cacheFileCount,
-                                                  out long cacheSize,
-                                                  out long cacheFreeSpace);
+                        manager.Cache.GetSizeInfo(out int   cacheFileCount,
+                                                  out long  cacheSize,
+                                                  out long? cacheFreeSpace);
 
                         Util.Invoke(this, () =>
                         {
@@ -116,10 +116,14 @@ namespace CKAN.GUI
                                 // Show setting in MiB
                                 CacheLimit.Text = (coreConfig.CacheSizeLimit.Value / 1024 / 1024).ToString();
                             }
-                            CacheSummary.Text = string.Format(Properties.Resources.SettingsDialogSummmary,
-                                                              cacheFileCount,
-                                                              CkanModule.FmtSize(cacheSize),
-                                                              CkanModule.FmtSize(cacheFreeSpace));
+                            CacheSummary.Text = cacheFreeSpace.HasValue
+                                ? string.Format(Properties.Resources.SettingsDialogSummmary,
+                                                cacheFileCount,
+                                                CkanModule.FmtSize(cacheSize),
+                                                CkanModule.FmtSize(cacheFreeSpace.Value))
+                                : string.Format(Properties.Resources.SettingsDialogSummmaryFreeSpaceUnknown,
+                                                cacheFileCount,
+                                                CkanModule.FmtSize(cacheSize));
                             CacheSummary.ForeColor   = SystemColors.ControlText;
                             OpenCacheButton.Enabled  = true;
                             ClearCacheButton.Enabled = (cacheSize > 0);

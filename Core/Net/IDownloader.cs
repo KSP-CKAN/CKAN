@@ -14,7 +14,7 @@ namespace CKAN
         /// </summary>
         void DownloadModules(IEnumerable<CkanModule> modules);
 
-        public event Action<ByteRateCounter> OverallDownloadProgress;
+        event Action<ByteRateCounter> OverallDownloadProgress;
 
         /// <summary>
         /// Raised when data arrives for a module

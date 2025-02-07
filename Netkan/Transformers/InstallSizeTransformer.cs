@@ -29,8 +29,7 @@ namespace CKAN.NetKAN.Transformers
                 ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
                 GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
                 json["install_size"] = _moduleService.FileSources(mod, zip, inst)
-                                                     .Select(ze => ze.Size)
-                                                     .Sum();
+                                                     .Sum(ze => ze.Size);
                 yield return new Metadata(json);
             }
             else

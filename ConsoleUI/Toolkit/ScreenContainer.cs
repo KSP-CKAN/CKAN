@@ -15,7 +15,8 @@ namespace CKAN.ConsoleUI.Toolkit {
         protected ScreenContainer(ConsoleTheme theme)
         {
             this.theme = theme;
-            AddBinding(Keys.CtrlL, (object sender) => {
+            AddBinding(Keys.CtrlL, sender =>
+            {
                 // Just redraw everything and keep running
                 DrawBackground();
                 return true;

@@ -157,7 +157,7 @@ namespace CKAN.ConsoleUI {
                                 ex.Message,
                                 Properties.Resources.InstallTooManyModsNameHeader,
                                 ex.modules,
-                                (CkanModule mod) => mod.ToString()
+                                mod => mod.ToString()
                             );
                             var chosen = ch.Run();
                             DrawBackground();

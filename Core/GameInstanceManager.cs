@@ -13,7 +13,6 @@ using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
-using CKAN.Extensions;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 namespace CKAN
@@ -615,23 +614,24 @@ namespace CKAN
                 }
                 else
                 {
-                    // Make sure we can access it
-                    var bytesFree = new DirectoryInfo(path).GetDrive().AvailableFreeSpace;
                     Cache = new NetModuleCache(this, path);
                     Configuration.DownloadCacheDir = path;
                 }
                 if (origPath != null && origCache != null)
                 {
                     origCache.GetSizeInfo(out _, out long oldNumBytes, out _);
-                    Cache.GetSizeInfo(out _, out _, out long bytesFree);
+                    Cache.GetSizeInfo(out _, out _, out long? bytesFree);
 
                     if (oldNumBytes > 0)
                     {
                         switch (User.RaiseSelectionDialog(
-                                    string.Format(Properties.Resources.GameInstanceManagerCacheMigrationPrompt,
-                                                  CkanModule.FmtSize(oldNumBytes),
-                                                  CkanModule.FmtSize(bytesFree)),
-                                    oldNumBytes < bytesFree ? 0 : 2,
+                                    bytesFree.HasValue
+                                        ? string.Format(Properties.Resources.GameInstanceManagerCacheMigrationPrompt,
+                                                        CkanModule.FmtSize(oldNumBytes),
+                                                        CkanModule.FmtSize(bytesFree.Value))
+                                        : string.Format(Properties.Resources.GameInstanceManagerCacheMigrationPromptFreeSpaceUnknown,
+                                                        CkanModule.FmtSize(oldNumBytes)),
+                                    oldNumBytes < (bytesFree ?? 0) ? 0 : 2,
                                     Properties.Resources.GameInstanceManagerCacheMigrationMove,
                                     Properties.Resources.GameInstanceManagerCacheMigrationDelete,
                                     Properties.Resources.GameInstanceManagerCacheMigrationOpen,

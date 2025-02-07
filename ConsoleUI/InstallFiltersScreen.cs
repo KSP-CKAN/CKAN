@@ -27,13 +27,15 @@ namespace CKAN.ConsoleUI {
             instanceFilters = instance.InstallFilters.ToList();
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender) => {
+            AddBinding(Keys.F2, sender =>
+            {
                 Save();
                 // Close screen
                 return false;
             });
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, sender =>
+            {
                 // Discard changes
                 return false;
             });
@@ -60,12 +62,14 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(globalList);
             globalList.AddTip("A", Properties.Resources.Add);
-            globalList.AddBinding(Keys.A, (object sender) => {
+            globalList.AddBinding(Keys.A, sender =>
+            {
                 AddFilter(theme, globalList, globalFilters);
                 return true;
             });
             globalList.AddTip("R", Properties.Resources.Remove);
-            globalList.AddBinding(Keys.R, (object sender) => {
+            globalList.AddBinding(Keys.R, sender =>
+            {
                 RemoveFilter(globalList, globalFilters);
                 return true;
             });
@@ -83,12 +87,14 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(instanceList);
             instanceList.AddTip("A", Properties.Resources.Add);
-            instanceList.AddBinding(Keys.A, (object sender) => {
+            instanceList.AddBinding(Keys.A, sender =>
+            {
                 AddFilter(theme, instanceList, instanceFilters);
                 return true;
             });
             instanceList.AddTip("R", Properties.Resources.Remove);
-            instanceList.AddBinding(Keys.R, (object sender) => {
+            instanceList.AddBinding(Keys.R, sender =>
+            {
                 RemoveFilter(instanceList, instanceFilters);
                 return true;
             });

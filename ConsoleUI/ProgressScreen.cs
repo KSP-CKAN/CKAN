@@ -79,11 +79,13 @@ namespace CKAN.ConsoleUI {
                 TextAlign.Center,
                 -Console.WindowHeight / 2
             );
-            d.AddBinding(Keys.Y, (object sender) => {
+            d.AddBinding(Keys.Y, sender =>
+            {
                 d.PressButton(0);
                 return false;
             });
-            d.AddBinding(Keys.N, (object sender) => {
+            d.AddBinding(Keys.N, sender =>
+            {
                 d.PressButton(1);
                 return false;
             });

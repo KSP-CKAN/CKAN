@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix broken version label in About dialog (#4277 by: HebaruSan)
 - [Core] Handle missing indexes in Steam vdf file lists (#4279 by: HebaruSan)
 - [Core] Fix cloning instances with shared stock files on Windows (#4297 by: HebaruSan)
+- [Core] Handle paths without DriveInfo (#4300 by: HebaruSan)
 
 ### Internal
 

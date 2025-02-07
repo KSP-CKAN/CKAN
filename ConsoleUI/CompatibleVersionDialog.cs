@@ -39,7 +39,8 @@ namespace CKAN.ConsoleUI {
             );
             AddObject(choices);
             choices.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsListAcceptTip);
-            choices.AddBinding(Keys.Enter, (object sender) => {
+            choices.AddBinding(Keys.Enter, sender =>
+            {
                 choice = choices.Selection;
                 return false;
             });
@@ -51,7 +52,8 @@ namespace CKAN.ConsoleUI {
             };
             AddObject(manualEntry);
             manualEntry.AddTip(Properties.Resources.Enter, Properties.Resources.CompatibleVersionsEntryAcceptTip, () => GameVersion.TryParse(manualEntry.Value, out choice));
-            manualEntry.AddBinding(Keys.Enter, (object sender) => {
+            manualEntry.AddBinding(Keys.Enter, sender =>
+            {
                 if (GameVersion.TryParse(manualEntry.Value, out choice)) {
                     // Good value, done running
                     return false;
@@ -62,7 +64,8 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object StronglyTypedResourceBuilder) => {
+            AddBinding(Keys.Escape, StronglyTypedResourceBuilder =>
+            {
                 choice = null;
                 return false;
             });

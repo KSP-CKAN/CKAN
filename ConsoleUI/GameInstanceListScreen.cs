@@ -71,15 +71,16 @@ namespace CKAN.ConsoleUI {
 
             if (first) {
                 AddTip($"{Properties.Resources.Ctrl}+Q", Properties.Resources.Quit);
-                AddBinding(Keys.AltX,  (object sender) => false);
-                AddBinding(Keys.CtrlQ, (object sender) => false);
+                AddBinding(Keys.AltX,  sender => false);
+                AddBinding(Keys.CtrlQ, sender => false);
             } else {
                 AddTip(Properties.Resources.Esc, Properties.Resources.Quit);
-                AddBinding(Keys.Escape, (object sender) => false);
+                AddBinding(Keys.Escape, sender => false);
             }
 
             AddTip(Properties.Resources.Enter, Properties.Resources.Select);
-            AddBinding(Keys.Enter, (object sender) => {
+            AddBinding(Keys.Enter, sender =>
+            {
                 if (instanceList.Selection is GameInstance inst)
                 {
                     var d = new ConsoleMessageDialog(theme, string.Format(Properties.Resources.InstanceListLoadingInstance,
@@ -87,7 +88,7 @@ namespace CKAN.ConsoleUI {
                                                      new List<string>());
 
                     if (TryGetInstance(theme, inst, repoData,
-                                       (ConsoleTheme th) => { d.Run(() => {}); },
+                                       th => { d.Run(() => {}); },
                                        null)) {
                         try {
                             manager.SetCurrentInstance(inst.Name);
@@ -105,13 +106,15 @@ namespace CKAN.ConsoleUI {
             });
 
             instanceList.AddTip("A", Properties.Resources.Add);
-            instanceList.AddBinding(Keys.A, (object sender) => {
+            instanceList.AddBinding(Keys.A, sender =>
+            {
                 LaunchSubScreen(new GameInstanceAddScreen(theme, manager));
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
             instanceList.AddTip("R", Properties.Resources.Remove);
-            instanceList.AddBinding(Keys.R, (object sender) => {
+            instanceList.AddBinding(Keys.R, sender =>
+            {
                 if (instanceList.Selection is GameInstance inst)
                 {
                     manager.RemoveInstance(inst.Name);
@@ -120,7 +123,8 @@ namespace CKAN.ConsoleUI {
                 return true;
             });
             instanceList.AddTip("E", Properties.Resources.Edit);
-            instanceList.AddBinding(Keys.E, (object sender) => {
+            instanceList.AddBinding(Keys.E, sender =>
+            {
                 if (instanceList.Selection is GameInstance inst)
                 {
                     var d = new ConsoleMessageDialog(
@@ -128,7 +132,7 @@ namespace CKAN.ConsoleUI {
                         string.Format(Properties.Resources.InstanceListLoadingInstance, inst.Name),
                         new List<string>());
                     TryGetInstance(theme, inst, repoData,
-                                   (ConsoleTheme th) => { d.Run(() => {}); },
+                                   th => { d.Run(() => {}); },
                                    null);
                     // Still launch the screen even if the load fails,
                     // because you need to be able to fix the name/path.
@@ -138,7 +142,8 @@ namespace CKAN.ConsoleUI {
             });
 
             instanceList.AddTip("D", Properties.Resources.InstanceListDefaultToggle);
-            instanceList.AddBinding(Keys.D, (object sender) => {
+            instanceList.AddBinding(Keys.D, sender =>
+            {
                 if (instanceList.Selection is GameInstance inst)
                 {
                     string name = inst.Name;

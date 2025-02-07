@@ -83,7 +83,7 @@ namespace CKAN.ConsoleUI.Toolkit {
                         9),
                     new ConsoleListBoxColumn<FileSystemInfo>(
                         Properties.Resources.FileSelectTimestampHeader,
-                        (FileSystemInfo fi) => fi.LastWriteTime.ToString("yyyy-MM-dd"),
+                        fi => fi.LastWriteTime.ToString("yyyy-MM-dd"),
                         (a, b) => a.LastWriteTime.CompareTo(b.LastWriteTime),
                         10)
                 },
@@ -92,13 +92,15 @@ namespace CKAN.ConsoleUI.Toolkit {
             AddObject(fileList);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, sender =>
+            {
                 chosenFiles.Clear();
                 return false;
             });
 
             AddTip(ConsoleScreen.MainMenuKeyTip, Properties.Resources.Sort);
-            AddBinding(ConsoleScreen.MainMenuKeys, (object sender) => {
+            AddBinding(ConsoleScreen.MainMenuKeys, sender =>
+            {
                 fileList.SortMenu().Run(theme, right - 2, top + 2);
                 DrawBackground();
                 return true;
@@ -106,11 +108,12 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectChangeDirectory, () => fileList.Selection != null &&  isDir(fileList.Selection));
             AddTip(Properties.Resources.Enter, Properties.Resources.FileSelectSelect,          () => fileList.Selection != null && !isDir(fileList.Selection));
-            AddBinding(Keys.Enter, (object sender) => selectRow());
-            AddBinding(Keys.Space, (object sender) => selectRow());
+            AddBinding(Keys.Enter, sender => selectRow());
+            AddBinding(Keys.Space, sender => selectRow());
 
             AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
-            AddBinding(Keys.CtrlA, (object sender) => {
+            AddBinding(Keys.CtrlA, sender =>
+            {
                 foreach (FileSystemInfo fi in contents) {
                     if (!isDir(fi)) {
                         if (fi is FileInfo file)
@@ -123,7 +126,8 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => chosenFiles.Count > 0);
-            AddBinding(Keys.CtrlD, (object sender) => {
+            AddBinding(Keys.CtrlD, sender =>
+            {
                 if (chosenFiles.Count > 0) {
                     chosenFiles.Clear();
                 }
@@ -131,7 +135,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             });
 
             AddTip("F9", acceptTip, () => chosenFiles.Count > 0);
-            AddBinding(Keys.F9, (object sender) => false);
+            AddBinding(Keys.F9, sender => false);
         }
 
         private bool selectRow()

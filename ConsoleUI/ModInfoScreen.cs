@@ -145,12 +145,13 @@ namespace CKAN.ConsoleUI {
             }
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Back);
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, sender => false);
 
             AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.ModInfoDownloadToCache,
                 () => manager.Cache != null && !manager.Cache.IsMaybeCachedZip(mod) && !mod.IsDLC
             );
-            AddBinding(Keys.CtrlD, (object sender) => {
+            AddBinding(Keys.CtrlD, sender =>
+            {
                 if (!mod.IsDLC) {
                     Download();
                 }

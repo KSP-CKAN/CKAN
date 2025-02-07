@@ -85,7 +85,7 @@ namespace CKAN
         public string? GetCachedFilename(CkanModule m)
             => m.download?.Select(dlUri => cache.GetCachedFilename(dlUri, m.release_date))
                           .FirstOrDefault(filename => filename != null);
-        public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
+        public void GetSizeInfo(out int numFiles, out long numBytes, out long? bytesFree)
         {
             cache.GetSizeInfo(out numFiles, out numBytes, out bytesFree);
         }
@@ -235,7 +235,7 @@ namespace CKAN
                         long onePercent = new FileInfo(filename).Length / 100;
                         // Perform CRC and other checks
                         if (zip.TestArchive(true, TestStrategy.FindFirstError,
-                            (TestStatus st, string msg) =>
+                            (st, msg) =>
                             {
                                 // This delegate is called as TestArchive proceeds through its
                                 // steps, both routine and abnormal.

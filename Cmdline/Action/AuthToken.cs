@@ -33,7 +33,7 @@ namespace CKAN.CmdLine
             string[] args     = unparsed.options.ToArray();
             int      exitCode = Exit.OK;
 
-            Parser.Default.ParseArgumentsStrict(args, new AuthTokenSubOptions(), (string option, object suboptions) =>
+            Parser.Default.ParseArgumentsStrict(args, new AuthTokenSubOptions(), (option, suboptions) =>
             {
                 if (!string.IsNullOrEmpty(option) && suboptions != null)
                 {

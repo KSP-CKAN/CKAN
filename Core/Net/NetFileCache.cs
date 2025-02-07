@@ -69,9 +69,6 @@ namespace CKAN
             }
             inProgressPath = new DirectoryInfo(Path.Combine(path, "downloading"));
 
-            // Make sure we can access it
-            var bytesFree = cachePath.GetDrive().AvailableFreeSpace;
-
             // Establish a watch on our cache. This means we can cache the directory contents,
             // and discard that cache if we spot changes.
             watcher = new FileSystemWatcher(cachePath.FullName, "*.zip")
@@ -257,9 +254,9 @@ namespace CKAN
         /// <param name="numFiles">Output parameter set to number of files in cache</param>
         /// <param name="numBytes">Output parameter set to number of bytes in cache</param>
         /// <param name="bytesFree">Output parameter set to number of bytes free</param>
-        public void GetSizeInfo(out int numFiles, out long numBytes, out long bytesFree)
+        public void GetSizeInfo(out int numFiles, out long numBytes, out long? bytesFree)
         {
-            bytesFree = cachePath.GetDrive().AvailableFreeSpace;
+            bytesFree = cachePath.GetDrive()?.AvailableFreeSpace;
             (numFiles, numBytes) = Enumerable.Repeat(cachePath, 1)
                                              .Concat(legacyDirs())
                                              .Select(GetDirSizeInfo)
@@ -292,7 +289,7 @@ namespace CKAN
 
         public void EnforceSizeLimit(long bytes, Registry registry)
         {
-            GetSizeInfo(out int numFiles, out long curBytes, out long _);
+            GetSizeInfo(out int numFiles, out long curBytes, out _);
             if (curBytes > bytes)
             {
                 // This object will let us determine whether a module is compatible with any of our instances
