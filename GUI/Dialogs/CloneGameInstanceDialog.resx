@@ -126,6 +126,8 @@
   <data name="checkBoxSetAsDefault.Text" xml:space="preserve"><value>Set new instance as default</value></data>
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve"><value>Switch to new instance</value></data>
   <data name="checkBoxShareStock.Text" xml:space="preserve"><value>Share stock files</value></data>
+  <data name="OptionalPathsLabel.Text" xml:space="preserve"><value>Optional paths to copy:</value></data>
+  <data name="PathHeader.Text" xml:space="preserve"><value>Optional paths</value></data>
   <data name="buttonOK.Text" xml:space="preserve"><value>Clone</value></data>
   <data name="buttonCancel.Text" xml:space="preserve"><value>Cancel</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Clone Game Instance</value></data>

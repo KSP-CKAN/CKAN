@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [CLI] Include `supports` relationship in `ckan show` (#4262 by: HebaruSan)
 - [Multiple] Pre-release handling (#4260, #4266, #4294 by: HebaruSan, JonnyOThan)
 - [Multiple] French translation updates (#4268 by: HebaruSan)
+- [Multiple] Checkboxes to copy more dirs when cloning instances (#4304 by: HebaruSan)
 
 ### Bugfixes
 

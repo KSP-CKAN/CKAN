@@ -57,10 +57,21 @@ namespace CKAN.GUI
 
         private void comboBoxKnownInstance_SelectedIndexChanged(object? sender, EventArgs? e)
         {
-            textBoxClonePath.Text = comboBoxKnownInstance.SelectedItem is string sel
-                                    && !string.IsNullOrEmpty(sel)
-                ? Platform.FormatPath(manager.Instances[sel].GameDir())
-                : "";
+            if (comboBoxKnownInstance.SelectedItem is string sel
+                && !string.IsNullOrEmpty(sel))
+            {
+                var inst = manager.Instances[sel];
+                textBoxClonePath.Text = Platform.FormatPath(inst.GameDir());
+                OptionalPathsListView.Items.Clear();
+                OptionalPathsListView.Items.AddRange(
+                    inst.game.LeaveEmptyInClones
+                             .OrderBy(path => path,
+                                      StringComparer.OrdinalIgnoreCase)
+                             .Select(path => new ListViewItem(path) { Tag = path })
+                             .ToArray());
+                OptionalPathsLabel.Visible = OptionalPathsListView.Visible =
+                    OptionalPathsListView.Items.Count > 0;
+            }
         }
 
         /// <summary>
@@ -143,7 +154,14 @@ namespace CKAN.GUI
                 {
                     if (instanceToClone.Valid)
                     {
-                        manager.CloneInstance(instanceToClone, newName, newPath, checkBoxShareStock.Checked);
+                        manager.CloneInstance(instanceToClone, newName, newPath,
+                                              OptionalPathsListView.Items
+                                                                   .OfType<ListViewItem>()
+                                                                   .Where(lvi => !lvi.Checked)
+                                                                   .Select(lvi => lvi.Tag)
+                                                                   .OfType<string>()
+                                                                   .ToArray(),
+                                              checkBoxShareStock.Checked);
                     }
                     else
                     {

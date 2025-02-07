@@ -44,6 +44,9 @@ namespace CKAN.GUI
             this.checkBoxSetAsDefault = new System.Windows.Forms.CheckBox();
             this.checkBoxSwitchInstance = new System.Windows.Forms.CheckBox();
             this.checkBoxShareStock = new System.Windows.Forms.CheckBox();
+            this.OptionalPathsLabel = new System.Windows.Forms.Label();
+            this.OptionalPathsListView = new ThemedListView();
+            this.PathHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -196,10 +199,39 @@ namespace CKAN.GUI
             this.checkBoxShareStock.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.checkBoxShareStock, "checkBoxShareStock");
             //
+            // OptionalPathsLabel
+            //
+            this.OptionalPathsLabel.AutoSize = true;
+            this.OptionalPathsLabel.Location = new System.Drawing.Point(12, 234);
+            this.OptionalPathsLabel.Name = "OptionalPathsLabel";
+            this.OptionalPathsLabel.Size = new System.Drawing.Size(131, 13);
+            this.OptionalPathsLabel.TabIndex = 22;
+            resources.ApplyResources(this.OptionalPathsLabel, "OptionalPathsLabel");
+            //
+            // OptionalPathsListView
+            //
+            this.OptionalPathsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.OptionalPathsListView.CheckBoxes = true;
+            this.OptionalPathsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.PathHeader});
+            this.OptionalPathsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.OptionalPathsListView.Location = new System.Drawing.Point(181, 234);
+            this.OptionalPathsListView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.OptionalPathsListView.Name = "OptionalPathsListView";
+            this.OptionalPathsListView.Size = new System.Drawing.Size(218, 120);
+            this.OptionalPathsListView.TabIndex = 23;
+            this.OptionalPathsListView.UseCompatibleStateImageBehavior = false;
+            this.OptionalPathsListView.View = System.Windows.Forms.View.Details;
+            //
+            // PathHeader
+            //
+            this.PathHeader.Width = 180;
+            resources.ApplyResources(this.PathHeader, "PathHeader");
+            //
             // buttonOK
             //
             this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonOK.Location = new System.Drawing.Point(256, 230);
+            this.buttonOK.Location = new System.Drawing.Point(256, 360);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 22;
@@ -210,7 +242,7 @@ namespace CKAN.GUI
             // buttonCancel
             //
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonCancel.Location = new System.Drawing.Point(337, 230);
+            this.buttonCancel.Location = new System.Drawing.Point(337, 360);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 23;
@@ -235,7 +267,7 @@ namespace CKAN.GUI
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 265);
+            this.ClientSize = new System.Drawing.Size(424, 395);
             this.Controls.Add(this.labelOldInstance);
             this.Controls.Add(this.comboBoxKnownInstance);
             this.Controls.Add(this.labelOldPath);
@@ -245,6 +277,8 @@ namespace CKAN.GUI
             this.Controls.Add(this.buttonPathBrowser);
             this.Controls.Add(this.checkBoxSwitchInstance);
             this.Controls.Add(this.checkBoxShareStock);
+            this.Controls.Add(this.OptionalPathsLabel);
+            this.Controls.Add(this.OptionalPathsListView);
             this.Controls.Add(this.textBoxNewPath);
             this.Controls.Add(this.labelNewPath);
             this.Controls.Add(this.checkBoxSetAsDefault);
@@ -284,6 +318,9 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox checkBoxSetAsDefault;
         private System.Windows.Forms.CheckBox checkBoxSwitchInstance;
         private System.Windows.Forms.CheckBox checkBoxShareStock;
+        private System.Windows.Forms.Label OptionalPathsLabel;
+        private System.Windows.Forms.ListView OptionalPathsListView;
+        private System.Windows.Forms.ColumnHeader PathHeader;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogNewPath;
