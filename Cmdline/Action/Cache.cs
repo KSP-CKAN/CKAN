@@ -251,11 +251,20 @@ namespace CKAN.CmdLine
         {
             if (manager?.Cache != null)
             {
-                manager.Cache.GetSizeInfo(out int fileCount, out long bytes, out long bytesFree);
-                user?.RaiseMessage(Properties.Resources.CacheInfo,
-                                   fileCount,
-                                   CkanModule.FmtSize(bytes),
-                                   CkanModule.FmtSize(bytesFree));
+                manager.Cache.GetSizeInfo(out int fileCount, out long bytes, out long? bytesFree);
+                if (bytesFree.HasValue)
+                {
+                    user?.RaiseMessage(Properties.Resources.CacheInfo,
+                                       fileCount,
+                                       CkanModule.FmtSize(bytes),
+                                       CkanModule.FmtSize(bytesFree.Value));
+                }
+                else
+                {
+                    user?.RaiseMessage(Properties.Resources.CacheInfoFreeSpaceUnknown,
+                                       fileCount,
+                                       CkanModule.FmtSize(bytes));
+                }
             }
         }
 
