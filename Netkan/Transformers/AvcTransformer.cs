@@ -111,6 +111,11 @@ namespace CKAN.NetKAN.Transformers
                                 remoteUri, e.Message);
                             Log.Debug(e);
                         }
+                        catch (RequestThrottledKraken)
+                        {
+                            // Treat rate limiting as a real error to avoid temporary metadata degradation
+                            throw;
+                        }
                         catch (Exception e)
                         {
                             Log.WarnFormat("Error fetching remote version file {0}: {1}", remoteUri, e.Message);
