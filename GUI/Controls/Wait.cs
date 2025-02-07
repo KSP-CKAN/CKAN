@@ -43,6 +43,8 @@ namespace CKAN.GUI
         public event Action? OnCancel;
         public event Action? OnOk;
 
+        public bool Busy => bgWorker.IsBusy;
+
         #pragma warning disable IDE0027
 
         public bool RetryEnabled

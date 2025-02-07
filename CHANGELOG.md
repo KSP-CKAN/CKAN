@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Handle missing indexes in Steam vdf file lists (#4279 by: HebaruSan)
 - [Core] Fix cloning instances with shared stock files on Windows (#4297 by: HebaruSan)
 - [Core] Handle paths without DriveInfo (#4300 by: HebaruSan)
+- [GUI] Make versions tab non-interactive inside install flow (#4302 by: HebaruSan)
 
 ### Internal
 

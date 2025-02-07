@@ -70,6 +70,7 @@ namespace CKAN.GUI
         private static GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
         private static GameInstanceManager? manager         => Main.Instance?.Manager;
         private static IUser?               user            => Main.Instance?.currentUser;
+        private static bool                 interactive     => !Main.Instance?.Waiting ?? false;
 
         private readonly RepositoryDataManager    repoData;
         private          GUIMod?                  visibleGuiModule;
@@ -171,7 +172,7 @@ namespace CKAN.GUI
 
         private void UpdateSelection()
         {
-            if (visibleGuiModule != null)
+            if (visibleGuiModule != null && interactive)
             {
                 bool prevIgnore = ignoreItemCheck;
                 ignoreItemCheck = true;
@@ -256,7 +257,7 @@ namespace CKAN.GUI
                     {
                         toRet.BackColor = PrereleaseLabel.BackColor;
                     }
-                    if (module.Equals(gmod.SelectedMod))
+                    if (module.Equals(gmod.SelectedMod) && interactive)
                     {
                         toRet.Checked = true;
                     }
@@ -322,6 +323,8 @@ namespace CKAN.GUI
         {
             if (currentInstance != null)
             {
+                StabilityToleranceLabel.Visible = interactive;
+                StabilityToleranceComboBox.Visible = interactive;
                 // checkInstallable needs this to stop background threads on switch to another mod
                 cancelTokenSrc     = new CancellationTokenSource();
                 var startingModule = gmod;
@@ -342,7 +345,7 @@ namespace CKAN.GUI
                     if (startingModule.Equals(visibleGuiModule))
                     {
                         // Only show checkboxes for non-DLC modules
-                        VersionsListView.CheckBoxes = !gmod.ToModule().IsDLC;
+                        VersionsListView.CheckBoxes = interactive && !gmod.ToModule().IsDLC;
                         ignoreItemCheck = true;
                         VersionsListView.Items.AddRange(items);
                         VersionsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -359,7 +362,7 @@ namespace CKAN.GUI
 
         private void UpdateStabilityToleranceComboBox(GUIMod gmod)
         {
-            if (currentInstance != null)
+            if (currentInstance != null && interactive)
             {
                 StabilityToleranceComboBox.Items.Clear();
                 StabilityToleranceComboBox.Items.AddRange(
