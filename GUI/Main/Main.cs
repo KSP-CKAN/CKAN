@@ -38,6 +38,7 @@ namespace CKAN.GUI
         private readonly RepositoryDataManager repoData;
         private readonly string? userAgent;
         private readonly AutoUpdate updater = new AutoUpdate();
+        public bool Waiting => Wait.Busy;
 
         // Stuff we set when the game instance changes
         public GUIConfiguration? configuration;
