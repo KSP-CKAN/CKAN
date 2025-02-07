@@ -108,7 +108,7 @@ namespace CKAN.CmdLine
 
             int exitCode = Exit.OK;
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new CacheSubOptions(), (string option, object suboptions) =>
+            Parser.Default.ParseArgumentsStrict(args, new CacheSubOptions(), (option, suboptions) =>
             {
                 // ParseArgumentsStrict calls us unconditionally, even with bad arguments
                 if (!string.IsNullOrEmpty(option) && suboptions != null)

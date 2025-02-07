@@ -97,8 +97,7 @@ namespace CKAN.GUI
                             var downloader = new NetAsyncDownloader(currentUser, () => null, userAgent);
                             downloader.TargetProgress += (target, remaining, total) =>
                             {
-                                var repo = repos.Where(r => target.urls.Contains(r.uri))
-                                                .FirstOrDefault();
+                                var repo = repos.FirstOrDefault(r => target.urls.Contains(r.uri));
                                 if (repo != null && total > 0)
                                 {
                                     Wait.SetProgress(repo.name, remaining, total);

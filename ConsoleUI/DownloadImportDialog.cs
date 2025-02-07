@@ -41,7 +41,7 @@ namespace CKAN.ConsoleUI {
                     Properties.Resources.ImportProgressTitle,
                     Properties.Resources.ImportProgressMessage);
                 ps.Run(() => ModuleInstaller.ImportFiles(files, ps,
-                                                         (CkanModule mod) => cp.Install.Add(mod),
+                                                         mod => cp.Install.Add(mod),
                                                          RegistryManager.Instance(gameInst, repoData).registry,
                                                          gameInst, cache));
             }

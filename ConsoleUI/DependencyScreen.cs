@@ -62,24 +62,25 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<Dependency>>() {
                     new ConsoleListBoxColumn<Dependency>(
                         Properties.Resources.RecommendationsInstallHeader,
-                        (Dependency d) => StatusSymbol(d.module),
+                        d => StatusSymbol(d.module),
                         null,
                         7),
                     new ConsoleListBoxColumn<Dependency>(
                         Properties.Resources.RecommendationsNameHeader,
-                        (Dependency d) => d.module.ToString(),
+                        d => d.module.ToString(),
                         null,
                         null),
                     new ConsoleListBoxColumn<Dependency>(
                         Properties.Resources.RecommendationsSourcesHeader,
-                        (Dependency d) => string.Join(", ", d.dependents),
+                        d => string.Join(", ", d.dependents),
                         null,
                         42)
                 },
                 1, 0, ListSortDirection.Descending
             );
             dependencyList.AddTip("+", Properties.Resources.Toggle);
-            dependencyList.AddBinding(Keys.Plus, (object sender) => {
+            dependencyList.AddBinding(Keys.Plus, sender =>
+            {
                 if (dependencyList.Selection?.module is CkanModule mod
                     && (accepted.Contains(mod) || TryWithoutConflicts(accepted.Append(mod)))) {
                     ChangePlan.toggleContains(accepted, mod);
@@ -88,7 +89,8 @@ namespace CKAN.ConsoleUI {
             });
 
             dependencyList.AddTip($"{Properties.Resources.Ctrl}+A", Properties.Resources.SelectAll);
-            dependencyList.AddBinding(Keys.CtrlA, (object sender) => {
+            dependencyList.AddBinding(Keys.CtrlA, sender =>
+            {
                 if (TryWithoutConflicts(dependencies.Keys)) {
                     foreach (var kvp in dependencies) {
                         if (!accepted.Contains(kvp.Key)) {
@@ -100,13 +102,15 @@ namespace CKAN.ConsoleUI {
             });
 
             dependencyList.AddTip($"{Properties.Resources.Ctrl}+D", Properties.Resources.DeselectAll, () => accepted.Count > 0);
-            dependencyList.AddBinding(Keys.CtrlD, (object sender) => {
+            dependencyList.AddBinding(Keys.CtrlD, sender =>
+            {
                 accepted.Clear();
                 return true;
             });
 
             dependencyList.AddTip(Properties.Resources.Enter, Properties.Resources.Details);
-            dependencyList.AddBinding(Keys.Enter, (object sender) => {
+            dependencyList.AddBinding(Keys.Enter, sender =>
+            {
                 if (dependencyList.Selection != null) {
                     LaunchSubScreen(new ModInfoScreen(theme, manager, instance, reg, userAgent, plan,
                                                              dependencyList.Selection.module,
@@ -119,14 +123,16 @@ namespace CKAN.ConsoleUI {
             AddObject(dependencyList);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, sender =>
+            {
                 // Add everything to rejected
                 rejected.UnionWith(dependencies.Keys.Select(m => m.identifier));
                 return false;
             });
 
             AddTip("F9", Properties.Resources.Accept);
-            AddBinding(Keys.F9, (object sender) => {
+            AddBinding(Keys.F9, sender =>
+            {
                 if (TryWithoutConflicts(accepted)) {
                     plan.Install.UnionWith(accepted);
                     // Add the rest to rejected

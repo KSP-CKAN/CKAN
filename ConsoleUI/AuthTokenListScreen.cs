@@ -36,10 +36,10 @@ namespace CKAN.ConsoleUI {
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>(
                         Properties.Resources.AuthTokenListHostHeader,
-                        (string s) => s, null, 20),
+                        s => s, null, 20),
                     new ConsoleListBoxColumn<string>(
                         Properties.Resources.AuthTokenListTokenHeader,
-                        (string s) => {
+                        s => {
                             return ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(s, out string? token)
                                 ? token
                                 : Properties.Resources.AuthTokenListMissingToken;
@@ -57,10 +57,11 @@ namespace CKAN.ConsoleUI {
             ));
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Back);
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, sender => false);
 
             tokenList.AddTip("A", Properties.Resources.Add);
-            tokenList.AddBinding(Keys.A, (object sender) => {
+            tokenList.AddBinding(Keys.A, sender =>
+            {
                 var ad = new AuthTokenAddDialog(theme);
                 ad.Run();
                 DrawBackground();
@@ -69,7 +70,8 @@ namespace CKAN.ConsoleUI {
             });
 
             tokenList.AddTip("R", Properties.Resources.Remove, () => tokenList.Selection != null);
-            tokenList.AddBinding(Keys.R, (object sender) => {
+            tokenList.AddBinding(Keys.R, sender =>
+            {
                 if (tokenList.Selection != null) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(tokenList.Selection, null);
                     tokenList.SetData(new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts()));

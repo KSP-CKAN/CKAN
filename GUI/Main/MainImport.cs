@@ -47,7 +47,7 @@ namespace CKAN.GUI
                                 e.Result = ModuleInstaller.ImportFiles(
                                     GetFiles(dlg.FileNames),
                                     currentUser,
-                                    (CkanModule mod) =>
+                                    mod =>
                                     {
                                         if (ManageMods.mainModList
                                                       .full_list_of_mod_rows

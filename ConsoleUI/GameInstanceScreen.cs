@@ -22,7 +22,8 @@ namespace CKAN.ConsoleUI {
             manager = mgr;
 
             AddTip("F2", Properties.Resources.Accept);
-            AddBinding(Keys.F2, (object sender) => {
+            AddBinding(Keys.F2, sender =>
+            {
                 if (Valid()) {
                     Save();
                     // Close screen
@@ -34,7 +35,8 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => {
+            AddBinding(Keys.Escape, sender =>
+            {
                 // Discard changes
                 return false;
             });

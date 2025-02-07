@@ -180,58 +180,70 @@ namespace CKAN.ConsoleUI.Toolkit {
         public void AddScrollBindings(ScreenContainer cont, ConsoleTheme theme, bool drawMore = false)
         {
             if (drawMore) {
-                cont.AddBinding(Keys.Home,      (object sender) => {
+                cont.AddBinding(Keys.Home,      sender =>
+                {
                     ScrollToTop();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender) => {
+                cont.AddBinding(Keys.End,       sender =>
+                {
                     ScrollToBottom();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender) => {
+                cont.AddBinding(Keys.PageUp,    sender =>
+                {
                     ScrollUp();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender) => {
+                cont.AddBinding(Keys.PageDown,  sender =>
+                {
                     ScrollDown();
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender) => {
+                cont.AddBinding(Keys.UpArrow,   sender =>
+                {
                     ScrollUp(1);
                     Draw(theme, false);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender) => {
+                cont.AddBinding(Keys.DownArrow, sender =>
+                {
                     ScrollDown(1);
                     Draw(theme, false);
                     return true;
                 });
             } else {
-                cont.AddBinding(Keys.Home,      (object sender) => {
+                cont.AddBinding(Keys.Home,      sender =>
+                {
                     ScrollToTop();
                     return true;
                 });
-                cont.AddBinding(Keys.End,       (object sender) => {
+                cont.AddBinding(Keys.End,       sender =>
+                {
                     ScrollToBottom();
                     return true;
                 });
-                cont.AddBinding(Keys.PageUp,    (object sender) => {
+                cont.AddBinding(Keys.PageUp,    sender =>
+                {
                     ScrollUp();
                     return true;
                 });
-                cont.AddBinding(Keys.PageDown,  (object sender) => {
+                cont.AddBinding(Keys.PageDown,  sender =>
+                {
                     ScrollDown();
                     return true;
                 });
-                cont.AddBinding(Keys.UpArrow,   (object sender) => {
+                cont.AddBinding(Keys.UpArrow,   sender =>
+                {
                     ScrollUp(1);
                     return true;
                 });
-                cont.AddBinding(Keys.DownArrow, (object sender) => {
+                cont.AddBinding(Keys.DownArrow, sender =>
+                {
                     ScrollDown(1);
                     return true;
                 });

@@ -79,7 +79,7 @@ namespace CKAN
             }
 
             // Strip off the root, then remove any slashes at the beginning
-            return path.Remove(0, root.Length).TrimStart('/');
+            return path[root.Length..].TrimStart('/');
         }
 
         /// <summary>

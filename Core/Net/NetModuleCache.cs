@@ -235,7 +235,7 @@ namespace CKAN
                         long onePercent = new FileInfo(filename).Length / 100;
                         // Perform CRC and other checks
                         if (zip.TestArchive(true, TestStrategy.FindFirstError,
-                            (TestStatus st, string msg) =>
+                            (st, msg) =>
                             {
                                 // This delegate is called as TestArchive proceeds through its
                                 // steps, both routine and abnormal.

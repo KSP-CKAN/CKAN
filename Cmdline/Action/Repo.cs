@@ -137,7 +137,7 @@ namespace CKAN.CmdLine
             int exitCode = Exit.OK;
 
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions(), (string option, object suboptions) =>
+            Parser.Default.ParseArgumentsStrict(args, new RepoSubOptions(), (option, suboptions) =>
             {
                 // ParseArgumentsStrict calls us unconditionally, even with bad arguments
                 if (!string.IsNullOrEmpty(option) && suboptions != null)
@@ -200,8 +200,7 @@ namespace CKAN.CmdLine
                         is RepositoryList repoList)
                 {
                     var maxNameLen = repoList.repositories
-                                             .Select(r => r.name.Length)
-                                             .Max();
+                                             .Max(r => r.name.Length);
                     foreach (var repository in repoList.repositories)
                     {
                         user?.RaiseMessage("  {0}: {1}",

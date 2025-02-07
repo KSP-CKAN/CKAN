@@ -57,10 +57,11 @@ namespace CKAN.ConsoleUI {
             AddObject(tokenEntry);
 
             AddTip(Properties.Resources.Esc, Properties.Resources.Cancel);
-            AddBinding(Keys.Escape, (object sender) => false);
+            AddBinding(Keys.Escape, sender => false);
 
             AddTip(Properties.Resources.Enter, Properties.Resources.Accept, validKey);
-            AddBinding(Keys.Enter, (object sender) => {
+            AddBinding(Keys.Enter, sender =>
+            {
                 if (validKey()) {
                     ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(hostEntry.Value, tokenEntry.Value);
                     return false;

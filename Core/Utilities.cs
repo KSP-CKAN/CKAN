@@ -142,7 +142,7 @@ namespace CKAN
         // Select only paths within subdir, prune prefixes
         private static IEnumerable<string> SubPaths(string parent, string[] paths)
             => paths.Where(p => p.StartsWith($"{parent}/", Platform.PathComparison))
-                    .Select(p => p.Remove(0, parent.Length + 1));
+                    .Select(p => p[(parent.Length + 1)..]);
 
         /// <summary>
         /// Launch a URL. For YEARS this was done by Process.Start in a

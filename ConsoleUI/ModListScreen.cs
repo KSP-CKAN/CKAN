@@ -82,7 +82,7 @@ namespace CKAN.ConsoleUI {
                         12),
                 },
                 1, 0, ListSortDirection.Descending,
-                (CkanModule m, string filter) => {
+                (m, filter) => {
                     // Search for author
                     if (filter.StartsWith("@")) {
                         string authorFilt = filter[1..];
@@ -149,7 +149,7 @@ namespace CKAN.ConsoleUI {
                     ? Properties.Resources.ModListSearchFocusedGhostText
                     : Properties.Resources.ModListSearchUnfocusedGhostText
             };
-            searchBox.OnChange += (ConsoleField sender, string newValue) => {
+            searchBox.OnChange += (sender, newValue) => {
                 moduleList.FilterString = newValue;
             };
 
@@ -167,34 +167,39 @@ namespace CKAN.ConsoleUI {
             AddObject(searchBox);
             AddObject(moduleList);
 
-            AddBinding(Keys.CtrlP, (object sender) => PlayGame());
-            AddBinding(Keys.CtrlQ, (object sender) => false);
-            AddBinding(Keys.AltX,  (object sender) => false);
-            AddBinding(Keys.F1,    (object sender) => Help());
-            AddBinding(Keys.AltH,  (object sender) => Help());
-            AddBinding(Keys.F5,    (object sender) => UpdateRegistry());
-            AddBinding(Keys.CtrlR, (object sender) => UpdateRegistry());
-            AddBinding(Keys.CtrlU, (object sender) => UpgradeAll());
+            AddBinding(Keys.CtrlP, sender => PlayGame());
+            AddBinding(Keys.CtrlQ, sender => false);
+            AddBinding(Keys.AltX,  sender => false);
+            AddBinding(Keys.F1,    sender => Help());
+            AddBinding(Keys.AltH,  sender => Help());
+            AddBinding(Keys.F5,    sender => UpdateRegistry());
+            AddBinding(Keys.CtrlR, sender => UpdateRegistry());
+            AddBinding(Keys.CtrlU, sender => UpgradeAll());
 
             // Now a bunch of convenience shortcuts so you don't get stuck in the search box
-            searchBox.AddBinding(Keys.PageUp, (object sender) => {
+            searchBox.AddBinding(Keys.PageUp, sender =>
+            {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.PageDown, (object sender) => {
+            searchBox.AddBinding(Keys.PageDown, sender =>
+            {
                 SetFocus(moduleList);
                 return true;
             });
-            searchBox.AddBinding(Keys.Enter, (object sender) => {
+            searchBox.AddBinding(Keys.Enter, sender =>
+            {
                 SetFocus(moduleList);
                 return true;
             });
 
-            moduleList.AddBinding(Keys.CtrlF, (object sender) => {
+            moduleList.AddBinding(Keys.CtrlF, sender =>
+            {
                 SetFocus(searchBox);
                 return true;
             });
-            moduleList.AddBinding(Keys.Escape, (object sender) => {
+            moduleList.AddBinding(Keys.Escape, sender =>
+            {
                 searchBox.Clear();
                 return true;
             });
@@ -202,7 +207,8 @@ namespace CKAN.ConsoleUI {
             moduleList.AddTip(Properties.Resources.Enter, Properties.Resources.Details,
                 () => moduleList.Selection != null
             );
-            moduleList.AddBinding(Keys.Enter, (object sender) => {
+            moduleList.AddBinding(Keys.Enter, sender =>
+            {
                 if (moduleList.Selection != null && manager.CurrentInstance != null) {
                     LaunchSubScreen(new ModInfoScreen(theme, manager, manager.CurrentInstance, registry, userAgent,
                                                       plan, moduleList.Selection, upgradeableGroups?[true], debug));
@@ -227,7 +233,8 @@ namespace CKAN.ConsoleUI {
                                                  manager.CurrentInstance.StabilityToleranceConfig,
                                                  manager.CurrentInstance.VersionCriteria()) != null
             );
-            moduleList.AddBinding(Keys.Plus, (object sender) => {
+            moduleList.AddBinding(Keys.Plus, sender =>
+            {
                 if (moduleList.Selection != null && !moduleList.Selection.IsDLC && manager.CurrentInstance != null) {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
                         plan.ToggleInstall(moduleList.Selection);
@@ -248,7 +255,8 @@ namespace CKAN.ConsoleUI {
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)
             );
-            moduleList.AddBinding(Keys.Minus, (object sender) => {
+            moduleList.AddBinding(Keys.Minus, sender =>
+            {
                 if (moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && registry.IsInstalled(moduleList.Selection.identifier, false)
                     && !registry.IsAutodetected(moduleList.Selection.identifier)) {
@@ -265,7 +273,8 @@ namespace CKAN.ConsoleUI {
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
                     && (registry.InstalledModule(moduleList.Selection.identifier)?.AutoInstalled ?? false)
             );
-            moduleList.AddBinding(Keys.F8, (object sender) => {
+            moduleList.AddBinding(Keys.F8, sender =>
+            {
                 if (moduleList.Selection is CkanModule m)
                 {
                     var im = registry.InstalledModule(m.identifier);
@@ -278,7 +287,8 @@ namespace CKAN.ConsoleUI {
             });
 
             AddTip("F9", Properties.Resources.ModListApplyChangesTip, plan.NonEmpty);
-            AddBinding(Keys.F9, (object sender) => {
+            AddBinding(Keys.F9, sender =>
+            {
                 ApplyChanges();
                 return true;
             });
@@ -298,7 +308,8 @@ namespace CKAN.ConsoleUI {
                         :              string.Format(Properties.Resources.ModListUpdatedDaysAgo, days);
                 },
                 null,
-                (ConsoleTheme th) => {
+                th =>
+                {
                     return timeSinceUpdate < RepositoryDataManager.TimeTillStale     ? th.RegistryUpToDate
                         :  timeSinceUpdate < RepositoryDataManager.TimeTillVeryStale ? th.RegistryStale
                         :                                                              th.RegistryVeryStale;

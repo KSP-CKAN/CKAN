@@ -309,7 +309,7 @@ namespace CKAN.GUI
             item.DefaultCellStyle.BackColor = GetRowBackground(mod, false, instanceName, game);
             item.DefaultCellStyle.SelectionBackColor = SelectionBlend(item.DefaultCellStyle.BackColor);
 
-            var myChange = changes?.FindLast((ModChange ch) => ch.Mod.Equals(mod));
+            var myChange = changes?.FindLast(ch => ch.Mod.Equals(mod));
 
             var selecting = mod.IsAutodetected
                 ? new DataGridViewTextBoxCell()

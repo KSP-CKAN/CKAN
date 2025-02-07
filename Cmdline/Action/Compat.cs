@@ -99,7 +99,7 @@ namespace CKAN.CmdLine
         {
             var exitCode = Exit.OK;
 
-            Parser.Default.ParseArgumentsStrict(options.options.ToArray(), new CompatSubOptions(), (string option, object suboptions) =>
+            Parser.Default.ParseArgumentsStrict(options.options.ToArray(), new CompatSubOptions(), (option, suboptions) =>
             {
                 // ParseArgumentsStrict calls us unconditionally, even with bad arguments
                 if (!string.IsNullOrEmpty(option) && suboptions != null)

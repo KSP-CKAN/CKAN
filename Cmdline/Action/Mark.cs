@@ -35,7 +35,7 @@ namespace CKAN.CmdLine
             string[] args = unparsed.options.ToArray();
             int exitCode = Exit.OK;
             // Parse and process our sub-verbs
-            Parser.Default.ParseArgumentsStrict(args, new MarkSubOptions(), (string option, object suboptions) =>
+            Parser.Default.ParseArgumentsStrict(args, new MarkSubOptions(), (option, suboptions) =>
             {
                 // ParseArgumentsStrict calls us unconditionally, even with bad arguments
                 if (!string.IsNullOrEmpty(option) && suboptions != null)

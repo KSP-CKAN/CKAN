@@ -215,8 +215,7 @@ namespace CKAN
                 // Can't get later than Any, so no need for more complex logic
                 return realVersions?.LastOrDefault()
                                    // This is needed for when we have no real versions loaded, such as tests
-                                   ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
-                                                           .Max()
+                                   ?? module_version.Values.Max(m => m.LatestCompatibleGameVersion())
                                    ?? module_version.Values.Last().LatestCompatibleGameVersion();
             }
             // Find the range with the highest upper bound
@@ -226,8 +225,7 @@ namespace CKAN
                                                               : best);
             return realVersions?.LastOrDefault(bestRange.Contains)
                                // This is needed for when we have no real versions loaded, such as tests
-                               ?? module_version.Values.Select(m => m.LatestCompatibleGameVersion())
-                                                       .Max()
+                               ?? module_version.Values.Max(m => m.LatestCompatibleGameVersion())
                                ?? module_version.Values.Last().LatestCompatibleGameVersion();
         }
 
