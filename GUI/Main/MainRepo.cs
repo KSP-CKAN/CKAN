@@ -217,9 +217,9 @@ namespace CKAN.GUI
                         break;
                 }
             }
-            else if (e?.Result is(RepositoryDataManager.UpdateResult updateResult,
-                                  Dictionary<string, bool>           oldModules,
-                                  bool                               refreshWithoutChanges))
+            else if (e?.Result is (RepositoryDataManager.UpdateResult updateResult,
+                                   Dictionary<string, bool>           oldModules,
+                                   bool                               refreshWithoutChanges))
             {
                 switch (updateResult)
                 {

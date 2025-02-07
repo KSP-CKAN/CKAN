@@ -344,12 +344,14 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve"><value>Would you like CKAN to refresh the mod list automatically every time it is loaded?
 
 You can refresh the mod list manually with the Refresh button at the top, and you can change this setting later in the Settings. If you disable automatic refreshes, it's a good idea to refresh every few days.</value></data>
-  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>{0} update(s) available</value></data>
-  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Click to upgrade</value></data>
+  <data name="MainRepoBalloonTipDetails" xml:space="preserve"><value>Updates available: {0}
+
+Click to install...</value></data>
+  <data name="MainRepoBalloonTipTooltip" xml:space="preserve"><value>Click to install updates</value></data>
   <data name="MainTrayIconResume" xml:space="preserve"><value>Resume</value></data>
   <data name="MainTrayIconPause" xml:space="preserve"><value>Pause</value></data>
   <data name="MainTrayNoUpdates" xml:space="preserve"><value>No available updates</value></data>
-  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>{0} available update(s)</value></data>
+  <data name="MainTrayUpdatesAvailable" xml:space="preserve"><value>Updates available: {0}</value></data>
   <data name="MainWaitPleaseWait" xml:space="preserve"><value>Please wait</value></data>
   <data name="MainWaitDone" xml:space="preserve"><value>All done!</value></data>
   <data name="ManageGameInstancesNotValid" xml:space="preserve"><value>Directory {0} is not a valid game directory.</value></data>

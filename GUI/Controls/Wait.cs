@@ -31,12 +31,15 @@ namespace CKAN.GUI
                                  bool                                          cancelable,
                                  object?                                       param)
         {
-            bgLogic   = mainWork;
-            postLogic = postWork;
-            Reset(cancelable);
-            ClearLog();
-            RetryEnabled = false;
-            bgWorker.RunWorkerAsync(param);
+            if (!Busy)
+            {
+                bgLogic   = mainWork;
+                postLogic = postWork;
+                Reset(cancelable);
+                ClearLog();
+                RetryEnabled = false;
+                bgWorker.RunWorkerAsync(param);
+            }
         }
 
         public event Action? OnRetry;
