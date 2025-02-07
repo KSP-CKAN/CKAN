@@ -243,6 +243,7 @@ namespace CKAN
         /// <param name="existingInstance">The KSP instance to clone.</param>
         /// <param name="newName">The name for the new instance.</param>
         /// <param name="newPath">The path where the new instance should be located.</param>
+        /// <param name="shareStockFolders">True to make junctions or symlinks to stock folders instead of copying</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
         /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if something went wrong with copying.</exception>
         /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
@@ -251,6 +252,30 @@ namespace CKAN
         public void CloneInstance(GameInstance existingInstance,
                                   string       newName,
                                   string       newPath,
+                                  bool         shareStockFolders = false)
+        {
+            CloneInstance(existingInstance, newName, newPath,
+                          existingInstance.game.LeaveEmptyInClones,
+                          shareStockFolders);
+        }
+
+        /// <summary>
+        /// Clones an existing KSP installation.
+        /// </summary>
+        /// <param name="existingInstance">The KSP instance to clone.</param>
+        /// <param name="newName">The name for the new instance.</param>
+        /// <param name="newPath">The path where the new instance should be located.</param>
+        /// <param name="leaveEmpty">Dirs whose contents should not be copied</param>
+        /// <param name="shareStockFolders">True to make junctions or symlinks to stock folders instead of copying</param>
+        /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
+        /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if something went wrong with copying.</exception>
+        /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
+        /// <exception cref="PathErrorKraken">Thrown by CopyDirectory() if the target folder already exists and is not empty.</exception>
+        /// <exception cref="IOException">Thrown by CopyDirectory() if something goes wrong during the process.</exception>
+        public void CloneInstance(GameInstance existingInstance,
+                                  string       newName,
+                                  string       newPath,
+                                  string[]     leaveEmpty,
                                   bool         shareStockFolders = false)
         {
             if (HasInstance(newName))
@@ -267,7 +292,7 @@ namespace CKAN
             Utilities.CopyDirectory(existingInstance.GameDir(), newPath,
                                     shareStockFolders ? existingInstance.game.StockFolders
                                                       : Array.Empty<string>(),
-                                    existingInstance.game.LeaveEmptyInClones);
+                                    leaveEmpty);
 
             // Add the new instance to the config
             AddInstance(new GameInstance(existingInstance.game, newPath, newName, User));
