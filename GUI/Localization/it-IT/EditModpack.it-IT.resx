@@ -141,6 +141,9 @@
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve">
     <value>Salva versioni mod</value>
   </data>
+  <data name="IncludeOptRelsCheckbox.Text" xml:space="preserve">
+    <value>Includi relazioni opzionali</value>
+  </data>
   <data name="ModNameColumn.Text" xml:space="preserve">
     <value>Mod</value>
   </data>
