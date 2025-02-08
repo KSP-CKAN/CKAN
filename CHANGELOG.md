@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Allow installs and removals to be cancelled (#4253 by: HebaruSan)
 - [CLI] Include `supports` relationship in `ckan show` (#4262 by: HebaruSan)
 - [Multiple] Pre-release handling (#4260, #4266, #4294 by: HebaruSan, JonnyOThan)
-- [Multiple] French translation updates (#4268 by: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4268, #4305 by: vinix38, frankieorabona, faida)
 - [Multiple] Checkboxes to copy more dirs when cloning instances (#4304 by: HebaruSan)
 
 ### Bugfixes

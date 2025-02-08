@@ -144,6 +144,12 @@
   <data name="checkBoxShareStock.Text" xml:space="preserve">
     <value>Partager les fichiers de jeu communs</value>
   </data>
+  <data name="OptionalPathsLabel.Text" xml:space="preserve">
+    <value>Chemins optionnels à copier :</value>
+  </data>
+  <data name="PathHeader.Text" xml:space="preserve">
+    <value>Chemins optionnels</value>
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
     <value>Cloner</value>
   </data>

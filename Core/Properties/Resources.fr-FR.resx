@@ -397,6 +397,10 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
     <value>L'ancien dossier de cache contient {0}. Le nouveau dossier de cache a {1} libres.
 Que voulez-vous faire ?</value>
   </data>
+  <data name="GameInstanceManagerCacheMigrationPromptFreeSpaceUnknown" xml:space="preserve">
+    <value>L'ancien dossier de cache contient {0}. Le nouveau dossier de cache a un espace libre inconnu.
+Que voulez-vous faire ?</value>
+  </data>
   <data name="GameInstanceManagerCacheMigrationMove" xml:space="preserve">
     <value>Déplacer les anciens fichiers mis en cache vers le nouveau dossier de cache</value>
   </data>
@@ -636,8 +640,7 @@ Consultez cette page pour obtenir de l'aide :
     <value>Oh non ! Le téléchargement a échoué avec une erreur de certificat !</value>
   </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
-    <value>Le téléchargement depuis {0} a été bridé.
-Pensez à ajouter un jeton d'authentification pour augmenter la limite avant bridage.</value>
+    <value>Requête à {0} restreinte</value>
   </data>
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}

@@ -117,18 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>Möchtest du, dass CKAN bei Programmstart automatisch nach neuen Versionen sucht?
-
-Du kannst auch manuell nach neuen Versionen von CKAN schauen, und diese Einstellung jederzeit in den Einstellungen ändern.</value>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
-  <data name="YesButton.Text" xml:space="preserve">
-    <value>Ja, suche nach Updates</value>
+  <data name="RefreshButton.Text" xml:space="preserve">
+    <value>Aktualisieren</value>
   </data>
-  <data name="NoButton.Text" xml:space="preserve">
-    <value>Nein</value>
+  <data name="ExpandAllButton.Text" xml:space="preserve">
+    <value>Alle aufklappen</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Automatische Updatesuche</value>
+  <data name="CollapseAllButton.Text" xml:space="preserve">
+    <value>Alle einklappen</value>
+  </data>
+  <data name="ResetCollapseButton.Text" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
+  <data name="ShowInFolderButton.Text" xml:space="preserve">
+    <value>In Verzeichnis anzeigen</value>
+  </data>
+  <data name="DeleteButton.Text" xml:space="preserve">
+    <value>Löschen</value>
   </data>
 </root>

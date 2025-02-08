@@ -133,6 +133,12 @@
   <data name="AddToCKANMenuItem.Text" xml:space="preserve">
     <value>Instanz hinzufügen</value>
   </data>
+  <data name="ImportFromSteamMenuItem.Text" xml:space="preserve">
+    <value>Aus Steam importieren</value>
+  </data>
+  <data name="ImportFromSteamMenuItem.TooltipText" xml:space="preserve">
+    <value>Steam-Bibliothek nach erkannten Spielverzeichnissen absuchen und als Instanzen hinzufügen</value>
+  </data>
   <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
     <value>Instanz klonen</value>
   </data>
