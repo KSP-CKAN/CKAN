@@ -260,6 +260,9 @@ Si vous n'avez vraiment pas le choix, le paramètre "--asroot" permet d'utiliser
   <data name="CacheInfo" xml:space="preserve">
     <value>{0} fichiers, {1}, {2} libre</value>
   </data>
+  <data name="CacheInfoFreeSpaceUnknown" xml:space="preserve">
+    <value>{0} fichiers, {1}, espace libre inconnu</value>
+  </data>
   <data name="CompareSame" xml:space="preserve">
     <value>"{0}" et "{1}" ont les mêmes versions.</value>
   </data>
@@ -472,7 +475,7 @@ et réessayez.
     <value>Modules installés :</value>
   </data>
   <data name="ListLegend" xml:space="preserve">
-    <value>Légende : -: À jour. +: Auto-installé. X: Incompatible. ^: À mettre à jour. &gt;: Remplaçable.
+    <value>Légende : -: À jour. +: Auto-installé. X: Incompatible. ^: À mettre à jour. >: Remplaçable.
         A: Auto-détecté. ?: Inconnu. *: Cassé.</value>
   </data>
   <data name="MarkHelpSummary" xml:space="preserve">
