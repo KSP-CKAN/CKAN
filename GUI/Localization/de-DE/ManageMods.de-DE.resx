@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,37 +117,130 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve"><value>Spiel starten</value></data>
-  <data name="RefreshToolButton.Text" xml:space="preserve"><value>Aktualisieren</value></data>
-  <data name="UpdateAllToolButton.Text" xml:space="preserve"><value>Verfügbare Updates auswählen</value></data>
-  <data name="ApplyToolButton.Text" xml:space="preserve"><value>Annehmen</value></data>
-  <data name="FilterToolButton.Text" xml:space="preserve"><value>Filter</value></data>
-  <data name="FilterCompatibleButton.Text" xml:space="preserve"><value>Kompatibel</value></data>
-  <data name="FilterInstalledButton.Text" xml:space="preserve"><value>Installiert</value></data>
-  <data name="FilterInstalledUpdateButton.Text" xml:space="preserve"><value>Aktualisierbar</value></data>
-  <data name="FilterReplaceableButton.Text" xml:space="preserve"><value>Ersetzbar</value></data>
-  <data name="FilterCachedButton.Text" xml:space="preserve"><value>Im Cache</value></data>
-  <data name="FilterUncachedButton.Text" xml:space="preserve"><value>Nicht im Cache</value></data>
-  <data name="FilterNewButton.Text" xml:space="preserve"><value>Neu kompatibel</value></data>
-  <data name="FilterNotInstalledButton.Text" xml:space="preserve"><value>Nicht installiert</value></data>
-  <data name="FilterIncompatibleButton.Text" xml:space="preserve"><value>Inkompatibel</value></data>
-  <data name="FilterAllButton.Text" xml:space="preserve"><value>Alle</value></data>
-  <data name="FilterTagsToolButton.Text" xml:space="preserve"><value>Kategorien</value></data>
-  <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve"><value>Zuvor ausgewählte Mod...</value></data>
-  <data name="NavForwardToolButton.ToolTipText" xml:space="preserve"><value>Danach ausgewählte mod...</value></data>
-  <data name="AutoInstalled.HeaderText" xml:space="preserve"><value>Auto-installiert</value></data>
-  <data name="ReplaceCol.HeaderText" xml:space="preserve"><value>Ersetzen</value></data>
-  <data name="Author.HeaderText" xml:space="preserve"><value>Autor</value></data>
-  <data name="InstalledVersion.HeaderText" xml:space="preserve"><value>Installierte Version</value></data>
-  <data name="LatestVersion.HeaderText" xml:space="preserve"><value>Neueste Version</value></data>
-  <data name="GameCompatibility.HeaderText" xml:space="preserve"><value>Max. Spielversion</value></data>
-  <data name="DownloadSize.HeaderText" xml:space="preserve"><value>Downloadgröße</value></data>
-  <data name="ReleaseDate.HeaderText" xml:space="preserve"><value>Veröffentlichungsdatum</value></data>
-  <data name="InstallDate.HeaderText" xml:space="preserve"><value>Installationsdatum</value></data>
-  <data name="DownloadCount.HeaderText" xml:space="preserve"><value>Downloadanzahl</value></data>
-  <data name="Description.HeaderText" xml:space="preserve"><value>Kurzbeschreibung</value></data>
-  <data name="reinstallToolStripMenuItem.Text" xml:space="preserve"><value>Neu installieren</value></data>
-  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve"><value>In den Cache herunterladen (wird nicht installiert)</value></data>
-  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve"><value>Aus dem Cache löschen</value></data>
-  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve"><value>Labels bearbeiten...</value></data>
+  <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>Spielen</value>
+  </data>
+  <data name="EditCommandLinesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Kommandozeile bearbeiten...</value>
+  </data>
+  <data name="RefreshToolButton.Text" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="UpdateAllToolButton.Text" xml:space="preserve">
+    <value>Verfügbare Updates auswählen</value>
+  </data>
+  <data name="ApplyToolButton.Text" xml:space="preserve">
+    <value>Annehmen</value>
+  </data>
+  <data name="FilterToolButton.Text" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="FilterCompatibleButton.Text" xml:space="preserve">
+    <value>Kompatibel</value>
+  </data>
+  <data name="FilterInstalledButton.Text" xml:space="preserve">
+    <value>Installiert</value>
+  </data>
+  <data name="FilterInstalledUpdateButton.Text" xml:space="preserve">
+    <value>Aktualisierbar</value>
+  </data>
+  <data name="FilterReplaceableButton.Text" xml:space="preserve">
+    <value>Ersetzbar</value>
+  </data>
+  <data name="FilterCachedButton.Text" xml:space="preserve">
+    <value>Im Cache</value>
+  </data>
+  <data name="FilterUncachedButton.Text" xml:space="preserve">
+    <value>Nicht im Cache</value>
+  </data>
+  <data name="FilterNewButton.Text" xml:space="preserve">
+    <value>Neu kompatibel</value>
+  </data>
+  <data name="FilterNotInstalledButton.Text" xml:space="preserve">
+    <value>Nicht installiert</value>
+  </data>
+  <data name="FilterIncompatibleButton.Text" xml:space="preserve">
+    <value>Inkompatibel</value>
+  </data>
+  <data name="FilterAllButton.Text" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="FilterTagsToolButton.Text" xml:space="preserve">
+    <value>Kategorien</value>
+  </data>
+  <data name="FilterLabelsToolButton.Text" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="NavBackwardToolButton.ToolTipText" xml:space="preserve">
+    <value>Zuvor ausgewählte Mod...</value>
+  </data>
+  <data name="NavForwardToolButton.ToolTipText" xml:space="preserve">
+    <value>Danach ausgewählte mod...</value>
+  </data>
+  <data name="hiddenTagsLabelsLinkList.TagToolTipText" xml:space="preserve">
+    <value>Klicken, um Tags anzuzeigen oder auszublenden</value>
+  </data>
+  <data name="Installed.HeaderText" xml:space="preserve">
+    <value>Installiert</value>
+  </data>
+  <data name="AutoInstalled.HeaderText" xml:space="preserve">
+    <value>Auto-installiert</value>
+  </data>
+  <data name="UpdateCol.HeaderText" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="ReplaceCol.HeaderText" xml:space="preserve">
+    <value>Ersetzen</value>
+  </data>
+  <data name="ModName.HeaderText" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Author.HeaderText" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="InstalledVersion.HeaderText" xml:space="preserve">
+    <value>Installierte Version</value>
+  </data>
+  <data name="LatestVersion.HeaderText" xml:space="preserve">
+    <value>Neueste Version</value>
+  </data>
+  <data name="GameCompatibility.HeaderText" xml:space="preserve">
+    <value>Max. Spielversion</value>
+  </data>
+  <data name="DownloadSize.HeaderText" xml:space="preserve">
+    <value>Downloadgröße</value>
+  </data>
+  <data name="InstallSize.HeaderText" xml:space="preserve">
+    <value>Installieren</value>
+  </data>
+  <data name="ReleaseDate.HeaderText" xml:space="preserve">
+    <value>Veröffentlichungsdatum</value>
+  </data>
+  <data name="InstallDate.HeaderText" xml:space="preserve">
+    <value>Installationsdatum</value>
+  </data>
+  <data name="DownloadCount.HeaderText" xml:space="preserve">
+    <value>Downloadanzahl</value>
+  </data>
+  <data name="Description.HeaderText" xml:space="preserve">
+    <value>Kurzbeschreibung</value>
+  </data>
+  <data name="reinstallToolStripMenuItem.Text" xml:space="preserve">
+    <value>Neu installieren</value>
+  </data>
+  <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve">
+    <value>In den Cache herunterladen (wird nicht installiert)</value>
+  </data>
+  <data name="purgeContentsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Aus dem Cache löschen</value>
+  </data>
+  <data name="labelsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Label</value>
+  </data>
+  <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Labels bearbeiten...</value>
+  </data>
+  <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
+    <value>[Strg + Klick] oder [Shift + Klick], um Metadaten erneut herunterzuladen, auch wenn keine Änderungen gefunden wurden</value>
+  </data>
 </root>

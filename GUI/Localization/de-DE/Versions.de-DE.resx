@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="OverallSummaryLabel.Text" xml:space="preserve">
-    <value>Alle verfügbaren Versionen der ausgewählten Mod</value>
+    <value>Alle verfügbaren Versionen der ausgewählten Mod:</value>
   </data>
   <data name="ModVersion.Text" xml:space="preserve">
     <value>Mod-Version</value>
@@ -137,5 +137,11 @@
   </data>
   <data name="InstalledLabel.Text" xml:space="preserve">
     <value>momentan installierte Version</value>
+  </data>
+  <data name="PrereleaseLabel.Text" xml:space="preserve">
+    <value>Weniger stabil als stability tolerance Einstellung</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>Mod Stabilitäts-Override:</value>
   </data>
 </root>

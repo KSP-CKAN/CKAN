@@ -141,6 +141,9 @@
   <data name="IncludeVersionsCheckbox.Text" xml:space="preserve">
     <value>Mod-Versionen im Pack auf die hier angezeigten festsetzen</value>
   </data>
+  <data name="IncludeOptRelsCheckbox.Text" xml:space="preserve">
+    <value>Optionale Beziehungen einbeziehen</value>
+  </data>
   <data name="ModNameColumn.Text" xml:space="preserve">
     <value>Mod</value>
   </data>

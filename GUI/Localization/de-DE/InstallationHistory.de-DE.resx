@@ -117,18 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>Möchtest du, dass CKAN bei Programmstart automatisch nach neuen Versionen sucht?
-
-Du kannst auch manuell nach neuen Versionen von CKAN schauen, und diese Einstellung jederzeit in den Einstellungen ändern.</value>
+  <data name="TimestampColumn.Text" xml:space="preserve">
+    <value>Zeitstempel</value>
   </data>
-  <data name="YesButton.Text" xml:space="preserve">
-    <value>Ja, suche nach Updates</value>
+  <data name="NotInstalledGroup.Header" xml:space="preserve">
+    <value>Derzeit nicht installiert</value>
   </data>
-  <data name="NoButton.Text" xml:space="preserve">
-    <value>Nein</value>
+  <data name="InstalledGroup.Header" xml:space="preserve">
+    <value>Aktuell installiert</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Automatische Updatesuche</value>
+  <data name="NameColumn.Text" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="VersionColumn.Text" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="AuthorColumn.Text" xml:space="preserve">
+    <value>Autoren</value>
+  </data>
+  <data name="DescriptionColumn.Text" xml:space="preserve">
+    <value>Beschreibung</value>
+  </data>
+  <data name="SelectInstallMessage.Text" xml:space="preserve">
+    <value>Klicke den Zeitstempel auf der linken Seite, um zu sehen, welche Mods installiert wurden</value>
+  </data>
+  <data name="NoModsMessage.Text" xml:space="preserve">
+    <value>Keine Mods wurden installiert</value>
+  </data>
+  <data name="InstallButton.Text" xml:space="preserve">
+    <value>Installieren</value>
+  </data>
+  <data name="OKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

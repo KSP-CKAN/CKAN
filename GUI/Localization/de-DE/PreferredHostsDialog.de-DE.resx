@@ -117,18 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>Möchtest du, dass CKAN bei Programmstart automatisch nach neuen Versionen sucht?
-
-Du kannst auch manuell nach neuen Versionen von CKAN schauen, und diese Einstellung jederzeit in den Einstellungen ändern.</value>
+  <data name="ExplanationLabel.Text" xml:space="preserve">
+    <value>Wenn ein Modul mehrere Download-URLs hat, werden Sie anhand ihres Host in der Liste auf der rechten Seite priorisiert.</value>
   </data>
-  <data name="YesButton.Text" xml:space="preserve">
-    <value>Ja, suche nach Updates</value>
+  <data name="AvailableHostsLabel.Text" xml:space="preserve">
+    <value>Verfügbare Hosts (nach Beliebtheit):</value>
   </data>
-  <data name="NoButton.Text" xml:space="preserve">
-    <value>Nein</value>
+  <data name="PreferredHostsLabel.Text" xml:space="preserve">
+    <value>Bevorzugte Hosts (nach Priorität):</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>Automatische Updatesuche</value>
+    <value>Bevorzugte Hosts</value>
   </data>
 </root>
