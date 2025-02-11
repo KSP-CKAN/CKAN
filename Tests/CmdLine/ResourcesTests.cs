@@ -19,7 +19,7 @@ namespace Tests.CmdLine
         public void PropertiesResources_LanguageResource_NotSet()
         {
             // Arrange
-            ResourceManager resources = new CKAN.CmdLine.SingleAssemblyResourceManager(
+            ResourceManager resources = new CKAN.SingleAssemblyResourceManager(
                 "CKAN.CmdLine.Properties.Resources", typeof(CKAN.CmdLine.Properties.Resources).Assembly);
 
             // Act/Assert
