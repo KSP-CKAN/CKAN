@@ -121,13 +121,16 @@ namespace CKAN.GUI
             //
             // LaunchGameToolStripMenuItem
             //
-            this.LaunchGameToolStripMenuItem.MouseHover += new System.EventHandler(LaunchGameToolStripMenuItem_MouseHover);
+            this.LaunchGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            EditCommandLinesToolStripMenuItem});
             this.LaunchGameToolStripMenuItem.Image = global::CKAN.GUI.EmbeddedImages.ksp;
             this.LaunchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.LaunchGameToolStripMenuItem.MouseHover += new System.EventHandler(LaunchGameToolStripMenuItem_MouseHover);
             this.LaunchGameToolStripMenuItem.Name = "LaunchGameToolStripMenuItem";
             this.LaunchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
             this.LaunchGameToolStripMenuItem.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
             this.LaunchGameToolStripMenuItem.Click += new System.EventHandler(this.LaunchGameToolStripMenuItem_Click);
+            this.LaunchGameToolStripMenuItem.DropDown.Opening += new System.ComponentModel.CancelEventHandler(LaunchGameToolStripMenuItem_DropDown_Opening);
             resources.ApplyResources(this.LaunchGameToolStripMenuItem, "LaunchGameToolStripMenuItem");
             //
             // EditCommandLinesToolStripMenuItem

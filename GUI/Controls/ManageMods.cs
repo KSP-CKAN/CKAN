@@ -586,6 +586,14 @@ namespace CKAN.GUI
         {
             if (guiConfig != null)
             {
+                LaunchGameToolStripMenuItem.ShowDropDown();
+            }
+        }
+
+        private void LaunchGameToolStripMenuItem_DropDown_Opening(object? sender, CancelEventArgs? e)
+        {
+            if (guiConfig != null)
+            {
                 var cmdLines = guiConfig.CommandLines;
                 LaunchGameToolStripMenuItem.DropDownItems.Clear();
                 LaunchGameToolStripMenuItem.DropDownItems.AddRange(
@@ -599,7 +607,6 @@ namespace CKAN.GUI
                             .Append(CommandLinesToolStripSeparator)
                             .Append(EditCommandLinesToolStripMenuItem)
                             .ToArray());
-                LaunchGameToolStripMenuItem.ShowDropDown();
             }
         }
 
