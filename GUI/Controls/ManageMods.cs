@@ -54,7 +54,7 @@ namespace CKAN.GUI
 
             if (Platform.IsMono)
             {
-                menuStrip2.Renderer = new FlatToolStripRenderer();
+                Toolbar.Renderer = new FlatToolStripRenderer();
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
@@ -1500,7 +1500,7 @@ namespace CKAN.GUI
 
             var has_unheld_updates = mainModList.Modules.Any(mod => mod.HasUpdate
                                                                     && (!Main.Instance?.LabelsHeld(mod.Identifier) ?? true));
-            Util.Invoke(menuStrip2, () =>
+            Util.Invoke(Toolbar, () =>
             {
                 FilterCompatibleButton.Text = string.Format(Properties.Resources.MainModListCompatible,
                     mainModList.CountModsByFilter(currentInstance, GUIModFilter.Compatible));

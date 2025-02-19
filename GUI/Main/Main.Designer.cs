@@ -30,7 +30,7 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Main));
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.manageGameInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openGameDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,7 +108,7 @@ namespace CKAN.GUI
             this.DeleteDirectories = new CKAN.GUI.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
             this.EditModpack = new CKAN.GUI.EditModpack();
-            this.menuStrip1.SuspendLayout();
+            this.MainMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -131,19 +131,18 @@ namespace CKAN.GUI
             this.EditModpackTabPage.SuspendLayout();
             this.SuspendLayout();
             //
-            // menuStrip1
+            // MainMenu
             //
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MainMenu.ImageScalingSize = new System.Drawing.Size(16, 16);
+            this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.helpToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
-            this.menuStrip1.Size = new System.Drawing.Size(1544, 35);
-            this.menuStrip1.TabIndex = 0;
-            this.menuStrip1.Text = "menuStrip1";
+            this.MainMenu.Location = new System.Drawing.Point(0, 0);
+            this.MainMenu.Name = "MainMenu";
+            this.MainMenu.Padding = new System.Windows.Forms.Padding(9, 3, 0, 3);
+            this.MainMenu.Size = new System.Drawing.Size(1544, 24);
+            this.MainMenu.TabIndex = 0;
             //
             // fileToolStripMenuItem
             //
@@ -838,17 +837,17 @@ namespace CKAN.GUI
             this.ClientSize = new System.Drawing.Size(1544, 1038);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.MainMenu);
             this.KeyPreview = true;
-            this.MainMenuStrip = this.menuStrip1;
+            this.MainMenuStrip = this.MainMenu;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MinimumSize = new System.Drawing.Size(880, 400);
             this.Name = "Main";
             this.Resize += new System.EventHandler(this.Main_Resize);
             this.Icon = EmbeddedImages.AppIcon;
             resources.ApplyResources(this, "$this");
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
+            this.MainMenu.ResumeLayout(false);
+            this.MainMenu.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -891,7 +890,7 @@ namespace CKAN.GUI
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem manageGameInstancesMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem;
