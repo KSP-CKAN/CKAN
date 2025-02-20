@@ -190,7 +190,7 @@ namespace CKAN.GUI
             var searches = editors.Select(ems => ems.Search)
                                   .ToList();
             ApplySearches?.Invoke(searches.Count == 0 ? null : searches);
-            AddSearchButton.Enabled = editors.Count == searches.Count;
+            AddSearchButton.Enabled = editors.Count == searches.OfType<ModSearch>().Count();
         }
 
         private void EditModSearch_SurrenderFocus()
