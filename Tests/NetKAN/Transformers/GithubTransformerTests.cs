@@ -1,9 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Github;
@@ -29,71 +30,79 @@ namespace Tests.NetKAN.Transformers
                 });
 
             mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>(), false))
-                .Returns(new GithubRelease(
-                    "ExampleProject",
-                    new ModuleVersion("1.0"),
-                    new List<GithubReleaseAsset>
-                    {
-                        new GithubReleaseAsset(
-                            "download",
-                            new Uri("http://github.example/download"),
-                            null
-                        )
-                    }
-                ));
+                .Returns(new GithubRelease()
+                         {
+                             Author = new GithubUser() { Login = "ExampleProject" },
+                             Tag    = new ModuleVersion("1.0"),
+                             Assets = new GithubReleaseAsset[]
+                                      {
+                                          new GithubReleaseAsset()
+                                          {
+                                              Name     = "download.zip",
+                                              Download = new Uri("http://github.example/download")
+                                          },
+                                      },
+                         });
 
             mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>(), false))
                 .Returns(new GithubRelease[] {
-                    new GithubRelease(
-                        "ExampleProject",
-                        new ModuleVersion("1.0"),
-                        new List<GithubReleaseAsset>
-                        {
-                            new GithubReleaseAsset(
-                                "download",
-                                new Uri("http://github.example/download/1.0"),
-                                null
-                            )
-                        }
-                    ),
-                    new GithubRelease("ExampleProject",
-                        new ModuleVersion("1.1"),
-                        new List<GithubReleaseAsset>
-                        {
-                            new GithubReleaseAsset(
-                                "download",
-                                new Uri("http://github.example/download/1.1"),
-                                null
-                            )
-                        }
-                    ),
-                    new GithubRelease("ExampleProject",
-                        new ModuleVersion("1.2"),
-                        new List<GithubReleaseAsset>
-                        {
-                            new GithubReleaseAsset(
-                                "ExampleProject_1.2-1.8.1.zip",
-                                new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
-                                null
-                            )
-                        }
-                    ),
-                    new GithubRelease("ExampleProject",
-                        new ModuleVersion("1.3"),
-                        new List<GithubReleaseAsset>
-                        {
-                            new GithubReleaseAsset(
-                                "ExampleProject_1.2-1.8.1.zip",
-                                new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
-                                null
-                            ),
-                            new GithubReleaseAsset(
-                                "ExampleProject_1.2-1.9.1.zip",
-                                new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.9.1.zip"),
-                                null
-                            )
-                        }
-                    ),
+                    new GithubRelease()
+                    {
+                         Author = new GithubUser() { Login = "ExampleProject" },
+                         Tag    = new ModuleVersion("1.0"),
+                         Assets = new GithubReleaseAsset[]
+                                  {
+                                      new GithubReleaseAsset()
+                                      {
+                                          Name     = "download.zip",
+                                          Download = new Uri("http://github.example/download/1.0"),
+                                      },
+                                  },
+                    },
+                    new GithubRelease()
+                    {
+                         Author = new GithubUser() { Login = "ExampleProject" },
+                         Tag    = new ModuleVersion("1.1"),
+                         Assets = new GithubReleaseAsset[]
+                                  {
+                                      new GithubReleaseAsset()
+                                      {
+                                          Name     = "download.zip",
+                                          Download = new Uri("http://github.example/download/1.1"),
+                                      },
+                                  },
+                    },
+                    new GithubRelease()
+                    {
+                         Author = new GithubUser() { Login = "ExampleProject" },
+                         Tag    = new ModuleVersion("1.2"),
+                         Assets = new GithubReleaseAsset[]
+                                  {
+                                      new GithubReleaseAsset()
+                                      {
+                                          Name     = "ExampleProject_1.2-1.8.1.zip",
+                                          Download = new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
+                                      },
+                                  },
+                    },
+                    new GithubRelease()
+                    {
+                         Author = new GithubUser() { Login = "ExampleProject" },
+                         Tag    = new ModuleVersion("1.3"),
+                         Assets = new GithubReleaseAsset[]
+                                  {
+                                      new GithubReleaseAsset()
+                                      {
+                                          Name     = "ExampleProject_1.2-1.8.1.zip",
+                                          Download = new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.8.1.zip"),
+                                      },
+                                      new GithubReleaseAsset()
+                                      {
+                                          Name     = "ExampleProject_1.2-1.9.1.zip",
+                                          Download = new Uri("http://github.example/download/1.2/ExampleProject_1.2-1.9.1.zip"),
+                                      }
+                                  },
+                    },
                 });
 
             apiMockUp = mApi;
@@ -138,32 +147,37 @@ namespace Tests.NetKAN.Transformers
                 });
 
             mApi.Setup(i => i.GetLatestRelease(It.IsAny<GithubRef>(), false))
-                .Returns(new GithubRelease(
-                    "DestructionEffects",
-                    new ModuleVersion("v1.8,0"),
-                    new List<GithubReleaseAsset>
-                    {
-                        new GithubReleaseAsset(
-                            "DestructionEffects.1.8.0_0412018.zip",
-                            new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
-                            null
-                        )
-                    }
-                ));
+                .Returns(new GithubRelease()
+                         {
+                             Author = new GithubUser() { Login = "DestructionEffects" },
+                             Tag    = new ModuleVersion("v1.8,0"),
+                             Assets = new GithubReleaseAsset[]
+                                      {
+                                          new GithubReleaseAsset()
+                                          {
+                                              Name = "DestructionEffects.1.8.0_0412018.zip",
+                                              Download = new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
+                                          }
+                                      },
+                         });
 
             mApi.Setup(i => i.GetAllReleases(It.IsAny<GithubRef>(), false))
-                .Returns(new GithubRelease[] { new GithubRelease(
-                    "DestructionEffects",
-                    new ModuleVersion("v1.8,0"),
-                    new List<GithubReleaseAsset>
-                    {
-                        new GithubReleaseAsset(
-                            "DestructionEffects.1.8.0_0412018.zip",
-                            new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
-                            null
-                        )
-                    }
-                )});
+                .Returns(new GithubRelease[]
+                         {
+                             new GithubRelease()
+                             {
+                                 Author = new GithubUser() { Login = "DestructionEffects" },
+                                 Tag    = new ModuleVersion("v1.8,0"),
+                                 Assets = new GithubReleaseAsset[]
+                                          {
+                                              new GithubReleaseAsset()
+                                              {
+                                                  Name = "DestructionEffects.1.8.0_0412018.zip",
+                                                  Download = new Uri("https://github.com/jrodrigv/DestructionEffects/releases/download/v1.8%2C0/DestructionEffects.1.8.0_0412018.zip"),
+                                              },
+                                          },
+                             },
+                         });
 
             ITransformer sut = new GithubTransformer(mApi.Object, false);
 

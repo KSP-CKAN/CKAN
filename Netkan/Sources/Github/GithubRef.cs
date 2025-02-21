@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Sources.Github
         public string Account          { get; private set; }
         public string Project          { get; private set; }
         public string Repository       { get; private set; }
-        public Regex? Filter           { get; private set; }
+        public Regex  Filter           { get; private set; }
         public Regex? VersionFromAsset { get; private set; }
         public bool   UseSourceArchive { get; private set; }
 
@@ -46,5 +46,9 @@ namespace CKAN.NetKAN.Sources.Github
                 throw new Kraken(string.Format(@"Could not parse reference: ""{0}""", remoteRef));
             }
         }
+
+        public bool FilterMatches(GithubReleaseAsset asset)
+            => asset.Name is string name && Filter.IsMatch(name);
+
     }
 }
