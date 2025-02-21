@@ -67,14 +67,27 @@ namespace CKAN.NetKAN.Transformers
                     releases = releases.Take(opts.Releases.Value);
                 }
                 bool returnedAny = false;
-                foreach (GithubRelease rel in releases)
+                foreach (var rel in releases)
                 {
-                    if (ghRef.VersionFromAsset != null && rel.Assets != null)
+                    if (ghRef.UseSourceArchive && rel.Tag != null)
+                    {
+                        returnedAny = true;
+                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel,
+                                                  new GithubReleaseAsset()
+                                                  {
+                                                      Name     = rel.Tag.ToString(),
+                                                      Download = rel.SourceArchive,
+                                                      Updated  = rel.PublishedAt,
+                                                      Uploader = rel.Author,
+                                                  },
+                                                  rel.Tag.ToString());
+                    }
+                    else if (ghRef.VersionFromAsset != null && rel.Assets != null)
                     {
                         Log.DebugFormat("Found version_from_asset regex, inflating all assets");
                         foreach (var asset in rel.Assets)
                         {
-                            var match = ghRef.VersionFromAsset.Match(asset.Name);
+                            var match = ghRef.VersionFromAsset.Match(asset.Name ?? "");
                             if (!match.Success)
                             {
                                 continue;
@@ -92,13 +105,15 @@ namespace CKAN.NetKAN.Transformers
                     }
                     else if (rel.Assets != null && rel.Tag != null)
                     {
-                        if (rel.Assets.Count > 1)
+                        var assets = rel.Assets.Where(ghRef.FilterMatches).ToArray();
+                        if (assets.Length > 1)
                         {
                             Log.WarnFormat("Multiple assets found for {0} {1} without `version_from_asset`",
                                 metadata.Identifier, rel.Tag);
                         }
                         returnedAny = true;
-                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel, rel.Assets.First(), rel.Tag.ToString());
+                        yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel,
+                                                  assets.First(), rel.Tag.ToString());
                     }
                 }
                 if (!returnedAny)
@@ -159,7 +174,10 @@ namespace CKAN.NetKAN.Transformers
                 json.SafeAdd("version",  version);
                 json.SafeAdd("author",   () => GetAuthors(ghRepo, ghRelease));
                 json.Remove("$kref");
-                json.SafeAdd("download", ghAsset.Download.ToString());
+                if (ghAsset.Download is Uri url)
+                {
+                    json.SafeAdd("download", url.ToString());
+                }
                 if (ghRef.UseSourceArchive)
                 {
                     // https://docs.github.com/en/rest/repos/contents#download-a-repository-archive-zip
@@ -241,17 +259,16 @@ namespace CKAN.NetKAN.Transformers
                                            : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}",
                                                           false)))
                    .Reverse()
-                   .SelectMany(r => r.Owner?.Type switch
-                                    {
-                                        userType => Enumerable.Repeat(r.Owner.Login, 1),
-                                        orgType  => _api.getOrgMembers(r.Owner)
-                                                        .Select(u => u.Login),
-                                        _        => Enumerable.Empty<string>()
-                                    })
+                   .Select(r => r.Owner)
                    .Append(release.Author)
+                   .OfType<GithubUser>()
+                   .SelectMany(u => u.Type switch
+                                    {
+                                        GithubUserType.User => Enumerable.Repeat(u.Login, 1),
+                                        GithubUserType.Organization => _api.getOrgMembers(u)
+                                                                           .Select(u => u.Login),
+                                        GithubUserType.Bot or _ => Enumerable.Empty<string>(),
+                                    })
                    .ToJValueOrJArray();
-
-        private const string userType = "User";
-        private const string orgType  = "Organization";
     }
 }

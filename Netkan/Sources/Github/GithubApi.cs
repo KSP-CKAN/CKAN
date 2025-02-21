@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Services;
 
@@ -72,21 +71,21 @@ namespace CKAN.NetKAN.Sources.Github
                     break;
                 }
                 Log.Debug("Parsing JSON...");
-                var jsonReleases = JArray.Parse(json);
-                if (jsonReleases.Count < 1)
+                var ghReleases = JsonConvert.DeserializeObject<GithubRelease[]>(json)
+                                            ?.Where(ghRel => ReleaseTypeMatches(usePrerelease, ghRel.PreRelease)
+                                                             // Skip releases without assets
+                                                             && (reference.UseSourceArchive
+                                                                 || (ghRel.Assets != null
+                                                                     && ghRel.Assets.Any(reference.FilterMatches))))
+                                             // Insurance against GitHub returning them in the wrong order
+                                             .OrderByDescending(ghRel => ghRel.PublishedAt)
+                                             .ToArray()
+                                            ?? Array.Empty<GithubRelease>();
+                if (ghReleases.Length < 1)
                 {
                     // That's all folks!
                     break;
                 }
-                var ghReleases = jsonReleases
-                    .Select(rel => new GithubRelease(reference, rel))
-                    .Where(ghRel => ReleaseTypeMatches(usePrerelease, ghRel.PreRelease)
-                                    // Skip releases without assets
-                                    && ghRel.Assets != null
-                                    && ghRel.Assets.Count != 0)
-                    // Insurance against GitHub returning them in the wrong order
-                    .OrderByDescending(ghRel => ghRel.PublishedAt)
-                    .ToList();
 
                 foreach (var ghRel in ghReleases)
                 {

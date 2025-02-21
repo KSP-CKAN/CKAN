@@ -53,6 +53,13 @@ namespace CKAN.NetKAN.Sources.Github
         public string? Login { get; set; }
 
         [JsonProperty("type")]
-        public string? Type { get; set; }
+        public GithubUserType? Type { get; set; } = GithubUserType.User;
+    }
+
+    public enum GithubUserType
+    {
+        User,
+        Organization,
+        Bot,
     }
 }
