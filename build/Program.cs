@@ -64,6 +64,7 @@ public sealed class RestoreTask : FrostingTask<BuildContext>
     {
         context.DotNetRestore(new DotNetRestoreSettings
         {
+            WorkingDirectory = context.Paths.RootDirectory,
             PackagesDirectory = context.Paths.NugetDirectory,
             EnvironmentVariables = new Dictionary<string, string> { { "Configuration", context.BuildConfiguration } }
         });
