@@ -71,23 +71,21 @@ namespace CKAN.NetKAN.Sources.Github
                     break;
                 }
                 Log.Debug("Parsing JSON...");
-                var ghReleases = JsonConvert.DeserializeObject<GithubRelease[]>(json)
-                                            ?.Where(ghRel => ReleaseTypeMatches(usePrerelease, ghRel.PreRelease)
-                                                             // Skip releases without assets
-                                                             && (reference.UseSourceArchive
-                                                                 || (ghRel.Assets != null
-                                                                     && ghRel.Assets.Any(reference.FilterMatches))))
-                                             // Insurance against GitHub returning them in the wrong order
-                                             .OrderByDescending(ghRel => ghRel.PublishedAt)
-                                             .ToArray()
-                                            ?? Array.Empty<GithubRelease>();
-                if (ghReleases.Length < 1)
+                var releases = JsonConvert.DeserializeObject<GithubRelease[]>(json)
+                               ?? Array.Empty<GithubRelease>();
+                if (releases.Length < 1)
                 {
                     // That's all folks!
                     break;
                 }
 
-                foreach (var ghRel in ghReleases)
+                foreach (var ghRel in releases.Where(r => ReleaseTypeMatches(usePrerelease, r.PreRelease)
+                                                          // Skip releases without assets
+                                                          && (reference.UseSourceArchive
+                                                              || (r.Assets != null
+                                                                  && r.Assets.Any(reference.FilterMatches))))
+                                              // Insurance against GitHub returning them in the wrong order
+                                              .OrderByDescending(r => r.PublishedAt))
                 {
                     yield return ghRel;
                 }
