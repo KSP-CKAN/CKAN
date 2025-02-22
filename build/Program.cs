@@ -13,6 +13,7 @@ using Cake.Common.Tools.ILMerge;
 using Cake.Common.Tools.ILRepack;
 using Cake.Common.Tools.MSBuild;
 using Cake.Common.Tools.NUnit;
+using Cake.Core.IO;
 using Cake.Frosting;
 
 namespace Build;
@@ -22,6 +23,13 @@ public static class Program
     public static int Main(string[] args)
     {
         return new CakeHost()
+            .ConfigureServices(services =>
+            {
+                services.UseToolPath(new DirectoryPath(Environment.CurrentDirectory)
+                    .GetParent()
+                    .Combine("_build")
+                    .Combine("tools"));
+            })
             .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.27"))
             .InstallTool(new Uri("nuget:?package=NUnit.ConsoleRunner&version=3.16.3"))
             .UseContext<BuildContext>()

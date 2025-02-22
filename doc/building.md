@@ -63,7 +63,7 @@ directory itself, instead use one of the existing or create a new subdirectory.
 - `_build/repack`: Used to store the output of [ILRepack](https://github.com/gluck/il-repack).
 - `_build/test`: Used to store the output of test runners.
   - `_build/test/nunit`: Used to store the output of the NUnit test runner.
-- `build/tools`: Used to store tools downloaded by Cake.
+- `_build/tools`: Used to store tools downloaded by Cake.
 
 ## NuGet
 
