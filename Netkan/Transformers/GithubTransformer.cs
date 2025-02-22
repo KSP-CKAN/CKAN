@@ -69,18 +69,13 @@ namespace CKAN.NetKAN.Transformers
                 bool returnedAny = false;
                 foreach (var rel in releases)
                 {
-                    if (ghRef.UseSourceArchive && rel.Tag != null)
+                    if (ghRef.UseSourceArchive
+                        && rel.Tag != null
+                        && rel.SourceArchiveAsset is GithubReleaseAsset srcAsset)
                     {
                         returnedAny = true;
                         yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel,
-                                                  new GithubReleaseAsset()
-                                                  {
-                                                      Name     = rel.Tag.ToString(),
-                                                      Download = rel.SourceArchive,
-                                                      Updated  = rel.PublishedAt,
-                                                      Uploader = rel.Author,
-                                                  },
-                                                  rel.Tag.ToString());
+                                                  srcAsset, rel.Tag.ToString());
                     }
                     else if (ghRef.VersionFromAsset != null && rel.Assets != null)
                     {

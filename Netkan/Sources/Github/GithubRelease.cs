@@ -27,5 +27,17 @@ namespace CKAN.NetKAN.Sources.Github
         [JsonProperty("prerelease")]
         [DefaultValue(false)]
         public bool PreRelease { get; set; } = false;
+
+        [JsonIgnore]
+        public GithubReleaseAsset? SourceArchiveAsset
+            => Tag is ModuleVersion ver
+                   ? new GithubReleaseAsset()
+                     {
+                         Name     = ver.ToString(),
+                         Download = SourceArchive,
+                         Updated  = PublishedAt,
+                         Uploader = Author,
+                     }
+                   : null;
     }
 }

@@ -46,7 +46,7 @@ All notable changes to this project will be documented in this file.
 - [Build] ci: Bumping Signing request tag (#4280 by: techman83; reviewed: HebaruSan)
 - [Netkan] Set unicode-aware locale in containers (#4289 by: HebaruSan)
 - [Netkan] Handle GitHub API rate limit errors appropriately, treat throttling as errors (#4299, #4301 by: HebaruSan)
-- [Netkan] Exclude release author bots from authors list (#4318 by: HebaruSan)
+- [Netkan] Exclude release author bots from authors list (#4318, #4319 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 
