@@ -27,7 +27,7 @@ jobs:
           name: Debug-repack-unsigned
           path: _build/repack/
       - name: Run tests
-        run: xvfb-run ./build test+only --configuration=Debug --where="Category!=FlakyNetwork"
+        run: xvfb-run ./build.sh -t test+only --configuration=Debug --where="Category!=FlakyNetwork"
 
   # notify:
   #   needs:

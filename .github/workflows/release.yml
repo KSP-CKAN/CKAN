@@ -45,7 +45,7 @@ jobs:
           name: Release-repack-unsigned
           path: _build/repack/
       - name: Build dmg
-        run: ./build osx --configuration=Release --exclusive
+        run: ./build.sh -t osx --configuration=Release --exclusive
       - name: Upload OSX release asset
         run: gh release upload ${{ github.event.release.tag_name }} _build/osx/CKAN.dmg
         env:
@@ -79,7 +79,7 @@ jobs:
       - name: Build deb
         env:
           CODENAME: stable
-        run: ./build deb --configuration=Release --exclusive
+        run: ./build.sh -t deb --configuration=Release --exclusive
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -91,7 +91,7 @@ jobs:
         env:
           CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
-        run: ./build deb-sign --configuration=Release --exclusive
+        run: ./build.sh -t deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Push deb to S3
         run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
@@ -130,7 +130,7 @@ jobs:
           VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d v)
           echo "RPM_VERSION=${VERSION}.$(date +'%g%j')" >> $GITHUB_ENV
       - name: Build rpm
-        run: ./build rpm --configuration=Release --exclusive
+        run: ./build.sh -t rpm --configuration=Release --exclusive
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -141,7 +141,7 @@ jobs:
         env:
           CODENAME: stable
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
-        run: ./build rpm-repo --configuration=Release --exclusive
+        run: ./build.sh -t rpm-repo --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Push stable RPM repo to S3
         run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/stable --follow-symlinks

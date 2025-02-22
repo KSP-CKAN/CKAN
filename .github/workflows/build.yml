@@ -22,12 +22,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: _build/tools
-          key: build-tools-${{ hashFiles('build', 'build.ps1', 'build.cake') }}
+          key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
       - name: Restore cache for _build/cake
         uses: actions/cache@v4
         with:
           path: _build/cake
-          key: build-cake-${{ hashFiles('build.cake') }}
+          key: build-cake-${{ hashFiles('build/*') }}
       - name: Restore cache for _build/lib/nuget
         uses: actions/cache@v4
         with:
@@ -36,7 +36,7 @@ jobs:
             ~/.nuget/packages
           key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Build ckan.exe and netkan.exe
-        run: ./build --configuration=${{ inputs.configuration }}
+        run: ./build.sh --configuration=${{ inputs.configuration }}
       - name: Upload repack artifact
         id: upload-repack-artifact
         uses: actions/upload-artifact@v4
@@ -52,7 +52,7 @@ jobs:
           retention-days: 1
       - name: Bundle assets for signing
         if: inputs.configuration == 'Release'
-        run: ./build Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
+        run: ./build.sh -t Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload unsigned artifact
         id: upload-unsigned-artifact
         if: inputs.configuration == 'Release'
