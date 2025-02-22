@@ -130,11 +130,12 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             });
             
             // Use Mono to build for net48 since dotnet can't use WinForms on Linux
-            context.MSBuild(context.Solution,
-                settings => settings
-                    .SetConfiguration(context.BuildConfiguration)
-                    .SetMaxCpuCount(0)
-                    .WithProperty("TargetFramework", context.BuildNetFramework));
+            context.MSBuild(context.Solution, new MSBuildSettings
+            {
+                Configuration = context.BuildConfiguration,
+                MaxCpuCount = 0,
+                Properties = { { "TargetFramework", [context.BuildNetFramework] } },
+            });
             // Use dotnet to build the stuff Mono can't build
             context.DotNetBuild(context.Solution, new DotNetBuildSettings
             {

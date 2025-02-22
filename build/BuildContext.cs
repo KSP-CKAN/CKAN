@@ -125,7 +125,7 @@ public partial class BuildContext : FrostingContext
 
         var quotes = System.IO.File
             .ReadAllText(file.FullPath)
-            .Split(['%'], StringSplitOptions.RemoveEmptyEntries);
+            .Split("%", StringSplitOptions.RemoveEmptyEntries);
 
         return quotes.Length > 0 ? quotes[new Random().Next(quotes.Length)] : null;
     }
