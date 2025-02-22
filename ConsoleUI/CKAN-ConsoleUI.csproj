@@ -83,7 +83,7 @@
     <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"
           WorkingDirectory=".."
           Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Windows_NT'" />
-    <Exec Command="sh ../build Generate-GlobalAssemblyVersionInfo"
+    <Exec Command="sh ../build.sh Generate-GlobalAssemblyVersionInfo"
           Condition="!Exists('../_build/meta/GlobalAssemblyVersionInfo.cs') And '$(OS)' == 'Unix'" />
   </Target>
 </Project>

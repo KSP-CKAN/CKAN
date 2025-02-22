@@ -40,7 +40,7 @@
 # Build files
 *.cake          text
 *.ps1           text
-build           text eol=lf
+*.sh            text eol=lf
 Dockerfile      text eol=lf
 
 # Other
