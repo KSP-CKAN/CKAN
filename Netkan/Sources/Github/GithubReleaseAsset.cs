@@ -1,18 +1,21 @@
 using System;
 
+using Newtonsoft.Json;
+
 namespace CKAN.NetKAN.Sources.Github
 {
     public sealed class GithubReleaseAsset
     {
-        public string    Name     { get; }
-        public Uri       Download { get; }
-        public DateTime? Updated  { get; }
+        [JsonProperty("name")]
+        public string? Name { get; set; }
 
-        public GithubReleaseAsset(string name, Uri download, DateTime? updated)
-        {
-            Name     = name;
-            Download = download;
-            Updated  = updated;
-        }
+        [JsonProperty("browser_download_url")]
+        public Uri? Download { get; set; }
+
+        [JsonProperty("updated_at")]
+        public DateTime? Updated { get; set; }
+
+        [JsonProperty("uploader")]
+        public GithubUser? Uploader { get; set; }
     }
 }

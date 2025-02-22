@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Services;
 
@@ -72,23 +71,21 @@ namespace CKAN.NetKAN.Sources.Github
                     break;
                 }
                 Log.Debug("Parsing JSON...");
-                var jsonReleases = JArray.Parse(json);
-                if (jsonReleases.Count < 1)
+                var releases = JsonConvert.DeserializeObject<GithubRelease[]>(json)
+                               ?? Array.Empty<GithubRelease>();
+                if (releases.Length < 1)
                 {
                     // That's all folks!
                     break;
                 }
-                var ghReleases = jsonReleases
-                    .Select(rel => new GithubRelease(reference, rel))
-                    .Where(ghRel => ReleaseTypeMatches(usePrerelease, ghRel.PreRelease)
-                                    // Skip releases without assets
-                                    && ghRel.Assets != null
-                                    && ghRel.Assets.Count != 0)
-                    // Insurance against GitHub returning them in the wrong order
-                    .OrderByDescending(ghRel => ghRel.PublishedAt)
-                    .ToList();
 
-                foreach (var ghRel in ghReleases)
+                foreach (var ghRel in releases.Where(r => ReleaseTypeMatches(usePrerelease, r.PreRelease)
+                                                          // Skip releases without assets
+                                                          && (reference.UseSourceArchive
+                                                              || (r.Assets != null
+                                                                  && r.Assets.Any(reference.FilterMatches))))
+                                              // Insurance against GitHub returning them in the wrong order
+                                              .OrderByDescending(r => r.PublishedAt))
                 {
                     yield return ghRel;
                 }
