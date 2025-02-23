@@ -104,7 +104,7 @@ jobs:
           name: Release-repack-unsigned
           path: _build/repack/
       - name: Build dmg
-        run: ./build.sh -t osx --configuration=Release --exclusive
+        run: ./build.sh osx --configuration=Release --exclusive
       - name: Push dmg to S3
         run: aws s3 cp _build/osx/CKAN.dmg s3://${AWS_S3_BUCKET} --follow-symlinks
 
@@ -137,7 +137,7 @@ jobs:
       - name: Build deb
         env:
           CODENAME: nightly
-        run: ./build.sh -t deb --configuration=Release --exclusive
+        run: ./build.sh deb --configuration=Release --exclusive
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -149,7 +149,7 @@ jobs:
         env:
           CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
-        run: ./build.sh -t deb-sign --configuration=Release --exclusive
+        run: ./build.sh deb-sign --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Push deb to S3
         run: aws s3 sync _build/deb/apt-repo-root s3://${AWS_S3_BUCKET}/deb --follow-symlinks
@@ -194,7 +194,7 @@ jobs:
           mkdir -p _build/repack/Release
           cp _build/signed/ckan.exe _build/repack/Release
       - name: Build rpm
-        run: ./build.sh -t rpm --configuration=Release --exclusive
+        run: ./build.sh rpm --configuration=Release --exclusive
       - name: Import GPG key
         env:
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
@@ -206,7 +206,7 @@ jobs:
         env:
           CODENAME: nightly
           DEBIAN_PRIVATE_KEY: ${{ secrets.DEBIAN_PRIVATE_KEY }}
-        run: ./build.sh -t rpm-repo --configuration=Release --exclusive
+        run: ./build.sh rpm-repo --configuration=Release --exclusive
         if: ${{ env.DEBIAN_PRIVATE_KEY }}
       - name: Push nightly PRM repo to S3
         run: aws s3 sync _build/rpm/repo s3://${AWS_S3_BUCKET}/rpm/nightly --follow-symlinks

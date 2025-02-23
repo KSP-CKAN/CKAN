@@ -52,7 +52,7 @@ jobs:
           retention-days: 1
       - name: Bundle assets for signing
         if: inputs.configuration == 'Release'
-        run: ./build.sh -t Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
+        run: ./build.sh Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload unsigned artifact
         id: upload-unsigned-artifact
         if: inputs.configuration == 'Release'

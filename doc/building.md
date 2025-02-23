@@ -80,7 +80,7 @@ After Cake is installed by NuGet, the bootstrapper scripts then parse the comman
 The bootstrapper scripts use the following command line:
 
 ```plain
-./build.sh [-t <target>] [<cake-args>...]
+./build.sh [<target>] [<cake-args>...]
 ```
 
 Which is then used to execute Cake with the following command line:
