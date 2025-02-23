@@ -184,7 +184,7 @@ push. GitHub's operation is pretty simple:
 - A bunch of packages are installed to make the build work.
 - Some commands are executed to simulate a graphical environment for testing.
 - The solution is built using `./build.sh --configuration=$BUILD_CONFIGURATION`
-- The solution is tested using `./build.sh -t test+only --configuration=$BUILD_CONFIGURATION --where="Category!=FlakyNetwork"`
+- The solution is tested using `./build.sh test+only --configuration=$BUILD_CONFIGURATION --where="Category!=FlakyNetwork"`
   - The `--where="Category!=FlakyNetwork"` argument is used to not execute tests that rely upon a network connection and could
       thus behave nondeterministically (frustrating behavior for a CI system).
 - The built executables (`ckan.exe` and `netkan.exe`) are uploaded to Amazon S3 if the following conditions are met:
