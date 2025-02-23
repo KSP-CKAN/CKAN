@@ -30,9 +30,25 @@ public partial class BuildContext : FrostingContext
         var rootDir = context.Environment.WorkingDirectory.GetParent();
         
         Target = context.Argument("target", "Default");
-        BuildConfiguration = context.Argument("configuration", "Debug");
+        BuildConfiguration = context.Argument<string>("configuration", null);
         Solution = context.Argument("solution", rootDir.CombineWithFilePath("CKAN.sln").FullPath);
 
+        if (string.Equals(Target, "Release", StringComparison.OrdinalIgnoreCase))
+        {
+            if (BuildConfiguration != null)
+                context.Warning($"Ignoring configuration argument: '{BuildConfiguration}'");
+
+            BuildConfiguration = "Release";
+        }
+        else if (string.Equals(Target, "Debug", StringComparison.OrdinalIgnoreCase))
+        {
+            if (BuildConfiguration != null)
+                context.Warning($"Ignoring configuration argument: '{BuildConfiguration}'");
+
+            BuildConfiguration = "Debug";
+        }
+        
+        BuildConfiguration ??= "Debug";
         Paths = new BuildPaths(rootDir, BuildConfiguration, GetVersion(false));
     }
 
