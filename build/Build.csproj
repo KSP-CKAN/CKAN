@@ -8,6 +8,10 @@
     <OutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\bin\</OutputPath>
     <BaseIntermediateOutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\obj\</BaseIntermediateOutputPath>
     <BaseIntermediateOutputPath Condition=" '$(Configuration)' == '' ">..\_build\out\$(AssemblyName)\VSCodeIDE\obj\</BaseIntermediateOutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>12</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <ItemGroup>

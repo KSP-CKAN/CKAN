@@ -1,5 +1,3 @@
-using System;
-using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using Cake.Frosting;
@@ -15,8 +13,11 @@ public class BuildLifetime : FrostingLifetime<BuildContext>
     public override void Teardown(BuildContext context, ITeardownContext info)
     {
         var quote = context.GetQuote(context.Paths.RootDirectory.CombineWithFilePath("quotes.txt"));
-        if (quote == null) return;
-        
+        if (quote == null)
+        {
+            return;
+        }
+
         using (context.NormalVerbosity())
         {
             context.Information(quote);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
@@ -74,7 +75,7 @@ public sealed class RestoreTask : FrostingTask<BuildContext>
         {
             WorkingDirectory = context.Paths.RootDirectory,
             PackagesDirectory = context.Paths.NugetDirectory,
-            EnvironmentVariables = new Dictionary<string, string> { { "Configuration", context.BuildConfiguration } }
+            EnvironmentVariables = new Dictionary<string, string?> { { "Configuration", context.BuildConfiguration } }
         });
     }
 }
@@ -87,7 +88,7 @@ public sealed class GenerateGlobalAssemblyVersionInfoTask : FrostingTask<BuildCo
     {
         var metaDirectory = context.Paths.BuildDirectory.Combine("meta");
         context.CreateDirectory(metaDirectory);
-        
+
         var version = context.GetVersion();
 
         context.CreateAssemblyInfo(
@@ -128,7 +129,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             {
                 Configuration = context.BuildConfiguration,
             });
-            
+
             // Use Mono to build for net48 since dotnet can't use WinForms on Linux
             context.MSBuild(context.Solution, new MSBuildSettings
             {
@@ -154,7 +155,7 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         context.CreateDirectory(context.Paths.RepackDirectory.Combine(context.BuildConfiguration));
-        
+
         var cmdLineBinDirectory = context.Paths.OutDirectory.Combine("CKAN-CmdLine")
                                               .Combine(context.BuildConfiguration)
                                               .Combine("bin")
@@ -318,7 +319,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        var where = context.Argument<string>("where", null);
+        var where = context.Argument<string?>("where", null);
         var nunitOutputDirectory = context.Paths.BuildDirectory.Combine("test")
             .Combine("nunit");
         context.CreateDirectory(nunitOutputDirectory);

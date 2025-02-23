@@ -57,5 +57,8 @@ dotnet_diagnostic.IDE0090.severity = none
 # Allow namespaces to be independent of folder names
 dotnet_diagnostic.IDE0130.severity = none
 
+# Allow file-scoped namespaces
+dotnet_diagnostic.IDE0160.severity = none
+
 # Who cares if it's a JSON formatted string, in a test?
 dotnet_diagnostic.JSON002.severity = none

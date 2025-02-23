@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
@@ -19,7 +20,7 @@ public partial class BuildContext : FrostingContext
     public string Target { get; }
 
     // Named to avoid conflict with ICakeContext.Configuration
-    public string BuildConfiguration { get; set; }
+    public string? BuildConfiguration { get; set; }
     public string Solution { get; }
 
     public BuildPaths Paths { get; }
@@ -28,26 +29,30 @@ public partial class BuildContext : FrostingContext
         : base(context)
     {
         var rootDir = context.Environment.WorkingDirectory.GetParent();
-        
+
         Target = context.Argument("target", "Default");
-        BuildConfiguration = context.Argument<string>("configuration", null);
+        BuildConfiguration = context.Argument<string?>("configuration", null);
         Solution = context.Argument("solution", rootDir.CombineWithFilePath("CKAN.sln").FullPath);
 
         if (string.Equals(Target, "Release", StringComparison.OrdinalIgnoreCase))
         {
             if (BuildConfiguration != null)
+            {
                 context.Warning($"Ignoring configuration argument: '{BuildConfiguration}'");
+            }
 
             BuildConfiguration = "Release";
         }
         else if (string.Equals(Target, "Debug", StringComparison.OrdinalIgnoreCase))
         {
             if (BuildConfiguration != null)
+            {
                 context.Warning($"Ignoring configuration argument: '{BuildConfiguration}'");
+            }
 
             BuildConfiguration = "Debug";
         }
-        
+
         BuildConfiguration ??= "Debug";
         Paths = new BuildPaths(rootDir, BuildConfiguration, GetVersion(false));
     }
@@ -59,11 +64,11 @@ public partial class BuildContext : FrostingContext
         var versionMatch = System.IO.File
             .ReadAllLines(rootDirectory.CombineWithFilePath("CHANGELOG.md").FullPath)
             .Select(i => VersionRegex().Match(i))
-            .FirstOrDefault(i => i.Success);
+            .First(i => i.Success);
 
         if (!SemVersion.TryParse(versionMatch.Groups["version"].Value, out var version))
         {
-            throw new System.Exception("Could not parse version from CHANGELOG.md");
+            throw new Exception("Could not parse version from CHANGELOG.md");
         }
 
         if (withBuild && this.DirectoryExists(rootDirectory.Combine(".git")))
@@ -109,7 +114,7 @@ public partial class BuildContext : FrostingContext
         {
             monoLib = new DirectoryPath("/usr").Combine("lib");
         }
-        
+
         return monoLib
             .Combine("mono")
             .Combine("4.8-api")
@@ -135,9 +140,12 @@ public partial class BuildContext : FrostingContext
             .SetRedirectStandardError(true)
             .SetRedirectedStandardErrorHandler(s => "");
 
-    public string GetQuote(FilePath file)
+    public string? GetQuote(FilePath file)
     {
-        if (!this.FileExists(file)) return null;
+        if (!this.FileExists(file))
+        {
+            return null;
+        }
 
         var quotes = System.IO.File
             .ReadAllText(file.FullPath)
@@ -145,21 +153,20 @@ public partial class BuildContext : FrostingContext
 
         return quotes.Length > 0 ? quotes[new Random().Next(quotes.Length)] : null;
     }
-    
+
     public IEnumerable<string> RunExecutable(FilePath executable, string arguments)
     {
-        IEnumerable<string> output;
         var exitCode = this.StartProcess(
             executable,
             new ProcessSettings { Arguments = arguments, RedirectStandardOutput = true },
-            out output
+            out IEnumerable<string> output
         );
 
         if (exitCode != 0)
         {
             throw new Exception("Process failed with exit code: " + exitCode);
         }
-        
+
         return output;
     }
 }

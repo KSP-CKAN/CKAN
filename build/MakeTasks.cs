@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 using Cake.Common;
 using Cake.Core.IO;
 using Cake.Frosting;
@@ -52,7 +53,7 @@ public sealed class RpmTestTask() : MakeTask("rpm", "test");
 [TaskDescription("Clean the rpm package output directory.")]
 public sealed class RpmCleanTask() : MakeTask("rpm", "clean");
 
-public abstract class MakeTask(string location, ProcessArgumentBuilder args = null) : FrostingTask<BuildContext>
+public abstract class MakeTask(string location, ProcessArgumentBuilder? args = null) : FrostingTask<BuildContext>
 {
     private string Location { get; } = location;
     private ProcessArgumentBuilder Args { get; } = args ?? "";
@@ -62,7 +63,7 @@ public abstract class MakeTask(string location, ProcessArgumentBuilder args = nu
         var exitCode = context.StartProcess("make", new ProcessSettings() {
             WorkingDirectory = Location,
             Arguments = Args,
-            EnvironmentVariables = new Dictionary<string, string> { { "CONFIGURATION", context.BuildConfiguration } }
+            EnvironmentVariables = new Dictionary<string, string?> { { "CONFIGURATION", context.BuildConfiguration } }
         });
         if (exitCode != 0)
         {
