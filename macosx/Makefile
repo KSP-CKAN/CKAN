@@ -27,7 +27,7 @@ $(EXEDEST): $(EXESRC)
 	ln $< $@
 
 $(EXESRC):
-	cd .. && ./build --configuration=Release
+	cd .. && ./build.sh --configuration=Release
 
 $(SCRIPTDEST): $(SCRIPTSRC)
 	mkdir -p $(shell dirname $@)

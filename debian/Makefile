@@ -95,7 +95,7 @@ $(EXEDEST): $(EXESRC)
 	umask 0022 && cp $< $@
 
 $(EXESRC):
-	cd .. && ./build --configuration=$(CONFIGURATION)
+	cd .. && ./build.sh --configuration=$(CONFIGURATION)
 
 $(CONTROLDEST): $(CONTROLSRC) $(CHANGELOGSRC)
 	umask 0022 && mkdir -p $(shell dirname $@)

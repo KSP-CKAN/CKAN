@@ -56,7 +56,7 @@ COPY . /source
 WORKDIR /source
 ARG config
 ENV config ${config:-Release}
-RUN ./build --configuration=${config}
+RUN ./build.sh --configuration=${config}
 RUN mkdir /build
 RUN cp _build/repack/${config}/ckan.exe /build/ckan.exe
 ENTRYPOINT ["/root/entrypoint.sh"]

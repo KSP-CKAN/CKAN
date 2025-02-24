@@ -17,28 +17,10 @@ if (($PSVersionTable.PSVersion -lt $minPSVer)) {
 }
 
 # Globals
-$NugetVersion       = "6.8.0"
-$UseExperimental    = $false
 $RootDir            = "${PSScriptRoot}"
-$ScriptFile         = "${RootDir}/build.cake"
+$ScriptFile         = "${RootDir}/build/Build.csproj"
 $BuildDir           = "${RootDir}/_build"
 $ToolsDir           = "${BuildDir}/tools"
-$NugetExe           = "${ToolsDir}/NuGet/${NugetVersion}/nuget.exe"
-
-# Download NuGet
-$NugetDir = Split-Path "$NugetExe" -Parent
-if (!(Test-Path "$NugetDir")) {
-    mkdir $nugetDir > $null
-}
-
-if (!(Test-Path "$NugetExe")) {
-    # Enable TLS1.2 for WebClient
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls13
-    (New-Object System.Net.WebClient).DownloadFile("https://dist.nuget.org/win-x86-commandline/v${NugetVersion}/nuget.exe", $NugetExe)
-}
-
-# Install build packages
-dotnet tool install --global Cake.Tool
 
 # Build args
 $cakeArgs = @()
@@ -51,10 +33,6 @@ if ($Arg0) {
     }
 }
 
-if ($UseExperimental) {
-    $cakeArgs += "--experimental"
-}
-
 # Run Cake
-dotnet cake --verbosity Minimal "${ScriptFile}" ${cakeArgs} ${RemainingArgs}
+dotnet run --project "${ScriptFile}" -- ${cakeArgs} ${RemainingArgs}
 exit $LASTEXITCODE
