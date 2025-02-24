@@ -117,7 +117,7 @@ namespace CKAN
                 // https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/8.0/getfolderpath-unix
                 return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 #else
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "Library", "Application Support");
 #endif
         }
@@ -135,9 +135,9 @@ namespace CKAN
             }
             : Platform.IsUnix ? new string[]
             {
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                             ".local", "share", "Steam"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                             "Steam"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                              ".steam", "steam"),
             }
             : Platform.IsMac ? new string[]
