@@ -61,7 +61,7 @@ public abstract class MakeTask(string location, ProcessArgumentBuilder? args = n
     public override void Run(BuildContext context)
     {
         var exitCode = context.StartProcess("make", new ProcessSettings() {
-            WorkingDirectory = Location,
+            WorkingDirectory = context.Paths.RootDirectory.Combine(Location),
             Arguments = Args,
             EnvironmentVariables = new Dictionary<string, string?> { { "CONFIGURATION", context.BuildConfiguration } }
         });
