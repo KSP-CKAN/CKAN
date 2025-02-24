@@ -32,7 +32,7 @@ The following are the minimum requirements to build CKAN and NetKAN from source:
 - PowerShell
 - MSBuild (usually by installing [Visual Studio](https://www.visualstudio.com/vs/community/))
 - [.NET Framework >= 4.8.0](https://dotnet.microsoft.com/en-us/download/dotnet-framework)
-- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/7.0)
+- [.NET 8](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 
 ## Build directory
 
