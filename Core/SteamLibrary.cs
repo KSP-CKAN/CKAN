@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
-
+using System.Diagnostics;
 using log4net;
 using ValveKeyValue;
 
@@ -103,6 +103,25 @@ namespace CKAN
                          .Select(nsg => nsg.NormalizeDir(path))
                         ?? Enumerable.Empty<NonSteamGame>();
 
+        /// <summary>
+        /// Find the location where the current user's application data resides. Specific to macOS.
+        /// </summary>
+        /// <returns>
+        ///     The application data folder, e.g. <code>/Users/USER/Library/Application Support</code>
+        /// </returns>
+        private static string GetMacOSApplicationDataFolder()
+        {
+            Debug.Assert(Platform.IsMac);
+
+#if NET8_0_OR_GREATER
+                // https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/8.0/getfolderpath-unix
+                return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+#else
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                "Library", "Application Support");
+#endif
+        }
+
         private const  string   registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
         private const  string   registryValue = @"SteamPath";
         private static string[] SteamPaths
@@ -116,15 +135,14 @@ namespace CKAN
             }
             : Platform.IsUnix ? new string[]
             {
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                             ".local", "share", "Steam"),
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                             "Steam"),
+                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                              ".steam", "steam"),
             }
             : Platform.IsMac ? new string[]
             {
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-                             "Library", "Application Support", "Steam"),
+                Path.Combine(GetMacOSApplicationDataFolder(), "Steam"),
             }
             : Array.Empty<string>();
 
