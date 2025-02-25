@@ -24,7 +24,7 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         public void ShowErrorDialog(Main mainForm, string text, params object[] args)
         {
-            Util.Invoke(this, () =>
+            Util.Invoke(mainForm, () =>
             {
                 log.ErrorFormat(text, args);
                 // Append to previous text, if any

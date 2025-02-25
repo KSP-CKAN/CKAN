@@ -307,7 +307,7 @@ namespace CKAN.GUI
 
         private void OnRefreshTimer(object? sender, ElapsedEventArgs e)
         {
-            if (menuStrip1.Enabled && configuration != null && !configuration.RefreshPaused)
+            if (MainMenu.Enabled && configuration != null && !configuration.RefreshPaused)
             {
                 // Just a safety check
                 UpdateRepo();

@@ -73,6 +73,8 @@ namespace CKAN.GUI
             //
             // InstallUpdateButton
             //
+            this.InstallUpdateButton.AutoSize = true;
+            this.InstallUpdateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.InstallUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.InstallUpdateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -85,6 +87,8 @@ namespace CKAN.GUI
             //
             // CancelUpdateButton
             //
+            this.CancelUpdateButton.AutoSize = true;
+            this.CancelUpdateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -97,7 +101,7 @@ namespace CKAN.GUI
             //
             // NewUpdateDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ClientSize = new System.Drawing.Size(426, 310);

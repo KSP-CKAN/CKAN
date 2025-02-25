@@ -41,6 +41,8 @@ namespace CKAN.GUI
                     selectedModule = value;
                     if (selectedModule != null)
                     {
+                        ContentsDownloadButton.Text = string.Format(Properties.Resources.ModInfoDownload,
+                                                                    CkanModule.FmtSize(selectedModule.ToModule().download_size));
                         selectedModule.PropertyChanged += SelectedMod_PropertyChanged;
                     }
                     Util.Invoke(ContentsPreviewTree,

@@ -32,6 +32,7 @@ namespace CKAN.GUI
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Relationships));
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
+            this.LegendTable = new System.Windows.Forms.TableLayoutPanel();
             this.LegendInstalledLabel = new System.Windows.Forms.Label();
             this.LegendProvidesImage = new System.Windows.Forms.PictureBox();
             this.LegendProvidesLabel = new System.Windows.Forms.Label();
@@ -46,6 +47,7 @@ namespace CKAN.GUI
             this.LegendConflictsImage = new System.Windows.Forms.PictureBox();
             this.LegendConflictsLabel = new System.Windows.Forms.Label();
             this.ReverseRelationshipsCheckbox = new System.Windows.Forms.CheckBox();
+            this.LegendTable.SuspendLayout();
             this.SuspendLayout();
             //
             // ToolTip
@@ -57,10 +59,8 @@ namespace CKAN.GUI
             //
             // DependsGraphTree
             //
-            this.DependsGraphTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.DependsGraphTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.DependsGraphTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DependsGraphTree.Location = new System.Drawing.Point(3, 132);
             this.DependsGraphTree.Name = "DependsGraphTree";
             this.DependsGraphTree.Size = new System.Drawing.Size(494, 340);
@@ -80,107 +80,142 @@ namespace CKAN.GUI
             this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.GUI.EmbeddedImages.smile);
             this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.GUI.EmbeddedImages.alert);
             //
+            // LegendTable
+            //
+            this.LegendTable.AutoSize = true;
+            this.LegendTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.LegendTable.ColumnCount = 6;
+            this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33f));
+            this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33f));
+            this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33f));
+            this.LegendTable.Controls.Add(this.LegendInstalledLabel, 1, 0);
+            this.LegendTable.Controls.Add(this.LegendProvidesImage, 0, 1);
+            this.LegendTable.Controls.Add(this.LegendProvidesLabel, 1, 1);
+            this.LegendTable.Controls.Add(this.LegendDependsImage, 0, 2);
+            this.LegendTable.Controls.Add(this.LegendDependsLabel, 1, 2);
+            this.LegendTable.Controls.Add(this.LegendRecommendsImage, 2, 1);
+            this.LegendTable.Controls.Add(this.LegendRecommendsLabel, 3, 1);
+            this.LegendTable.Controls.Add(this.LegendSuggestsImage, 2, 2);
+            this.LegendTable.Controls.Add(this.LegendSuggestsLabel, 3, 2);
+            this.LegendTable.Controls.Add(this.LegendSupportsImage, 4, 1);
+            this.LegendTable.Controls.Add(this.LegendSupportsLabel, 5, 1);
+            this.LegendTable.Controls.Add(this.LegendConflictsImage, 4, 2);
+            this.LegendTable.Controls.Add(this.LegendConflictsLabel, 5, 2);
+            this.LegendTable.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.LegendTable.Location = new System.Drawing.Point(0, 0);
+            this.LegendTable.Name = "LegendTable";
+            this.LegendTable.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
+            this.LegendTable.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.LegendTable.RowCount = 3;
+            this.LegendTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LegendTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LegendTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.LegendTable.Size = new System.Drawing.Size(346, 255);
+            this.LegendTable.TabIndex = 0;
+            //
             // LegendInstalledLabel
             //
             this.LegendInstalledLabel.AutoSize = true;
-            this.LegendInstalledLabel.Location = new System.Drawing.Point(24, 3);
             this.LegendInstalledLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.LegendInstalledLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendInstalledLabel, "LegendInstalledLabel");
             //
             // LegendProvidesImage
             //
             this.LegendProvidesImage.BackColor = System.Drawing.SystemColors.Window;
             this.LegendProvidesImage.Image = global::CKAN.GUI.EmbeddedImages.ballot;
-            this.LegendProvidesImage.Location = new System.Drawing.Point(6, 21);
+            this.LegendProvidesImage.Margin = new System.Windows.Forms.Padding(0);
             this.LegendProvidesImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.LegendProvidesImage.ClientSize = new System.Drawing.Size(14, 14);
+            this.LegendProvidesImage.ClientSize = new System.Drawing.Size(16, 16);
             //
             // LegendProvidesLabel
             //
             this.LegendProvidesLabel.AutoSize = true;
-            this.LegendProvidesLabel.Location = new System.Drawing.Point(24, 21);
+            this.LegendProvidesLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendProvidesLabel, "LegendProvidesLabel");
             //
             // LegendDependsImage
             //
             this.LegendDependsImage.BackColor = System.Drawing.SystemColors.Window;
             this.LegendDependsImage.Image = global::CKAN.GUI.EmbeddedImages.star;
-            this.LegendDependsImage.Location = new System.Drawing.Point(6, 39);
+            this.LegendDependsImage.Margin = new System.Windows.Forms.Padding(0);
             this.LegendDependsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.LegendDependsImage.ClientSize = new System.Drawing.Size(14, 14);
+            this.LegendDependsImage.ClientSize = new System.Drawing.Size(16, 16);
             //
             // LegendDependsLabel
             //
             this.LegendDependsLabel.AutoSize = true;
             this.LegendDependsLabel.Location = new System.Drawing.Point(24, 39);
+            this.LegendDependsLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendDependsLabel, "LegendDependsLabel");
             //
             // LegendRecommendsImage
             //
             this.LegendRecommendsImage.BackColor = System.Drawing.SystemColors.Window;
             this.LegendRecommendsImage.Image = global::CKAN.GUI.EmbeddedImages.thumbup;
-            this.LegendRecommendsImage.Location = new System.Drawing.Point(6, 57);
+            this.LegendRecommendsImage.Margin = new System.Windows.Forms.Padding(0);
             this.LegendRecommendsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.LegendRecommendsImage.ClientSize = new System.Drawing.Size(14, 14);
+            this.LegendRecommendsImage.ClientSize = new System.Drawing.Size(16, 16);
             //
             // LegendRecommendsLabel
             //
             this.LegendRecommendsLabel.AutoSize = true;
-            this.LegendRecommendsLabel.Location = new System.Drawing.Point(24, 57);
+            this.LegendRecommendsLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendRecommendsLabel, "LegendRecommendsLabel");
             //
             // LegendSuggestsImage
             //
             this.LegendSuggestsImage.BackColor = System.Drawing.SystemColors.Window;
             this.LegendSuggestsImage.Image = global::CKAN.GUI.EmbeddedImages.info;
-            this.LegendSuggestsImage.Location = new System.Drawing.Point(6, 75);
+            this.LegendSuggestsImage.Margin = new System.Windows.Forms.Padding(0);
             this.LegendSuggestsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.LegendSuggestsImage.ClientSize = new System.Drawing.Size(14, 14);
+            this.LegendSuggestsImage.ClientSize = new System.Drawing.Size(16, 16);
             //
             // LegendSuggestsLabel
             //
             this.LegendSuggestsLabel.AutoSize = true;
-            this.LegendSuggestsLabel.Location = new System.Drawing.Point(24, 75);
+            this.LegendSuggestsLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendSuggestsLabel, "LegendSuggestsLabel");
             //
             // LegendSupportsImage
             //
             this.LegendSupportsImage.BackColor = System.Drawing.SystemColors.Window;
             this.LegendSupportsImage.Image = global::CKAN.GUI.EmbeddedImages.smile;
-            this.LegendSupportsImage.Location = new System.Drawing.Point(6, 93);
+            this.LegendSupportsImage.Margin = new System.Windows.Forms.Padding(0);
             this.LegendSupportsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.LegendSupportsImage.ClientSize = new System.Drawing.Size(14, 14);
+            this.LegendSupportsImage.ClientSize = new System.Drawing.Size(16, 16);
             //
             // LegendSupportsLabel
             //
             this.LegendSupportsLabel.AutoSize = true;
-            this.LegendSupportsLabel.Location = new System.Drawing.Point(24, 93);
+            this.LegendSupportsLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendSupportsLabel, "LegendSupportsLabel");
             //
             // LegendConflictsImage
             //
             this.LegendConflictsImage.BackColor = System.Drawing.SystemColors.Window;
             this.LegendConflictsImage.Image = global::CKAN.GUI.EmbeddedImages.alert;
-            this.LegendConflictsImage.Location = new System.Drawing.Point(6, 111);
+            this.LegendConflictsImage.Margin = new System.Windows.Forms.Padding(0);
             this.LegendConflictsImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.LegendConflictsImage.ClientSize = new System.Drawing.Size(14, 14);
+            this.LegendConflictsImage.ClientSize = new System.Drawing.Size(16, 16);
             //
             // LegendConflictsLabel
             //
             this.LegendConflictsLabel.AutoSize = true;
-            this.LegendConflictsLabel.Location = new System.Drawing.Point(24, 111);
+            this.LegendConflictsLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendConflictsLabel, "LegendConflictsLabel");
             //
             // ReverseRelationshipsCheckbox
             //
-            this.ReverseRelationshipsCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReverseRelationshipsCheckbox.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.ReverseRelationshipsCheckbox.AutoSize = true;
             this.ReverseRelationshipsCheckbox.AutoCheck = false;
             this.ReverseRelationshipsCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReverseRelationshipsCheckbox.Name = "ReverseRelationshipsCheckbox";
-            this.ReverseRelationshipsCheckbox.Location = new System.Drawing.Point(3, 474);
+            this.ReverseRelationshipsCheckbox.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
             this.ReverseRelationshipsCheckbox.Size = new System.Drawing.Size(494, 24);
             this.ReverseRelationshipsCheckbox.Click += new System.EventHandler(this.ReverseRelationshipsCheckbox_Click);
             this.ReverseRelationshipsCheckbox.CheckedChanged += new System.EventHandler(this.ReverseRelationshipsCheckbox_CheckedChanged);
@@ -188,24 +223,16 @@ namespace CKAN.GUI
             //
             // Relationships
             //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.DependsGraphTree);
-            this.Controls.Add(this.LegendInstalledLabel);
-            this.Controls.Add(this.LegendProvidesImage);
-            this.Controls.Add(this.LegendProvidesLabel);
-            this.Controls.Add(this.LegendDependsImage);
-            this.Controls.Add(this.LegendDependsLabel);
-            this.Controls.Add(this.LegendRecommendsImage);
-            this.Controls.Add(this.LegendRecommendsLabel);
-            this.Controls.Add(this.LegendSuggestsImage);
-            this.Controls.Add(this.LegendSuggestsLabel);
-            this.Controls.Add(this.LegendSupportsImage);
-            this.Controls.Add(this.LegendSupportsLabel);
-            this.Controls.Add(this.LegendConflictsImage);
-            this.Controls.Add(this.LegendConflictsLabel);
+            this.Controls.Add(this.LegendTable);
             this.Controls.Add(this.ReverseRelationshipsCheckbox);
             this.Name = "Relationships";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.LegendTable.ResumeLayout(false);
+            this.LegendTable.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -214,6 +241,7 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.TreeView DependsGraphTree;
+        private System.Windows.Forms.TableLayoutPanel LegendTable;
         private System.Windows.Forms.Label LegendInstalledLabel;
         private System.Windows.Forms.PictureBox LegendProvidesImage;
         private System.Windows.Forms.Label LegendProvidesLabel;

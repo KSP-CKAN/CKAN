@@ -217,7 +217,8 @@ namespace CKAN.GUI
             //
             // ChooseRecommendedMods
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.RecommendedModsListView);
             this.Controls.Add(this.RecommendedDialogLabel);
             this.Controls.Add(this.Toolbar);

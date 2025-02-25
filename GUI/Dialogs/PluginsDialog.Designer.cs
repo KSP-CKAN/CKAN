@@ -90,6 +90,8 @@ namespace CKAN.GUI
             //
             // DeactivateButton
             //
+            this.DeactivateButton.AutoSize = true;
+            this.DeactivateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DeactivateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.DeactivateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DeactivateButton.Enabled = false;
@@ -103,6 +105,8 @@ namespace CKAN.GUI
             //
             // ReloadPluginButton
             //
+            this.ReloadPluginButton.AutoSize = true;
+            this.ReloadPluginButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ReloadPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ReloadPluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReloadPluginButton.Enabled = false;
@@ -128,6 +132,8 @@ namespace CKAN.GUI
             //
             // ActivatePluginButton
             //
+            this.ActivatePluginButton.AutoSize = true;
+            this.ActivatePluginButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ActivatePluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.ActivatePluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ActivatePluginButton.Enabled = false;
@@ -141,6 +147,8 @@ namespace CKAN.GUI
             //
             // AddNewPluginButton
             //
+            this.AddNewPluginButton.AutoSize = true;
+            this.AddNewPluginButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.AddNewPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewPluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddNewPluginButton.Location = new System.Drawing.Point(231, 75);
@@ -153,6 +161,8 @@ namespace CKAN.GUI
             //
             // UnloadPluginButton
             //
+            this.UnloadPluginButton.AutoSize = true;
+            this.UnloadPluginButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.UnloadPluginButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.UnloadPluginButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UnloadPluginButton.Enabled = false;
@@ -166,7 +176,7 @@ namespace CKAN.GUI
             //
             // PluginsDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 358);
             this.Controls.Add(this.groupBox2);
@@ -174,6 +184,7 @@ namespace CKAN.GUI
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = EmbeddedImages.AppIcon;
             this.Name = "PluginsDialog";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.PluginsDialog_Load);
             resources.ApplyResources(this, "$this");
             this.groupBox1.ResumeLayout(false);

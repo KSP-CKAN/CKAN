@@ -30,18 +30,38 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Contents));
+            this.ButtonsTable = new System.Windows.Forms.TableLayoutPanel();
             this.NotCachedLabel = new System.Windows.Forms.Label();
             this.ContentsPreviewTree = new System.Windows.Forms.TreeView();
             this.ContentsDownloadButton = new System.Windows.Forms.Button();
             this.ContentsOpenButton = new System.Windows.Forms.Button();
+            this.ButtonsTable.SuspendLayout();
             this.SuspendLayout();
+            //
+            // ButtonsTable
+            //
+            this.ButtonsTable.AutoSize = true;
+            this.ButtonsTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ButtonsTable.ColumnCount = 2;
+            this.ButtonsTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.ButtonsTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.ButtonsTable.Controls.Add(this.ContentsDownloadButton, 0, 0);
+            this.ButtonsTable.Controls.Add(this.ContentsOpenButton, 1, 0);
+            this.ButtonsTable.Dock = System.Windows.Forms.DockStyle.Top;
+            this.ButtonsTable.Location = new System.Drawing.Point(0, 10);
+            this.ButtonsTable.Name = "ButtonsTable";
+            this.ButtonsTable.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            this.ButtonsTable.RowCount = 1;
+            this.ButtonsTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.ButtonsTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.ButtonsTable.Size = new System.Drawing.Size(346, 255);
+            this.ButtonsTable.TabIndex = 0;
             //
             // NotCachedLabel
             //
-            this.NotCachedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.NotCachedLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.NotCachedLabel.Location = new System.Drawing.Point(3, 3);
+            this.NotCachedLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 6);
             this.NotCachedLabel.Name = "NotCachedLabel";
             this.NotCachedLabel.Size = new System.Drawing.Size(494, 30);
             this.NotCachedLabel.TabIndex = 0;
@@ -49,6 +69,8 @@ namespace CKAN.GUI
             //
             // ContentsDownloadButton
             //
+            this.ContentsDownloadButton.AutoSize = true;
+            this.ContentsDownloadButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ContentsDownloadButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ContentsDownloadButton.Location = new System.Drawing.Point(6, 36);
             this.ContentsDownloadButton.Name = "ContentsDownloadButton";
@@ -60,6 +82,8 @@ namespace CKAN.GUI
             //
             // ContentsOpenButton
             //
+            this.ContentsOpenButton.AutoSize = true;
+            this.ContentsOpenButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ContentsOpenButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ContentsOpenButton.Location = new System.Drawing.Point(115, 36);
             this.ContentsOpenButton.Name = "ContentsOpenButton";
@@ -71,10 +95,8 @@ namespace CKAN.GUI
             //
             // ContentsPreviewTree
             //
-            this.ContentsPreviewTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.ContentsPreviewTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ContentsPreviewTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ContentsPreviewTree.ImageList = new System.Windows.Forms.ImageList(this.components)
             {
                 // ImageList's default makes icons look like garbage
@@ -97,13 +119,16 @@ namespace CKAN.GUI
             //
             // Contents
             //
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ContentsPreviewTree);
-            this.Controls.Add(this.ContentsDownloadButton);
-            this.Controls.Add(this.ContentsOpenButton);
+            this.Controls.Add(this.ButtonsTable);
             this.Controls.Add(this.NotCachedLabel);
             this.Name = "Contents";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
+            this.ButtonsTable.ResumeLayout(false);
+            this.ButtonsTable.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
@@ -111,6 +136,7 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.Label NotCachedLabel;
+        private System.Windows.Forms.TableLayoutPanel ButtonsTable;
         private System.Windows.Forms.Button ContentsDownloadButton;
         private System.Windows.Forms.Button ContentsOpenButton;
         private System.Windows.Forms.TreeView ContentsPreviewTree;

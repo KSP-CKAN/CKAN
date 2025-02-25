@@ -116,7 +116,7 @@ namespace CKAN.GUI
             // Replace mono's broken, ugly toolstrip renderer
             if (Platform.IsMono)
             {
-                menuStrip1.Renderer = new FlatToolStripRenderer();
+                MainMenu.Renderer = new FlatToolStripRenderer();
                 fileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
@@ -195,7 +195,7 @@ namespace CKAN.GUI
 
             try
             {
-                splitContainer1.SplitterDistance = configuration.PanelPosition;
+                // splitContainer1.SplitterDistance = configuration.PanelPosition;
             }
             catch
             {
@@ -550,7 +550,7 @@ namespace CKAN.GUI
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             // Only close the window, when the user has access to the "Exit" of the menu.
-            if (!menuStrip1.Enabled)
+            if (!MainMenu.Enabled)
             {
                 e.Cancel = true;
                 return;
@@ -1199,7 +1199,7 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 Enabled = true;
-                menuStrip1.Enabled = true;
+                MainMenu.Enabled = true;
                 tabController.SetTabLock(false);
                 /* Windows (7 & 8 only?) bug #1548 has extra facets.
                  * parent.childcontrol.Enabled = false seems to disable the parent,
@@ -1215,7 +1215,7 @@ namespace CKAN.GUI
         {
             Util.Invoke(this, () =>
             {
-                menuStrip1.Enabled = false;
+                MainMenu.Enabled = false;
                 tabController.SetTabLock(true);
             });
         }

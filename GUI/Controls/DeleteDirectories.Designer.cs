@@ -170,7 +170,8 @@ namespace CKAN.GUI
             // 
             // DeleteDirectories
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.ExplanationLabel);
             this.Controls.Add(this.BottomButtonPanel);

@@ -1577,12 +1577,14 @@ namespace CKAN
                                                out Dictionary<CkanModule, List<string>>              suggestions,
                                                out Dictionary<CkanModule, HashSet<string>>           supporters)
         {
+            log.DebugFormat("Finding recommendations for: {0}", string.Join(", ", sourceModules));
             var crit     = instance.VersionCriteria();
             var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
                                                     null,
                                                     RelationshipResolverOptions.KitchenSinkOpts(instance.StabilityToleranceConfig),
                                                     registry, instance.game, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
+            log.DebugFormat("Recommenders: {0}", string.Join(", ", recommenders));
 
             var checkedRecs = resolver.Recommendations(recommenders)
                                       .Where(m => resolver.ReasonsFor(m)

@@ -31,7 +31,7 @@ namespace CKAN.GUI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ManageMods));
             this.ToolTip = new System.Windows.Forms.ToolTip();
-            this.menuStrip2 = new System.Windows.Forms.MenuStrip();
+            this.Toolbar = new System.Windows.Forms.MenuStrip();
             this.LaunchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.CommandLinesToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.EditCommandLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +84,7 @@ namespace CKAN.GUI
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hiddenTagsLabelsLinkList = new CKAN.GUI.TagsLabelsLinkList();
-            this.menuStrip2.SuspendLayout();
+            this.Toolbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModGrid)).BeginInit();
             this.ModListContextMenuStrip.SuspendLayout();
             this.ModListHeaderContextMenuStrip.SuspendLayout();
@@ -97,12 +97,12 @@ namespace CKAN.GUI
             this.ToolTip.ReshowDelay = 250;
             this.ToolTip.ShowAlways = true;
             //
-            // menuStrip2
+            // Toolbar
             //
-            this.menuStrip2.AutoSize = false;
-            this.menuStrip2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.menuStrip2.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.menuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.Toolbar.AutoSize = false;
+            this.Toolbar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.Toolbar.ImageScalingSize = new System.Drawing.Size(24, 24);
+            this.Toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.LaunchGameToolStripMenuItem,
             this.RefreshToolButton,
             this.UpdateAllToolButton,
@@ -110,24 +110,27 @@ namespace CKAN.GUI
             this.FilterToolButton,
             this.NavBackwardToolButton,
             this.NavForwardToolButton});
-            this.menuStrip2.CanOverflow = true;
-            this.menuStrip2.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip2.Name = "menuStrip2";
-            this.menuStrip2.ShowItemToolTips = true;
-            this.menuStrip2.Size = new System.Drawing.Size(5876, 48);
-            this.menuStrip2.TabStop = true;
-            this.menuStrip2.TabIndex = 4;
-            this.menuStrip2.Text = "menuStrip2";
+            this.Toolbar.CanOverflow = true;
+            this.Toolbar.Location = new System.Drawing.Point(0, 0);
+            this.Toolbar.Name = "Toolbar";
+            this.Toolbar.ShowItemToolTips = true;
+            this.Toolbar.Size = new System.Drawing.Size(5876, 48);
+            this.Toolbar.TabStop = true;
+            this.Toolbar.TabIndex = 4;
+            this.Toolbar.Text = "Toolbar";
             //
             // LaunchGameToolStripMenuItem
             //
-            this.LaunchGameToolStripMenuItem.MouseHover += new System.EventHandler(LaunchGameToolStripMenuItem_MouseHover);
+            this.LaunchGameToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            EditCommandLinesToolStripMenuItem});
             this.LaunchGameToolStripMenuItem.Image = global::CKAN.GUI.EmbeddedImages.ksp;
             this.LaunchGameToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.LaunchGameToolStripMenuItem.MouseHover += new System.EventHandler(LaunchGameToolStripMenuItem_MouseHover);
             this.LaunchGameToolStripMenuItem.Name = "LaunchGameToolStripMenuItem";
             this.LaunchGameToolStripMenuItem.Size = new System.Drawing.Size(146, 56);
             this.LaunchGameToolStripMenuItem.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
             this.LaunchGameToolStripMenuItem.Click += new System.EventHandler(this.LaunchGameToolStripMenuItem_Click);
+            this.LaunchGameToolStripMenuItem.DropDown.Opening += new System.ComponentModel.CancelEventHandler(LaunchGameToolStripMenuItem_DropDown_Opening);
             resources.ApplyResources(this.LaunchGameToolStripMenuItem, "LaunchGameToolStripMenuItem");
             //
             // EditCommandLinesToolStripMenuItem
@@ -324,6 +327,7 @@ namespace CKAN.GUI
             this.ModGrid.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.ModGrid.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ModGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ModGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModGrid.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -558,25 +562,26 @@ namespace CKAN.GUI
             this.hiddenTagsLabelsLinkList.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.hiddenTagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
             this.hiddenTagsLabelsLinkList.Name = "hiddenTagsLabelsLinkList";
-            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 20);
+            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 22);
             this.hiddenTagsLabelsLinkList.TagClicked += this.hiddenTagsLabelsLinkList_TagClicked;
             this.hiddenTagsLabelsLinkList.LabelClicked += this.hiddenTagsLabelsLinkList_LabelClicked;
             resources.ApplyResources(this.hiddenTagsLabelsLinkList, "hiddenTagsLabelsLinkList");
             //
             // ManageMods
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.InstallAllCheckbox);
             this.Controls.Add(this.ModGrid);
             this.Controls.Add(this.hiddenTagsLabelsLinkList);
             this.Controls.Add(this.EditModSearches);
-            this.Controls.Add(this.menuStrip2);
+            this.Controls.Add(this.Toolbar);
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "ManageMods";
             this.Size = new System.Drawing.Size(1544, 948);
             resources.ApplyResources(this, "$this");
-            this.menuStrip2.ResumeLayout(false);
-            this.menuStrip2.PerformLayout();
+            this.Toolbar.ResumeLayout(false);
+            this.Toolbar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModGrid)).EndInit();
             this.ModListContextMenuStrip.ResumeLayout(false);
             this.ModListHeaderContextMenuStrip.ResumeLayout(false);
@@ -588,7 +593,7 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.ToolTip ToolTip;
-        private System.Windows.Forms.MenuStrip menuStrip2;
+        private System.Windows.Forms.MenuStrip Toolbar;
         private System.Windows.Forms.CheckBox InstallAllCheckbox;
         private System.Windows.Forms.ToolStripMenuItem LaunchGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator CommandLinesToolStripSeparator;

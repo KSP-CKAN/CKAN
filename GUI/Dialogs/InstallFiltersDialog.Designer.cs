@@ -46,6 +46,7 @@ namespace CKAN.GUI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.GlobalFiltersGroupBox.Controls.Add(this.AddMiniAVCButton);
             this.GlobalFiltersGroupBox.Controls.Add(this.GlobalFiltersTextBox);
+            this.GlobalFiltersGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.GlobalFiltersGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.GlobalFiltersGroupBox.Location = new System.Drawing.Point(12, 12);
             this.GlobalFiltersGroupBox.Name = "GlobalFiltersGroupBox";
@@ -60,6 +61,7 @@ namespace CKAN.GUI
             | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.InstanceFiltersGroupBox.Controls.Add(this.InstanceFiltersTextBox);
+            this.InstanceFiltersGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.InstanceFiltersGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.InstanceFiltersGroupBox.Location = new System.Drawing.Point(12, 187);
             this.InstanceFiltersGroupBox.Name = "InstanceFiltersGroupBox";
@@ -82,7 +84,10 @@ namespace CKAN.GUI
             //
             // AddMiniAVCButton
             //
+            this.AddMiniAVCButton.AutoSize = true;
+            this.AddMiniAVCButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.AddMiniAVCButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.AddMiniAVCButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddMiniAVCButton.Location = new System.Drawing.Point(231, 17);
             this.AddMiniAVCButton.Name = "AddMiniAVCButton";
             this.AddMiniAVCButton.Size = new System.Drawing.Size(124, 23);
@@ -116,7 +121,7 @@ namespace CKAN.GUI
             //
             // InstallFiltersDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(379, 390);
             this.Controls.Add(this.GlobalFiltersGroupBox);

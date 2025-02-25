@@ -421,7 +421,8 @@ namespace CKAN.GUI
             // 
             // EditModpack
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.RelationshipsListView);
             this.Controls.Add(this.TopEditPanel);
             this.Controls.Add(this.BottomButtonPanel);

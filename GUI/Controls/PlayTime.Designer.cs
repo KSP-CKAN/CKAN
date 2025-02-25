@@ -131,7 +131,8 @@ namespace CKAN.GUI
             // 
             // PlayTime
             // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.PlayTimeGrid);
             this.Controls.Add(this.EditHelpLabel);
             this.Controls.Add(this.BottomButtonPanel);

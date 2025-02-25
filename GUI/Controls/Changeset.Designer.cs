@@ -175,7 +175,8 @@ namespace CKAN.GUI
             //
             // Changeset
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.ChangesGrid);
             this.Controls.Add(this.CloseTheGameLabel);
             this.Controls.Add(this.BottomButtonPanel);

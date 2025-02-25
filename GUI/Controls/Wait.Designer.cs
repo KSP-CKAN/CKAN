@@ -160,7 +160,8 @@ namespace CKAN.GUI
             //
             // Wait
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.VerticalSplitter);
             this.Controls.Add(this.BottomButtonPanel);
             this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);

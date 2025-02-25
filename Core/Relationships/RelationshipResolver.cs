@@ -528,7 +528,7 @@ namespace CKAN
                                                            .Except(found));
 
         public IEnumerable<CkanModule> Dependencies()
-            => BreadthFirstSearch(user_requested_mods,
+            => BreadthFirstSearch(user_requested_mods.Where(m => !suppressedRecommenders.Any(rel => rel.WithinBounds(m))),
                                   (searching, found) =>
                                       modlist.Values
                                              .Except(found)

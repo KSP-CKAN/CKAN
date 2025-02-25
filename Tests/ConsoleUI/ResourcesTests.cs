@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Resources;
 using System.Globalization;
+
 using NUnit.Framework;
 
 namespace Tests.ConsoleUI
@@ -18,7 +19,7 @@ namespace Tests.ConsoleUI
         public void PropertiesResources_LanguageResource_NotSet()
         {
             // Arrange
-            ResourceManager resources = new CKAN.ConsoleUI.SingleAssemblyResourceManager(
+            ResourceManager resources = new CKAN.SingleAssemblyResourceManager(
                 "CKAN.ConsoleUI.Properties.Resources", typeof(CKAN.ConsoleUI.Properties.Resources).Assembly);
 
             // Act/Assert

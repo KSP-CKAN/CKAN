@@ -22,7 +22,7 @@ namespace Tests.GUI
         public void PropertiesResources_AllLocales_LanguageNotSetAndAllStrings()
         {
             // Arrange
-            ResourceManager resources = new CKAN.GUI.SingleAssemblyResourceManager(
+            ResourceManager resources = new CKAN.SingleAssemblyResourceManager(
                 "CKAN.GUI.Properties.Resources", typeof(CKAN.GUI.Properties.Resources).Assembly);
 
             // Act/Assert
@@ -62,6 +62,7 @@ namespace Tests.GUI
             TestCase(typeof(CKAN.GUI.ChooseRecommendedMods)),
             TestCase(typeof(CKAN.GUI.DeleteDirectories)),
             TestCase(typeof(CKAN.GUI.EditModpack)),
+            TestCase(typeof(CKAN.GUI.EditModSearchDetails)),
             TestCase(typeof(CKAN.GUI.EditModSearch)),
             TestCase(typeof(CKAN.GUI.InstallationHistory)),
             TestCase(typeof(CKAN.GUI.ManageMods)),
@@ -88,6 +89,7 @@ namespace Tests.GUI
             TestCase(typeof(CKAN.GUI.PreferredHostsDialog)),
             TestCase(typeof(CKAN.GUI.RenameInstanceDialog)),
             TestCase(typeof(CKAN.GUI.SelectionDialog)),
+            TestCase(typeof(CKAN.GUI.SettingsDialog)),
             TestCase(typeof(CKAN.GUI.YesNoDialog)),
         ]
         public void ControlOrDialog_AllLocales_LanguageNotSetAndAllStrings(Type t)

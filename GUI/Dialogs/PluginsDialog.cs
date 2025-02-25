@@ -14,7 +14,6 @@ namespace CKAN.GUI
         public PluginsDialog()
         {
             InitializeComponent();
-            StartPosition = FormStartPosition.CenterScreen;
         }
 
         private static PluginController? pluginController => Main.Instance?.pluginController;

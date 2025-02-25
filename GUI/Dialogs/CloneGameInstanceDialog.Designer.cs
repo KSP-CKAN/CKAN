@@ -104,6 +104,8 @@ namespace CKAN.GUI
             //
             // buttonInstancePathSelection
             //
+            this.buttonInstancePathSelection.AutoSize = true;
+            this.buttonInstancePathSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.buttonInstancePathSelection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonInstancePathSelection.Location = new System.Drawing.Point(339, 48);
             this.buttonInstancePathSelection.Name = "buttonInstancePathSelection";
@@ -153,6 +155,8 @@ namespace CKAN.GUI
             //
             // buttonPathBrowser
             //
+            this.buttonPathBrowser.AutoSize = true;
+            this.buttonPathBrowser.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.buttonPathBrowser.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonPathBrowser.Location = new System.Drawing.Point(339, 108);
             this.buttonPathBrowser.Name = "buttonPathBrowser";
@@ -230,6 +234,8 @@ namespace CKAN.GUI
             //
             // buttonOK
             //
+            this.buttonOK.AutoSize = true;
+            this.buttonOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.buttonOK.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonOK.Location = new System.Drawing.Point(256, 360);
             this.buttonOK.Name = "buttonOK";
@@ -241,6 +247,8 @@ namespace CKAN.GUI
             //
             // buttonCancel
             //
+            this.buttonCancel.AutoSize = true;
+            this.buttonCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.buttonCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.buttonCancel.Location = new System.Drawing.Point(337, 360);
             this.buttonCancel.Name = "buttonCancel";

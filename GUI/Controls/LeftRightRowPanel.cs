@@ -20,6 +20,7 @@ namespace CKAN.GUI
         /// Initialize the control.
         /// </summary>
         public LeftRightRowPanel()
+            : base()
         {
             LeftPanel = new FlowLayoutPanel()
             {
@@ -53,8 +54,10 @@ namespace CKAN.GUI
             GrowStyle = TableLayoutPanelGrowStyle.FixedSize;
 
             ColumnCount = 2;
-            ColumnStyles.Add(new ColumnStyle());
-            ColumnStyles.Add(new ColumnStyle());
+            ColumnStyles.Add(Platform.IsMono ? new ColumnStyle(SizeType.Percent, 50F)
+                                             : new ColumnStyle());
+            ColumnStyles.Add(Platform.IsMono ? new ColumnStyle(SizeType.Percent, 50F)
+                                             : new ColumnStyle());
 
             RowCount = 1;
             RowStyles.Add(new RowStyle());

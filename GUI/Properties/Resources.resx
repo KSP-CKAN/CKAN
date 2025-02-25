@@ -285,6 +285,7 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (not indexed)</value></data>
   <data name="ModInfoNotCached" xml:space="preserve"><value>This mod is not in the cache, click 'Download' to preview contents</value></data>
   <data name="ModInfoCached" xml:space="preserve"><value>Module is cached, preview available</value></data>
+  <data name="ModInfoDownload" xml:space="preserve"><value>Download ({0})</value></data>
   <data name="ModInfoNoDownload" xml:space="preserve"><value>Module has no download</value></data>
   <data name="ModInfoFolderNotFound" xml:space="preserve"><value>Folder not found!</value></data>
   <data name="ModInfoFileNotFound" xml:space="preserve"><value>File not found!</value></data>

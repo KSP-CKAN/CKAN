@@ -19,13 +19,18 @@ namespace CKAN.GUI
             InitializeComponent();
         }
 
-        public void LoadHistory(GameInstance inst, GUIConfiguration config, RepositoryDataManager repoData)
+        public void LoadHistory(GameInstance          inst,
+                                GUIConfiguration      config,
+                                RepositoryDataManager repoData)
         {
-            this.inst     = inst;
-            registry = RegistryManager.Instance(inst, repoData).registry;
-            this.config   = config;
+            this.inst   = inst;
+            registry    = RegistryManager.Instance(inst, repoData).registry;
+            this.config = config;
             Util.Invoke(this, () =>
             {
+                HistoryListView.Items.Clear();
+                ModsListView.Items.Clear();
+                ModsListView.Items.Add(LoadingMessage);
                 UseWaitCursor = true;
                 Task.Factory.StartNew(() =>
                 {
@@ -38,7 +43,6 @@ namespace CKAN.GUI
                     Util.Invoke(this, () =>
                     {
                         HistoryListView.BeginUpdate();
-                        HistoryListView.Items.Clear();
                         HistoryListView.Items.AddRange(items);
                         HistoryListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
                         Splitter.Panel1MinSize = Splitter.SplitterDistance =

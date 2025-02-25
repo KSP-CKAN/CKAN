@@ -455,7 +455,8 @@ namespace CKAN.GUI
             //
             // EditModSearchDetails
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.Controls.Add(this.FilterByAuthorTextBox);
