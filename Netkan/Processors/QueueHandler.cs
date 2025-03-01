@@ -186,7 +186,7 @@ namespace CKAN.NetKAN.Processors
                 {
                     // Let the API credits recharge
                     var span = dt.Subtract(DateTime.UtcNow);
-                    caughtMessage += $"; sleeping {span}";
+                    caughtMessage += $@"; sleeping {span.TotalMinutes:0}m {span.Seconds}s...";
                     Thread.Sleep(span);
                 }
             }
