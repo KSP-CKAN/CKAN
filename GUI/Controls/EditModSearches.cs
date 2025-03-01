@@ -21,7 +21,6 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             ToolTip.SetToolTip(AddSearchButton, Properties.Resources.EditModSearchesTooltipAddSearchButton);
-            ActiveControl = AddSearch();
         }
 
         public event Action?                    SurrenderFocus;
@@ -68,6 +67,10 @@ namespace CKAN.GUI
             while (editors.Count > searches.Count && editors.Count > 1)
             {
                 RemoveSearch(editors[^1]);
+            }
+            if (editors.Count < 1)
+            {
+                ActiveControl = AddSearch();
             }
             if (searches.Count < 1)
             {
@@ -116,8 +119,6 @@ namespace CKAN.GUI
 
         private EditModSearch AddSearch()
         {
-            SuspendLayout();
-
             var ctl = new EditModSearch()
             {
                 // Dock handles the layout for us
@@ -136,9 +137,6 @@ namespace CKAN.GUI
             // Still need to be able to see the add button, without this it's covered up
             AddSearchButton.BringToFront();
 
-            ResumeLayout(false);
-            PerformLayout();
-
             Height = editors.Sum(ems => ems.Height);
 
             return ctl;
@@ -148,8 +146,6 @@ namespace CKAN.GUI
         {
             if (editors.Count >= 2)
             {
-                SuspendLayout();
-
                 if (which == ActiveControl)
                 {
                     // Move focus to next control, or previous if last in list
@@ -169,9 +165,6 @@ namespace CKAN.GUI
                     editor.ShowLabel = true;
                 }
 
-                ResumeLayout(false);
-                PerformLayout();
-
                 Height = editors.Sum(ems => ems.Height);
             }
         }
@@ -190,7 +183,7 @@ namespace CKAN.GUI
             var searches = editors.Select(ems => ems.Search)
                                   .ToList();
             ApplySearches?.Invoke(searches.Count == 0 ? null : searches);
-            AddSearchButton.Enabled = editors.Count == searches.Count;
+            AddSearchButton.Enabled = editors.Count == searches.OfType<ModSearch>().Count();
         }
 
         private void EditModSearch_SurrenderFocus()

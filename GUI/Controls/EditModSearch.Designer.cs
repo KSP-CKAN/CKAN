@@ -107,7 +107,8 @@ namespace CKAN.GUI
             //
             // EditModSearch
             //
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.FilterCombinedLabel);
             this.Controls.Add(this.FilterOrLabel);
             this.Controls.Add(this.ExpandButton);

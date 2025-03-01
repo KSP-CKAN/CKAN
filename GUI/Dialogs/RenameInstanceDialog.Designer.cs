@@ -47,6 +47,8 @@ namespace CKAN.GUI
             //
             // OKButton
             //
+            this.OKButton.AutoSize = true;
+            this.OKButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.OKButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.OKButton.Location = new System.Drawing.Point(232, 39);
@@ -58,6 +60,8 @@ namespace CKAN.GUI
             //
             // CancelRenameInstanceButton
             //
+            this.CancelRenameInstanceButton.AutoSize = true;
+            this.CancelRenameInstanceButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelRenameInstanceButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelRenameInstanceButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelRenameInstanceButton.Location = new System.Drawing.Point(151, 39);
@@ -69,7 +73,7 @@ namespace CKAN.GUI
             //
             // RenameInstanceDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 100);
             this.ControlBox = false;

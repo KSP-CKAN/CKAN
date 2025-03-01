@@ -54,7 +54,7 @@ namespace CKAN.GUI
 
             if (Platform.IsMono)
             {
-                menuStrip2.Renderer = new FlatToolStripRenderer();
+                Toolbar.Renderer = new FlatToolStripRenderer();
                 FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
                 FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
@@ -62,7 +62,21 @@ namespace CKAN.GUI
                 ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
                 LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
+
+                ModGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+                ResizeColumnHeaders();
+                ModGrid.ColumnWidthChanged += (sender, e) => ResizeColumnHeaders();
             }
+        }
+
+        private void ResizeColumnHeaders()
+        {
+            var g = CreateGraphics();
+            ModGrid.ColumnHeadersHeight = ModGrid.Columns.OfType<DataGridViewColumn>().Max(col =>
+                ModGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical
+                + Util.StringHeight(g, col.HeaderText,
+                                    col.HeaderCell?.Style?.Font ?? ModGrid.ColumnHeadersDefaultCellStyle.Font,
+                                    col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));
@@ -586,6 +600,14 @@ namespace CKAN.GUI
         {
             if (guiConfig != null)
             {
+                LaunchGameToolStripMenuItem.ShowDropDown();
+            }
+        }
+
+        private void LaunchGameToolStripMenuItem_DropDown_Opening(object? sender, CancelEventArgs? e)
+        {
+            if (guiConfig != null)
+            {
                 var cmdLines = guiConfig.CommandLines;
                 LaunchGameToolStripMenuItem.DropDownItems.Clear();
                 LaunchGameToolStripMenuItem.DropDownItems.AddRange(
@@ -599,7 +621,6 @@ namespace CKAN.GUI
                             .Append(CommandLinesToolStripSeparator)
                             .Append(EditCommandLinesToolStripMenuItem)
                             .ToArray());
-                LaunchGameToolStripMenuItem.ShowDropDown();
             }
         }
 
@@ -1500,7 +1521,7 @@ namespace CKAN.GUI
 
             var has_unheld_updates = mainModList.Modules.Any(mod => mod.HasUpdate
                                                                     && (!Main.Instance?.LabelsHeld(mod.Identifier) ?? true));
-            Util.Invoke(menuStrip2, () =>
+            Util.Invoke(Toolbar, () =>
             {
                 FilterCompatibleButton.Text = string.Format(Properties.Resources.MainModListCompatible,
                     mainModList.CountModsByFilter(currentInstance, GUIModFilter.Compatible));

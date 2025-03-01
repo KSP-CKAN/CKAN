@@ -118,7 +118,7 @@ namespace CKAN.GUI
             // 
             // YesNoDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(418, 127);
             this.Controls.Add(this.BottomButtonPanel);

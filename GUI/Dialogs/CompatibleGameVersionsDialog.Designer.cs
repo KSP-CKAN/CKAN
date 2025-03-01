@@ -147,6 +147,8 @@ namespace CKAN.GUI
             //
             // clearSelectionButton
             //
+            this.ClearSelectionButton.AutoSize = true;
+            this.ClearSelectionButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.ClearSelectionButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ClearSelectionButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ClearSelectionButton.Location = new System.Drawing.Point(12, 211);
@@ -180,6 +182,8 @@ namespace CKAN.GUI
             //
             // AddVersionToListButton
             //
+            this.AddVersionToListButton.AutoSize = true;
+            this.AddVersionToListButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.AddVersionToListButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
             | System.Windows.Forms.AnchorStyles.Right));
             this.AddVersionToListButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -225,6 +229,8 @@ namespace CKAN.GUI
             //
             // CancelChooseCompatibleVersionsButton
             //
+            this.CancelChooseCompatibleVersionsButton.AutoSize = true;
+            this.CancelChooseCompatibleVersionsButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelChooseCompatibleVersionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelChooseCompatibleVersionsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelChooseCompatibleVersionsButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
@@ -236,8 +242,10 @@ namespace CKAN.GUI
             this.CancelChooseCompatibleVersionsButton.Click += new System.EventHandler(this.CancelButton_Click);
             resources.ApplyResources(this.CancelChooseCompatibleVersionsButton, "CancelChooseCompatibleVersionsButton");
             //
-            // saveButton
+            // SaveButton
             //
+            this.SaveButton.AutoSize = true;
+            this.SaveButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SaveButton.Location = new System.Drawing.Point(356, 350);

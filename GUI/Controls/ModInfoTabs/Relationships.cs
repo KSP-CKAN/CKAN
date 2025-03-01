@@ -100,19 +100,10 @@ namespace CKAN.GUI
         }
 
         private static bool ImMyOwnGrandpa(TreeNode node)
-        {
-            if (node.Tag is CkanModule module)
-            {
-                for (TreeNode other = node.Parent; other != null; other = other.Parent)
-                {
-                    if (module == other.Tag)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
+            => node.Tag is CkanModule module
+               && (node.Parent?.TraverseNodes(nd => nd.Parent)
+                               .Any(other => other.Tag == module)
+                              ?? false);
 
         private void ReverseRelationshipsCheckbox_Click(object? sender, EventArgs? e)
         {
@@ -234,7 +225,7 @@ namespace CKAN.GUI
             RelationshipType.Recommends,
             RelationshipType.Suggests,
             RelationshipType.Supports,
-            RelationshipType.Conflicts
+            RelationshipType.Conflicts,
         };
 
         private void AddChildren(IRegistryQuerier         registry,
@@ -259,28 +250,21 @@ namespace CKAN.GUI
                        : ReverseRelationships(registry, module, stabilityTolerance, crit)
                    : Enumerable.Empty<TreeNode>();
 
-        private static IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule module, RelationshipType which)
-        {
-            switch (which)
-            {
-                case RelationshipType.Depends:
-                    return module.depends
-                        ?? Enumerable.Empty<RelationshipDescriptor>();
-                case RelationshipType.Recommends:
-                    return module.recommends
-                        ?? Enumerable.Empty<RelationshipDescriptor>();
-                case RelationshipType.Suggests:
-                    return module.suggests
-                        ?? Enumerable.Empty<RelationshipDescriptor>();
-                case RelationshipType.Supports:
-                    return module.supports
-                        ?? Enumerable.Empty<RelationshipDescriptor>();
-                case RelationshipType.Conflicts:
-                    return module.conflicts
-                        ?? Enumerable.Empty<RelationshipDescriptor>();
-            }
-            return Enumerable.Empty<RelationshipDescriptor>();
-        }
+        private static IEnumerable<RelationshipDescriptor> GetModRelationships(CkanModule       module,
+                                                                               RelationshipType which)
+            => which switch {
+                RelationshipType.Depends       => module.depends
+                                                  ?? Enumerable.Empty<RelationshipDescriptor>(),
+                RelationshipType.Recommends    => module.recommends
+                                                  ?? Enumerable.Empty<RelationshipDescriptor>(),
+                RelationshipType.Suggests      => module.suggests
+                                                  ?? Enumerable.Empty<RelationshipDescriptor>(),
+                RelationshipType.Supports      => module.supports
+                                                  ?? Enumerable.Empty<RelationshipDescriptor>(),
+                RelationshipType.Conflicts     => module.conflicts
+                                                  ?? Enumerable.Empty<RelationshipDescriptor>(),
+                RelationshipType.Provides or _ => Enumerable.Empty<RelationshipDescriptor>(),
+            };
 
         private IEnumerable<TreeNode> ForwardRelationships(IRegistryQuerier         registry,
                                                            CkanModule               module,
@@ -362,35 +346,40 @@ namespace CKAN.GUI
                                                            CkanModule               module,
                                                            StabilityToleranceConfig stabilityTolerance,
                                                            GameVersionCriteria      crit)
-        {
-            var compat   = registry.CompatibleModules(stabilityTolerance, crit).ToArray();
-            var incompat = registry.IncompatibleModules(stabilityTolerance, crit).ToArray();
-            var toFind   = new CkanModule[] { module };
-            return kindsOfRelationships.SelectMany(relationship =>
-                compat.SelectMany(otherMod =>
-                    GetModRelationships(otherMod, relationship)
-                        .Where(r => r.MatchesAny(toFind, null, null))
-                        .Select(r => IndexedNode(registry, otherMod, relationship, r, stabilityTolerance, crit)))
-                .Concat(incompat.SelectMany(otherMod =>
-                    GetModRelationships(otherMod, relationship)
-                        .Where(r => r.MatchesAny(toFind, null, null))
-                        .Select(r => IndexedNode(registry, otherMod, relationship, r, stabilityTolerance, crit)))));
-        }
+            => ReverseRelationships(registry, new CkanModule[] { module },
+                                    stabilityTolerance, crit);
+
+        private IEnumerable<TreeNode> ReverseRelationships(IRegistryQuerier         registry,
+                                                           CkanModule[]             modules,
+                                                           StabilityToleranceConfig stabilityTolerance,
+                                                           GameVersionCriteria      crit)
+            => kindsOfRelationships.SelectMany(relationship =>
+                registry.CompatibleModules(stabilityTolerance, crit)
+                        .SelectMany(otherMod =>
+                            GetModRelationships(otherMod, relationship)
+                                .Where(r => r.MatchesAny(modules, null, null))
+                                .Select(r => IndexedNode(registry, otherMod, relationship,
+                                                         r, stabilityTolerance, crit)))
+                        .Concat(registry.IncompatibleModules(stabilityTolerance, crit)
+                                        .SelectMany(otherMod =>
+                                            GetModRelationships(otherMod, relationship)
+                                                .Where(r => r.MatchesAny(modules, null, null))
+                                                .Select(r => IndexedNode(registry, otherMod, relationship,
+                                                                         r, stabilityTolerance, crit)))));
 
         private static TreeNode providesNode(string           identifier,
                                              RelationshipType relationship,
                                              TreeNode[]       children)
         {
             int icon = (int)relationship + 1;
-            var node = new TreeNode(string.Format(Properties.Resources.ModInfoVirtual,
-                                                  identifier),
-                                    icon, icon, children)
+            return new TreeNode(string.Format(Properties.Resources.ModInfoVirtual,
+                                              identifier),
+                                icon, icon, children)
             {
                 Name        = identifier,
-                ToolTipText = relationship.LocalizeDescription(),
+                ToolTipText = $"{relationship.LocalizeDescription()} {identifier}",
                 ForeColor   = SystemColors.GrayText,
             };
-            return node;
         }
 
         private TreeNode IndexedNode(IRegistryQuerier         registry,
@@ -436,7 +425,7 @@ namespace CKAN.GUI
         }
 
         private static TreeNode NonindexedNode(RelationshipDescriptor relDescr,
-                                        RelationshipType       relationship)
+                                               RelationshipType       relationship)
         {
             // Completely nonexistent dependency, e.g. "AJE"
             int icon = (int)relationship + 1;
@@ -446,7 +435,7 @@ namespace CKAN.GUI
             {
                 Name        = relDescr.ToString(),
                 ToolTipText = relationship.LocalizeDescription(),
-                ForeColor   = Color.Red
+                ForeColor   = Color.Red,
             };
         }
 
