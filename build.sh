@@ -37,5 +37,5 @@ fi
 
 export PATH="$PATH:$HOME/.dotnet/tools"
 # shellcheck disable=SC2086
-dotnet run --project "$scriptFile" --  $cakeArgs $remainingArgs
+dotnet run --project "$scriptFile" -- --verbosity Minimal $cakeArgs $remainingArgs
 exit $?

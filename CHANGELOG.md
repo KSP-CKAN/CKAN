@@ -35,7 +35,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Make versions tab non-interactive inside install flow (#4302 by: HebaruSan)
 - [GUI] Guard rail for clicking refresh with refresh already in progress (#4303 by: HebaruSan)
 - [Core] Fix searching for Steam in .NET 8 by correcting path on macOS (#4322 by: doinkythederp; reviewed: HebaruSan)
-- [Multiple] Fix GUI layout issues with scaling (#4316 by: HebaruSan)
+- [Multiple] Fix GUI layout issues with scaling (#4316, #4324 by: HebaruSan)
 
 ### Internal
 

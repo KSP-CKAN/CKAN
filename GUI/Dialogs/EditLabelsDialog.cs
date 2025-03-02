@@ -161,6 +161,7 @@ namespace CKAN.GUI
 
         private void CancelEditButton_Click(object? sender, EventArgs? e)
         {
+            SelectOrCreateLabel.Visible = true;
             EditDetailsPanel.Visible = false;
             currentlyEditing = null;
             LabelSelectionTree.SelectedNode = null;
@@ -178,6 +179,7 @@ namespace CKAN.GUI
                 labels.Labels = labels.Labels
                     .Except(new ModuleLabel[] { currentlyEditing })
                     .ToArray();
+                SelectOrCreateLabel.Visible = true;
                 EditDetailsPanel.Visible = false;
                 currentlyEditing = null;
                 LoadTree();
@@ -210,6 +212,7 @@ namespace CKAN.GUI
             DeleteButton.Enabled = labels.Labels.Contains(lbl);
             EnableDisableUpDownButtons();
 
+            SelectOrCreateLabel.Visible = false;
             EditDetailsPanel.Visible = true;
             EditDetailsPanel.BringToFront();
             NameTextBox.Focus();
