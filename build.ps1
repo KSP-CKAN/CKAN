@@ -34,5 +34,5 @@ if ($Arg0) {
 }
 
 # Run Cake
-dotnet run --project "${ScriptFile}" -- ${cakeArgs} ${RemainingArgs}
+dotnet run --project "${ScriptFile}" -- --verbosity Minimal ${cakeArgs} ${RemainingArgs}
 exit $LASTEXITCODE
