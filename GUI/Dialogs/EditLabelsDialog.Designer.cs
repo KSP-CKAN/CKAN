@@ -31,6 +31,9 @@ namespace CKAN.GUI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(EditLabelsDialog));
             this.ToolTip = new System.Windows.Forms.ToolTip();
+            this.TopButtonPanel = new CKAN.GUI.LeftRightRowPanel();
+            this.CreateButton = new System.Windows.Forms.Button();
+            this.Splitter = new System.Windows.Forms.SplitContainer();
             this.LabelSelectionTree = new System.Windows.Forms.TreeView();
             this.SelectOrCreateLabel = new System.Windows.Forms.Label();
             this.EditDetailsPanel = new System.Windows.Forms.Panel();
@@ -47,14 +50,22 @@ namespace CKAN.GUI
             this.RemoveOnInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.HoldVersionCheckBox = new System.Windows.Forms.CheckBox();
             this.IgnoreMissingFilesCheckBox = new System.Windows.Forms.CheckBox();
-            this.CreateButton = new System.Windows.Forms.Button();
-            this.CloseButton = new System.Windows.Forms.Button();
+            this.EditButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.SaveButton = new System.Windows.Forms.Button();
             this.CancelEditButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
             this.MoveUpButton = new System.Windows.Forms.Button();
             this.MoveDownButton = new System.Windows.Forms.Button();
+            this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
+            this.CloseButton = new System.Windows.Forms.Button();
+            this.TopButtonPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Splitter)).BeginInit();
+            this.Splitter.Panel1.SuspendLayout();
+            this.Splitter.Panel2.SuspendLayout();
+            this.Splitter.SuspendLayout();
             this.EditDetailsPanel.SuspendLayout();
+            this.EditButtonPanel.SuspendLayout();
+            this.BottomButtonPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // ToolTip
@@ -64,14 +75,17 @@ namespace CKAN.GUI
             this.ToolTip.ReshowDelay = 250;
             this.ToolTip.ShowAlways = true;
             // 
+            // TopButtonPanel
+            // 
+            this.TopButtonPanel.LeftControls.Add(this.CreateButton);
+            this.TopButtonPanel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.TopButtonPanel.Name = "TopButtonPanel";
+            // 
             // CreateButton
             // 
-            this.CreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.CreateButton.AutoSize = true;
             this.CreateButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CreateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CreateButton.Location = new System.Drawing.Point(10, 10);
             this.CreateButton.Name = "CreateButton";
             this.CreateButton.Size = new System.Drawing.Size(75, 23);
             this.CreateButton.TabIndex = 0;
@@ -79,19 +93,40 @@ namespace CKAN.GUI
             this.CreateButton.Click += new System.EventHandler(this.CreateButton_Click);
             resources.ApplyResources(this.CreateButton, "CreateButton");
             // 
+            // Splitter
+            // 
+            this.Splitter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.Splitter.Name = "Splitter";
+            this.Splitter.Size = new System.Drawing.Size(500, 350);
+            this.Splitter.SplitterDistance = 125;
+            this.Splitter.SplitterWidth = 10;
+            this.Splitter.TabIndex = 0;
+            // 
+            // Splitter.Panel1
+            // 
+            this.Splitter.Panel1.Controls.Add(this.LabelSelectionTree);
+            this.Splitter.Panel1.Padding = new System.Windows.Forms.Padding(10, 6, 0, 6);
+            this.Splitter.Panel1MinSize = 125;
+            // 
+            // Splitter.Panel2
+            // 
+            this.Splitter.Panel2.Controls.Add(this.SelectOrCreateLabel);
+            this.Splitter.Panel2.Controls.Add(this.EditDetailsPanel);
+            this.Splitter.Panel2.Controls.Add(this.MoveUpButton);
+            this.Splitter.Panel2.Controls.Add(this.MoveDownButton);
+            this.Splitter.Panel2.Padding = new System.Windows.Forms.Padding(0, 6, 10, 6);
+            this.Splitter.Panel2MinSize = 300;
+            // 
             // LabelSelectionTree
             // 
-            this.LabelSelectionTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left))));
             this.LabelSelectionTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.LabelSelectionTree.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LabelSelectionTree.FullRowSelect = true;
             this.LabelSelectionTree.HideSelection = false;
             this.LabelSelectionTree.Indent = 16;
             this.LabelSelectionTree.ItemHeight = 24;
             this.LabelSelectionTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.LabelSelectionTree.Location = new System.Drawing.Point(10, 43);
             this.LabelSelectionTree.Name = "LabelSelectionTree";
-            this.LabelSelectionTree.Size = new System.Drawing.Size(125, 350);
             this.LabelSelectionTree.ShowPlusMinus = false;
             this.LabelSelectionTree.ShowRootLines = false;
             this.LabelSelectionTree.ShowLines = false;
@@ -101,17 +136,14 @@ namespace CKAN.GUI
             // 
             // SelectOrCreateLabel
             // 
-            this.SelectOrCreateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.SelectOrCreateLabel.Location = new System.Drawing.Point(160, 50);
+            this.SelectOrCreateLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SelectOrCreateLabel.Name = "SelectOrCreateLabel";
-            this.SelectOrCreateLabel.Size = new System.Drawing.Size(300, 23);
+            this.SelectOrCreateLabel.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
             resources.ApplyResources(this.SelectOrCreateLabel, "SelectOrCreateLabel");
             // 
             // EditDetailsPanel
             // 
-            this.EditDetailsPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.EditDetailsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EditDetailsPanel.Controls.Add(this.NameLabel);
             this.EditDetailsPanel.Controls.Add(this.NameTextBox);
             this.EditDetailsPanel.Controls.Add(this.ColorLabel);
@@ -125,20 +157,16 @@ namespace CKAN.GUI
             this.EditDetailsPanel.Controls.Add(this.RemoveOnInstallCheckBox);
             this.EditDetailsPanel.Controls.Add(this.HoldVersionCheckBox);
             this.EditDetailsPanel.Controls.Add(this.IgnoreMissingFilesCheckBox);
-            this.EditDetailsPanel.Controls.Add(this.SaveButton);
-            this.EditDetailsPanel.Controls.Add(this.CancelEditButton);
-            this.EditDetailsPanel.Controls.Add(this.DeleteButton);
+            this.EditDetailsPanel.Controls.Add(this.EditButtonPanel);
             this.EditDetailsPanel.Controls.Add(this.MoveUpButton);
             this.EditDetailsPanel.Controls.Add(this.MoveDownButton);
-            this.EditDetailsPanel.Location = new System.Drawing.Point(135, 43);
             this.EditDetailsPanel.Name = "EditDetailsPanel";
-            this.EditDetailsPanel.Size = new System.Drawing.Size(350, 350);
             this.EditDetailsPanel.TabIndex = 1;
             this.EditDetailsPanel.Visible = false;
             // 
             // MoveUpButton
             // 
-            this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            this.MoveUpButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top
             | System.Windows.Forms.AnchorStyles.Left));
             this.MoveUpButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoveUpButton.Location = new System.Drawing.Point(3, 0);
@@ -152,7 +180,7 @@ namespace CKAN.GUI
             // 
             // MoveDownButton
             // 
-            this.MoveDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            this.MoveDownButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top
             | System.Windows.Forms.AnchorStyles.Left));
             this.MoveDownButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MoveDownButton.Location = new System.Drawing.Point(3, 25);
@@ -194,7 +222,7 @@ namespace CKAN.GUI
             // 
             // ColorButton
             // 
-            this.ColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
+            this.ColorButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top
             | System.Windows.Forms.AnchorStyles.Left));
             this.ColorButton.AutoSize = true;
             this.ColorButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
@@ -277,9 +305,9 @@ namespace CKAN.GUI
             this.HoldVersionCheckBox.Name = "HoldVersionCheckBox";
             this.HoldVersionCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.HoldVersionCheckBox, "HoldVersionCheckBox");
-            //
+            // 
             // IgnoreMissingFilesCheckBox
-            //
+            // 
             this.IgnoreMissingFilesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
             this.IgnoreMissingFilesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IgnoreMissingFilesCheckBox.Location = new System.Drawing.Point(118, 244);
@@ -287,14 +315,19 @@ namespace CKAN.GUI
             this.IgnoreMissingFilesCheckBox.Size = new System.Drawing.Size(200, 23);
             resources.ApplyResources(this.IgnoreMissingFilesCheckBox, "IgnoreMissingFilesCheckBox");
             // 
+            // EditButtonPanel
+            // 
+            this.EditButtonPanel.LeftControls.Add(this.SaveButton);
+            this.EditButtonPanel.LeftControls.Add(this.CancelEditButton);
+            this.EditButtonPanel.RightControls.Add(this.DeleteButton);
+            this.EditButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.EditButtonPanel.Name = "EditButtonPanel";
+            // 
             // SaveButton
             // 
-            this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.SaveButton.AutoSize = true;
             this.SaveButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SaveButton.Location = new System.Drawing.Point(38, 320);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 0;
@@ -304,12 +337,9 @@ namespace CKAN.GUI
             // 
             // CancelEditButton
             // 
-            this.CancelEditButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.CancelEditButton.AutoSize = true;
             this.CancelEditButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CancelEditButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelEditButton.Location = new System.Drawing.Point(118, 320);
             this.CancelEditButton.Name = "CancelEditButton";
             this.CancelEditButton.Size = new System.Drawing.Size(75, 23);
             this.CancelEditButton.TabIndex = 0;
@@ -319,12 +349,9 @@ namespace CKAN.GUI
             // 
             // DeleteButton
             // 
-            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.DeleteButton.AutoSize = true;
             this.DeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteButton.Location = new System.Drawing.Point(198, 320);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(75, 23);
             this.DeleteButton.TabIndex = 0;
@@ -332,14 +359,17 @@ namespace CKAN.GUI
             this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
             resources.ApplyResources(this.DeleteButton, "DeleteButton");
             // 
+            // BottomButtonPanel
+            // 
+            this.BottomButtonPanel.LeftControls.Add(this.CloseButton);
+            this.BottomButtonPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.BottomButtonPanel.Name = "BottomButtonPanel";
+            // 
             // CloseButton
             // 
-            this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Bottom
-            | System.Windows.Forms.AnchorStyles.Left));
             this.CloseButton.AutoSize = true;
             this.CloseButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CloseButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CloseButton.Location = new System.Drawing.Point(10, 397);
             this.CloseButton.Name = "CloseButton";
             this.CloseButton.Size = new System.Drawing.Size(75, 23);
             this.CloseButton.TabIndex = 2;
@@ -352,26 +382,41 @@ namespace CKAN.GUI
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(500, 430);
-            this.Controls.Add(this.CreateButton);
-            this.Controls.Add(this.LabelSelectionTree);
-            this.Controls.Add(this.SelectOrCreateLabel);
-            this.Controls.Add(this.EditDetailsPanel);
-            this.Controls.Add(this.CloseButton);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Controls.Add(this.Splitter);
+            this.Controls.Add(this.TopButtonPanel);
+            this.Controls.Add(this.BottomButtonPanel);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
             this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(500, 500);
             this.HelpButton = true;
             this.Name = "EditLabelsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             resources.ApplyResources(this, "$this");
+            this.TopButtonPanel.ResumeLayout(false);
+            this.TopButtonPanel.PerformLayout();
+            this.EditButtonPanel.ResumeLayout(false);
+            this.EditButtonPanel.PerformLayout();
+            this.BottomButtonPanel.ResumeLayout(false);
+            this.BottomButtonPanel.PerformLayout();
             this.EditDetailsPanel.ResumeLayout(false);
+            this.EditDetailsPanel.PerformLayout();
+            this.Splitter.Panel1.ResumeLayout(false);
+            this.Splitter.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Splitter)).EndInit();
+            this.Splitter.ResumeLayout(false);
+            this.Splitter.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.ToolTip ToolTip;
+        private CKAN.GUI.LeftRightRowPanel TopButtonPanel;
+        private System.Windows.Forms.Button CreateButton;
+        private System.Windows.Forms.SplitContainer Splitter;
         private System.Windows.Forms.TreeView LabelSelectionTree;
         private System.Windows.Forms.Label SelectOrCreateLabel;
         private System.Windows.Forms.Panel EditDetailsPanel;
@@ -388,12 +433,13 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox IgnoreMissingFilesCheckBox;
         private System.Windows.Forms.Label ColorLabel;
         private System.Windows.Forms.Button ColorButton;
-        private System.Windows.Forms.Button CreateButton;
-        private System.Windows.Forms.Button CloseButton;
+        private CKAN.GUI.LeftRightRowPanel EditButtonPanel;
         private System.Windows.Forms.Button SaveButton;
         private System.Windows.Forms.Button CancelEditButton;
         private System.Windows.Forms.Button DeleteButton;
         private System.Windows.Forms.Button MoveUpButton;
         private System.Windows.Forms.Button MoveDownButton;
+        private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
+        private System.Windows.Forms.Button CloseButton;
     }
 }
