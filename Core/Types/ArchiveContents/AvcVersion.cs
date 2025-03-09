@@ -1,7 +1,8 @@
-using CKAN.Versioning;
 using Newtonsoft.Json;
 
-namespace CKAN.NetKAN.Sources.Avc
+using CKAN.Versioning;
+
+namespace CKAN.Avc
 {
     public class AvcVersion
     {

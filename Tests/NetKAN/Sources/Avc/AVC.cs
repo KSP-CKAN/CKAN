@@ -4,7 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
-using CKAN.NetKAN.Sources.Avc;
+using CKAN.Avc;
 using CKAN.Versioning;
 using Tests.Data;
 

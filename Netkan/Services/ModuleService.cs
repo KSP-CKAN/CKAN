@@ -11,8 +11,8 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Extensions;
 using CKAN.Versioning;
-using CKAN.NetKAN.Sources.Avc;
-using CKAN.NetKAN.Sources.SpaceWarp;
+using CKAN.Avc;
+using CKAN.SpaceWarp;
 using CKAN.Games;
 using CKAN.NetKAN.Sources.Github;
 
