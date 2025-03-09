@@ -44,7 +44,7 @@ namespace CKAN.GUI
                         {
                             if (e != null && Manager?.Cache != null)
                             {
-                                e.Result = ModuleInstaller.ImportFiles(
+                                e.Result = ModuleImporter.ImportFiles(
                                     GetFiles(dlg.FileNames),
                                     currentUser,
                                     mod =>
