@@ -19,8 +19,6 @@ if (($PSVersionTable.PSVersion -lt $minPSVer)) {
 # Globals
 $RootDir            = "${PSScriptRoot}"
 $ScriptFile         = "${RootDir}/build/Build.csproj"
-$BuildDir           = "${RootDir}/_build"
-$ToolsDir           = "${BuildDir}/tools"
 
 # Build args
 $cakeArgs = @()
