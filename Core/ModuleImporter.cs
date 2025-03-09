@@ -2,8 +2,16 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+
+using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json.Linq;
+using YamlDotNet.RepresentationModel;
 
 using CKAN.Extensions;
+using CKAN.Versioning;
+using CKAN.Avc;
+using CKAN.SpaceWarp;
 
 namespace CKAN
 {
@@ -151,6 +159,11 @@ namespace CKAN
                 {
                     matched.Add(fi, modules);
                 }
+                else if (GetInternalModules(new ZipFile(fi.FullName)).ToList() is var ckans
+                         && ckans.Count > 0)
+                {
+                    matched.Add(fi, ckans);
+                }
                 else
                 {
                     notFound.Add(fi);
@@ -159,6 +172,125 @@ namespace CKAN
             }
             return matched.Count > 0;
         }
+
+        private static readonly Regex avcRegex    = new Regex(@"^#/ckan/ksp-avc(/(?<filter>.*))?$",
+                                                              RegexOptions.Compiled);
+
+        private static readonly Regex swInfoRegex = new Regex(@"^#/ckan/space-warp(/(?<filter>.*))?$",
+                                                              RegexOptions.Compiled);
+
+        private static IEnumerable<CkanModule> GetInternalModules(ZipFile zip)
+        {
+            var internalCkans = InternalCkanFiles(zip).ToArray();
+            // CkanModule.download is required for cache management, set a default if missing
+            foreach (var ckan in internalCkans)
+            {
+                ckan["download"] ??= $"https://ckan/imported-from-zip/{ckan["identifier"]}/{zip.Name}";
+            }
+            // Set the version and compatibility if we can
+            foreach (var grp in internalCkans.GroupBy(ckan => (string?)ckan["$vref"] ?? ""))
+            {
+                if (avcRegex.TryMatch(grp.Key, out Match? avcMatch))
+                {
+                    var filter = avcMatch.Groups["filter"].Success
+                                     ? avcMatch.Groups["filter"].ToString()
+                                     : null;
+                    ApplyAvcs(InternalVersionFiles(zip, filter).ToArray(), grp);
+                }
+                else if (swInfoRegex.TryMatch(grp.Key, out Match? swInfoMatch))
+                {
+                    var filter = swInfoMatch.Groups["filter"].Success
+                                     ? swInfoMatch.Groups["filter"].ToString()
+                                     : null;
+                    ApplySpaceWarpInfos(InternalSpaceWarpInfos(zip, filter).ToArray(), grp);
+                }
+            }
+            return internalCkans.Select(json => json.ToObject<CkanModule>())
+                                .OfType<CkanModule>();
+        }
+
+        private static void ApplyAvcs(AvcVersion[]         avcs,
+                                      IEnumerable<JObject> ckans)
+        {
+            if (avcs.Length > 1)
+            {
+                throw new Kraken(string.Format("Too many .version files found!"));
+            }
+            foreach (var avc in avcs)
+            {
+                foreach (var ckan in ckans)
+                {
+                    ckan.Remove("$vref");
+                    if (avc.version is ModuleVersion ver)
+                    {
+                        ckan["version"] ??= ver.ToString();
+                    }
+                    GameVersion.SetJsonCompatibility(ckan, avc.ksp_version,
+                                                           avc.ksp_version_min,
+                                                           avc.ksp_version_max);
+                }
+            }
+        }
+
+        private static void ApplySpaceWarpInfos(SpaceWarpInfo[]      swInfos,
+                                                IEnumerable<JObject> ckans)
+        {
+            if (swInfos.Length > 1)
+            {
+                throw new Kraken(string.Format("Too many swinfo.json files found!"));
+            }
+            foreach (var swInfo in swInfos)
+            {
+                bool hasMin = GameVersion.TryParse(swInfo.ksp2_version?.min, out GameVersion? minVer);
+                bool hasMax = GameVersion.TryParse(swInfo.ksp2_version?.max, out GameVersion? maxVer);
+                foreach (var ckan in ckans)
+                {
+                    ckan.Remove("$vref");
+                    ckan["version"] ??= swInfo.version;
+                    if (hasMin || hasMax)
+                    {
+                        GameVersion.SetJsonCompatibility(ckan, null,
+                                                               minVer?.WithoutBuild,
+                                                               maxVer?.WithoutBuild);
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<JObject> InternalCkanFiles(ZipFile zip)
+            => GetInternalYamlFiles(zip, ".ckan", null);
+
+        private static IEnumerable<AvcVersion> InternalVersionFiles(ZipFile zip, string? filter)
+            => GetInternalJsonFiles(zip, ".version", filter)
+                   .Select(json => json.ToObject<AvcVersion>())
+                   .OfType<AvcVersion>();
+
+        private static IEnumerable<SpaceWarpInfo> InternalSpaceWarpInfos(ZipFile zip, string? filter)
+            => GetInternalJsonFiles(zip, "swinfo.json", filter)
+                   .Select(json => json.ToObject<SpaceWarpInfo>())
+                   .OfType<SpaceWarpInfo>();
+
+        private static IEnumerable<JObject> GetInternalYamlFiles(ZipFile zip, string nameSuffix, string? filter)
+            => FilterEntries(zip, nameSuffix, filter)
+                   .SelectMany(entry =>
+                               {
+                                   var stream = new YamlStream();
+                                   stream.Load(new StreamReader(zip.GetInputStream(entry)));
+                                   return stream.Documents.Select(doc => doc?.RootNode)
+                                                          .OfType<YamlMappingNode>()
+                                                          .Select(yaml => yaml.ToJObject());
+                               });
+
+        private static IEnumerable<JObject> GetInternalJsonFiles(ZipFile zip, string nameSuffix, string? filter)
+            => FilterEntries(zip, nameSuffix, filter)
+                   .Select(entry => JObject.Parse(new StreamReader(zip.GetInputStream(entry)).ReadToEnd()));
+
+        private static IEnumerable<ZipEntry> FilterEntries(ZipFile zip, string nameSuffix, string? filter)
+            => zip.OfType<ZipEntry>()
+                  .Where(entry => entry.Name.EndsWith(nameSuffix, StringComparison.InvariantCultureIgnoreCase)
+                                  && (filter == null
+                                      || entry.Name == filter
+                                      || Regex.IsMatch(entry.Name, filter)));
 
     }
 }
