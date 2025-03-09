@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using CKAN.Extensions;
-using CKAN.Versioning;
 using CKAN.Avc;
 using CKAN.SpaceWarp;
 using CKAN.Games;
@@ -111,110 +110,6 @@ namespace CKAN.NetKAN.Services
                 .FindInstallableFiles(module, filePath, inst)
                 .Where(f => !f.source.IsDirectory)
                 .Select(f => inst.ToRelativeGameDir(f.destination));
-        }
-
-        /// <summary>
-        /// Update the game versions of a module.
-        /// Final range will be the union of the previous and new ranges.
-        /// Note that this means we always increase, never decrease, compatibility.
-        /// </summary>
-        /// <param name="json">The module being inflated</param>
-        /// <param name="ver">The single game version</param>
-        /// <param name="minVer">The minimum game version</param>
-        /// <param name="maxVer">The maximum game version</param>
-        public static void ApplyVersions(JObject     json,
-                                         GameVersion? ver,
-                                         GameVersion? minVer,
-                                         GameVersion? maxVer)
-        {
-            // Get the minimum and maximum game versions that already exist in the metadata.
-            // Use specific game version if min/max don't exist.
-            var existingMinStr = json.Value<string>("ksp_version_min") ?? json.Value<string>("ksp_version");
-            var existingMaxStr = json.Value<string>("ksp_version_max") ?? json.Value<string>("ksp_version");
-
-            var existingMin = existingMinStr == null ? null : GameVersion.Parse(existingMinStr);
-            var existingMax = existingMaxStr == null ? null : GameVersion.Parse(existingMaxStr);
-
-            GameVersion? avcMin, avcMax;
-            if (minVer == null && maxVer == null)
-            {
-                // Use specific game version if min/max don't exist
-                avcMin = avcMax = ver;
-            }
-            else
-            {
-                avcMin = minVer;
-                avcMax = maxVer;
-            }
-
-            // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
-            // AVC file.
-            var gameVerMins  = new List<GameVersion?>();
-            var gameVerMaxes = new List<GameVersion?>();
-
-            if (!GameVersion.IsNullOrAny(existingMin))
-            {
-                gameVerMins.Add(existingMin);
-            }
-
-            if (!GameVersion.IsNullOrAny(avcMin))
-            {
-                gameVerMins.Add(avcMin);
-            }
-
-            if (!GameVersion.IsNullOrAny(existingMax))
-            {
-                gameVerMaxes.Add(existingMax);
-            }
-
-            if (!GameVersion.IsNullOrAny(avcMax))
-            {
-                gameVerMaxes.Add(avcMax);
-            }
-
-            var gameVerMin = gameVerMins.DefaultIfEmpty(null).Min();
-            var gameVerMax = gameVerMaxes.DefaultIfEmpty(null).Max();
-
-            if (gameVerMin != null || gameVerMax != null)
-            {
-                // If we have either a minimum or maximum game version, remove all existing game version
-                // information from the metadata.
-                json.Remove("ksp_version");
-                json.Remove("ksp_version_min");
-                json.Remove("ksp_version_max");
-
-                if (gameVerMin != null && gameVerMax != null)
-                {
-                    // If we have both a minimum and maximum game version...
-                    if (gameVerMin.Equals(gameVerMax))
-                    {
-                        // ...and they are equal, then just set ksp_version
-                        Log.DebugFormat("Min and max game versions are same, setting ksp_version");
-                        json["ksp_version"] = gameVerMin.ToString();
-                    }
-                    else
-                    {
-                        // ...otherwise set both ksp_version_min and ksp_version_max
-                        Log.DebugFormat("Min and max game versions are different, setting both");
-                        json["ksp_version_min"] = gameVerMin.ToString();
-                        json["ksp_version_max"] = gameVerMax.ToString();
-                    }
-                }
-                else
-                {
-                    // If we have only one or the other then set which ever is applicable
-                    if (gameVerMin != null)
-                    {
-                        Log.DebugFormat("Only min game version is set");
-                        json["ksp_version_min"] = gameVerMin.ToString();
-                    }
-                    if (gameVerMax != null)
-                    {
-                        Log.DebugFormat("Only max game version is set");
-                        json["ksp_version_max"] = gameVerMax.ToString();
-                    }
-                }
-            }
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.Games;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -60,7 +61,7 @@ namespace CKAN.NetKAN.Transformers
                         json.SafeAdd(property.Name, property.Value);
                     }
 
-                    ModuleService.ApplyVersions(json, null, null, null);
+                    GameVersion.SetJsonCompatibility(json, null, null, null);
                     json.SafeMerge("resources", internalJson["resources"]);
 
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);

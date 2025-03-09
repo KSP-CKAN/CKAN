@@ -79,8 +79,8 @@ namespace CKAN.NetKAN.Transformers
                     {
                         log.InfoFormat("Found compatibility: {0}–{1}", minVer?.WithoutBuild,
                                                                        maxVer?.WithoutBuild);
-                        ModuleService.ApplyVersions(json, null, minVer?.WithoutBuild,
-                                                                maxVer?.WithoutBuild);
+                        GameVersion.SetJsonCompatibility(json, null, minVer?.WithoutBuild,
+                                                                     maxVer?.WithoutBuild);
                     }
                     log.DebugFormat("Transformed metadata:{0}{1}",
                                     Environment.NewLine, json);
