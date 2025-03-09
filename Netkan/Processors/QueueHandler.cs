@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 using CKAN.Versioning;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Extensions;
+using CKAN.Extensions;
 using CKAN.Games;
 
 namespace CKAN.NetKAN.Processors

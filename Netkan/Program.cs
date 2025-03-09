@@ -17,7 +17,7 @@ using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Transformers;
-using CKAN.NetKAN.Extensions;
+using CKAN.Extensions;
 
 namespace CKAN.NetKAN
 {
