@@ -7,7 +7,7 @@ using log4net;
 
 using CKAN.Versioning;
 
-namespace CKAN.NetKAN.Sources.Avc
+namespace CKAN.Avc
 {
     /// <summary>
     /// Converts AVC style versions into CKAN ones.

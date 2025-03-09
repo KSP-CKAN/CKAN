@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 // https://github.com/SpaceWarpDev/SpaceWarp/blob/main/example_mod_info.json
 
-namespace CKAN.NetKAN.Sources.SpaceWarp
+namespace CKAN.SpaceWarp
 {
     public class SpaceWarpInfo
     {

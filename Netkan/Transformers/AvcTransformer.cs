@@ -9,7 +9,7 @@ using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
-using CKAN.NetKAN.Sources.Avc;
+using CKAN.Avc;
 using CKAN.Games;
 using CKAN.NetKAN.Sources.Github;
 

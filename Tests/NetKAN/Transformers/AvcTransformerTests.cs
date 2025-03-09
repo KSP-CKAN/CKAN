@@ -9,7 +9,7 @@ using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Sources.Avc;
+using CKAN.Avc;
 using CKAN.NetKAN.Transformers;
 using CKAN.Versioning;
 
