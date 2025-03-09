@@ -3,7 +3,7 @@ using NUnit.Framework;
 using YamlDotNet.RepresentationModel;
 using Newtonsoft.Json.Linq;
 
-using CKAN.NetKAN.Extensions;
+using CKAN.Extensions;
 
 namespace Tests.NetKAN.Extensions
 {

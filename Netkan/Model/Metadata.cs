@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using YamlDotNet.RepresentationModel;
 
 using CKAN.Versioning;
-using CKAN.NetKAN.Extensions;
+using CKAN.Extensions;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Services;
 
