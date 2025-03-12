@@ -9,9 +9,10 @@ using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
-using CKAN.NetKAN.Sources.Avc;
+using CKAN.Avc;
 using CKAN.Games;
 using CKAN.NetKAN.Sources.Github;
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -140,7 +141,7 @@ namespace CKAN.NetKAN.Transformers
 
         public static void ApplyVersions(JObject json, AvcVersion avc)
         {
-            ModuleService.ApplyVersions(json, avc.ksp_version, avc.ksp_version_min, avc.ksp_version_max);
+            GameVersion.SetJsonCompatibility(json, avc.ksp_version, avc.ksp_version_min, avc.ksp_version_max);
 
             if (avc.version != null)
             {

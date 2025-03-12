@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.Versioning;
 
-namespace CKAN.NetKAN.Sources.Avc
+namespace CKAN.Avc
 {
     /// <summary>
     /// Converts AVC style KSP versions into CKAN ones.

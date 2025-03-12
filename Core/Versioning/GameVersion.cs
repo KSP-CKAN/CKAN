@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using log4net;
 
 using CKAN.Games;
 
@@ -568,6 +570,144 @@ namespace CKAN.Versioning
                 }
             }
         }
+
+        private static string? DeriveString(int major, int minor, int patch, int build)
+        {
+            var sb = new StringBuilder();
+
+            if (major != Undefined)
+            {
+                sb.Append(major);
+            }
+
+            if (minor != Undefined)
+            {
+                sb.Append(".");
+                sb.Append(minor);
+            }
+
+            if (patch != Undefined)
+            {
+                sb.Append(".");
+                sb.Append(patch);
+            }
+
+            if (build != Undefined)
+            {
+                sb.Append(".");
+                sb.Append(build);
+            }
+
+            var s = sb.ToString();
+
+            return s.Equals(string.Empty) ? null : s;
+        }
+
+        /// <summary>
+        /// Update the game versions of a module.
+        /// Final range will be the union of the previous and new ranges.
+        /// Note that this means we always increase, never decrease, compatibility.
+        /// </summary>
+        /// <param name="json">The module being inflated</param>
+        /// <param name="ver">The single game version</param>
+        /// <param name="minVer">The minimum game version</param>
+        /// <param name="maxVer">The maximum game version</param>
+        public static void SetJsonCompatibility(JObject      json,
+                                                GameVersion? ver,
+                                                GameVersion? minVer,
+                                                GameVersion? maxVer)
+        {
+            // Get the minimum and maximum game versions that already exist in the metadata.
+            // Use specific game version if min/max don't exist.
+            var existingMinStr = json.Value<string>("ksp_version_min") ?? json.Value<string>("ksp_version");
+            var existingMaxStr = json.Value<string>("ksp_version_max") ?? json.Value<string>("ksp_version");
+
+            var existingMin = existingMinStr == null ? null : Parse(existingMinStr);
+            var existingMax = existingMaxStr == null ? null : Parse(existingMaxStr);
+
+            GameVersion? avcMin, avcMax;
+            if (minVer == null && maxVer == null)
+            {
+                // Use specific game version if min/max don't exist
+                avcMin = avcMax = ver;
+            }
+            else
+            {
+                avcMin = minVer;
+                avcMax = maxVer;
+            }
+
+            // Now calculate the minimum and maximum KSP versions between both the existing metadata and the
+            // AVC file.
+            var gameVerMins  = new List<GameVersion?>();
+            var gameVerMaxes = new List<GameVersion?>();
+
+            if (!IsNullOrAny(existingMin))
+            {
+                gameVerMins.Add(existingMin);
+            }
+
+            if (!IsNullOrAny(avcMin))
+            {
+                gameVerMins.Add(avcMin);
+            }
+
+            if (!IsNullOrAny(existingMax))
+            {
+                gameVerMaxes.Add(existingMax);
+            }
+
+            if (!IsNullOrAny(avcMax))
+            {
+                gameVerMaxes.Add(avcMax);
+            }
+
+            var gameVerMin = gameVerMins.DefaultIfEmpty(null).Min();
+            var gameVerMax = gameVerMaxes.DefaultIfEmpty(null).Max();
+
+            if (gameVerMin != null || gameVerMax != null)
+            {
+                // If we have either a minimum or maximum game version, remove all existing game version
+                // information from the metadata.
+                json.Remove("ksp_version");
+                json.Remove("ksp_version_min");
+                json.Remove("ksp_version_max");
+
+                if (gameVerMin != null && gameVerMax != null)
+                {
+                    // If we have both a minimum and maximum game version...
+                    if (gameVerMin.Equals(gameVerMax))
+                    {
+                        // ...and they are equal, then just set ksp_version
+                        log.DebugFormat("Min and max game versions are same, setting ksp_version");
+                        json["ksp_version"] = gameVerMin.ToString();
+                    }
+                    else
+                    {
+                        // ...otherwise set both ksp_version_min and ksp_version_max
+                        log.DebugFormat("Min and max game versions are different, setting both");
+                        json["ksp_version_min"] = gameVerMin.ToString();
+                        json["ksp_version_max"] = gameVerMax.ToString();
+                    }
+                }
+                else
+                {
+                    // If we have only one or the other then set which ever is applicable
+                    if (gameVerMin != null)
+                    {
+                        log.DebugFormat("Only min game version is set");
+                        json["ksp_version_min"] = gameVerMin.ToString();
+                    }
+                    if (gameVerMax != null)
+                    {
+                        log.DebugFormat("Only max game version is set");
+                        json["ksp_version_max"] = gameVerMax.ToString();
+                    }
+                }
+            }
+        }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(GameVersion));
     }
 
     public sealed partial class GameVersion : IEquatable<GameVersion>
@@ -812,41 +952,6 @@ namespace CKAN.Versioning
         /// </returns>
         public static bool operator >=(GameVersion left, GameVersion right)
             => left.CompareTo(right) >= 0;
-    }
-
-    public sealed partial class GameVersion
-    {
-        private static string? DeriveString(int major, int minor, int patch, int build)
-        {
-            var sb = new StringBuilder();
-
-            if (major != Undefined)
-            {
-                sb.Append(major);
-            }
-
-            if (minor != Undefined)
-            {
-                sb.Append(".");
-                sb.Append(minor);
-            }
-
-            if (patch != Undefined)
-            {
-                sb.Append(".");
-                sb.Append(patch);
-            }
-
-            if (build != Undefined)
-            {
-                sb.Append(".");
-                sb.Append(build);
-            }
-
-            var s = sb.ToString();
-
-            return s.Equals(string.Empty) ? null : s;
-        }
     }
 
     public sealed class GameVersionJsonConverter : JsonConverter

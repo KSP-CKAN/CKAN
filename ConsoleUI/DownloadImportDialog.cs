@@ -40,10 +40,10 @@ namespace CKAN.ConsoleUI {
                     theme,
                     Properties.Resources.ImportProgressTitle,
                     Properties.Resources.ImportProgressMessage);
-                ps.Run(() => ModuleInstaller.ImportFiles(files, ps,
-                                                         mod => cp.Install.Add(mod),
-                                                         RegistryManager.Instance(gameInst, repoData).registry,
-                                                         gameInst, cache));
+                ps.Run(() => ModuleImporter.ImportFiles(files, ps,
+                                                        mod => cp.Install.Add(mod),
+                                                        RegistryManager.Instance(gameInst, repoData).registry,
+                                                        gameInst, cache));
             }
         }
 

@@ -8,7 +8,7 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.Games;
 using CKAN.NetKAN.Sources.Github;
-using CKAN.NetKAN.Sources.SpaceWarp;
+using CKAN.SpaceWarp;
 
 namespace CKAN.NetKAN.Validators
 {
