@@ -626,7 +626,7 @@ namespace CKAN.GUI
 
         private string CmdLineHelp(string cmdLine)
             => manager?.SteamLibrary.Games.Length > 0
-                ? cmdLine.StartsWith("steam://", StringComparison.InvariantCultureIgnoreCase)
+                ? SteamLibrary.IsSteamCmdLine(cmdLine)
                     ? Properties.Resources.ManageModsSteamPlayTimeYesTooltip
                     : Properties.Resources.ManageModsSteamPlayTimeNoTooltip
                 : ""
@@ -634,8 +634,29 @@ namespace CKAN.GUI
 
         private void LaunchGameToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            var menuItem = sender as ToolStripMenuItem;
-            LaunchGame?.Invoke(menuItem?.Tag as string);
+            if (sender is ToolStripMenuItem menuItem)
+            {
+                if (menuItem.Tag is string cmd
+                    && !SteamLibrary.IsSteamCmdLine(cmd))
+                {
+                    SetPlayButtonActiveInactive(true);
+                }
+                LaunchGame?.Invoke(menuItem.Tag as string);
+            }
+        }
+
+        public void OnGameExit()
+        {
+            SetPlayButtonActiveInactive(false);
+        }
+
+        private void SetPlayButtonActiveInactive(bool playing)
+        {
+            LaunchGameToolStripMenuItem.Text = playing
+                ? Properties.Resources.ManageModsPlaying
+                : new SingleAssemblyComponentResourceManager(typeof(ManageMods))
+                      .GetString($"{LaunchGameToolStripMenuItem.Name}.{nameof(LaunchGameToolStripMenuItem.Text)}");
+            LaunchGameToolStripMenuItem.Enabled = !playing;
         }
 
         private void EditCommandLinesToolStripMenuItem_Click(object? sender, EventArgs? e)
@@ -1995,6 +2016,7 @@ namespace CKAN.GUI
             Conflicts = null;
             ChangeSet = null;
             ModGrid.CurrentCell = null;
+            SetPlayButtonActiveInactive(false);
         }
 
         public HashSet<ModChange> ComputeUserChangeSet()

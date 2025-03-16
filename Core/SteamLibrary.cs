@@ -68,6 +68,9 @@ namespace CKAN
 
         public readonly GameBase[] Games;
 
+        public static bool IsSteamCmdLine(string command)
+            => command.StartsWith("steam://", StringComparison.InvariantCultureIgnoreCase);
+
         private static string LibraryFoldersConfigPath(string libraryPath)
             => Path.Combine(libraryPath, "config", "libraryfolders.vdf");
 

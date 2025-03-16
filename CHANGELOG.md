@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Pre-release handling (#4260, #4266, #4294 by: HebaruSan, JonnyOThan)
 - [Multiple] Translation updates from Crowdin (#4268, #4305 by: vinix38, frankieorabona, faida)
 - [Multiple] Checkboxes to copy more dirs when cloning instances (#4304 by: HebaruSan)
+- [GUI] Disable Play button while playing game (#4330 by: HebaruSan)
 
 ### Bugfixes
 
