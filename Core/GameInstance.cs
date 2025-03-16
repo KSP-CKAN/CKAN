@@ -413,14 +413,21 @@ namespace CKAN
                         EnableRaisingEvents = true
                     };
 
+                    var isSteam = SteamLibrary.IsSteamCmdLine(command);
                     p.Exited += (sender, e) =>
                     {
-                        playTime?.Stop(CkanDir());
+                        if (!isSteam)
+                        {
+                            playTime?.Stop(CkanDir());
+                        }
                         onExit?.Invoke();
                     };
 
                     p.Start();
-                    playTime?.Start();
+                    if (!isSteam)
+                    {
+                        playTime?.Start();
+                    }
                 }
                 catch (Exception exception)
                 {

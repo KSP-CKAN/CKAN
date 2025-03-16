@@ -483,6 +483,7 @@ If unchecked, only mods in the pack will be installed.</value></data>
   <data name="ModSearchReplaceableSuffix" xml:space="preserve"><value>replaceable</value></data>
   <data name="EditModSearchTooltipExpandButton" xml:space="preserve"><value>Expand or collapse the detailed search fields (Ctrl-Shift-F)</value></data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve"><value>Combine a new search with your current searches</value></data>
+  <data name="ManageModsPlaying" xml:space="preserve"><value>Playing...</value></data>
   <data name="ManageModsSteamPlayTimeYesTooltip" xml:space="preserve"><value>(will count play time in Steam)</value></data>
   <data name="ManageModsSteamPlayTimeNoTooltip" xml:space="preserve"><value>(will NOT count play time in Steam)</value></data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve"><value>Uncheck to uninstall all mods, check to clear change set</value></data>

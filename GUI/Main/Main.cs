@@ -1144,7 +1144,11 @@ namespace CKAN.GUI
                 }
 
                 CurrentInstance.PlayGame(command ?? configuration.CommandLines.First(),
-                                         UpdateStatusBar);
+                                         () =>
+                                         {
+                                             ManageMods.OnGameExit();
+                                             UpdateStatusBar();
+                                         });
             }
         }
 
