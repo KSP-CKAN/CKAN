@@ -5,9 +5,9 @@ using YamlDotNet.Core;
 using YamlDotNet.RepresentationModel;
 using Newtonsoft.Json.Linq;
 
-namespace CKAN.NetKAN.Extensions
+namespace CKAN.Extensions
 {
-    internal static class YamlExtensions
+    public static class YamlExtensions
     {
         public static YamlMappingNode[] Parse(string input)
         {

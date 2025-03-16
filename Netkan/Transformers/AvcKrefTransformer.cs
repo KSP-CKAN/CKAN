@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Sources.Avc;
+using CKAN.Avc;
 using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Transformers

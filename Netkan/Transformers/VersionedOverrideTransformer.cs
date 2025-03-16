@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using log4net;
 using Newtonsoft.Json.Linq;
+
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Services;
 using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
@@ -158,7 +159,7 @@ namespace CKAN.NetKAN.Transformers
                 {
                     if (gameVersionProperties.Any(overrides.ContainsKey))
                     {
-                        ModuleService.ApplyVersions(
+                        GameVersion.SetJsonCompatibility(
                             metadata,
                             (string?)overrides["ksp_version"] is string v1
                                 ? GameVersion.Parse(v1)

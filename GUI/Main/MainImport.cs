@@ -44,7 +44,7 @@ namespace CKAN.GUI
                         {
                             if (e != null && Manager?.Cache != null)
                             {
-                                e.Result = ModuleInstaller.ImportFiles(
+                                e.Result = ModuleImporter.ImportFiles(
                                     GetFiles(dlg.FileNames),
                                     currentUser,
                                     mod =>
@@ -97,15 +97,9 @@ namespace CKAN.GUI
         };
 
         private static string FindDownloadsPath(GameInstance gameInst)
-        {
-            foreach (string p in downloadPaths)
-            {
-                if (!string.IsNullOrEmpty(p) && Directory.Exists(p))
-                {
-                    return p;
-                }
-            }
-            return gameInst.GameDir();
-        }
+            => downloadPaths.FirstOrDefault(p => !string.IsNullOrEmpty(p)
+                                                 && Directory.Exists(p))
+                            ?? gameInst.GameDir();
+
     }
 }
