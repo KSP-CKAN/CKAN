@@ -93,6 +93,10 @@
                 }
             ]
         },
+        "x_netkan_trust_version_file": {
+            "description": "If true (and $vref is set), set the version property to the VERSION specified in the .version file",
+            "type": "boolean"
+        },
         "x_netkan_epoch": {
             "description": "Specifies a minimum epoch number manually in the version field",
             "type": "integer"

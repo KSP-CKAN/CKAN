@@ -1075,6 +1075,17 @@ When used, the following fields are auto-generated:
 - `version`
 - `resources.remote-swinfo` (if the `version_check` property is present in the `swinfo.json` file)
 
+##### `x_netkan_trust_version_file`
+
+If true (and `$vref` is set), then the `version` property will be set to the value specified in the `VERSION` property of the mod's `.version` file, overriding the value from the host server. This is mostly useful when we need to index a mod that lacks its own standalone download but instead exists only as a bundled mod inside another mod's download.
+
+An example `.netkan` excerpt:
+
+```yaml
+$vref: '#/ckan/ksp-avc'
+x_netkan_trust_version_file: true
+```
+
 ##### `x_netkan_epoch`
 
 The `x_netkan_epoch` field is used to specify a minimum `epoch` number manually in the `version` field. Its value should be
