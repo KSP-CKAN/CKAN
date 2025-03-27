@@ -321,7 +321,7 @@ namespace CKAN
             // basic string replacements.
             if (string.Compare(remoteUri.Host, "github.com", StringComparison.OrdinalIgnoreCase) == 0)
             {
-                // We expect a non-raw URI to be in one of two forms:
+                // We expect a non-raw URI to be in one of these forms:
                 //  1. https://github.com/<USER>/<PROJECT>/blob/<BRANCH>/<PATH>
                 //  2. https://github.com/<USER>/<PROJECT>/tree/<BRANCH>/<PATH>
                 //
@@ -343,6 +343,15 @@ namespace CKAN
                     && segments[3] is "raw/")
                 {
                     log.InfoFormat("Remote GitHub URL is in raw format, using as is.");
+                    return remoteUri;
+                }
+                if (//segments is [_, _, _, "releases/", "latest/", "download/", ..]
+                    segments.Count > 6
+                    && segments[3] is "releases/"
+                    && segments[4] is "latest/"
+                    && segments[5] is "download/")
+                {
+                    log.InfoFormat("Remote GitHub URL is in release asset format, using as is.");
                     return remoteUri;
                 }
                 if (//segments is not [_, _, _, "blob/" or "tree/", _, _, ..]
