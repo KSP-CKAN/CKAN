@@ -70,7 +70,7 @@ namespace CKAN
 
             try
             {
-                LoadOrCreate(repoData);
+                Load(repoData);
             }
             catch
             {
@@ -307,40 +307,29 @@ namespace CKAN
         [MemberNotNull(nameof(registry))]
         private void Load(RepositoryDataManager repoData)
         {
-            // Our registry needs to know our game instance when upgrading from older
-            // registry formats. This lets us encapsulate that to make it available
-            // after deserialisation.
-            var settings = new JsonSerializerSettings
-            {
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                Context = new StreamingContext(StreamingContextStates.Other, gameInstance)
-            };
-
-            log.DebugFormat("Trying to load registry from {0}", path);
-            string json = File.ReadAllText(path);
-            log.Debug("Registry JSON loaded; parsing...");
-            registry = new Registry(repoData);
-            JsonConvert.PopulateObject(json, registry, settings);
-            log.Debug("Registry loaded and parsed");
-            log.InfoFormat("Loaded CKAN registry at {0}", path);
-        }
-
-        [MemberNotNull(nameof(registry))]
-        private void LoadOrCreate(RepositoryDataManager repoData)
-        {
             try
             {
-                Load(repoData);
+                // Our registry needs to know our game instance when upgrading from older
+                // registry formats. This lets us encapsulate that to make it available
+                // after deserialisation.
+                var settings = new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                    Context = new StreamingContext(StreamingContextStates.Other, gameInstance)
+                };
+
+                log.DebugFormat("Trying to load registry from {0}", path);
+                string json = File.ReadAllText(path);
+                log.Debug("Registry JSON loaded; parsing...");
+                registry = new Registry(repoData);
+                JsonConvert.PopulateObject(json, registry, settings);
+                log.Debug("Registry loaded and parsed");
+                log.InfoFormat("Loaded CKAN registry at {0}", path);
+                AscertainDefaultRepo();
             }
-            catch (FileNotFoundException)
+            catch (IOException exc) when (exc is FileNotFoundException or DirectoryNotFoundException)
             {
-                Create();
-                Load(repoData);
-            }
-            catch (DirectoryNotFoundException)
-            {
-                Create();
-                Load(repoData);
+                Create(repoData);
             }
             catch (JsonException exc)
             {
@@ -349,25 +338,22 @@ namespace CKAN
                 log.ErrorFormat("{0} is corrupted, archiving to {1}: {2}",
                     path, previousCorruptedPath, previousCorruptedMessage);
                 File.Move(path, previousCorruptedPath);
-                Create();
-                Load(repoData);
+                Create(repoData);
             }
             catch (Exception ex)
             {
                 log.ErrorFormat("Uncaught exception loading registry: {0}", ex.ToString());
                 throw;
             }
-            AscertainDefaultRepo();
         }
 
         [MemberNotNull(nameof(registry))]
-        private void Create()
+        private void Create(RepositoryDataManager repoData)
         {
             log.InfoFormat("Creating new CKAN registry at {0}", path);
-            registry = Registry.Empty();
+            registry = Registry.Empty(repoData);
             AscertainDefaultRepo();
             ScanUnmanagedFiles();
-            Save();
         }
 
         private void AscertainDefaultRepo()

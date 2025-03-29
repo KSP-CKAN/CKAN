@@ -16,7 +16,7 @@ namespace Tests.Core
     /// Tests the AddParentDirectories method in CKAN.ModuleInstaller
     /// </summary>
     [TestFixture]
-    public class ModuleInstallerDirTest
+    public class ModuleInstallerDirTests
     {
         private GameInstanceManager? _manager;
         private DisposableKSP?       _instance;

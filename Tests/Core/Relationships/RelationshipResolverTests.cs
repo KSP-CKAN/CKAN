@@ -39,10 +39,14 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_WithoutModules_AlwaysReturns()
         {
-            var registry = CKAN.Registry.Empty();
-            options = RelationshipResolverOptions.DefaultOpts(stabilityTolerance);
-            Assert.DoesNotThrow(() => new RelationshipResolver(new List<CkanModule>(),
-                null, options, registry, game, crit));
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
+            {
+                var registry = CKAN.Registry.Empty(repoData.Manager);
+                options = RelationshipResolverOptions.DefaultOpts(stabilityTolerance);
+                Assert.DoesNotThrow(() => new RelationshipResolver(new List<CkanModule>(),
+                    null, options, registry, game, crit));
+            }
         }
 
         [Test]
@@ -1043,9 +1047,11 @@ namespace Tests.Core.Relationships
         [Test]
         public void AutodetectedCanSatisfyRelationships()
         {
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             using (var ksp = new DisposableKSP())
             {
-                var registry = CKAN.Registry.Empty();
+                var registry = CKAN.Registry.Empty(repoData.Manager);
                 registry.SetDlls(new Dictionary<string, string>()
                 {
                     {

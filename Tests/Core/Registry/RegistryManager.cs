@@ -79,7 +79,9 @@ namespace Tests.Core.Registry
                 var lockPath = Path.Combine(gameInst.KSP.CkanDir(), "registry.locked");
 
                 // Act / Assert
-                RegistryManager.Instance(gameInst.KSP, repoData.Manager);
+                var mgr = RegistryManager.Instance(gameInst.KSP, repoData.Manager);
+                Assert.IsFalse(File.Exists(jsonPath));
+                mgr.Save();
                 Assert.IsTrue(File.Exists(jsonPath));
                 Assert.IsTrue(File.Exists(lockPath));
                 RegistryManager.DisposeInstance(gameInst.KSP);

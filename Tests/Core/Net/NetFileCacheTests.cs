@@ -160,33 +160,41 @@ namespace Tests.Core
         [Test]
         public void EnforceSizeLimit_UnderLimit_FileRetained()
         {
-            // Arrange
-            CKAN.Registry registry = CKAN.Registry.Empty();
-            long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
+            {
+                // Arrange
+                CKAN.Registry registry = CKAN.Registry.Empty(repoData.Manager);
+                long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
 
-            // Act
-            Uri url = new Uri("http://kitte.nz/");
-            cache?.Store(url, TestData.DogeCoinFlagZip());
-            cache?.EnforceSizeLimit(fileSize + 100, registry);
+                // Act
+                Uri url = new Uri("http://kitte.nz/");
+                cache?.Store(url, TestData.DogeCoinFlagZip());
+                cache?.EnforceSizeLimit(fileSize + 100, registry);
 
-            // Assert
-            Assert.IsTrue(cache?.IsCached(url));
+                // Assert
+                Assert.IsTrue(cache?.IsCached(url));
+            }
         }
 
         [Test]
         public void EnforceSizeLimit_OverLimit_FileRemoved()
         {
-            // Arrange
-            CKAN.Registry registry = CKAN.Registry.Empty();
-            long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
+            {
+                // Arrange
+                CKAN.Registry registry = CKAN.Registry.Empty(repoData.Manager);
+                long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
 
-            // Act
-            Uri url = new Uri("http://kitte.nz/");
-            cache?.Store(url, TestData.DogeCoinFlagZip());
-            cache?.EnforceSizeLimit(fileSize - 100, registry);
+                // Act
+                Uri url = new Uri("http://kitte.nz/");
+                cache?.Store(url, TestData.DogeCoinFlagZip());
+                cache?.EnforceSizeLimit(fileSize - 100, registry);
 
-            // Assert
-            Assert.IsFalse(cache?.IsCached(url));
+                // Assert
+                Assert.IsFalse(cache?.IsCached(url));
+            }
         }
 
         #pragma warning disable IDE0051

@@ -30,9 +30,11 @@ namespace Tests.GUI
         public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
             var item = new ModList();
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             using (var tidy = new DisposableKSP())
             {
-                Assert.That(item.ComputeUserChangeSet(Registry.Empty(), crit, tidy.KSP, null, null), Is.Empty);
+                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
             }
         }
 
@@ -225,7 +227,7 @@ namespace Tests.GUI
                     {
                         // Install the "other" module
                         installer.InstallList(
-                            modList.ComputeUserChangeSet(Registry.Empty(), crit, inst2.KSP, null, null).Select(change => change.Mod).ToList(),
+                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, inst2.KSP, null, null).Select(change => change.Mod).ToList(),
                             new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),
                             registryManager,
                             ref possibleConfigOnlyDirs,
