@@ -440,11 +440,22 @@ namespace CKAN
 
             if (modlist.TryGetValue(module.identifier, out CkanModule? possibleDup))
             {
-                if (possibleDup?.identifier == module.identifier)
+                if (possibleDup.identifier == module.identifier)
                 {
-                    // We should never add the same module twice!
-                    log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
-                    throw new ArgumentException("Already contains module: " + module.identifier);
+                    if (possibleDup.version == module.version
+                        && !possibleDup.MetadataEquals(module))
+                    {
+                        // If the version is the same and the metadata changed,
+                        // queue this up as a reinstall (remove the old version)
+                        reasons.Remove(possibleDup);
+                        modlist.Remove(possibleDup.identifier);
+                    }
+                    else
+                    {
+                        // We should never add the same module twice!
+                        log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
+                        throw new ArgumentException("Already contains module: " + module.identifier);
+                    }
                 }
                 else
                 {
