@@ -12,7 +12,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             foreach (string relName in relProps)
             {
                 if (json.ContainsKey(relName))

@@ -6,7 +6,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             var kind = json.Value<string>("kind");
             if (json.ContainsKey("download") && json.ContainsKey("$kref"))
             {

@@ -7,7 +7,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             var kind = json.Value<string>("kind");
             if (metadata.SpecVersion != null
                 && metadata.SpecVersion < v1p6 && kind == "metapackage")

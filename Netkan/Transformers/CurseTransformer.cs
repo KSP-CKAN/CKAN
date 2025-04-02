@@ -28,14 +28,12 @@ namespace CKAN.NetKAN.Transformers
             _userAgent = userAgent;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "curse" && metadata.Kref.Id != null)
+            if (metadata.Kref?.Source == "curse" && metadata.Kref.Id != null)
             {
-                var json = metadata.Json();
-
                 Log.InfoFormat("Executing Curse transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 // Look up our mod on Curse by its Id.
                 var curseMod = _api.GetMod(metadata.Kref.Id);
@@ -44,16 +42,13 @@ namespace CKAN.NetKAN.Transformers
                     throw new Kraken("Failed to get mod from Curse!");
                 }
                 var versions = curseMod.All();
-                if (opts != null)
+                if (opts.SkipReleases != null)
                 {
-                    if (opts.SkipReleases != null)
-                    {
-                        versions = versions.Skip(opts.SkipReleases.Value);
-                    }
-                    if (opts.Releases != null)
-                    {
-                        versions = versions.Take(opts.Releases.Value);
-                    }
+                    versions = versions.Skip(opts.SkipReleases.Value);
+                }
+                if (opts.Releases != null)
+                {
+                    versions = versions.Take(opts.Releases.Value);
                 }
                 bool returnedAny = false;
                 foreach (CurseFile f in versions)

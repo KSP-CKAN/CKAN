@@ -29,19 +29,19 @@ namespace CKAN.NetKAN.Transformers
             _fileService = fileService;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Download != null)
             {
-                var json = metadata.Json();
 
                 Log.Debug("Executing Download attribute transformation");
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 var file = _http.DownloadModule(metadata);
 
                 if (file != null)
                 {
+                    var json = metadata.Json();
                     Log.Debug("Calculating download size...");
                     json["download_size"] = _fileService.GetSizeBytes(file);
 
@@ -61,16 +61,12 @@ namespace CKAN.NetKAN.Transformers
 
                     Log.Debug("Calculating download MIME type...");
                     json.SafeAdd("download_content_type", _fileService.GetMimetype(file));
+                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+                    yield return new Metadata(json);
+                    yield break;
                 }
-
-                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                yield return new Metadata(json);
             }
-            else
-            {
-                yield return metadata;
-            }
+            yield return metadata;
         }
         private static readonly ModuleVersion v1p34 = new ModuleVersion("v1.34");
     }

@@ -2,9 +2,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using Newtonsoft.Json.Linq;
+
 using CKAN.Extensions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
@@ -40,20 +42,18 @@ namespace CKAN.NetKAN.Transformers
         /// <returns>
         /// Updated metadata with the `locales` property set
         /// </returns>
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            JObject json = metadata.Json();
-            if (json.ContainsKey(localizationsProperty))
+            if (metadata.AllJson.ContainsKey(localizationsProperty))
             {
                 log.Debug("Localizations property already set, skipping");
                 // Already set, don't override (skips a bunch of file processing)
-                yield return metadata;
             }
             else
             {
-                CkanModule mod = CkanModule.FromJson(json.ToString());
-                ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
-                GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
+                var mod  = CkanModule.FromJson(metadata.AllJson.ToString());
+                var zip  = new ZipFile(_http.DownloadModule(metadata));
+                var inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files
@@ -71,16 +71,18 @@ namespace CKAN.NetKAN.Transformers
 
                 if (locales.Any())
                 {
+                    var json = metadata.Json();
                     json.SafeAdd(localizationsProperty, new JArray(locales));
                     log.Debug("Localizations property set");
                     yield return new Metadata(json);
+                    yield break;
                 }
                 else
                 {
                     log.Debug("No localizations found");
-                    yield return metadata;
                 }
             }
+            yield return metadata;
         }
 
         private const string localizationsProperty = "localizations";

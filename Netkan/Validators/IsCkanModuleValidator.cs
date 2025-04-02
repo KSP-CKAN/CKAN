@@ -6,7 +6,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            CkanModule.FromJson(metadata.Json().ToString());
+            CkanModule.FromJson(metadata.AllJson.ToString());
         }
     }
 }

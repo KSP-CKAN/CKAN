@@ -49,6 +49,6 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="metadata">The metadata to transform.</param>
         /// <returns>The transformed metadata.</returns>
-        IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts);
+        IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts);
     }
 }

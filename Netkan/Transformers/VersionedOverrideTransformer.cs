@@ -40,14 +40,13 @@ namespace CKAN.NetKAN.Transformers
             _after.Add(after);
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            var json = metadata.Json();
-
-            if (json.TryGetValue("x_netkan_override", out JToken? overrideList))
+            if (metadata.AllJson.TryGetValue("x_netkan_override", out JToken? overrideList))
             {
+                var json = metadata.Json();
                 Log.InfoFormat("Executing override transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 // There's an override section, process them
 
@@ -65,6 +64,7 @@ namespace CKAN.NetKAN.Transformers
                     Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                     yield return new Metadata(json);
+                    yield break;
                 }
                 else
                 {
@@ -74,10 +74,7 @@ namespace CKAN.NetKAN.Transformers
                             overrideList));
                 }
             }
-            else
-            {
-                yield return metadata;
-            }
+            yield return metadata;
         }
 
         /// <summary>

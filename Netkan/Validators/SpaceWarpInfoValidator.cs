@@ -27,7 +27,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            var moduleJson = metadata.Json();
+            var moduleJson = metadata.AllJson;
             CkanModule    mod  = CkanModule.FromJson(moduleJson.ToString());
             GameInstance  inst = new GameInstance(game, "/", "dummy", new NullUser());
             if (httpSvc.DownloadModule(metadata) is string file

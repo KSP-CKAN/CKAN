@@ -32,6 +32,11 @@ namespace CKAN.NetKAN.Model
         public override string ToString()
             => _string;
 
+        public static explicit operator RemoteRef(string rref)
+        {
+            return new RemoteRef(rref);
+        }
+
         private static Arguments ParseArguments(string refToken)
         {
             var match = Pattern.Match(refToken);

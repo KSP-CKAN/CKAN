@@ -28,19 +28,17 @@ namespace CKAN.NetKAN.Transformers
             _matchPreleases = matchPreleases;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "github" && opts != null)
+            if (metadata.Kref?.Source == "github")
             {
-                var json = metadata.Json();
-
                 // Tell downstream translators that this host's API is unreliable
                 opts.FlakyAPI = true;
 
                 Log.InfoFormat("Executing GitHub transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
-                var conf = (json.TryGetValue("x_netkan_github", out JToken? jtok)
+                var conf = (metadata.AllJson.TryGetValue("x_netkan_github", out JToken? jtok)
                             && jtok is JObject jobj
                                 ? jobj.ToObject<GitHubConfig>() : null)
                            ?? new GitHubConfig();
@@ -181,7 +179,7 @@ namespace CKAN.NetKAN.Transformers
                     json.SafeAdd("download_content_type",
                                  "application/vnd.github+json");
                 }
-                json.SafeAdd(Metadata.UpdatedPropertyName, ghAsset.Updated);
+                json.SafeAdd("release_date", ghAsset.Updated);
 
                 if (ghRef.Project.Contains('_'))
                 {

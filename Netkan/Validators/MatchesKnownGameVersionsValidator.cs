@@ -16,7 +16,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            var mod = CkanModule.FromJson(metadata.Json().ToString());
+            var mod = CkanModule.FromJson(metadata.AllJson.ToString());
             if (!mod.IsCompatible(new GameVersionCriteria(null, knownVersions)))
             {
                 CkanModule.GetMinMaxVersions(new List<CkanModule>() { mod }, out _, out _,

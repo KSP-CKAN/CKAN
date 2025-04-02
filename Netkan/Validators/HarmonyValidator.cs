@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Validators
 
         public void Validate(Metadata metadata)
         {
-            JObject    json = metadata.Json();
+            JObject    json = metadata.AllJson;
             CkanModule mod  = CkanModule.FromJson(json.ToString());
             // The Harmony2 module is allowed to install a Harmony DLL;
             // anybody else must have "provides":["Harmony1"] to do so

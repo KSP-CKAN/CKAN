@@ -26,7 +26,7 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "space_warp_info";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Vref != null && metadata.Vref.Source == "space-warp")
             {

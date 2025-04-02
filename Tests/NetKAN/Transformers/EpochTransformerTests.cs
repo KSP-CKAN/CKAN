@@ -1,15 +1,53 @@
 using System.Linq;
+
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
+using CKAN;
 
 namespace Tests.NetKAN.Transformers
 {
     [TestFixture]
     public sealed class EpochTransformerTests
     {
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01""}", "1.01", "1.01")]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""0""}",
+             "1.01", "1.01", Description = "Implicit 0")]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""1""}", "1.01", "1:1.01")]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""v1.01"", ""x_netkan_epoch"": ""9""}", "v1.01", "9:v1.01")]
+        public void Transform_WithAndWithoutEpochs_EpochAppliedCorrectly(string json, string orig_version, string new_version)
+        {
+            JObject metadata = JObject.Parse(json);
+            var opts = new TransformOptions(1, null, null, null, false, null);
+
+            Assert.AreEqual(orig_version, (string?)metadata["version"], "JSON parsed as expected");
+            metadata = new EpochTransformer().Transform(new Metadata(metadata), opts).First().Json();
+            Assert.AreEqual(new_version, (string?)metadata["version"], "Output string as expected");
+        }
+
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01""}", false)]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""1""}", false)]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""3""}", false)]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""a""}", true)]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""-1""}", true)]
+        [TestCase(@"{""spec_version"": 1, ""version"": ""1.01"", ""x_netkan_epoch"": ""5.5""}", true)]
+        public void Transform_ValidOrInvalidEpoch_ThrowsIffInvalid(string json, bool expected_to_throw)
+        {
+            var opts = new TransformOptions(1, null, null, null, false, null);
+            TestDelegate test_delegate = () => new EpochTransformer().Transform(new Metadata(JObject.Parse(json)), opts).First().Json();
+            if (expected_to_throw)
+            {
+                Assert.Throws<BadMetadataKraken>(test_delegate);
+            }
+            else
+            {
+                Assert.DoesNotThrow(test_delegate);
+            }
+        }
+
         [
             TestCase("1.1",     null,   null, false,    "1.1", false),
             TestCase("1.1",     null,   null,  true,    "1.1", false),

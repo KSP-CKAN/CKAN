@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using CKAN.NetKAN.Model;
+
 using log4net;
-using Newtonsoft.Json.Linq;
+
+using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -15,14 +16,14 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "forced_v";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            var json = metadata.Json();
 
-            if (json.TryGetValue("x_netkan_force_v", out JToken? forceV) && (bool)forceV)
+            if (metadata.ForceV)
             {
+                var json = metadata.Json();
                 Log.InfoFormat("Executing forced-v transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 // Force a 'v' in front of the version string if it's not there
                 // already.
@@ -37,9 +38,10 @@ namespace CKAN.NetKAN.Transformers
                 }
 
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+                yield return new Metadata(json);
+                yield break;
             }
-
-            yield return new Metadata(json);
+            yield return metadata;
         }
     }
 }

@@ -261,7 +261,7 @@ namespace CKAN.NetKAN.Processors
                     new MessageAttributeValue()
                     {
                         DataType    = "String",
-                        StringValue = Program.CkanFileName(outDir, ckan.Json())
+                        StringValue = Program.CkanFileName(outDir, ckan.AllJson)
                     }
                 );
             }
@@ -325,7 +325,7 @@ namespace CKAN.NetKAN.Processors
                 })
             {
                 var serializer = new JsonSerializer();
-                serializer.Serialize(writer, ckan.Json());
+                serializer.Serialize(writer, ckan.AllJson);
             }
             return sw + Environment.NewLine;
         }

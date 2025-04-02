@@ -14,7 +14,52 @@ namespace CKAN.NetKAN.Transformers
 {
     internal sealed class PropertySortTransformer : ITransformer
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(PropertySortTransformer));
+        public string Name => "property_sort";
+
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
+        {
+            Log.Debug("Executing property sort transformation");
+            Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
+
+            var newMeta = SortProperties(metadata);
+            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, newMeta.AllJson);
+            yield return newMeta;
+        }
+
+        public static Metadata SortProperties(Metadata metadata)
+        {
+            var json = metadata.Json();
+            var sortedJson = new JObject();
+
+            var sortedPropertyNames = json.Properties()
+                                          .Select(i => i.Name)
+                                          .OrderBy(GetPropertySortOrder)
+                                          .ThenBy(i => i);
+
+            foreach (var propertyName in sortedPropertyNames)
+            {
+                sortedJson[propertyName] = json[propertyName];
+            }
+
+            if (json["resources"] is JObject resources)
+            {
+                var sortedResourcePropertyNames = resources.Properties()
+                                                           .Select(i => i.Name)
+                                                           .OrderBy(GetResourcePropertySortOrder)
+                                                           .ThenBy(i => i);
+
+                var sortedResources = new JObject();
+
+                foreach (var resourceProprtyName in sortedResourcePropertyNames)
+                {
+                    sortedResources[resourceProprtyName] = resources[resourceProprtyName];
+                }
+
+                sortedJson["resources"] = sortedResources;
+            }
+
+            return new Metadata(sortedJson);
+        }
 
         private const int DefaultSortOrder = 1073741823; // int.MaxValue / 2
 
@@ -71,54 +116,6 @@ namespace CKAN.NetKAN.Transformers
             .Select((str, i) => new KeyValuePair<string, int>(str, i))
             .ToDictionary();
 
-        public string Name => "property_sort";
-
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
-        {
-            var json = metadata.Json();
-            var sortedJson = new JObject();
-
-            Log.Debug("Executing property sort transformation");
-            Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
-
-            var sortedPropertyNames = json
-                .Properties()
-                .Select(i => i.Name)
-                .OrderBy(GetPropertySortOrder)
-                .ThenBy(i => i);
-
-            foreach (var propertyName in sortedPropertyNames)
-            {
-                sortedJson[propertyName] = json[propertyName];
-            }
-
-            if (json["resources"] is JObject resources)
-            {
-                var sortedResourcePropertyNames = resources
-                    .Properties()
-                    .Select(i => i.Name)
-                    .OrderBy(GetResourcePropertySortOrder)
-                    .ThenBy(i => i);
-
-                var sortedResources = new JObject();
-
-                foreach (var resourceProprtyName in sortedResourcePropertyNames)
-                {
-                    sortedResources[resourceProprtyName] = resources[resourceProprtyName];
-                }
-
-                sortedJson["resources"] = sortedResources;
-            }
-
-            Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, sortedJson);
-
-            yield return new Metadata(sortedJson);
-        }
-
-        public static Metadata SortProperties(Metadata metadata)
-            => new PropertySortTransformer().Transform(metadata, null)
-                                            .First();
-
         private static double GetPropertySortOrder(string propertyName)
             => PropertySortOrder.TryGetValue(propertyName, out int sortOrder)
                 ? sortOrder
@@ -132,5 +129,7 @@ namespace CKAN.NetKAN.Transformers
                 : propertyName.StartsWith("x_")
                     ? DefaultSortOrder + 1
                     : DefaultSortOrder;
+
+        private static readonly ILog Log = LogManager.GetLogger(typeof(PropertySortTransformer));
     }
 }

@@ -21,7 +21,7 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Debug("Validating that metadata vref is consistent with download contents");
 
-            JObject json = metadata.Json();
+            JObject json = metadata.AllJson;
             var noVersion = metadata.Version == null;
             if (noVersion)
             {

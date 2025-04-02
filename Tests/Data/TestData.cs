@@ -78,9 +78,7 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""kerbalstuff"": {
-                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Flag"",
@@ -133,9 +131,7 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""kerbalstuff"": {
-                            ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Flag"",
@@ -178,9 +174,7 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""kerbalstuff"": {
-                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Flag"",
@@ -220,9 +214,7 @@ namespace Tests.Data
                         ""min_version"": ""1.01""
                     ),
                     ""resources"": {
-                        ""kerbalstuff"": {
-                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Flag"",
@@ -382,9 +374,7 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""kerbalstuff"": {
-                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Flag"",
@@ -420,9 +410,7 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""kerbalstuff"": {
-                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Core Plugin"",
@@ -464,9 +452,7 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""kerbalstuff"": {
-                        ""url"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag""
-                        },
+                        ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
                         ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
                     },
                     ""name"": ""Dogecoin Plugin Addon - Ferram"",

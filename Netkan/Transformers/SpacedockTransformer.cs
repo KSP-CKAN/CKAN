@@ -30,30 +30,25 @@ namespace CKAN.NetKAN.Transformers
             _githubApi = githubApi;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == "spacedock")
             {
-                var json = metadata.Json();
-
                 Log.InfoFormat("Executing SpaceDock transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 // Look up our mod on SD by its Id.
                 var sdMod = _api.GetMod(Convert.ToInt32(metadata.Kref.Id));
                 var versions = sdMod?.All();
                 if (sdMod != null && versions != null)
                 {
-                    if (opts != null)
+                    if (opts.SkipReleases != null)
                     {
-                        if (opts.SkipReleases != null)
-                        {
-                            versions = versions.Skip(opts.SkipReleases.Value);
-                        }
-                        if (opts.Releases != null)
-                        {
-                            versions = versions.Take(opts.Releases.Value);
-                        }
+                        versions = versions.Skip(opts.SkipReleases.Value);
+                    }
+                    if (opts.Releases != null)
+                    {
+                        versions = versions.Take(opts.Releases.Value);
                     }
                     bool returnedAny = false;
                     foreach (SDVersion vers in versions)
@@ -91,7 +86,7 @@ namespace CKAN.NetKAN.Transformers
             json.SafeAdd("version", ver);
             json.Remove("$kref");
             json.SafeAdd("download", latestVersion.download_path?.OriginalString);
-            json.SafeAdd(Metadata.UpdatedPropertyName, latestVersion.created);
+            json.SafeAdd("release_date", latestVersion.created);
 
             json.SafeAdd("author", () => GetAuthors(sdMod));
 

@@ -20,14 +20,12 @@ namespace CKAN.NetKAN.Transformers
             this.userAgent = userAgent;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "http")
+            if (metadata.Kref?.Source == "http")
             {
-                var json = metadata.Json();
-
                 Log.InfoFormat("Executing HTTP transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 if (Uri.IsWellFormedUriString(metadata.Kref.Id, UriKind.Absolute))
                 {
@@ -37,12 +35,14 @@ namespace CKAN.NetKAN.Transformers
 
                     if (resolvedUri != null)
                     {
+                        var json = metadata.Json();
                         json.Remove("$kref");
                         json["download"] = resolvedUri.ToString();
 
                         Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
 
                         yield return new Metadata(json);
+                        yield break;
                     }
                     else
                     {
@@ -54,10 +54,7 @@ namespace CKAN.NetKAN.Transformers
                     throw new Kraken("Invalid URL in HTTP $kref: " + metadata.Kref.Id);
                 }
             }
-            else
-            {
-                yield return metadata;
-            }
+            yield return metadata;
         }
     }
 }

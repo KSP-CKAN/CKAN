@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-using log4net;
-using Newtonsoft.Json.Linq;
 
+using log4net;
+
+#if NETFRAMEWORK
+using CKAN.Extensions;
+#endif
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers
@@ -12,9 +15,9 @@ namespace CKAN.NetKAN.Transformers
     {
         public string Name => "staging_links";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (opts != null && opts.Staged && opts.StagingReasons.Count > 0)
+            if (opts.Staged && opts.StagingReasons.Count > 0)
             {
                 var table = LinkTable(metadata);
                 if (!string.IsNullOrEmpty(table))
@@ -30,20 +33,17 @@ namespace CKAN.NetKAN.Transformers
 
         private static string LinkTable(Metadata metadata)
         {
-            var resourcesJson = (JObject?)metadata.Json()?["resources"];
-            if (resourcesJson == null)
-            {
-                // No resources, no links to append
-                return "";
-            }
             StringBuilder table = new StringBuilder();
-            // Blank lines to separate the table from the description
             table.AppendLine("Resource | URL");
             table.AppendLine(":-- | :--");
             table.AppendLine($"download | <{metadata.Download}>");
-            foreach (var prop in resourcesJson.Properties().OrderBy(prop => prop.Name))
+            if (metadata.Resources != null)
             {
-                table.AppendLine($"{prop.Name} | <{prop.Value}>");
+                foreach ((string name, string value) in metadata.Resources
+                                                                .OrderBy(kvp => kvp.Key))
+                {
+                    table.AppendLine($"{name} | <{value}>");
+                }
             }
             return table.ToString();
         }

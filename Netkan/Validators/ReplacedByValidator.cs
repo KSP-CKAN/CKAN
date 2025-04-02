@@ -7,7 +7,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             if (metadata.SpecVersion != null
                 && metadata.SpecVersion < v1p26 && json.ContainsKey("replaced_by"))
             {

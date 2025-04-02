@@ -7,7 +7,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             if (json?.Value<string>("spec_version") is not string s
                 || !specVersionFormat.IsMatch(s))
             {

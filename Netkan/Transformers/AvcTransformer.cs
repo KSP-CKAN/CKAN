@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 
-using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
 
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
@@ -42,19 +42,19 @@ namespace CKAN.NetKAN.Transformers
             _vrefValidator = new VrefValidator(_http, _moduleService, game);
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             _vrefValidator.Validate(metadata);
 
-            if (metadata.Vref != null && metadata.Vref.Source == "ksp-avc")
+            if (metadata.Vref?.Source == "ksp-avc")
             {
-                var json = metadata.Json();
 
                 Log.InfoFormat("Executing internal AVC transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 var noVersion = metadata.Version == null;
 
+                var json = metadata.Json();
                 if (noVersion)
                 {
                     json["version"] = "0"; // TODO: DBB: Dummy version necessary to the next statement doesn't throw
@@ -124,7 +124,7 @@ namespace CKAN.NetKAN.Transformers
                         }
                     }
 
-                    ApplyVersions(json, avc);
+                    ApplyVersions(metadata, json, avc);
 
                     // It's cool if we don't have version info at all, it's optional in the AVC spec.
 
@@ -139,7 +139,7 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        public static void ApplyVersions(JObject json, AvcVersion avc)
+        public static void ApplyVersions(Metadata metadata, JObject json, AvcVersion avc)
         {
             GameVersion.SetJsonCompatibility(json, avc.ksp_version, avc.ksp_version_min, avc.ksp_version_max);
 
@@ -149,7 +149,7 @@ namespace CKAN.NetKAN.Transformers
                 // forgetting to update it when new versions are released. Therefore if we have a version
                 // specified from another source such as SpaceDock, curse or a GitHub tag, don't overwrite it
                 // unless x_netkan_trust_version_file is true.
-                if ((bool?)json["x_netkan_trust_version_file"] ?? false)
+                if (metadata.TrustVersionFile)
                 {
                     json.Remove("version");
                 }

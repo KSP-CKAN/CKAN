@@ -21,14 +21,14 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "jenkins";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.Kref != null && metadata.Kref.Source == "jenkins" && opts != null)
+            if (metadata.Kref?.Source == "jenkins")
             {
                 var json = metadata.Json();
 
                 Log.InfoFormat("Executing Jenkins transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 JenkinsOptions options = json["x_netkan_jenkins"]?.ToObject<JenkinsOptions>()
                     ?? new JenkinsOptions();
@@ -62,9 +62,9 @@ namespace CKAN.NetKAN.Transformers
         }
 
         private static Metadata TransformOne(Metadata       metadata,
-                                      JObject        json,
-                                      JenkinsBuild   build,
-                                      JenkinsOptions options)
+                                             JObject        json,
+                                             JenkinsBuild   build,
+                                             JenkinsOptions options)
         {
             var artifacts = build.Artifacts
                 ?.Where(a => a.FileName != null
@@ -80,7 +80,7 @@ namespace CKAN.NetKAN.Transformers
                     Log.DebugFormat("Using download URL: {0}", download);
                     json.Remove("$kref");
                     json.SafeAdd("download", download);
-                    json.SafeAdd(Metadata.UpdatedPropertyName, build.Timestamp);
+                    json.SafeAdd("release_date", build.Timestamp);
 
                     if (options.UseFilenameVersion)
                     {

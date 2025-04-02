@@ -22,7 +22,7 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Debug("Validating that craft files are installed into Ships");
 
-            JObject    json = metadata.Json();
+            JObject    json = metadata.AllJson;
             CkanModule mod  = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {
