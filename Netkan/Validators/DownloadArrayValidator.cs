@@ -9,7 +9,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             if (json.ContainsKey("download"))
             {
                 if (metadata.SpecVersion != null

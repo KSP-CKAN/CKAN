@@ -20,9 +20,9 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "staging";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (opts != null && VersionsNeedManualReview(metadata, out string reason))
+            if (VersionsNeedManualReview(metadata, out string reason))
             {
                 Log.DebugFormat("Enabling staging, reason: {0}", reason);
                 opts.StagingReasons.Add(reason);
@@ -34,7 +34,7 @@ namespace CKAN.NetKAN.Transformers
 
         private bool VersionsNeedManualReview(Metadata metadata, out string reason)
         {
-            JObject json = metadata.Json();
+            JObject json = metadata.AllJson;
             var minStr = json["ksp_version_min"] ?? json["ksp_version"];
             var maxStr = json["ksp_version_max"] ?? json["ksp_version"];
             var minVer = (string?)minStr is string s1 ? GameVersion.Parse(s1) : GameVersion.Any;

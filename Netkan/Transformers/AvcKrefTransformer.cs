@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
-using log4net;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
+
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
@@ -28,14 +30,11 @@ namespace CKAN.NetKAN.Transformers
             githubSrc = github;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref?.Source == "ksp-avc" && metadata.Kref.Id != null)
             {
-                var json = metadata.Json();
-
                 Log.InfoFormat("Executing KSP-AVC $kref transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
 
                 var url = new Uri(metadata.Kref.Id);
                 if ((githubSrc?.DownloadText(url)
@@ -44,6 +43,8 @@ namespace CKAN.NetKAN.Transformers
                     && JsonConvert.DeserializeObject<AvcVersion>(contents)
                         is AvcVersion remoteAvc)
                 {
+                    var json = metadata.Json();
+                    Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
                     json.SafeAdd("name",     remoteAvc.Name);
                     json.Remove("$kref");
                     json.SafeAdd("download", remoteAvc.Download);
@@ -61,17 +62,14 @@ namespace CKAN.NetKAN.Transformers
                         resourcesJson?.SafeAdd("repository", $"https://github.com/{remoteAvc.Github.Username}/{remoteAvc.Github.Repository}");
                     }
                     // Use standard KSP-AVC logic to set version and the ksp_version_* properties
-                    AvcTransformer.ApplyVersions(json, remoteAvc);
+                    AvcTransformer.ApplyVersions(metadata, json, remoteAvc);
+                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+                    yield return new Metadata(json);
+                    yield break;
                 }
-
-                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                yield return new Metadata(json);
             }
-            else
-            {
-                yield return metadata;
-            }
+            yield return metadata;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Transformers
         /// <param name="metadata">Input netkan</param>
         /// <param name="opts">Inflation options from command line</param>
         /// <returns></returns>
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref?.Source == Name)
             {
@@ -88,7 +88,7 @@ namespace CKAN.NetKAN.Transformers
                                                              "Wget", 1)
                                             ?.OriginalString);
             }
-            json.SafeAdd(Metadata.UpdatedPropertyName, version.Timestamp);
+            json.SafeAdd("release_date", version.Timestamp);
 
             json.Remove("$kref");
 

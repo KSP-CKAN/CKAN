@@ -8,7 +8,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json      = metadata.Json();
+            var json      = metadata.AllJson;
             var overrides = json["x_netkan_override"];
             if (overrides != null)
             {

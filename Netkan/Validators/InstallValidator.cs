@@ -11,7 +11,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             if (json.ContainsKey("install"))
             {
                 foreach (JObject stanza in json["install"]?.OfType<JObject>()

@@ -54,6 +54,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Exclude release author bots from authors list (#4318, #4319 by: HebaruSan)
 - [Build] Support building on macOS (#4320 by: doinkythederp; reviewed: HebaruSan)
 - [Spec] Document the `x_netkan_trust_version_file` property (#4334 by: HebaruSan)
+- [Netkan] Make Netkan.Metadata a more standard JSON object, eliminate deep clones (#4339 by: HebaruSan)
 
 ## v1.35.2 (Penrose)
 

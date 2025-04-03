@@ -16,12 +16,12 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "strip_netkan_metadata";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             var json = metadata.Json();
 
             Log.Debug("Executing strip Netkan metadata transformation");
-            Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+            Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
             Strip(json);
 

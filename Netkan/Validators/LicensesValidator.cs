@@ -1,8 +1,10 @@
 using System.Text.RegularExpressions;
+using System.Linq;
+
 using Newtonsoft.Json.Linq;
+
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
-using System.Linq;
 
 namespace CKAN.NetKAN.Validators
 {
@@ -10,7 +12,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var json = metadata.Json();
+            var json = metadata.AllJson;
             var licenses = json["license"] switch
                            {
                                JArray array => array,
@@ -44,7 +46,7 @@ namespace CKAN.NetKAN.Validators
                 }
             }
             var kref = (string?)json["$kref"] ?? "";
-            if (!metanetkan.IsMatch(kref) && !json.ContainsKey("x_netkan_license_ok"))
+            if (!metanetkan.IsMatch(kref) && !metadata.SkipLicenseValidation)
             {
                 if (licenses == null || licenses.Count < 1)
                 {

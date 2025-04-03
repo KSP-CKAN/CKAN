@@ -19,40 +19,27 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "epoch";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             Log.Debug("Fixing version strings (if required)...");
 
-            var json = metadata.Json();
+            JObject? json = null;
 
-            if (json.TryGetValue("x_netkan_epoch", out JToken? epoch))
+            // Implicit if zero. No need to add
+            if (metadata.Epoch is not null and not 0)
             {
+                json ??= metadata.Json();
                 Log.InfoFormat("Executing epoch transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
-
-                if (uint.TryParse(epoch.ToString(), out uint epochNumber))
-                {
-                    // Implicit if zero. No need to add
-                    if (epochNumber != 0)
-                    {
-                        json["version"] = epochNumber + ":" + json["version"];
-                    }
-
-                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-                }
-                else
-                {
-                    throw new BadMetadataKraken(null, "Invalid epoch: " + epoch + " In " + json["identifier"]);
-                }
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
+                json["version"] = $"{metadata.Epoch}:{metadata.Version}";
+                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
             }
 
-            if (json.TryGetValue("x_netkan_allow_out_of_order", out JToken? allowOOO)
-                && (bool)allowOOO)
+            if (metadata.AllowOutOfOrder)
             {
                 Log.Debug("Out of order versions enabled in netkan, skipping OOO check");
             }
-            else if (opts != null
-                     && (string?)json["version"] is string v
+            else if (metadata.Version != null
                      && (metadata.Prerelease
                              ? new ModuleVersion?[]
                                {
@@ -67,12 +54,13 @@ namespace CKAN.NetKAN.Transformers
                             .Max()
                         is ModuleVersion highest)
             {
-                json["version"] = CheckOutOfOrder(opts, highest,
-                                                  new ModuleVersion(v))
+                json ??= metadata.Json();
+                json["version"] = CheckOutOfOrder(opts, highest, metadata.Version)
                                       .ToString();
             }
 
-            yield return new Metadata(json);
+            yield return json == null ? metadata
+                                      : new Metadata(json);
         }
 
         private static ModuleVersion CheckOutOfOrder(TransformOptions opts,

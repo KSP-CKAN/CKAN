@@ -19,19 +19,18 @@ namespace CKAN.NetKAN.Transformers
 
         public string Name => "version_edit";
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            var json = metadata.Json();
-
-            var versionEditInfo = GetVersionEditInfo(json);
+            var versionEditInfo = GetVersionEditInfo(metadata.AllJson);
             if (versionEditInfo != null)
             {
                 Log.InfoFormat("Executing version edit transformation");
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 var findRegex = new Regex(versionEditInfo.Find);
                 if (findRegex.IsMatch(versionEditInfo.Version))
                 {
+                    var json = metadata.Json();
                     string version = new Regex(versionEditInfo.Find)
                         .Replace(versionEditInfo.Version, versionEditInfo.Replace);
 
@@ -50,6 +49,9 @@ namespace CKAN.NetKAN.Transformers
                     }
 
                     json["version"] = version;
+                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+                    yield return new Metadata(json);
+                    yield break;
                 }
                 else if (versionEditInfo.Strict)
                 {
@@ -58,11 +60,8 @@ namespace CKAN.NetKAN.Transformers
                         versionEditInfo.Version,
                         versionEditInfo.Find));
                 }
-
-                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
             }
-
-            yield return new Metadata(json);
+            yield return metadata;
         }
 
         private static VersionEditInfo? GetVersionEditInfo(JObject json)

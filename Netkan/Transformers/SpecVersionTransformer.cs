@@ -18,20 +18,18 @@ namespace CKAN.NetKAN.Transformers
         public string Name => "spec_version";
 
         public IEnumerable<Metadata> Transform(Metadata          metadata,
-                                               TransformOptions? opts)
+                                               TransformOptions opts)
         {
-            var json       = metadata.Json();
-            var minVersion = SpecVersionAnalyzer.MinimumSpecVersion(json);
+            var minVersion = SpecVersionAnalyzer.MinimumSpecVersion(metadata.AllJson);
             if (metadata.SpecVersion == null || metadata.SpecVersion != minVersion)
             {
+                var json = metadata.Json();
                 log.InfoFormat("Setting spec version {0}", minVersion);
-                json[Metadata.SpecVersionPropertyName] = minVersion.ToSpecVersionJson();
+                json["spec_version"] = minVersion.ToSpecVersionJson();
                 yield return new Metadata(json);
+                yield break;
             }
-            else
-            {
-                yield return metadata;
-            }
+            yield return metadata;
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SpecVersionTransformer));

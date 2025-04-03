@@ -19,12 +19,19 @@ namespace Tests.NetKAN.Validators
         }
 
         [Test,
+            TestCase("v1.4",  @"""NotARealLicense"""),
+            TestCase("v1.4",  @"[ ""GPL-3.0"", ""NotARealLicense"" ]"),
+        ]
+        public void Validate_InvalidLicense_Throws(string spec_version, string license)
+        {
+            Assert.Throws<CKAN.BadMetadataKraken>(() => TryLicense(spec_version, license));
+        }
+
+        [Test,
             TestCase("1",     @"""WTFPL"""),
             TestCase("v1.17", @"""Unlicense"""),
-            TestCase("v1.4",  @"""NotARealLicense"""),
             TestCase("v1.4",  @"[ ""GPL-3.0"", ""MIT"" ]"),
             TestCase("v1.4",  @"[ ""GPL-3.0"", ""Unlicense"" ]"),
-            TestCase("v1.4",  @"[ ""GPL-3.0"", ""NotARealLicense"" ]"),
         ]
         public void Validate_BadSpecVersionLicense_Throws(string spec_version, string license)
         {

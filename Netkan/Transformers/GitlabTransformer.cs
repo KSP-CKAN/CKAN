@@ -37,7 +37,7 @@ namespace CKAN.NetKAN.Transformers
         /// <param name="metadata">Input netkan</param>
         /// <param name="opts">Inflation options from command line</param>
         /// <returns></returns>
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref?.Source == Name)
             {
@@ -90,7 +90,7 @@ namespace CKAN.NetKAN.Transformers
                                .Where(src => src.Format == "zip")
                                .Select(src => src.URL)
                                .FirstOrDefault());
-            json.SafeAdd(Metadata.UpdatedPropertyName, release.ReleasedAt);
+            json.SafeAdd("release_date", release.ReleasedAt);
 
             json.Remove("$kref");
 

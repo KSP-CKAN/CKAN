@@ -33,14 +33,14 @@ namespace CKAN.NetKAN.Transformers
             _github = github;
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             if (metadata.Kref != null && metadata.Kref.Source == KrefSource && metadata.Kref.Id != null)
             {
                 var json = metadata.Json();
 
                 Log.InfoFormat("Executing MetaNetkan transformation with {0}", metadata.Kref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, json);
+                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 // Make sure resources exist, save metanetkan
                 if (json["resources"] == null)

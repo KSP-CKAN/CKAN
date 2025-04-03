@@ -8,7 +8,7 @@ namespace CKAN.NetKAN.Validators
     {
         public void Validate(Metadata metadata)
         {
-            var errors = CKANSchema.schema?.Validate(metadata.Json());
+            var errors = CKANSchema.schema?.Validate(metadata.AllJson);
             if (errors?.Any() ?? false)
             {
                 var msg = string.Join(", ", errors.Select(err => $"{err.Path}: {err.Kind}"));

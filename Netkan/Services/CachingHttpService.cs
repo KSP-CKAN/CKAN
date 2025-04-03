@@ -34,9 +34,9 @@ namespace CKAN.NetKAN.Services
             }
             try
             {
-                return DownloadPackage(metadata.Download,
+                return DownloadPackage(metadata.Download[0],
                                        metadata.Identifier,
-                                       metadata.RemoteTimestamp);
+                                       metadata.ReleaseDate);
             }
             catch (Exception)
             {
@@ -50,8 +50,8 @@ namespace CKAN.NetKAN.Services
                     log.InfoFormat("Trying fallback URL: {0}", fallback);
                     return DownloadPackage(fallback,
                                            metadata.Identifier,
-                                           metadata.RemoteTimestamp,
-                                           metadata.Download);
+                                           metadata.ReleaseDate,
+                                           metadata.Download[0]);
                 }
             }
         }

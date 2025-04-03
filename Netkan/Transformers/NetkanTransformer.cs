@@ -71,7 +71,7 @@ namespace CKAN.NetKAN.Transformers
             });
         }
 
-        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions? opts)
+        public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
             Metadata[] modules = new Metadata[] { metadata };
             foreach (ITransformer tr in _transformers)

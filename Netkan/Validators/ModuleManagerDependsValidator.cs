@@ -25,7 +25,7 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Debug("Validating that metadata dependencies are consistent with cfg file syntax");
 
-            JObject    json = metadata.Json();
+            JObject    json = metadata.AllJson;
             CkanModule mod  = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {

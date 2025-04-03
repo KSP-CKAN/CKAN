@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Debug("Validating that metadata has tags");
 
-            JObject json = metadata.Json();
+            JObject json = metadata.AllJson;
             var tags = !json.ContainsKey("tags") ? null : (JArray?)json["tags"];
             if (tags == null || tags.Count < 1)
             {

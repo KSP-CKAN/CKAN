@@ -112,7 +112,7 @@ namespace CKAN.NetKAN
                         .ToArray();
                     foreach (Metadata ckan in ckans)
                     {
-                        WriteCkan(Options.OutputDir, ckan.Json());
+                        WriteCkan(Options.OutputDir, ckan.AllJson);
                     }
                 }
                 else
