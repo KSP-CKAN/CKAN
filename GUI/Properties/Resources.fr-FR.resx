@@ -510,6 +510,9 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="ModInfoCached" xml:space="preserve">
     <value>Le module est dans le cache, aperçu disponible</value>
   </data>
+  <data name="ModInfoDownload" xml:space="preserve">
+    <value>Télécharger ({0})</value>
+  </data>
   <data name="ModInfoNoDownload" xml:space="preserve">
     <value>Le module n'est pas téléchargeable</value>
   </data>
@@ -1062,6 +1065,9 @@ Sinon, seuls ces derniers seront installés.</value>
   </data>
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve">
     <value>Combiner une nouvelle recherche avec vos recherches actuelles</value>
+  </data>
+  <data name="ManageModsPlaying" xml:space="preserve">
+    <value>Lancé...</value>
   </data>
   <data name="ManageModsSteamPlayTimeYesTooltip" xml:space="preserve">
     <value>(comptera le temps de jeu dans Steam)</value>
