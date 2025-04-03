@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Checkboxes to copy more dirs when cloning instances (#4304 by: HebaruSan)
 - [Core] Use internal ckan and version file to install unrecognized ZIPs (#4327 by: HebaruSan)
 - [GUI] Disable Play button while playing game (#4330 by: HebaruSan)
+- [GUI] Add some missing Polish translations (#4341 by: 3meraldK; reviewed: HebaruSan)
 
 ### Bugfixes
 

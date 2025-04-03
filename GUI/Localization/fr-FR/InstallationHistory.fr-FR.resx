@@ -141,6 +141,9 @@
   <data name="SelectInstallMessage.Text" xml:space="preserve">
     <value>Cliquez sur un horodatage à gauche pour voir quels mods ont été installés</value>
   </data>
+  <data name="LoadingMessage.Text" xml:space="preserve">
+    <value>Chargement de l'historique d'installation...</value>
+  </data>
   <data name="NoModsMessage.Text" xml:space="preserve">
     <value>Aucun mod n'a été installé</value>
   </data>

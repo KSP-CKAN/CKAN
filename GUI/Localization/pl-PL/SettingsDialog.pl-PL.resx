@@ -192,6 +192,9 @@
   <data name="CheckUpdateOnLaunchCheckbox.Text" xml:space="preserve">
     <value>Sprawdź aktualizacje CKAN przy uruchomieniu</value>
   </data>
+  <data name="DevBuildsCheckbox.Text" xml:space="preserve">
+    <value>Używaj wersji deweloperskich</value>
+  </data>
   <data name="CheckForUpdatesButton.Text" xml:space="preserve">
     <value>Sprawdź dostępność aktualizacji</value>
   </data>
