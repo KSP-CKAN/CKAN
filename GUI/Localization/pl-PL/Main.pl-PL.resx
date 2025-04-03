@@ -156,8 +156,11 @@
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
     <value>Pluginy CKAN</value>
   </data>
+  <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Preferowane hosty</value>
+  </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
-    <value>$Filtry instalacji</value>
+    <value>Filtry instalacji</value>
   </data>
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Wiersz poleceń gry</value>
@@ -173,6 +176,9 @@
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Discord</value>
+  </data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
+    <value>Zgłoś problem z modyfikacjami podczas gry</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
     <value>Zgłoś problem z &amp;klientem CKAN</value>
@@ -206,6 +212,12 @@
   </data>
   <data name="EditModpackTabPage.Text" xml:space="preserve">
     <value>Edytuj paczkę modów</value>
+  </data>
+  <data name="UnmanagedFilesTabPage.Text" xml:space="preserve">
+    <value>Niezarządzane pliki</value>
+  </data>
+  <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
+    <value>Historia instalacji</value>
   </data>
   <data name="minimizeNotifyIcon.Text" xml:space="preserve">
     <value>CKAN</value>

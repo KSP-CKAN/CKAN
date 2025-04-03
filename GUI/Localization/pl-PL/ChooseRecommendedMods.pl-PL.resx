@@ -117,6 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="UncheckAllButton.Text" xml:space="preserve">
+    <value>Odznacz wszystko</value>
+  </data>
+  <data name="AlwaysUncheckAllButton.Text" xml:space="preserve">
+    <value>Zawsze odznaczaj wszystko</value>
+  </data>
+  <data name="CheckAllButton.Text" xml:space="preserve">
+    <value>Zaznacz wszystko</value>
+  </data>
+  <data name="CheckRecommendationsButton.Text" xml:space="preserve">
+    <value>Zaznacz rekomendacje</value>
+  </data>
   <data name="RecommendedModsCancelButton.Text" xml:space="preserve">
     <value>Anuluj</value>
   </data>

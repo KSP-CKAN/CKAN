@@ -572,6 +572,10 @@ Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/
   <data name="MainModListAutoDetected" xml:space="preserve">
     <value>AD</value>
   </data>
+  <data name="MainModListAutoInstalledToolTip" xml:space="preserve">
+    <value>If checked, auto-uninstall this mod if everything that depends on it is removed</value>
+    <value>Jeśli zaznaczone, automatycznie odinstaluj ten mod, jeżeli wszystkie inne mody, które go potrzebują są usunięte</value>
+  </data>
   <data name="MainModListUnknownFilter" xml:space="preserve">
     <value>Nieznany typ filtra {0} w IsModInFilter</value>
   </data>
@@ -972,5 +976,20 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
   <data name="FilterLinkToolTip">
     <value>Kliknij, aby wyszukać
 Kliknij razem z Ctrl lub Shift, aby połączyć z bieżącym wyszukiwaniem</value>
+  </data>
+  <data name="PreferredHostsPlaceholder">
+    <value>&lt;POZOSTAŁE HOSTY&gt;</value><comment>Ten tekst nie powinien być prawidłowy jako nazwa hosta</comment>
+  </data>
+  <data name="PreferredHostsTooltipMoveRight">
+    <value>Dodaj zaznaczonego hosta do listy preferowanych hostów</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveLeft">
+    <value>Usuń zaznaczonego hosta z listy preferowanych hostów</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveUp">
+    <value>Ustaw zaznaczonego hosta jako wyższy priorytet</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveDown">
+    <value>Ustaw zaznaczonego hosta jako niższy priorytet</value>
   </data>
 </root>
