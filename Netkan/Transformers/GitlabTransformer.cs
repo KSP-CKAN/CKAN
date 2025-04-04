@@ -56,8 +56,8 @@ namespace CKAN.NetKAN.Transformers
                     log.WarnFormat("No releases found for {0}", reference);
                     return Enumerable.Repeat(metadata, 1);
                 }
-                return releases.Select(release => TransformOne(
-                    metadata.Json(), project, release));
+                return releases.Select(release => TransformOne(metadata.Json(), project, release,
+                                                               metadata.Gitlab ?? new GitlabOptions()));
             }
             else
             {
@@ -66,10 +66,8 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private static Metadata TransformOne(JObject json, GitlabProject project, GitlabRelease release)
+        private static Metadata TransformOne(JObject json, GitlabProject project, GitlabRelease release, GitlabOptions opts)
         {
-            var opts = (json["x_netkan_gitlab"] as JObject)?.ToObject<GitlabOptions>()
-                ?? new GitlabOptions();
             if (!opts.UseSourceArchive)
             {
                 throw new Exception("'x_netkan_gitlab.use_source_archive' missing or false; GitLab ONLY supports source archives!");

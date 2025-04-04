@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
+
 using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using System.Linq;
 
 namespace CKAN.NetKAN.Sources.Jenkins
 {
@@ -54,26 +57,26 @@ namespace CKAN.NetKAN.Sources.Jenkins
         private string? Call(Uri url)
             => _http.DownloadText(url);
 
-        private static readonly Dictionary<string, string> BuildTypeToProperty = new Dictionary<string, string>()
+        private static readonly Dictionary<JenkinsBuildType, string> BuildTypeToProperty = new Dictionary<JenkinsBuildType, string>()
         {
-            { "any",          "lastBuild"             },
-            { "completed",    "lastCompletedBuild"    },
-            { "failed",       "lastFailedBuild"       },
-            { "stable",       "lastStableBuild"       },
-            { "successful",   "lastSuccessfulBuild"   },
-            { "unstable",     "lastUnstableBuild"     },
-            { "unsuccessful", "lastUnsuccessfulBuild" }
+            { JenkinsBuildType.any,          "lastBuild"             },
+            { JenkinsBuildType.completed,    "lastCompletedBuild"    },
+            { JenkinsBuildType.failed,       "lastFailedBuild"       },
+            { JenkinsBuildType.stable,       "lastStableBuild"       },
+            { JenkinsBuildType.successful,   "lastSuccessfulBuild"   },
+            { JenkinsBuildType.unstable,     "lastUnstableBuild"     },
+            { JenkinsBuildType.unsuccessful, "lastUnsuccessfulBuild" }
         };
 
-        private static readonly Dictionary<string, string> BuildTypeToResult = new Dictionary<string, string>()
+        private static readonly Dictionary<JenkinsBuildType, string> BuildTypeToResult = new Dictionary<JenkinsBuildType, string>()
         {
             // "any" not listed so it will match everything
-            { "completed",    "SUCCESS" },
-            { "stable",       "SUCCESS" },
-            { "successful",   "SUCCESS" },
-            { "failed",       "FAILURE" },
-            { "unstable",     "FAILURE" },
-            { "unsuccessful", "FAILURE" }
+            { JenkinsBuildType.completed,    "SUCCESS" },
+            { JenkinsBuildType.stable,       "SUCCESS" },
+            { JenkinsBuildType.successful,   "SUCCESS" },
+            { JenkinsBuildType.failed,       "FAILURE" },
+            { JenkinsBuildType.unstable,     "FAILURE" },
+            { JenkinsBuildType.unsuccessful, "FAILURE" }
         };
 
         private readonly IHttpService _http;

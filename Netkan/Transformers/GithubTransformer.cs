@@ -38,10 +38,7 @@ namespace CKAN.NetKAN.Transformers
                 Log.InfoFormat("Executing GitHub transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
-                var conf = (metadata.AllJson.TryGetValue("x_netkan_github", out JToken? jtok)
-                            && jtok is JObject jobj
-                                ? jobj.ToObject<GitHubConfig>() : null)
-                           ?? new GitHubConfig();
+                var conf = metadata.Github ?? new GithubOptions();
 
                 var ghRef = new GithubRef(metadata.Kref, conf.UseSourceArchive);
 

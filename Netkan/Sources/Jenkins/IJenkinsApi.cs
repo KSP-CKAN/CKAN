@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using CKAN.NetKAN.Model;
+
 namespace CKAN.NetKAN.Sources.Jenkins
 {
     internal interface IJenkinsApi

@@ -21,18 +21,18 @@ namespace CKAN.NetKAN.Transformers
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            var versionEditInfo = GetVersionEditInfo(metadata.AllJson);
-            if (versionEditInfo != null)
+            if (metadata.VersionEdit?.Find != null)
             {
                 Log.InfoFormat("Executing version edit transformation");
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
-                var findRegex = new Regex(versionEditInfo.Find);
-                if (findRegex.IsMatch(versionEditInfo.Version))
+                var findRegex = new Regex(metadata.VersionEdit.Find);
+                if (findRegex.IsMatch(metadata.Version?.ToString() ?? ""))
                 {
                     var json = metadata.Json();
-                    string version = new Regex(versionEditInfo.Find)
-                        .Replace(versionEditInfo.Version, versionEditInfo.Replace);
+                    string version = new Regex(metadata.VersionEdit.Find)
+                        .Replace(metadata.Version?.ToString() ?? "",
+                                 metadata.VersionEdit.Replace);
 
                     var versionPieces = json.Value<JObject>("x_netkan_version_pieces")
                                             ?.ToObject<Dictionary<string, string>>();
@@ -53,95 +53,15 @@ namespace CKAN.NetKAN.Transformers
                     yield return new Metadata(json);
                     yield break;
                 }
-                else if (versionEditInfo.Strict)
+                else if (metadata.VersionEdit.Strict)
                 {
                     throw new Kraken(string.Format(
                         "Could not match version {0} with find pattern {1}",
-                        versionEditInfo.Version,
-                        versionEditInfo.Find));
+                        metadata.Version,
+                        metadata.VersionEdit.Find));
                 }
             }
             yield return metadata;
-        }
-
-        private static VersionEditInfo? GetVersionEditInfo(JObject json)
-        {
-            if (json.TryGetValue("x_netkan_version_edit", out JToken? editProp)
-                && editProp != null)
-            {
-                if (json.TryGetValue("version", out JToken? versionProp)
-                    && (string?)versionProp is string ver)
-                {
-                    string? find;
-                    var replace = "${version}";
-                    var strict  = true;
-
-                    switch (editProp)
-                    {
-                        case JValue val:
-                            find = val.ToString();
-                            break;
-
-                        case JObject editObj:
-                            if (editObj.TryGetValue("find", out JToken? findProp)
-                                && findProp.Type == JTokenType.String
-                                && (string?)findProp is string fp)
-                            {
-                                find = fp;
-                            }
-                            else
-                            {
-                                throw new Kraken("`x_netkan_version_edit` must contain `find` string property");
-                            }
-                            if (editObj.TryGetValue("replace", out JToken? replaceProp))
-                            {
-                                if (replaceProp.Type != JTokenType.String)
-                                {
-                                    throw new Kraken(
-                                        "`x_netkan_version_edit` `replace` property must be a string");
-                                }
-                                replace = (string?)replaceProp ?? replace;
-                            }
-                            if (editObj.TryGetValue("strict", out JToken? strictProp))
-                            {
-                                if (strictProp.Type != JTokenType.Boolean)
-                                {
-                                    throw new Kraken(
-                                        "`x_netkan_version_edit` `strict` property must be a bool");
-                                }
-                                strict = (bool)strictProp;
-                            }
-                            break;
-
-                        default:
-                            throw new Kraken(
-                                string.Format("Unrecognized `x_netkan_version_edit` value: {0}", editProp));
-                    }
-
-                    return new VersionEditInfo(ver, find, replace, strict);
-                }
-                else
-                {
-                    throw new Kraken("`version` property must be a string property");
-                }
-            }
-            return null;
-        }
-
-        private sealed class VersionEditInfo
-        {
-            public string Version { get; private set; }
-            public string Find    { get; private set; }
-            public string Replace { get; private set; }
-            public bool   Strict  { get; private set; }
-
-            public VersionEditInfo(string version, string find, string replace, bool strict)
-            {
-                Version = version;
-                Find    = find;
-                Replace = replace;
-                Strict  = strict;
-            }
         }
     }
 }

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using log4net;
 using Newtonsoft.Json.Linq;
+
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Sources.Jenkins;
@@ -16,7 +18,7 @@ namespace CKAN.NetKAN.Transformers
     {
         public JenkinsTransformer(IJenkinsApi api)
         {
-            _api      = api;
+            _api = api;
         }
 
         public string Name => "jenkins";
@@ -25,13 +27,10 @@ namespace CKAN.NetKAN.Transformers
         {
             if (metadata.Kref?.Source == "jenkins")
             {
-                var json = metadata.Json();
-
                 Log.InfoFormat("Executing Jenkins transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
-                JenkinsOptions options = json["x_netkan_jenkins"]?.ToObject<JenkinsOptions>()
-                    ?? new JenkinsOptions();
+                JenkinsOptions options = metadata.Jenkins ?? new JenkinsOptions();
                 JenkinsRef jRef = new JenkinsRef(metadata.Kref);
 
                 var versions = _api.GetAllBuilds(jRef, options);
