@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Model;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -42,37 +43,23 @@ namespace CKAN.NetKAN.Transformers
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.AllJson.TryGetValue("x_netkan_override", out JToken? overrideList))
+            if (metadata.Overrides != null)
             {
-                var json = metadata.Json();
                 Log.InfoFormat("Executing override transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 // There's an override section, process them
 
-                Log.DebugFormat("Override section:{0}{1}", Environment.NewLine, overrideList);
-
-                if (overrideList.Type == JTokenType.Array)
+                var json = metadata.Json();
+                foreach (var overrideStanza in metadata.Overrides)
                 {
-                    // Sweet! We have an override. Let's walk through and see if we can find
-                    // an applicable section for us.
-                    foreach (var overrideStanza in overrideList)
-                    {
-                        ProcessOverrideStanza((JObject)overrideStanza, json);
-                    }
-
-                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-
-                    yield return new Metadata(json);
-                    yield break;
+                    ProcessOverrideStanza(overrideStanza, metadata, json);
                 }
-                else
-                {
-                    throw new Kraken(
-                        string.Format(
-                            "x_netkan_override expects a list of overrides, found: {0}",
-                            overrideList));
-                }
+
+                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+                yield return new Metadata(json);
+                yield break;
             }
             yield return metadata;
         }
@@ -81,40 +68,16 @@ namespace CKAN.NetKAN.Transformers
         /// Processes an individual override stanza, altering the object's
         /// metadata in the process if applicable.
         /// </summary>
-        private void ProcessOverrideStanza(JObject overrideStanza, JObject metadata)
+        private void ProcessOverrideStanza(OverrideOptions overrideStanza,
+                                           Metadata        metadata,
+                                           JObject         json)
         {
-            string? before = null;
-            string? after  = null;
-
-            if (overrideStanza.TryGetValue("before", out JToken? jBefore))
-            {
-                if (jBefore is JValue val)
-                {
-                    before = val.ToString();
-                }
-                else
-                {
-                    throw new Kraken("override before property must be a string");
-                }
-            }
-
-            if (overrideStanza.TryGetValue("after", out JToken? jAfter))
-            {
-                if (jAfter is JValue val)
-                {
-                    after = val.ToString();
-                }
-                else
-                {
-                    throw new Kraken("override after property must be a string");
-                }
-            }
-
-            if (_before.Contains(before) || _after.Contains(after))
+            if (_before.Contains(overrideStanza.BeforeStep)
+                || _after.Contains(overrideStanza.AfterStep))
             {
                 Log.InfoFormat("Processing override: {0}", overrideStanza);
 
-                if (!overrideStanza.TryGetValue("version", out JToken? stanzaConstraints))
+                if (overrideStanza.VersionConstraints == null)
                 {
                     throw new Kraken(
                         string.Format(
@@ -122,75 +85,51 @@ namespace CKAN.NetKAN.Transformers
                             overrideStanza));
                 }
 
-                IEnumerable<string> constraints;
-
-                // First let's get our constraints into a list of strings.
-
-                if (stanzaConstraints is JValue)
-                {
-                    constraints = new List<string> { stanzaConstraints.ToString() };
-                }
-                else if (stanzaConstraints is JArray array)
-                {
-                    // Pop the constraints in 'constraints'
-                    constraints = array.Values().Select(x => x.ToString());
-                }
-                else
-                {
-                    throw new Kraken(
-                        string.Format("Totally unexpected x_netkan_override - {0}", stanzaConstraints));
-                }
-
                 // If the constraints don't apply, then do nothing.
-                if (metadata["version"]?.ToString() is string s
-                    && !ConstraintsApply(constraints, new ModuleVersion(s)))
+                if (metadata.Version == null
+                    || !ConstraintsApply(overrideStanza.VersionConstraints, metadata.Version))
                 {
                     return;
                 }
 
                 // All the constraints pass; let's replace the metadata we have with what's
                 // in the override.
-
-                if (overrideStanza.TryGetValue("override", out JToken? overrideBlock)
-                    && overrideBlock is JObject overrides)
+                if (overrideStanza.Override != null)
                 {
-                    if (gameVersionProperties.Any(overrides.ContainsKey))
+                    if (gameVersionProperties.Any(overrideStanza.Override.ContainsKey))
                     {
                         GameVersion.SetJsonCompatibility(
-                            metadata,
-                            (string?)overrides["ksp_version"] is string v1
-                                ? GameVersion.Parse(v1)
-                                : null,
-                            (string?)overrides["ksp_version_min"] is string v2
-                                ? GameVersion.Parse(v2)
-                                : null,
-                            (string?)overrides["ksp_version_max"] is string v3
-                                ? GameVersion.Parse(v3)
-                                : null
-                        );
+                            json,
+                            VersionProperty(overrideStanza.Override, "ksp_version"),
+                            VersionProperty(overrideStanza.Override, "ksp_version_min"),
+                            VersionProperty(overrideStanza.Override, "ksp_version_max"));
                         foreach (var p in gameVersionProperties)
                         {
-                            overrides.Remove(p);
+                            overrideStanza.Override.Remove(p);
                         }
                     }
-                    foreach (var property in overrides.Properties())
+                    foreach ((string propName, JToken propVal) in overrideStanza.Override)
                     {
-                        metadata[property.Name] = property.Value;
+                        json[propName] = propVal;
                     }
                 }
 
-                // And let's delete anything that needs deleting.
-
-                if (overrideStanza.TryGetValue("delete", out JToken? deleteList))
+                // Delete anything that needs deleting
+                if (overrideStanza.Delete != null)
                 {
-                    foreach (string key in ((JArray)deleteList).Select(v => (string?)v)
-                                                               .OfType<string>())
+                    foreach (var key in overrideStanza.Delete)
                     {
-                        metadata.Remove(key);
+                        json.Remove(key);
                     }
                 }
             }
         }
+
+        private static GameVersion? VersionProperty(Dictionary<string, JToken> dict,
+                                                    string                     name)
+            => dict.TryGetValue(name, out JToken? tok) && (string?)tok is string v
+                   ? GameVersion.Parse(v)
+                   : null;
 
         private readonly string[] gameVersionProperties = new string[]
         {
@@ -201,63 +140,34 @@ namespace CKAN.NetKAN.Transformers
         /// Walks through a list of constraints, and returns true if they're all satisifed
         /// for the mod version we're examining.
         /// </summary>
-        private static bool ConstraintsApply(IEnumerable<string> constraints, ModuleVersion version)
-        {
-            foreach (var constraint in constraints)
-            {
-                var match = Regex.Match(
-                    constraint,
-                    @"^(?<op> [<>=]*) \s* (?<version> .*)$",
-                    RegexOptions.IgnorePatternWhitespace);
+        private static bool ConstraintsApply(IEnumerable<string> constraints,
+                                             ModuleVersion       version)
+            => constraints.All(c => ConstraintPattern.TryMatch(c, out Match? match)
+                                    && ConstraintPasses(match.Groups["op"].Value,
+                                                        version,
+                                                        new ModuleVersion(match.Groups["version"].Value)));
 
-                if (!match.Success)
-                {
-                    throw new Kraken(
-                        string.Format("Unable to parse x_netkan_override - {0}", constraint));
-                }
-
-                var op = match.Groups["op"].Value;
-                var desiredVersion = new ModuleVersion(match.Groups["version"].Value);
-
-                // This contstraint failed. This stanza is not for us.
-                if (!ConstraintPasses(op, version, desiredVersion))
-                {
-                    return false;
-                }
-            }
-
-            // All the constraints passed! We want to apply this stanza!
-            return true;
-        }
+        private static readonly Regex ConstraintPattern = new Regex(
+            @"^(?<op> [<>=]*) \s* (?<version> .*)$",
+            RegexOptions.IgnorePatternWhitespace | RegexOptions.Compiled);
 
         /// <summary>
         /// Returns whether the given constraint matches the desired version
         /// for the mod we're processing.
         /// </summary>
-        private static bool ConstraintPasses(string op, ModuleVersion version, ModuleVersion desiredVersion)
-        {
-            switch (op)
-            {
-                case "":
-                case "=":
-                    return version.IsEqualTo(desiredVersion);
-
-                case "<":
-                    return version.IsLessThan(desiredVersion);
-
-                case ">":
-                    return version.IsGreaterThan(desiredVersion);
-
-                case "<=":
-                    return version.CompareTo(desiredVersion) <= 0;
-
-                case ">=":
-                    return version.CompareTo(desiredVersion) >= 0;
-
-                default:
-                    throw new Kraken(
-                        string.Format("Unknown x_netkan_override comparator: {0}", op));
-            }
-        }
+        private static bool ConstraintPasses(string        op,
+                                             ModuleVersion version,
+                                             ModuleVersion desiredVersion)
+            => op switch
+               {
+                   "" or "=" => version.IsEqualTo(desiredVersion),
+                   "<"       => version.IsLessThan(desiredVersion),
+                   ">"       => version.IsGreaterThan(desiredVersion),
+                   "<="      => version.CompareTo(desiredVersion) <= 0,
+                   ">="      => version.CompareTo(desiredVersion) >= 0,
+                   _         => throw new Kraken(
+                                    string.Format("Unknown x_netkan_override comparator: {0}",
+                                                  op)),
+               };
     }
 }

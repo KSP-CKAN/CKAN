@@ -130,6 +130,23 @@ namespace CKAN.NetKAN.Model
         [DefaultValue(false)]
         public readonly bool OptimusPrime = false;
 
+        [JsonProperty("x_netkan_version_edit", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonVersionEditConverter))]
+        public readonly VersionEditOptions? VersionEdit;
+
+        [JsonProperty("x_netkan_override", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(JsonSingleOrArrayConverter<OverrideOptions>))]
+        public readonly List<OverrideOptions>? Overrides;
+
+        [JsonProperty("x_netkan_jenkins", NullValueHandling = NullValueHandling.Ignore)]
+        public readonly JenkinsOptions? Jenkins;
+
+        [JsonProperty("x_netkan_github", NullValueHandling = NullValueHandling.Ignore)]
+        public readonly GithubOptions? Github;
+
+        [JsonProperty("x_netkan_gitlab", NullValueHandling = NullValueHandling.Ignore)]
+        public readonly GitlabOptions? Gitlab;
+
         public readonly JObject AllJson;
 
         public JObject Json()

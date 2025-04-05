@@ -10,16 +10,10 @@ using CKAN.NetKAN.Transformers;
 namespace Tests.NetKAN
 {
     [TestFixture]
-    public class NetkanOverride
+    public class VersionedOverrideTransformerTests
     {
-        private JObject? such_metadata;
+        private readonly JObject such_metadata = JObject.Parse(TestData.DogeCoinFlag_101());
         private readonly TransformOptions opts = new TransformOptions(1, null, null, null, false, null);
-
-        [SetUp]
-        public void Setup()
-        {
-            such_metadata = JObject.Parse(TestData.DogeCoinFlag_101());
-        }
 
         [Test]
         public void ExactOverride()
