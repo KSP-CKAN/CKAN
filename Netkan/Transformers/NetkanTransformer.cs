@@ -73,19 +73,19 @@ namespace CKAN.NetKAN.Transformers
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            Metadata[] modules = new Metadata[] { metadata };
-            foreach (ITransformer tr in _transformers)
+            var modules = RunTransformers(metadata, opts);
+            foreach (var meta in modules)
             {
-                modules = modules.SelectMany(meta => tr.Transform(meta, opts))
-                                 .ToArray();
-                // The metadata should be valid after each step
-                foreach (Metadata meta in modules)
-                {
-                    _validator.Validate(meta);
-                }
+                _validator.Validate(meta);
             }
             return modules;
         }
+
+        private Metadata[] RunTransformers(Metadata         metadata,
+                                           TransformOptions opts)
+            => _transformers.Aggregate(new Metadata[] { metadata },
+                                       (modules, tr) => modules.SelectMany(meta => tr.Transform(meta, opts))
+                                                               .ToArray());
 
         private static List<ITransformer> InjectVersionedOverrideTransformers(List<ITransformer> transformers)
         {
