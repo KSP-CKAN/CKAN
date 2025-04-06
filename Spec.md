@@ -1054,11 +1054,11 @@ Version information is generated in such a way as to ensure maximum compatibilit
 specifies that the mod is compatible with KSP version `1.0.2` but the existing `version` specifies `1.0.5` then the
 version information generated will give a `ksp_version_min` of `1.0.2` and a `ksp_version_max` of `1.0.5`.
 
-If (and only if) no mod version number has been identified (eg when `$kref` is `#/ckan/http/:url`), then the following field will also be auto-generated:
+If (and only if) no mod version number has been identified (e.g., when `$kref` is `#/ckan/http/:url`), then the following field will also be auto-generated:
 
 - `version`
 
-Note that `$kref`s from github and spacedock will *always* have `version` already populated, which means the version in the .version file will not be used (but see `x_netkan_trust_version_file` below).
+Note that `$kref`s from GitHub and SpaceDock will *always* have `version` already populated, which means the version in the .version file will not be used (but see `x_netkan_trust_version_file` below).
 
 ###### `#/ckan/space-warp[[/path]/swinfo.json]`
 
