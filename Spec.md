@@ -826,7 +826,7 @@ When used, the following fields will be auto-filled if not already present:
 - `license` (**v1.26**)
 - `abstract`
 - `author`
-- `version` - from the release tag
+- `version` - from the release tag by default (unless `version_from_asset` is used, see below)
 - `download`
 - `download_size`
 - `download_hash`
