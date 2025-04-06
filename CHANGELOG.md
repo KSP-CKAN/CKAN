@@ -57,6 +57,7 @@ All notable changes to this project will be documented in this file.
 - [Spec] Document the `x_netkan_trust_version_file` property (#4334 by: HebaruSan)
 - [Netkan] Make Netkan.Metadata a more standard JSON object, eliminate deep clones (#4339 by: HebaruSan)
 - [Netkan] More standard JSON parsing, don't run netkan validators after every transformer (#4342 by: HebaruSan)
+- [Spec] Spec: clarify some info about how version is populated (#4344 by: JonnyOThan; reviewed: HebaruSan)
 
 ## v1.35.2 (Penrose)
 
