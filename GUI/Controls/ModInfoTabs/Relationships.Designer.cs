@@ -34,6 +34,8 @@ namespace CKAN.GUI
             this.DependsGraphTree = new System.Windows.Forms.TreeView();
             this.LegendTable = new System.Windows.Forms.TableLayoutPanel();
             this.LegendInstalledLabel = new System.Windows.Forms.Label();
+            this.LegendIncompatibleLabel = new System.Windows.Forms.Label();
+            this.LegendVirtualLabel = new System.Windows.Forms.Label();
             this.LegendProvidesImage = new System.Windows.Forms.PictureBox();
             this.LegendProvidesLabel = new System.Windows.Forms.Label();
             this.LegendDependsImage = new System.Windows.Forms.PictureBox();
@@ -92,6 +94,8 @@ namespace CKAN.GUI
             this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.LegendTable.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33f));
             this.LegendTable.Controls.Add(this.LegendInstalledLabel, 1, 0);
+            this.LegendTable.Controls.Add(this.LegendIncompatibleLabel, 3, 0);
+            this.LegendTable.Controls.Add(this.LegendVirtualLabel, 5, 0);
             this.LegendTable.Controls.Add(this.LegendProvidesImage, 0, 1);
             this.LegendTable.Controls.Add(this.LegendProvidesLabel, 1, 1);
             this.LegendTable.Controls.Add(this.LegendDependsImage, 0, 2);
@@ -122,6 +126,20 @@ namespace CKAN.GUI
             this.LegendInstalledLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
             this.LegendInstalledLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendInstalledLabel, "LegendInstalledLabel");
+            //
+            // LegendIncompatibleLabel
+            //
+            this.LegendIncompatibleLabel.AutoSize = true;
+            this.LegendIncompatibleLabel.ForeColor = System.Drawing.Color.Red;
+            this.LegendIncompatibleLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            resources.ApplyResources(this.LegendIncompatibleLabel, "LegendIncompatibleLabel");
+            //
+            // LegendVirtualLabel
+            //
+            this.LegendVirtualLabel.AutoSize = true;
+            this.LegendVirtualLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.LegendVirtualLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
+            resources.ApplyResources(this.LegendVirtualLabel, "LegendVirtualLabel");
             //
             // LegendProvidesImage
             //
@@ -243,6 +261,8 @@ namespace CKAN.GUI
         private System.Windows.Forms.TreeView DependsGraphTree;
         private System.Windows.Forms.TableLayoutPanel LegendTable;
         private System.Windows.Forms.Label LegendInstalledLabel;
+        private System.Windows.Forms.Label LegendIncompatibleLabel;
+        private System.Windows.Forms.Label LegendVirtualLabel;
         private System.Windows.Forms.PictureBox LegendProvidesImage;
         private System.Windows.Forms.Label LegendProvidesLabel;
         private System.Windows.Forms.PictureBox LegendDependsImage;

@@ -118,6 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LegendInstalledLabel.Text" xml:space="preserve"><value>Installed</value></data>
+  <data name="LegendIncompatibleLabel.Text" xml:space="preserve"><value>Incompatible</value></data>
+  <data name="LegendVirtualLabel.Text" xml:space="preserve"><value>Virtual</value></data>
   <data name="LegendProvidesLabel.Text" xml:space="preserve"><value>Provides</value></data>
   <data name="LegendDependsLabel.Text" xml:space="preserve"><value>Depends</value></data>
   <data name="LegendRecommendsLabel.Text" xml:space="preserve"><value>Recommends</value></data>
