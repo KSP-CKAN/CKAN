@@ -13,6 +13,7 @@ using Mono.Cecil;
 
 using CKAN.DLC;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN.Games.KerbalSpaceProgram2
 {
@@ -92,10 +93,13 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public void RebuildSubdirectories(string absGameRoot)
         {
-            var path = Path.Combine(absGameRoot, DataDir);
-            if (!Directory.Exists(path))
+            // Create the plugin path used by Planety
+            foreach (var path in PluginsPieces.Accumulate(absGameRoot, Path.Combine))
             {
-                Directory.CreateDirectory(path);
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
             }
         }
 
@@ -233,6 +237,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
         public Uri ModSupportURL => new Uri("https://forum.kerbalspaceprogram.com/forum/137-ksp2-technical-support-pc-modded-installs/");
 
         private const string DataDir = "KSP2_x64_Data";
+
+        private static readonly string[] PluginsPieces = { DataDir, "Plugins", "x86_64" };
 
         // Key: Allowed value of install_to
         // Value: Relative path

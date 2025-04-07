@@ -266,6 +266,28 @@ namespace CKAN.Extensions
                                     return hc;
                                 },
                                 hc => hc.ToHashCode());
+
+        /// <summary>
+        /// Accumulate a sequence of values based on a seed value and a function,
+        /// similar to Aggregate but including intermediate values
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="source">Input sequence</param>
+        /// <param name="seed">First intermediate value, not included in return sequence</param>
+        /// <param name="func">Function to transform a previous result and a next input sequence element into the next result</param>
+        /// <returns></returns>
+        public static IEnumerable<TResult> Accumulate<TSource, TResult>(this IEnumerable<TSource>       source,
+                                                                        TResult                         seed,
+                                                                        Func<TResult, TSource, TResult> func)
+        {
+            var result = seed;
+            foreach (var item in source)
+            {
+                result = func(result, item);
+                yield return result;
+            }
+        }
     }
 
     /// <summary>
