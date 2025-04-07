@@ -85,8 +85,12 @@ namespace CKAN.Games.KerbalSpaceProgram2
         /// <param name="path"></param>
         /// <returns></returns>
         public bool IsReservedDirectory(GameInstance inst, string path)
-            => path == inst.GameDir() || path == inst.CkanDir()
-                || path == PrimaryModDirectory(inst);
+            => path == inst.GameDir()
+               || path == inst.CkanDir()
+               || path == PrimaryModDirectory(inst)
+               || PluginsPieces.Accumulate(inst.GameDir(), Path.Combine)
+                               .Select(CKANPathUtils.NormalizePath)
+                               .Contains(path);
 
         public bool AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path)
             => allowedFolders.TryGetValue(name, out path);
