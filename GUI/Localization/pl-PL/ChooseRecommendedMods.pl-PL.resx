@@ -135,9 +135,6 @@
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>Kontynuuj</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>(Od-)Zaznacz wszystko</value>
-  </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>Wybrane moduły rekomendują, sugerują lub są wspierane przez następujące moduły:</value>
   </data>
