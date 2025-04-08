@@ -40,8 +40,12 @@ namespace Tests.Core.Registry
         [Test]
         public void Empty()
         {
-            CKAN.Registry registry = CKAN.Registry.Empty();
-            Assert.IsInstanceOf<CKAN.Registry>(registry);
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
+            {
+                CKAN.Registry registry = CKAN.Registry.Empty(repoData.Manager);
+                Assert.IsInstanceOf<CKAN.Registry>(registry);
+            }
         }
 
         [Test]
@@ -434,10 +438,12 @@ namespace Tests.Core.Registry
                          }");
             CKAN.Registry reg;
 
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             using (var gameInstWrapper = new DisposableKSP())
             using (var tScope = new TransactionScope())
             {
-                reg = CKAN.Registry.Empty();
+                reg = CKAN.Registry.Empty(repoData.Manager);
                 reg.RegisterModule(module, new List<string>(),
                                    gameInstWrapper.KSP, false);
 
@@ -455,147 +461,163 @@ namespace Tests.Core.Registry
         [Test]
         public void TxCommit()
         {
-            // Our registry should work fine on committed transactions.
-            // This one seemingly just makes sure adding a mod adds it
-            // when the registry is created outside the transaction
-            var module = CkanModule.FromJson(@"{
-                             ""spec_version"": ""v1.4"",
-                             ""identifier"":   ""InstalledMod"",
-                             ""author"":       ""InstalledModder"",
-                             ""version"":      ""1.0"",
-                             ""download"":     ""https://github.com/""
-                         }");
-            var registry = CKAN.Registry.Empty();
-
-            using (var gameInstWrapper = new DisposableKSP())
-            using (var tScope = new TransactionScope())
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             {
-                registry.RegisterModule(module, new List<string>(),
-                                        gameInstWrapper.KSP, false);
+                // Our registry should work fine on committed transactions.
+                // This one seemingly just makes sure adding a mod adds it
+                // when the registry is created outside the transaction
+                var module = CkanModule.FromJson(@"{
+                                 ""spec_version"": ""v1.4"",
+                                 ""identifier"":   ""InstalledMod"",
+                                 ""author"":       ""InstalledModder"",
+                                 ""version"":      ""1.0"",
+                                 ""download"":     ""https://github.com/""
+                             }");
+                var registry = CKAN.Registry.Empty(repoData.Manager);
 
+                using (var gameInstWrapper = new DisposableKSP())
+                using (var tScope = new TransactionScope())
+                {
+                    registry.RegisterModule(module, new List<string>(),
+                                            gameInstWrapper.KSP, false);
+
+                    CollectionAssert.AreEqual(
+                        Enumerable.Repeat(module, 1),
+                        registry.InstalledModules.Select(im => im.Module));
+
+                    tScope.Complete();
+                }
                 CollectionAssert.AreEqual(
                     Enumerable.Repeat(module, 1),
                     registry.InstalledModules.Select(im => im.Module));
-
-                tScope.Complete();
             }
-            CollectionAssert.AreEqual(
-                Enumerable.Repeat(module, 1),
-                registry.InstalledModules.Select(im => im.Module));
         }
 
         [Test]
         public void TxRollback()
         {
-            // Our registry should roll-back any changes it made during a transaction.
-            // This one makes sure that aborting the transaction rolls back the change
-            var registry = CKAN.Registry.Empty();
-
-            using (var gameInstWrapper = new DisposableKSP())
-            using (var tScope = new TransactionScope())
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             {
-                var module = CkanModule.FromJson(@"{
-                                 ""spec_version"": ""v1.4"",
-                                 ""identifier"":   ""InstalledMod"",
-                                 ""author"":       ""InstalledModder"",
-                                 ""version"":      ""1.0"",
-                                 ""download"":     ""https://github.com/""
-                             }");
-                registry.RegisterModule(module, new List<string>(),
-                                        gameInstWrapper.KSP, false);
+                // Our registry should roll-back any changes it made during a transaction.
+                // This one makes sure that aborting the transaction rolls back the change
+                var registry = CKAN.Registry.Empty(repoData.Manager);
+
+                using (var gameInstWrapper = new DisposableKSP())
+                using (var tScope = new TransactionScope())
+                {
+                    var module = CkanModule.FromJson(@"{
+                                     ""spec_version"": ""v1.4"",
+                                     ""identifier"":   ""InstalledMod"",
+                                     ""author"":       ""InstalledModder"",
+                                     ""version"":      ""1.0"",
+                                     ""download"":     ""https://github.com/""
+                                 }");
+                    registry.RegisterModule(module, new List<string>(),
+                                            gameInstWrapper.KSP, false);
+
+                    CollectionAssert.AreEqual(
+                        Enumerable.Repeat(module, 1),
+                        registry.InstalledModules.Select(im => im.Module));
+
+                    // Rollback, our module should no longer be registered
+                    tScope.Dispose();
+                }
 
                 CollectionAssert.AreEqual(
-                    Enumerable.Repeat(module, 1),
+                    Enumerable.Empty<CkanModule>(),
                     registry.InstalledModules.Select(im => im.Module));
-
-                // Rollback, our module should no longer be registered
-                tScope.Dispose();
             }
-
-            CollectionAssert.AreEqual(
-                Enumerable.Empty<CkanModule>(),
-                registry.InstalledModules.Select(im => im.Module));
         }
 
         [Test]
         public void TxNested()
         {
-            // Our registry doesn't understand how to do nested transactions,
-            // make sure it throws on these.
-            // This one makes sure that one transaction inside another both work
-            // (except it doesn't check it? just that nothing throws?)
-            var registry = CKAN.Registry.Empty();
-
-            using (var gameInstWrapper = new DisposableKSP())
-            using (var tScope = new TransactionScope())
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             {
-                var module = CkanModule.FromJson(@"{
-                                 ""spec_version"": ""v1.4"",
-                                 ""identifier"":   ""InstalledMod"",
-                                 ""author"":       ""InstalledModder"",
-                                 ""version"":      ""1.0"",
-                                 ""download"":     ""https://github.com/""
-                             }");
-                registry.RegisterModule(module, new List<string>(),
-                                        gameInstWrapper.KSP, false);
+                // Our registry doesn't understand how to do nested transactions,
+                // make sure it throws on these.
+                // This one makes sure that one transaction inside another both work
+                // (except it doesn't check it? just that nothing throws?)
+                var registry = CKAN.Registry.Empty(repoData.Manager);
 
-                using (var tScope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
+                using (var gameInstWrapper = new DisposableKSP())
+                using (var tScope = new TransactionScope())
                 {
-                    Assert.Throws<TransactionalKraken>(delegate
+                    var module = CkanModule.FromJson(@"{
+                                     ""spec_version"": ""v1.4"",
+                                     ""identifier"":   ""InstalledMod"",
+                                     ""author"":       ""InstalledModder"",
+                                     ""version"":      ""1.0"",
+                                     ""download"":     ""https://github.com/""
+                                 }");
+                    registry.RegisterModule(module, new List<string>(),
+                                            gameInstWrapper.KSP, false);
+
+                    using (var tScope2 = new TransactionScope(TransactionScopeOption.RequiresNew))
                     {
-                        var module2 = CkanModule.FromJson(@"{
-                                          ""spec_version"": ""v1.4"",
-                                          ""identifier"":   ""InstalledMod2"",
-                                          ""author"":       ""InstalledModder"",
-                                          ""version"":      ""1.0"",
-                                          ""download"":     ""https://github.com/""
-                                      }");
-                        registry.RegisterModule(module2, new List<string>(),
-                                                gameInstWrapper.KSP, false);
-                    });
-                    tScope2.Complete();
+                        Assert.Throws<TransactionalKraken>(delegate
+                        {
+                            var module2 = CkanModule.FromJson(@"{
+                                              ""spec_version"": ""v1.4"",
+                                              ""identifier"":   ""InstalledMod2"",
+                                              ""author"":       ""InstalledModder"",
+                                              ""version"":      ""1.0"",
+                                              ""download"":     ""https://github.com/""
+                                          }");
+                            registry.RegisterModule(module2, new List<string>(),
+                                                    gameInstWrapper.KSP, false);
+                        });
+                        tScope2.Complete();
+                    }
+                    tScope.Complete();
                 }
-                tScope.Complete();
             }
         }
 
         [Test]
         public void TxAmbient()
         {
-            // Our registry should be fine with ambient transactions, which join together.
-            // Note the absence of TransactionScopeOption.RequiresNew
-            var registry = CKAN.Registry.Empty();
-
-            using (var gameInstWrapper = new DisposableKSP())
-            using (var tScope = new TransactionScope())
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
             {
-                var module = CkanModule.FromJson(@"{
-                                 ""spec_version"": ""v1.4"",
-                                 ""identifier"":   ""InstalledMod"",
-                                 ""author"":       ""InstalledModder"",
-                                 ""version"":      ""1.0"",
-                                 ""download"":     ""https://github.com/""
-                             }");
-                registry.RegisterModule(module, new List<string>(),
-                                        gameInstWrapper.KSP, false);
+                // Our registry should be fine with ambient transactions, which join together.
+                // Note the absence of TransactionScopeOption.RequiresNew
+                var registry = CKAN.Registry.Empty(repoData.Manager);
 
-                using (var tScope2 = new TransactionScope())
+                using (var gameInstWrapper = new DisposableKSP())
+                using (var tScope = new TransactionScope())
                 {
-                    Assert.DoesNotThrow(delegate
+                    var module = CkanModule.FromJson(@"{
+                                     ""spec_version"": ""v1.4"",
+                                     ""identifier"":   ""InstalledMod"",
+                                     ""author"":       ""InstalledModder"",
+                                     ""version"":      ""1.0"",
+                                     ""download"":     ""https://github.com/""
+                                 }");
+                    registry.RegisterModule(module, new List<string>(),
+                                            gameInstWrapper.KSP, false);
+
+                    using (var tScope2 = new TransactionScope())
                     {
-                        var module2 = CkanModule.FromJson(@"{
-                                          ""spec_version"": ""v1.4"",
-                                          ""identifier"":   ""InstalledMod2"",
-                                          ""author"":       ""InstalledModder"",
-                                          ""version"":      ""1.0"",
-                                          ""download"":     ""https://github.com/""
-                                      }");
-                        registry.RegisterModule(module2, new List<string>(),
-                                                gameInstWrapper.KSP, false);
-                    });
-                    tScope2.Complete();
+                        Assert.DoesNotThrow(delegate
+                        {
+                            var module2 = CkanModule.FromJson(@"{
+                                              ""spec_version"": ""v1.4"",
+                                              ""identifier"":   ""InstalledMod2"",
+                                              ""author"":       ""InstalledModder"",
+                                              ""version"":      ""1.0"",
+                                              ""download"":     ""https://github.com/""
+                                          }");
+                            registry.RegisterModule(module2, new List<string>(),
+                                                    gameInstWrapper.KSP, false);
+                        });
+                        tScope2.Complete();
+                    }
+                    tScope.Complete();
                 }
-                tScope.Complete();
             }
         }
     }

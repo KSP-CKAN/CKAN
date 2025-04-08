@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix searching for Steam in .NET 8 by correcting path on macOS (#4322 by: doinkythederp; reviewed: HebaruSan)
 - [Multiple] Fix GUI layout issues with scaling (#4316, #4324 by: HebaruSan)
 - [Core] Allow adding already installed mod if metadata changed (#4337 by: HebaruSan)
+- [Core] Don't save registry.json at instance creation (#4346 by: HebaruSan)
 
 ### Internal
 

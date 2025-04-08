@@ -374,8 +374,8 @@ namespace CKAN
         {
         }
 
-        public static Registry Empty()
-            => new Registry(null,
+        public static Registry Empty(RepositoryDataManager repoData)
+            => new Registry(repoData,
                             new Dictionary<string, InstalledModule>(),
                             new Dictionary<string, string>(),
                             new Dictionary<string, string>(),
