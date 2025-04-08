@@ -14,7 +14,7 @@ jobs:
     secrets: inherit
 
   upload-nuget:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - sign-assets
     steps:
