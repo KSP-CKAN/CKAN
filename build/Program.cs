@@ -96,9 +96,9 @@ public sealed class GenerateGlobalAssemblyVersionInfoTask : FrostingTask<BuildCo
             {
                 Version = $"{version.Major}.{version.Minor}",
                 FileVersion = version.HasMeta
-                    ? $"{version.Major}.{version.Minor}.{version.Patch}.{version.Meta}"
+                    ? $"{version.Major}.{version.Minor}.{version.Patch}{version.Meta}"
                     : $"{version.Major}.{version.Minor}.{version.Patch}",
-                InformationalVersion = version.ToString()
+                InformationalVersion = version.ToString(),
             });
     }
 }
