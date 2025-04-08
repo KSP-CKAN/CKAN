@@ -2,19 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## v1.35.3
+## v1.36.0
 
 ### Features
 
 - [GUI] Minor tray icon improvements (#4231 by: HebaruSan)
-- [Multiple] Translation updates from Crowdin (#4233 by: vixnig38, ambition, tinygrox; reviewed: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4233, #4268, #4305 by: vinix38, ambition, tinygrox, frankieorabona, faida; reviewed: HebaruSan)
 - [Multiple] Cache migration and other fixes (#4240 by: HebaruSan)
 - [Multiple] Start installing mods while downloads are still in progress (#4249, #4255, #4269 by: HebaruSan)
 - [Multiple] Sort dependencies first in modpacks (#4252 by: HebaruSan)
 - [Multiple] Allow installs and removals to be cancelled (#4253 by: HebaruSan)
 - [CLI] Include `supports` relationship in `ckan show` (#4262 by: HebaruSan)
 - [Multiple] Pre-release handling (#4260, #4266, #4294 by: HebaruSan, JonnyOThan)
-- [Multiple] Translation updates from Crowdin (#4268, #4305 by: vinix38, frankieorabona, faida)
 - [Multiple] Checkboxes to copy more dirs when cloning instances (#4304 by: HebaruSan)
 - [Core] Use internal ckan and version file to install unrecognized ZIPs (#4327 by: HebaruSan)
 - [GUI] Disable Play button while playing game (#4330 by: HebaruSan)
