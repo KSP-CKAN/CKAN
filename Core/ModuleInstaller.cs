@@ -408,8 +408,7 @@ namespace CKAN
                                         instF.destination != null
                                         && instF.destination.Contains(filt))
                                     // Skip the file if it's a ckan file, these should never be copied to GameData
-                                    && !instF.source.Name.EndsWith(
-                                        ".ckan", StringComparison.InvariantCultureIgnoreCase))
+                                    && !IsInternalCkan(instF.source))
                     .ToList();
 
                 try
@@ -500,6 +499,9 @@ namespace CKAN
             }
             return createdPaths;
         }
+
+        public static bool IsInternalCkan(ZipEntry ze)
+            => ze.Name.EndsWith(".ckan", StringComparison.OrdinalIgnoreCase);
 
         #region File overwrites
 
