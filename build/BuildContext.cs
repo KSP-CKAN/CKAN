@@ -78,7 +78,7 @@ public partial class BuildContext : FrostingContext
                 version.Minor,
                 version.Patch,
                 version.PreRelease,
-                commitDate.ToString("yy") + commitDate.DayOfYear.ToString("000"));
+                "." + commitDate.ToString("yy") + commitDate.DayOfYear.ToString("000"));
         }
 
         return version;

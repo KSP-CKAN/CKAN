@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.1
 
+### Bugfixes
 
+- [Multiple] Fix ckan version command and update copyrights (#4347 by: HebaruSan)
 
 ## v1.36.0 (Quasar)
 
