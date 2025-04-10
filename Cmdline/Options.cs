@@ -90,6 +90,9 @@ namespace CKAN.CmdLine
         [VerbOption("clean", HelpText = "Clean away downloaded files from the cache")]
         public CleanOptions? Clean { get; set; }
 
+        [VerbOption("dedup", HelpText = "Find mod files that exist in multiple game instances and replace all but one of each group with hard links")]
+        public DeduplicateOptions? Deduplicate { get; set; }
+
         [VerbOption("repair", HelpText = "Attempt various automatic repairs")]
         public RepairSubOptions? Repair { get; set; }
 
@@ -188,6 +191,7 @@ namespace CKAN.CmdLine
                     case "update":
                     case "scan":
                     case "clean":
+                    case "dedup":
                     case "version":
                     default:
                         yield return $"{Properties.Resources.Usage}: ckan {verb} [{Properties.Resources.Options}]";
