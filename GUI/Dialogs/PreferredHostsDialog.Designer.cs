@@ -32,7 +32,7 @@ namespace CKAN.GUI
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(PreferredHostsDialog));
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.ExplanationLabel = new System.Windows.Forms.Label();
-            this.Splitter = new System.Windows.Forms.SplitContainer();
+            this.Splitter = new CKAN.GUI.UsableSplitContainer();
             this.AvailableHostsLabel = new System.Windows.Forms.Label();
             this.AvailableHostsListBox = new System.Windows.Forms.ListBox();
             this.MoveRightButton = new System.Windows.Forms.Button();
@@ -223,7 +223,7 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.Label ExplanationLabel;
-        private System.Windows.Forms.SplitContainer Splitter;
+        private CKAN.GUI.UsableSplitContainer Splitter;
         private System.Windows.Forms.Label AvailableHostsLabel;
         private System.Windows.Forms.ListBox AvailableHostsListBox;
         private System.Windows.Forms.Button MoveRightButton;

@@ -244,7 +244,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem CheckAllButton;
         private System.Windows.Forms.ToolStripMenuItem CheckRecommendationsButton;
         private System.Windows.Forms.Label RecommendedDialogLabel;
-        private System.Windows.Forms.ListView RecommendedModsListView;
+        private CKAN.GUI.ThemedListView RecommendedModsListView;
         private System.Windows.Forms.ListViewGroup RecommendationsGroup;
         private System.Windows.Forms.ListViewGroup SuggestionsGroup;
         private System.Windows.Forms.ListViewGroup SupportedByGroup;

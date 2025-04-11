@@ -218,7 +218,7 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.Label OverallSummaryLabel;
-        private System.Windows.Forms.ListView VersionsListView;
+        private CKAN.GUI.ThemedListView VersionsListView;
         private System.Windows.Forms.ColumnHeader ModVersion;
         private System.Windows.Forms.ColumnHeader CompatibleGameVersion;
         private System.Windows.Forms.ColumnHeader ReleaseDate;

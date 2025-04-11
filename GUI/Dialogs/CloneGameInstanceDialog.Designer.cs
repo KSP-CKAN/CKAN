@@ -49,7 +49,7 @@ namespace CKAN.GUI
             this.PathHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buttonOK = new System.Windows.Forms.Button();
             this.buttonCancel = new System.Windows.Forms.Button();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new CKAN.GUI.LabeledProgressBar();
             this.folderBrowserDialogNewPath = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
             //
@@ -327,11 +327,11 @@ namespace CKAN.GUI
         private System.Windows.Forms.CheckBox checkBoxSwitchInstance;
         private System.Windows.Forms.CheckBox checkBoxShareStock;
         private System.Windows.Forms.Label OptionalPathsLabel;
-        private System.Windows.Forms.ListView OptionalPathsListView;
+        private CKAN.GUI.ThemedListView OptionalPathsListView;
         private System.Windows.Forms.ColumnHeader PathHeader;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogNewPath;
-        private System.Windows.Forms.ProgressBar progressBar;
+        private CKAN.GUI.LabeledProgressBar progressBar;
     }
 }

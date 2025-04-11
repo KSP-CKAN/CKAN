@@ -30,7 +30,7 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Wait));
-            this.VerticalSplitter = new System.Windows.Forms.SplitContainer();
+            this.VerticalSplitter = new CKAN.GUI.UsableSplitContainer();
             this.DialogProgressBar = new CKAN.GUI.LabeledProgressBar();
             this.ProgressBarTable = new System.Windows.Forms.TableLayoutPanel();
             this.LogTextBox = new System.Windows.Forms.TextBox();
@@ -183,7 +183,7 @@ namespace CKAN.GUI
 
         #endregion
 
-        private System.Windows.Forms.SplitContainer VerticalSplitter;
+        private CKAN.GUI.UsableSplitContainer VerticalSplitter;
         private CKAN.GUI.LabeledProgressBar DialogProgressBar;
         private System.Windows.Forms.TableLayoutPanel ProgressBarTable;
         private System.Windows.Forms.TextBox LogTextBox;

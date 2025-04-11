@@ -61,7 +61,7 @@ namespace CKAN.GUI
             this.PurgeAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ResetCacheButton = new System.Windows.Forms.Button();
             this.OpenCacheButton = new System.Windows.Forms.Button();
-            this.MoveCacheProgressBar = new System.Windows.Forms.ProgressBar();
+            this.MoveCacheProgressBar = new CKAN.GUI.LabeledProgressBar();
             this.AutoUpdateGroupBox = new System.Windows.Forms.GroupBox();
             this.LocalVersionPreLabel = new System.Windows.Forms.Label();
             this.LocalVersionLabel = new System.Windows.Forms.Label();
@@ -759,7 +759,7 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
-        private System.Windows.Forms.ListView ReposListBox;
+        private CKAN.GUI.ThemedListView ReposListBox;
         private System.Windows.Forms.ColumnHeader RepoNameHeader;
         private System.Windows.Forms.ColumnHeader RepoURLHeader;
         private System.Windows.Forms.Button NewRepoButton;
@@ -767,7 +767,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.Button DownRepoButton;
         private System.Windows.Forms.Button DeleteRepoButton;
         private System.Windows.Forms.GroupBox AuthTokensGroupBox;
-        private System.Windows.Forms.ListView AuthTokensListBox;
+        private CKAN.GUI.ThemedListView AuthTokensListBox;
         private System.Windows.Forms.ColumnHeader AuthHostHeader;
         private System.Windows.Forms.ColumnHeader AuthTokenHeader;
         private System.Windows.Forms.Button NewAuthTokenButton;
@@ -788,7 +788,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem PurgeAllMenuItem;
         private System.Windows.Forms.Button ResetCacheButton;
         private System.Windows.Forms.Button OpenCacheButton;
-        private System.Windows.Forms.ProgressBar MoveCacheProgressBar;
+        private CKAN.GUI.LabeledProgressBar MoveCacheProgressBar;
         private System.Windows.Forms.GroupBox AutoUpdateGroupBox;
         private System.Windows.Forms.Label LocalVersionPreLabel;
         private System.Windows.Forms.Label LocalVersionLabel;

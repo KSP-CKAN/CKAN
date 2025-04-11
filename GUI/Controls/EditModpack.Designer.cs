@@ -458,7 +458,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ComboBox LicenseComboBox;
         private System.Windows.Forms.CheckBox IncludeVersionsCheckbox;
         private System.Windows.Forms.CheckBox IncludeOptRelsCheckbox;
-        private System.Windows.Forms.ListView RelationshipsListView;
+        private CKAN.GUI.ThemedListView RelationshipsListView;
         private System.Windows.Forms.ColumnHeader ModNameColumn;
         private System.Windows.Forms.ColumnHeader ModVersionColumn;
         private System.Windows.Forms.ColumnHeader ModAbstractColumn;

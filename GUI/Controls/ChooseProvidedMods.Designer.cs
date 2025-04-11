@@ -134,7 +134,7 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.Label ChooseProvidedModsLabel;
-        private System.Windows.Forms.ListView ChooseProvidedModsListView;
+        private CKAN.GUI.ThemedListView ChooseProvidedModsListView;
         private System.Windows.Forms.ColumnHeader modNameColumnHeader;
         private System.Windows.Forms.ColumnHeader modDescriptionColumnHeader;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;

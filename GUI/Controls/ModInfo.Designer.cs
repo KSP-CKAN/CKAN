@@ -252,7 +252,7 @@ namespace CKAN.GUI
         private CKAN.GUI.TagsLabelsLinkList tagsLabelsLinkList;
         private System.Windows.Forms.Label MetadataModuleAbstractLabel;
         private CKAN.GUI.TransparentTextBox MetadataModuleDescriptionTextBox;
-        private System.Windows.Forms.TabControl ModInfoTabControl;
+        private CKAN.GUI.ThemedTabControl ModInfoTabControl;
         private System.Windows.Forms.TabPage MetadataTabPage;
         private CKAN.GUI.Metadata Metadata;
         private System.Windows.Forms.TabPage RelationshipTabPage;
