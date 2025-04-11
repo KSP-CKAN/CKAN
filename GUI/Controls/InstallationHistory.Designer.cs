@@ -228,9 +228,9 @@ namespace CKAN.GUI
         private System.Windows.Forms.MenuStrip Toolbar;
         private System.Windows.Forms.ToolStripMenuItem InstallButton;
         private CKAN.GUI.UsableSplitContainer Splitter;
-        private System.Windows.Forms.ListView HistoryListView;
+        private CKAN.GUI.ThemedListView HistoryListView;
         private System.Windows.Forms.ColumnHeader TimestampColumn;
-        private System.Windows.Forms.ListView ModsListView;
+        private CKAN.GUI.ThemedListView ModsListView;
         private System.Windows.Forms.ListViewGroup NotInstalledGroup;
         private System.Windows.Forms.ListViewGroup InstalledGroup;
         private System.Windows.Forms.ColumnHeader NameColumn;

@@ -251,7 +251,7 @@ namespace CKAN.GUI
 
         #endregion
 
-        private System.Windows.Forms.ListView GameInstancesListView;
+        private CKAN.GUI.ThemedListView GameInstancesListView;
         private System.Windows.Forms.ColumnHeader GameInstallName;
         private System.Windows.Forms.ColumnHeader Game;
         private System.Windows.Forms.ColumnHeader GameInstallVersion;

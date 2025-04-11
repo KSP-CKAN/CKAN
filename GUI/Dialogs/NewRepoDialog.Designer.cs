@@ -183,7 +183,7 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.GroupBox RepositoryGroupBox;
-        private System.Windows.Forms.ListView ReposListBox;
+        private CKAN.GUI.ThemedListView ReposListBox;
         private System.Windows.Forms.ColumnHeader RepoNameHeader;
         private System.Windows.Forms.ColumnHeader RepoURLHeader;
         private System.Windows.Forms.Label RepoNameLabel;

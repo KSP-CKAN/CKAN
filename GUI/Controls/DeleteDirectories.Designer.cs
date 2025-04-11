@@ -194,9 +194,9 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.Label ExplanationLabel;
         private CKAN.GUI.UsableSplitContainer Splitter;
-        private System.Windows.Forms.ListView DirectoriesListView;
+        private CKAN.GUI.ThemedListView DirectoriesListView;
         private System.Windows.Forms.ColumnHeader DirectoryColumn;
-        private System.Windows.Forms.ListView ContentsListView;
+        private CKAN.GUI.ThemedListView ContentsListView;
         private System.Windows.Forms.ColumnHeader FileColumn;
         private System.Windows.Forms.ListViewItem SelectDirPrompt;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
