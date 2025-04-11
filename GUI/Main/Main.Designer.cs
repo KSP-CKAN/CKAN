@@ -58,7 +58,7 @@ namespace CKAN.GUI
             this.reportMetadataIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer1 = new CKAN.GUI.UsableSplitContainer();
             this.LabelsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -918,7 +918,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem reportMetadataIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
+        private CKAN.GUI.UsableSplitContainer splitContainer1;
         private System.Windows.Forms.ToolStripSeparator modListToolStripSeparator;
         private System.Windows.Forms.ToolStripSeparator tagFilterToolStripSeparator;
         private System.Windows.Forms.ToolStripSeparator untaggedFilterToolStripSeparator;

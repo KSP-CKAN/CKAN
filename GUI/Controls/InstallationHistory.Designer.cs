@@ -33,7 +33,7 @@ namespace CKAN.GUI
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.Toolbar = new System.Windows.Forms.MenuStrip();
             this.InstallButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.Splitter = new System.Windows.Forms.SplitContainer();
+            this.Splitter = new CKAN.GUI.UsableSplitContainer();
             this.HistoryListView = new ThemedListView();
             this.TimestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ModsListView = new ThemedListView();
@@ -227,7 +227,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolTip ToolTip;
         private System.Windows.Forms.MenuStrip Toolbar;
         private System.Windows.Forms.ToolStripMenuItem InstallButton;
-        private System.Windows.Forms.SplitContainer Splitter;
+        private CKAN.GUI.UsableSplitContainer Splitter;
         private System.Windows.Forms.ListView HistoryListView;
         private System.Windows.Forms.ColumnHeader TimestampColumn;
         private System.Windows.Forms.ListView ModsListView;

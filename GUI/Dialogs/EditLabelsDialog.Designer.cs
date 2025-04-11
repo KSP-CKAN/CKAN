@@ -33,7 +33,7 @@ namespace CKAN.GUI
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.TopButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.CreateButton = new System.Windows.Forms.Button();
-            this.Splitter = new System.Windows.Forms.SplitContainer();
+            this.Splitter = new CKAN.GUI.UsableSplitContainer();
             this.LabelSelectionTree = new System.Windows.Forms.TreeView();
             this.SelectOrCreateLabel = new System.Windows.Forms.Label();
             this.EditDetailsPanel = new System.Windows.Forms.Panel();
@@ -416,7 +416,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolTip ToolTip;
         private CKAN.GUI.LeftRightRowPanel TopButtonPanel;
         private System.Windows.Forms.Button CreateButton;
-        private System.Windows.Forms.SplitContainer Splitter;
+        private CKAN.GUI.UsableSplitContainer Splitter;
         private System.Windows.Forms.TreeView LabelSelectionTree;
         private System.Windows.Forms.Label SelectOrCreateLabel;
         private System.Windows.Forms.Panel EditDetailsPanel;

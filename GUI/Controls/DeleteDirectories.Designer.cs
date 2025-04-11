@@ -31,7 +31,7 @@ namespace CKAN.GUI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(DeleteDirectories));
             this.ExplanationLabel = new System.Windows.Forms.Label();
-            this.Splitter = new System.Windows.Forms.SplitContainer();
+            this.Splitter = new CKAN.GUI.UsableSplitContainer();
             this.DirectoriesListView = new ThemedListView();
             this.DirectoryColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ContentsListView = new ThemedListView();
@@ -193,7 +193,7 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.Label ExplanationLabel;
-        private System.Windows.Forms.SplitContainer Splitter;
+        private CKAN.GUI.UsableSplitContainer Splitter;
         private System.Windows.Forms.ListView DirectoriesListView;
         private System.Windows.Forms.ColumnHeader DirectoryColumn;
         private System.Windows.Forms.ListView ContentsListView;

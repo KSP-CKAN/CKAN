@@ -193,15 +193,7 @@ namespace CKAN.GUI
 
             Util.Invoke(this, () => Text = $"CKAN {Meta.GetVersion()}");
 
-            try
-            {
-                // splitContainer1.SplitterDistance = configuration.PanelPosition;
-            }
-            catch
-            {
-                // SplitContainer is mis-designed to throw exceptions
-                // if the min/max limits are exceeded rather than simply obeying them.
-            }
+            splitContainer1.SplitterDistance = configuration.PanelPosition;
 
             log.Info("GUI started");
             base.OnLoad(e);
