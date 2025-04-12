@@ -11,9 +11,6 @@ using System.Runtime.CompilerServices;
 
 using Newtonsoft.Json;
 
-#if !NET8_0_OR_GREATER
-using CKAN.Extensions;
-#endif
 using CKAN.Games.KerbalSpaceProgram;
 
 namespace CKAN.Configuration

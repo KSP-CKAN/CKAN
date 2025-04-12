@@ -4,9 +4,6 @@ using System.Linq;
 
 using log4net;
 
-#if NETFRAMEWORK
-using CKAN.Extensions;
-#endif
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Transformers

@@ -6,9 +6,6 @@ using NUnit.Framework;
 using CKAN;
 using CKAN.Configuration;
 using CKAN.Versioning;
-#if NET45
-using CKAN.Extensions;
-#endif
 
 using Tests.Data;
 

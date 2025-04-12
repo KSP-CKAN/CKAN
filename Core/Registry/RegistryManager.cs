@@ -15,9 +15,6 @@ using Newtonsoft.Json;
 
 using CKAN.Configuration;
 using CKAN.Versioning;
-#if !NET8_0_OR_GREATER
-using CKAN.Extensions;
-#endif
 
 namespace CKAN
 {

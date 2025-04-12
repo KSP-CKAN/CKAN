@@ -6,9 +6,6 @@ using log4net;
 using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Model;
-#if NETFRAMEWORK
-using CKAN.Extensions;
-#endif
 
 namespace CKAN.NetKAN.Transformers
 {

@@ -9,9 +9,6 @@ using log4net;
 using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Games;
-#if NETSTANDARD2_0
-using CKAN.Extensions;
-#endif
 
 namespace CKAN
 {

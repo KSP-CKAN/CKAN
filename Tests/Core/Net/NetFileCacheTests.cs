@@ -6,9 +6,6 @@ using System.Threading;
 using NUnit.Framework;
 
 using CKAN;
-#if NETFRAMEWORK
-using CKAN.Extensions;
-#endif
 using Tests.Data;
 
 namespace Tests.Core

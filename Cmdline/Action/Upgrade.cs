@@ -8,9 +8,6 @@ using Autofac;
 
 using CKAN.Versioning;
 using CKAN.Configuration;
-#if !NET8_0_OR_GREATER
-using CKAN.Extensions;
-#endif
 
 namespace CKAN.CmdLine
 {

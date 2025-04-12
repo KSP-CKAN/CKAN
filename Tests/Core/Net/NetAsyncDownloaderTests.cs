@@ -5,9 +5,6 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
-#if NETFRAMEWORK || NETSTANDARD
-using CKAN.Extensions;
-#endif
 
 using Tests.Data;
 
