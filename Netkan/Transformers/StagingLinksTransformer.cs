@@ -36,7 +36,9 @@ namespace CKAN.NetKAN.Transformers
             StringBuilder table = new StringBuilder();
             table.AppendLine("Resource | URL");
             table.AppendLine(":-- | :--");
-            table.AppendLine($"download | <{metadata.Download}>");
+            var downloads = string.Join(" ", metadata.Download?.Select(d => $"<{d}>")
+                                                              ?? Enumerable.Empty<string>());
+            table.AppendLine($"download | {downloads}");
             if (metadata.Resources != null)
             {
                 foreach ((string name, string value) in metadata.Resources
