@@ -176,8 +176,16 @@ namespace CKAN
                 && querier.InstalledVersion(identifier) is UnmanagedModuleVersion;
 
         /// <summary>
-        /// Is the mod installed and does it have a newer version compatible with versionCrit
+        /// Is the mod installed and does it have a newer version compatible with the game instance's version criteria
         /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="identifier">Identifier of mod to check</param>
+        /// <param name="stabilityTolerance">Stability tolerance for the game instance</param>
+        /// <param name="instance">The registry's game instance</param>
+        /// <param name="filters">Install filters that will cause missing files to be skipped</param>
+        /// <param name="checkMissingFiles">If true, check if any of the files or directories are missing</param>
+        /// <param name="latestMod">The latest mod if an update is available</param>
+        /// <param name="installed">The installed modules to check against</param>
         public static bool HasUpdate(this IRegistryQuerier    querier,
                                      string                   identifier,
                                      StabilityToleranceConfig stabilityTolerance,
@@ -230,6 +238,17 @@ namespace CKAN
             return true;
         }
 
+        /// <summary>
+        /// Partition the installed mods based on whether they are upgradeable
+        /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="instance">The registry's game instance</param>
+        /// <param name="heldIdents">Identifiers of mods that the user has designated as not to be upgraded</param>
+        /// <param name="ignoreMissingIdents">Identifiers of mods that the user has designated as allowed to have missing files</param>
+        /// <returns>
+        /// Dictionary with true key containing list of upgradeable installed modules
+        /// and false key containing list of non-upgradeable installed modules
+        /// </returns>
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
                                                                           GameInstance          instance,
                                                                           HashSet<string>       heldIdents,
@@ -256,6 +275,19 @@ namespace CKAN
             return querier.CheckUpgradeable(instance, heldIdents, unlimited, filters, ignoreMissingIdents);
         }
 
+        /// <summary>
+        /// Partition the installed mods based on whether they are upgradeable
+        /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="instance">The registry's game instance</param>
+        /// <param name="heldIdents">Identifiers of mods that the user has designated as not to be upgraded</param>
+        /// <param name="initial">Installed modules to start out considering as possibly upgradeable, to be checked against each other</param>
+        /// <param name="filters">Install filters that will cause missing files to be skipped</param>
+        /// <param name="ignoreMissingIdents">Identifiers of mods that the user has designated as allowed to have missing files</param>
+        /// <returns>
+        /// Dictionary with true key containing list of upgradeable installed modules
+        /// and false key containing list of non-upgradeable installed modules
+        /// </returns>
         public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
                                                                           GameInstance          instance,
                                                                           HashSet<string>       heldIdents,
@@ -297,14 +329,21 @@ namespace CKAN
             };
         }
 
+        /// <summary>
+        /// Check if any important metadata of a module has changed since it was installed
+        /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="identifier">Identifier of mod to check</param>
+        /// <returns>True if any property has changed that can affect how the mod is installed</returns>
         public static bool MetadataChanged(this IRegistryQuerier querier, string identifier)
         {
             try
             {
                 var installed = querier.InstalledModule(identifier)?.Module;
                 return installed != null
-                    && (!querier.GetModuleByVersion(identifier, installed.version)?.MetadataEquals(installed)
-                        ?? false);
+                    && (!querier.GetModuleByVersion(identifier, installed.version)
+                                ?.MetadataEquals(installed)
+                                ?? false);
             }
             catch
             {

@@ -10,8 +10,6 @@ namespace CKAN.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static ICollection<T> AsCollection<T>(this IEnumerable<T> source)
-            => source is ICollection<T> collection ? collection : source.ToArray();
 
 #if NET45 || NETSTANDARD2_0
 
