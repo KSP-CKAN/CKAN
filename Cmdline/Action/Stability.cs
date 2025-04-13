@@ -6,8 +6,6 @@ using Autofac;
 using CommandLine;
 using CommandLine.Text;
 
-using CKAN.Extensions;
-
 namespace CKAN.CmdLine
 {
     public class Stability : ISubCommand

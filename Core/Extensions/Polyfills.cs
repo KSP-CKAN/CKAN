@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+#if !NET8_0_OR_GREATER
+
 namespace System.Linq
 {
     public static class LinqExtensions
@@ -32,7 +34,7 @@ namespace System.Linq
 
         #endif
 
-        #if NETFRAMEWORK || NETSTANDARD || NET5_0 || NET6_0 || NET7_0
+        #if !NET8_0_OR_GREATER
 
         public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs) where K: class
             => pairs.ToDictionary(kvp => kvp.Key,
@@ -55,10 +57,6 @@ namespace System.Linq
         public static IEnumerable<T> DistinctBy<T, U>(this IEnumerable<T> seq, Func<T, U> func)
             => seq.GroupBy(func).Select(grp => grp.First());
 
-        #endif
-
-        #if NETFRAMEWORK || NETSTANDARD2_0
-
         /// <summary>
         /// Make pairs out of the elements of two sequences
         /// </summary>
@@ -72,7 +70,10 @@ namespace System.Linq
     }
 }
 
+#endif
+
 #if NETFRAMEWORK || NETSTANDARD2_0
+
 namespace System.Collections.Generic
 {
     public static class KeyValuePairDeconstructExtensions
@@ -80,19 +81,23 @@ namespace System.Collections.Generic
         /// <summary>
         /// Enable a `foreach` over a sequence of key value pairs
         /// </summary>
-        /// <param name="tuple">A tuple to deconstruct</param>
-        /// <param name="item1">Set to the first value from the tuple</param>
-        /// <param name="item2">Set to the second value from the tuple</param>
-        public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> kvp, out T1 key, out T2 val)
+        /// <param name="kvp">A pair to deconstruct</param>
+        /// <param name="key">Set to the key from the pair</param>
+        /// <param name="val">Set to the value from the pair</param>
+        public static void Deconstruct<T1, T2>(this KeyValuePair<T1, T2> kvp,
+                                               out  T1                   key,
+                                               out  T2                   val)
         {
             key = kvp.Key;
             val = kvp.Value;
         }
     }
 }
+
 #endif
 
 #if NET45
+
 namespace System
 {
     public static class TupleDeconstructExtensions
@@ -101,9 +106,11 @@ namespace System
         /// Enable a `foreach` over a sequence of tuples
         /// </summary>
         /// <param name="tuple">A tuple to deconstruct</param>
-        /// <param name="item1">Set to the first value from the tuple</param>
-        /// <param name="item2">Set to the second value from the tuple</param>
-        public static void Deconstruct<T1, T2>(this Tuple<T1, T2> tuple, out T1 item1, out T2 item2)
+        /// <param name="item1">Set to the first item from the tuple</param>
+        /// <param name="item2">Set to the second item from the tuple</param>
+        public static void Deconstruct<T1, T2>(this Tuple<T1, T2> tuple,
+                                               out  T1            item1,
+                                               out  T2            item2)
         {
             item1 = tuple.Item1;
             item2 = tuple.Item2;
@@ -113,8 +120,9 @@ namespace System
         /// Enable a `foreach` over a sequence of tuples
         /// </summary>
         /// <param name="tuple">A tuple to deconstruct</param>
-        /// <param name="item1">Set to the first value from the tuple</param>
-        /// <param name="item2">Set to the second value from the tuple</param>
+        /// <param name="item1">Set to the first item from the tuple</param>
+        /// <param name="item2">Set to the second item from the tuple</param>
+        /// <param name="item3">Set to the third item from the tuple</param>
         public static void Deconstruct<T1, T2, T3>(this Tuple<T1, T2, T3> tuple,
                                                    out  T1                item1,
                                                    out  T2                item2,
@@ -129,8 +137,10 @@ namespace System
         /// Enable a `foreach` over a sequence of tuples
         /// </summary>
         /// <param name="tuple">A tuple to deconstruct</param>
-        /// <param name="item1">Set to the first value from the tuple</param>
-        /// <param name="item2">Set to the second value from the tuple</param>
+        /// <param name="item1">Set to the first item from the tuple</param>
+        /// <param name="item2">Set to the second item from the tuple</param>
+        /// <param name="item3">Set to the third item from the tuple</param>
+        /// <param name="item4">Set to the fourth item from the tuple</param>
         public static void Deconstruct<T1, T2, T3, T4>(this Tuple<T1, T2, T3, T4> tuple,
                                                        out  T1                    item1,
                                                        out  T2                    item2,
@@ -144,4 +154,5 @@ namespace System
         }
     }
 }
+
 #endif

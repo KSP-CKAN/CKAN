@@ -5,9 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using CKAN.Versioning;
-#if NETFRAMEWORK
-using CKAN.Extensions;
-#endif
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {

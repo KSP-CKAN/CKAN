@@ -9,10 +9,6 @@ using System.ComponentModel;
 using System.Runtime.Versioning;
 #endif
 
-#if NETFRAMEWORK || NETSTANDARD2_0
-using CKAN.Extensions;
-#endif
-
 namespace CKAN.Configuration
 {
     // DEPRECATED: We now use a JSON configuration file. This still exists to facilitate migration.
