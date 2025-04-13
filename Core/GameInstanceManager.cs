@@ -620,6 +620,7 @@ namespace CKAN
         /// Switch to using a download cache in a new location
         /// </summary>
         /// <param name="path">Location of folder for new cache</param>
+        /// <param name="progress">Progress object to report progress to</param>
         /// <param name="failureReason">Contains a human readable failure message if the setup failed</param>
         /// <returns>
         /// true if successful, false otherwise

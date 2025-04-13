@@ -24,6 +24,9 @@ namespace CKAN
         /// <param name="files">Set of files to import</param>
         /// <param name="user">Object for user interaction</param>
         /// <param name="installMod">Function to call to mark a mod for installation</param>
+        /// <param name="registry">Registry to use for version checking</param>
+        /// <param name="instance">Game instance to use for version checking</param>
+        /// <param name="Cache">Cache to use for storing files</param>
         /// <param name="allowDelete">True to ask user whether to delete imported files, false to leave the files as is</param>
         public static bool ImportFiles(HashSet<FileInfo>  files,
                                        IUser              user,

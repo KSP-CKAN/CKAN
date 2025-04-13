@@ -96,6 +96,7 @@ namespace CKAN
         /// <summary>
         /// Return the most recent release of a module with a optional ksp version to target and a RelationshipDescriptor to satisfy.
         /// </summary>
+        /// <param name="stabilityTolerance">Stability tolerance that the module must match.</param>
         /// <param name="ksp_version">If not null only consider mods which match this ksp version.</param>
         /// <param name="relationship">If not null only consider mods which satisfy the RelationshipDescriptor.</param>
         /// <param name="installed">Modules that are already installed</param>

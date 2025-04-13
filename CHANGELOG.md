@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Exclude internal .ckan files from `install_size` (#4348 by: HebaruSan)
+- [Core] Generate and tidy up XML docs for Core (#4351 by: HebaruSan)
 
 ## v1.36.0 (Quasar)
 

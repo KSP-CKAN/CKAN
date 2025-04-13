@@ -106,6 +106,9 @@ namespace CKAN
         /// Initialize the exception representing failed dependency resolution
         /// </summary>
         /// <param name="unsatisfied">List of chain of relationships with last one unsatisfied</param>
+        /// <param name="registry">Registry to use for formatting</param>
+        /// <param name="game">Game to use for formatting</param>
+        /// <param name="resolved">Resolved relationships tree</param>
         /// <param name="innerException">Originating exception parameter for base class</param>
         public DependenciesNotSatisfiedKraken(ICollection<ResolvedRelationship[]> unsatisfied,
                                               IRegistryQuerier                    registry,
@@ -536,7 +539,7 @@ namespace CKAN
         /// Release the kraken
         /// </summary>
         /// <param name="module">Module to check against path</param>
-        /// <param name="Path">Path to the file to check against module</param>
+        /// <param name="path">Path to the file to check against module</param>
         /// <param name="reason">Human-readable description of the problem</param>
         public InvalidModuleFileKraken(CkanModule module, string path, string? reason = null)
             : base(reason)

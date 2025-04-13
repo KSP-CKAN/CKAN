@@ -20,9 +20,11 @@ namespace CKAN
         /// <summary>
         /// Initialize the sorter and partition the mods.
         /// </summary>
+        /// <param name="stabilityTolerance">The least stable category of modules to consider</param>
         /// <param name="crit">Versions to be considered compatible</param>
         /// <param name="available">Collection of mods from registry</param>
         /// <param name="providers">Dictionary mapping every identifier to the modules providing it</param>
+        /// <param name="installed">Collection of installed mods</param>
         /// <param name="dlls">Collection of found dlls</param>
         /// <param name="dlc">Collection of installed DLCs</param>
         public CompatibilitySorter(StabilityToleranceConfig                         stabilityTolerance,

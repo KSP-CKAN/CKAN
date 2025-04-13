@@ -97,6 +97,7 @@ namespace CKAN.Versioning
         /// Generate a string describing a range of KSP versions.
         /// May be bounded or unbounded on either side.
         /// </summary>
+        /// <param name="game">The game to which the version range applies</param>
         /// <param name="minKsp">Lowest version in the range</param>
         /// <param name="maxKsp">Highest version in the range</param>
         /// <returns>

@@ -24,6 +24,8 @@ namespace CKAN.Extensions
         /// <param name="dest">Stream to which to copy</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with count of bytes received</param>
         /// <param name="idleInterval">Maximum timespand to elapse between progress updates, will synthesize extra updates as needed</param>
+        /// <param name="hasher">Hash algorithm to use, if any</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         public static void CopyTo(this Stream       src,
                                   Stream            dest,
                                   IProgress<long>   progress,

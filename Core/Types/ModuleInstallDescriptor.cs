@@ -139,10 +139,10 @@ namespace CKAN
         /// <summary>
         /// Compare two install stanzas
         /// </summary>
-        /// <param name="other">The other stanza for comparison</param>
+        /// <param name="otherStanza">The other stanza for comparison</param>
         /// <returns>
         /// True if they're equivalent, false if they're different.
-        /// IEquatable<> uses this for more efficient comparisons.
+        /// IEquatable&lt;&gt; uses this for more efficient comparisons.
         /// </returns>
         public bool Equals(ModuleInstallDescriptor? otherStanza)
         {
@@ -477,8 +477,10 @@ namespace CKAN
         /// EX: "kOS-1.1/GameData/kOS", "kOS-1.1/GameData/kOS/Plugins/kOS.dll", "GameData" will be transformed
         /// to "GameData/kOS/Plugins/kOS.dll"
         /// </summary>
+        /// <param name="game">The game to use for reserved paths</param>
         /// <param name="outputName">The name of the file to transform</param>
         /// <param name="installDir">The installation dir where the file should end up with</param>
+        /// <param name="as">The name to use for the file</param>
         /// <returns>The output name</returns>
         internal string TransformOutputName(IGame game, string outputName, string installDir, string? @as)
         {

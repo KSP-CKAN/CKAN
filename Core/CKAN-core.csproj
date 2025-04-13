@@ -18,9 +18,10 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>SYSLIB0050,IDE0090</WarningsNotAsErrors>
-    <NoWarn>IDE1006</NoWarn>
+    <NoWarn>IDE1006,CS1591</NoWarn>
     <TargetFrameworks>netstandard2.0;net48;net8.0</TargetFrameworks>
     <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
   </PropertyGroup>

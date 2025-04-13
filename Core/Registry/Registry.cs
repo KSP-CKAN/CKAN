@@ -575,6 +575,7 @@ namespace CKAN
         /// Partition all CkanModules in available_modules into
         /// compatible and incompatible groups.
         /// </summary>
+        /// <param name="stabilityTolerance">Stability tolerance to determine compatibility</param>
         /// <param name="versCrit">Version criteria to determine compatibility</param>
         public CompatibilitySorter SetCompatibleVersion(StabilityToleranceConfig stabilityTolerance,
                                                         GameVersionCriteria      versCrit)
@@ -625,6 +626,7 @@ namespace CKAN
         /// Quicker than checking CompatibleModules for one identifier.
         /// </summary>
         /// <param name="identifier">Identifier of mod</param>
+        /// <param name="stabilityTolerance">Stability tolerance to determine compatibility</param>
         /// <param name="crit">Game versions</param>
         /// <returns>true if any version is recursively compatible, false otherwise</returns>
         public bool IdentifierCompatible(string                   identifier,
@@ -700,6 +702,7 @@ namespace CKAN
         /// <summary>
         /// Return the latest game version compatible with the given mod.
         /// </summary>
+        /// <param name="realVersions">Game versions to check against</param>
         /// <param name="identifier">Name of mod to check</param>
         public GameVersion? LatestCompatibleGameVersion(List<GameVersion> realVersions,
                                                         string            identifier)
@@ -1112,6 +1115,7 @@ namespace CKAN
         /// <param name="origInstalled">Modules that are already installed, MUST include the FULL changeset if installing mods</param>
         /// <param name="dlls">Installed DLLs</param>
         /// <param name="dlc">Installed DLCs</param>
+        /// <param name="satisfiedFilter">Optional filter to apply to the dependencies</param>
         /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         public static IEnumerable<string> FindReverseDependencies(
             ICollection<string>                 modulesToRemove,

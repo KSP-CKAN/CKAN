@@ -95,8 +95,9 @@ namespace CKAN.Games.KerbalSpaceProgram
         /// <summary>
         /// Checks the path against a list of reserved game directories
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="inst">Game instance we're checking</param>
+        /// <param name="path">Path to check</param>
+        /// <returns>True if reserved, false otherwise</returns>
         public bool IsReservedDirectory(GameInstance inst, string path)
             => path == inst.GameDir() || path == inst.CkanDir()
             || path == PrimaryModDirectory(inst)
@@ -323,6 +324,7 @@ namespace CKAN.Games.KerbalSpaceProgram
         /// otherwise return the array as-is.
         /// </summary>
         /// <param name="args">Command line parameters to check</param>
+        /// <param name="installedVersion">The installed game version</param>
         /// <param name="crashyKspRange">Game versions that should not use this parameter</param>
         /// <param name="parameter">The parameter to remove on version match</param>
         /// <returns>

@@ -22,6 +22,7 @@ namespace CKAN
         /// <summary>
         /// Initialize our special web client
         /// </summary>
+        /// <param name="userAgent">User agent string to send with the request</param>
         /// <param name="timeout">Timeout for the request in milliseconds, defaulting to 100 000 (=100 seconds)</param>
         /// <param name="mimeType">A mime type sent with the "Accept" header</param>
         public RedirectingTimeoutWebClient(string userAgent,

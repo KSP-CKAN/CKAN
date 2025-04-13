@@ -323,7 +323,7 @@ namespace CKAN.Versioning
         /// <param name="input">A string that contains a version number to convert.</param>
         /// <returns>
         /// A <see cref="GameVersion"/> object that is equivalent to the version number specified in the
-        /// <see cref="input"/> parameter.
+        /// input parameter.
         /// </returns>
         public static GameVersion Parse(string input)
         {
@@ -346,10 +346,10 @@ namespace CKAN.Versioning
         /// </param>
         /// <param name="result">
         /// When this method returns <c>true</c>, contains the <see cref="GameVersion"/> equivalent of the number that
-        /// is contained in <see cref="input"/>. When this method returns <c>false</c>, the value is unspecified.
+        /// is contained in input. When this method returns <c>false</c>, the value is unspecified.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the <see cref="input"/> parameter was converted successfully; otherwise, <c>false</c>.
+        /// <c>true</c> if the input parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
         public static bool TryParse(string? input,
                                     [NotNullWhen(returnValue: true)] out GameVersion? result)
@@ -489,7 +489,8 @@ namespace CKAN.Versioning
         /// Needs at least a Major and Minor (doesn't make sense else).
         /// </summary>
         /// <returns>A complete GameVersion object</returns>
-        /// <param name="user">A IUser instance, to raise the corresponding dialog.</param>
+        /// <param name="game">The game whose versions are to be selected</param>
+        /// <param name="user">A IUser instance, to raise the corresponding dialog</param>
         public GameVersion RaiseVersionSelectionDialog(IGame game, IUser? user)
         {
             if (IsFullyDefined && InBuildMap(game))
@@ -722,7 +723,7 @@ namespace CKAN.Versioning
         /// </param>
         /// <returns>
         /// <c>true</c> if every component of the current <see cref="GameVersion"/> matches the corresponding component
-        /// of the <see cref="obj"/> parameter; otherwise, <c>false</c>.
+        /// of the obj parameter; otherwise, <c>false</c>.
         /// </returns>
         public bool Equals(GameVersion? obj)
             => obj is not null
@@ -740,9 +741,9 @@ namespace CKAN.Versioning
         /// An object to compare with the current <see cref="GameVersion"/> object, or <c>null</c>.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the current <see cref="GameVersion"/> object and <see cref="obj"/> are both
+        /// <c>true</c> if the current <see cref="GameVersion"/> object and obj are both
         /// <see cref="GameVersion"/> objects and every component of the current <see cref="GameVersion"/> object
-        /// matches the corresponding component of <see cref="obj"/>; otherwise, <c>false</c>.
+        /// matches the corresponding component of obj; otherwise, <c>false</c>.
         /// </returns>
         public override bool Equals(object? obj)
             => obj is not null
@@ -765,7 +766,7 @@ namespace CKAN.Versioning
         /// </summary>
         /// <param name="v1">The first <see cref="GameVersion"/> object.</param>
         /// <param name="v2">The second <see cref="GameVersion"/> object.</param>
-        /// <returns><c>true</c> if <see cref="v1"/> equals <see cref="v2"/>; otherwise, <c>false</c>.</returns>
+        /// <returns><c>true</c> if v1 equals v2; otherwise, <c>false</c>.</returns>
         public static bool operator ==(GameVersion? v1, GameVersion? v2)
             => Equals(v1, v2);
 
@@ -775,7 +776,7 @@ namespace CKAN.Versioning
         /// <param name="v1">The first <see cref="GameVersion"/> object.</param>
         /// <param name="v2">The second <see cref="GameVersion"/> object.</param>
         /// <returns>
-        /// <c>true</c> if <see cref="v1"/> does not equal <see cref="v2"/>; otherwise, <c>false</c>.
+        /// <c>true</c> if v1 does not equal v2; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator !=(GameVersion? v1, GameVersion? v2)
             => !Equals(v1, v2);
@@ -798,20 +799,20 @@ namespace CKAN.Versioning
         /// <item>
         /// <term>Less than zero</term>
         /// <description>
-        /// The current <see cref="GameVersion"/> object is a version before <see cref="obj"/>.
+        /// The current <see cref="GameVersion"/> object is a version before obj.
         /// </description>
         /// </item>
         /// <item>
         /// <term>Zero</term>
         /// <description>
-        /// The current <see cref="GameVersion"/> object is the same version as <see cref="obj"/>.
+        /// The current <see cref="GameVersion"/> object is the same version as obj.
         /// </description>
         /// </item>
         /// <item>
         /// <term>Greater than zero</term>
         /// <description>
         /// <para>
-        /// The current <see cref="GameVersion"/> object is a version subsequent to <see cref="obj"/>.
+        /// The current <see cref="GameVersion"/> object is a version subsequent to obj.
         /// </para>
         /// </description>
         /// </item>
@@ -851,20 +852,20 @@ namespace CKAN.Versioning
         /// <item>
         /// <term>Less than zero</term>
         /// <description>
-        /// The current <see cref="GameVersion"/> object is a version before <see cref="other"/>.
+        /// The current <see cref="GameVersion"/> object is a version before other.
         /// </description>
         /// </item>
         /// <item>
         /// <term>Zero</term>
         /// <description>
-        /// The current <see cref="GameVersion"/> object is the same version as <see cref="other"/>.
+        /// The current <see cref="GameVersion"/> object is the same version as other.
         /// </description>
         /// </item>
         /// <item>
         /// <term>Greater than zero</term>
         /// <description>
         /// <para>
-        /// The current <see cref="GameVersion"/> object is a version subsequent to <see cref="other"/>.
+        /// The current <see cref="GameVersion"/> object is a version subsequent to other.
         /// </para>
         /// </description>
         /// </item>
@@ -912,7 +913,7 @@ namespace CKAN.Versioning
         /// <param name="left">The first <see cref="GameVersion"/> object.</param>
         /// <param name="right">The second <see cref="GameVersion"/> object.</param>
         /// <returns>
-        /// <c>true</c> if <see cref="left"/> is less than <see cref="right"/>; otherwise, <c>flase</c>.
+        /// <c>true</c> if left is less than right; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator <(GameVersion left, GameVersion right)
             => left.CompareTo(right) < 0;
@@ -924,7 +925,7 @@ namespace CKAN.Versioning
         /// <param name="left">The first <see cref="GameVersion"/> object.</param>
         /// <param name="right">The second <see cref="GameVersion"/> object.</param>
         /// <returns>
-        /// <c>true</c> if <see cref="left"/> is greater than <see cref="right"/>; otherwise, <c>flase</c>.
+        /// <c>true</c> if left is greater than right; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator >(GameVersion left, GameVersion right)
             => left.CompareTo(right) > 0;
@@ -936,7 +937,7 @@ namespace CKAN.Versioning
         /// <param name="left">The first <see cref="GameVersion"/> object.</param>
         /// <param name="right">The second <see cref="GameVersion"/> object.</param>
         /// <returns>
-        /// <c>true</c> if <see cref="left"/> is less than or equal to <see cref="right"/>; otherwise, <c>flase</c>.
+        /// <c>true</c> if left is less than or equal to right; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator <=(GameVersion left, GameVersion right)
             => left.CompareTo(right) <= 0;
@@ -948,7 +949,7 @@ namespace CKAN.Versioning
         /// <param name="left">The first <see cref="GameVersion"/> object.</param>
         /// <param name="right">The second <see cref="GameVersion"/> object.</param>
         /// <returns>
-        /// <c>true</c> if <see cref="left"/> is greater than or equal to <see cref="right"/>; otherwise, <c>flase</c>.
+        /// <c>true</c> if left is greater than or equal to right; otherwise, <c>false</c>.
         /// </returns>
         public static bool operator >=(GameVersion left, GameVersion right)
             => left.CompareTo(right) >= 0;

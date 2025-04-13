@@ -75,7 +75,7 @@ namespace CKAN
                     : $"{first.download_content_type};q=1.0,{defaultMimeType};q=0.9");
 
         /// <summary>
-        /// <see cref="IDownloader.DownloadModules(NetFileCache, IEnumerable{CkanModule})"/>
+        /// <see cref="IDownloader.DownloadModules"/>
         /// </summary>
         public void DownloadModules(IEnumerable<CkanModule> modules)
         {

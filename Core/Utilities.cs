@@ -54,6 +54,7 @@ namespace CKAN
         /// <param name="sourceDirPath">Source directory path</param>
         /// <param name="destDirPath">Destination directory path</param>
         /// <param name="subFolderRelPathsToSymlink">Relative subdirs that should be symlinked to the originals instead of copied</param>
+        /// <param name="subFolderRelPathsToLeaveEmpty">Relative subdirs that should be left empty</param>
         public static void CopyDirectory(string   sourceDirPath,
                                          string   destDirPath,
                                          string[] subFolderRelPathsToSymlink,

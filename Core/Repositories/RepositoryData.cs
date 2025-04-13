@@ -87,6 +87,7 @@ namespace CKAN
         /// <param name="counts">Download counts from this repo</param>
         /// <param name="versions">Game versions in this repo</param>
         /// <param name="repos">Contents of repositories.json in this repo</param>
+        /// <param name="unsupportedSpec">true if any module we found requires a newer client version, false otherwise</param>
         public RepositoryData(IEnumerable<CkanModule>?       modules,
                               SortedDictionary<string, int>? counts,
                               IEnumerable<GameVersion>?      versions,

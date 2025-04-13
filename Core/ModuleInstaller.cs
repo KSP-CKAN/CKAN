@@ -509,7 +509,9 @@ namespace CKAN
         /// Find files in the given list that are already installed and unowned.
         /// Note, this compares files on demand; Memoize for performance!
         /// </summary>
+        /// <param name="zip">Zip file that we are installing from</param>
         /// <param name="files">Files that we want to install for a module</param>
+        /// <param name="registry">Registry to check for file ownership</param>
         /// <returns>
         /// List of pairs: Key = file, Value = true if identical, false if different
         /// </returns>
@@ -929,6 +931,8 @@ namespace CKAN
         /// </summary>
         /// <param name="identifier">Identifier of module to uninstall</param>
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
+        /// <param name="registry">Registry to use</param>
+        /// <param name="progress">Progress to report</param>
         private void Uninstall(string               identifier,
                                ref HashSet<string>? possibleConfigOnlyDirs,
                                Registry             registry,
@@ -1208,10 +1212,14 @@ namespace CKAN
         /// No relationships will be processed.
         /// This *will* save the registry.
         /// </summary>
+        /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
+        /// <param name="registry_manager">Registry to use</param>
+        /// <param name="resolver">Relationship resolver to use</param>
         /// <param name="add">Modules to add</param>
         /// <param name="autoInstalled">true or false for each item in `add`</param>
         /// <param name="remove">Modules to remove</param>
-        /// <param name="newModulesAreAutoInstalled">true if newly installed modules should be marked auto-installed, false otherwise</param>
+        /// <param name="downloader">Downloader to use</param>
+        /// <param name="enforceConsistency">Whether to enforce consistency</param>
         private void AddRemove(ref HashSet<string>?          possibleConfigOnlyDirs,
                                RegistryManager               registry_manager,
                                RelationshipResolver          resolver,
@@ -1563,8 +1571,10 @@ namespace CKAN
         /// <summary>
         /// Looks for optional related modules that could be installed alongside the given modules
         /// </summary>
+        /// <param name="instance">Game instance to use</param>
         /// <param name="sourceModules">Modules to check for relationships</param>
         /// <param name="toInstall">Modules already being installed, to be omitted from search</param>
+        /// <param name="registry">Registry to use</param>
         /// <param name="recommendations">Modules that are recommended to install</param>
         /// <param name="suggestions">Modules that are suggested to install</param>
         /// <param name="supporters">Modules that support other modules we're installing</param>
@@ -1641,6 +1651,8 @@ namespace CKAN
         /// <param name="opts">Installer options</param>
         /// <param name="toInstall">Mods we want to install</param>
         /// <param name="registry">Registry of instance into which we want to install</param>
+        /// <param name="game">Game instance</param>
+        /// <param name="crit">Game version criteria</param>
         /// <returns>
         /// True if it's possible to install these mods, false otherwise
         /// </returns>

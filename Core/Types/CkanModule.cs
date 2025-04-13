@@ -220,7 +220,7 @@ namespace CKAN
         /// <param name="spec_version">The version of the spec obeyed by this module</param>
         /// <param name="identifier">This module's machine-readable identifier</param>
         /// <param name="name">This module's user-visible display name</param>
-        /// <param name="@abstract">Short description of this module</param>
+        /// <param name="abstract">Short description of this module</param>
         /// <param name="description">Long description of this module</param>
         /// <param name="author">Authors of this module</param>
         /// <param name="license">Licenses of this module</param>
@@ -414,7 +414,7 @@ namespace CKAN
         /// Returns the latest compatible or installed module if no version has been given.
         /// </summary>
         /// <param name="registry">CKAN registry object for current game instance</param>
-        /// <param name="name">The identifier or identifier=version of the module</param>
+        /// <param name="mod">The identifier or identifier=version of the module</param>
         /// <param name="ksp_version">The current KSP version criteria to consider</param>
         /// <returns>A CkanModule</returns>
         /// <exception cref="ModuleNotFoundKraken">Thrown if no matching module could be found</exception>
