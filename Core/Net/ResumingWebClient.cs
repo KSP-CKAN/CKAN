@@ -24,6 +24,7 @@ namespace CKAN
         /// </summary>
         /// <param name="url">What to download</param>
         /// <param name="path">Where to save it</param>
+        /// <param name="hasher">Hash algorithm to use, or null</param>
         public void DownloadFileAsyncWithResume(Uri url, string path, HashAlgorithm? hasher)
         {
             this.hasher = hasher;

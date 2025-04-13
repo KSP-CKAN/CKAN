@@ -82,8 +82,9 @@ namespace CKAN.Games.KerbalSpaceProgram2
         /// <summary>
         /// Checks the path against a list of reserved game directories
         /// </summary>
-        /// <param name="path"></param>
-        /// <returns></returns>
+        /// <param name="inst">Game instance we're checking</param>
+        /// <param name="path">Path to check</param>
+        /// <returns>True if reserved, false otherwise</returns>
         public bool IsReservedDirectory(GameInstance inst, string path)
             => path == inst.GameDir()
                || path == inst.CkanDir()

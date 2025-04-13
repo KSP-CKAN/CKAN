@@ -28,6 +28,7 @@ namespace CKAN
         /// <param name="modulesToRemove">Modules to remove</param>
         /// <param name="options">Options for the RelationshipResolver</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="game">The game to mention in error messages</param>
         /// <param name="versionCrit">The current game version criteria to consider</param>
         public RelationshipResolver(IEnumerable<CkanModule>     modulesToInstall,
                                     IEnumerable<CkanModule>?    modulesToRemove,

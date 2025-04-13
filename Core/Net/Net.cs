@@ -171,6 +171,7 @@ namespace CKAN
         /// Download a string from a URL
         /// </summary>
         /// <param name="url">URL to download from</param>
+        /// <param name="userAgent">User agent to send with the request</param>
         /// <param name="authToken">An authentication token sent with the "Authorization" header.
         ///                         Attempted to be looked up from the configuraiton if not specified</param>
         /// <param name="mimeType">A mime type sent with the "Accept" header</param>

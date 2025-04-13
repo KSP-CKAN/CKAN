@@ -106,9 +106,9 @@ namespace CKAN
         /// <summary>
         /// Releases all resource used by the <see cref="RegistryManager"/> object.
         /// </summary>
-        /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="RegistryManager"/>. The
-        /// <see cref="Dispose"/> method leaves the <see cref="RegistryManager"/> in an unusable state. After
-        /// calling <see cref="Dispose"/>, you must release all references to the <see cref="RegistryManager"/> so
+        /// <remarks>Call <see cref="Dispose()"/> when you are finished using the <see cref="RegistryManager"/>. The
+        /// <see cref="Dispose()"/> method leaves the <see cref="RegistryManager"/> in an unusable state. After
+        /// calling <see cref="Dispose()"/>, you must release all references to the <see cref="RegistryManager"/> so
         /// the garbage collector can reclaim the memory that the <see cref="RegistryManager"/> was occupying.</remarks>
         public void Dispose()
         {

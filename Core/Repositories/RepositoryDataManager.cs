@@ -89,7 +89,7 @@ namespace CKAN
         /// Load the cached data for the given repos, WITHOUT any network calls
         /// </summary>
         /// <param name="repos">Repositories for which to load data</param>
-        /// <param name="progress">Progress object for reporting percentage complete</param>
+        /// <param name="percentProgress">Progress object for reporting percentage complete</param>
         public void Prepopulate(List<Repository> repos, IProgress<int>? percentProgress)
         {
             // Look up the sizes of repos that have uncached files
@@ -140,6 +140,7 @@ namespace CKAN
         /// <param name="skipETags">True to force downloading regardless of the etags, false to skip if no changes on remote</param>
         /// <param name="downloader">The object that will do the actual downloading for us</param>
         /// <param name="user">Object for reporting messages and progress to the UI</param>
+        /// <param name="userAgent">User agent string to send with the request</param>
         /// <returns>Updated if we changed any of the available modules, NoChanges if already up to date</returns>
         public UpdateResult Update(Repository[]       repos,
                                    IGame              game,

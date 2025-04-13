@@ -18,7 +18,8 @@ namespace CKAN
         /// <summary>
         /// Initialize the Object
         /// </summary>
-        /// <param name="json">JSON representation of release</param>
+        /// <param name="releaseJson">JSON representation of release</param>
+        /// <param name="userAgent">User agent to use for the request</param>
         public GitHubReleaseCkanUpdate(GitHubReleaseInfo? releaseJson = null, string? userAgent = null)
         {
             if (releaseJson == null)

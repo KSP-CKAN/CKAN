@@ -46,6 +46,9 @@ namespace CKAN
         /// and then launches the helper allowing us to upgrade.
         /// </summary>
         /// <param name="launchCKANAfterUpdate">If set to <c>true</c> launch CKAN after update.</param>
+        /// <param name="userAgent">The user agent to use for the request.</param>
+        /// <param name="devBuild">If set to <c>true</c> use the dev build.</param>
+        /// <param name="user">The user to use for the request.</param>
         public void StartUpdateProcess(bool launchCKANAfterUpdate, string? userAgent, bool devBuild, IUser? user = null)
         {
             var pid = Process.GetCurrentProcess().Id;

@@ -110,7 +110,7 @@ namespace CKAN.Versioning
         /// tie inclusive bounds are treated as both lower and higher than equivalent exclusive bounds.
         /// </summary>
         /// <param name="versionBounds">The set of <see cref="GameVersionBound"/> objects to compare.</param>
-        /// <returns>The lowest value in <see cref="versionBounds"/>.</returns>
+        /// <returns>The lowest value in versionBounds.</returns>
         public static GameVersionBound Lowest(params GameVersionBound[] versionBounds)
         {
             if (!versionBounds.Any())
@@ -131,7 +131,7 @@ namespace CKAN.Versioning
         /// tie inclusive bounds are treated as both lower and higher than equivalent exclusive bounds.
         /// </summary>
         /// <param name="versionBounds">The set of <see cref="GameVersionBound"/> objects to compare.</param>
-        /// <returns>The highest value in <see cref="versionBounds"/>.</returns>
+        /// <returns>The highest value in versionBounds.</returns>
         public static GameVersionBound Highest(params GameVersionBound?[] versionBounds)
         {
             if (versionBounds.Length == 0)

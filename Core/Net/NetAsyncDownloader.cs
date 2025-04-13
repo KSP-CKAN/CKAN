@@ -272,7 +272,6 @@ namespace CKAN
         /// Generates a download progress report.
         /// </summary>
         /// <param name="download">The download that progressed</param>
-        /// <param name="percent">The percent complete</param>
         /// <param name="bytesDownloaded">The bytes downloaded</param>
         /// <param name="bytesToDownload">The total amount of bytes we expect to download</param>
         private void FileProgressReport(DownloadPart download, long bytesDownloaded, long bytesToDownload)

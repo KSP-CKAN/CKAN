@@ -122,6 +122,7 @@ namespace CKAN
         /// <param name="modules">Sequence of modules to consider</param>
         /// <param name="dlls">Sequence of DLLs to consider</param>
         /// <param name="dlc">DLC to consider</param>
+        /// <param name="matched">The first module that matched, if any</param>
         /// <returns>
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>

@@ -46,6 +46,7 @@ namespace CKAN
         /// Initialize a cache given a GameInstanceManager
         /// </summary>
         /// <param name="mgr">GameInstanceManager object containing the Instances that might have old caches</param>
+        /// <param name="path">Location of folder to use for caching</param>
         public NetFileCache(GameInstanceManager mgr, string path)
             : this(path)
         {
@@ -517,6 +518,7 @@ namespace CKAN
         /// May throw an IOException if disk is full!
         /// </summary>
         /// <param name="fromDir">Path from which to move files</param>
+        /// <param name="percentProgress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
         public void MoveFrom(DirectoryInfo  fromDir,
                              IProgress<int> percentProgress)
         {
@@ -604,6 +606,7 @@ namespace CKAN
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
@@ -617,6 +620,7 @@ namespace CKAN
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
@@ -629,7 +633,11 @@ namespace CKAN
         /// Calculate the hash of a file
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
+        /// <param name="hashSuffix">Suffix to use for the hash file</param>
+        /// <param name="cache">Cache to use for storing the hash</param>
+        /// <param name="getHashAlgo">Function to get the hash algorithm</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// Hash, in all-caps hexadecimal format
         /// </returns>

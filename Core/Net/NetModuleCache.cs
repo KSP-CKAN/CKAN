@@ -29,6 +29,7 @@ namespace CKAN
         /// Initialize the cache
         /// </summary>
         /// <param name="mgr">GameInstanceManager containing instances that might have legacy caches</param>
+        /// <param name="path">Path to directory to use as the cache</param>
         public NetModuleCache(GameInstanceManager mgr, string path)
         {
             cache = new NetFileCache(mgr, path);
@@ -126,6 +127,7 @@ namespace CKAN
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// SHA1 hash, in all-caps hexadecimal format
         /// </returns>
@@ -137,6 +139,7 @@ namespace CKAN
         /// </summary>
         /// <param name="filePath">Path to file to examine</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// SHA256 hash, in all-caps hexadecimal format
         /// </returns>
@@ -152,6 +155,8 @@ namespace CKAN
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
         /// <param name="description">Description of the file</param>
         /// <param name="move">True to move the file, false to copy</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
+        /// <param name="validate">True to validate the file, false to skip validation</param>
         /// <returns>
         /// Name of the new file in the cache
         /// </returns>

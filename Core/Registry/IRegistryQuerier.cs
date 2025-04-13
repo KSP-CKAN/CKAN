@@ -54,6 +54,7 @@ namespace CKAN
         /// <summary>
         /// Returns the max game version that is compatible with the given mod.
         /// </summary>
+        /// <param name="realVersions">List of game versions to check against</param>
         /// <param name="identifier">Name of mod to check</param>
         GameVersion? LatestCompatibleGameVersion(List<GameVersion> realVersions, string identifier);
 
@@ -131,6 +132,7 @@ namespace CKAN
         ///     If the mod was autodetected (but present), a version of type `DllVersion` is returned.
         ///     If the mod is provided by another mod (ie, virtual) a type of ProvidesVersion is returned.
         /// </summary>
+        /// <param name="identifier">Identifier of mod</param>
         /// <param name="with_provides">If set to false will not check for provided versions.</param>
         /// <returns>The version of the mod or null if not found</returns>
         ModuleVersion? InstalledVersion(string identifier, bool with_provides = true);
@@ -139,6 +141,7 @@ namespace CKAN
         /// Check whether any versions of this mod are installable (including dependencies) on the given game versions
         /// </summary>
         /// <param name="identifier">Identifier of mod</param>
+        /// <param name="stabilityTolerance">Stability tolerance for the game instance</param>
         /// <param name="crit">Game versions</param>
         /// <returns>true if any version is recursively compatible, false otherwise</returns>
         bool IdentifierCompatible(string identifier, StabilityToleranceConfig stabilityTolerance, GameVersionCriteria crit);
@@ -353,6 +356,8 @@ namespace CKAN
         /// Generate a string describing the range of game versions
         /// compatible with the given module.
         /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="game">Game to represent</param>
         /// <param name="identifier">Mod name to findDependencyShallow</param>
         /// <returns>
         /// String describing range of compatible game versions.
@@ -464,9 +469,10 @@ namespace CKAN
         /// Find auto-installed modules that have no depending modules
         /// or only auto-installed depending modules.
         /// </summary>
+        /// <param name="querier">A registry</param>
         /// <param name="installedModules">The modules currently installed</param>
-        /// <param name="dlls">The DLLs that are manually installed</param>
-        /// <param name="dlc">The DLCs that are installed</param>
+        /// <param name="game">The registry's game instance</param>
+        /// <param name="stabilityTolerance">Stability tolerance for the game instance</param>
         /// <param name="crit">Version criteria for resolving relationships</param>
         /// <returns>
         /// Sequence of removable auto-installed modules, if any
