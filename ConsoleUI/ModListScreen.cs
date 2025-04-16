@@ -11,6 +11,7 @@ using CKAN.Extensions;
 using CKAN.Games;
 using CKAN.Configuration;
 using CKAN.Versioning;
+using CKAN.IO;
 
 namespace CKAN.ConsoleUI {
 
@@ -370,6 +371,9 @@ namespace CKAN.ConsoleUI {
                 new ConsoleMenuOption(Properties.Resources.ModListFilterMenu, "",
                     Properties.Resources.ModListFilterMenuTip,
                     true, EditInstallFilters),
+                new ConsoleMenuOption(Properties.Resources.ModListDeduplicateInstalledFilesMenu, "",
+                    Properties.Resources.ModListDeduplicateInstalledFilesMenuTip,
+                    true, DeduplicateInstalledFiles),
                 null,
                 new ConsoleMenuOption(Properties.Resources.ModListHelpMenu, helpKey,
                     Properties.Resources.ModListHelpMenuTip,
@@ -624,6 +628,29 @@ namespace CKAN.ConsoleUI {
                     ServiceLocator.Container.Resolve<IConfiguration>(),
                     manager.CurrentInstance));
             }
+            return true;
+        }
+
+        private bool DeduplicateInstalledFiles()
+        {
+            var ps = new ProgressScreen(theme,
+                                        Properties.Resources.ModListDeduplicateInstalledFilesProgressTitle,
+                                        Properties.Resources.ModListDeduplicateInstalledFilesProgressMessage);
+            ps.Run(() =>
+            {
+                ps.RaiseMessage(Properties.Resources.ModListDeduplicateInstalledFilesScanning);
+                var deduper = new InstalledFilesDeduplicator(manager.Instances.Values, repoData);
+                try
+                {
+                    deduper.DeduplicateAll(ps);
+                    ps.RaiseMessage(Properties.Resources.SplashPressAnyKey);
+                    Console.ReadKey(true);
+                }
+                catch (CancelledActionKraken)
+                {
+                    // User cancelled, do nothing.
+                }
+            });
             return true;
         }
 

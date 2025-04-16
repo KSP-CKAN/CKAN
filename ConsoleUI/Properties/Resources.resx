@@ -239,6 +239,7 @@ Edit authentication tokens now?</value></data>
 {1}</value></data>
   <data name="InstallNotInstalled" xml:space="preserve"><value>{0} is not installed, can't remove</value></data>
   <data name="InstallModInstalled" xml:space="preserve"><value>{0} Successfully installed {1} {2}</value></data>
+  <data name="InstallDeduplicateScanning" xml:space="preserve"><value>Checking other game instances for possible duplicate installed files...</value></data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Delete Directories</value></data>
   <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Warning, some folders have been left behind because CKAN does not know whether it is safe to delete their remaining files. Keeping these folders may break other mods! If you do not need these files, deleting them is recommended.</value></data>
   <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Directories</value></data>
@@ -360,6 +361,11 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModListAuthTokenMenuTip" xml:space="preserve"><value>Edit authentication tokens sent to download servers</value></data>
   <data name="ModListFilterMenu" xml:space="preserve"><value>Installation filters...</value></data>
   <data name="ModListFilterMenuTip" xml:space="preserve"><value>Edit list of files and folders to exclude from installation</value></data>
+  <data name="ModListDeduplicateInstalledFilesMenu" xml:space="preserve"><value>Deduplicate installed files...</value></data>
+  <data name="ModListDeduplicateInstalledFilesMenuTip" xml:space="preserve"><value>Search game instances for multiple copies of the same file and consolidate duplicates with hard links</value></data>
+  <data name="ModListDeduplicateInstalledFilesProgressTitle" xml:space="preserve"><value>Deduplicating Installed Files</value></data>
+  <data name="ModListDeduplicateInstalledFilesProgressMessage" xml:space="preserve"><value>Scanning instances for duplicates...</value></data>
+  <data name="ModListDeduplicateInstalledFilesScanning" xml:space="preserve"><value>Scanning instances for duplicates...</value></data>
   <data name="ModListHelpMenu" xml:space="preserve"><value>Help</value></data>
   <data name="ModListHelpMenuTip" xml:space="preserve"><value>Tips &amp; tricks</value></data>
   <data name="ModListQuitMenu" xml:space="preserve"><value>Quit</value></data>

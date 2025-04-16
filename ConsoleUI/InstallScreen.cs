@@ -78,6 +78,10 @@ namespace CKAN.ConsoleUI {
 
                             HashSet<string>? possibleConfigOnlyDirs = null;
 
+                            if (manager.Instances.Count > 0)
+                            {
+                                RaiseMessage(Properties.Resources.InstallDeduplicateScanning);
+                            }
                             var deduper = new InstalledFilesDeduplicator(manager.CurrentInstance,
                                                                          manager.Instances.Values,
                                                                          repoData);
