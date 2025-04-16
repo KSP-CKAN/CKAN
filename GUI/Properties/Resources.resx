@@ -530,4 +530,7 @@ This action cannot be undone!</value></data>
   <data name="PreferredHostsTooltipMoveUp" xml:space="preserve"><value>Make selected host higher priority</value></data>
   <data name="PreferredHostsTooltipMoveDown" xml:space="preserve"><value>Make selected host lower priority</value></data>
   <data name="SelectionDialogDefault" xml:space="preserve"><value>{0} (DEFAULT)</value></data>
+  <data name="MainInstallDeduplicateScanning" xml:space="preserve"><value>Checking other game instances for possible duplicate installed files...</value></data>
+  <data name="MainDeduplicateWaitTitle" xml:space="preserve"><value>Duplicating Installed Files</value></data>
+  <data name="MainDeduplicateScanning" xml:space="preserve"><value>Scanning for duplicate installed files...</value></data>
 </root>

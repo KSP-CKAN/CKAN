@@ -130,6 +130,8 @@
   <data name="installFromckanToolStripMenuItem.ToolTipText" xml:space="preserve"><value>Choose a .ckan file containing metadata for a module and install it</value></data>
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Import &amp;downloaded mods...</value></data>
   <data name="importDownloadsToolStripMenuItem.ToolTipText" xml:space="preserve"><value>Choose ZIP files downloaded outside of CKAN and put them in the cache for installation</value></data>
+  <data name="deduplicateToolstripMenuItem.Text" xml:space="preserve"><value>Deduplicate installed files...</value></data>
+  <data name="deduplicateToolstripMenuItem.ToolTipText" xml:space="preserve"><value>Scan installed files from all game instances and share the ones that can be shared</value></data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Save installed mod list (cannot be re-imported)...</value></data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Export modpack (can be re-imported)...</value></data>
   <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Import &amp;downloaded mods...</value></data>

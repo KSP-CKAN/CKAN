@@ -214,6 +214,10 @@ namespace CKAN.GUI
                 downloader.DownloadProgress += OnModDownloading;
                 downloader.StoreProgress    += OnModValidating;
 
+                if (Manager.Instances.Count > 1)
+                {
+                    currentUser.RaiseMessage(Properties.Resources.MainInstallDeduplicateScanning);
+                }
                 var deduper = new InstalledFilesDeduplicator(CurrentInstance,
                                                              Manager.Instances.Values,
                                                              repoData);
