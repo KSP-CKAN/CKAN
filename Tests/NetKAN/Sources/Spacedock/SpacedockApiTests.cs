@@ -7,6 +7,8 @@ using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Spacedock;
 
+using Tests.Data;
+
 namespace Tests.NetKAN.Sources.Spacedock
 {
     [TestFixture]
@@ -17,17 +19,17 @@ namespace Tests.NetKAN.Sources.Spacedock
         private string?       _cachePath;
         private NetFileCache? _cache;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void TestFixtureSetup()
         {
-            _cachePath = Path.Combine(Path.GetTempPath(), "CKAN");
+            _cachePath = TestData.NewTempDir();
             var path = Path.Combine(_cachePath, Guid.NewGuid().ToString("N"));
 
             Directory.CreateDirectory(path);
             _cache = new NetFileCache(path);
         }
 
-        [OneTimeTearDown]
+        [TearDown]
         public void TestFixtureTearDown()
         {
             _cache?.Dispose();
