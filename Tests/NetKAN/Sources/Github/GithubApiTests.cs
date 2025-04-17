@@ -8,6 +8,8 @@ using CKAN;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Github;
 
+using Tests.Data;
+
 namespace Tests.NetKAN.Sources.Github
 {
     [TestFixture]
@@ -23,7 +25,7 @@ namespace Tests.NetKAN.Sources.Github
         [OneTimeSetUp]
         public void TestFixtureSetup()
         {
-            _cachePath = Path.Combine(Path.GetTempPath(), "CKAN");
+            _cachePath = TestData.NewTempDir();
             var path = Path.Combine(_cachePath, Guid.NewGuid().ToString("N"));
 
             Directory.CreateDirectory(path);

@@ -8,6 +8,8 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Jenkins;
 
+using Tests.Data;
+
 namespace Tests.NetKAN.Sources.Jenkins
 {
     [TestFixture]
@@ -16,7 +18,7 @@ namespace Tests.NetKAN.Sources.Jenkins
         [OneTimeSetUp]
         public void TestFixtureSetup()
         {
-            _cachePath = Path.Combine(Path.GetTempPath(), "CKAN");
+            _cachePath = TestData.NewTempDir();
             var path = Path.Combine(_cachePath, Guid.NewGuid().ToString("N"));
 
             Directory.CreateDirectory(path);

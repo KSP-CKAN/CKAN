@@ -15,7 +15,7 @@ namespace Tests.NetKAN.Services
         [OneTimeSetUp]
         public void TestFixtureSetup()
         {
-            _cachePath = Path.Combine(Path.GetTempPath(), "CKAN");
+            _cachePath = TestData.NewTempDir();
             var path = Path.Combine(_cachePath, Guid.NewGuid().ToString("N"));
 
             Directory.CreateDirectory(path);
