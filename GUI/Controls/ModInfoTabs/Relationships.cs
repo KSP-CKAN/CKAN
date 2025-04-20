@@ -360,12 +360,14 @@ namespace CKAN.GUI
                                 .Where(r => r.MatchesAny(modules, null, null))
                                 .Select(r => IndexedNode(registry, otherMod, relationship,
                                                          r, stabilityTolerance, crit)))
+                        .OrderBy(r => r.Name)
                         .Concat(registry.IncompatibleModules(stabilityTolerance, crit)
                                         .SelectMany(otherMod =>
                                             GetModRelationships(otherMod, relationship)
                                                 .Where(r => r.MatchesAny(modules, null, null))
                                                 .Select(r => IndexedNode(registry, otherMod, relationship,
-                                                                         r, stabilityTolerance, crit)))));
+                                                                         r, stabilityTolerance, crit)))
+                                        .OrderBy(r => r.Name)));
 
         private static TreeNode providesNode(string           identifier,
                                              RelationshipType relationship,
