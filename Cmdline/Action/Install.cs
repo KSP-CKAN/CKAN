@@ -6,6 +6,8 @@ using System.Linq;
 using CommandLine;
 using log4net;
 
+using CKAN.Versioning;
+
 namespace CKAN.CmdLine
 {
     public class Install : ICommand

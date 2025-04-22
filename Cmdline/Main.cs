@@ -15,6 +15,8 @@ using Autofac;
 using log4net;
 using log4net.Core;
 
+using CKAN.Versioning;
+
 namespace CKAN.CmdLine
 {
     internal class MainClass
