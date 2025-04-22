@@ -205,7 +205,8 @@ namespace CKAN.ConsoleUI {
 
         private void OnModInstalled(CkanModule mod)
         {
-            RaiseMessage(Properties.Resources.InstallModInstalled, Symbols.checkmark, mod.name, ModuleInstaller.StripEpoch(mod.version));
+            RaiseMessage(Properties.Resources.InstallModInstalled,
+                         Symbols.checkmark, mod.name, mod.version.StripEpoch());
         }
 
         private IEnumerable<ModuleReplacement> AllReplacements(IEnumerable<string> identifiers)
