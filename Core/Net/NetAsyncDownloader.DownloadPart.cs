@@ -58,6 +58,11 @@ namespace CKAN
                         // Send our auth token to the GitHub API (or whoever else needs one)
                         agent.Headers.Add("Authorization", $"token {token}");
                     }
+                    // Raise the initial progress report if we know the size
+                    if (size > 0)
+                    {
+                        Progress?.Invoke(this, 0, size);
+                    }
                     target.DownloadWith(agent, url, hasher);
                 }
             }
