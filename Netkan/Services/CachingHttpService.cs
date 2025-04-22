@@ -4,6 +4,7 @@ using System.IO;
 
 using log4net;
 
+using CKAN.IO;
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Services

@@ -6,6 +6,8 @@ using System.Text.RegularExpressions;
 using CommandLine;
 using log4net;
 
+using CKAN.IO;
+
 namespace CKAN.CmdLine
 {
     public class Remove : ICommand

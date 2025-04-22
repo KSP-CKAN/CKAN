@@ -4,6 +4,7 @@ using System.IO;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.IO;
 using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Data;

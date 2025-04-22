@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using ICSharpCode.SharpZipLib.Zip;
 
+using CKAN.IO;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.Games;

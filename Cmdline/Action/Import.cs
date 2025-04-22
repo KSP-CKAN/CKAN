@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using CommandLine;
 using log4net;
 
+using CKAN.IO;
+
 namespace CKAN.CmdLine
 {
     /// <summary>

@@ -1,6 +1,7 @@
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.IO;
 
 namespace Tests.Core
 {

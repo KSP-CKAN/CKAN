@@ -10,6 +10,7 @@ using log4net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using CKAN.IO;
 using CKAN.DLC;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 using CKAN.Games.KerbalSpaceProgram.DLC;

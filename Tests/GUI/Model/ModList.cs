@@ -13,6 +13,7 @@ using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.GUI;
 

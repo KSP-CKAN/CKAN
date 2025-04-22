@@ -5,7 +5,7 @@ using log4net;
 
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.IO
 {
     public static class CKANPathUtils
     {

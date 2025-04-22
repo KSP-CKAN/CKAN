@@ -6,6 +6,7 @@ using System.Transactions;
 using CommandLine;
 using Autofac;
 
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Configuration;
 

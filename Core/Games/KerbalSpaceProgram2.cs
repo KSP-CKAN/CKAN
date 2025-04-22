@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Mono.Cecil;
 
+using CKAN.IO;
 using CKAN.DLC;
 using CKAN.Versioning;
 using CKAN.Extensions;

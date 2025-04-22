@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
 

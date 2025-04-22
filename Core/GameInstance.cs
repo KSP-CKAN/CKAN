@@ -11,6 +11,7 @@ using ChinhDo.Transactions.FileManager;
 using log4net;
 using Newtonsoft.Json;
 
+using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Versioning;

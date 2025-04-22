@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CommandLine;
 using log4net;
 
+using CKAN.IO;
 using CKAN.Versioning;
 
 namespace CKAN.CmdLine

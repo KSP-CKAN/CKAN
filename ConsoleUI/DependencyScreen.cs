@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.ConsoleUI.Toolkit;
 

@@ -2,6 +2,7 @@ using System.Linq;
 
 using Newtonsoft.Json.Linq;
 
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 

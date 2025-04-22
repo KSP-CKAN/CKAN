@@ -11,6 +11,7 @@ using Autofac;
 using Newtonsoft.Json;
 using log4net;
 
+using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.Extensions;
 using CKAN.Versioning;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
@@ -14,9 +15,8 @@ using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
-using System.Threading;
 
-namespace CKAN
+namespace CKAN.IO
 {
     public struct InstallableFile
     {

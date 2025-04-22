@@ -4,6 +4,7 @@ using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
 
+using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
 

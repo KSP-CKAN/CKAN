@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 using ICSharpCode.SharpZipLib.Zip;
 
+using CKAN.IO;
+
 namespace CKAN
 {
     /// <summary>

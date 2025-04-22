@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 using Autofac;
 using log4net;
 
+using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 

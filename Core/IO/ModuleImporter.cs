@@ -13,7 +13,7 @@ using CKAN.Versioning;
 using CKAN.Avc;
 using CKAN.SpaceWarp;
 
-namespace CKAN
+namespace CKAN.IO
 {
     public static class ModuleImporter
     {

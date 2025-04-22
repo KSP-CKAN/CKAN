@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
+using CKAN.IO;
+
 namespace CKAN
 {
     public static class Utilities
