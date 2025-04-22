@@ -123,7 +123,11 @@ namespace CKAN.CmdLine
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
                     installer.InstallList(modules, install_ops, regMgr,
-                                          ref possibleConfigOnlyDirs, options?.NetUserAgent);
+                                          ref possibleConfigOnlyDirs,
+                                          new InstalledFilesDeduplicator(instance,
+                                                                         manager.Instances.Values,
+                                                                         repoData),
+                                          options?.NetUserAgent);
                     user.RaiseMessage("");
                     done = true;
                 }

@@ -214,6 +214,10 @@ namespace CKAN.GUI
                 downloader.DownloadProgress += OnModDownloading;
                 downloader.StoreProgress    += OnModValidating;
 
+                var deduper = new InstalledFilesDeduplicator(CurrentInstance,
+                                                             Manager.Instances.Values,
+                                                             repoData);
+
                 HashSet<string>? possibleConfigOnlyDirs = null;
 
                 // Treat whole changeset as atomic
@@ -235,12 +239,14 @@ namespace CKAN.GUI
                             }
                             if (!canceled && toInstall.Count > 0)
                             {
-                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, userAgent, downloader, false);
+                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs,
+                                                      deduper, userAgent, downloader, false);
                                 toInstall.Clear();
                             }
                             if (!canceled && toUpgrade.Count > 0)
                             {
-                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, false);
+                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager,
+                                                  deduper, true, false);
                                 toUpgrade.Clear();
                             }
                             if (canceled)

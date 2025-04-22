@@ -119,6 +119,9 @@ namespace CKAN.CmdLine
             {
                 var regMgr = RegistryManager.Instance(instance, repoData);
                 var registry = regMgr.registry;
+                var deduper = new InstalledFilesDeduplicator(instance,
+                                                             manager.Instances.Values,
+                                                             repoData);
                 if (options.upgrade_all)
                 {
                     var to_upgrade = registry
@@ -130,7 +133,7 @@ namespace CKAN.CmdLine
                     }
                     else if (manager.Cache != null)
                     {
-                        UpgradeModules(manager.Cache, options.NetUserAgent, user, instance, to_upgrade);
+                        UpgradeModules(manager.Cache, options.NetUserAgent, user, instance, deduper, to_upgrade);
                     }
                 }
                 else
@@ -138,7 +141,7 @@ namespace CKAN.CmdLine
                     if (options.modules != null && manager.Cache != null)
                     {
                         Search.AdjustModulesCase(instance, registry, options.modules);
-                        UpgradeModules(manager.Cache, options.NetUserAgent, user, instance, options.modules);
+                        UpgradeModules(manager.Cache, options.NetUserAgent, user, instance, deduper, options.modules);
                     }
                 }
                 user.RaiseMessage("");
@@ -182,18 +185,19 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="modules">List of modules to upgrade</param>
-        private void UpgradeModules(NetModuleCache    cache,
-                                    string?           userAgent,
-                                    IUser             user,
-                                    CKAN.GameInstance instance,
-                                    List<CkanModule>  modules)
+        private void UpgradeModules(NetModuleCache             cache,
+                                    string?                    userAgent,
+                                    IUser                      user,
+                                    CKAN.GameInstance          instance,
+                                    InstalledFilesDeduplicator deduper,
+                                    List<CkanModule>           modules)
         {
             UpgradeModules(
                 cache, userAgent, user, instance, repoData,
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs) =>
                     installer.Upgrade(modules, downloader,
                                       ref possibleConfigOnlyDirs,
-                                      regMgr, true, true),
+                                      regMgr, deduper, true, true),
                 modules.Add);
         }
 
@@ -204,11 +208,12 @@ namespace CKAN.CmdLine
         /// <param name="user">IUser object for output</param>
         /// <param name="instance">Game instance to use</param>
         /// <param name="identsAndVersions">List of identifier[=version] to upgrade</param>
-        private void UpgradeModules(NetModuleCache    cache,
-                                    string?           userAgent,
-                                    IUser             user,
-                                    CKAN.GameInstance instance,
-                                    List<string>      identsAndVersions)
+        private void UpgradeModules(NetModuleCache             cache,
+                                    string?                    userAgent,
+                                    IUser                      user,
+                                    CKAN.GameInstance          instance,
+                                    InstalledFilesDeduplicator deduper,
+                                    List<string>               identsAndVersions)
         {
             UpgradeModules(
                 cache, userAgent, user, instance, repoData,
@@ -254,7 +259,8 @@ namespace CKAN.CmdLine
                     }
                     if (to_upgrade.Count > 0)
                     {
-                        installer.Upgrade(to_upgrade, downloader, ref possibleConfigOnlyDirs, regMgr, true);
+                        installer.Upgrade(to_upgrade, downloader,
+                                          ref possibleConfigOnlyDirs, regMgr, deduper, true);
                     }
                 },
                 m => identsAndVersions.Add(m.identifier));

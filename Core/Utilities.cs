@@ -107,7 +107,9 @@ namespace CKAN
                     continue;
                 }
 
-                file_transaction.Copy(file.FullName, Path.Combine(destDirPath, file.Name), false);
+                InstalledFilesDeduplicator.CreateOrCopy(file,
+                                                        Path.Combine(destDirPath, file.Name),
+                                                        file_transaction);
             }
 
             // Create all first level subdirectories

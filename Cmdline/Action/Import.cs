@@ -65,6 +65,9 @@ namespace CKAN.CmdLine
                                               new RelationshipResolverOptions(instance.StabilityToleranceConfig),
                                               regMgr,
                                               ref possibleConfigOnlyDirs,
+                                              new InstalledFilesDeduplicator(instance,
+                                                                             manager.Instances.Values,
+                                                                             repoData),
                                               opts?.NetUserAgent);
                     }
                     return Exit.OK;

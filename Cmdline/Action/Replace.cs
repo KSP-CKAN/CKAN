@@ -165,7 +165,10 @@ namespace CKAN.CmdLine
                         .Replace(to_replace, replace_ops,
                                  new NetAsyncModulesDownloader(user, manager.Cache, options.NetUserAgent),
                                  ref possibleConfigOnlyDirs,
-                                 regMgr);
+                                 regMgr,
+                                 new InstalledFilesDeduplicator(instance,
+                                                                manager.Instances.Values,
+                                                                repoData));
                     user.RaiseMessage("");
                 }
                 catch (DependenciesNotSatisfiedKraken ex)
