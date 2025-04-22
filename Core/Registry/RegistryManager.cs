@@ -306,22 +306,7 @@ namespace CKAN
         {
             try
             {
-                // Our registry needs to know our game instance when upgrading from older
-                // registry formats. This lets us encapsulate that to make it available
-                // after deserialisation.
-                var settings = new JsonSerializerSettings
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                    Context = new StreamingContext(StreamingContextStates.Other, gameInstance)
-                };
-
-                log.DebugFormat("Trying to load registry from {0}", path);
-                string json = File.ReadAllText(path);
-                log.Debug("Registry JSON loaded; parsing...");
-                registry = new Registry(repoData);
-                JsonConvert.PopulateObject(json, registry, settings);
-                log.Debug("Registry loaded and parsed");
-                log.InfoFormat("Loaded CKAN registry at {0}", path);
+                registry = LoadRegistry(gameInstance, repoData);
                 AscertainDefaultRepo();
             }
             catch (IOException exc) when (exc is FileNotFoundException or DirectoryNotFoundException)
@@ -343,6 +328,36 @@ namespace CKAN
                 throw;
             }
         }
+
+        public static Registry? ReadOnlyRegistry(GameInstance          inst,
+                                                 RepositoryDataManager repoData)
+            => Utilities.DefaultIfThrows(() => registryCache.TryGetValue(inst.CkanDir(),
+                                                                         out RegistryManager? regMgr)
+                                                   ? regMgr.registry
+                                                   : LoadRegistry(inst, repoData));
+
+        private static Registry LoadRegistry(GameInstance inst, RepositoryDataManager repoData)
+        {
+            var path = Path.Combine(inst.CkanDir(), "registry.json");
+            log.DebugFormat("Trying to load registry from {0}", path);
+            string json = File.ReadAllText(path);
+            log.Debug("Registry JSON loaded; parsing...");
+            var registry = new Registry(repoData);
+            JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
+            log.Debug("Registry loaded and parsed");
+            log.InfoFormat("Loaded CKAN registry at {0}", path);
+            return registry;
+        }
+
+        // Our registry needs to know our game instance when upgrading from older
+        // registry formats. This lets us encapsulate that to make it available
+        // after deserialisation.
+        private static JsonSerializerSettings LoadSettings(GameInstance inst)
+            => new JsonSerializerSettings
+               {
+                   DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                   Context = new StreamingContext(StreamingContextStates.Other, inst)
+               };
 
         [MemberNotNull(nameof(registry))]
         private void Create(RepositoryDataManager repoData)

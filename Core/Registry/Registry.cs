@@ -1097,6 +1097,10 @@ namespace CKAN
                 ? InstalledModule(fileOwner)
                 : null;
 
+        public IEnumerable<(string relPath, InstalledModule owner)> InstalledFileInfo()
+            => installed_files.Select(kvp => (kvp.Key, InstalledModule(kvp.Value)))
+                              .OfType<(string, InstalledModule)>();
+
         /// <summary>
         /// <see cref="IRegistryQuerier.CheckSanity"/>
         /// </summary>
