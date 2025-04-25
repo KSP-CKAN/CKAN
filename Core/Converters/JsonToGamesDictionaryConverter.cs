@@ -59,7 +59,7 @@ namespace CKAN
             }
             if (//objectType.GetGenericArguments() is [_, var valueType, ..]
                 objectType.GetGenericArguments() is Type[] types
-                && types.Length > 0
+                && types.Length > 1
                 && types[1] is var valueType
                 && Activator.CreateInstance(objectType) is IDictionary obj
                 && !IsTokenEmpty(token))
