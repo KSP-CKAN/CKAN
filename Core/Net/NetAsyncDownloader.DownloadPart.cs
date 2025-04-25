@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Security.Cryptography;
 
 using Autofac;
@@ -43,7 +44,7 @@ namespace CKAN
                 triedDownloads = 0;
             }
 
-            public void Download()
+            public void Download(CancellationToken? cancelToken = default)
             {
                 var url = CurrentUri;
                 ResetAgent();
@@ -63,7 +64,8 @@ namespace CKAN
                     {
                         Progress?.Invoke(this, 0, size);
                     }
-                    target.DownloadWith(agent, url, hasher);
+                    target.DownloadWith(agent, url, hasher,
+                                        cancelToken);
                 }
             }
 

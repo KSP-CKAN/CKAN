@@ -189,7 +189,7 @@ namespace CKAN
                 cancelToken?.ThrowIfCancellationRequested();
 
                 // Check valid CRC
-                if (!ZipValid(path, out string invalidReason, progress))
+                if (!ZipValid(path, out string invalidReason, progress, cancelToken))
                 {
                     throw new InvalidModuleFileKraken(
                         module, path,
@@ -220,12 +220,14 @@ namespace CKAN
         /// <param name="filename">Path to zip file to check</param>
         /// <param name="invalidReason">Description of problem with the file</param>
         /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.
         /// </returns>
-        public static bool ZipValid(string           filename,
-                                    out string       invalidReason,
-                                    IProgress<long>? progress)
+        public static bool ZipValid(string             filename,
+                                    out string         invalidReason,
+                                    IProgress<long>?   progress,
+                                    CancellationToken? cancelToken = default)
         {
             try
             {
@@ -242,6 +244,7 @@ namespace CKAN
                         if (zip.TestArchive(true, TestStrategy.FindFirstError,
                             (st, msg) =>
                             {
+                                cancelToken?.ThrowIfCancellationRequested();
                                 // This delegate is called as TestArchive proceeds through its
                                 // steps, both routine and abnormal.
                                 // The second parameter is non-null if an error occurred.
