@@ -229,6 +229,8 @@ namespace CKAN.GUI
             {
                 MoveCacheProgressBar.Visible = true;
                 MoveCacheProgressBar.Value = percent;
+                MoveCacheProgressBar.Text = string.Format(Properties.Resources.SettingsDialogCacheProgress,
+                                                          percent);
             });
         }
 
