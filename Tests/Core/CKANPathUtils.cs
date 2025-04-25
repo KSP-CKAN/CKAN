@@ -1,5 +1,6 @@
-using CKAN;
 using NUnit.Framework;
+
+using CKAN;
 
 namespace Tests.Core
 {
@@ -15,30 +16,6 @@ namespace Tests.Core
             Assert.AreEqual("a/b/c", CKANPathUtils.NormalizePath("a/b\\c"), "No starting slash");
             Assert.AreEqual("/a/b/c", CKANPathUtils.NormalizePath("\\a/b\\c\\"), "Trailing slash");
             Assert.AreEqual("SPACE", CKANPathUtils.NormalizePath("SPACE"), "All upper-case, no slashes");
-        }
-
-        [Test]
-        public void GetLastPathElement()
-        {
-            Assert.AreEqual("c", CKANPathUtils.GetLastPathElement("/a/b/c"), "Simple case");
-            Assert.AreEqual("c", CKANPathUtils.GetLastPathElement("\\a\\b\\c"), "With other slashes");
-            Assert.AreEqual("c", CKANPathUtils.GetLastPathElement("\\a/b\\c"), "With mixed slashes");
-            Assert.AreEqual("c", CKANPathUtils.GetLastPathElement("a/b\\c"), "No starting slash");
-            Assert.AreEqual("c", CKANPathUtils.GetLastPathElement("\\a/b\\c\\"), "Trailing slash");
-            Assert.AreEqual("kOS", CKANPathUtils.GetLastPathElement("GameData/kOS"), "Real world test");
-            Assert.AreEqual("buckethead", CKANPathUtils.GetLastPathElement("buckethead"), "No slashes at all");
-        }
-
-        [Test]
-        public void GetLeadingPathElements()
-        {
-            Assert.AreEqual("/a/b", CKANPathUtils.GetLeadingPathElements("/a/b/c"), "Simple case");
-            Assert.AreEqual("/a/b", CKANPathUtils.GetLeadingPathElements("\\a\\b\\c"), "With other slashes");
-            Assert.AreEqual("/a/b", CKANPathUtils.GetLeadingPathElements("\\a/b\\c"), "With mixed slashes");
-            Assert.AreEqual("a/b", CKANPathUtils.GetLeadingPathElements("a/b\\c"), "No starting slash");
-            Assert.AreEqual("/a/b", CKANPathUtils.GetLeadingPathElements("\\a/b\\c\\"), "Trailing slash");
-
-            Assert.IsEmpty(CKANPathUtils.GetLeadingPathElements("ModuleManager.2.5.1.dll"));
         }
 
         [Test]
