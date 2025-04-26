@@ -94,7 +94,7 @@ namespace CKAN.GUI
         public event Action<string>?  RaiseError;
         public event Action<string>?  SetStatusBar;
         public event Action?          ClearStatusBar;
-        public event Action<string?>? LaunchGame;
+        public event Action<string>?  LaunchGame;
         public event Action?          EditCommandLines;
 
         public readonly ModList mainModList;
@@ -634,14 +634,15 @@ namespace CKAN.GUI
 
         private void LaunchGameToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            if (sender is ToolStripMenuItem menuItem)
+            if (sender is ToolStripMenuItem menuItem
+                && (menuItem.Tag as string
+                    ?? guiConfig?.CommandLines.First()) is string cmd)
             {
-                if (menuItem.Tag is string cmd
-                    && !SteamLibrary.IsSteamCmdLine(cmd))
+                if (!SteamLibrary.IsSteamCmdLine(cmd))
                 {
                     SetPlayButtonActiveInactive(true);
                 }
-                LaunchGame?.Invoke(menuItem.Tag as string);
+                LaunchGame?.Invoke(cmd);
             }
         }
 
