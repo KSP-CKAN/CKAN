@@ -799,7 +799,6 @@ namespace CKAN
                                                             ICollection<CkanModule>? toInstall    = null)
             => ((providers ?? BuildProvidesIndex())
                     is Dictionary<string, AvailableModule[]> allProvs
-                && Repositories.Values.ToArray() is Repository[] repos
                 && allProvs.TryGetValue(identifier, out AvailableModule[]? provs)
                     // For each AvailableModule, we want the latest one matching our constraints
                     ? provs.Select(am => am.Latest(stabilityTolerance, gameVersion, relationship, installed, toInstall))
@@ -807,7 +806,7 @@ namespace CKAN
                            .Where(m => m.ProvidesList.Contains(identifier))
                            .Distinct()
                            // Put the most popular one on top
-                           .OrderByDescending(m => repoDataMgr?.GetDownloadCount(repos, m.identifier)
+                           .OrderByDescending(m => repoDataMgr?.GetDownloadCount(Repositories.Values, m.identifier)
                                                               ?? 0)
                     // Nothing provides this
                     : Enumerable.Empty<CkanModule>())
