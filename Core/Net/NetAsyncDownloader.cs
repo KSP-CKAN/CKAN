@@ -237,7 +237,7 @@ namespace CKAN
                                   dl.CurrentUri.ToString().Replace(" ", "%20"));
 
                 // Start the download!
-                dl.Download();
+                dl.Download(cancelToken);
             }
         }
 

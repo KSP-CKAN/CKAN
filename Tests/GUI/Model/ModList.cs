@@ -13,6 +13,7 @@ using Tests.Core.Configuration;
 using Tests.Data;
 
 using CKAN;
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.GUI;
 
@@ -183,7 +184,7 @@ namespace Tests.GUI
                     new RelationshipResolverOptions(instance.KSP.StabilityToleranceConfig),
                     registryManager,
                     ref possibleConfigOnlyDirs,
-                    null,
+                    null, null,
                     downloader);
 
                 // TODO: Refactor the column header code to allow mocking of the GUI without creating columns
@@ -231,7 +232,7 @@ namespace Tests.GUI
                             new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),
                             registryManager,
                             ref possibleConfigOnlyDirs,
-                            null,
+                            null, null,
                             downloader);
 
                         // Now we need to sort

@@ -6,6 +6,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.IO;
 
 using Tests.Data;
 

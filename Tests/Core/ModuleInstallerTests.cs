@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
 
@@ -266,7 +267,7 @@ namespace Tests.Core
         // GH #205, make sure we write in *binary*, not text.
         public void BinaryNotText_205()
         {
-            // Use CopyZipEntry (via CopyDogeFromZip) and make sure it
+            // Use InstallFile (via CopyDogeFromZip) and make sure it
             // comes out the right size.
             string tmpfile = CopyDogeFromZip();
             long size = new FileInfo(tmpfile).Length;
@@ -284,7 +285,7 @@ namespace Tests.Core
         }
 
         [Test]
-        // Make sure when we roll-back a transaction, files written with CopyZipEntry go
+        // Make sure when we roll-back a transaction, files written with InstallFile go
         // back to their pre-transaction state.
         public void FileSysRollBack()
         {
@@ -312,7 +313,7 @@ namespace Tests.Core
 
                 Assert.Throws<FileExistsKraken>(delegate
                 {
-                    ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false, null);
+                    ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
                 });
 
                 // Cleanup
@@ -350,7 +351,7 @@ namespace Tests.Core
 
             // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
             File.Delete(tmpfile);
-            ModuleInstaller.CopyZipEntry(zipfile, entry, tmpfile, false, null);
+            ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
 
             return tmpfile;
         }
@@ -1086,7 +1087,7 @@ namespace Tests.Core
                                                          new GameVersionCriteria(new GameVersion(1, 12)))!;
                 installer.Replace(Enumerable.Repeat(replacement, 1),
                                   new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                  downloader, ref possibleConfigOnlyDirs, regMgr,
+                                  downloader, ref possibleConfigOnlyDirs, regMgr, null,
                                   false);
 
                 // Assert
@@ -1329,7 +1330,7 @@ namespace Tests.Core
                                       registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, inst.KSP.VersionCriteria()))
                                                     .OfType<CkanModule>()
                                                     .ToArray(),
-                                  downloader, ref possibleConfigOnlyDirs, regMgr, false);
+                                  downloader, ref possibleConfigOnlyDirs, regMgr, null, false);
 
                 // Assert
                 CollectionAssert.AreEquivalent(correctRemainingIdentifiers,

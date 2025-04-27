@@ -9,6 +9,8 @@ using System.ComponentModel;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.IO;
+
 namespace CKAN.Configuration
 {
     // DEPRECATED: We now use a JSON configuration file. This still exists to facilitate migration.

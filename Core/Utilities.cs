@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
+using CKAN.IO;
+
 namespace CKAN
 {
     public static class Utilities
@@ -105,7 +107,9 @@ namespace CKAN
                     continue;
                 }
 
-                file_transaction.Copy(file.FullName, Path.Combine(destDirPath, file.Name), false);
+                InstalledFilesDeduplicator.CreateOrCopy(file,
+                                                        Path.Combine(destDirPath, file.Name),
+                                                        file_transaction);
             }
 
             // Create all first level subdirectories

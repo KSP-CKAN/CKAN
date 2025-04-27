@@ -9,6 +9,7 @@ using Autofac;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.1
 
+### Features
+
+- [Multiple] Mod file deduplication across game instances (#4358 by: HebaruSan)
+
 ### Bugfixes
 
 - [Multiple] Fix ckan version command and update copyrights (#4347 by: HebaruSan)

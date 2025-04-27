@@ -14,6 +14,7 @@ using System.Runtime.Versioning;
 using log4net;
 using Autofac;
 
+using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
@@ -1097,12 +1098,15 @@ namespace CKAN.GUI
 
         private void openGameToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            LaunchGame();
+            if (configuration != null)
+            {
+                LaunchGame(configuration.CommandLines.First());
+            }
         }
 
-        private void LaunchGame(string? command = null)
+        private void LaunchGame(string command)
         {
-            if (CurrentInstance != null && configuration != null)
+            if (CurrentInstance != null)
             {
                 var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
                 var suppressedIdentifiers = CurrentInstance.GetSuppressedCompatWarningIdentifiers;
@@ -1135,7 +1139,7 @@ namespace CKAN.GUI
                     }
                 }
 
-                CurrentInstance.PlayGame(command ?? configuration.CommandLines.First(),
+                CurrentInstance.PlayGame(command,
                                          () =>
                                          {
                                              ManageMods.OnGameExit();

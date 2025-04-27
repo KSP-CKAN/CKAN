@@ -24,8 +24,12 @@ namespace CKAN
         /// </summary>
         /// <param name="url">What to download</param>
         /// <param name="path">Where to save it</param>
+        /// <param name="size">Size of the download</param>
         /// <param name="hasher">Hash algorithm to use, or null</param>
-        public void DownloadFileAsyncWithResume(Uri url, string path, HashAlgorithm? hasher)
+        /// <param name="cancelToken">Cancellation token to cancel the operation</param>
+        public void DownloadFileAsyncWithResume(Uri url, string path, long size,
+                                                HashAlgorithm? hasher,
+                                                CancellationToken? cancelToken = default)
         {
             this.hasher = hasher;
             contentLength = 0;
@@ -36,7 +40,12 @@ namespace CKAN
                 {
                     using (var stream = fi.OpenRead())
                     {
-                        hasher?.PartialHash(stream, null);
+                        hasher?.PartialHash(stream,
+                                            new ProgressImmediate<int>(percent =>
+                                                DownloadProgress?.Invoke(percent,
+                                                                         percent * size / 100, size)),
+                                            cancelToken);
+
                     }
                     log.DebugFormat("File exists at {0}, {1} bytes", path, fi.Length);
                     bytesToSkip = fi.Length;

@@ -4,6 +4,7 @@ using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
 
+using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
 
@@ -77,6 +78,14 @@ namespace CKAN.ConsoleUI {
 
                             HashSet<string>? possibleConfigOnlyDirs = null;
 
+                            if (manager.Instances.Count > 0)
+                            {
+                                RaiseMessage(Properties.Resources.InstallDeduplicateScanning);
+                            }
+                            var deduper = new InstalledFilesDeduplicator(manager.CurrentInstance,
+                                                                         manager.Instances.Values,
+                                                                         repoData);
+
                             ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this, userAgent);
                             inst.OneComplete += OnModInstalled;
                             if (plan.Remove.Count > 0) {
@@ -96,7 +105,8 @@ namespace CKAN.ConsoleUI {
                                                                                           plan.Install))
                                                              ?? m)
                                                 .ToArray();
-                                inst.InstallList(iList, resolvOpts(stabilityTolerance), regMgr, ref possibleConfigOnlyDirs, userAgent, dl);
+                                inst.InstallList(iList, resolvOpts(stabilityTolerance), regMgr,
+                                                 ref possibleConfigOnlyDirs, deduper, userAgent, dl);
                                 plan.Install.Clear();
                             }
                             if (plan.Upgrade.Count > 0) {
@@ -107,11 +117,12 @@ namespace CKAN.ConsoleUI {
                                                                           .Keys
                                                                           .Except(plan.Upgrade)
                                                                           .ToHashSet());
-                                inst.Upgrade(upgGroups[true], dl, ref possibleConfigOnlyDirs, regMgr);
+                                inst.Upgrade(upgGroups[true], dl, ref possibleConfigOnlyDirs, regMgr, deduper);
                                 plan.Upgrade.Clear();
                             }
                             if (plan.Replace.Count > 0) {
-                                inst.Replace(AllReplacements(plan.Replace), resolvOpts(stabilityTolerance), dl, ref possibleConfigOnlyDirs, regMgr, true);
+                                inst.Replace(AllReplacements(plan.Replace), resolvOpts(stabilityTolerance), dl,
+                                             ref possibleConfigOnlyDirs, regMgr, deduper, true);
                             }
 
                             trans.Complete();
@@ -205,7 +216,8 @@ namespace CKAN.ConsoleUI {
 
         private void OnModInstalled(CkanModule mod)
         {
-            RaiseMessage(Properties.Resources.InstallModInstalled, Symbols.checkmark, mod.name, ModuleInstaller.StripEpoch(mod.version));
+            RaiseMessage(Properties.Resources.InstallModInstalled,
+                         Symbols.checkmark, mod.name, mod.version.StripEpoch());
         }
 
         private IEnumerable<ModuleReplacement> AllReplacements(IEnumerable<string> identifiers)

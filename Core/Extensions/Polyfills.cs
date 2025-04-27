@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-
 #if !NET8_0_OR_GREATER
+using System.Collections.Generic;
 
 namespace System.Linq
 {
@@ -63,8 +62,8 @@ namespace System.Linq
         /// <param name="seq1">The first sequence</param>
         /// <param name="seq2">The second sequence</param>
         /// <returns>Sequence of pairs of one element from seq1 and one from seq2</returns>
-        public static IEnumerable<Tuple<T1, T2>> Zip<T1, T2>(this IEnumerable<T1> seq1, IEnumerable<T2> seq2)
-            => seq1.Zip(seq2, (item1, item2) => new Tuple<T1, T2>(item1, item2));
+        public static IEnumerable<(T1 First, T2 Second)> Zip<T1, T2>(this IEnumerable<T1> seq1, IEnumerable<T2> seq2)
+            => seq1.Zip(seq2, (First, Second) => (First, Second));
 
         #endif
     }

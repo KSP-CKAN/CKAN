@@ -12,6 +12,7 @@ using System.Reflection;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 
+using CKAN.IO;
 using CKAN.Games;
 
 [assembly: InternalsVisibleTo("CKAN.Tests")]

@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 
+using CKAN.IO;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {

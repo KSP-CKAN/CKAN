@@ -5,7 +5,7 @@ using ICSharpCode.SharpZipLib.GZip;
 
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.IO
 {
     public static class FileIdentifier
     {

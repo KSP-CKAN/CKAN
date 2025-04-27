@@ -13,6 +13,7 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
+using CKAN.IO;
 using CKAN.Games;
 using CKAN.Extensions;
 using CKAN.Versioning;

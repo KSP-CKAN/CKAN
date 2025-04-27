@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json.Linq;
 
+using CKAN.IO;
 using CKAN.DLC;
 using CKAN.Versioning;
 

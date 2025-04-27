@@ -348,4 +348,8 @@ Free up space on that device or change your settings to use another location.
   <data name="ReleaseStatusTestingDescription" xml:space="preserve"><value>Pre-releases for adventurous users</value></data>
   <data name="ReleaseStatusDevelopmentName" xml:space="preserve"><value>Development</value></data>
   <data name="ReleaseStatusDevelopmentDescription" xml:space="preserve"><value>Bleeding edge unstable</value></data>
+  <data name="FoundDuplicatesConfirmation" xml:space="preserve"><value>Found {0} duplicate installed files. De-duplicate?</value></data>
+  <data name="DeduplicatedRelPath" xml:space="preserve"><value>Deduplicated {0} copies of {1}</value></data>
+  <data name="DoneDeduplicatingFiles" xml:space="preserve"><value>Deduplication complete. Space saved: {0}</value></data>
+  <data name="NoDuplicatesFound" xml:space="preserve"><value>No duplicate installed files found.</value></data>
 </root>

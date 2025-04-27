@@ -3,12 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using log4net;
 using ValveKeyValue;
 
 using CKAN.Extensions;
 
-namespace CKAN
+namespace CKAN.IO
 {
     public class SteamLibrary
     {

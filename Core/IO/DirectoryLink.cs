@@ -8,12 +8,12 @@ using Microsoft.Win32.SafeHandles;
 
 using ChinhDo.Transactions.FileManager;
 
-namespace CKAN
+namespace CKAN.IO
 {
     /// <summary>
     /// Junctions on Windows, symbolic links on Unix
     /// </summary>
-    public static class DirectoryLink
+    internal static class DirectoryLink
     {
         public static void Create(string target, string link, TxFileManager txMgr)
         {

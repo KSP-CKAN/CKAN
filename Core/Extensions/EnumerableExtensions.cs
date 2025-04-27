@@ -81,6 +81,19 @@ namespace CKAN.Extensions
             => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
 
         /// <summary>
+        /// Zip a sequence with a sequence generated from the first sequence using the given function
+        /// </summary>
+        /// <typeparam name="T">Source sequence type</typeparam>
+        /// <typeparam name="V">Type of elements returned by func</typeparam>
+        /// <param name="source">Source sequence</param>
+        /// <param name="func">Function to generate values of second sequence given source</param>
+        /// <returns>Sequence of tuples containing pairs from each sequence</returns>
+        public static IEnumerable<(T First, V Second)> ZipBy<T, V>(this IEnumerable<T> source, Func<IEnumerable<T>, IEnumerable<V>> func)
+            => source.ToArray() is T[] array
+                   ? array.Zip(func(array))
+                   : Enumerable.Empty<(T First, V Second)>();
+
+        /// <summary>
         /// Generate a sequence from a linked list
         /// </summary>
         /// <param name="start">The first node</param>

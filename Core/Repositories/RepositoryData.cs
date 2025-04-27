@@ -14,6 +14,7 @@ using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games;
 

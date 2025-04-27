@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using ChinhDo.Transactions.FileManager;
 using log4net;
 
+using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.Games;
 

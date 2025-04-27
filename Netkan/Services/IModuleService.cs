@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json.Linq;
 
+using CKAN.IO;
 using CKAN.Avc;
 using CKAN.SpaceWarp;
 using CKAN.NetKAN.Sources.Github;

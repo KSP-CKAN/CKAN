@@ -7,6 +7,8 @@ using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
 
+using CKAN.IO;
+
 namespace CKAN.GUI
 {
     [JsonObject(MemberSerialization.OptIn)]

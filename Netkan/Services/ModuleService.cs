@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.Avc;
 using CKAN.SpaceWarp;

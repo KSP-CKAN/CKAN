@@ -40,6 +40,7 @@ namespace CKAN.GUI
             this.exportModPackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.importDownloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deduplicateToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.auditRecommendationsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -153,6 +154,7 @@ namespace CKAN.GUI
             this.installationHistoryStripMenuItem,
             this.installFromckanToolStripMenuItem,
             this.importDownloadsToolStripMenuItem,
+            this.deduplicateToolstripMenuItem,
             this.toolStripSeparator2,
             this.exportModListToolStripMenuItem,
             this.exportModPackToolStripMenuItem,
@@ -218,6 +220,13 @@ namespace CKAN.GUI
             this.importDownloadsToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
             this.importDownloadsToolStripMenuItem.Click += new System.EventHandler(this.importDownloadsToolStripMenuItem_Click);
             resources.ApplyResources(this.importDownloadsToolStripMenuItem, "importDownloadsToolStripMenuItem");
+            //
+            // deduplicateToolstripMenuItem
+            //
+            this.deduplicateToolstripMenuItem.Name = "deduplicateToolstripMenuItem";
+            this.deduplicateToolstripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.deduplicateToolstripMenuItem.Click += new System.EventHandler(this.deduplicateToolstripMenuItem_Click);
+            resources.ApplyResources(this.deduplicateToolstripMenuItem, "deduplicateToolstripMenuItem");
             //
             // toolStripSeparator3
             //
@@ -900,6 +909,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem exportModPackToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem importDownloadsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deduplicateToolstripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         private System.Windows.Forms.ToolStripMenuItem auditRecommendationsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExitToolButton;

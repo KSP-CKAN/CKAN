@@ -373,6 +373,7 @@ Find the folder where your game is installed and choose one of these files:
   <data name="SettingsToolTipResetCacheButton" xml:space="preserve"><value>Use the default download cache folder </value></data>
   <data name="SettingsToolTipOpenCacheButton" xml:space="preserve"><value>Browse the cache folder</value></data>
   <data name="SettingsToolTipClearCacheButton" xml:space="preserve"><value>Delete files from the cache</value></data>
+  <data name="SettingsDialogCacheProgress" xml:space="preserve"><value>Moving... ({0}%)</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} files, {1}, {2} free</value></data>
   <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve"><value>{0} files, {1}, free space unknown</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Invalid path: {0}</value></data>
@@ -529,4 +530,7 @@ This action cannot be undone!</value></data>
   <data name="PreferredHostsTooltipMoveUp" xml:space="preserve"><value>Make selected host higher priority</value></data>
   <data name="PreferredHostsTooltipMoveDown" xml:space="preserve"><value>Make selected host lower priority</value></data>
   <data name="SelectionDialogDefault" xml:space="preserve"><value>{0} (DEFAULT)</value></data>
+  <data name="MainInstallDeduplicateScanning" xml:space="preserve"><value>Checking other game instances for possible duplicate installed files...</value></data>
+  <data name="MainDeduplicateWaitTitle" xml:space="preserve"><value>Duplicating Installed Files</value></data>
+  <data name="MainDeduplicateScanning" xml:space="preserve"><value>Scanning for duplicate installed files...</value></data>
 </root>

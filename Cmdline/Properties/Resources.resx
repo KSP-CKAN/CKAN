@@ -404,4 +404,5 @@ Proceeding with {0} in case it fixes it.</value></data>
   <data name="CompletionNotAvailable" xml:space="preserve"><value>
 No game instance selected, identifier completion not available.
 Use the `instance default` command to choose an instance.</value></data>
+  <data name="ScanningForDuplicates" xml:space="preserve"><value>Scanning for duplicate installed files...</value></data>
 </root>

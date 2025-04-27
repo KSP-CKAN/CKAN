@@ -3,8 +3,10 @@ using System.IO;
 
 using NUnit.Framework;
 
-using Tests.Data;
 using CKAN;
+using CKAN.IO;
+
+using Tests.Data;
 
 namespace Tests.Core
 {

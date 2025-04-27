@@ -429,18 +429,6 @@ namespace CKAN.GUI
 
         private const float selectionAlpha = 0.4f;
 
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        public string StripEpoch(string version)
-            // If our version number starts with a string of digits, followed by
-            // a colon, and then has no more colons, we're probably safe to assume
-            // the first string of digits is an epoch
-            => ContainsEpoch.IsMatch(version) ? RemoveEpoch.Replace(version, @"$2") : version;
-
-        private static readonly Regex ContainsEpoch = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
-        private static readonly Regex RemoveEpoch   = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
-
         private static IEnumerable<ModChange> rowChanges(IRegistryQuerier    registry,
                                                          DataGridViewRow     row,
                                                          DataGridViewColumn? upgradeCol,

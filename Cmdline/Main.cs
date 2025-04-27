@@ -15,6 +15,8 @@ using Autofac;
 using log4net;
 using log4net.Core;
 
+using CKAN.Versioning;
+
 namespace CKAN.CmdLine
 {
     internal class MainClass
@@ -262,6 +264,9 @@ namespace CKAN.CmdLine
 
                     case "clean":
                         return Clean(manager.Cache);
+
+                    case "dedup":
+                        return new Deduplicate(manager, repoData, user).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "compare":
                         return (new Compare(user)).RunCommand(cmdline.options);

@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 
 using Autofac;
 
+using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 using CKAN.Configuration;
@@ -213,6 +214,14 @@ namespace CKAN.GUI
                 downloader.DownloadProgress += OnModDownloading;
                 downloader.StoreProgress    += OnModValidating;
 
+                if (Manager.Instances.Count > 1)
+                {
+                    currentUser.RaiseMessage(Properties.Resources.MainInstallDeduplicateScanning);
+                }
+                var deduper = new InstalledFilesDeduplicator(CurrentInstance,
+                                                             Manager.Instances.Values,
+                                                             repoData);
+
                 HashSet<string>? possibleConfigOnlyDirs = null;
 
                 // Treat whole changeset as atomic
@@ -234,12 +243,14 @@ namespace CKAN.GUI
                             }
                             if (!canceled && toInstall.Count > 0)
                             {
-                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs, userAgent, downloader, false);
+                                installer.InstallList(toInstall, options, registry_manager, ref possibleConfigOnlyDirs,
+                                                      deduper, userAgent, downloader, false);
                                 toInstall.Clear();
                             }
                             if (!canceled && toUpgrade.Count > 0)
                             {
-                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager, true, false);
+                                installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager,
+                                                  deduper, true, false);
                                 toUpgrade.Clear();
                             }
                             if (canceled)

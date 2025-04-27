@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 
+using CKAN.IO;
+
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
 

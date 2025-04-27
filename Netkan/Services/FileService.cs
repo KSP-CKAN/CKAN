@@ -1,5 +1,7 @@
 using System.IO;
 
+using CKAN.IO;
+
 namespace CKAN.NetKAN.Services
 {
     internal sealed class FileService : IFileService

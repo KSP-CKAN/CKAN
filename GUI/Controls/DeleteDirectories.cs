@@ -9,6 +9,7 @@ using System.Runtime.Versioning;
 #endif
 using System.Diagnostics.CodeAnalysis;
 
+using CKAN.IO;
 using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI

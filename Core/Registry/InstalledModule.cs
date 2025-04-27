@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
+using CKAN.IO;
 using Newtonsoft.Json;
 
 namespace CKAN

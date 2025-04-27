@@ -2,6 +2,8 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
+using CKAN.IO;
+
 namespace CKAN
 {
     public class ModuleTagList

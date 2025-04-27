@@ -14,6 +14,7 @@ using System.Security.Permissions;
 using log4net;
 using ChinhDo.Transactions.FileManager;
 
+using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.Versioning;
 

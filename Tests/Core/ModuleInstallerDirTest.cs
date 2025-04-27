@@ -10,6 +10,8 @@ using CKAN;
 using Tests.Core.Configuration;
 using Tests.Data;
 
+using CKAN.IO;
+
 namespace Tests.Core
 {
     /// <summary>

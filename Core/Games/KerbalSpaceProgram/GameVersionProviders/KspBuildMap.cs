@@ -7,6 +7,7 @@ using System.Reflection;
 using log4net;
 using Newtonsoft.Json;
 
+using CKAN.IO;
 using CKAN.Versioning;
 
 namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders

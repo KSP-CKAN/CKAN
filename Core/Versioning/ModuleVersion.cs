@@ -89,11 +89,49 @@ namespace CKAN.Versioning
         public string ToString(bool hideEpoch, bool hideV)
             => hideEpoch
                 ? hideV
-                    ? ModuleInstaller.StripEpoch(ModuleInstaller.StripV(_string))
-                    : ModuleInstaller.StripEpoch(_string)
+                    ? StripEpoch(StripV(_string))
+                    : StripEpoch(_string)
                 : hideV
-                    ? ModuleInstaller.StripV(_string)
+                    ? StripV(_string)
                     : _string;
+
+        /// <summary>
+        /// Remove prepending v V. Version_ etc
+        /// </summary>
+        private static string StripV(string version)
+            => Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$") is Match match
+               && match.Success
+                   ? match.Groups["num"].Value + match.Groups["ver"].Value
+                   : version;
+
+        /// <summary>
+        /// Returns a version string shorn of any leading epoch as delimited by a single colon
+        /// </summary>
+        public string StripEpoch()
+            => StripEpoch(_string);
+
+        /// <summary>
+        /// Returns a version string shorn of any leading epoch as delimited by a single colon
+        /// </summary>
+        /// <param name="version">A version string that might contain an epoch</param>
+        private static string StripEpoch(string version)
+            // If our version number starts with a string of digits, followed by
+            // a colon, and then has no more colons, we're probably safe to assume
+            // the first string of digits is an epoch
+            => epochMatch.IsMatch(version)
+                ? epochReplace.Replace(version, @"$2")
+                : version;
+
+        /// <summary>
+        /// As above, but includes the original in parentheses
+        /// </summary>
+        public string WithAndWithoutEpoch()
+            => epochMatch.IsMatch(_string)
+                ? $"{epochReplace.Replace(_string, @"$2")} ({_string})"
+                : _string;
+
+        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
+        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
     }
 
     public partial class ModuleVersion : IEquatable<ModuleVersion>

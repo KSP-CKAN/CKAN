@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
@@ -14,9 +15,8 @@ using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.Configuration;
 using CKAN.Games;
-using System.Threading;
 
-namespace CKAN
+namespace CKAN.IO
 {
     public struct InstallableFile
     {
@@ -130,6 +130,7 @@ namespace CKAN
                                 RelationshipResolverOptions options,
                                 RegistryManager             registry_manager,
                                 ref HashSet<string>?        possibleConfigOnlyDirs,
+                                InstalledFilesDeduplicator? deduper       = null,
                                 string?                     userAgent     = null,
                                 IDownloader?                downloader    = null,
                                 bool                        ConfirmPrompt = true)
@@ -210,6 +211,7 @@ namespace CKAN
                                                  Properties.Resources.NotEnoughSpaceToInstall);
                     Install(mod, resolver.IsAutoInstalled(mod),
                             registry_manager.registry,
+                            deduper?.ModuleCandidateDuplicates(mod.identifier, mod.version),
                             ref possibleConfigOnlyDirs,
                             new ProgressImmediate<long>(bytes =>
                             {
@@ -307,11 +309,12 @@ namespace CKAN
         ///
         /// TODO: The name of this and InstallModule() need to be made more distinctive.
         /// </summary>
-        private void Install(CkanModule           module,
-                             bool                 autoInstalled,
-                             Registry             registry,
-                             ref HashSet<string>? possibleConfigOnlyDirs,
-                             IProgress<long>?     progress)
+        private void Install(CkanModule                    module,
+                             bool                          autoInstalled,
+                             Registry                      registry,
+                             Dictionary<string, string[]>? candidateDuplicates,
+                             ref HashSet<string>?          possibleConfigOnlyDirs,
+                             IProgress<long>?              progress)
         {
             CheckKindInstallationKraken(module);
             var version = registry.InstalledVersion(module.identifier);
@@ -345,7 +348,7 @@ namespace CKAN
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 // Install all the things!
-                var files = InstallModule(module, filename, registry,
+                var files = InstallModule(module, filename, registry, candidateDuplicates,
                                           ref possibleConfigOnlyDirs, progress);
 
                 // Register our module and its files.
@@ -385,11 +388,12 @@ namespace CKAN
         /// Propagates a CancelledActionKraken if the user decides not to overwite unowned files.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
-        private List<string> InstallModule(CkanModule           module,
-                                           string?              zip_filename,
-                                           Registry             registry,
-                                           ref HashSet<string>? possibleConfigOnlyDirs,
-                                           IProgress<long>?     moduleProgress)
+        private List<string> InstallModule(CkanModule                    module,
+                                           string?                       zip_filename,
+                                           Registry                      registry,
+                                           Dictionary<string, string[]>? candidateDuplicates,
+                                           ref HashSet<string>?          possibleConfigOnlyDirs,
+                                           IProgress<long>?              moduleProgress)
         {
             var createdPaths = new List<string>();
             if (module.IsMetapackage || zip_filename == null)
@@ -474,8 +478,13 @@ namespace CKAN
                             throw new CancelledActionKraken();
                         }
                         log.DebugFormat("Copying {0}", file.source.Name);
-                        var path = CopyZipEntry(zipfile, file.source, file.destination, file.makedir,
-                                                fileProgress);
+                        var path = InstallFile(zipfile, file.source, file.destination, file.makedir,
+                                               (candidateDuplicates != null
+                                                && candidateDuplicates.TryGetValue(instance.ToRelativeGameDir(file.destination),
+                                                                                 out string[]? duplicates))
+                                                   ? duplicates
+                                                   : Array.Empty<string>(),
+                                               fileProgress);
                         installedBytes += file.source.Size;
                         if (path != null)
                         {
@@ -727,11 +736,12 @@ namespace CKAN
         /// Path of file or directory that was created.
         /// May differ from the input fullPath!
         /// </returns>
-        internal static string? CopyZipEntry(ZipFile          zipfile,
-                                             ZipEntry         entry,
-                                             string           fullPath,
-                                             bool             makeDirs,
-                                             IProgress<long>? progress)
+        internal static string? InstallFile(ZipFile          zipfile,
+                                            ZipEntry         entry,
+                                            string           fullPath,
+                                            bool             makeDirs,
+                                            string[]         candidateDuplicates,
+                                            IProgress<long>? progress)
         {
             var file_transaction = new TxFileManager();
 
@@ -774,6 +784,20 @@ namespace CKAN
                 // overwite files, as it ensures deletion on rollback.
                 file_transaction.Snapshot(fullPath);
 
+                // Try making hard links if already installed in another instance (faster, less space)
+                foreach (var installedSource in candidateDuplicates)
+                {
+                    try
+                    {
+                        HardLink.Create(installedSource, fullPath);
+                        return fullPath;
+                    }
+                    catch
+                    {
+                        // If hard link creation fails, try more hard links, or copy if none work
+                    }
+                }
+
                 try
                 {
                     // It's a file! Prepare the streams
@@ -792,7 +816,7 @@ namespace CKAN
                                              progress?.Report(e.Processed);
                                          },
                                          UnzipProgressInterval,
-                                         entry, "CopyZipEntry");
+                                         entry, "InstallFile");
                     }
                 }
                 catch (DirectoryNotFoundException ex)
@@ -1219,6 +1243,7 @@ namespace CKAN
         /// <param name="autoInstalled">true or false for each item in `add`</param>
         /// <param name="remove">Modules to remove</param>
         /// <param name="downloader">Downloader to use</param>
+        /// <param name="deduper">Deduplicator to use</param>
         /// <param name="enforceConsistency">Whether to enforce consistency</param>
         private void AddRemove(ref HashSet<string>?          possibleConfigOnlyDirs,
                                RegistryManager               registry_manager,
@@ -1227,7 +1252,8 @@ namespace CKAN
                                IDictionary<CkanModule, bool> autoInstalled,
                                ICollection<InstalledModule>  remove,
                                IDownloader                   downloader,
-                               bool                          enforceConsistency)
+                               bool                          enforceConsistency,
+                               InstalledFilesDeduplicator?   deduper = null)
         {
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
@@ -1293,6 +1319,7 @@ namespace CKAN
                                   ?.AutoInstalled
                                   ?? autoInstalled[mod],
                             registry_manager.registry,
+                            deduper?.ModuleCandidateDuplicates(mod.identifier, mod.version),
                             ref possibleConfigOnlyDirs,
                             new ProgressImmediate<long>(bytes =>
                             {
@@ -1319,12 +1346,13 @@ namespace CKAN
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(ICollection<CkanModule> modules,
-                            IDownloader             downloader,
-                            ref HashSet<string>?    possibleConfigOnlyDirs,
-                            RegistryManager         registry_manager,
-                            bool                    enforceConsistency   = true,
-                            bool                    ConfirmPrompt        = true)
+        public void Upgrade(ICollection<CkanModule>     modules,
+                            IDownloader                 downloader,
+                            ref HashSet<string>?        possibleConfigOnlyDirs,
+                            RegistryManager             registry_manager,
+                            InstalledFilesDeduplicator? deduper            = null,
+                            bool                        enforceConsistency = true,
+                            bool                        ConfirmPrompt      = true)
         {
             var registry = registry_manager.registry;
 
@@ -1455,7 +1483,8 @@ namespace CKAN
                       autoInstalled,
                       to_remove,
                       downloader,
-                      enforceConsistency);
+                      enforceConsistency,
+                      deduper);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 
@@ -1470,6 +1499,7 @@ namespace CKAN
                             IDownloader                    downloader,
                             ref HashSet<string>?           possibleConfigOnlyDirs,
                             RegistryManager                registry_manager,
+                            InstalledFilesDeduplicator?    deduper = null,
                             bool                           enforceConsistency = true)
         {
             replacements = replacements.Memoize();
@@ -1554,7 +1584,8 @@ namespace CKAN
                       resolvedModsToInstall.ToDictionary(m => m, m => false),
                       modsToRemove,
                       downloader,
-                      enforceConsistency);
+                      enforceConsistency,
+                      deduper);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 
@@ -1719,45 +1750,5 @@ namespace CKAN
                 Cache.EnforceSizeLimit(winReg.CacheSizeLimit.Value, registry);
             }
         }
-
-        /// <summary>
-        /// Remove prepending v V. Version_ etc
-        /// </summary>
-        public static string StripV(string version)
-            => Regex.Match(version, @"^(?<num>\d\:)?[vV]+(ersion)?[_.]*(?<ver>\d.*)$") is Match match
-               && match.Success
-                   ? match.Groups["num"].Value + match.Groups["ver"].Value
-                   : version;
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        /// <param name="version">A version that might contain an epoch</param>
-        public static string StripEpoch(ModuleVersion version)
-            => StripEpoch(version.ToString());
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
-        /// <param name="version">A version string that might contain an epoch</param>
-        public static string StripEpoch(string version)
-            // If our version number starts with a string of digits, followed by
-            // a colon, and then has no more colons, we're probably safe to assume
-            // the first string of digits is an epoch
-            => epochMatch.IsMatch(version)
-                ? epochReplace.Replace(version, @"$2")
-                : version;
-
-        /// <summary>
-        /// As above, but includes the original in parentheses
-        /// </summary>
-        /// <param name="version">A version string that might contain an epoch</param>
-        public static string WithAndWithoutEpoch(string version)
-            => epochMatch.IsMatch(version)
-                ? $"{epochReplace.Replace(version, @"$2")} ({version})"
-                : version;
-
-        private static readonly Regex epochMatch   = new Regex(@"^[0-9][0-9]*:[^:]+$", RegexOptions.Compiled);
-        private static readonly Regex epochReplace = new Regex(@"^([^:]+):([^:]+)$",   RegexOptions.Compiled);
     }
 }
