@@ -91,45 +91,60 @@ namespace CKAN.GUI
             {
                 Util.Invoke(this, () =>
                 {
-                    if (progressBars.TryGetValue(label, out LabeledProgressBar? pb))
+                    if (progressLabels.TryGetValue(label, out Label? myLbl)
+                        && progressBars.TryGetValue(label, out LabeledProgressBar? myPb))
                     {
                         var rateCounter = rateCounters[label];
                         rateCounter.BytesLeft = remaining;
                         rateCounter.Size      = total;
 
-                        // download_size is allowed to be 0
-                        var newVal = Math.Max(pb.Minimum,
-                                              Math.Min(pb.Maximum,
+                        var newVal = Math.Max(myPb.Minimum,
+                                              Math.Min(myPb.Maximum,
                                                        (int)(100 * (total - remaining) / total)));
-                        pb.Value = newVal;
-                        pb.Text = rateCounter.Summary;
+                        myPb.Value = newVal;
+                        myPb.Text = rateCounter.Summary;
                         if (newVal >= 100)
                         {
-                            var myLbl = progressLabels[label];
                             rateCounter.Stop();
-                            ProgressBarTable.SuspendLayout();
-                            for (int row = ProgressBarTable.GetPositionFromControl(pb).Row; row > 0; --row)
+                        }
+                        // Move the progress bar up or down in the table
+                        (int                            direction,
+                         Func<int, bool>                inRange,
+                         Func<LabeledProgressBar, bool> stopIf) =
+                            newVal >= 100
+                                // If completed, move upwards and stop at the top or if we find a completed one
+                                ? (-1,
+                                   new Func<int, bool>(row => row > 0),
+                                   new Func<LabeledProgressBar, bool>(pb => pb.Value >= 100))
+                                // If not completed, move downwards and stop at the bottom or if we find an active one
+                                : (1,
+                                   new Func<int, bool>(row => row < ProgressBarTable.RowCount - 1),
+                                   new Func<LabeledProgressBar, bool>(pb => pb.Value < 100));
+                        ProgressBarTable.SuspendLayout();
+                        for (int row = ProgressBarTable.GetPositionFromControl(myPb).Row;
+                             inRange(row);
+                             row += direction)
+                        {
+                            var otherRow = row + direction;
+                            if (ProgressBarTable.GetControlFromPositionEvenIfInvisible(0, otherRow) is Label otherLbl
+                                && ProgressBarTable.GetControlFromPositionEvenIfInvisible(1, otherRow) is LabeledProgressBar otherPb)
                             {
-                                if (ProgressBarTable.GetControlFromPosition(0, row - 1) is Label prevLbl
-                                    && ProgressBarTable.GetControlFromPosition(1, row - 1) is LabeledProgressBar prevPb)
+                                if (stopIf(otherPb))
                                 {
-                                    if (prevPb.Value >= 100)
-                                    {
-                                        // Previous row is completed, done
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        // Previous row is in progress, swap
-                                        ProgressBarTable.SetRow(myLbl,   row - 1);
-                                        ProgressBarTable.SetRow(pb,      row - 1);
-                                        ProgressBarTable.SetRow(prevLbl, row);
-                                        ProgressBarTable.SetRow(prevPb,  row);
-                                    }
+                                    // Adjacent row is the right place, done
+                                    break;
+                                }
+                                else
+                                {
+                                    // Adjacent row belongs on the other side of us, swap
+                                    ProgressBarTable.SetRow(myLbl,    otherRow);
+                                    ProgressBarTable.SetRow(myPb,     otherRow);
+                                    ProgressBarTable.SetRow(otherLbl, row);
+                                    ProgressBarTable.SetRow(otherPb,  row);
                                 }
                             }
-                            ProgressBarTable.ResumeLayout();
                         }
+                        ProgressBarTable.ResumeLayout();
                     }
                     else
                     {
