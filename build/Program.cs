@@ -320,6 +320,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var where = context.Argument<string?>("where", null);
+        var labels = context.Argument<string>("labels", "Off");
         var nunitOutputDirectory = context.Paths.BuildDirectory.Combine("test")
             .Combine("nunit");
         context.CreateDirectory(nunitOutputDirectory);
@@ -333,7 +334,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 NoRestore        = true,
                 NoBuild          = true,
                 NoLogo           = true,
-                Filter           = where,
+                Filter           = where?.Replace("class=", "FullyQualifiedName="),
                 ResultsDirectory = nunitOutputDirectory,
                 Verbosity        = DotNetVerbosity.Minimal,
             });
@@ -347,7 +348,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 NoRestore        = true,
                 NoBuild          = true,
                 NoLogo           = true,
-                Filter           = where,
+                Filter           = where?.Replace("class=", "FullyQualifiedName="),
                 ResultsDirectory = nunitOutputDirectory,
                 Verbosity        = DotNetVerbosity.Minimal,
             });
@@ -360,6 +361,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
             {
                 Configuration = context.BuildConfiguration,
                 Where         = where,
+                Labels        = Enum.Parse<NUnit3Labels>(labels),
                 Work          = nunitOutputDirectory,
                 NoHeader      = true,
                 // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
