@@ -13,7 +13,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public class FormCompatibility : Form
+    public abstract class FormCompatibility : Form
     {
         private const int formHeightDifference = 24;
 
