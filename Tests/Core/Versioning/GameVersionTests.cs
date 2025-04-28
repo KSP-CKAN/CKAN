@@ -11,7 +11,6 @@ namespace Tests.Core.Versioning
     [TestFixture]
     public class GameVersionTests
     {
-        #pragma warning disable 0414, IDE0052
         private static readonly object[] ParseCases =
         {
             new object[] { "1", new GameVersion(1) },
@@ -102,7 +101,6 @@ namespace Tests.Core.Versioning
                 )
             }
         };
-        #pragma warning restore 0414, IDE0052
 
         [Test]
         public void ParameterlessCtorWorksCorrectly()
@@ -269,7 +267,7 @@ namespace Tests.Core.Versioning
             Assert.That(act, Throws.Exception.InstanceOf<ArgumentOutOfRangeException>());
         }
 
-        [TestCaseSource("ParseCases")]
+        [TestCaseSource(nameof(ParseCases))]
         public void ParseWorksCorrectly(string s, GameVersion version)
         {
             // Act
@@ -280,7 +278,7 @@ namespace Tests.Core.Versioning
             Assert.AreEqual(s, result.ToString());
         }
 
-        [TestCaseSource("ParseFailureCases")]
+        [TestCaseSource(nameof(ParseFailureCases))]
         public void ParseThrowsExceptionOnInvalidParameter(string s)
         {
             // Act
@@ -291,7 +289,7 @@ namespace Tests.Core.Versioning
             Assert.That(act, Throws.Exception);
         }
 
-        [TestCaseSource("ToVersionRangeWorksCorrectlyCases")]
+        [TestCaseSource(nameof(ToVersionRangeWorksCorrectlyCases))]
         public void ToVersionRangeWorksCorrectly(GameVersion version, GameVersionRange expectedRange)
         {
             // Act
@@ -301,7 +299,7 @@ namespace Tests.Core.Versioning
             Assert.AreEqual(expectedRange, result);
         }
 
-        [TestCaseSource("ParseCases")]
+        [TestCaseSource(nameof(ParseCases))]
         public void TryParseWorksCorrectly(string s, GameVersion version)
         {
             // Act
@@ -313,7 +311,7 @@ namespace Tests.Core.Versioning
             Assert.AreEqual(s, result?.ToString());
         }
 
-        [TestCaseSource("ParseFailureCases")]
+        [TestCaseSource(nameof(ParseFailureCases))]
         public void TryParseReturnsFalseOnInvalidParameter(string s)
         {
             // Act
@@ -323,7 +321,7 @@ namespace Tests.Core.Versioning
             Assert.IsFalse(success);
         }
 
-        [TestCaseSource("EqualityCases")]
+        [TestCaseSource(nameof(EqualityCases))]
         public void EqualityWorksCorrectly(GameVersion a, GameVersion b, bool areEqual)
         {
             // Act
@@ -343,7 +341,7 @@ namespace Tests.Core.Versioning
             Assert.IsTrue(nonGenericRefereneEquality);
         }
 
-        [TestCaseSource("CompareToCases")]
+        [TestCaseSource(nameof(CompareToCases))]
         public void CompareToWorksCorrectly(GameVersion v1, GameVersion v2, int comparison)
         {
             // Act

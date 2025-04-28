@@ -36,7 +36,7 @@ namespace Tests.Core.Versioning
             new object[] { @"{ ""GameVersion"": ""a.b.c"" }" }
         };
 
-        [TestCaseSource("WriteJsonCases")]
+        [TestCaseSource(nameof(WriteJsonCases))]
         public void WriteJsonWorksCorrectly(GameVersion version, string expected)
         {
             // Arrange
@@ -49,7 +49,7 @@ namespace Tests.Core.Versioning
             Assert.That((string?)result?.GameVersion, Is.EqualTo(expected));
         }
 
-        [TestCaseSource("ReadJsonCases")]
+        [TestCaseSource(nameof(ReadJsonCases))]
         public void ReadJsonWorksCorrectly(string json, GameVersion expected)
         {
             // Act
@@ -59,7 +59,7 @@ namespace Tests.Core.Versioning
             Assert.That(result?.GameVersion, Is.EqualTo(expected));
         }
 
-        [TestCaseSource("ReadJsonFailureCases")]
+        [TestCaseSource(nameof(ReadJsonFailureCases))]
         public void ReadJsonThrowsOnInvalidValue(string json)
         {
             // Act

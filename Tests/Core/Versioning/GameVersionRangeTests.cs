@@ -10,7 +10,6 @@ namespace Tests.Core.Versioning
 {
     public sealed class GameVersionRangeTests
     {
-        #pragma warning disable 0414, IDE0052
         private static readonly object[] EqualityCases =
         {
             new object[]
@@ -427,7 +426,6 @@ namespace Tests.Core.Versioning
                 true
             },
         };
-        #pragma warning restore 0414, IDE0052
 
         [Test]
         public void CtorWorksCorrectly()
@@ -484,7 +482,7 @@ namespace Tests.Core.Versioning
             Assert.AreEqual(GameVersionBound.Unbounded, range.Upper);
         }
 
-        [TestCaseSource("ToStringCases")]
+        [TestCaseSource(nameof(ToStringCases))]
         public void ToStringWorksCorrectly(GameVersionRange vr, string expected)
         {
             // Act
@@ -494,7 +492,7 @@ namespace Tests.Core.Versioning
             Assert.That(result, Is.EqualTo(expected));
         }
 
-        [TestCaseSource("IntersectWithCases")]
+        [TestCaseSource(nameof(IntersectWithCases))]
         public void IntersectWithWorksCorrectly(GameVersionRange left, GameVersionRange right, GameVersionRange expected)
         {
             // Act
@@ -504,7 +502,7 @@ namespace Tests.Core.Versioning
             Assert.That(result, Is.EqualTo(expected));
         }
 
-        [TestCaseSource("IsSupersetOfCases")]
+        [TestCaseSource(nameof(IsSupersetOfCases))]
         public void IsSupersetOfWorksCorrectly(GameVersionRange left, GameVersionRange right, bool expected)
         {
             // Act
@@ -514,7 +512,7 @@ namespace Tests.Core.Versioning
             Assert.That(result, Is.EqualTo(expected));
         }
 
-        [TestCaseSource("EqualityCases")]
+        [TestCaseSource(nameof(EqualityCases))]
         public void EqualityWorksCorrectly(GameVersionRange vr1, GameVersionRange vr2, bool areEqual)
         {
             // Act

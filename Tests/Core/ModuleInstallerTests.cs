@@ -63,14 +63,14 @@ namespace Tests.Core
         }
 
         // Test data: different ways to install the same file.
-        public static CkanModule[] doge_mods =
+        private static CkanModule[] doge_mods =
             {
                 TestData.DogeCoinFlag_101_module(),
                 TestData.DogeCoinFlag_101_module_find()
             };
 
         [Test]
-        [TestCaseSource("doge_mods")]
+        [TestCaseSource(nameof(doge_mods))]
         public void FindInstallableFiles(CkanModule mod)
         {
             List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(mod, TestData.DogeCoinFlagZip(), ksp.KSP);
@@ -97,7 +97,7 @@ namespace Tests.Core
         }
 
         [Test]
-        [TestCaseSource("doge_mods")]
+        [TestCaseSource(nameof(doge_mods))]
         public void FindInstallableFilesWithKSP(CkanModule mod)
         {
             using (var tidy = new DisposableKSP())
@@ -116,7 +116,7 @@ namespace Tests.Core
         // GH #315, all of these should result in the same output.
         // Even though they're not necessarily all spec-valid, we should accept them
         // nonetheless.
-        public static readonly string[] SuchPaths =
+        private static readonly string[] SuchPaths =
             {
                 "GameData/SuchTest",
                 "GameData/SuchTest/",
@@ -127,7 +127,7 @@ namespace Tests.Core
             };
 
         [Test]
-        [TestCaseSource("SuchPaths")]
+        [TestCaseSource(nameof(SuchPaths))]
         public void FindInstallableFilesWithBonusPath(string path)
         {
             var dogemod = TestData.DogeCoinFlag_101_module();
@@ -188,7 +188,7 @@ namespace Tests.Core
         }
 
         [Test]
-        [TestCaseSource("doge_mods")]
+        [TestCaseSource(nameof(doge_mods))]
         // Make sure all our filters work.
         public void FindInstallableFilesWithFilter(CkanModule mod)
         {
@@ -238,19 +238,15 @@ namespace Tests.Core
             Assert.AreEqual(bugged_mod.identifier, exc?.module?.identifier);
         }
 
-#pragma warning disable 0414
-
         // All of these targets should fail.
-        public static readonly string[] BadTargets = {
+        private static readonly string[] BadTargets = {
             "GameDataIsTheBestData", "Shups", "GameData/../../../../etc/pwned",
             "Ships/Foo", "GameRoot/saves", "GameRoot/CKAN", "GameData/..",
             @"GameData\..\..\etc\pwned", @"GameData\.."
         };
 
-#pragma warning restore 0414
-
         [Test]
-        [TestCaseSource("BadTargets")]
+        [TestCaseSource(nameof(BadTargets))]
         public void FindInstallableFilesWithBadTarget(string location)
         {
             // This install location? It shouldn't be valid.

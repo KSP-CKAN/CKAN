@@ -12,7 +12,7 @@ namespace Tests.NetKAN.Transformers
     {
         private readonly TransformOptions opts = new TransformOptions(1, null, null, null, false, null);
 
-        [TestCaseSource("StripNetkanMetadataTestCaseSource")]
+        [TestCaseSource(nameof(StripNetkanMetadataTestCaseSource))]
         public void StripNetkanMetadata(string json, string expected)
         {
             // Arrange
@@ -28,7 +28,6 @@ namespace Tests.NetKAN.Transformers
             Assert.AreEqual(expectedJson, transformedJson);
         }
 
-        #pragma warning disable 0414, IDE0051
         private static IEnumerable<object[]> StripNetkanMetadataTestCaseSource
         {
             get
@@ -121,6 +120,5 @@ namespace Tests.NetKAN.Transformers
                 };
             }
         }
-        #pragma warning restore 0414, IDE0051
     }
 }

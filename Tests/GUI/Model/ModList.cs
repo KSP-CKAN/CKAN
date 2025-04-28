@@ -66,10 +66,10 @@ namespace Tests.GUI
             }
         }
 
-        public static Array GetFilters()
+        private static Array GetFilters()
             => Enum.GetValues(typeof(GUIModFilter));
 
-        [TestCaseSource("GetFilters")]
+        [TestCaseSource(nameof(GetFilters))]
         public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
             using (var tidy = new DisposableKSP())

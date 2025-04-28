@@ -11,7 +11,6 @@ namespace Tests.Core.Versioning
     [TestFixture]
     public sealed class GameVersionBoundTests
     {
-        #pragma warning disable 0414, IDE0052
         private static readonly object[] EqualityCases =
         {
             new object[]
@@ -39,7 +38,6 @@ namespace Tests.Core.Versioning
                 false
             }
         };
-        #pragma warning restore 0414, IDE0052
 
         [Test]
         public void ParameterlessCtorWorksCorrectly()
@@ -74,7 +72,7 @@ namespace Tests.Core.Versioning
             Assert.That(act, Throws.Exception);
         }
 
-        [TestCaseSource("EqualityCases")]
+        [TestCaseSource(nameof(EqualityCases))]
         public void EqualityWorksCorrectly(GameVersionBound vb1, GameVersionBound vb2, bool areEqual)
         {
             // Act

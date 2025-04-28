@@ -71,7 +71,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expected, comparator?.Compatible(new GameVersionCriteria (gameVersion), gameMod!));
         }
 
-        public static readonly object[] TestStrictGameComparatorCases =
+        private static readonly object[] TestStrictGameComparatorCases =
         {
             //             Mod compat.      KSP             expected
             new object[] { "1.0",           "1.0.4",        true },
@@ -107,7 +107,7 @@ namespace Tests.Core.Types
             new object[] { "1",             "0.9",          false },
         };
 
-        [TestCaseSource("TestStrictGameComparatorCases")]
+        [TestCaseSource(nameof(TestStrictGameComparatorCases))]
         public void TestStrictGameComparator(string modVersion, string gameVersion, bool expectedResult)
         {
             var comparator = new StrictGameComparator();
@@ -119,7 +119,7 @@ namespace Tests.Core.Types
             Assert.AreEqual(expectedResult, comparator.Compatible(new GameVersionCriteria(GameVersion.Parse(gameVersion)), gameMod));
         }
 
-        public static readonly object[] TestStrictGameComparatorMinMaxCases =
+        private static readonly object[] TestStrictGameComparatorMinMaxCases =
         {
             //             Min comapat      Max comapat     KSP           expected
             new object?[] { "1.0.4",         null,           "1.0.3",      false },
@@ -153,7 +153,7 @@ namespace Tests.Core.Types
             new object?[] { null,            "1.1",          "1.2",        false },
         };
 
-        [TestCaseSource("TestStrictGameComparatorMinMaxCases")]
+        [TestCaseSource(nameof(TestStrictGameComparatorMinMaxCases))]
         public void TestStrictGameComparatorMinMax(string modMinVersion, string modMaxVersion, string gameVersion, bool expectedResult)
         {
             var comparator = new StrictGameComparator();

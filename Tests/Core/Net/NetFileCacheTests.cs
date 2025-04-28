@@ -194,7 +194,6 @@ namespace Tests.Core
             }
         }
 
-        #pragma warning disable IDE0051
         private static object[] HashCachingTestCases()
             => new[]
             {
@@ -204,9 +203,8 @@ namespace Tests.Core
                     TestData.DogeCoinFlag_101_module(),
                 }
             };
-        #pragma warning restore IDE0051
 
-        [Test, TestCaseSource("HashCachingTestCases")]
+        [TestCaseSource(nameof(HashCachingTestCases))]
         public void Store_ExternalDeletion_HashesPurged(string     zipPath,
                                                         CkanModule module)
         {
@@ -256,7 +254,7 @@ namespace Tests.Core
         }
 
 
-        [Test, TestCaseSource("HashCachingTestCases")]
+        [TestCaseSource(nameof(HashCachingTestCases))]
         public void GetCachedFilename_FutureTimestamp_Deleted(string     zipPath,
                                                               CkanModule module)
         {
@@ -311,7 +309,6 @@ namespace Tests.Core
                                                  "SHA256 hash is still cached!!");
         }
 
-        #pragma warning disable IDE0051
         private static object[] HashReplacementTestCases()
             => new[]
             {
@@ -331,9 +328,8 @@ namespace Tests.Core
                     },
                 },
             };
-        #pragma warning restore IDE0051
 
-        [Test, TestCaseSource("HashReplacementTestCases")]
+        [TestCaseSource(nameof(HashReplacementTestCases))]
         public void GetCachedFilename_ReplaceZIP_HashesUpdated(string[]     zipPaths,
                                                                CkanModule[] modules)
         {
