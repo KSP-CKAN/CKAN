@@ -120,6 +120,12 @@
   <data name="LegendInstalledLabel.Text" xml:space="preserve">
     <value>Zainstalowane</value>
   </data>
+  <data name="LegendIncompatibleLabel.Text" xml:space="preserve">
+    <value>Niekompatybilne</value>
+  </data>
+  <data name="LegendVirtualLabel.Text" xml:space="preserve">
+    <value>Wirtualny</value>
+  </data>
   <data name="LegendProvidesLabel.Text" xml:space="preserve">
     <value>Zapewnia</value>
   </data>

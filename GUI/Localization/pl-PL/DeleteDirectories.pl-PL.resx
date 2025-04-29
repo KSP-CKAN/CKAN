@@ -118,8 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExplanationLabel.Text" xml:space="preserve">
-    <value>Poniższe foldery są pozostałościami po usuniętych modach. Zawierają pliki które nie były pobierane przez CKAN (prawdopodobnie wygenerowane przez moda bądź zainstalowane ręcznie). CKAN nie usuwa plików których nie instalował ale możesz sam je usunąć jeśli uważasz że to bezpieczne (zalecane)
-Uważaj bo jeśli nie usuniesz folderu, ModuleManager może myśleć że mod jest nadal zainstalowany.</value>
+    <value>Uwaga, niektóre foldery zostały zostawione, ponieważ CKAN nie wie, czy można bezpiecznie usunąć pliki tam zawarte. Trzymanie tych folderów może źle wpływać na działanie innych modów! Jeśli nie potrzebujesz tych plików, zalecane jest ich usunięcie.</value>
   </data>
   <data name="DirectoryColumn.Text" xml:space="preserve">
     <value>Foldery</value>

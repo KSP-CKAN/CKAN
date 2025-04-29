@@ -118,7 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve">
-    <value>Uruchom grę</value>
+    <value>Graj</value>
+  </data>
+  <data name="EditCommandLinesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Edytuj linie poleceń...</value>
   </data>
   <data name="RefreshToolButton.Text" xml:space="preserve">
     <value>Odśwież</value>
@@ -174,11 +177,14 @@
   <data name="NavForwardToolButton.ToolTipText" xml:space="preserve">
     <value>Następny wybrany mod...</value>
   </data>
+  <data name="hiddenTagsLabelsLinkList.TagToolTipText" xml:space="preserve">
+    <value>Kliknij, aby wyświetlić lub ukryć tagi</value>
+  </data>
   <data name="Installed.HeaderText" xml:space="preserve">
     <value>Zainstalowane</value>
   </data>
   <data name="AutoInstalled.HeaderText" xml:space="preserve">
-    <value>Auto-zainstalowany</value>
+    <value>Automatycznie zainstalowane</value>
   </data>
   <data name="UpdateCol.HeaderText" xml:space="preserve">
     <value>Zaktualizuj</value>
@@ -220,7 +226,7 @@
     <value>Opis</value>
   </data>
   <data name="reinstallToolStripMenuItem.Text" xml:space="preserve">
-    <value>Reinstaluj</value>
+    <value>Zainstaluj ponownie</value>
   </data>
   <data name="downloadContentsToolStripMenuItem.Text" xml:space="preserve">
     <value>Pobierz do folderu cache (nie instaluj)</value>
@@ -233,5 +239,8 @@
   </data>
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Edytuj etykiety...</value>
+  </data>
+  <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
+    <value>Kliknij Ctrl lub Shift, aby ponownie pobrać metadane, nawet jeśli nie było żadnych zmian od ostatniego odświeżenia</value>
   </data>
 </root>

@@ -138,4 +138,10 @@
   <data name="InstalledLabel.Text" xml:space="preserve">
     <value>aktualnie zainstalowana wersja</value>
   </data>
+  <data name="PrereleaseLabel.Text" xml:space="preserve">
+    <value>Mniej stabilne niż opcja tolerancji stabilności</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>Nadpisanie stabilności moda:</value>
+  </data>
 </root>

@@ -147,6 +147,15 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>Pliki cache</value>
   </data>
+  <data name="CachePathEditButton.Text" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N plików, M MiB</value>
   </data>
@@ -236,6 +245,9 @@
   </data>
   <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
     <value>Automatycznie sortuj według kolumny aktualizacji po kliknięciu "Dodaj dostępne aktualizacje"</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>Tolerancja stabilności:</value>
   </data>
   <data name="RepoNameHeader.Text" xml:space="preserve">
     <value>Nazwa</value>

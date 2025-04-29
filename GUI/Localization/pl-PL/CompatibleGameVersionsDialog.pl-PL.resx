@@ -139,7 +139,7 @@
     <value>Dodaj</value>
   </data>
   <data name="WildcardExplanationLabel.Text" xml:space="preserve">
-    <value>Uwaga: Jeśli dodasz wersję jak np. "1.2" spowodujesz, że wszystkie mody kompatybilne z 1.2.xx (1.2.0, 1.2.1, itd.) będą kompatybilne z tą instalacją.</value>
+    <value>Uwaga: Dodanie wersji typu "1.12" zmusi wszystkie modyfikacje kompatybilne z wersjami 1.12.x (1.12.0, 1.12.1 itd.) do bycia kompatybilnymi z tą instancją gry.</value>
   </data>
   <data name="FutureUpdatesLabel.Text" xml:space="preserve">
     <value>Jeśli gra zostanie zaktualizowana, to okno dialogowe zostanie wyświetlone ponownie, dzięki czemu będziesz mógł dostosować swoje ustawienia.</value>

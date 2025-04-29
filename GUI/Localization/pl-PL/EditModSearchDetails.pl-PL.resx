@@ -126,6 +126,9 @@
   <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
     <value>Opis:</value>
   </data>
+  <data name="FilterByLicenseLabel.Text" xml:space="preserve">
+    <value>Licencja:</value>
+  </data>
   <data name="FilterByLanguageLabel.Text" xml:space="preserve">
     <value>Język:</value>
   </data>
@@ -140,6 +143,9 @@
   </data>
   <data name="FilterByConflictsLabel.Text" xml:space="preserve">
     <value>Konfliktuje z:</value>
+  </data>
+  <data name="FilterBySupportsLabel.Text" xml:space="preserve">
+    <value>Wspiera:</value>
   </data>
   <data name="FilterByTagsLabel.Text" xml:space="preserve">
     <value>Tagi:</value>
