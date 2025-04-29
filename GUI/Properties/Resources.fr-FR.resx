@@ -754,6 +754,9 @@ Trouvez le dossier où votre jeu est installé et sélectionnez l'un de ces fich
   <data name="SettingsToolTipClearCacheButton" xml:space="preserve">
     <value>Supprimer les fichiers du cache</value>
   </data>
+  <data name="SettingsDialogCacheProgress" xml:space="preserve">
+    <value>Déplacement... ({0}%)</value>
+  </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
     <value>{0} fichiers, {1}, {2} libres</value>
   </data>
@@ -1190,5 +1193,14 @@ Cette action est irréversible !</value>
   </data>
   <data name="SelectionDialogDefault" xml:space="preserve">
     <value>{0} (PAR DÉFAUT)</value>
+  </data>
+  <data name="MainInstallDeduplicateScanning" xml:space="preserve">
+    <value>Vérification des autres instances de jeu pour d'éventuels fichiers installés redondants...</value>
+  </data>
+  <data name="MainDeduplicateWaitTitle" xml:space="preserve">
+    <value>Duplication des Fichiers Installés</value>
+  </data>
+  <data name="MainDeduplicateScanning" xml:space="preserve">
+    <value>Recherche des fichiers installés redondants...</value>
   </data>
 </root>

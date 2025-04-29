@@ -138,4 +138,10 @@
   <data name="InstalledLabel.Text" xml:space="preserve">
     <value>当前安装版本</value>
   </data>
+  <data name="PrereleaseLabel.Text" xml:space="preserve">
+    <value>稳定性低于偏好设置</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>强制设置MOD稳定性：</value>
+  </data>
 </root>

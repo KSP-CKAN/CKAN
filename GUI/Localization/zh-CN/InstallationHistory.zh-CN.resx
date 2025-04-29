@@ -141,6 +141,9 @@
   <data name="SelectInstallMessage.Text" xml:space="preserve">
     <value>点击左侧的时间戳来查看安装了哪些模组</value>
   </data>
+  <data name="LoadingMessage.Text" xml:space="preserve">
+    <value>正在加载安装历史……</value>
+  </data>
   <data name="NoModsMessage.Text" xml:space="preserve">
     <value>没有安装模组</value>
   </data>

@@ -120,6 +120,12 @@
   <data name="LegendInstalledLabel.Text" xml:space="preserve">
     <value>已安装</value>
   </data>
+  <data name="LegendIncompatibleLabel.Text" xml:space="preserve">
+    <value>不兼容</value>
+  </data>
+  <data name="LegendVirtualLabel.Text" xml:space="preserve">
+    <value>虚拟</value>
+  </data>
   <data name="LegendProvidesLabel.Text" xml:space="preserve">
     <value>提供</value>
   </data>

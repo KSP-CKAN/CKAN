@@ -141,8 +141,17 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>Przełącz na nową instalację</value>
   </data>
+  <data name="checkBoxShareStock.Text" xml:space="preserve">
+    <value>Udostępnij pliki domyślne</value>
+  </data>
+  <data name="OptionalPathsLabel.Text" xml:space="preserve">
+    <value>Opcjonalne ścieżki do kopiowania:</value>
+  </data>
+  <data name="PathHeader.Text" xml:space="preserve">
+    <value>Opcjonalne ścieżki</value>
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
-    <value>Stwórz</value>
+    <value>Klonuj</value>
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>Anuluj</value>

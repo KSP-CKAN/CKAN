@@ -118,7 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>Czy chcesz, aby CKAN automatycznie sprawdzał dostępność aktualizacji przy uruchomieniu? (Możesz to później zmienić w ustawieniach)</value>
+    <value>Czy chcesz, aby CKAN automatycznie sprawdzał nowe wersje CKAN podczas uruchamiania?
+
+Możesz sprawdzić, czy jest nowa wersja CKAN ręcznie lub zmienić to ustawienie później w oknie Ustawienia.</value>
   </data>
   <data name="YesButton.Text" xml:space="preserve">
     <value>Tak, sprawdzaj aktualizacje</value>

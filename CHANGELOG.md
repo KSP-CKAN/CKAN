@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [Multiple] Mod file deduplication across game instances (#4358 by: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4359 by: HebaruSan)
 
 ### Bugfixes
 

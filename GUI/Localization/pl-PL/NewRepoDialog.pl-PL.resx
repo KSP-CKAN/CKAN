@@ -121,7 +121,7 @@
     <value>Oficjalne repozytoria</value>
   </data>
   <data name="RepoCancel.Text" xml:space="preserve">
-    <value>&amp;Anuluj</value>
+    <value>Anuluj</value>
   </data>
   <data name="RepoOK.Text" xml:space="preserve">
     <value>&amp;Dodaj</value>
