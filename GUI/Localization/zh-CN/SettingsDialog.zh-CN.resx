@@ -147,6 +147,15 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>下载缓存</value>
   </data>
+  <data name="CachePathEditButton.Text" xml:space="preserve">
+    <value>修改</value>
+  </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>取消</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N 个文件, M MB</value>
   </data>
@@ -236,6 +245,9 @@
   </data>
   <data name="AutoSortUpdateCheckBox.Text" xml:space="preserve">
     <value>当点击添加可用更新时自动按‘更新’排序</value>
+  </data>
+  <data name="StabilityToleranceLabel.Text" xml:space="preserve">
+    <value>稳定性偏好：</value>
   </data>
   <data name="RepoNameHeader.Text" xml:space="preserve">
     <value>名称</value>

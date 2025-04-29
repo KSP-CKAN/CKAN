@@ -155,6 +155,9 @@
   <data name="HoldVersionCheckBox.Text" xml:space="preserve">
     <value>不要升级</value>
   </data>
+  <data name="IgnoreMissingFilesCheckBox.Text" xml:space="preserve">
+    <value>忽略缺失的文件</value>
+  </data>
   <data name="CloseButton.Text" xml:space="preserve">
     <value>关闭</value>
   </data>

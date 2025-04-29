@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="GlobalFiltersGroupBox.Text" xml:space="preserve">
-    <value>全局筛选器</value>
+    <value>全局过滤器</value>
   </data>
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
-    <value>游戏实例筛选</value>
+    <value>对此游戏实例的过滤</value>
   </data>
   <data name="AddMiniAVCButton.Text" xml:space="preserve">
-    <value>添加 MiniAVC</value>
+    <value>过滤 MiniAVC</value>
   </data>
   <data name="WarningLabel.Text" xml:space="preserve">
-    <value>注意：修改安装筛选内容仅会对未来Mod的安装生效；已安装的文件不受影响。</value>
+    <value>注意：修改安装过滤内容仅会对未来Mod的安装生效；已安装的文件不受影响。</value>
   </data>
   <data name="$this.Text" xml:space="preserve">
-    <value>安装筛选器</value>
+    <value>安装过滤规则</value>
   </data>
 </root>

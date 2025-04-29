@@ -144,6 +144,12 @@
   <data name="checkBoxShareStock.Text" xml:space="preserve">
     <value>分享库存文件</value>
   </data>
+  <data name="OptionalPathsLabel.Text" xml:space="preserve">
+    <value>要复制的可选路径：</value>
+  </data>
+  <data name="PathHeader.Text" xml:space="preserve">
+    <value>可选路径</value>
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
     <value>复制</value>
   </data>
