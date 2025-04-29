@@ -858,4 +858,7 @@ Exécution de {0} au cas où cela réglerait le problème.</value>
 Aucune instance de jeu sélectionnée, complétion de l'identifiant indisponible.
 Utilisez la commande `instance default` pour choisir une instance.</value>
   </data>
+  <data name="ScanningForDuplicates" xml:space="preserve">
+    <value>Recherche des fichiers installés redondants...</value>
+  </data>
 </root>

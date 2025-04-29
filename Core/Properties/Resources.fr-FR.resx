@@ -754,4 +754,16 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   <data name="ReleaseStatusDevelopmentDescription" xml:space="preserve">
     <value>À la pointe du développement, instable</value>
   </data>
+  <data name="FoundDuplicatesConfirmation" xml:space="preserve">
+    <value>{0} fichiers redondants ont été trouvés. Dédupliquer ?</value>
+  </data>
+  <data name="DeduplicatedRelPath" xml:space="preserve">
+    <value>{0} exemplaires de {1} ont été dédupliqués</value>
+  </data>
+  <data name="DoneDeduplicatingFiles" xml:space="preserve">
+    <value>Déduplication terminée. Espace économisé : {0}</value>
+  </data>
+  <data name="NoDuplicatesFound" xml:space="preserve">
+    <value>Aucun fichier installé redondant trouvé.</value>
+  </data>
 </root>

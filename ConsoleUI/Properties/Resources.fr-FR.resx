@@ -469,6 +469,9 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
   <data name="InstallModInstalled" xml:space="preserve">
     <value>{0} installé avec succès {1} {2}</value>
   </data>
+  <data name="InstallDeduplicateScanning" xml:space="preserve">
+    <value>Vérification des autres instances de jeu pour d'éventuels fichiers installés redondants...</value>
+  </data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve">
     <value>Supprimer les Dossiers</value>
   </data>
@@ -827,6 +830,21 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   </data>
   <data name="ModListFilterMenuTip" xml:space="preserve">
     <value>Modifier la liste des fichiers et dossiers à exclure de l'installation</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesMenu" xml:space="preserve">
+    <value>Dédupliquer les fichiers installés...</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesMenuTip" xml:space="preserve">
+    <value>Rechercher dans les instances de jeu de fichiers en plusieurs exemplaires, et remplacer ceux-ci par des liens physiques</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesProgressTitle" xml:space="preserve">
+    <value>Déduplication des Fichiers Installés</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesProgressMessage" xml:space="preserve">
+    <value>Recherche de redondances dans les instances...</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesScanning" xml:space="preserve">
+    <value>Recherche de redondances dans les instances...</value>
   </data>
   <data name="ModListHelpMenu" xml:space="preserve">
     <value>Aide</value>
