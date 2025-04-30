@@ -53,7 +53,7 @@ namespace CKAN.Exporters
                                                  QuoteIfNecessary(mod.Module.@abstract),
                                                  QuoteIfNecessary(mod.Module.description),
                                                  QuoteIfNecessary(mod.Module.author == null ? "" : string.Join(";", mod.Module.author)),
-                                                 QuoteIfNecessary(mod.Module.kind),
+                                                 QuoteIfNecessary(mod.Module.kind.ToString()),
                                                  WriteUri(mod.Module.download),
                                                  mod.Module.download_size,
                                                  mod.Module.ksp_version,

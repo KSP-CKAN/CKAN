@@ -134,10 +134,16 @@ namespace CKAN
         /// <summary>
         /// A map between module identifiers and versions for official DLC that are installed.
         /// </summary>
-        [JsonIgnore] public IDictionary<string, ModuleVersion> InstalledDlc
+        [JsonIgnore] public IDictionary<string, UnmanagedModuleVersion> InstalledDlc
             => installedDlc ??= installed_modules.Values
                 .Where(im => im.Module.IsDLC)
-                .ToDictionary(im => im.Module.identifier, im => im.Module.version);
+                .Select(im => im.Module.version is UnmanagedModuleVersion unmVer
+                              ? (KeyValuePair<string, UnmanagedModuleVersion>?)
+                                new KeyValuePair<string, UnmanagedModuleVersion>(
+                                    im.Module.identifier, unmVer)
+                              : null)
+                .OfType<KeyValuePair<string, UnmanagedModuleVersion>>()
+                .ToDictionary();
 
         /// <summary>
         /// Find installed modules that are not compatible with the given versions
@@ -532,7 +538,7 @@ namespace CKAN
         private Dictionary<string, AvailableModule[]>? providers;
 
         [JsonIgnore]
-        private IDictionary<string, ModuleVersion>? installedDlc;
+        private IDictionary<string, UnmanagedModuleVersion>? installedDlc;
 
         private void InvalidateAvailableModCaches()
         {
@@ -948,7 +954,7 @@ namespace CKAN
             return false;
         }
 
-        public bool SetDlcs(IDictionary<string, ModuleVersion> dlcs)
+        public bool SetDlcs(IDictionary<string, UnmanagedModuleVersion> dlcs)
         {
             var installed = InstalledDlc;
             if (!dlcs.DictionaryEquals(installed))
@@ -961,7 +967,7 @@ namespace CKAN
                     installed_modules.Remove(identifier);
                 }
 
-                foreach ((string identifier, ModuleVersion version) in dlcs)
+                foreach ((string identifier, UnmanagedModuleVersion version) in dlcs)
                 {
                     // Overwrite everything in case there are version differences
                     installed_modules[identifier] =
@@ -975,9 +981,9 @@ namespace CKAN
                                     null,
                                     new List<string>() { "SQUAD" },
                                     new List<License>() { new License("restricted") },
-                                    version ?? new UnmanagedModuleVersion(null),
+                                    version,
                                     null,
-                                    "dlc"),
+                                    ModuleKind.dlc),
                             Enumerable.Empty<string>(), false);
                 }
                 return true;
@@ -1122,12 +1128,12 @@ namespace CKAN
         /// <param name="satisfiedFilter">Optional filter to apply to the dependencies</param>
         /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         public static IEnumerable<string> FindReverseDependencies(
-            ICollection<string>                 modulesToRemove,
-            ICollection<CkanModule>?            modulesToInstall,
-            ICollection<CkanModule>             origInstalled,
-            ICollection<string>                 dlls,
-            IDictionary<string, ModuleVersion>  dlc,
-            Func<RelationshipDescriptor, bool>? satisfiedFilter = null)
+            ICollection<string>                         modulesToRemove,
+            ICollection<CkanModule>?                    modulesToInstall,
+            ICollection<CkanModule>                     origInstalled,
+            ICollection<string>                         dlls,
+            IDictionary<string, UnmanagedModuleVersion> dlc,
+            Func<RelationshipDescriptor, bool>?         satisfiedFilter = null)
         {
             log.DebugFormat("Finding reverse dependencies of: {0}", string.Join(", ", modulesToRemove));
             log.DebugFormat("From installed mods: {0}", string.Join(", ", origInstalled));

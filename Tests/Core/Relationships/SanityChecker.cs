@@ -25,7 +25,7 @@ namespace Tests.Core.Relationships
         private readonly StabilityToleranceConfig stabilityTolerance = new StabilityToleranceConfig("");
 
         private readonly string[] dlls = Array.Empty<string>();
-        private readonly IDictionary<string, ModuleVersion> dlc = new Dictionary<string, ModuleVersion>();
+        private readonly IDictionary<string, UnmanagedModuleVersion> dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
         [OneTimeSetUp]
         public void Setup()
@@ -117,7 +117,7 @@ namespace Tests.Core.Relationships
         {
             var mods = new List<CkanModule>();
             var dlls = new Dictionary<string, string>().Keys;
-            var dlc = new Dictionary<string, ModuleVersion>();
+            var dlc = new Dictionary<string, UnmanagedModuleVersion>();
 
             Assert.IsEmpty(CKAN.SanityChecker.FindUnsatisfiedDepends(mods, dlls, dlc), "Empty list");
 
@@ -369,12 +369,12 @@ namespace Tests.Core.Relationships
             Assert.IsTrue(CKAN.SanityChecker.IsConsistent(modules, dlls, dlc));
         }
 
-        private static void TestDepends(List<string>                       to_remove,
-                                        HashSet<CkanModule>                mods,
-                                        ICollection<string>                dlls,
-                                        IDictionary<string, ModuleVersion> dlc,
-                                        List<string>                       expected,
-                                        string                             message)
+        private static void TestDepends(List<string>                                to_remove,
+                                        HashSet<CkanModule>                         mods,
+                                        ICollection<string>                         dlls,
+                                        IDictionary<string, UnmanagedModuleVersion> dlc,
+                                        List<string>                                expected,
+                                        string                                      message)
         {
             dlls ??= new Dictionary<string, string>().Keys;
 

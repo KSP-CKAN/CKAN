@@ -79,7 +79,7 @@ namespace Tests.Core.Registry
                                                       grp => grp.ToArray());
                 var installed = new Dictionary<string, InstalledModule>();
                 var dlls      = new Dictionary<string, string>().Keys;
-                var dlcs      = new Dictionary<string, ModuleVersion>();
+                var dlcs      = new Dictionary<string, UnmanagedModuleVersion>();
                 var highPrio  = repoData.Manager
                                         .GetAvailableModules(Enumerable.Repeat(repo1.repo, 1),
                                                              identifier)

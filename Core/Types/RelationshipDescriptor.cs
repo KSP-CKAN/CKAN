@@ -14,15 +14,15 @@ namespace CKAN
 {
     public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
-        public bool MatchesAny(ICollection<CkanModule>             modules,
-                               ICollection<string>?                dlls,
-                               IDictionary<string, ModuleVersion>? dlc)
+        public bool MatchesAny(ICollection<CkanModule>                      modules,
+                               ICollection<string>?                         dlls,
+                               IDictionary<string, UnmanagedModuleVersion>? dlc)
             => MatchesAny(modules, dlls, dlc, out CkanModule? _);
 
-        public abstract bool MatchesAny(ICollection<CkanModule>             modules,
-                                        ICollection<string>?                dlls,
-                                        IDictionary<string, ModuleVersion>? dlc,
-                                        out CkanModule?                     matched);
+        public abstract bool MatchesAny(ICollection<CkanModule>                      modules,
+                                        ICollection<string>?                         dlls,
+                                        IDictionary<string, UnmanagedModuleVersion>? dlc,
+                                        out CkanModule?                              matched);
 
         public abstract bool WithinBounds(CkanModule otherModule);
 
@@ -126,10 +126,10 @@ namespace CKAN
         /// <returns>
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>
-        public override bool MatchesAny(ICollection<CkanModule>             modules,
-                                        ICollection<string>?                dlls,
-                                        IDictionary<string, ModuleVersion>? dlc,
-                                        out CkanModule?                     matched)
+        public override bool MatchesAny(ICollection<CkanModule>                      modules,
+                                        ICollection<string>?                         dlls,
+                                        IDictionary<string, UnmanagedModuleVersion>? dlc,
+                                        out CkanModule?                              matched)
         {
             // DLLs are considered to match any version
             if (dlls != null && dlls.Contains(name))
@@ -145,7 +145,7 @@ namespace CKAN
                 return true;
             }
 
-            return dlc != null && dlc.TryGetValue(name, out ModuleVersion? dlcVer)
+            return dlc != null && dlc.TryGetValue(name, out UnmanagedModuleVersion? dlcVer)
                                && WithinBounds(dlcVer);
         }
 
@@ -244,10 +244,10 @@ namespace CKAN
         public override bool WithinBounds(CkanModule otherModule)
             => any_of?.Any(r => r.WithinBounds(otherModule)) ?? false;
 
-        public override bool MatchesAny(ICollection<CkanModule>             modules,
-                                        ICollection<string>?                dlls,
-                                        IDictionary<string, ModuleVersion>? dlc,
-                                        out CkanModule?                     matched)
+        public override bool MatchesAny(ICollection<CkanModule>                      modules,
+                                        ICollection<string>?                         dlls,
+                                        IDictionary<string, UnmanagedModuleVersion>? dlc,
+                                        out CkanModule?                              matched)
         {
             matched = any_of?.AsParallel()
                              .Select(rel => rel.MatchesAny(modules, dlls, dlc, out CkanModule? whatMached)

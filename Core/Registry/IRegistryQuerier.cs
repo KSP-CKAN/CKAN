@@ -17,10 +17,10 @@ namespace CKAN
     /// </summary>
     public interface IRegistryQuerier
     {
-        ReadOnlyDictionary<string, Repository> Repositories     { get; }
-        IEnumerable<InstalledModule>           InstalledModules { get; }
-        ICollection<string>                    InstalledDlls    { get; }
-        IDictionary<string, ModuleVersion>     InstalledDlc     { get; }
+        ReadOnlyDictionary<string, Repository>      Repositories     { get; }
+        IEnumerable<InstalledModule>                InstalledModules { get; }
+        ICollection<string>                         InstalledDlls    { get; }
+        IDictionary<string, UnmanagedModuleVersion> InstalledDlc     { get; }
 
         /// <summary>
         /// Returns a simple array of the latest compatible module for each identifier for

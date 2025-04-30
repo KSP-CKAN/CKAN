@@ -120,7 +120,7 @@ namespace Tests.Core.Registry
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                registry.SetDlcs(new Dictionary<string, UnmanagedModuleVersion>()
                 {
                     { "MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0") }
                 });
@@ -153,7 +153,7 @@ namespace Tests.Core.Registry
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                registry.SetDlcs(new Dictionary<string, UnmanagedModuleVersion>()
                 {
                     { "MakingHistory-DLC", new UnmanagedModuleVersion("1.1.0") }
                 });
@@ -186,7 +186,7 @@ namespace Tests.Core.Registry
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                registry.SetDlcs(new Dictionary<string, ModuleVersion>()
+                registry.SetDlcs(new Dictionary<string, UnmanagedModuleVersion>()
                 {
                     { "MakingHistory-DLC", new UnmanagedModuleVersion("1.0.0") }
                 });
@@ -197,6 +197,36 @@ namespace Tests.Core.Registry
 
                 // Assert
                 Assert.IsFalse(avail.Contains(DLCDepender));
+            }
+        }
+
+        [Test]
+        public void InstalledDlc_BothDLCsSerializedDeserialized_StillThere()
+        {
+            // Arrange
+            using (var instance = new DisposableKSP())
+            using (var repoData = new TemporaryRepositoryData(new NullUser()))
+            {
+                using (var manager = RegistryManager.Instance(instance.KSP, repoData.Manager))
+                {
+                    // Act
+                    manager.registry.SetDlcs(new Dictionary<string, UnmanagedModuleVersion>()
+                    {
+                        { "MakingHistory-DLC",  new UnmanagedModuleVersion("1.1.0") },
+                        { "BreakingGround-DLC", new UnmanagedModuleVersion("1.1.0") },
+                    });
+                    manager.Save();
+                }
+                using (var manager = RegistryManager.Instance(instance.KSP, repoData.Manager))
+                {
+                    // Assert
+                    CollectionAssert.IsSupersetOf(manager.registry.InstalledDlc.Keys,
+                                                  new string[]
+                                                  {
+                                                      "MakingHistory-DLC",
+                                                      "BreakingGround-DLC",
+                                                  });
+                }
             }
         }
 

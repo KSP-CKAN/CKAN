@@ -489,7 +489,7 @@ namespace CKAN
                 new List<License>() { License.UnknownLicense },
                 new ModuleVersion(DateTime.UtcNow.ToString("yyyy.MM.dd.hh.mm.ss")),
                 null,
-                "metapackage")
+                ModuleKind.metapackage)
             {
                 ksp_version_min       = minAndMax.Lower.AsInclusiveLower().WithoutBuild,
                 ksp_version_max       = minAndMax.Upper.AsInclusiveUpper().WithoutBuild,
@@ -618,21 +618,21 @@ namespace CKAN
                                 .Concat(WellKnownDlcScan())
                                 .ToDictionary());
 
-        private static IEnumerable<KeyValuePair<string, ModuleVersion>> TestDlcScan(string dlcDir)
+        private static IEnumerable<KeyValuePair<string, UnmanagedModuleVersion>> TestDlcScan(string dlcDir)
             => (Directory.Exists(dlcDir)
                        ? Directory.EnumerateFiles(dlcDir, "*.dlc",
                                                   SearchOption.TopDirectoryOnly)
                        : Enumerable.Empty<string>())
-                   .Select(f => new KeyValuePair<string, ModuleVersion>(
+                   .Select(f => new KeyValuePair<string, UnmanagedModuleVersion>(
                        $"{Path.GetFileNameWithoutExtension(f)}-DLC",
                        new UnmanagedModuleVersion(File.ReadAllText(f).Trim())));
 
-        private IEnumerable<KeyValuePair<string, ModuleVersion>> WellKnownDlcScan()
+        private IEnumerable<KeyValuePair<string, UnmanagedModuleVersion>> WellKnownDlcScan()
             => gameInstance.game.DlcDetectors
                 .Select(d => d.IsInstalled(gameInstance, out string? identifier, out UnmanagedModuleVersion? version)
                                  && identifier is not null && version is not null
-                             ? new KeyValuePair<string, ModuleVersion>(identifier, version)
-                             : (KeyValuePair<string, ModuleVersion>?)null)
-                .OfType<KeyValuePair<string, ModuleVersion>>();
+                             ? new KeyValuePair<string, UnmanagedModuleVersion>(identifier, version)
+                             : (KeyValuePair<string, UnmanagedModuleVersion>?)null)
+                .OfType<KeyValuePair<string, UnmanagedModuleVersion>>();
     }
 }

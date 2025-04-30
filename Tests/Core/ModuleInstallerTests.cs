@@ -922,7 +922,7 @@ namespace Tests.Core
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 registry.SetDlcs(dlcIdents.ToDictionary(ident => ident,
-                                                        ident => new ModuleVersion("1.0.0")));
+                                                        ident => new UnmanagedModuleVersion("1.0.0")));
 
                 // Act
                 var result = ModuleInstaller.FindRecommendations(inst.KSP,

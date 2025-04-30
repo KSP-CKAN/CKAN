@@ -19,9 +19,9 @@ namespace CKAN
         /// Throws a BadRelationshipsKraken describing the problems otherwise.
         /// Does nothing if the modules can happily co-exist.
         /// </summary>
-        public static void EnforceConsistency(IEnumerable<CkanModule>            modules,
-                                              ICollection<string>                dlls,
-                                              IDictionary<string, ModuleVersion> dlc)
+        public static void EnforceConsistency(IEnumerable<CkanModule>                     modules,
+                                              ICollection<string>                         dlls,
+                                              IDictionary<string, UnmanagedModuleVersion> dlc)
         {
             if (!CheckConsistency(modules, dlls, dlc,
                                   out List<Tuple<CkanModule, RelationshipDescriptor>> unmetDepends,
@@ -35,15 +35,15 @@ namespace CKAN
         /// Returns true if the mods supplied can co-exist. This checks depends/pre-depends/conflicts only.
         /// This is only used by tests!
         /// </summary>
-        public static bool IsConsistent(IEnumerable<CkanModule>            modules,
-                                        ICollection<string>                dlls,
-                                        IDictionary<string, ModuleVersion> dlc)
+        public static bool IsConsistent(IEnumerable<CkanModule>                     modules,
+                                        ICollection<string>                         dlls,
+                                        IDictionary<string, UnmanagedModuleVersion> dlc)
             => CheckConsistency(modules, dlls, dlc,
                                 out var _, out var _);
 
         private static bool CheckConsistency(IEnumerable<CkanModule>                             modules,
                                              ICollection<string>                                 dlls,
-                                             IDictionary<string, ModuleVersion>                  dlc,
+                                             IDictionary<string, UnmanagedModuleVersion>         dlc,
                                              out List<Tuple<CkanModule, RelationshipDescriptor>> UnmetDepends,
                                              out modRelList                                      Conflicts)
         {
@@ -64,9 +64,9 @@ namespace CKAN
         /// Each Key is the depending module, and each Value is the relationship.
         /// </returns>
         public static IEnumerable<Tuple<CkanModule, RelationshipDescriptor>> FindUnsatisfiedDepends(
-                ICollection<CkanModule>            modules,
-                ICollection<string>?               dlls,
-                IDictionary<string, ModuleVersion> dlc)
+                ICollection<CkanModule>                     modules,
+                ICollection<string>?                        dlls,
+                IDictionary<string, UnmanagedModuleVersion> dlc)
             => modules.SelectMany(m => (m.depends ?? Enumerable.Empty<RelationshipDescriptor>())
                                          .Where(dep => !dep.MatchesAny(modules, dlls, dlc))
                                          .Select(dep => Tuple.Create(m, dep)));
@@ -81,9 +81,9 @@ namespace CKAN
         /// List of conflicts represented as pairs.
         /// Each Key is the depending module, and each Value is the relationship.
         /// </returns>
-        private static modRelList FindConflicting(List<CkanModule>                   modules,
-                                                  ICollection<string>                dlls,
-                                                  IDictionary<string, ModuleVersion> dlc)
+        private static modRelList FindConflicting(List<CkanModule>                            modules,
+                                                  ICollection<string>                         dlls,
+                                                  IDictionary<string, UnmanagedModuleVersion> dlc)
             => modules.Where(m => m.conflicts != null)
                       .SelectMany(m => FindConflictingWith(
                                            m,
@@ -92,11 +92,11 @@ namespace CKAN
                                            dlls, dlc))
                       .ToList();
 
-        private static IEnumerable<modRelPair> FindConflictingWith(CkanModule                         module,
-                                                                   List<CkanModule>                   otherMods,
-                                                                   ICollection<string>                dlls,
-                                                                   IDictionary<string, ModuleVersion> dlc)
-            => module.conflicts?.Select(rel => rel.MatchesAny(otherMods, dlls, dlc, out CkanModule? other)
+        private static IEnumerable<modRelPair> FindConflictingWith(CkanModule                                  module,
+                                                                   List<CkanModule>                            otherMods,
+                                                                   ICollection<string>                         dlls,
+                                                                   IDictionary<string, UnmanagedModuleVersion> dlc)
+            => module.conflicts?.Select(rel => rel.MatchesAny(otherMods, dlls, dlc, out CkanModule?            other)
                                                    ? new modRelPair(module, rel, other)
                                                    : null)
                                 .OfType<modRelPair>()

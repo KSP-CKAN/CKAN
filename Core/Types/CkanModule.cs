@@ -42,8 +42,11 @@ namespace CKAN
 
         // Package type: in spec v1.6 can be either "package" or "metapackage"
         // In spec v1.28, "dlc"
-        [JsonProperty("kind", Order = 31, NullValueHandling = NullValueHandling.Ignore)]
-        public string? kind;
+        [JsonProperty("kind", Order = 31,
+                      NullValueHandling = NullValueHandling.Ignore,
+                      DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(ModuleKind.package)]
+        public ModuleKind kind = ModuleKind.package;
 
         [JsonProperty("author", Order = 7, NullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<string>))]
@@ -242,7 +245,7 @@ namespace CKAN
             ModuleVersion    version,
             [JsonConverter(typeof(JsonSingleOrArrayConverter<Uri>))]
             List<Uri>?       download,
-            string?          kind = null,
+            ModuleKind       kind = ModuleKind.package,
             IGameComparator? comparator = null)
         {
             this.spec_version = spec_version;
@@ -348,7 +351,7 @@ namespace CKAN
                                                               identifier, "author"));
                 }
             }
-            if (kind is null or "package" && download == null)
+            if (kind == ModuleKind.package && download == null)
             {
                 throw new BadMetadataKraken(null,
                                             string.Format(Properties.Resources.CkanModuleMissingRequired,
@@ -405,6 +408,11 @@ namespace CKAN
             license   ??= new List<License> { License.UnknownLicense };
             @abstract ??= string.Empty;
             name      ??= string.Empty;
+
+            if (kind == ModuleKind.dlc && version is not UnmanagedModuleVersion)
+            {
+                version = new UnmanagedModuleVersion(version.ToString());
+            }
 
             CalculateSearchables();
         }
@@ -546,9 +554,9 @@ namespace CKAN
             => (realVers?.LastOrDefault(range.Contains)
                         ?? LatestCompatibleGameVersion());
 
-        public bool IsMetapackage => kind == "metapackage";
+        public bool IsMetapackage => kind == ModuleKind.metapackage;
 
-        public bool IsDLC => kind == "dlc";
+        public bool IsDLC => kind == ModuleKind.dlc;
 
         protected bool Equals(CkanModule? other)
             => string.Equals(identifier, other?.identifier) && version.Equals(other?.version);
