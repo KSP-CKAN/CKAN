@@ -34,7 +34,6 @@ namespace CKAN.GUI
             this.InstanceFiltersGroupBox = new System.Windows.Forms.GroupBox();
             this.GlobalFiltersTextBox = new System.Windows.Forms.TextBox();
             this.InstanceFiltersTextBox = new System.Windows.Forms.TextBox();
-            this.AddMiniAVCButton = new System.Windows.Forms.Button();
             this.WarningLabel = new System.Windows.Forms.Label();
             this.GlobalFiltersGroupBox.SuspendLayout();
             this.InstanceFiltersGroupBox.SuspendLayout();
@@ -44,7 +43,6 @@ namespace CKAN.GUI
             //
             this.GlobalFiltersGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.GlobalFiltersGroupBox.Controls.Add(this.AddMiniAVCButton);
             this.GlobalFiltersGroupBox.Controls.Add(this.GlobalFiltersTextBox);
             this.GlobalFiltersGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.GlobalFiltersGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -81,20 +79,6 @@ namespace CKAN.GUI
             this.GlobalFiltersTextBox.Size = new System.Drawing.Size(219, 147);
             this.GlobalFiltersTextBox.TabIndex = 1;
             resources.ApplyResources(this.GlobalFiltersTextBox, "GlobalFiltersTextBox");
-            //
-            // AddMiniAVCButton
-            //
-            this.AddMiniAVCButton.AutoSize = true;
-            this.AddMiniAVCButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            this.AddMiniAVCButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.AddMiniAVCButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddMiniAVCButton.Location = new System.Drawing.Point(231, 17);
-            this.AddMiniAVCButton.Name = "AddMiniAVCButton";
-            this.AddMiniAVCButton.Size = new System.Drawing.Size(124, 23);
-            this.AddMiniAVCButton.TabIndex = 2;
-            this.AddMiniAVCButton.UseVisualStyleBackColor = true;
-            this.AddMiniAVCButton.Click += new System.EventHandler(this.AddMiniAVCButton_Click);
-            resources.ApplyResources(this.AddMiniAVCButton, "AddMiniAVCButton");
             //
             // InstanceFiltersTextBox
             //
@@ -148,7 +132,6 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.GroupBox GlobalFiltersGroupBox;
         private System.Windows.Forms.GroupBox InstanceFiltersGroupBox;
-        private System.Windows.Forms.Button AddMiniAVCButton;
         private System.Windows.Forms.TextBox GlobalFiltersTextBox;
         private System.Windows.Forms.TextBox InstanceFiltersTextBox;
         private System.Windows.Forms.Label WarningLabel;

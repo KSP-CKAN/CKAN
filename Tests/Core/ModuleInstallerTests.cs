@@ -1024,6 +1024,85 @@ namespace Tests.Core
         }
 
         [Test]
+        [Category("Online")]
+        public void InstallList_KSP1InstallFilterPresets_InstallsZeroMiniAVCWithoutMiniAVC()
+        {
+            // Arrange
+            using (var inst   = new DisposableKSP())
+            using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name)
+                {
+                    GlobalInstallFilters = inst.KSP.game.InstallFilterPresets
+                                                        .SelectMany(kvp => kvp.Value)
+                                                        .ToArray(),
+                })
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                // The tests for different targets can run in parallel,
+                // so they don't share a cache nicely
+                const string targetFramework =
+                    #if NET48
+                        "net48";
+                    #elif NET8_0
+                        #if WINDOWS
+                            "net8.0-windows";
+                        #else
+                            "net8.0";
+                        #endif
+                    #endif
+                // Do not Dispose this, we want it to persist for GitHub workflow caching
+                var cacheDir = TestData.DataDir($"../../_build/test/cache/{targetFramework}");
+                Directory.CreateDirectory(cacheDir);
+                var cache     = new NetModuleCache(cacheDir);
+                var registry  = CKAN.Registry.Empty(repoData.Manager);
+                var installer = new ModuleInstaller(inst.KSP, cache, config, nullUser);
+                var modules   = new string[]
+                    {
+                        // MiniAVC (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
+                        @"{
+                            ""identifier"": ""MiniAVC"",
+                            ""version"":    ""1.4.1.3"",
+                            ""download"":   ""https://github.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.3/MiniAVC-1.8.0-1.4.1.3.zip""
+                        }",
+                        // MiniAVC-V2 (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
+                        @"{
+                            ""identifier"": ""MiniAVC-V2"",
+                            ""version"":    ""1.4.1.5"",
+                            ""download"":   ""https://github.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.5/MiniAVC-V2-1.10.1-2.0.0MiniAVC.zip""
+                        }",
+                        // ZeroMiniAVC (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
+                        @"{
+                            ""identifier"": ""ZeroMiniAVC"",
+                            ""version"":    ""1.1.3.3"",
+                            ""download"":   ""https://github.com/linuxgurugamer/ZeroMiniAVC/releases/download/1.1.3.3/ZeroMiniAVC-1.12.0-1.1.3.3.zip""
+                        }",
+                    }
+                    .Select(CkanModule.FromJson)
+                    .ToArray();
+
+                // Act
+                HashSet<string>? possibleConfigOnlyDirs = null;
+                installer.InstallList(modules,
+                                      new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
+                                      regMgr, ref possibleConfigOnlyDirs);
+
+                // Assert
+                var installedFileNames = regMgr.registry
+                                               .InstalledFileInfo()
+                                               .Select(tuple => Path.GetFileName(tuple.relPath))
+                                               .ToHashSet();
+                CollectionAssert.DoesNotContain(installedFileNames, "MiniAVC.dll",
+                                                "The KSP1 filter presets should block MiniAVC");
+                CollectionAssert.DoesNotContain(installedFileNames, "MiniAVC-V2.dll",
+                                                "The KSP1 filter presets should block MiniAVC");
+                CollectionAssert.Contains(installedFileNames, "ZeroMiniAVC.dll",
+                                          "The KSP1 filter presets should not block ZeroMiniAVC");
+            }
+        }
+
+        [Test]
         public void Replace_WithCompatibleModule_Succeeds()
         {
             // Arrange

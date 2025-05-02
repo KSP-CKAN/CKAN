@@ -14,6 +14,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+      - name: Restore cache for _build/test/cache
+        uses: actions/cache@v4
+        with:
+          path: _build/test/cache
+          key: build-test-cache
       - name: Install runtime dependencies
         run: sudo apt-get install -y xvfb
       - name: Download out artifact

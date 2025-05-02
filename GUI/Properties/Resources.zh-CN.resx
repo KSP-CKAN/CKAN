@@ -1133,4 +1133,5 @@ Ctrl-单击或Shift-单击以合并当前搜索</value>
   <data name="PreferredHostsTooltipMoveDown" xml:space="preserve">
     <value>降低所选服务器的优先级</value>
   </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>过滤 {0}</value></data>
 </root>

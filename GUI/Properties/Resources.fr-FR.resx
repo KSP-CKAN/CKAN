@@ -1194,4 +1194,5 @@ Cette action est irréversible !</value>
   <data name="MainDeduplicateScanning" xml:space="preserve">
     <value>Recherche des fichiers installés redondants...</value>
   </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Ajouter {0}</value></data>
 </root>

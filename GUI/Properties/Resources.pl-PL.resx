@@ -983,4 +983,5 @@ Kliknij razem z Ctrl lub Shift, aby połączyć z bieżącym wyszukiwaniem</valu
   <data name="PreferredHostsTooltipMoveDown">
     <value>Ustaw zaznaczonego hosta jako niższy priorytet</value>
   </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Dodaj {0}</value></data>
 </root>

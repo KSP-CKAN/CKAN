@@ -376,4 +376,5 @@ Você deseja permitir que o CKAN faça isso? Se você clicar em Não, você não
   <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Sugere</value></data>
   <data name="RelationshipTypeSupports" xml:space="preserve"><value>Suporta</value></data>
   <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Conflita</value></data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Adicionar {0}</value></data>
 </root>

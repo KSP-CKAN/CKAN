@@ -172,6 +172,28 @@ namespace CKAN.Games.KerbalSpaceProgram
             new MakingHistoryDlcDetector(),
         };
 
+        public IDictionary<string, string[]> InstallFilterPresets =>
+            new SortedDictionary<string, string[]>()
+            {
+                {
+                    "MiniAVC",
+                    new string[]
+                    {
+                        "/MiniAVC.dll",
+                        "/MiniAVC.xml",
+                        "/LICENSE-MiniAVC.txt",
+                    }
+                },
+                {
+                    "MiniAVC2-V2",
+                    new string[]
+                    {
+                        "/MiniAVC-V2.dll",
+                        "/MiniAVC-V2.dll.mdb",
+                    }
+                },
+            };
+
         public void RefreshVersions(string? userAgent)
         {
             ServiceLocator.Container.Resolve<IKspBuildMap>().Refresh(userAgent);

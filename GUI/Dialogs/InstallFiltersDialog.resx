@@ -119,7 +119,6 @@
   </resheader>
   <data name="GlobalFiltersGroupBox.Text" xml:space="preserve"><value>Global Filters</value></data>
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve"><value>Instance Filters</value></data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve"><value>Add MiniAVC</value></data>
   <data name="WarningLabel.Text" xml:space="preserve"><value>NOTE: Changes to the install filters only take effect on future mod installations; already installed files are unaffected.</value></data>
   <data name="$this.Text" xml:space="preserve"><value>Install Filters</value></data>
 </root>

@@ -949,4 +949,5 @@ Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messa
     <value>Clicca per cercare
 Ctrl-clic o Shift-click per combinare con la ricerca corrente</value>
   </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Aggiungi {0}</value></data>
 </root>

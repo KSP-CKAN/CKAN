@@ -123,9 +123,6 @@
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
     <value>인스턴스 한정 필터</value>
   </data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve">
-    <value>MiniAVC 추가</value>
-  </data>
   <data name="WarningLabel.Text" xml:space="preserve">
     <value>참고: 설치 필터를 바꾸면 나중의 모드 설치에만 적용돼요. 현재 모드들은 영향을 받지 않아요.</value>
   </data>

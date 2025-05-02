@@ -403,4 +403,5 @@ CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지�
   <data name="RelationshipTypeSuggests" xml:space="preserve"><value>제안</value></data>
   <data name="RelationshipTypeSupports" xml:space="preserve"><value>지원함</value></data>
   <data name="RelationshipTypeConflicts" xml:space="preserve"><value>충돌함</value></data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>{0} 추가</value></data>
 </root>

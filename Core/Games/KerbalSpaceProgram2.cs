@@ -127,6 +127,9 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public IDlcDetector[] DlcDetectors => Array.Empty<IDlcDetector>();
 
+        public IDictionary<string, string[]> InstallFilterPresets =>
+            new Dictionary<string, string[]>();
+
         private static readonly Uri BuildMapUri =
             new Uri("https://raw.githubusercontent.com/KSP-CKAN/KSP2-CKAN-meta/main/builds.json");
         private static readonly string cachedBuildMapPath =

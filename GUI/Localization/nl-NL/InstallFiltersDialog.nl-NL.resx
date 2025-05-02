@@ -123,9 +123,6 @@
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
     <value>Instantiemap</value>
   </data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve">
-    <value>Voeg MiniAVC toe</value>
-  </data>
   <data name="WarningLabel.Text" xml:space="preserve">
     <value>OPMERKING: Wijzigingen in de installatie filters hebben alleen effect op toekomstige mod installaties; al geïnstalleerde bestanden worden niet beïnvloed.</value>
   </data>
