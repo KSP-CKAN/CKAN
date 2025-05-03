@@ -828,15 +828,6 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   <data name="StatusInstanceLabelText" xml:space="preserve">
     <value>Instance de jeu : {0} ({1} {2})</value>
   </data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve">
-    <value>Favoris</value>
-  </data>
-  <data name="ModuleLabelListHidden" xml:space="preserve">
-    <value>Caché</value>
-  </data>
-  <data name="ModuleLabelListHeld" xml:space="preserve">
-    <value>Gelé</value>
-  </data>
   <data name="ModuleLabelListGlobal" xml:space="preserve">
     <value>Global</value>
   </data>

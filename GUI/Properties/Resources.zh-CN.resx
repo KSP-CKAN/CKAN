@@ -782,15 +782,6 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="StatusInstanceLabelText" xml:space="preserve">
     <value>游戏实例: {0} ({1} {2})</value>
   </data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve">
-    <value>收藏</value>
-  </data>
-  <data name="ModuleLabelListHidden" xml:space="preserve">
-    <value>隐藏</value>
-  </data>
-  <data name="ModuleLabelListHeld" xml:space="preserve">
-    <value>已使用</value>
-  </data>
   <data name="ModuleLabelListGlobal" xml:space="preserve">
     <value>全局</value>
   </data>

@@ -352,4 +352,7 @@ Free up space on that device or change your settings to use another location.
   <data name="DeduplicatedRelPath" xml:space="preserve"><value>Deduplicated {0} copies of {1}</value></data>
   <data name="DoneDeduplicatingFiles" xml:space="preserve"><value>Deduplication complete. Space saved: {0}</value></data>
   <data name="NoDuplicatesFound" xml:space="preserve"><value>No duplicate installed files found.</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favourites</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Hidden</value></data>
+  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Held</value></data>
 </root>

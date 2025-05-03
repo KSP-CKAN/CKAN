@@ -399,9 +399,6 @@ Do you want to allow CKAN to do this? If you click no you won't see this message
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Copy link address</value></data>
   <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve"><value>Game instance: {0} ({1} {2}, played {3}h)</value></data>
   <data name="StatusInstanceLabelText" xml:space="preserve"><value>Game instance: {0} ({1} {2})</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favourites</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Hidden</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Held</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Global</value></data>
   <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Are you sure you want to delete {0}? This can't be undone!</value></data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Save changes?</value></data>

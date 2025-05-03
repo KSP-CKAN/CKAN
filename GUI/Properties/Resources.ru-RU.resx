@@ -332,9 +332,6 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Хотите ли вы разрешить CKAN это делать? При выборе «Нет» вы не увидите это сообщение снова.</value></data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Скопировать адрес ссылки</value></data>
   <data name="StatusInstanceLabelText" xml:space="preserve"><value>Сборка игры: {0} ({1} {2})</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Избранные</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Скрытые</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Без обновления</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>Глобальные</value></data>
   <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>Вы уверены, что хотите удалить {0}? Это действие не может быть отменено!</value></data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>Сохранить изменения?</value></data>

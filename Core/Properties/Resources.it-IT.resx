@@ -670,4 +670,13 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   <data name="ModpackName" xml:space="preserve">
     <value>installata-{0}</value>
   </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>Preferiti</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>Nascosto</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>Mantenuta</value>
+  </data>
 </root>

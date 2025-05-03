@@ -119,4 +119,7 @@
   </resheader>
   <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Neue Mod-Installation ausgewählt vom Nutzer</value></data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoriten</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Versteckt</value></data>
+  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Zurückgehalten</value></data>
 </root>

@@ -766,4 +766,13 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   <data name="NoDuplicatesFound" xml:space="preserve">
     <value>Aucun fichier installé redondant trouvé.</value>
   </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>Favoris</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>Caché</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>Gelé</value>
+  </data>
 </root>
