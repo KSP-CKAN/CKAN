@@ -143,7 +143,7 @@ namespace CKAN
                 long fileSize = new FileInfo(path).Length;
                 log.DebugFormat("Trying to load repository data from {0}", path);
                 // Ain't OOP grand?!
-                using (var stream = File.Open(path, FileMode.Open))
+                using (var stream = File.OpenRead(path))
                 using (var progressStream = new ReadProgressStream(
                     stream,
                     progress == null
