@@ -373,10 +373,10 @@ namespace CKAN
             if (registry.Repositories.Count == 0)
             {
                 log.InfoFormat("Fabricating repository: {0}", gameInstance.game.DefaultRepositoryURL);
-                var name = $"{gameInstance.game.ShortName}-{Repository.default_ckan_repo_name}";
+                var repo = Repository.DefaultGameRepo(gameInstance.game);
                 registry.RepositoriesSet(new SortedDictionary<string, Repository>
                 {
-                    { name, new Repository(name, gameInstance.game.DefaultRepositoryURL) }
+                    { repo.name, repo }
                 });
             }
         }
