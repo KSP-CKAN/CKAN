@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;

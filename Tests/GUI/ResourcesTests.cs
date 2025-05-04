@@ -90,8 +90,9 @@ namespace Tests.GUI
         // The types to test
         private static IEnumerable<Type> DialogsAndControls =>
             Assembly.GetAssembly(typeof(CKAN.GUI.Main))
-                    .GetTypes()
-                    .Where(t => !t.IsAbstract && baseTypesToCheck.Any(t.IsSubclassOf));
+                    ?.GetTypes()
+                     .Where(t => !t.IsAbstract && baseTypesToCheck.Any(t.IsSubclassOf))
+                    ?? Enumerable.Empty<Type>();
 
         private static readonly Type[] baseTypesToCheck = new Type[]
         {
