@@ -889,7 +889,8 @@ namespace CKAN.GUI
                                Properties.Resources.AllModVersionsInstallYes,
                                Properties.Resources.AllModVersionsInstallNo))
             {
-                UpdateChangesDialog(toInstall.Select(m => new ModChange(m, GUIModChangeType.Install))
+                UpdateChangesDialog(toInstall.Select(m => new ModChange(m, GUIModChangeType.Install,
+                                                                        ServiceLocator.Container.Resolve<IConfiguration>()))
                                              .ToList(),
                                     null);
                 tabController.ShowTab(ChangesetTabPage.Name, 1);

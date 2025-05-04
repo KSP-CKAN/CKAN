@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.Configuration;
 using CKAN.GUI.Attributes;
 
 namespace CKAN.GUI
@@ -22,7 +23,10 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void LoadProviders(string message, List<CkanModule> modules, NetModuleCache cache)
+        public void LoadProviders(string           message,
+                                  List<CkanModule> modules,
+                                  NetModuleCache   cache,
+                                  IConfiguration   config)
         {
             Util.Invoke(this, () =>
             {
@@ -34,7 +38,7 @@ namespace CKAN.GUI
                 ChooseProvidedModsListView.Items.AddRange(modules
                     .Select((module, index) => new ListViewItem(new string[]
                     {
-                        cache.DescribeAvailability(module),
+                        cache.DescribeAvailability(config, module),
                         module.@abstract
                     })
                     {

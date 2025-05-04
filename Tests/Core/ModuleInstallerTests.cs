@@ -399,7 +399,7 @@ namespace Tests.Core
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
                     // This should throw, as our tidy KSP has no mods installed.
-                    new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
+                    new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                         .UninstallList(new List<string> {"Foo"},
                                        ref possibleConfigOnlyDirs,
                                        RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
@@ -450,7 +450,7 @@ namespace Tests.Core
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
@@ -489,7 +489,7 @@ namespace Tests.Core
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
+                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .InstallList(modules, new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
                                  ref possibleConfigOnlyDirs);
@@ -498,7 +498,7 @@ namespace Tests.Core
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 // Attempt to uninstall it.
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
+                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs,
                                    RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
@@ -537,7 +537,7 @@ namespace Tests.Core
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
+                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
@@ -552,7 +552,7 @@ namespace Tests.Core
 
                 modules.Add(TestData.DogeCoinPlugin_module());
 
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
+                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
@@ -568,7 +568,7 @@ namespace Tests.Core
                 modules.Add(TestData.DogeCoinFlag_101_module());
                 modules.Add(TestData.DogeCoinPlugin_module());
 
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, nullUser)
+                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs,
                                    RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
@@ -746,7 +746,7 @@ namespace Tests.Core
                     var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
+                    new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                         .InstallList(modules,
                                      new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                      RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
@@ -977,7 +977,7 @@ namespace Tests.Core
                     delegate
                     {
                         HashSet<string>? possibleConfigOnlyDirs = null;
-                        new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
+                        new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                             .InstallList(modules,
                                          new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                          RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
@@ -1016,7 +1016,7 @@ namespace Tests.Core
 
                 // Act / Assert
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(ksp.KSP, manager.Cache!, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
@@ -1072,7 +1072,7 @@ namespace Tests.Core
                 Assert.IsNotNull(replaced, "Replaced module should exist");
                 var replacer = registry.GetModuleByVersion("replacer", "1.0");
                 Assert.IsNotNull(replacer, "Replacer module should exist");
-                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, nullUser);
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
 
@@ -1141,7 +1141,7 @@ namespace Tests.Core
                 Assert.IsNotNull(replaced, "Replaced module should exist");
                 var replacer = registry.GetModuleByVersion("replacer", "1.0");
                 Assert.IsNotNull(replacer, "Replacer module should exist");
-                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, nullUser);
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
 
                 // Act
@@ -1206,7 +1206,7 @@ namespace Tests.Core
             using (var repo     = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             {
-                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, nullUser);
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var regMgr    = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                 var registry  = regMgr.registry;
                 var possibleConfigOnlyDirs = new HashSet<string>();
@@ -1289,7 +1289,7 @@ namespace Tests.Core
             using (var repo     = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             {
-                var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, nullUser);
+                var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
                 var regMgr     = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                 var registry   = regMgr.registry;
@@ -1374,7 +1374,7 @@ namespace Tests.Core
                                                          repoData.Manager);
                 var module    = CkanModule.FromJson(moduleJson);
                 var modules   = new List<CkanModule> { module };
-                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, nullUser);
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 File.WriteAllText(inst.KSP.ToAbsoluteGameDir(unmanaged),
                                   "Not really a DLL, are we?");
                 regMgr.ScanUnmanagedFiles();
@@ -1382,7 +1382,7 @@ namespace Tests.Core
 
                 // Act
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(inst.KSP, manager.Cache!, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  regMgr,

@@ -140,7 +140,8 @@ namespace CKAN.GUI
                                          .OfType<ModuleReplacement>()
                                          .GroupBy(repl => repl.ReplaceWith)
                                          .Select(grp => new ModChange(grp.Key, GUIModChangeType.Install,
-                                                                      grp.Select(repl => new SelectionReason.Replacement(repl.ToReplace))))
+                                                                      grp.Select(repl => new SelectionReason.Replacement(repl.ToReplace)),
+                                                                      ServiceLocator.Container.Resolve<IConfiguration>()))
                                          .ToHashSet());
 
             foreach (var change in changeSet)
@@ -192,7 +193,8 @@ namespace CKAN.GUI
                         is CkanModule modByVer)
                 {
                     changeSet.Add(new ModChange(modByVer, GUIModChangeType.Remove,
-                                                new SelectionReason.DependencyRemoved()));
+                                                new SelectionReason.DependencyRemoved(),
+                                                ServiceLocator.Container.Resolve<IConfiguration>()));
                     modules_to_remove.Add(modByVer);
                 }
             }
@@ -200,7 +202,8 @@ namespace CKAN.GUI
             foreach (var im in registry.FindRemovableAutoInstalled(
                 InstalledAfterChanges(registry, changeSet).ToList(), game, stabilityTolerance, version))
             {
-                changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed()));
+                changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed(),
+                                            ServiceLocator.Container.Resolve<IConfiguration>()));
                 modules_to_remove.Add(im.Module);
             }
 
@@ -218,7 +221,8 @@ namespace CKAN.GUI
                          .Union(resolver.ModList()
                                         // Changeset already contains changes for these
                                         .Except(extraInstalls)
-                                        .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m)))),
+                                        .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m),
+                                                                   ServiceLocator.Container.Resolve<IConfiguration>()))),
                 resolver.ConflictList,
                 resolver.ConflictDescriptions.ToList());
         }
@@ -499,7 +503,8 @@ namespace CKAN.GUI
                     registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), instance.game, instance.StabilityToleranceConfig, crit)
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
-                            new SelectionReason.NoLongerUsed()))))
+                            new SelectionReason.NoLongerUsed(),
+                            ServiceLocator.Container.Resolve<IConfiguration>()))))
                 .ToHashSet();
         }
 

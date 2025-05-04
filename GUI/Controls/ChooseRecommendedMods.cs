@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Games;
 using CKAN.GUI.Attributes;
@@ -32,7 +33,8 @@ namespace CKAN.GUI
                                         NetModuleCache      cache,
                                         IGame               game,
                                         List<ModuleLabel>   labels,
-                                        GUIConfiguration?   config,
+                                        IConfiguration      coreConfig,
+                                        GUIConfiguration    guiConfig,
                                         Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                         Dictionary<CkanModule, List<string>>              suggestions,
                                         Dictionary<CkanModule, HashSet<string>>           supporters)
@@ -41,18 +43,19 @@ namespace CKAN.GUI
             this.toInstall   = toInstall;
             this.toUninstall = toUninstall;
             this.versionCrit = versionCrit;
-            this.config      = config;
+            this.guiConfig   = guiConfig;
             this.game        = game;
             Util.Invoke(this, () =>
             {
-                AlwaysUncheckAllButton.Checked = config?.SuppressRecommendations ?? false;
+                AlwaysUncheckAllButton.Checked = guiConfig?.SuppressRecommendations ?? false;
                 RecommendedModsListView.BeginUpdate();
                 RecommendedModsListView.ItemChecked -= RecommendedModsListView_ItemChecked;
                 RecommendedModsListView.Items.AddRange(
                     getRecSugRows(cache, game,
                                   labels.Where(mlbl => mlbl.HoldVersion || mlbl.Hide)
                                         .ToArray(),
-                                  recommendations, suggestions, supporters).ToArray());
+                                  recommendations, suggestions, supporters,
+                                  coreConfig).ToArray());
                 MarkConflicts();
                 EnableDisableButtons();
                 RecommendedModsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -186,27 +189,31 @@ namespace CKAN.GUI
             ModuleLabel[]                                     uncheckLabels,
             Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
             Dictionary<CkanModule, List<string>>              suggestions,
-            Dictionary<CkanModule, HashSet<string>>           supporters)
+            Dictionary<CkanModule, HashSet<string>>           supporters,
+            IConfiguration                                    coreConfig)
             => recommendations.Select(kvp => getRecSugItem(cache,
                                                            kvp.Key,
                                                            string.Join(", ", kvp.Value.Item2),
                                                            RecommendationsGroup,
-                                                           (!config?.SuppressRecommendations ?? true)
+                                                           (!guiConfig?.SuppressRecommendations ?? true)
                                                                && kvp.Value.Item1
                                                                && !uncheckLabels.Any(mlbl =>
-                                                                   mlbl.ContainsModule(game, kvp.Key.identifier))))
+                                                                   mlbl.ContainsModule(game, kvp.Key.identifier)),
+                                                           coreConfig))
                               .OrderBy(SecondColumn)
                               .Concat(suggestions.Select(kvp => getRecSugItem(cache,
                                                                               kvp.Key,
                                                                               string.Join(", ", kvp.Value),
                                                                               SuggestionsGroup,
-                                                                              false))
+                                                                              false,
+                                                                              coreConfig))
                                                  .OrderBy(SecondColumn))
                               .Concat(supporters.Select(kvp => getRecSugItem(cache,
                                                                              kvp.Key,
                                                                              string.Join(", ", kvp.Value.OrderBy(s => s)),
                                                                              SupportedByGroup,
-                                                                             false))
+                                                                             false,
+                                                                             coreConfig))
                                                 .OrderBy(SecondColumn));
 
         private string SecondColumn(ListViewItem item)
@@ -217,13 +224,14 @@ namespace CKAN.GUI
                    : "";
 
         private static ListViewItem getRecSugItem(NetModuleCache cache,
-                                           CkanModule     module,
-                                           string         descrip,
-                                           ListViewGroup  group,
-                                           bool           check)
+                                                  CkanModule     module,
+                                                  string         descrip,
+                                                  ListViewGroup  group,
+                                                  bool           check,
+                                                  IConfiguration config)
         => new ListViewItem(new string[]
             {
-                module.IsDLC ? module.name : cache.DescribeAvailability(module),
+                module.IsDLC ? module.name : cache.DescribeAvailability(config, module),
                 descrip,
                 module.@abstract
             })
@@ -240,11 +248,11 @@ namespace CKAN.GUI
 
         private void AlwaysUncheckAllButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            if (config != null && config.SuppressRecommendations != AlwaysUncheckAllButton.Checked)
+            if (guiConfig != null && guiConfig.SuppressRecommendations != AlwaysUncheckAllButton.Checked)
             {
-                config.SuppressRecommendations = AlwaysUncheckAllButton.Checked;
-                config.Save();
-                if (config.SuppressRecommendations)
+                guiConfig.SuppressRecommendations = AlwaysUncheckAllButton.Checked;
+                guiConfig.Save();
+                if (guiConfig.SuppressRecommendations)
                 {
                     UncheckAllButton_Click(null, null);
                 }
@@ -316,7 +324,7 @@ namespace CKAN.GUI
         private List<CkanModule>     toInstall = new List<CkanModule>();
         private HashSet<CkanModule>  toUninstall = new HashSet<CkanModule>();
         private GameVersionCriteria? versionCrit;
-        private GUIConfiguration?    config;
+        private GUIConfiguration?    guiConfig;
         private IGame?               game;
         private TaskCompletionSource<HashSet<CkanModule>?>? task;
     }

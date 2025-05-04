@@ -296,7 +296,8 @@ namespace CKAN.CmdLine
                                            Action<CkanModule>    addUserChoiceCallback)
         {
             using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
-                var installer  = new ModuleInstaller(instance, cache, user);
+                var installer  = new ModuleInstaller(instance, cache,
+                                                     ServiceLocator.Container.Resolve<IConfiguration>(), user);
                 var downloader = new NetAsyncModulesDownloader(user, cache, userAgent);
                 var regMgr     = RegistryManager.Instance(instance, repoData);
                 HashSet<string>? possibleConfigOnlyDirs = null;

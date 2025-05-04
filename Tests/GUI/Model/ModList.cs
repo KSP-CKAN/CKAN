@@ -169,7 +169,7 @@ namespace Tests.GUI
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");
                 var modList = new ModList();
                 var listGui = new DataGridView();
-                var installer = new ModuleInstaller(instance.KSP, manager.Cache!, manager.User);
+                var installer = new ModuleInstaller(instance.KSP, manager.Cache!, config, manager.User);
                 var downloader = new NetAsyncModulesDownloader(user, manager.Cache!);
 
                 // Act

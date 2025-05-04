@@ -4,6 +4,8 @@ using System.Transactions;
 using System.Collections.Generic;
 using System.Linq;
 
+using Autofac;
+
 using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
@@ -86,7 +88,9 @@ namespace CKAN.ConsoleUI {
                                                                          manager.Instances.Values,
                                                                          repoData);
 
-                            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
+                            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache,
+                                                                       ServiceLocator.Container.Resolve<IConfiguration>(),
+                                                                       this);
                             inst.OneComplete += OnModInstalled;
                             if (plan.Remove.Count > 0) {
                                 inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));

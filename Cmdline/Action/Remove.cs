@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using Autofac;
 using CommandLine;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.IO;
 
 namespace CKAN.CmdLine
@@ -81,7 +83,8 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    var installer = new ModuleInstaller(instance, manager.Cache, user);
+                    var installer = new ModuleInstaller(instance, manager.Cache,
+                                                        ServiceLocator.Container.Resolve<IConfiguration>(), user);
                     Search.AdjustModulesCase(instance, regMgr.registry, options.modules);
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
                     user.RaiseMessage("");

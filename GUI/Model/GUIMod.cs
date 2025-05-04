@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 #endif
 
+using Autofac;
+
 using CKAN.Configuration;
 using CKAN.Versioning;
 
@@ -313,7 +315,8 @@ namespace CKAN.GUI
         {
             if (replaceChecked)
             {
-                yield return new ModChange(Mod, GUIModChangeType.Replace);
+                yield return new ModChange(Mod, GUIModChangeType.Replace,
+                                           ServiceLocator.Container.Resolve<IConfiguration>());
             }
             else if (!(SelectedMod?.Equals(InstalledMod?.Module)
                        ?? InstalledMod?.Module?.Equals(SelectedMod)
@@ -327,17 +330,20 @@ namespace CKAN.GUI
                     yield return new ModUpgrade(Mod,
                                                 GUIModChangeType.Update,
                                                 SelectedMod,
-                                                false, false);
+                                                false, false,
+                                                ServiceLocator.Container.Resolve<IConfiguration>());
                 }
                 else
                 {
                     if (InstalledMod != null)
                     {
-                        yield return new ModChange(InstalledMod.Module!, GUIModChangeType.Remove);
+                        yield return new ModChange(InstalledMod.Module!, GUIModChangeType.Remove,
+                                                   ServiceLocator.Container.Resolve<IConfiguration>());
                     }
                     if (SelectedMod != null)
                     {
-                        yield return new ModChange(SelectedMod, GUIModChangeType.Install);
+                        yield return new ModChange(SelectedMod, GUIModChangeType.Install,
+                                                   ServiceLocator.Container.Resolve<IConfiguration>());
                     }
                 }
             }
@@ -347,7 +353,8 @@ namespace CKAN.GUI
                 yield return new ModUpgrade(Mod,
                                             GUIModChangeType.Update,
                                             SelectedMod,
-                                            false, metadataChanged);
+                                            false, metadataChanged,
+                                            ServiceLocator.Container.Resolve<IConfiguration>());
             }
         }
 

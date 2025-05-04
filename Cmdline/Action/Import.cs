@@ -2,9 +2,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
+using Autofac;
 using CommandLine;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.IO;
 
 namespace CKAN.CmdLine
@@ -53,7 +55,8 @@ namespace CKAN.CmdLine
                 {
                     log.InfoFormat("Importing {0} files", toImport.Count);
                     var toInstall = new List<CkanModule>();
-                    var installer = new ModuleInstaller(instance, manager.Cache, user);
+                    var installer = new ModuleInstaller(instance, manager.Cache,
+                                                        ServiceLocator.Container.Resolve<IConfiguration>(), user);
                     var regMgr    = RegistryManager.Instance(instance, repoData);
                     ModuleImporter.ImportFiles(toImport, user, toInstall.Add,
                                                regMgr.registry, instance, manager.Cache,

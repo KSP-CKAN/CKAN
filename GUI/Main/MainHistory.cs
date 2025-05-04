@@ -1,6 +1,10 @@
 using System;
 using System.Linq;
 
+using Autofac;
+
+using CKAN.Configuration;
+
 // Don't warn if we use our own obsolete properties
 #pragma warning disable 0618
 
@@ -24,7 +28,8 @@ namespace CKAN.GUI
                 InstallationHistory_Done();
                 var tuple = ManageMods.mainModList.ComputeFullChangeSetFromUserChangeSet(
                     RegistryManager.Instance(CurrentInstance, repoData).registry,
-                    modules.Select(mod => new ModChange(mod, GUIModChangeType.Install))
+                    modules.Select(mod => new ModChange(mod, GUIModChangeType.Install,
+                                                        ServiceLocator.Container.Resolve<IConfiguration>()))
                            .ToHashSet(),
                     CurrentInstance.game,
                     CurrentInstance.StabilityToleranceConfig,

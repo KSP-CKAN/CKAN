@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 using Autofac;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
@@ -1350,7 +1351,8 @@ namespace CKAN.GUI
                                    registry.GetModuleByVersion(module.identifier,
                                                                module.version)
                                            ?? module,
-                                   true, false)
+                                   true, false,
+                                   ServiceLocator.Container.Resolve<IConfiguration>())
                 }, null);
             }
         }

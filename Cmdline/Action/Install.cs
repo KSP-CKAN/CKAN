@@ -3,9 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
+using Autofac;
 using CommandLine;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.IO;
 using CKAN.Versioning;
 
@@ -105,7 +107,8 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
 
-            var installer   = new ModuleInstaller(instance, manager.Cache, user);
+            var installer   = new ModuleInstaller(instance, manager.Cache,
+                                                  ServiceLocator.Container.Resolve<IConfiguration>(), user);
             var install_ops = new RelationshipResolverOptions(instance.StabilityToleranceConfig)
             {
                 with_all_suggests              = options?.with_all_suggests ?? false,

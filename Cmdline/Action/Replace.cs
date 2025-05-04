@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 
+using Autofac;
 using CommandLine;
 using log4net;
 
+using CKAN.Configuration;
 using CKAN.IO;
 using CKAN.Versioning;
 
@@ -161,7 +163,8 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(instance, manager.Cache, user)
+                    new ModuleInstaller(instance, manager.Cache,
+                                        ServiceLocator.Container.Resolve<IConfiguration>(), user)
                         .Replace(to_replace, replace_ops,
                                  new NetAsyncModulesDownloader(user, manager.Cache, options.NetUserAgent),
                                  ref possibleConfigOnlyDirs,

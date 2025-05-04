@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using ICSharpCode.SharpZipLib.Zip;
 
 using CKAN.IO;
+using CKAN.Configuration;
 
 namespace CKAN
 {
@@ -106,23 +107,25 @@ namespace CKAN
                 ? null
                 : cache.GetInProgressFileName(m.download, m.StandardName());
 
-        private static string DescribeUncachedAvailability(CkanModule m, FileInfo? fi)
+        private static string DescribeUncachedAvailability(IConfiguration config,
+                                                           CkanModule     m,
+                                                           FileInfo?      fi)
             => (fi?.Exists ?? false)
                 ? string.Format(Properties.Resources.NetModuleCacheModuleResuming,
                     m.name, m.version,
-                    string.Join(", ", ModuleInstaller.PrioritizedHosts(m.download)),
+                    string.Join(", ", ModuleInstaller.PrioritizedHosts(config, m.download)),
                     CkanModule.FmtSize(m.download_size - fi.Length))
                 : string.Format(Properties.Resources.NetModuleCacheModuleHostSize,
                     m.name, m.version,
-                    string.Join(", ", ModuleInstaller.PrioritizedHosts(m.download)),
+                    string.Join(", ", ModuleInstaller.PrioritizedHosts(config, m.download)),
                     CkanModule.FmtSize(m.download_size));
 
-        public string DescribeAvailability(CkanModule m)
+        public string DescribeAvailability(IConfiguration config, CkanModule m)
             => m.IsMetapackage
                 ? string.Format(Properties.Resources.NetModuleCacheMetapackage, m.name, m.version)
                 : IsMaybeCachedZip(m)
                     ? string.Format(Properties.Resources.NetModuleCacheModuleCached, m.name, m.version)
-                    : DescribeUncachedAvailability(m, GetInProgressFileName(m));
+                    : DescribeUncachedAvailability(config, m, GetInProgressFileName(m));
 
         /// <summary>
         /// Calculate the SHA1 hash of a file

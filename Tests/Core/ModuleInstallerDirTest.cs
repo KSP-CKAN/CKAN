@@ -55,7 +55,7 @@ namespace Tests.Core
             _testModule = _registry.GetModuleByVersion("DogeCoinFlag", "1.01");
             Assert.IsNotNull(_testModule, "DogeCoinFlag 1.01 should exist");
 
-            _installer = new ModuleInstaller(_instance.KSP, _manager.Cache!, _nullUser);
+            _installer = new ModuleInstaller(_instance.KSP, _manager.Cache!, _config, _nullUser);
 
             _gameDir = _instance.KSP.GameDir();
             _gameDataDir = _instance.KSP.game.PrimaryModDirectory(_instance.KSP);
