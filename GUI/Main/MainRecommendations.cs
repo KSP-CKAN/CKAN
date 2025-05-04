@@ -41,7 +41,7 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null && Manager.Cache != null)
             {
-                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent);
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser);
                 if (ModuleInstaller.FindRecommendations(
                     CurrentInstance,
                     registry.InstalledModules.Select(im => im.Module).ToHashSet(),

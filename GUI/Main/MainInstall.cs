@@ -98,7 +98,7 @@ namespace CKAN.GUI
                 var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
                 var registry = registry_manager.registry;
                 var stabilityTolerance = CurrentInstance.StabilityToleranceConfig;
-                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent,
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser,
                                                     cancelTokenSrc.Token);
                 // Avoid accumulating multiple event handlers
                 installer.OneComplete     -= OnModInstalled;

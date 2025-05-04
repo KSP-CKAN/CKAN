@@ -36,84 +36,23 @@ namespace CKAN.IO
 
         private readonly GameInstance      instance;
         private readonly NetModuleCache    Cache;
-        private readonly string?           userAgent;
         private readonly CancellationToken cancelToken;
 
         // Constructor
         public ModuleInstaller(GameInstance      inst,
                                NetModuleCache    cache,
                                IUser             user,
-                               string?           userAgent   = null,
                                CancellationToken cancelToken = default)
         {
             User     = user;
             Cache    = cache;
             instance = inst;
-            this.userAgent = userAgent;
+            User        = user;
             this.cancelToken = cancelToken;
             log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir());
         }
 
-        #region Downloading
 
-        /// <summary>
-        /// Downloads the given mod to the cache. Returns the filename it was saved to.
-        /// </summary>
-        public string Download(CkanModule module, string filename)
-        {
-            User.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerDownloading, module.download), 0);
-            return Download(module, filename, userAgent, Cache);
-        }
-
-        /// <summary>
-        /// Downloads the given mod to the cache. Returns the filename it was saved to.
-        /// </summary>
-        public static string Download(CkanModule module, string filename, string? userAgent, NetModuleCache cache)
-        {
-            log.Info("Downloading " + filename);
-
-            string tmp_file = Net.Download((module.download ?? Enumerable.Empty<Uri>())
-                .OrderBy(u => u,
-                         new PreferredHostUriComparer(
-                             ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
-                .First(),
-                userAgent);
-
-            return cache.Store(module, tmp_file, new ProgressImmediate<long>(bytes => {}), filename, true);
-        }
-
-        /// <summary>
-        /// Returns the path to a cached copy of a module if it exists, or downloads
-        /// and returns the downloaded copy otherwise.
-        ///
-        /// If no filename is provided, the module's standard name will be used.
-        /// Checks the CKAN cache first.
-        /// </summary>
-        public string CachedOrDownload(CkanModule module, string? filename = null)
-            => CachedOrDownload(module, userAgent, Cache, filename);
-
-        /// <summary>
-        /// Returns the path to a cached copy of a module if it exists, or downloads
-        /// and returns the downloaded copy otherwise.
-        ///
-        /// If no filename is provided, the module's standard name will be used.
-        /// Chcecks provided cache first.
-        /// </summary>
-        public static string CachedOrDownload(CkanModule module, string? userAgent, NetModuleCache cache, string? filename = null)
-        {
-            filename ??= CkanModule.StandardName(module.identifier, module.version);
-
-            var full_path = cache.GetCachedFilename(module);
-            if (full_path == null)
-            {
-                return Download(module, filename, userAgent, cache);
-            }
-
-            log.DebugFormat("Using {0} (cached)", filename);
-            return full_path;
-        }
-
-        #endregion
 
         #region Installation
 

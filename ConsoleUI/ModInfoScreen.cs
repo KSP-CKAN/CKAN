@@ -589,7 +589,7 @@ namespace CKAN.ConsoleUI {
             {
                 var ps   = new ProgressScreen(theme, string.Format(Properties.Resources.ModInfoDownloading, mod.identifier));
                 var dl   = new NetAsyncModulesDownloader(ps, manager.Cache, userAgent);
-                var inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps, userAgent);
+                var inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps);
                 LaunchSubScreen(
                     ps,
                     () => {

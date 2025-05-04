@@ -81,7 +81,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    var installer = new ModuleInstaller(instance, manager.Cache, user, options.NetUserAgent);
+                    var installer = new ModuleInstaller(instance, manager.Cache, user);
                     Search.AdjustModulesCase(instance, regMgr.registry, options.modules);
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
                     user.RaiseMessage("");

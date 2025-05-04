@@ -161,7 +161,7 @@ namespace CKAN.CmdLine
                 try
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(instance, manager.Cache, user, options.NetUserAgent)
+                    new ModuleInstaller(instance, manager.Cache, user)
                         .Replace(to_replace, replace_ops,
                                  new NetAsyncModulesDownloader(user, manager.Cache, options.NetUserAgent),
                                  ref possibleConfigOnlyDirs,

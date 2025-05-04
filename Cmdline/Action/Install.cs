@@ -105,7 +105,7 @@ namespace CKAN.CmdLine
                 return Exit.ERROR;
             }
 
-            var installer   = new ModuleInstaller(instance, manager.Cache, user, options?.NetUserAgent);
+            var installer   = new ModuleInstaller(instance, manager.Cache, user);
             var install_ops = new RelationshipResolverOptions(instance.StabilityToleranceConfig)
             {
                 with_all_suggests              = options?.with_all_suggests ?? false,

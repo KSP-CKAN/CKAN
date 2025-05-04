@@ -86,7 +86,7 @@ namespace CKAN.ConsoleUI {
                                                                          manager.Instances.Values,
                                                                          repoData);
 
-                            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this, userAgent);
+                            ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, this);
                             inst.OneComplete += OnModInstalled;
                             if (plan.Remove.Count > 0) {
                                 inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
