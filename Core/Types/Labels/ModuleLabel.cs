@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 using CKAN.Games;
 
-namespace CKAN.GUI
+namespace CKAN
 {
     [JsonObject(MemberSerialization.OptIn)]
     [JsonConverter(typeof(ModuleIdentifiersRenamedConverter))]
@@ -104,6 +104,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Add a module to this label's group
         /// </summary>
+        /// <param name="game">The game for which to add this identifier</param>
         /// <param name="identifier">The identifier of the module to add</param>
         public void Add(IGame game, string identifier)
         {
@@ -120,6 +121,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Remove a module from this label's group
         /// </summary>
+        /// <param name="game">The game for which to remove this identifier</param>
         /// <param name="identifier">The identifier of the module to remove</param>
         public void Remove(IGame game, string identifier)
         {

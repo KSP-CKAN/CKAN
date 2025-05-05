@@ -143,7 +143,7 @@ namespace CKAN.GUI
                 if (manager?.CurrentInstance is GameInstance inst)
                 {
                     var filters = ServiceLocator.Container.Resolve<IConfiguration>()
-                                                          .GlobalInstallFilters
+                                                          .GetGlobalInstallFilters(inst.game)
                                                           .Concat(inst.InstallFilters)
                                                           .ToHashSet();
                     ContentTabPage.ImageKey = ModuleLabels.IgnoreMissingIdentifiers(inst)

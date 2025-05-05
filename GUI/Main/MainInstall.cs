@@ -58,10 +58,12 @@ namespace CKAN.GUI
                         if (installed != null)
                         {
                             // Already installed, remove it first
-                            userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove));
+                            userChangeSet.Add(new ModChange(installed.Module, GUIModChangeType.Remove,
+                                                            ServiceLocator.Container.Resolve<IConfiguration>()));
                         }
                         // Install the selected mod
-                        userChangeSet.Add(new ModChange(module, GUIModChangeType.Install));
+                        userChangeSet.Add(new ModChange(module, GUIModChangeType.Install,
+                                                        ServiceLocator.Container.Resolve<IConfiguration>()));
                     }
                     if (userChangeSet.Count > 0)
                     {
@@ -98,8 +100,9 @@ namespace CKAN.GUI
                 var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
                 var registry = registry_manager.registry;
                 var stabilityTolerance = CurrentInstance.StabilityToleranceConfig;
-                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent,
-                                                    cancelTokenSrc.Token);
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache,
+                                                    ServiceLocator.Container.Resolve<IConfiguration>(),
+                                                    currentUser, cancelTokenSrc.Token);
                 // Avoid accumulating multiple event handlers
                 installer.OneComplete     -= OnModInstalled;
                 installer.InstallProgress -= OnModInstalling;
@@ -166,7 +169,8 @@ namespace CKAN.GUI
                         registry,
                         out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                         out Dictionary<CkanModule, List<string>> suggestions,
-                        out Dictionary<CkanModule, HashSet<string>> supporters))
+                        out Dictionary<CkanModule, HashSet<string>> supporters)
+                        && configuration != null)
                     {
                         tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                         ChooseRecommendedMods.LoadRecommendations(
@@ -176,6 +180,7 @@ namespace CKAN.GUI
                             ModuleLabelList.ModuleLabels
                                            .LabelsFor(CurrentInstance.Name)
                                            .ToList(),
+                            ServiceLocator.Container.Resolve<IConfiguration>(),
                             configuration,
                             recommendations, suggestions, supporters);
                         tabController.SetTabLock(true);
@@ -324,7 +329,8 @@ namespace CKAN.GUI
                                          .ThenByDescending(m => m.identifier == k.requested)
                                          .ThenBy(m => m.name)
                                          .ToList(),
-                                Manager.Cache);
+                                Manager.Cache,
+                                ServiceLocator.Container.Resolve<IConfiguration>());
                             tabController.SetTabLock(true);
                             var chosen = ChooseProvidedMods.Wait();
                             // Close the selection prompt

@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
 using CKAN.IO;
+using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 
 namespace CKAN.Configuration
@@ -23,24 +24,30 @@ namespace CKAN.Configuration
         [JsonConverter(typeof(ConfigConverter))]
         private class Config
         {
-            public string?                      AutoStartInstance    { get; set; }
-            public string?                      DownloadCacheDir     { get; set; }
-            public long?                        CacheSizeLimit       { get; set; }
-            public int?                         RefreshRate          { get; set; }
-            public string?                      Language             { get; set; }
-            public IList<GameInstanceEntry>?    GameInstances        { get; set; } = new List<GameInstanceEntry>();
-            public IDictionary<string, string>? AuthTokens           { get; set; } = new Dictionary<string, string>();
-            public string[]?                    GlobalInstallFilters { get; set; } = Array.Empty<string>();
-            public string?[]?                   PreferredHosts       { get; set; } = Array.Empty<string>();
-            public bool?                        DevBuilds            { get; set; }
+            public string?                       AutoStartInstance    { get; set; }
+            public string?                       DownloadCacheDir     { get; set; }
+            public long?                         CacheSizeLimit       { get; set; }
+            public int?                          RefreshRate          { get; set; }
+            public string?                       Language             { get; set; }
+            public IList<GameInstanceEntry>?     GameInstances        { get; set; } = new List<GameInstanceEntry>();
+            public IDictionary<string, string>?  AuthTokens           { get; set; } = new Dictionary<string, string>();
+            [JsonProperty("GlobalInstallFiltersByGame", NullValueHandling = NullValueHandling.Ignore)]
+            [JsonConverter(typeof(JsonToGamesDictionaryConverter))]
+            public Dictionary<string, string[]>? GlobalInstallFilters { get; set; } = new Dictionary<string, string[]>();
+            public string?[]?                    PreferredHosts       { get; set; } = Array.Empty<string>();
+            public bool?                         DevBuilds            { get; set; }
         }
 
-        public class ConfigConverter : JsonPropertyNamesChangedConverter
+        /// <summary>
+        /// Protect old clients from trying to load a file they can't parse
+        /// </summary>
+        private class ConfigConverter : JsonPropertyNamesChangedConverter
         {
             protected override Dictionary<string, string> mapping
                 => new Dictionary<string, string>
                 {
-                    { "KspInstances", "GameInstances" }
+                    { "KspInstances",         "GameInstances" },
+                    { "GlobalInstallFilters", "GlobalInstallFiltersByGame" },
                 };
         }
 
@@ -209,18 +216,19 @@ namespace CKAN.Configuration
             SaveConfig();
         }
 
-        public string[] GlobalInstallFilters
-        {
-            get => config.GlobalInstallFilters
-                   ?? Array.Empty<string>();
+        public string[] GetGlobalInstallFilters(IGame game)
+            => config.GlobalInstallFilters != null
+               && config.GlobalInstallFilters.TryGetValue(game.ShortName, out string[]? value)
+                   ? value
+                   : Array.Empty<string>();
 
-            set
-            {
-                config.GlobalInstallFilters = value;
-                SaveConfig();
-                // Refresh the Contents tab
-                OnPropertyChanged();
-            }
+        public void SetGlobalInstallFilters(IGame game, string[] value)
+        {
+            config.GlobalInstallFilters ??= new Dictionary<string, string[]>();
+            config.GlobalInstallFilters[game.ShortName] = value;
+            SaveConfig();
+            // Refresh the Contents tab
+            OnPropertyChanged();
         }
 
         public string?[] PreferredHosts

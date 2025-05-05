@@ -6,6 +6,7 @@ using CommandLine;
 using CommandLine.Text;
 
 using CKAN.Configuration;
+using CKAN.Games;
 
 namespace CKAN.CmdLine
 {
@@ -50,24 +51,32 @@ namespace CKAN.CmdLine
                         return;
                     }
 
-                    switch (option)
+                    try
                     {
-                        case "list":
-                            exitCode = ListFilters((FilterListOptions)suboptions);
-                            break;
+                        switch (option)
+                        {
+                            case "list":
+                                exitCode = ListFilters((FilterListOptions)suboptions);
+                                break;
 
-                        case "add":
-                            exitCode = AddFilters((FilterAddOptions)suboptions, option);
-                            break;
+                            case "add":
+                                exitCode = AddFilters((FilterAddOptions)suboptions, option);
+                                break;
 
-                        case "remove":
-                            exitCode = RemoveFilters((FilterRemoveOptions)suboptions, option);
-                            break;
+                            case "remove":
+                                exitCode = RemoveFilters((FilterRemoveOptions)suboptions, option);
+                                break;
 
-                        default:
-                            user.RaiseMessage("{0}: filter {1}", Properties.Resources.UnknownCommand, option);
-                            exitCode = Exit.BADOPT;
-                            break;
+                            default:
+                                user.RaiseMessage("{0}: filter {1}", Properties.Resources.UnknownCommand, option);
+                                exitCode = Exit.BADOPT;
+                                break;
+                        }
+                    }
+                    catch (Kraken k)
+                    {
+                        user.RaiseError("{0}", k.Message);
+                        exitCode = Exit.BADOPT;
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(); });
@@ -84,16 +93,19 @@ namespace CKAN.CmdLine
                 return exitCode;
             }
 
+            var instance = MainClass.GetGameInstance(manager);
+                var game = GetGame(opts.gameId, instance);
             var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            user?.RaiseMessage(Properties.Resources.FilterListGlobalHeader);
-            foreach (string filter in cfg.GlobalInstallFilters)
+            user?.RaiseMessage(Properties.Resources.FilterListGlobalHeader,
+                               game.ShortName);
+            foreach (string filter in cfg.GetGlobalInstallFilters(game))
             {
                 user?.RaiseMessage("\t- {0}", filter);
             }
             user?.RaiseMessage("");
 
-            var instance = MainClass.GetGameInstance(manager);
-            user?.RaiseMessage(Properties.Resources.FilterListInstanceHeader);
+            user?.RaiseMessage(Properties.Resources.FilterListInstanceHeader,
+                               instance.Name);
             foreach (string filter in instance.InstallFilters)
             {
                 user?.RaiseMessage("\t- {0}", filter);
@@ -118,10 +130,12 @@ namespace CKAN.CmdLine
                 return exitCode;
             }
 
+            var instance = MainClass.GetGameInstance(manager);
             if (opts.global)
             {
+                var game = GetGame(opts.gameId, instance);
                 var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                var duplicates = cfg.GlobalInstallFilters
+                var duplicates = cfg.GetGlobalInstallFilters(game)
                     .Intersect(opts.filters ?? new List<string> { })
                     .ToArray();
                 if (duplicates.Length > 0)
@@ -132,15 +146,14 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    cfg.GlobalInstallFilters = cfg.GlobalInstallFilters
+                    cfg.SetGlobalInstallFilters(game, cfg.GetGlobalInstallFilters(game)
                         .Concat(opts.filters ?? new List<string> { })
                         .Distinct()
-                        .ToArray();
+                        .ToArray());
                 }
             }
             else
             {
-                var instance = MainClass.GetGameInstance(manager);
                 var duplicates = instance.InstallFilters
                     .Intersect(opts.filters ?? new List<string> { })
                     .ToArray();
@@ -178,11 +191,13 @@ namespace CKAN.CmdLine
                 return exitCode;
             }
 
+            var instance = MainClass.GetGameInstance(manager);
             if (opts.global)
             {
+                var game = GetGame(opts.gameId, instance);
                 var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
                 var notFound = (opts.filters  ?? new List<string> { })
-                    .Except(cfg.GlobalInstallFilters)
+                    .Except(cfg.GetGlobalInstallFilters(game))
                     .ToArray();
                 if (notFound.Length > 0)
                 {
@@ -193,14 +208,13 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    cfg.GlobalInstallFilters = cfg.GlobalInstallFilters
+                    cfg.SetGlobalInstallFilters(game, cfg.GetGlobalInstallFilters(game)
                         .Except(opts.filters ?? new List<string> { })
-                        .ToArray();
+                        .ToArray());
                 }
             }
             else
             {
-                var instance = MainClass.GetGameInstance(manager);
                 var notFound = (opts.filters ?? new List<string> { })
                     .Except(instance.InstallFilters)
                     .ToArray();
@@ -218,6 +232,21 @@ namespace CKAN.CmdLine
                 }
             }
             return Exit.OK;
+        }
+
+        private static IGame GetGame(string? gameId, CKAN.GameInstance instance)
+        {
+            if (gameId != null)
+            {
+                if (KnownGames.GameByShortName(gameId.ToUpper()) is IGame game)
+                {
+                    return game;
+                }
+                throw new Kraken(string.Format(Properties.Resources.FilterGameNotFoundError,
+                                               gameId,
+                                               string.Join(" ", KnownGames.AllGameShortNames())));
+            }
+            return instance.game;
         }
 
         private void PrintUsage(string verb)
@@ -286,12 +315,19 @@ namespace CKAN.CmdLine
 
     internal class FilterListOptions : InstanceSpecificOptions
     {
+        [Option("game", DefaultValue = null,
+                HelpText = "The game for which to list global filters, either KSP or KSP2")]
+        public string? gameId { get; set; }
     }
 
     internal class FilterAddOptions : InstanceSpecificOptions
     {
         [Option("global", DefaultValue = false, HelpText = "Add global filters")]
         public bool global { get; set; }
+
+        [Option("game", DefaultValue = null,
+                HelpText = "The game for which to set global filters, either KSP or KSP2")]
+        public string? gameId { get; set; }
 
         [ValueList(typeof(List<string>))]
         public List<string>? filters { get; set; }
@@ -301,6 +337,10 @@ namespace CKAN.CmdLine
     {
         [Option("global", DefaultValue = false, HelpText = "Remove global filters")]
         public bool global { get; set; }
+
+        [Option("game", DefaultValue = null,
+                HelpText = "The game for which to remove global filters, either KSP or KSP2")]
+        public string? gameId { get; set; }
 
         [ValueList(typeof(List<string>))]
         public List<string>? filters { get; set; }

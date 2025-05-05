@@ -405,7 +405,7 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="FiltersTitle" xml:space="preserve"><value>Installation Filters</value></data>
   <data name="FiltersAddMiniAVCMenu" xml:space="preserve"><value>Add MiniAVC</value></data>
   <data name="FiltersAddMiniAVCMenuTip" xml:space="preserve"><value>Prevent MiniAVC from being installed</value></data>
-  <data name="FiltersGlobalHeader" xml:space="preserve"><value>Global Filters</value></data>
+  <data name="FiltersGlobalHeader" xml:space="preserve"><value>Global Filters for {0}</value></data>
   <data name="FiltersInstanceHeader" xml:space="preserve"><value>Instance Filters</value></data>
   <data name="FilterAddGhostText" xml:space="preserve"><value>&lt;Enter a filter&gt;</value></data>
   <data name="FilterAddAcceptTip" xml:space="preserve"><value>Accept value</value></data>

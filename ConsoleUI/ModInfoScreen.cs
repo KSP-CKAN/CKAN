@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using Autofac;
+
 using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.Versioning;
@@ -589,7 +591,8 @@ namespace CKAN.ConsoleUI {
             {
                 var ps   = new ProgressScreen(theme, string.Format(Properties.Resources.ModInfoDownloading, mod.identifier));
                 var dl   = new NetAsyncModulesDownloader(ps, manager.Cache, userAgent);
-                var inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache, ps, userAgent);
+                var inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache,
+                                               ServiceLocator.Container.Resolve<IConfiguration>(), ps);
                 LaunchSubScreen(
                     ps,
                     () => {

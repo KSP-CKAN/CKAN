@@ -123,9 +123,6 @@
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
     <value>对此游戏实例的过滤</value>
   </data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve">
-    <value>过滤 MiniAVC</value>
-  </data>
   <data name="WarningLabel.Text" xml:space="preserve">
     <value>注意：修改安装过滤内容仅会对未来Mod的安装生效；已安装的文件不受影响。</value>
   </data>

@@ -23,7 +23,7 @@ namespace CKAN.ConsoleUI {
         {
             this.globalConfig = globalConfig;
             this.instance     = instance;
-            globalFilters   = globalConfig.GlobalInstallFilters.ToList();
+            globalFilters   = globalConfig.GetGlobalInstallFilters(instance.game).ToList();
             instanceFilters = instance.InstallFilters.ToList();
 
             AddTip("F2", Properties.Resources.Accept);
@@ -53,7 +53,8 @@ namespace CKAN.ConsoleUI {
                 globalFilters,
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>(
-                        Properties.Resources.FiltersGlobalHeader,
+                        string.Format(Properties.Resources.FiltersGlobalHeader,
+                                      instance.game.ShortName),
                         f => f,
                         null,
                         null)
@@ -143,8 +144,8 @@ namespace CKAN.ConsoleUI {
 
         private void Save()
         {
-            globalConfig.GlobalInstallFilters = globalFilters.ToArray();
-            instance.InstallFilters           = instanceFilters.ToArray();
+            globalConfig.SetGlobalInstallFilters(instance.game, globalFilters.ToArray());
+            instance.InstallFilters = instanceFilters.ToArray();
         }
 
         private readonly IConfiguration globalConfig;

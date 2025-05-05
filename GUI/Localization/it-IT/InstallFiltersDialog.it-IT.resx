@@ -123,9 +123,6 @@
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
     <value>Filtri Dell'Istanza</value>
   </data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve">
-    <value>Aggiungi MiniAVC</value>
-  </data>
   <data name="WarningLabel.Text" xml:space="preserve">
     <value>NOTA: le modifiche ai filtri di installazione hanno effetto solo sulle future installazioni di mod; i file già installati non subiranno alcuna modifica.</value>
   </data>

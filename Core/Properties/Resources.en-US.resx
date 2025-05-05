@@ -119,4 +119,5 @@
   </resheader>
   <data name="CkanModuleDeserialisationError" xml:space="preserve"><value>JSON deserialization error: {0}</value></data>
   <data name="LicenceInvalid" xml:space="preserve"><value>The license {0} is invalid</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favorites</value></data>
 </root>

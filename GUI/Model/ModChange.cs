@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.Configuration;
 using CKAN.Extensions;
 
 namespace CKAN.GUI
@@ -64,21 +65,30 @@ namespace CKAN.GUI
         public bool IsRemovable => IsAutoRemoval || IsUserRequested;
 
         // If we don't have a Reason, the user probably wanted to install it
-        public ModChange(CkanModule mod, GUIModChangeType changeType)
-            : this(mod, changeType, new SelectionReason.UserRequested())
+        public ModChange(CkanModule       mod,
+                         GUIModChangeType changeType,
+                         IConfiguration   config)
+            : this(mod, changeType, new SelectionReason.UserRequested(), config)
         {
         }
 
-        public ModChange(CkanModule mod, GUIModChangeType changeType, SelectionReason reason)
-            : this(mod, changeType, Enumerable.Repeat(reason, 1))
+        public ModChange(CkanModule       mod,
+                         GUIModChangeType changeType,
+                         SelectionReason  reason,
+                         IConfiguration   config)
+            : this(mod, changeType, Enumerable.Repeat(reason, 1), config)
         {
         }
 
-        public ModChange(CkanModule mod, GUIModChangeType changeType, IEnumerable<SelectionReason> reasons)
+        public ModChange(CkanModule                   mod,
+                         GUIModChangeType             changeType,
+                         IEnumerable<SelectionReason> reasons,
+                         IConfiguration               config)
         {
             Mod        = mod;
             ChangeType = changeType;
             Reasons    = reasons.ToArray();
+            this.config = config;
             IsAutoRemoval   = Reasons.All(r => r is SelectionReason.NoLongerUsed);
             IsUserRequested = Reasons.All(r => r is SelectionReason.UserRequested);
         }
@@ -115,7 +125,7 @@ namespace CKAN.GUI
             => $"{ChangeType.LocalizeDescription()} {Mod} ({Description})";
 
         public virtual string? NameAndStatus
-            => Main.Instance?.Manager?.Cache?.DescribeAvailability(Mod);
+            => Main.Instance?.Manager?.Cache?.DescribeAvailability(config, Mod);
 
         private static string DescribeGroup(IEnumerable<SelectionReason> reasons)
             => reasons.First().DescribeWith(reasons.Skip(1));
@@ -128,6 +138,8 @@ namespace CKAN.GUI
                             ? reasons.OfType<SelectionReason.RelationshipReason>()
                                      .OrderBy(r => r.Parent.name)
                             : reasons)));
+
+        protected IConfiguration config;
     }
 
     #if NET5_0_OR_GREATER
@@ -139,8 +151,9 @@ namespace CKAN.GUI
                           GUIModChangeType changeType,
                           CkanModule       targetMod,
                           bool             userReinstall,
-                          bool             metadataChanged)
-            : base(mod, changeType)
+                          bool             metadataChanged,
+                          IConfiguration   config)
+            : base(mod, changeType, config)
         {
             this.targetMod       = targetMod;
             this.userReinstall   = userReinstall;
@@ -148,7 +161,7 @@ namespace CKAN.GUI
         }
 
         public override string? NameAndStatus
-            => Main.Instance?.Manager?.Cache?.DescribeAvailability(targetMod);
+            => Main.Instance?.Manager?.Cache?.DescribeAvailability(config, targetMod);
 
         public override string Description
             => IsReinstall

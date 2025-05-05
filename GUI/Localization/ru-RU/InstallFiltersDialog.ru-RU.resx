@@ -123,9 +123,6 @@
   <data name="InstanceFiltersGroupBox.Text" xml:space="preserve">
     <value>Фильтры сборки</value>
   </data>
-  <data name="AddMiniAVCButton.Text" xml:space="preserve">
-    <value>Добавить MiniAVC</value>
-  </data>
   <data name="WarningLabel.Text" xml:space="preserve">
     <value>ВАЖНО: Изменения фильтров установки вступят в силу при последующих установках модификаций; установленные файлы не затрагиваются.</value>
   </data>

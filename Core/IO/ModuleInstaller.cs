@@ -8,7 +8,6 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 using ChinhDo.Transactions.FileManager;
-using Autofac;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
@@ -26,94 +25,26 @@ namespace CKAN.IO
 
     public class ModuleInstaller
     {
+        // Constructor
+        public ModuleInstaller(GameInstance      inst,
+                               NetModuleCache    cache,
+                               IConfiguration    config,
+                               IUser             user,
+                               CancellationToken cancelToken = default)
+        {
+            User        = user;
+            this.cache  = cache;
+            this.config = config;
+            instance    = inst;
+            this.cancelToken = cancelToken;
+            log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir());
+        }
+
         public IUser User { get; set; }
 
         public event Action<CkanModule, long, long>?      InstallProgress;
         public event Action<InstalledModule, long, long>? RemoveProgress;
         public event Action<CkanModule>?                  OneComplete;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
-
-        private readonly GameInstance      instance;
-        private readonly NetModuleCache    Cache;
-        private readonly string?           userAgent;
-        private readonly CancellationToken cancelToken;
-
-        // Constructor
-        public ModuleInstaller(GameInstance      inst,
-                               NetModuleCache    cache,
-                               IUser             user,
-                               string?           userAgent   = null,
-                               CancellationToken cancelToken = default)
-        {
-            User     = user;
-            Cache    = cache;
-            instance = inst;
-            this.userAgent = userAgent;
-            this.cancelToken = cancelToken;
-            log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir());
-        }
-
-        #region Downloading
-
-        /// <summary>
-        /// Downloads the given mod to the cache. Returns the filename it was saved to.
-        /// </summary>
-        public string Download(CkanModule module, string filename)
-        {
-            User.RaiseProgress(string.Format(Properties.Resources.ModuleInstallerDownloading, module.download), 0);
-            return Download(module, filename, userAgent, Cache);
-        }
-
-        /// <summary>
-        /// Downloads the given mod to the cache. Returns the filename it was saved to.
-        /// </summary>
-        public static string Download(CkanModule module, string filename, string? userAgent, NetModuleCache cache)
-        {
-            log.Info("Downloading " + filename);
-
-            string tmp_file = Net.Download((module.download ?? Enumerable.Empty<Uri>())
-                .OrderBy(u => u,
-                         new PreferredHostUriComparer(
-                             ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
-                .First(),
-                userAgent);
-
-            return cache.Store(module, tmp_file, new ProgressImmediate<long>(bytes => {}), filename, true);
-        }
-
-        /// <summary>
-        /// Returns the path to a cached copy of a module if it exists, or downloads
-        /// and returns the downloaded copy otherwise.
-        ///
-        /// If no filename is provided, the module's standard name will be used.
-        /// Checks the CKAN cache first.
-        /// </summary>
-        public string CachedOrDownload(CkanModule module, string? filename = null)
-            => CachedOrDownload(module, userAgent, Cache, filename);
-
-        /// <summary>
-        /// Returns the path to a cached copy of a module if it exists, or downloads
-        /// and returns the downloaded copy otherwise.
-        ///
-        /// If no filename is provided, the module's standard name will be used.
-        /// Chcecks provided cache first.
-        /// </summary>
-        public static string CachedOrDownload(CkanModule module, string? userAgent, NetModuleCache cache, string? filename = null)
-        {
-            filename ??= CkanModule.StandardName(module.identifier, module.version);
-
-            var full_path = cache.GetCachedFilename(module);
-            if (full_path == null)
-            {
-                return Download(module, filename, userAgent, cache);
-            }
-
-            log.DebugFormat("Using {0} (cached)", filename);
-            return full_path;
-        }
-
-        #endregion
 
         #region Installation
 
@@ -161,8 +92,8 @@ namespace CKAN.IO
             User.RaiseMessage("");
             foreach (var module in modsToInstall)
             {
-                User.RaiseMessage(" * {0}", Cache.DescribeAvailability(module));
-                if (!module.IsMetapackage && !Cache.IsMaybeCachedZip(module))
+                User.RaiseMessage(" * {0}", cache.DescribeAvailability(config, module));
+                if (!module.IsMetapackage && !cache.IsMaybeCachedZip(module))
                 {
                     downloads.Add(module);
                 }
@@ -188,7 +119,7 @@ namespace CKAN.IO
             long installedBytes  = 0;
             if (downloads.Count > 0)
             {
-                downloader ??= new NetAsyncModulesDownloader(User, Cache, userAgent, cancelToken);
+                downloader ??= new NetAsyncModulesDownloader(User, cache, userAgent, cancelToken);
                 downloader.OverallDownloadProgress += brc =>
                 {
                     downloadedBytes = downloadBytes - brc.BytesLeft;
@@ -231,7 +162,7 @@ namespace CKAN.IO
                 transaction.Complete();
             }
 
-            EnforceCacheSizeLimit(registry_manager.registry, Cache);
+            EnforceCacheSizeLimit(registry_manager.registry, cache, config);
             User.RaiseProgress(Properties.Resources.ModuleInstallerDone, 100);
         }
 
@@ -330,7 +261,7 @@ namespace CKAN.IO
             if (!module.IsMetapackage)
             {
                 // Find ZIP in the cache if we don't already have it.
-                filename ??= Cache.GetCachedFilename(module);
+                filename ??= cache.GetCachedFilename(module);
 
                 // If we *still* don't have a file, then kraken bitterly.
                 if (filename == null)
@@ -403,9 +334,9 @@ namespace CKAN.IO
             }
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
-                var filters = ServiceLocator.Container.Resolve<IConfiguration>().GlobalInstallFilters
-                    .Concat(instance.InstallFilters)
-                    .ToHashSet();
+                var filters = config.GetGlobalInstallFilters(instance.game)
+                                    .Concat(instance.InstallFilters)
+                                    .ToHashSet();
                 var files = FindInstallableFiles(module, zipfile, instance)
                     .Where(instF => !filters.Any(filt =>
                                         instF.destination != null
@@ -1256,7 +1187,7 @@ namespace CKAN.IO
         {
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-                var groups = add.GroupBy(m => m.IsMetapackage || Cache.IsCached(m));
+                var groups = add.GroupBy(m => m.IsMetapackage || cache.IsCached(m));
                 var cached = groups.FirstOrDefault(grp => grp.Key)?.ToArray()
                                                                   ?? Array.Empty<CkanModule>();
                 var toDownload = groups.FirstOrDefault(grp => !grp.Key)?.ToArray()
@@ -1336,7 +1267,7 @@ namespace CKAN.IO
 
                 registry_manager.Save(enforceConsistency);
                 tx.Complete();
-                EnforceCacheSizeLimit(registry_manager.registry, Cache);
+                EnforceCacheSizeLimit(registry_manager.registry, cache, config);
             }
         }
 
@@ -1381,21 +1312,21 @@ namespace CKAN.IO
 
                 if (installed_mod == null)
                 {
-                    if (!Cache.IsMaybeCachedZip(module)
-                        && Cache.GetInProgressFileName(module) is FileInfo inProgressFile)
+                    if (!cache.IsMaybeCachedZip(module)
+                        && cache.GetInProgressFileName(module) is FileInfo inProgressFile)
                     {
                         if (inProgressFile.Exists)
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
                                 module.name, module.version,
-                                string.Join(", ", PrioritizedHosts(module.download)),
+                                string.Join(", ", PrioritizedHosts(config, module.download)),
                                 CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
                                 module.name, module.version,
-                                string.Join(", ", PrioritizedHosts(module.download)),
+                                string.Join(", ", PrioritizedHosts(config, module.download)),
                                 CkanModule.FmtSize(module.download_size));
                         }
                     }
@@ -1423,21 +1354,21 @@ namespace CKAN.IO
                     }
                     else
                     {
-                        if (!Cache.IsMaybeCachedZip(module)
-                            && Cache.GetInProgressFileName(module) is FileInfo inProgressFile)
+                        if (!cache.IsMaybeCachedZip(module)
+                            && cache.GetInProgressFileName(module) is FileInfo inProgressFile)
                         {
                             if (inProgressFile.Exists)
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
                                     module.name, installed.version, module.version,
-                                    string.Join(", ", PrioritizedHosts(module.download)),
+                                    string.Join(", ", PrioritizedHosts(config, module.download)),
                                     CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                             }
                             else
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
                                     module.name, installed.version, module.version,
-                                    string.Join(", ", PrioritizedHosts(module.download)),
+                                    string.Join(", ", PrioritizedHosts(config, module.download)),
                                     CkanModule.FmtSize(module.download_size));
                             }
                         }
@@ -1590,8 +1521,9 @@ namespace CKAN.IO
 
         #endregion
 
-        public static IEnumerable<string> PrioritizedHosts(IEnumerable<Uri>? urls)
-            => urls?.OrderBy(u => u, new PreferredHostUriComparer(ServiceLocator.Container.Resolve<IConfiguration>().PreferredHosts))
+        public static IEnumerable<string> PrioritizedHosts(IConfiguration    config,
+                                                           IEnumerable<Uri>? urls)
+            => urls?.OrderBy(u => u, new PreferredHostUriComparer(config.PreferredHosts))
                     .Select(dl => dl.Host)
                     .Distinct()
                    ?? Enumerable.Empty<string>();
@@ -1740,14 +1672,22 @@ namespace CKAN.IO
 
         #endregion
 
-        private static void EnforceCacheSizeLimit(Registry registry, NetModuleCache Cache)
+        private static void EnforceCacheSizeLimit(Registry       registry,
+                                                  NetModuleCache Cache,
+                                                  IConfiguration config)
         {
             // Purge old downloads if we're over the limit
-            IConfiguration winReg = ServiceLocator.Container.Resolve<IConfiguration>();
-            if (winReg.CacheSizeLimit.HasValue)
+            if (config.CacheSizeLimit.HasValue)
             {
-                Cache.EnforceSizeLimit(winReg.CacheSizeLimit.Value, registry);
+                Cache.EnforceSizeLimit(config.CacheSizeLimit.Value, registry);
             }
         }
+
+        private readonly GameInstance      instance;
+        private readonly NetModuleCache    cache;
+        private readonly IConfiguration    config;
+        private readonly CancellationToken cancelToken;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(ModuleInstaller));
     }
 }

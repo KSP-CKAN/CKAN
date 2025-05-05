@@ -330,9 +330,6 @@ CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지�
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;링크 주소 복사</value></data>
   <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve"><value>게임 인스턴스: {0} ({1} {2}, {3}시간 플레이)</value></data>
   <data name="StatusInstanceLabelText" xml:space="preserve"><value>게임 인스턴스: {0} ({1} {2})</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>즐겨찾기</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>숨겨짐</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>유지</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>전역</value></data>
   <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>정말로 {0}을 지울까요? 다시는 되돌릴 수 없어요!</value></data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>변경점을 저장할까요?</value></data>
@@ -406,4 +403,5 @@ CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지�
   <data name="RelationshipTypeSuggests" xml:space="preserve"><value>제안</value></data>
   <data name="RelationshipTypeSupports" xml:space="preserve"><value>지원함</value></data>
   <data name="RelationshipTypeConflicts" xml:space="preserve"><value>충돌함</value></data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>{0} 추가</value></data>
 </root>

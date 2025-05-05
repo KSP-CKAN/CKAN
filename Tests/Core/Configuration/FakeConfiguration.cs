@@ -6,6 +6,7 @@ using System.Linq;
 
 using CKAN;
 using CKAN.Configuration;
+using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 using Tests.Data;
@@ -149,7 +150,17 @@ namespace Tests.Core.Configuration
             }
         }
 
-        public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
+        private readonly IDictionary<string, string[]> globalInstallFilters = new Dictionary<string, string[]>();
+
+        public string[] GetGlobalInstallFilters(IGame game)
+            => globalInstallFilters.TryGetValue(game.ShortName, out string[]? value)
+                   ? value
+                   : Array.Empty<string>();
+
+        public void SetGlobalInstallFilters(IGame game, string[] value)
+        {
+            globalInstallFilters[game.ShortName] = value;
+        }
 
         public string?[] PreferredHosts { get; set; } = Array.Empty<string>();
 

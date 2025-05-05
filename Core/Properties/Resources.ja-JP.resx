@@ -120,4 +120,7 @@
   <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (メタパッケージ)</value></data>
   <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (キャッシュ済)</value></data>
   <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>お気に入り</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>非表示</value></data>
+  <data name="ModuleLabelListHeld" xml:space="preserve"><value>保持</value></data>
 </root>

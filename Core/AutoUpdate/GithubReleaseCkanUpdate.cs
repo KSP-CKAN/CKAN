@@ -26,7 +26,8 @@ namespace CKAN
             {
                 var coreConfig = ServiceLocator.Container.Resolve<IConfiguration>();
                 var token = coreConfig.TryGetAuthToken(latestCKANReleaseApiUrl.Host, out string? t)
-                    ? t : null;
+                                ? t
+                                : Environment.GetEnvironmentVariable("GITHUB_TOKEN");
                 releaseJson = Net.DownloadText(latestCKANReleaseApiUrl, userAgent, token) is string content
                               ? JsonConvert.DeserializeObject<GitHubReleaseInfo>(content)
                               : null;

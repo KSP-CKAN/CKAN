@@ -121,4 +121,7 @@
   <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
   <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (Em cache)</value></data>
   <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoritos</value></data>
+  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Oculto</value></data>
+  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Mantido</value></data>
 </root>

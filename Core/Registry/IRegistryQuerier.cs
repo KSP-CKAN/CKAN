@@ -255,7 +255,7 @@ namespace CKAN
                                                                           HashSet<string>?      ignoreMissingIdents = null)
         {
             var filters = ServiceLocator.Container.Resolve<IConfiguration>()
-                                                  .GlobalInstallFilters
+                                                  .GetGlobalInstallFilters(instance.game)
                                                   .Concat(instance.InstallFilters)
                                                   .ToHashSet();
             // Get the absolute latest versions ignoring restrictions,
@@ -296,7 +296,7 @@ namespace CKAN
                                                                           HashSet<string>?      ignoreMissingIdents = null)
         {
             filters ??= ServiceLocator.Container.Resolve<IConfiguration>()
-                                                .GlobalInstallFilters
+                                                .GetGlobalInstallFilters(instance.game)
                                                 .Concat(instance.InstallFilters)
                                                 .ToHashSet();
             // Use those as the installed modules

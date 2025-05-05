@@ -205,9 +205,11 @@ namespace Tests.Core.Registry
         {
             // Arrange
             using (var instance = new DisposableKSP())
-            using (var repoData = new TemporaryRepositoryData(new NullUser()))
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(new NullUser(), repo.repo))
             {
-                using (var manager = RegistryManager.Instance(instance.KSP, repoData.Manager))
+                using (var manager = RegistryManager.Instance(instance.KSP, repoData.Manager,
+                                                              new Repository[] { repo.repo }))
                 {
                     // Act
                     manager.registry.SetDlcs(new Dictionary<string, UnmanagedModuleVersion>()
@@ -217,7 +219,8 @@ namespace Tests.Core.Registry
                     });
                     manager.Save();
                 }
-                using (var manager = RegistryManager.Instance(instance.KSP, repoData.Manager))
+                using (var manager = RegistryManager.Instance(instance.KSP, repoData.Manager,
+                                                              new Repository[] { repo.repo }))
                 {
                     // Assert
                     CollectionAssert.IsSupersetOf(manager.registry.InstalledDlc.Keys,

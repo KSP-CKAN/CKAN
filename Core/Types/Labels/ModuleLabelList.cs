@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 using CKAN.IO;
 
-namespace CKAN.GUI
+namespace CKAN
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ModuleLabelList

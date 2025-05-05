@@ -51,7 +51,10 @@ namespace CKAN
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string path, GameInstance inst, RepositoryDataManager repoData)
+        private RegistryManager(string                  path,
+                                GameInstance            inst,
+                                RepositoryDataManager   repoData,
+                                ICollection<Repository> initialRepositories)
         {
             gameInstance = inst;
 
@@ -67,7 +70,7 @@ namespace CKAN
 
             try
             {
-                Load(repoData);
+                Load(repoData, initialRepositories);
             }
             catch
             {
@@ -268,13 +271,16 @@ namespace CKAN
         /// Returns an instance of the registry manager for the game instance.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(GameInstance inst, RepositoryDataManager repoData)
+        public static RegistryManager Instance(GameInstance             inst,
+                                               RepositoryDataManager    repoData,
+                                               ICollection<Repository>? repositories = null)
         {
             string directory = inst.CkanDir();
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
-                registryCache[directory] = new RegistryManager(directory, inst, repoData);
+                registryCache[directory] = new RegistryManager(directory, inst, repoData,
+                                                               repositories ?? Array.Empty<Repository>());
             }
 
             return registryCache[directory];
@@ -302,7 +308,8 @@ namespace CKAN
         }
 
         [MemberNotNull(nameof(registry))]
-        private void Load(RepositoryDataManager repoData)
+        private void Load(RepositoryDataManager   repoData,
+                          ICollection<Repository> repositories)
         {
             try
             {
@@ -311,7 +318,7 @@ namespace CKAN
             }
             catch (IOException exc) when (exc is FileNotFoundException or DirectoryNotFoundException)
             {
-                Create(repoData);
+                Create(repoData, repositories);
             }
             catch (JsonException exc)
             {
@@ -320,7 +327,7 @@ namespace CKAN
                 log.ErrorFormat("{0} is corrupted, archiving to {1}: {2}",
                     path, previousCorruptedPath, previousCorruptedMessage);
                 File.Move(path, previousCorruptedPath);
-                Create(repoData);
+                Create(repoData, repositories);
             }
             catch (Exception ex)
             {
@@ -336,7 +343,8 @@ namespace CKAN
                                                    ? regMgr.registry
                                                    : LoadRegistry(inst, repoData));
 
-        private static Registry LoadRegistry(GameInstance inst, RepositoryDataManager repoData)
+        private static Registry LoadRegistry(GameInstance            inst,
+                                             RepositoryDataManager   repoData)
         {
             var path = Path.Combine(inst.CkanDir(), "registry.json");
             log.DebugFormat("Trying to load registry from {0}", path);
@@ -360,10 +368,11 @@ namespace CKAN
                };
 
         [MemberNotNull(nameof(registry))]
-        private void Create(RepositoryDataManager repoData)
+        private void Create(RepositoryDataManager   repoData,
+                            IEnumerable<Repository> repositories)
         {
             log.InfoFormat("Creating new CKAN registry at {0}", path);
-            registry = Registry.Empty(repoData);
+            registry = new Registry(repoData, repositories);
             AscertainDefaultRepo();
             ScanUnmanagedFiles();
         }
@@ -373,10 +382,10 @@ namespace CKAN
             if (registry.Repositories.Count == 0)
             {
                 log.InfoFormat("Fabricating repository: {0}", gameInstance.game.DefaultRepositoryURL);
-                var name = $"{gameInstance.game.ShortName}-{Repository.default_ckan_repo_name}";
+                var repo = Repository.DefaultGameRepo(gameInstance.game);
                 registry.RepositoriesSet(new SortedDictionary<string, Repository>
                 {
-                    { name, new Repository(name, gameInstance.game.DefaultRepositoryURL) }
+                    { repo.name, repo }
                 });
             }
         }

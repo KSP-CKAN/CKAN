@@ -138,7 +138,7 @@ namespace CKAN.GUI
         {
             switch (e?.PropertyName)
             {
-                case nameof(IConfiguration.GlobalInstallFilters):
+                case nameof(IConfiguration.GetGlobalInstallFilters):
                     RefreshModContentsTree();
                     break;
             }
@@ -206,7 +206,8 @@ namespace CKAN.GUI
                         UseWaitCursor = true;
                         Task.Factory.StartNew(() =>
                         {
-                            var filters = ServiceLocator.Container.Resolve<IConfiguration>().GlobalInstallFilters
+                            var filters = ServiceLocator.Container.Resolve<IConfiguration>()
+                                                                  .GetGlobalInstallFilters(inst.game)
                                                                   .Concat(inst.InstallFilters)
                                                                   .ToHashSet();
                             var tuples = (instMod != null

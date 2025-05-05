@@ -4,6 +4,9 @@ using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Linq;
 
+using Autofac;
+
+using CKAN.Configuration;
 using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
@@ -41,15 +44,18 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null && Manager.Cache != null)
             {
-                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache, currentUser, userAgent);
+                var installer = new ModuleInstaller(CurrentInstance, Manager.Cache,
+                                                    ServiceLocator.Container.Resolve<IConfiguration>(),
+                                                    currentUser);
                 if (ModuleInstaller.FindRecommendations(
-                    CurrentInstance,
-                    registry.InstalledModules.Select(im => im.Module).ToHashSet(),
-                    new List<CkanModule>(),
-                    registry,
-                    out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
-                    out Dictionary<CkanModule, List<string>> suggestions,
-                    out Dictionary<CkanModule, HashSet<string>> supporters))
+                        CurrentInstance,
+                        registry.InstalledModules.Select(im => im.Module).ToHashSet(),
+                        new List<CkanModule>(),
+                        registry,
+                        out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                        out Dictionary<CkanModule, List<string>> suggestions,
+                        out Dictionary<CkanModule, HashSet<string>> supporters)
+                    && configuration != null)
                 {
                     tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                     ChooseRecommendedMods.LoadRecommendations(
@@ -59,6 +65,7 @@ namespace CKAN.GUI
                         ModuleLabelList.ModuleLabels
                                        .LabelsFor(CurrentInstance.Name)
                                        .ToList(),
+                        ServiceLocator.Container.Resolve<IConfiguration>(),
                         configuration,
                         recommendations, suggestions, supporters);
                     var result = ChooseRecommendedMods.Wait();
@@ -67,7 +74,8 @@ namespace CKAN.GUI
                     {
                         Wait.StartWaiting(InstallMods, PostInstallMods, true,
                             new InstallArgument(
-                                result.Select(mod => new ModChange(mod, GUIModChangeType.Install))
+                                result.Select(mod => new ModChange(mod, GUIModChangeType.Install,
+                                                                   ServiceLocator.Container.Resolve<IConfiguration>()))
                                       .ToList(),
                                 RelationshipResolverOptions.DependsOnlyOpts(CurrentInstance.StabilityToleranceConfig)));
                     }

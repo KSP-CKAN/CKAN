@@ -37,6 +37,7 @@ namespace CKAN.Games
         string[]       DefaultCommandLines(SteamLibrary steamLib, DirectoryInfo path);
         string[]       AdjustCommandLine(string[] args, GameVersion? installedVersion);
         IDlcDetector[] DlcDetectors { get; }
+        IDictionary<string, string[]> InstallFilterPresets { get; }
 
         // Which versions exist and which is present?
         void              RefreshVersions(string? userAgent);

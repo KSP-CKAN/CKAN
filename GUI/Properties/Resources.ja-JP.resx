@@ -328,9 +328,6 @@ CKAN バージョン   : {3}</value></data>
 CKANにこの動作をする許可を与えますか？ いいえをクリックした場合はこのメッセージは再び表示されません。</value></data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Copy link address</value></data>
   <data name="StatusInstanceLabelText" xml:space="preserve"><value>ゲームインスタンス: {0} ({1} {2})</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>お気に入り</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>非表示</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>保持</value></data>
   <data name="ModuleLabelListGlobal" xml:space="preserve"><value>グローバル</value></data>
   <data name="EditLabelsDialogConfirmDelete" xml:space="preserve"><value>本当に {0}を消去しますか？ この操作は取消できません！</value></data>
   <data name="EditLabelsDialogSavePrompt" xml:space="preserve"><value>変更を保存しますか？</value></data>

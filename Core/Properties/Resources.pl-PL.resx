@@ -641,4 +641,13 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   <data name="ModpackName" xml:space="preserve">
     <value>zainstalowano-{0}</value>
   </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>Ulubione</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>Ukryte</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>Trzymane</value>
+  </data>
 </root>

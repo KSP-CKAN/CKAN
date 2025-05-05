@@ -49,7 +49,8 @@ namespace Tests.NetKAN.Sources.Github
         public void GetsLatestReleaseCorrectly()
         {
             // Arrange
-            var sut = new GithubApi(new CachingHttpService(_cache!));
+            var sut = new GithubApi(new CachingHttpService(_cache!),
+                                    Environment.GetEnvironmentVariable("GITHUB_TOKEN"));
 
             // Act
             var githubRelease = sut.GetLatestRelease(new GithubRef("#/ckan/github/KSP-CKAN/Test", false), false);

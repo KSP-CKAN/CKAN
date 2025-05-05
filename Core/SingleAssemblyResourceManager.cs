@@ -34,38 +34,42 @@ namespace CKAN
                                                                bool        createIfNotExists,
                                                                bool        tryParents)
         {
-            if (!myResourceSets.TryGetValue(culture, out ResourceSet? rs)
-                && createIfNotExists && MainAssembly != null)
+            lock (resourcesMutex)
             {
-                // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
-                neutralResourcesCulture ??= GetNeutralResourcesLanguage(MainAssembly);
-
-                // If we're asking for the default language, then ask for the
-                // invariant (non-specific) resources.
-                if (neutralResourcesCulture.Equals(culture))
+                if (!myResourceSets.TryGetValue(culture, out ResourceSet? rs)
+                    && createIfNotExists && MainAssembly != null)
                 {
-                    culture = CultureInfo.InvariantCulture;
-                }
-                string resourceFileName = GetResourceFileName(culture);
+                    // Lazy-load default language (without caring about duplicate assignment in race conditions, no harm done)
+                    neutralResourcesCulture ??= GetNeutralResourcesLanguage(MainAssembly);
 
-                var store = MainAssembly.GetManifestResourceStream(resourceFileName);
+                    // If we're asking for the default language, then ask for the
+                    // invariant (non-specific) resources.
+                    if (neutralResourcesCulture.Equals(culture))
+                    {
+                        culture = CultureInfo.InvariantCulture;
+                    }
+                    string resourceFileName = GetResourceFileName(culture);
 
-                // If we found the appropriate resources in the local assembly
-                if (store != null)
-                {
-                    rs = new ResourceSet(store);
-                    // Save for later
-                    myResourceSets.Add(culture, rs);
+                    var store = MainAssembly.GetManifestResourceStream(resourceFileName);
+
+                    // If we found the appropriate resources in the local assembly
+                    if (store != null)
+                    {
+                        rs = new ResourceSet(store);
+                        // Save for later
+                        myResourceSets.Add(culture, rs);
+                    }
+                    else
+                    {
+                        rs = base.InternalGetResourceSet(culture, createIfNotExists, tryParents);
+                    }
                 }
-                else
-                {
-                    rs = base.InternalGetResourceSet(culture, createIfNotExists, tryParents);
-                }
+                return rs;
             }
-            return rs;
         }
 
         private          CultureInfo?                         neutralResourcesCulture;
         private readonly Dictionary<CultureInfo, ResourceSet> myResourceSets = new Dictionary<CultureInfo, ResourceSet>();
+        private readonly object                               resourcesMutex = new object();
     }
 }

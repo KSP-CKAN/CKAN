@@ -673,4 +673,13 @@
   <data name="ModpackName" xml:space="preserve">
     <value>已安装-{0}</value>
   </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>收藏</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>隐藏</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>已使用</value>
+  </data>
 </root>

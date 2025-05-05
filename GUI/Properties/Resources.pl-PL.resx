@@ -710,15 +710,6 @@ Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wia
   <data name="StatusInstanceLabelText" xml:space="preserve">
     <value>Instalacja gry: {0} ({1} {2})</value>
   </data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve">
-    <value>Ulubione</value>
-  </data>
-  <data name="ModuleLabelListHidden" xml:space="preserve">
-    <value>Ukryte</value>
-  </data>
-  <data name="ModuleLabelListHeld" xml:space="preserve">
-    <value>Trzymane</value>
-  </data>
   <data name="ModuleLabelListGlobal" xml:space="preserve">
     <value>Globalne</value>
   </data>
@@ -992,4 +983,5 @@ Kliknij razem z Ctrl lub Shift, aby połączyć z bieżącym wyszukiwaniem</valu
   <data name="PreferredHostsTooltipMoveDown">
     <value>Ustaw zaznaczonego hosta jako niższy priorytet</value>
   </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Dodaj {0}</value></data>
 </root>

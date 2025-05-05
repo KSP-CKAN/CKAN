@@ -389,12 +389,13 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="ScanPreliminaryInconsistent" xml:space="preserve"><value>Preliminary scanning shows that the install is in a inconsistent state.
 Use ckan.exe scan for more details
 Proceeding with {0} in case it fixes it.</value></data>
-  <data name="FilterListGlobalHeader" xml:space="preserve"><value>Global filters:</value></data>
-  <data name="FilterListInstanceHeader" xml:space="preserve"><value>Instance filters:</value></data>
+  <data name="FilterListGlobalHeader" xml:space="preserve"><value>Global filters for {0}:</value></data>
+  <data name="FilterListInstanceHeader" xml:space="preserve"><value>Instance filters for {0}:</value></data>
   <data name="FilterAddGlobalDuplicateError" xml:space="preserve"><value>Global filters already set: {0}</value></data>
   <data name="FilterAddInstanceDuplicateError" xml:space="preserve"><value>Instance filters already set: {0}</value></data>
   <data name="FilterRemoveGlobalNotFoundError" xml:space="preserve"><value>Global filters not found: {0}</value></data>
   <data name="FilterRemoveInstanceNotFoundError" xml:space="preserve"><value>Instance filters not found: {0}</value></data>
+  <data name="FilterGameNotFoundError" xml:space="preserve"><value>Game {0} not found! Try one of: {1}</value></data>
   <data name="FilterHelpSummary" xml:space="preserve"><value>View or edit installation filters</value></data>
   <data name="StabilityUnknownCommand" xml:space="preserve"><value>Unknown command: stability {0}</value></data>
   <data name="StabilityHelpSummary" xml:space="preserve"><value>View or edit stability settings</value></data>
