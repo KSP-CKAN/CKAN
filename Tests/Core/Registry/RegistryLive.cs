@@ -27,13 +27,12 @@ namespace Tests.Core.Registry
             {
                 { repo, RepositoryData.FromJson(TestData.TestRepository(), null)! },
             }))
+            using (var regMgr = RegistryManager.Instance(temp_ksp.KSP, repoData.Manager,
+                                                         new Repository[] { repo }))
             {
-                var registry = RegistryManager.Instance(temp_ksp.KSP, repoData.Manager).registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo);
-
-                var module =
-                    registry.LatestAvailable("AGExt", new StabilityToleranceConfig(""), new GameVersionCriteria(temp_ksp.KSP.Version()));
+                var registry = regMgr.registry;
+                var module = registry.LatestAvailable("AGExt", new StabilityToleranceConfig(""),
+                                                               new GameVersionCriteria(temp_ksp.KSP.Version()));
 
                 Assert.AreEqual("AGExt", module?.identifier);
                 Assert.AreEqual("1.24a", module?.version.ToString());

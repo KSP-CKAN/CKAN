@@ -394,6 +394,7 @@ namespace Tests.Core
                 {
                     CurrentInstance = tidy.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(tidy.KSP, repoData.Manager))
             {
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
@@ -401,8 +402,7 @@ namespace Tests.Core
                     // This should throw, as our tidy KSP has no mods installed.
                     new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                         .UninstallList(new List<string> {"Foo"},
-                                       ref possibleConfigOnlyDirs,
-                                       RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
+                                       ref possibleConfigOnlyDirs, regMgr);
                 });
 
                 // I weep even more.
@@ -424,6 +424,8 @@ namespace Tests.Core
                 {
                     CurrentInstance = ksp.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 // Make sure the mod is not installed.
                 string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
@@ -440,7 +442,7 @@ namespace Tests.Core
                 Assert.IsTrue(manager.Cache?.IsCached(TestData.DogeCoinFlag_101_module()));
                 Assert.IsTrue(File.Exists(cache_path));
 
-                var registry = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager).registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
 
@@ -453,7 +455,7 @@ namespace Tests.Core
                 new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                 RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
+                                 regMgr,
                                  ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
@@ -475,11 +477,13 @@ namespace Tests.Core
                 {
                     CurrentInstance = ksp.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
 
                 // Install the test mod.
-                var registry = RegistryManager.Instance(ksp.KSP, repoData.Manager).registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
                 manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
@@ -491,8 +495,7 @@ namespace Tests.Core
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .InstallList(modules, new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                 RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                 ref possibleConfigOnlyDirs);
+                                 regMgr, ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
                 Assert.IsTrue(File.Exists(mod_file_path));
@@ -500,8 +503,7 @@ namespace Tests.Core
                 // Attempt to uninstall it.
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
-                                   ref possibleConfigOnlyDirs,
-                                   RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
+                                   ref possibleConfigOnlyDirs, regMgr);
 
                 // Check that the module is not installed.
                 Assert.IsFalse(File.Exists(mod_file_path));
@@ -523,11 +525,13 @@ namespace Tests.Core
                 {
                     CurrentInstance = ksp.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 string directoryPath = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), emptyFolderName);
 
                 // Install the base test mod.
-                var registry = RegistryManager.Instance(ksp.KSP, repoData.Manager).registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
                 manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
@@ -540,8 +544,7 @@ namespace Tests.Core
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                 RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                 ref possibleConfigOnlyDirs);
+                                 regMgr, ref possibleConfigOnlyDirs);
 
                 modules.Clear();
 
@@ -555,8 +558,7 @@ namespace Tests.Core
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                 RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                 ref possibleConfigOnlyDirs);
+                                 regMgr, ref possibleConfigOnlyDirs);
 
                 modules.Clear();
 
@@ -570,8 +572,7 @@ namespace Tests.Core
 
                 new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
-                                   ref possibleConfigOnlyDirs,
-                                   RegistryManager.Instance(manager.CurrentInstance, repoData.Manager));
+                                   ref possibleConfigOnlyDirs, regMgr);
 
                 // Check that the directory has been deleted.
                 Assert.IsFalse(Directory.Exists(directoryPath));
@@ -731,8 +732,9 @@ namespace Tests.Core
                     {
                         CurrentInstance = ksp.KSP
                     })
+                using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                                               new Repository[] { repo.repo }))
                 {
-                    var regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                     var registry = regMgr.registry;
                     registry.RepositoriesClear();
                     registry.RepositoriesAdd(repo.repo);
@@ -749,8 +751,7 @@ namespace Tests.Core
                     new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                         .InstallList(modules,
                                      new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                     RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                     ref possibleConfigOnlyDirs);
+                                     regMgr, ref possibleConfigOnlyDirs);
 
                     // Check that the module is installed.
                     Assert.IsTrue(File.Exists(Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP),
@@ -957,10 +958,10 @@ namespace Tests.Core
                 {
                     CurrentInstance = ksp.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
-                var registry = RegistryManager.Instance(manager.CurrentInstance,
-                                                        repoData.Manager)
-                                              .registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
 
@@ -980,8 +981,7 @@ namespace Tests.Core
                         new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                             .InstallList(modules,
                                          new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                         RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                         ref possibleConfigOnlyDirs);
+                                         regMgr, ref possibleConfigOnlyDirs);
                     },
                     "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
             }
@@ -999,10 +999,10 @@ namespace Tests.Core
                 {
                     CurrentInstance = ksp.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
-                var registry = RegistryManager.Instance(manager.CurrentInstance,
-                                                        repoData.Manager)
-                                              .registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
 
@@ -1019,8 +1019,7 @@ namespace Tests.Core
                 new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
-                                 RegistryManager.Instance(manager.CurrentInstance, repoData.Manager),
-                                 ref possibleConfigOnlyDirs);
+                                 regMgr, ref possibleConfigOnlyDirs);
             }
         }
 
@@ -1063,11 +1062,11 @@ namespace Tests.Core
                 {
                     CurrentInstance = inst.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
-                var regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                 var registry = regMgr.registry;
                 IRegistryQuerier querier = registry;
-                registry.RepositoriesAdd(repo.repo);
                 var replaced = registry.GetModuleByVersion("replaced", "1.0")!;
                 Assert.IsNotNull(replaced, "Replaced module should exist");
                 var replacer = registry.GetModuleByVersion("replacer", "1.0");
@@ -1132,11 +1131,11 @@ namespace Tests.Core
                 {
                     CurrentInstance = inst.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
-                var regMgr = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                 var registry = regMgr.registry;
                 IRegistryQuerier querier = registry;
-                registry.RepositoriesAdd(repo.repo);
                 var replaced = registry.GetModuleByVersion("replaced", "1.0")!;
                 Assert.IsNotNull(replaced, "Replaced module should exist");
                 var replacer = registry.GetModuleByVersion("replacer", "1.0");
@@ -1205,9 +1204,10 @@ namespace Tests.Core
                 })
             using (var repo     = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
-                var regMgr    = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                 var registry  = regMgr.registry;
                 var possibleConfigOnlyDirs = new HashSet<string>();
                 foreach (var m in regularMods)
@@ -1288,10 +1288,11 @@ namespace Tests.Core
                 })
             using (var repo     = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
-                var regMgr     = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager);
                 var registry   = regMgr.registry;
                 registry.RepositoriesSet(new SortedDictionary<string, Repository>()
                 {
@@ -1369,9 +1370,9 @@ namespace Tests.Core
                 {
                     CurrentInstance = inst.KSP
                 })
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
-                var regMgr    = RegistryManager.Instance(manager.CurrentInstance,
-                                                         repoData.Manager);
                 var module    = CkanModule.FromJson(moduleJson);
                 var modules   = new List<CkanModule> { module };
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);

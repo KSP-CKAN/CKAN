@@ -115,24 +115,24 @@ namespace Tests.Core.Registry
 
             // Act
             var user = new NullUser();
-            using (var repoData = new TemporaryRepositoryData(user))
-            using (var dispksp = new DisposableKSP(registryPath))
+
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var dispksp  = new DisposableKSP(registryPath))
+            using (var regMgr   = RegistryManager.Instance(dispksp.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 // Assert
-                var reg = RegistryManager.Instance(dispksp.KSP, repoData.Manager).registry;
+                var reg = regMgr.registry;
                 Assert.IsNotNull(reg);
                 // These lists should all be empty, copied from Registry.Empty()
-                Assert.IsFalse(reg.InstalledModules.Any());
-                Assert.IsFalse(reg.InstalledDlls.Any());
+                CollectionAssert.IsEmpty(reg.InstalledModules);
+                CollectionAssert.IsEmpty(reg.InstalledDlls);
                 Assert.IsFalse(reg.HasAnyAvailable());
                 // installed_files isn't exposed for testing
                 // A default repo is set during load
-                CollectionAssert.AreEqual(
-                    new Repository[]
-                    {
-                        new Repository("default", new KerbalSpaceProgram().DefaultRepositoryURL)
-                    },
-                    reg.Repositories.Values);
+                CollectionAssert.AreEqual(new Repository[] { repo.repo },
+                                          reg.Repositories.Values);
             }
         }
 
@@ -142,10 +142,9 @@ namespace Tests.Core.Registry
             var user = new NullUser();
             using (var repoData = new TemporaryRepositoryData(user))
             using (var dispInst = new DisposableKSP())
+            using (var regMgr = RegistryManager.Instance(dispInst.KSP, repoData.Manager))
             {
-                var gameInst = dispInst.KSP;
-                var regMgr = RegistryManager.Instance(gameInst, repoData.Manager);
-                var path = Path.Combine(gameInst.game.PrimaryModDirectory(gameInst), "Example.dll");
+                var path = Path.Combine(dispInst.KSP.game.PrimaryModDirectory(dispInst.KSP), "Example.dll");
                 var registry = regMgr.registry;
 
                 Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
@@ -161,7 +160,7 @@ namespace Tests.Core.Registry
 
                 // Now let's do the same with different case.
 
-                var path2 = Path.Combine(gameInst.game.PrimaryModDirectory(gameInst), "NewMod.DLL");
+                var path2 = Path.Combine(dispInst.KSP.game.PrimaryModDirectory(dispInst.KSP), "NewMod.DLL");
 
                 Assert.IsFalse(registry.IsInstalled("NewMod"));
                 File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");
@@ -196,13 +195,12 @@ namespace Tests.Core.Registry
             var user = new NullUser();
             using (var repoData = new TemporaryRepositoryData(user))
             using (var dispInst = new DisposableKSP())
+            using (var regMgr   = RegistryManager.Instance(dispInst.KSP, repoData.Manager))
             {
-                var gameInst = dispInst.KSP;
-                var regMgr   = RegistryManager.Instance(gameInst, repoData.Manager);
                 var registry = regMgr.registry;
-                var absReg   = registered.Select(gameInst.ToAbsoluteGameDir)
+                var absReg   = registered.Select(dispInst.KSP.ToAbsoluteGameDir)
                                                 .ToList();
-                var absUnreg = unregistered.Select(gameInst.ToAbsoluteGameDir)
+                var absUnreg = unregistered.Select(dispInst.KSP.ToAbsoluteGameDir)
                                                   .ToArray();
 
                 // Create all the files
@@ -219,7 +217,7 @@ namespace Tests.Core.Registry
                                             ""version"":      ""1.0"",
                                             ""download"":     ""https://github.com/""
                                         }"),
-                                        absReg, gameInst, false);
+                                        absReg, dispInst.KSP, false);
 
                 // Act
                 regMgr.ScanUnmanagedFiles();
