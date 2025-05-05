@@ -531,4 +531,5 @@ This action cannot be undone!</value></data>
   <data name="MainDeduplicateWaitTitle" xml:space="preserve"><value>Duplicating Installed Files</value></data>
   <data name="MainDeduplicateScanning" xml:space="preserve"><value>Scanning for duplicate installed files...</value></data>
   <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Add {0}</value></data>
+  <data name="InstallFiltersGlobalFiltersForGame" xml:space="preserve"><value>Global Filters for {0}</value></data>
 </root>

@@ -3,6 +3,8 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
+using CKAN.Games;
+
 namespace CKAN.Configuration
 {
     public interface IConfiguration
@@ -60,7 +62,8 @@ namespace CKAN.Configuration
         /// <summary>
         /// Paths that should be excluded from all installations
         /// </summary>
-        string[] GlobalInstallFilters { get; set; }
+        string[] GetGlobalInstallFilters(IGame game);
+        void SetGlobalInstallFilters(IGame game, string[] value);
 
         /// <summary>
         /// List of hosts in order of priority when there are multiple URLs to choose from.

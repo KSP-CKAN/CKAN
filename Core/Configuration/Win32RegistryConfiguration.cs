@@ -10,6 +10,7 @@ using System.Runtime.Versioning;
 #endif
 
 using CKAN.IO;
+using CKAN.Games;
 
 namespace CKAN.Configuration
 {
@@ -179,7 +180,11 @@ namespace CKAN.Configuration
         /// <summary>
         /// Not implemented because the Windows registry is deprecated
         /// </summary>
-        public string[] GlobalInstallFilters { get; set; } = Array.Empty<string>();
+        public string[] GetGlobalInstallFilters(IGame game) => Array.Empty<string>();
+        /// <summary>
+        /// Not implemented because the Windows registry is deprecated
+        /// </summary>
+        public void SetGlobalInstallFilters(IGame game, string[] value) { }
 
         /// <summary>
         /// Not implemented because the Windows registry is deprecated

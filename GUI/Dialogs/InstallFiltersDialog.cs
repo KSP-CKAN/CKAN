@@ -25,6 +25,8 @@ namespace CKAN.GUI
             presets           = instance.game.InstallFilterPresets;
             const int hPadding = 6;
             int top = 17;
+            GlobalFiltersGroupBox.Text = string.Format(Properties.Resources.InstallFiltersGlobalFiltersForGame,
+                                                       instance.game.ShortName);
             foreach ((string name, string[] filters) in presets)
             {
                 var btn = new Button()
@@ -66,7 +68,7 @@ namespace CKAN.GUI
 
         private void InstallFiltersDialog_Load(object? sender, EventArgs? e)
         {
-            GlobalFiltersTextBox.Text = string.Join(Environment.NewLine, globalConfig.GlobalInstallFilters);
+            GlobalFiltersTextBox.Text = string.Join(Environment.NewLine, globalConfig.GetGlobalInstallFilters(instance.game));
             InstanceFiltersTextBox.Text = string.Join(Environment.NewLine, instance.InstallFilters);
             GlobalFiltersTextBox.DeselectAll();
             InstanceFiltersTextBox.DeselectAll();
@@ -76,11 +78,11 @@ namespace CKAN.GUI
         {
             var newGlobal   = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             var newInstance = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            Changed = !globalConfig.GlobalInstallFilters.SequenceEqual(newGlobal)
+            Changed = !globalConfig.GetGlobalInstallFilters(instance.game).SequenceEqual(newGlobal)
                       || !instance.InstallFilters.SequenceEqual(newInstance);
             if (Changed)
             {
-                globalConfig.GlobalInstallFilters = newGlobal;
+                globalConfig.SetGlobalInstallFilters(instance.game, newGlobal);
                 instance.InstallFilters           = newInstance;
             }
         }

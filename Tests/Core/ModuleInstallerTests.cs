@@ -1028,18 +1028,17 @@ namespace Tests.Core
         public void InstallList_KSP1InstallFilterPresets_InstallsZeroMiniAVCWithoutMiniAVC()
         {
             // Arrange
-            using (var inst   = new DisposableKSP())
-            using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name)
-                {
-                    GlobalInstallFilters = inst.KSP.game.InstallFilterPresets
-                                                        .SelectMany(kvp => kvp.Value)
-                                                        .ToArray(),
-                })
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                config.SetGlobalInstallFilters(inst.KSP.game,
+                                               inst.KSP.game.InstallFilterPresets
+                                                            .SelectMany(kvp => kvp.Value)
+                                                            .ToArray());
                 // The tests for different targets can run in parallel,
                 // so they don't share a cache nicely
                 const string targetFramework =

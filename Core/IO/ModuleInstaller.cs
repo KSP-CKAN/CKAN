@@ -334,7 +334,7 @@ namespace CKAN.IO
             }
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
-                var filters = config.GlobalInstallFilters
+                var filters = config.GetGlobalInstallFilters(instance.game)
                                     .Concat(instance.InstallFilters)
                                     .ToHashSet();
                 var files = FindInstallableFiles(module, zipfile, instance)
