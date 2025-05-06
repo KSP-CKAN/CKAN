@@ -122,6 +122,7 @@
   <data name="GameCompatibilityLabel.Text" xml:space="preserve"><value>Max game ver.:</value></data>
   <data name="ReleaseLabel.Text" xml:space="preserve"><value>Release status:</value></data>
   <data name="AuthorLabel.Text" xml:space="preserve"><value>Author:</value></data>
+  <data name="DownloadCountLabel.Text" xml:space="preserve"><value>Downloads:</value></data>
   <data name="LicenseLabel.Text" xml:space="preserve"><value>Licence:</value></data>
   <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve"><value>None</value></data>
   <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve"><value>Nobody</value></data>

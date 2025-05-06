@@ -38,6 +38,8 @@ namespace CKAN.GUI
             this.MetadataModuleLicenseTextBox = new CKAN.GUI.TransparentTextBox();
             this.AuthorLabel = new System.Windows.Forms.Label();
             this.AuthorsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.DownloadCountLabel = new System.Windows.Forms.Label();
+            this.DownloadCountTextBox = new CKAN.GUI.TransparentTextBox();
             this.ReleaseLabel = new System.Windows.Forms.Label();
             this.MetadataModuleReleaseStatusTextBox = new CKAN.GUI.TransparentTextBox();
             this.GameCompatibilityLabel = new System.Windows.Forms.Label();
@@ -67,19 +69,22 @@ namespace CKAN.GUI
             this.MetadataTable.Controls.Add(this.MetadataModuleLicenseTextBox, 1, 1);
             this.MetadataTable.Controls.Add(this.AuthorLabel, 0, 2);
             this.MetadataTable.Controls.Add(this.AuthorsPanel, 1, 2);
-            this.MetadataTable.Controls.Add(this.ReleaseLabel, 0, 3);
-            this.MetadataTable.Controls.Add(this.MetadataModuleReleaseStatusTextBox, 1, 3);
-            this.MetadataTable.Controls.Add(this.GameCompatibilityLabel, 0, 4);
-            this.MetadataTable.Controls.Add(this.MetadataModuleGameCompatibilityTextBox, 1, 4);
-            this.MetadataTable.Controls.Add(this.IdentifierLabel, 0, 5);
-            this.MetadataTable.Controls.Add(this.MetadataIdentifierTextBox, 1, 5);
-            this.MetadataTable.Controls.Add(this.ReplacementLabel, 0, 6);
-            this.MetadataTable.Controls.Add(this.ReplacementTextBox, 1, 6);
+            this.MetadataTable.Controls.Add(this.DownloadCountLabel, 0, 3);
+            this.MetadataTable.Controls.Add(this.DownloadCountTextBox, 1, 3);
+            this.MetadataTable.Controls.Add(this.ReleaseLabel, 0, 4);
+            this.MetadataTable.Controls.Add(this.MetadataModuleReleaseStatusTextBox, 1, 4);
+            this.MetadataTable.Controls.Add(this.GameCompatibilityLabel, 0, 5);
+            this.MetadataTable.Controls.Add(this.MetadataModuleGameCompatibilityTextBox, 1, 5);
+            this.MetadataTable.Controls.Add(this.IdentifierLabel, 0, 6);
+            this.MetadataTable.Controls.Add(this.MetadataIdentifierTextBox, 1, 6);
+            this.MetadataTable.Controls.Add(this.ReplacementLabel, 0, 7);
+            this.MetadataTable.Controls.Add(this.ReplacementTextBox, 1, 7);
             this.MetadataTable.Dock = System.Windows.Forms.DockStyle.Top;
             this.MetadataTable.Location = new System.Drawing.Point(0, 0);
             this.MetadataTable.Name = "MetadataTable";
             this.MetadataTable.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.MetadataTable.RowCount = 7;
+            this.MetadataTable.RowCount = 8;
+            this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.MetadataTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -151,6 +156,31 @@ namespace CKAN.GUI
             this.AuthorLabel.Size = new System.Drawing.Size(84, 30);
             this.AuthorLabel.TabIndex = 5;
             resources.ApplyResources(this.AuthorLabel, "AuthorLabel");
+            //
+            // DownloadCountLabel
+            //
+            this.DownloadCountLabel.AutoSize = true;
+            this.DownloadCountLabel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DownloadCountLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.DownloadCountLabel.Location = new System.Drawing.Point(0, 3);
+            this.DownloadCountLabel.Name = "DownloadCountLabel";
+            this.DownloadCountLabel.Size = new System.Drawing.Size(84, 30);
+            this.DownloadCountLabel.TabIndex = 3;
+            resources.ApplyResources(this.DownloadCountLabel, "DownloadCountLabel");
+            //
+            // DownloadCountTextBox
+            //
+            this.DownloadCountTextBox.AutoSize = true;
+            this.DownloadCountTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DownloadCountTextBox.Location = new System.Drawing.Point(0, 3);
+            this.DownloadCountTextBox.Name = "DownloadCountTextBox";
+            this.DownloadCountTextBox.Size = new System.Drawing.Size(250, 30);
+            this.DownloadCountTextBox.TabIndex = 4;
+            this.DownloadCountTextBox.ReadOnly = true;
+            this.DownloadCountTextBox.BackColor = System.Drawing.SystemColors.Control;
+            this.DownloadCountTextBox.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.DownloadCountTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.DownloadCountTextBox, "DownloadCountTextBox");
             //
             // AuthorsPanel
             //
@@ -286,6 +316,8 @@ namespace CKAN.GUI
         private CKAN.GUI.TransparentTextBox MetadataModuleLicenseTextBox;
         private System.Windows.Forms.Label AuthorLabel;
         private System.Windows.Forms.FlowLayoutPanel AuthorsPanel;
+        private System.Windows.Forms.Label DownloadCountLabel;
+        private CKAN.GUI.TransparentTextBox DownloadCountTextBox;
         private System.Windows.Forms.Label ReleaseLabel;
         private CKAN.GUI.TransparentTextBox MetadataModuleReleaseStatusTextBox;
         private System.Windows.Forms.Label GameCompatibilityLabel;
