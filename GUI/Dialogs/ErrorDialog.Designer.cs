@@ -74,7 +74,7 @@ namespace CKAN.GUI
             //
             // ErrorDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 160);
             this.ControlBox = true;
