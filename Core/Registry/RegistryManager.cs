@@ -320,6 +320,14 @@ namespace CKAN
             {
                 Create(repoData, repositories);
             }
+            catch (RegistryVersionNotSupportedKraken kraken)
+            {
+                // Throw a new one with the full path, since Registry doesn't know it
+                throw new RegistryVersionNotSupportedKraken(
+                    kraken.requestVersion,
+                    string.Format(Properties.Resources.RegistryManagerRegistryVersionNotSupported,
+                                  Platform.FormatPath(path)));
+            }
             catch (JsonException exc)
             {
                 previousCorruptedMessage = exc.Message;
@@ -351,7 +359,16 @@ namespace CKAN
             string json = File.ReadAllText(path);
             log.Debug("Registry JSON loaded; parsing...");
             var registry = new Registry(repoData);
-            JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
+            try
+            {
+                JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
+            }
+            catch (TargetInvocationException exc) when (exc.InnerException != null)
+            {
+                // "The exception that is thrown by methods invoked through reflection."
+                // The JSON library uses reflection for OnDeserialized.
+                throw exc.InnerException;
+            }
             log.Debug("Registry loaded and parsed");
             log.InfoFormat("Loaded CKAN registry at {0}", path);
             return registry;

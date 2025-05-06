@@ -165,6 +165,9 @@ Install the `mono-complete` package or equivalent for your operating system.</va
   <data name="RegistryManagerDirectoryNotFound" xml:space="preserve"><value>Can't find a directory in {0}</value></data>
   <data name="RegistryManagerExportFilenamePrefix" xml:space="preserve"><value>installed</value></data>
   <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve"><value>A list of modules installed on the {0} KSP instance</value></data>
+  <data name="RegistryManagerRegistryVersionNotSupported" xml:space="preserve"><value>This version of CKAN is too old to load:
+{0}
+Update CKAN to load this game instance.</value></data>
   <data name="CkanModuleDeserialisationError" xml:space="preserve"><value>JSON deserialisation error: {0}</value></data>
   <data name="CkanModuleUnsupportedSpec" xml:space="preserve"><value>{0} requires CKAN {1}, we can't read it.</value></data>
   <data name="CkanModuleMissingRequired" xml:space="preserve"><value>{0} missing required field {1}</value></data>

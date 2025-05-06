@@ -44,9 +44,10 @@ namespace CKAN.GUI
             //
             // YesButton
             //
+            this.YesButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.YesButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.YesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.YesButton.Location = new System.Drawing.Point(401, 44);
+            this.YesButton.Location = new System.Drawing.Point(401, 64);
             this.YesButton.Name = "YesButton";
             this.YesButton.Size = new System.Drawing.Size(149, 23);
             this.YesButton.TabIndex = 1;
@@ -55,8 +56,9 @@ namespace CKAN.GUI
             //
             // NoButton
             //
+            this.NoButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.NoButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NoButton.Location = new System.Drawing.Point(323, 44);
+            this.NoButton.Location = new System.Drawing.Point(323, 64);
             this.NoButton.Size = new System.Drawing.Size(72, 23);
             this.NoButton.DialogResult = System.Windows.Forms.DialogResult.No;
             this.NoButton.Name = "NoButton";
@@ -66,9 +68,9 @@ namespace CKAN.GUI
             //
             // AskUserForAutoUpdatesDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(562, 79);
+            this.ClientSize = new System.Drawing.Size(562, 100);
             this.Controls.Add(this.NoButton);
             this.Controls.Add(this.YesButton);
             this.Controls.Add(this.autoCheckLabel);

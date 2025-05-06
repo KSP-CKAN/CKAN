@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 
 - [Multiple] Fix ckan version command and update copyrights (#4347 by: HebaruSan)
 - [GUI] Suppress exceptions on setting SplitterDistance (#4350 by: HebaruSan)
+- [Multiple] Detect future registry versions (#4364 by: HebaruSan)
 
 ### Internal
 

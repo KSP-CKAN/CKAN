@@ -163,6 +163,14 @@ namespace CKAN
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext context)
         {
+            if (registry_version > LATEST_REGISTRY_VERSION)
+            {
+                throw new RegistryVersionNotSupportedKraken(
+                    registry_version,
+                    string.Format(Properties.Resources.RegistryManagerRegistryVersionNotSupported,
+                                  "registry.json"));
+            }
+
             // Our context is our game instance.
             var ksp = context.Context as GameInstance;
 

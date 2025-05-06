@@ -200,10 +200,10 @@ namespace CKAN
     {
         public readonly int requestVersion;
 
-        public RegistryVersionNotSupportedKraken(int v, string? reason = null, Exception? innerException = null)
-            : base(reason, innerException)
+        public RegistryVersionNotSupportedKraken(int badVersion, string reason)
+            : base(reason)
         {
-            requestVersion = v;
+            requestVersion = badVersion;
         }
     }
 

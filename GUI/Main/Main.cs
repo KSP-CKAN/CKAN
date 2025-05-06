@@ -291,6 +291,24 @@ namespace CKAN.GUI
                                         }
                                     }
                                 }
+                                catch (RegistryVersionNotSupportedKraken kraken)
+                                {
+                                    currentUser.RaiseError("{0}", kraken.Message);
+                                    if (CheckForCKANUpdate())
+                                    {
+                                        UpdateCKAN();
+                                    }
+                                    else
+                                    {
+                                        Manager.CurrentInstance = null;
+                                        if (Manager.Instances.Values.All(inst => !inst.Valid || inst.IsMaybeLocked))
+                                        {
+                                            // Everything's invalid or locked, give up
+                                            evt.Result = false;
+                                            return;
+                                        }
+                                    }
+                                }
                             }
                         } while (CurrentInstance == null);
                         // We can only reach this point if CurrentInstance is not null
@@ -304,7 +322,11 @@ namespace CKAN.GUI
                     {
                         // Application.Exit doesn't work if the window is disabled!
                         EnableMainWindow();
-                        if (evt.Result is bool b && b)
+                        if (evt.Error != null)
+                        {
+                            currentUser.RaiseError("{0}", evt.Error.Message);
+                        }
+                        else if (evt.Result is bool b && b)
                         {
                             HideWaitDialog();
                             CheckTrayState();
@@ -370,6 +392,21 @@ namespace CKAN.GUI
                         else
                         {
                             // Couldn't get the lock, revert to previous instance
+                            Manager.CurrentInstance = old_instance;
+                            CurrentInstanceUpdated();
+                            done = true;
+                        }
+                    }
+                    catch (RegistryVersionNotSupportedKraken kraken)
+                    {
+                        // Couldn't load the registry, revert to previous instance
+                        currentUser.RaiseError("{0}", kraken.Message);
+                        if (CheckForCKANUpdate())
+                        {
+                            UpdateCKAN();
+                        }
+                        else
+                        {
                             Manager.CurrentInstance = old_instance;
                             CurrentInstanceUpdated();
                             done = true;
