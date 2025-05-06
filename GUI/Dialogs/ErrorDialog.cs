@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -22,7 +23,9 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void ShowErrorDialog(Main mainForm, string text, params object[] args)
+        public void ShowErrorDialog(Main mainForm,
+                                    [StringSyntax(StringSyntaxAttribute.CompositeFormat)]
+                                    string text, params object[] args)
         {
             Util.Invoke(mainForm, () =>
             {
