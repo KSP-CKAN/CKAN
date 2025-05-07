@@ -44,6 +44,10 @@ namespace CKAN
             log.DebugFormat("Trying to set max timeout to {0:g}", timeout);
             if (TransactionManager.MaximumTimeout < timeout)
             {
+#if NET7_0_OR_GREATER
+
+                TransactionManager.MaximumTimeout = timeout;
+#else
                 // TransactionManager.MaximumTimeout should not exist; if
                 // app code tells TransactionScope's constructor that it needs
                 // 2 hours to run a transaction, it's probably not wrong, and
@@ -83,9 +87,12 @@ namespace CKAN
                     SetField(t, "s_cachedMaxTimeout", true);
                     SetField(t, "s_maximumTimeout",   timeout);
                 }
+            
+#endif
             }
         }
 
+#if !NET7_0_OR_GREATER
         private static void SetField(Type T, string fieldName, object? value)
         {
             try
@@ -98,6 +105,7 @@ namespace CKAN
                 log.DebugFormat("Failed to set {0}", fieldName);
             }
         }
+#endif
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CkanTransaction));
     }
