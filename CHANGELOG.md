@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
 
 - [Netkan] Exclude internal .ckan files from `install_size` (#4348 by: HebaruSan)
 - [Core] Generate and tidy up XML docs for Core (#4351 by: HebaruSan)
+- [Core] Use setter instead of reflection to set max transaction timeout (#4365 by: doinkythederp; reviewed: HebaruSan)
 
 ## v1.36.0 (Quasar)
 
