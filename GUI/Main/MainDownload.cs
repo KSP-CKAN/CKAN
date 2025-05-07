@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -54,7 +55,36 @@ namespace CKAN.GUI
                 downloader.DownloadProgress += OnModDownloading;
                 downloader.StoreProgress    += OnModValidating;
                 downloader.OverallDownloadProgress += currentUser.RaiseProgress;
-                downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
+                for (bool done = false; !done; )
+                {
+                    try {
+                        downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
+                        done = true;
+                    }
+                    catch (ModuleDownloadErrorsKraken k)
+                    {
+                        DownloadsFailedDialog? dfd = null;
+                        Util.Invoke(this, () =>
+                        {
+                            dfd = new DownloadsFailedDialog(
+                                Properties.Resources.ModDownloadsFailedMessage,
+                                Properties.Resources.ModDownloadsFailedColHdr,
+                                Properties.Resources.ModDownloadsFailedAbortBtn,
+                                k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
+                                    new CkanModule[] { gm.ToCkanModule() }, kvp.Value)),
+                                (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
+                             dfd.ShowDialog(this);
+                        });
+                        var skip  = (dfd?.Wait()?.OfType<CkanModule>() ?? Enumerable.Empty<CkanModule>())
+                                                 .ToArray();
+                        var abort = dfd?.Abort ?? false;
+                        dfd?.Dispose();
+                        if (abort || skip.Length > 0)
+                        {
+                            throw new CancelledActionKraken();
+                        }
+                    }
+                }
                 e.Result = e.Argument;
             }
         }

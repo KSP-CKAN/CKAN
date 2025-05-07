@@ -212,7 +212,7 @@ namespace CKAN
                             OneComplete?.Invoke(m);
                         }
                     }
-                    catch (InvalidModuleFileKraken kraken)
+                    catch (InvalidModuleFileKraken)
                     {
                         if (module != null)
                         {
@@ -223,7 +223,7 @@ namespace CKAN
                         File.Delete(filename);
 
                         // Tell downloader there is a problem with this file
-                        throw new DownloadErrorsKraken(target, kraken);
+                        throw;
                     }
                     catch (OperationCanceledException exc)
                     {

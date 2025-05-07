@@ -147,9 +147,13 @@ namespace CKAN
             }
 
             // Check to see if we've had any errors. If so, then release the kraken!
-            var exceptions = downloads.Select(dl => dl.error != null
-                                                        ? new KeyValuePair<DownloadTarget, Exception>(dl.target, dl.error)
-                                                        : (KeyValuePair<DownloadTarget, Exception>?)null)
+            var exceptions = downloads.SelectMany(dl => dl.error switch
+                                                        {
+                                                            DownloadErrorsKraken dlKrak => dlKrak.Exceptions,
+                                                            Exception => Enumerable.Repeat(
+                                                                new KeyValuePair<DownloadTarget, Exception>(dl.target, dl.error), 1),
+                                                            null => Enumerable.Empty<KeyValuePair<DownloadTarget, Exception>>(),
+                                                        })
                                       .OfType<KeyValuePair<DownloadTarget, Exception>>()
                                       .ToList();
 
