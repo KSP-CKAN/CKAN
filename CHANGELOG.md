@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Mod file deduplication across game instances (#4358 by: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#4359 by: HebaruSan)
 - [Multiple] Make global install filters and presets game-specific (#4361 by: HebaruSan)
+- [GUI] Add download count to Metadata Tab (#4363 by: averageksp; reviewed: HebaruSan)
 
 ### Bugfixes
 

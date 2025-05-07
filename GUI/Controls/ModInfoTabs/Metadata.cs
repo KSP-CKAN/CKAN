@@ -31,22 +31,31 @@ namespace CKAN.GUI
                 MetadataTable.SuspendLayout();
                 MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString();
                 MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license);
-
                 UpdateAuthorLinks(gui_module.Authors);
 
                 MetadataIdentifierTextBox.Text = module.identifier;
+
+                if (gui_module.DownloadCount is null or 0)
+                {
+                    DownloadCountLabel.Visible = false;
+                    DownloadCountTextBox.Visible = false;
+                }
+                else
+                {
+                    DownloadCountLabel.Visible = true;
+                    DownloadCountTextBox.Visible = true;
+                    DownloadCountTextBox.Text = $"{gui_module.DownloadCount:N0}";
+                }
 
                 if (module.release_status is null or ReleaseStatus.stable)
                 {
                     ReleaseLabel.Visible = false;
                     MetadataModuleReleaseStatusTextBox.Visible = false;
-                    MetadataTable.LayoutSettings.RowStyles[3].Height = 0;
                 }
                 else
                 {
                     ReleaseLabel.Visible = true;
                     MetadataModuleReleaseStatusTextBox.Visible = true;
-                    MetadataTable.LayoutSettings.RowStyles[3].Height = 30;
                     MetadataModuleReleaseStatusTextBox.Text = module.release_status.LocalizeName();
                 }
 
@@ -62,13 +71,11 @@ namespace CKAN.GUI
                 {
                     ReplacementLabel.Visible = false;
                     ReplacementTextBox.Visible = false;
-                    MetadataTable.LayoutSettings.RowStyles[6].Height = 0;
                 }
                 else
                 {
                     ReplacementLabel.Visible = true;
                     ReplacementTextBox.Visible = true;
-                    MetadataTable.LayoutSettings.RowStyles[6].Height = 30;
                     ReplacementTextBox.Text = module.replaced_by.ToString();
                 }
 
