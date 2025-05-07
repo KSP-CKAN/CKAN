@@ -75,6 +75,7 @@ namespace CKAN.GUI
             this.VersionsListView.UseCompatibleStateImageBehavior = false;
             this.VersionsListView.View = System.Windows.Forms.View.Details;
             this.VersionsListView.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.VersionsListView_ItemCheck);
+            this.VersionsListView.Resize += new System.EventHandler(this.VersionsListView_OnResize);
             this.VersionsListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.VersionsListView_ItemSelectionChanged);
             //
             // ModVersion
