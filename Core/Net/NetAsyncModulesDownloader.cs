@@ -139,7 +139,15 @@ namespace CKAN
                 yield return m;
             }
             blockingQueue.Dispose();
-            if (dlTask.Exception is AggregateException { InnerException: Exception exc })
+            try
+            {
+                dlTask.Wait();
+                if (dlTask.Exception is AggregateException { InnerException: Exception exc })
+                {
+                    throw exc;
+                }
+            }
+            catch (AggregateException agExc) when (agExc.InnerException is Exception exc)
             {
                 throw exc;
             }
@@ -155,6 +163,10 @@ namespace CKAN
                                               {
                                                   blockingQueue.CompleteAdding();
                                                   OneComplete -= oneComplete;
+                                                  if (t.Exception is AggregateException { InnerException: Exception exc })
+                                                  {
+                                                      throw exc;
+                                                  }
                                               }),
                     blockingQueue);
         }
