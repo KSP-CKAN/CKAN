@@ -1194,5 +1194,10 @@ Cette action est irréversible !</value>
   <data name="MainDeduplicateScanning" xml:space="preserve">
     <value>Recherche des fichiers installés redondants...</value>
   </data>
-  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Ajouter {0}</value></data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve">
+    <value>Ajouter {0}</value>
+  </data>
+  <data name="InstallFiltersGlobalFiltersForGame" xml:space="preserve">
+    <value>Filtres globaux pour {0}</value>
+  </data>
 </root>

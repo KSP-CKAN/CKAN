@@ -818,10 +818,10 @@ Utilisez ckan.exe scan pour plus de détails
 Exécution de {0} au cas où cela réglerait le problème.</value>
   </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
-    <value>Filtres globaux :</value>
+    <value>Filtres globaux pour {0} :</value>
   </data>
   <data name="FilterListInstanceHeader" xml:space="preserve">
-    <value>Filtres d'instance :</value>
+    <value>Filtres d'instance pour {0} :</value>
   </data>
   <data name="FilterAddGlobalDuplicateError" xml:space="preserve">
     <value>Filtres globaux existant déjà : {0}</value>
@@ -834,6 +834,9 @@ Exécution de {0} au cas où cela réglerait le problème.</value>
   </data>
   <data name="FilterRemoveInstanceNotFoundError" xml:space="preserve">
     <value>Filtres d'instance introuvables : {0}</value>
+  </data>
+  <data name="FilterGameNotFoundError" xml:space="preserve">
+    <value>Le jeu {0} est introuvable ! Essayez l'un de ceux-ci : {1}</value>
   </data>
   <data name="FilterHelpSummary" xml:space="preserve">
     <value>Afficher ou modifier les filtres d'installation</value>

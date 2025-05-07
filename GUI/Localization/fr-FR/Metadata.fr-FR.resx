@@ -132,6 +132,9 @@
   <data name="AuthorLabel.Text" xml:space="preserve">
     <value>Auteur :</value>
   </data>
+  <data name="DownloadCountLabel.Text" xml:space="preserve">
+    <value>Téléchargements :</value>
+  </data>
   <data name="LicenseLabel.Text" xml:space="preserve">
     <value>Licence :</value>
   </data>

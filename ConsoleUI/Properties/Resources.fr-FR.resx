@@ -964,7 +964,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Empêcher MiniAVC d'être installé</value>
   </data>
   <data name="FiltersGlobalHeader" xml:space="preserve">
-    <value>Filtres Globaux</value>
+    <value>Filtres globaux pour {0}</value>
   </data>
   <data name="FiltersInstanceHeader" xml:space="preserve">
     <value>Filtres de l'Instance</value>

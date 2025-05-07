@@ -258,6 +258,11 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve">
     <value>Une liste des modules installés sur l'instance KSP {0}</value>
   </data>
+  <data name="RegistryManagerRegistryVersionNotSupported" xml:space="preserve">
+    <value>Cette version de CKAN est trop ancienne pour charger :
+{0}
+Mettez à jour CKAN pour charger cette instance de jeu.</value>
+  </data>
   <data name="CkanModuleDeserialisationError" xml:space="preserve">
     <value>Erreur de désérialisation JSON : {0}</value>
   </data>

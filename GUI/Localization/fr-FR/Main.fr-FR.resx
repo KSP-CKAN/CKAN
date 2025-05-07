@@ -162,6 +162,9 @@
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Sauver le modpack dans un fichier (peut être réimporté)...</value>
   </data>
+  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Importer des &amp;mods téléchargés...</value>
+  </data>
   <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
     <value>Voir les &amp;recommandations</value>
   </data>
