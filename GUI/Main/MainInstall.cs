@@ -229,13 +229,13 @@ namespace CKAN.GUI
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
 
-                // Treat whole changeset as atomic
-                using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
+                // Checks if all actions were successful
+                // Uninstall/installs/upgrades until every list is empty
+                // If the queue is NOT empty, resolvedAllProvidedMods is false until the action is done
+                for (bool resolvedAllProvidedMods = false; !resolvedAllProvidedMods;)
                 {
-                    // Checks if all actions were successful
-                    // Uninstall/installs/upgrades until every list is empty
-                    // If the queue is NOT empty, resolvedAllProvidedMods is false until the action is done
-                    for (bool resolvedAllProvidedMods = false; !resolvedAllProvidedMods;)
+                    // Treat whole changeset as atomic
+                    using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
                     {
                         try
                         {
@@ -263,6 +263,7 @@ namespace CKAN.GUI
                                 e.Result = new InstallResult(false, changes);
                                 throw new CancelledActionKraken();
                             }
+                            transaction.Complete();
                             resolvedAllProvidedMods = true;
                         }
                         catch (ModuleDownloadErrorsKraken k)
@@ -351,7 +352,6 @@ namespace CKAN.GUI
                             }
                         }
                     }
-                    transaction.Complete();
                 }
                 HandlePossibleConfigOnlyDirs(registry, possibleConfigOnlyDirs);
                 e.Result = new InstallResult(true, changes);
