@@ -121,7 +121,7 @@ namespace Tests.Core.Net
                      "DogeCoinFlag-1.01-LZMA.zip",
                      "DogeCoinFlag-1.01-avc.zip",
                      "DogeCoinFlag-extra-files.zip"),
-            // Last URL is bad
+            // A URL in the middle is bad
             TestCase("gh221.zip",
                      "ModuleManager-2.5.1.zip",
                      "ZipWithUnicodeChars.zip",
@@ -136,7 +136,7 @@ namespace Tests.Core.Net
                      "DogeCoinFlag-1.01-LZMA.zip",
                      "DogeCoinFlag-1.01-avc.zip",
                      "DogeCoinFlag-extra-files.zip"),
-            // A URL in the middle is bad
+            // Last URL is bad
             TestCase("gh221.zip",
                      "ModuleManager-2.5.1.zip",
                      "ZipWithUnicodeChars.zip",
@@ -152,33 +152,33 @@ namespace Tests.Core.Net
                      "DogeCoinFlag-extra-files.zip",
                      "DoesNotExist.zip"),
             // Every other URL is bad
-            TestCase("DoesNotExist.zip",
+            TestCase("DoesNotExist1.zip",
                      "gh221.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist2.zip",
                      "ModuleManager-2.5.1.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist3.zip",
                      "ZipWithUnicodeChars.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist4.zip",
                      "DogeCoinPlugin.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist5.zip",
                      "DogeCoinFlag-1.01-corrupt.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist6.zip",
                      "CKAN-meta-testkan.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist7.zip",
                      "ZipWithBadChars.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist8.zip",
                      "DogeCoinFlag-1.01-no-dir-entries.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist9.zip",
                      "DogeTokenFlag-1.01.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist10.zip",
                      "DogeCoinFlag-1.01.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist11.zip",
                      "DogeCoinFlag-1.01-LZMA.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist12.zip",
                      "DogeCoinFlag-1.01-avc.zip",
-                     "DoesNotExist.zip",
+                     "DoesNotExist13.zip",
                      "DogeCoinFlag-extra-files.zip",
-                     "DoesNotExist.zip"),
+                     "DoesNotExist14.zip"),
         ]
         public void DownloadAndWait_WithSomeInvalidUrls_ThrowsDownloadErrorsKraken(
             params string[] pathsWithinTestData)
@@ -190,10 +190,8 @@ namespace Tests.Core.Net
                                                                                                Path.GetTempFileName()))
                                         .ToArray();
             var badTargets   = targets.Zip(fromPaths)
-                                      #pragma warning disable IDE0033
-                                      .Where(tuple => !File.Exists(tuple.Item2))
-                                      .Select(tuple => tuple.Item1)
-                                      #pragma warning restore IDE0033
+                                      .Where(tuple => !File.Exists(tuple.Second))
+                                      .Select(tuple => tuple.First)
                                       .ToArray();
             var validTargets = targets.Except(badTargets);
 
