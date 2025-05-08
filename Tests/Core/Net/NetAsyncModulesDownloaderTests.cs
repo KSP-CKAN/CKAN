@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +7,7 @@ using NUnit.Framework;
 
 using Tests.Data;
 using CKAN;
+using CKAN.IO;
 
 namespace Tests.Core.Net
 {
@@ -141,6 +143,164 @@ namespace Tests.Core.Net
 
                 // Assert
                 Assert.AreEqual(correctURLs, urls);
+            }
+        }
+
+        [Test,
+            // Only one bad URL
+            TestCase(new string[] { "DoesNotExist.zip" },
+                     new string[] { "DoesNotExist.zip" }),
+            // First URL is bad, some fail to store
+            TestCase(new string[]
+                     {
+                         "DoesNotExist.zip",
+                         "gh221.zip",
+                         "ModuleManager-2.5.1.zip",
+                         "ZipWithUnicodeChars.zip",
+                         "DogeCoinPlugin.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "CKAN-meta-testkan.zip",
+                         "DogeCoinFlag-1.01-no-dir-entries.zip",
+                         "DogeTokenFlag-1.01.zip",
+                         "DogeCoinFlag-1.01.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                         "DogeCoinFlag-1.01-avc.zip",
+                         "DogeCoinFlag-extra-files.zip",
+                     },
+                     new string[]
+                     {
+                         "DoesNotExist.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                     }),
+            // A URL in the middle is bad, some fail to store
+            TestCase(new string[]
+                     {
+                         "gh221.zip",
+                         "ModuleManager-2.5.1.zip",
+                         "ZipWithUnicodeChars.zip",
+                         "DogeCoinPlugin.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "CKAN-meta-testkan.zip",
+                         "DogeCoinFlag-1.01-no-dir-entries.zip",
+                         "DoesNotExist.zip",
+                         "DogeTokenFlag-1.01.zip",
+                         "DogeCoinFlag-1.01.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                         "DogeCoinFlag-1.01-avc.zip",
+                         "DogeCoinFlag-extra-files.zip",
+                     },
+                     new string[]
+                     {
+                         "DoesNotExist.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                     }),
+            // Last URL is bad, some fail to store
+            TestCase(new string[]
+                     {
+                         "gh221.zip",
+                         "ModuleManager-2.5.1.zip",
+                         "ZipWithUnicodeChars.zip",
+                         "DogeCoinPlugin.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "CKAN-meta-testkan.zip",
+                         "DogeCoinFlag-1.01-no-dir-entries.zip",
+                         "DogeTokenFlag-1.01.zip",
+                         "DogeCoinFlag-1.01.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                         "DogeCoinFlag-1.01-avc.zip",
+                         "DogeCoinFlag-extra-files.zip",
+                         "DoesNotExist.zip",
+                     },
+                     new string[]
+                     {
+                         "DoesNotExist.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                     }),
+            // Every other URL is bad, some fail to store
+            TestCase(new string[]
+                     {
+                         "DoesNotExist1.zip",
+                         "gh221.zip",
+                         "DoesNotExist2.zip",
+                         "ModuleManager-2.5.1.zip",
+                         "DoesNotExist.zip",
+                         "ZipWithUnicodeChars.zip",
+                         "DoesNotExist3.zip",
+                         "DogeCoinPlugin.zip",
+                         "DoesNotExist4.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "DoesNotExist5.zip",
+                         "CKAN-meta-testkan.zip",
+                         "DoesNotExist6.zip",
+                         "DogeCoinFlag-1.01-no-dir-entries.zip",
+                         "DoesNotExist7.zip",
+                         "DogeTokenFlag-1.01.zip",
+                         "DoesNotExist8.zip",
+                         "DogeCoinFlag-1.01.zip",
+                         "DoesNotExist9.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                         "DoesNotExist10.zip",
+                         "DogeCoinFlag-1.01-avc.zip",
+                         "DoesNotExist11.zip",
+                         "DogeCoinFlag-extra-files.zip",
+                         "DoesNotExist12.zip",
+                     },
+                     new string[]
+                     {
+                         "DoesNotExist1.zip",
+                         "DoesNotExist2.zip",
+                         "DoesNotExist.zip",
+                         "DoesNotExist3.zip",
+                         "DoesNotExist4.zip",
+                         "DogeCoinFlag-1.01-corrupt.zip",
+                         "DoesNotExist5.zip",
+                         "DoesNotExist6.zip",
+                         "DoesNotExist7.zip",
+                         "DoesNotExist8.zip",
+                         "DoesNotExist9.zip",
+                         "DoesNotExist10.zip",
+                         "DogeCoinFlag-1.01-LZMA.zip",
+                         "DoesNotExist11.zip",
+                         "DoesNotExist12.zip",
+                     }),
+        ]
+        public void ModulesAsTheyFinish_InvalidURLsAndFiles_ThrowsModuleDownloadErrorsKraken(
+            string[] pathsWithinTestData, string[] failCases)
+        {
+            // Arrange
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir.Path.FullName))
+            {
+                var downloader = new NetAsyncModulesDownloader(new NullUser(), cache);
+                var modules    = pathsWithinTestData.Select(TestData.DataDir)
+                                                    .Select(Path.GetFullPath)
+                                                    .Select(CKANPathUtils.NormalizePath)
+                                                    .Select((p, i) =>
+                                                        $@"{{
+                                                            ""identifier"": ""Mod{i}"",
+                                                            ""version"":    ""1.0"",
+                                                            ""download"":   ""{p}""
+                                                        }}")
+                                                    .Select(CkanModule.FromJson)
+                                                    .ToArray();
+                var badURLs    = failCases.Select(TestData.DataDir)
+                                          .Select(Path.GetFullPath)
+                                          .Select(CKANPathUtils.NormalizePath)
+                                          .Select(p => new Uri(p))
+                                          .ToArray();
+
+                // Act / Assert
+                var exc = Assert.Throws<ModuleDownloadErrorsKraken>(() =>
+                {
+                    var gotModules = downloader.ModulesAsTheyFinish(Array.Empty<CkanModule>(),
+                                                                    modules)
+                                               .ToArray();
+                });
+                CollectionAssert.AreEquivalent(badURLs,
+                                               exc!.Exceptions.SelectMany(kvp => kvp.Key.download!));
             }
         }
     }
