@@ -833,10 +833,10 @@ namespace CKAN
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
         /// </summary>
-        public void RegisterModule(CkanModule   mod,
-                                   List<string> absoluteFiles,
-                                   GameInstance inst,
-                                   bool         autoInstalled)
+        public void RegisterModule(CkanModule          mod,
+                                   ICollection<string> absoluteFiles,
+                                   GameInstance        inst,
+                                   bool                autoInstalled)
         {
             log.DebugFormat("Registering module {0}", mod);
             EnlistWithTransaction();
@@ -1220,8 +1220,8 @@ namespace CKAN
         /// Return modules which are dependent on the modules passed in or modules in the return list
         /// </summary>
         public IEnumerable<string> FindReverseDependencies(
-                List<string>                        modulesToRemove,
-                List<CkanModule>?                   modulesToInstall = null,
+                ICollection<string>                 modulesToRemove,
+                ICollection<CkanModule>?            modulesToInstall = null,
                 Func<RelationshipDescriptor, bool>? satisfiedFilter  = null)
             => FindReverseDependencies(modulesToRemove, modulesToInstall,
                                        installed_modules.Values.Select(im => im.Module)

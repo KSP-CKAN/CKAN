@@ -798,20 +798,20 @@ namespace CKAN.IO
                     mods.Except(installing?.Select(m => m.identifier) ?? Array.Empty<string>())
                         .ToList(),
                     installing))
-                .ToList();
+                .ToArray();
 
             var goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
                         registry_manager.registry.InstalledModules
                             .Where(im => !revdep.Contains(im.identifier))
-                            .Concat(installing?.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)) ?? Array.Empty<InstalledModule>())
-                            .ToList(),
+                            .ToArray(),
+                        installing ?? new List<CkanModule>(),
                         instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
                     .Select(im => im.identifier))
-                .ToList();
+                .ToArray();
 
             // If there is nothing to uninstall, skip out.
-            if (goners.Count == 0)
+            if (goners.Length == 0)
             {
                 return;
             }
@@ -1386,11 +1386,11 @@ namespace CKAN.IO
                     // Conjure the future state of the installed modules list after upgrading
                     registry.InstalledModules
                             .Where(im => !removingIdents.Contains(im.identifier))
-                            .Concat(modules.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)))
-                            .ToList(),
+                            .ToArray(),
+                    modules,
                     instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
-                .ToList();
-            if (autoRemoving.Count > 0)
+                .ToArray();
+            if (autoRemoving.Length > 0)
             {
                 foreach (var im in autoRemoving)
                 {
