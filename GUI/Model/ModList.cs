@@ -236,7 +236,7 @@ namespace CKAN.GUI
         /// <param name="crit">Compatible versions of current instance</param>
         /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
         private static IEnumerable<InstalledModule> InstalledAfterChanges(
-            IRegistryQuerier registry, HashSet<ModChange> changeSet)
+            IRegistryQuerier registry, ICollection<ModChange> changeSet)
         {
             var removingIdents = changeSet
                 .Where(ch => ch.ChangeType != GUIModChangeType.Install)
@@ -453,58 +453,54 @@ namespace CKAN.GUI
                                                        DataGridViewColumn?  replaceCol)
         {
             log.Debug("Computing user changeset");
-            var modChanges = full_list_of_mod_rows?.Values
-                                                   .SelectMany(row => rowChanges(registry, row, upgradeCol, replaceCol))
-                                                   .ToList()
-                                                  ?? new List<ModChange>();
+            var modChanges = (full_list_of_mod_rows?.Values
+                                                    .SelectMany(row => rowChanges(registry, row, upgradeCol, replaceCol))
+                                                   ?? Enumerable.Empty<ModChange>())
+                                                   .ToList();
 
             // Inter-mod dependencies can block some upgrades, which can sometimes but not always
             // be overcome by upgrading both mods. Try to pick the right target versions.
-            if (registry != null)
+            var upgrades = modChanges.OfType<ModUpgrade>()
+                                     // Skip reinstalls
+                                     .Where(upg => upg.Mod != upg.targetMod)
+                                     .ToArray();
+            if (upgrades.Length > 0)
             {
-                var upgrades = modChanges.OfType<ModUpgrade>()
-                                         // Skip reinstalls
-                                         .Where(upg => upg.Mod != upg.targetMod)
-                                         .ToArray();
-                if (upgrades.Length > 0)
+                var upgradeable = registry.CheckUpgradeable(instance,
+                                                            // Hold identifiers not chosen for upgrading
+                                                            registry.Installed(false)
+                                                                    .Select(kvp => kvp.Key)
+                                                                    .Except(upgrades.Select(ch => ch.Mod.identifier))
+                                                                    .ToHashSet(),
+                                                            ModuleLabelList.ModuleLabels
+                                                                           .IgnoreMissingIdentifiers(instance)
+                                                                           .ToHashSet())
+                                          [true]
+                                          .ToDictionary(m => m.identifier,
+                                                        m => m);
+                foreach (var change in upgrades)
                 {
-                    var upgradeable = registry.CheckUpgradeable(instance,
-                                                                // Hold identifiers not chosen for upgrading
-                                                                registry.Installed(false)
-                                                                        .Select(kvp => kvp.Key)
-                                                                        .Except(upgrades.Select(ch => ch.Mod.identifier))
-                                                                        .ToHashSet(),
-                                                                ModuleLabelList.ModuleLabels
-                                                                               .IgnoreMissingIdentifiers(instance)
-                                                                               .ToHashSet())
-                                              [true]
-                                              .ToDictionary(m => m.identifier,
-                                                            m => m);
-                    foreach (var change in upgrades)
+                    change.targetMod = upgradeable.TryGetValue(change.Mod.identifier,
+                                                               out CkanModule? allowedMod)
+                        // Upgrade to the version the registry says we should
+                        ? allowedMod
+                        // Not upgradeable!
+                        : change.Mod;
+                    if (change.Mod == change.targetMod)
                     {
-                        change.targetMod = upgradeable.TryGetValue(change.Mod.identifier,
-                                                                   out CkanModule? allowedMod)
-                            // Upgrade to the version the registry says we should
-                            ? allowedMod
-                            // Not upgradeable!
-                            : change.Mod;
-                        if (change.Mod == change.targetMod)
-                        {
-                            // This upgrade was voided by dependencies or conflicts
-                            modChanges.Remove(change);
-                        }
+                        // This upgrade was voided by dependencies or conflicts
+                        modChanges.Remove(change);
                     }
                 }
             }
 
-            return (registry == null
-                ? modChanges
-                : modChanges.Union(
-                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), instance.game, instance.StabilityToleranceConfig, crit)
+            return modChanges.Union(
+                    registry.FindRemovableAutoInstalled(InstalledAfterChanges(registry, modChanges).ToList(),
+                                                        instance.game, instance.StabilityToleranceConfig, crit)
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
                             new SelectionReason.NoLongerUsed(),
-                            ServiceLocator.Container.Resolve<IConfiguration>()))))
+                            ServiceLocator.Container.Resolve<IConfiguration>())))
                 .ToHashSet();
         }
 
