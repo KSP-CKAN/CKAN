@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Transactions;
 using System.Collections.Generic;
@@ -453,6 +454,64 @@ namespace Tests.Core.Registry
 
                 // Assert
                 Assert.AreEqual(correctAnswer, allHosts);
+            }
+        }
+
+        [Test]
+        public void FindRemovableAutoInstalled_InstallingDepWithConflict_FindsOldConflictingDep()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var repo = new TemporaryRepository(
+                                @"{
+                                    ""identifier"": ""OuterPlanetsMod"",
+                                    ""version"":    ""1.0"",
+                                    ""download"":   ""https://github.com/"",
+                                    ""depends"":    [ { ""name"": ""KopernicusTech"" } ]
+                                }",
+                                @"{
+                                    ""identifier"": ""OuterPlanetsMod"",
+                                    ""version"":    ""2.0"",
+                                    ""download"":   ""https://github.com/"",
+                                    ""depends"":    [ { ""name"": ""Kopernicus"" } ]
+                                }",
+                                @"{
+                                    ""identifier"": ""KopernicusTech"",
+                                    ""version"":    ""1.0"",
+                                    ""download"":   ""https://github.com/"",
+                                    ""conflicts"":  [ { ""name"": ""Kopernicus"" } ]
+                                }",
+                                @"{
+                                    ""identifier"": ""Kopernicus"",
+                                    ""version"":    ""1.0"",
+                                    ""download"":   ""https://github.com/""
+                                }"))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var firstChosen = registry.GetModuleByVersion("OuterPlanetsMod", "1.0")!;
+                var secondChosen = registry.GetModuleByVersion("OuterPlanetsMod", "2.0")!;
+                var firstDependency = registry.GetModuleByVersion("KopernicusTech", "1.0")!;
+                var secondDependency = registry.GetModuleByVersion("Kopernicus", "1.0")!;
+                registry.RegisterModule(firstChosen, Array.Empty<string>(),
+                                        gameInstWrapper.KSP, false);
+                registry.RegisterModule(firstDependency, Array.Empty<string>(),
+                                        gameInstWrapper.KSP, true);
+                var autoInstDep = registry.InstalledModule(firstDependency.identifier)!;
+                var installed = new InstalledModule[] { registry.InstalledModule(firstDependency.identifier)! };
+                var installing = new CkanModule[] { secondChosen };
+
+                // Act
+                var removable = registry.FindRemovableAutoInstalled(
+                                    installed, installing,
+                                    gameInstWrapper.KSP.game,
+                                    stabilityTolerance,
+                                    gameInstWrapper.KSP.VersionCriteria());
+
+                // Assert
+                CollectionAssert.AreEquivalent(new InstalledModule[] { autoInstDep },
+                                               removable);
             }
         }
 
