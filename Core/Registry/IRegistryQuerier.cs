@@ -492,26 +492,28 @@ namespace CKAN
             var autoInstMods = installed.Where(im => im.AutoInstalled).ToArray();
             var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
 
-            // Need to get the full changeset for this to work as intended
-            RelationshipResolverOptions opts = RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance);
+            var opts = RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance);
             opts.without_toomanyprovides_kraken = true;
             opts.without_enforce_consistency    = true;
             opts.proceed_with_inconsistencies   = true;
-            var resolver = new RelationshipResolver(
-                // DLC silently crashes the resolver
-                installed.Where(im => !im.Module.IsDLC)
-                         .Select(im => im.Module),
-                null,
-                opts, querier, game, crit);
-
-            var mods = resolver.ModList().ToHashSet();
             return autoInstMods.Where(
                 im => autoInstIds.IsSupersetOf(
-                    Registry.FindReverseDependencies(new List<string> { im.identifier },
-                                                     installing,
-                                                     mods,
-                                                     querier.InstalledDlls,
-                                                     querier.InstalledDlc)));
+                    Registry.FindReverseDependencies(
+                        new string[] { im.identifier },
+                        installing,
+                        new RelationshipResolver(
+                            // DLC silently crashes the resolver
+                            installed.Where(other => !other.Module.IsDLC
+                                                     && other != im)
+                                     .Select(other => other.Module),
+                            querier.InstalledModules.Except(installed)
+                                                    .Append(im)
+                                                    .Select(other => other.Module),
+                            opts, querier, game, crit)
+                                .ModList()
+                                .ToArray(),
+                        querier.InstalledDlls,
+                        querier.InstalledDlc)));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
