@@ -273,6 +273,11 @@ public sealed class PrepareSignPathTask : FrostingTask<BuildContext>
 [IsDependentOn(typeof(TestOnlyTask))]
 public sealed class TestTask : FrostingTask<BuildContext>;
 
+[TaskName("Test-UnitTests")]
+[IsDependentOn(typeof(BuildTask))]
+[IsDependentOn(typeof(TestUnitTestsOnlyTask))]
+public sealed class TestUnitTestsTask : FrostingTask<BuildContext>;
+
 [TaskName("Test+Only")]
 [TaskDescription("Run tests without compiling.")]
 [IsDependentOn(typeof(TestExecutablesOnlyTask))]
