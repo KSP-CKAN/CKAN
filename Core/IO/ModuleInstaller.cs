@@ -273,7 +273,7 @@ namespace CKAN.IO
             }
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerInstallingMod,
-                              module.name);
+                              $"{module.name} {module.version}");
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
@@ -292,7 +292,7 @@ namespace CKAN.IO
             }
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
-                              module.name);
+                              $"{module.name} {module.version}");
 
             // Fire our callback that we've installed a module, if we have one.
             OneComplete?.Invoke(module);
@@ -848,9 +848,6 @@ namespace CKAN.IO
                 {
                     if (registry.InstalledModule(ident) is InstalledModule instMod)
                     {
-                        User.RaiseMessage(Properties.Resources.ModuleInstallerRemovingMod,
-                                          registry.InstalledModule(ident)?.Module.name
-                                                                         ?? ident);
                         Uninstall(ident, ref possibleConfigOnlyDirs, registry,
                                   new ProgressImmediate<long>(bytes =>
                                   {
@@ -861,9 +858,6 @@ namespace CKAN.IO
                                       User.RaiseProgress(rateCounter);
                                   }));
                         modRemoveCompletedBytes += instMod?.Module.install_size ?? 0;
-                        User.RaiseMessage(Properties.Resources.ModuleInstallerRemovedMod,
-                                          registry.InstalledModule(ident)?.Module.name
-                                                                         ?? ident);
                     }
                 }
 
@@ -902,6 +896,8 @@ namespace CKAN.IO
                     log.ErrorFormat("Trying to uninstall {0} but it's not installed", identifier);
                     throw new ModNotInstalledKraken(identifier);
                 }
+                User.RaiseMessage(Properties.Resources.ModuleInstallerRemovingMod,
+                                  $"{instMod.Module.name} {instMod.Module.version}");
 
                 // Walk our registry to find all files for this mod.
                 var modFiles = instMod.Files.ToArray();
@@ -1065,6 +1061,8 @@ namespace CKAN.IO
                 }
                 log.InfoFormat("Removed {0}", identifier);
                 transaction.Complete();
+                User.RaiseMessage(Properties.Resources.ModuleInstallerRemovedMod,
+                                  $"{instMod.Module.name} {instMod.Module.version}");
             }
         }
 
@@ -1317,22 +1315,22 @@ namespace CKAN.IO
                         if (inProgressFile.Exists)
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
-                                module.name, module.version,
-                                string.Join(", ", PrioritizedHosts(config, module.download)),
-                                CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                                              module.name, module.version,
+                                              string.Join(", ", PrioritizedHosts(config, module.download)),
+                                              CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
-                                module.name, module.version,
-                                string.Join(", ", PrioritizedHosts(config, module.download)),
-                                CkanModule.FmtSize(module.download_size));
+                                              module.name, module.version,
+                                              string.Join(", ", PrioritizedHosts(config, module.download)),
+                                              CkanModule.FmtSize(module.download_size));
                         }
                     }
                     else
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingCached,
-                            module.name, module.version);
+                                          module.name, module.version);
                     }
                 }
                 else
@@ -1344,12 +1342,12 @@ namespace CKAN.IO
                     if (installed.version.IsEqualTo(module.version))
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeReinstalling,
-                            module.name, module.version);
+                                          module.name, module.version);
                     }
                     else if (installed.version.IsGreaterThan(module.version))
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeDowngrading,
-                            module.name, installed.version, module.version);
+                                          module.name, installed.version, module.version);
                     }
                     else
                     {
@@ -1359,22 +1357,22 @@ namespace CKAN.IO
                             if (inProgressFile.Exists)
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
-                                    module.name, installed.version, module.version,
-                                    string.Join(", ", PrioritizedHosts(config, module.download)),
-                                    CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                                                  module.name, installed.version, module.version,
+                                                  string.Join(", ", PrioritizedHosts(config, module.download)),
+                                                  CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                             }
                             else
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
-                                    module.name, installed.version, module.version,
-                                    string.Join(", ", PrioritizedHosts(config, module.download)),
-                                    CkanModule.FmtSize(module.download_size));
+                                                  module.name, installed.version, module.version,
+                                                  string.Join(", ", PrioritizedHosts(config, module.download)),
+                                                  CkanModule.FmtSize(module.download_size));
                             }
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingCached,
-                                module.name, installed.version, module.version);
+                                              module.name, installed.version, module.version);
                         }
                     }
                 }
