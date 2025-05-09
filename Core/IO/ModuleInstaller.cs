@@ -196,10 +196,19 @@ namespace CKAN.IO
             else
             {
                 waiting.UnionWith(cached);
+                // Treat excluded mods as already done
+                done.UnionWith(resolver.ModList().Except(waiting));
                 foreach (var m in OnePass(resolver, waiting, done))
                 {
                     yield return m;
                 }
+            }
+            if (waiting.Count > 0)
+            {
+                // Sanity check in case something goes haywire with the threading logic
+                throw new InconsistentKraken(
+                    string.Format("Mods should have been installed but were not: {0}",
+                                  string.Join(", ", waiting)));
             }
         }
 
@@ -1283,15 +1292,35 @@ namespace CKAN.IO
         {
             var registry = registry_manager.registry;
 
+            var removingIdents = registry.InstalledModules.Select(im => im.identifier)
+                                         .Intersect(modules.Select(m => m.identifier))
+                                         .ToHashSet();
+            var autoRemoving = registry
+                .FindRemovableAutoInstalled(
+                    // Conjure the future state of the installed modules list after upgrading
+                    registry.InstalledModules
+                            .Where(im => !removingIdents.Contains(im.identifier))
+                            .ToArray(),
+                    modules,
+                    instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
+                .ToHashSet();
+
             var resolver = new RelationshipResolver(
                 modules,
                 modules.Select(m => registry.InstalledModule(m.identifier)?.Module)
-                       .OfType<CkanModule>(),
+                       .OfType<CkanModule>()
+                       .Concat(autoRemoving.Select(im => im.Module)),
                 RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
                 registry,
                 instance.game, instance.VersionCriteria());
-            modules = resolver.ModList().ToArray();
+            modules = resolver.ModList()
+                              .ToArray();
             var autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
+            // Skip removing ones we still need
+            autoRemoving.RemoveWhere(im => modules.Contains(im.Module));
+            // Don't install stuff that's already there
+            modules = modules.Except(registry.InstalledModules.Select(im => im.Module))
+                             .ToArray();
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToUpgrade);
             User.RaiseMessage("");
@@ -1378,17 +1407,7 @@ namespace CKAN.IO
                 }
             }
 
-            var removingIdents = to_remove.Select(im => im.identifier).ToHashSet();
-            var autoRemoving = registry
-                .FindRemovableAutoInstalled(
-                    // Conjure the future state of the installed modules list after upgrading
-                    registry.InstalledModules
-                            .Where(im => !removingIdents.Contains(im.identifier))
-                            .ToArray(),
-                    modules,
-                    instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
-                .ToArray();
-            if (autoRemoving.Length > 0)
+            if (autoRemoving.Count > 0)
             {
                 foreach (var im in autoRemoving)
                 {
