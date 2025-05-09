@@ -784,10 +784,9 @@ namespace CKAN.IO
                 throw new ModNotInstalledKraken(mod);
             }
 
-            var instDlc = mods
-                .Select(registry_manager.registry.InstalledModule)
-                .OfType<InstalledModule>()
-                .FirstOrDefault(m => m.Module.IsDLC);
+            var instDlc = mods.Select(registry_manager.registry.InstalledModule)
+                              .OfType<InstalledModule>()
+                              .FirstOrDefault(m => m.Module.IsDLC);
             if (instDlc != null)
             {
                 throw new ModuleIsDLCKraken(instDlc.Module);
