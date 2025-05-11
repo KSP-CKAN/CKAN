@@ -463,30 +463,7 @@ namespace Tests.Core.Registry
             // Arrange
             var user = new NullUser();
             using (var gameInstWrapper = new DisposableKSP())
-            using (var repo = new TemporaryRepository(
-                                @"{
-                                    ""identifier"": ""OuterPlanetsMod"",
-                                    ""version"":    ""1.0"",
-                                    ""download"":   ""https://github.com/"",
-                                    ""depends"":    [ { ""name"": ""KopernicusTech"" } ]
-                                }",
-                                @"{
-                                    ""identifier"": ""OuterPlanetsMod"",
-                                    ""version"":    ""2.0"",
-                                    ""download"":   ""https://github.com/"",
-                                    ""depends"":    [ { ""name"": ""Kopernicus"" } ]
-                                }",
-                                @"{
-                                    ""identifier"": ""KopernicusTech"",
-                                    ""version"":    ""1.0"",
-                                    ""download"":   ""https://github.com/"",
-                                    ""conflicts"":  [ { ""name"": ""Kopernicus"" } ]
-                                }",
-                                @"{
-                                    ""identifier"": ""Kopernicus"",
-                                    ""version"":    ""1.0"",
-                                    ""download"":   ""https://github.com/""
-                                }"))
+            using (var repo = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
