@@ -90,8 +90,8 @@ namespace CKAN
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
-        IEnumerable<string> FindReverseDependencies(List<string>                        modulesToRemove,
-                                                    List<CkanModule>?                   modulesToInstall = null,
+        IEnumerable<string> FindReverseDependencies(ICollection<string>                 modulesToRemove,
+                                                    ICollection<CkanModule>?            modulesToInstall = null,
                                                     Func<RelationshipDescriptor, bool>? satisfiedFilter  = null);
 
         /// <summary>
@@ -470,7 +470,8 @@ namespace CKAN
         /// or only auto-installed depending modules.
         /// </summary>
         /// <param name="querier">A registry</param>
-        /// <param name="installedModules">The modules currently installed</param>
+        /// <param name="installed">The modules currently installed</param>
+        /// <param name="installing">The modules to be installed</param>
         /// <param name="game">The registry's game instance</param>
         /// <param name="stabilityTolerance">Stability tolerance for the game instance</param>
         /// <param name="crit">Version criteria for resolving relationships</param>
@@ -478,38 +479,41 @@ namespace CKAN
         /// Sequence of removable auto-installed modules, if any
         /// </returns>
         public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
-            this IRegistryQuerier    querier,
-            List<InstalledModule>    installedModules,
-            IGame                    game,
-            StabilityToleranceConfig stabilityTolerance,
-            GameVersionCriteria      crit)
+            this IRegistryQuerier        querier,
+            ICollection<InstalledModule> installed,
+            ICollection<CkanModule>      installing,
+            IGame                        game,
+            StabilityToleranceConfig     stabilityTolerance,
+            GameVersionCriteria          crit)
         {
             log.DebugFormat("Finding removable autoInstalled for: {0}",
-                            string.Join(", ", installedModules.Select(im => im.identifier)));
+                            string.Join(", ", installed.Select(im => im.identifier)));
 
-            var autoInstMods = installedModules.Where(im => im.AutoInstalled).ToList();
+            var autoInstMods = installed.Where(im => im.AutoInstalled).ToArray();
             var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
 
-            // Need to get the full changeset for this to work as intended
-            RelationshipResolverOptions opts = RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance);
+            var opts = RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance);
             opts.without_toomanyprovides_kraken = true;
             opts.without_enforce_consistency    = true;
             opts.proceed_with_inconsistencies   = true;
-            var resolver = new RelationshipResolver(
-                // DLC silently crashes the resolver
-                installedModules.Where(im => !im.Module.IsDLC)
-                                .Select(im => im.Module),
-                null,
-                opts, querier, game, crit);
-
-            var mods = resolver.ModList().ToHashSet();
             return autoInstMods.Where(
                 im => autoInstIds.IsSupersetOf(
-                    Registry.FindReverseDependencies(new List<string> { im.identifier },
-                                                     new List<CkanModule>(),
-                                                     mods,
-                                                     querier.InstalledDlls,
-                                                     querier.InstalledDlc)));
+                    Registry.FindReverseDependencies(
+                        new string[] { im.identifier },
+                        installing,
+                        new RelationshipResolver(
+                            // DLC silently crashes the resolver
+                            installed.Where(other => !other.Module.IsDLC
+                                                     && other != im)
+                                     .Select(other => other.Module),
+                            querier.InstalledModules.Except(installed)
+                                                    .Append(im)
+                                                    .Select(other => other.Module),
+                            opts, querier, game, crit)
+                                .ModList()
+                                .ToArray(),
+                        querier.InstalledDlls,
+                        querier.InstalledDlc)));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));

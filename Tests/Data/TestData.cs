@@ -873,6 +873,54 @@ namespace Tests.Data
                 }
               }
             }";
+
+        public static readonly string[] OuterPlanetsLibraryMetadata = new string[]
+        {
+            @"{
+                ""identifier"": ""OuterPlanetsMod"",
+                ""name"":       ""OuterPlanetsMod"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://github.com/"",
+                ""depends"":    [ { ""name"": ""KopernicusTech"" } ],
+                ""install"":    [ { ""find"":       ""DogeCoinFlag"",
+                                    ""install_to"": ""GameData/OuterPlanetsMod1"" } ]
+            }",
+            @"{
+                ""identifier"": ""OuterPlanetsMod"",
+                ""name"":       ""OuterPlanetsMod"",
+                ""version"":    ""2.0"",
+                ""download"":   ""https://github.com/"",
+                ""depends"":    [ { ""name"": ""Kopernicus"" } ],
+                ""install"":    [ { ""find"":       ""DogeCoinFlag"",
+                                    ""install_to"": ""GameData/OuterPlanetsMod2"" } ]
+            }",
+            @"{
+                ""identifier"": ""KopernicusTech"",
+                ""name"":       ""KopernicusTech"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://github.com/"",
+                ""conflicts"":  [ { ""name"": ""Kopernicus"" } ],
+                ""install"":    [ { ""find"":       ""DogeCoinFlag"",
+                                    ""install_to"": ""GameData/KopernicusTech"" } ]
+            }",
+            @"{
+                ""identifier"": ""Kopernicus"",
+                ""name"":       ""Kopernicus"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://github.com/"",
+                ""depends"":    [ { ""name"": ""ModularFlightIntegrator"" } ],
+                ""install"":    [ { ""find"":       ""DogeCoinFlag"",
+                                    ""install_to"": ""GameData/Kopernicus"" } ]
+            }",
+            @"{
+                ""identifier"": ""ModularFlightIntegrator"",
+                ""name"":       ""ModularFlightIntegrator"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://github.com/"",
+                ""install"":    [ { ""find"":       ""DogeCoinFlag"",
+                                    ""install_to"": ""GameData/ModularFlightIntegrator"" } ]
+            }",
+        };
     }
 
     public class RandomModuleGenerator

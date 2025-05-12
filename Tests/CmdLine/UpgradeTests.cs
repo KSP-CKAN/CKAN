@@ -658,7 +658,58 @@ namespace Tests.CmdLine
                                                                       .ToString())
                                                   .ToArray(),
                                           description);
+            }
+        }
 
+        [Test,
+         // Install the old KopernicusTech-depending version,
+         // then upgrade to the Kopernicus-depending version
+         TestCase(new string[] { "OuterPlanetsMod=1.0" },
+                  new string[] { "OuterPlanetsMod" },
+                  new string[] { "OuterPlanetsMod", "Kopernicus", "ModularFlightIntegrator" }),
+         // Install the Kopernicus-depending version
+         // then downgrade to the old KopernicusTech-depending version,
+         TestCase(new string[] { "OuterPlanetsMod" },
+                  new string[] { "OuterPlanetsMod=1.0" },
+                  new string[] { "OuterPlanetsMod", "KopernicusTech" })]
+        public void RunCommand_UpOrDowngradeWithAutoDepConflict_Works(string[] toInstall,
+                                                                      string[] toUpgrade,
+                                                                      string[] finalInstalled)
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var repo = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var config = new FakeConfiguration(gameInstWrapper.KSP,
+                                                      gameInstWrapper.KSP.Name))
+            using (var manager = new GameInstanceManager(user, config)
+                {
+                    CurrentInstance = gameInstWrapper.KSP,
+                })
+            using (var regMgr = RegistryManager.Instance(gameInstWrapper.KSP,
+                                                         repoData.Manager,
+                                                         new Repository[] { repo.repo }))
+            {
+                foreach (var m in repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
+                                                  .SelectMany(am => am.AllAvailable()))
+                {
+                    manager.Cache?.Store(m, TestData.DogeCoinFlagZip(), null);
+                }
+                // Act
+                new Install(manager, repoData.Manager, user)
+                    .RunCommand(gameInstWrapper.KSP,
+                                new InstallOptions() { modules = toInstall.ToList() });
+                new Upgrade(manager, repoData.Manager, user)
+                    .RunCommand(gameInstWrapper.KSP,
+                                new UpgradeOptions() { modules = toUpgrade.ToList() });
+
+                // Assert
+                CollectionAssert.IsEmpty(user.RaisedErrors);
+                CollectionAssert.AreEquivalent(finalInstalled,
+                                               regMgr.registry
+                                                     .InstalledModules
+                                                     .Select(im => im.Module.identifier));
             }
         }
     }

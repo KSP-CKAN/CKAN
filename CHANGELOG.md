@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Detect future registry versions (#4364 by: HebaruSan)
 - [Multiple] Show download errors popup for downloads from Contents tab (#4366 by: HebaruSan)
 - [Multiple] Propagate exceptions from downloader task (#4367 by: HebaruSan)
+- [Multiple] Fix upgrading with conflicts between old and new dependencies (#4369 by: HebaruSan)
 
 ### Internal
 

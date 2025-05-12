@@ -134,7 +134,6 @@
   <data name="deduplicateToolstripMenuItem.ToolTipText" xml:space="preserve"><value>Scan installed files from all game instances and share the ones that can be shared</value></data>
   <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Save installed mod list (cannot be re-imported)...</value></data>
   <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Export modpack (can be re-imported)...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>Import &amp;downloaded mods...</value></data>
   <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>Audit &amp;recommendations</value></data>
   <data name="auditRecommendationsMenuItem.ToolTipText" xml:space="preserve"><value>Review recommendations and suggestions of all installed mods</value></data>
   <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve"><value>Play &amp;time...</value></data>

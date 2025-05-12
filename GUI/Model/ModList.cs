@@ -124,7 +124,7 @@ namespace CKAN.GUI
         /// <param name="registry"></param>
         /// <param name="changeSet"></param>
         /// <param name="version">The version of the current game instance</param>
-        public Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
+        public Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier         registry,
             HashSet<ModChange>       changeSet,
             IGame                    game,
@@ -200,7 +200,8 @@ namespace CKAN.GUI
             }
 
             foreach (var im in registry.FindRemovableAutoInstalled(
-                InstalledAfterChanges(registry, changeSet).ToList(), game, stabilityTolerance, version))
+                InstalledAfterChanges(registry, changeSet).ToArray(),
+                Array.Empty<CkanModule>(), game, stabilityTolerance, version))
             {
                 changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed(),
                                             ServiceLocator.Container.Resolve<IConfiguration>()));
@@ -213,7 +214,7 @@ namespace CKAN.GUI
                 conflictOptions(stabilityTolerance), registry, game, version);
 
             // Replace Install entries in changeset with the ones from resolver to get all the reasons
-            return new Tuple<IEnumerable<ModChange>, Dictionary<CkanModule, string>, List<string>>(
+            return new Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>>(
                 changeSet.Where(ch => !(ch.ChangeType is GUIModChangeType.Install
                                         // Leave in replacements
                                         && !ch.Reasons.Any(r => r is SelectionReason.Replacement)))
@@ -222,7 +223,8 @@ namespace CKAN.GUI
                                         // Changeset already contains changes for these
                                         .Except(extraInstalls)
                                         .Select(m => new ModChange(m, GUIModChangeType.Install, resolver.ReasonsFor(m),
-                                                                   ServiceLocator.Container.Resolve<IConfiguration>()))),
+                                                                   ServiceLocator.Container.Resolve<IConfiguration>())))
+                         .ToArray(),
                 resolver.ConflictList,
                 resolver.ConflictDescriptions.ToList());
         }
@@ -236,7 +238,7 @@ namespace CKAN.GUI
         /// <param name="crit">Compatible versions of current instance</param>
         /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
         private static IEnumerable<InstalledModule> InstalledAfterChanges(
-            IRegistryQuerier registry, HashSet<ModChange> changeSet)
+            IRegistryQuerier registry, ICollection<ModChange> changeSet)
         {
             var removingIdents = changeSet
                 .Where(ch => ch.ChangeType != GUIModChangeType.Install)
@@ -453,58 +455,55 @@ namespace CKAN.GUI
                                                        DataGridViewColumn?  replaceCol)
         {
             log.Debug("Computing user changeset");
-            var modChanges = full_list_of_mod_rows?.Values
-                                                   .SelectMany(row => rowChanges(registry, row, upgradeCol, replaceCol))
-                                                   .ToList()
-                                                  ?? new List<ModChange>();
+            var modChanges = (full_list_of_mod_rows?.Values
+                                                    .SelectMany(row => rowChanges(registry, row, upgradeCol, replaceCol))
+                                                   ?? Enumerable.Empty<ModChange>())
+                                                   .ToList();
 
             // Inter-mod dependencies can block some upgrades, which can sometimes but not always
             // be overcome by upgrading both mods. Try to pick the right target versions.
-            if (registry != null)
+            var upgrades = modChanges.OfType<ModUpgrade>()
+                                     // Skip reinstalls
+                                     .Where(upg => upg.Mod != upg.targetMod)
+                                     .ToArray();
+            if (upgrades.Length > 0)
             {
-                var upgrades = modChanges.OfType<ModUpgrade>()
-                                         // Skip reinstalls
-                                         .Where(upg => upg.Mod != upg.targetMod)
-                                         .ToArray();
-                if (upgrades.Length > 0)
+                var upgradeable = registry.CheckUpgradeable(instance,
+                                                            // Hold identifiers not chosen for upgrading
+                                                            registry.Installed(false)
+                                                                    .Select(kvp => kvp.Key)
+                                                                    .Except(upgrades.Select(ch => ch.Mod.identifier))
+                                                                    .ToHashSet(),
+                                                            ModuleLabelList.ModuleLabels
+                                                                           .IgnoreMissingIdentifiers(instance)
+                                                                           .ToHashSet())
+                                          [true]
+                                          .ToDictionary(m => m.identifier,
+                                                        m => m);
+                foreach (var change in upgrades)
                 {
-                    var upgradeable = registry.CheckUpgradeable(instance,
-                                                                // Hold identifiers not chosen for upgrading
-                                                                registry.Installed(false)
-                                                                        .Select(kvp => kvp.Key)
-                                                                        .Except(upgrades.Select(ch => ch.Mod.identifier))
-                                                                        .ToHashSet(),
-                                                                ModuleLabelList.ModuleLabels
-                                                                               .IgnoreMissingIdentifiers(instance)
-                                                                               .ToHashSet())
-                                              [true]
-                                              .ToDictionary(m => m.identifier,
-                                                            m => m);
-                    foreach (var change in upgrades)
+                    change.targetMod = upgradeable.TryGetValue(change.Mod.identifier,
+                                                               out CkanModule? allowedMod)
+                        // Upgrade to the version the registry says we should
+                        ? allowedMod
+                        // Not upgradeable!
+                        : change.Mod;
+                    if (change.Mod == change.targetMod)
                     {
-                        change.targetMod = upgradeable.TryGetValue(change.Mod.identifier,
-                                                                   out CkanModule? allowedMod)
-                            // Upgrade to the version the registry says we should
-                            ? allowedMod
-                            // Not upgradeable!
-                            : change.Mod;
-                        if (change.Mod == change.targetMod)
-                        {
-                            // This upgrade was voided by dependencies or conflicts
-                            modChanges.Remove(change);
-                        }
+                        // This upgrade was voided by dependencies or conflicts
+                        modChanges.Remove(change);
                     }
                 }
             }
 
-            return (registry == null
-                ? modChanges
-                : modChanges.Union(
-                    registry.FindRemovableAutoInstalled(registry.InstalledModules.ToList(), instance.game, instance.StabilityToleranceConfig, crit)
+            return modChanges.Union(
+                    registry.FindRemovableAutoInstalled(InstalledAfterChanges(registry, modChanges).ToArray(),
+                                                        Array.Empty<CkanModule>(),
+                                                        instance.game, instance.StabilityToleranceConfig, crit)
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
                             new SelectionReason.NoLongerUsed(),
-                            ServiceLocator.Container.Resolve<IConfiguration>()))))
+                            ServiceLocator.Container.Resolve<IConfiguration>())))
                 .ToHashSet();
         }
 

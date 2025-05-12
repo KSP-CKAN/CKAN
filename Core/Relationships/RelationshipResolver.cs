@@ -16,9 +16,6 @@ namespace CKAN
     /// <summary>
     /// Resolves relationships between mods. Primarily used to satisfy missing dependencies and to check for conflicts on proposed installs.
     /// </summary>
-    /// <remarks>
-    /// All constructors start with currently installed modules, to remove <see cref="RemoveModsFromInstalledList" />
-    /// </remarks>
     public class RelationshipResolver
     {
         /// <summary>
@@ -44,6 +41,7 @@ namespace CKAN
 
             installed_modules = registry.InstalledModules
                                         .Select(i_module => i_module.Module)
+                                        .Except(modulesToRemove ?? Enumerable.Empty<CkanModule>())
                                         .ToHashSet();
             var installed_relationship = new SelectionReason.Installed();
             foreach (var module in installed_modules)
@@ -74,10 +72,6 @@ namespace CKAN
                 }
             }
 
-            if (modulesToRemove != null)
-            {
-                RemoveModsFromInstalledList(modulesToRemove);
-            }
             AddModulesToInstall(toInst);
         }
 
@@ -143,20 +137,6 @@ namespace CKAN
                 conflicts.AddRange(k.Conflicts.Select(tuple => new ModPair(tuple.Item1, tuple.Item3))
                                               .Where(pair => !conflicts.Contains(pair))
                                               .ToArray());
-            }
-        }
-
-        /// <summary>
-        /// Removes mods from the list of installed modules. Intended to be used for cases
-        /// in which the mod is to be un-installed.
-        /// </summary>
-        /// <param name="mods">The mods to remove.</param>
-        private void RemoveModsFromInstalledList(IEnumerable<CkanModule> mods)
-        {
-            foreach (var module in mods)
-            {
-                installed_modules.Remove(module);
-                conflicts.RemoveAll(kvp => module.Equals(kvp.Key) || module.Equals(kvp.Value));
             }
         }
 

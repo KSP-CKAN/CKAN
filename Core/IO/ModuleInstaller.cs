@@ -196,10 +196,19 @@ namespace CKAN.IO
             else
             {
                 waiting.UnionWith(cached);
+                // Treat excluded mods as already done
+                done.UnionWith(resolver.ModList().Except(waiting));
                 foreach (var m in OnePass(resolver, waiting, done))
                 {
                     yield return m;
                 }
+            }
+            if (waiting.Count > 0)
+            {
+                // Sanity check in case something goes haywire with the threading logic
+                throw new InconsistentKraken(
+                    string.Format("Mods should have been installed but were not: {0}",
+                                  string.Join(", ", waiting)));
             }
         }
 
@@ -273,7 +282,7 @@ namespace CKAN.IO
             }
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerInstallingMod,
-                              module.name);
+                              $"{module.name} {module.version}");
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
@@ -292,7 +301,7 @@ namespace CKAN.IO
             }
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
-                              module.name);
+                              $"{module.name} {module.version}");
 
             // Fire our callback that we've installed a module, if we have one.
             OneComplete?.Invoke(module);
@@ -784,10 +793,9 @@ namespace CKAN.IO
                 throw new ModNotInstalledKraken(mod);
             }
 
-            var instDlc = mods
-                .Select(registry_manager.registry.InstalledModule)
-                .OfType<InstalledModule>()
-                .FirstOrDefault(m => m.Module.IsDLC);
+            var instDlc = mods.Select(registry_manager.registry.InstalledModule)
+                              .OfType<InstalledModule>()
+                              .FirstOrDefault(m => m.Module.IsDLC);
             if (instDlc != null)
             {
                 throw new ModuleIsDLCKraken(instDlc.Module);
@@ -799,20 +807,20 @@ namespace CKAN.IO
                     mods.Except(installing?.Select(m => m.identifier) ?? Array.Empty<string>())
                         .ToList(),
                     installing))
-                .ToList();
+                .ToArray();
 
             var goners = revdep.Union(
                     registry_manager.registry.FindRemovableAutoInstalled(
                         registry_manager.registry.InstalledModules
                             .Where(im => !revdep.Contains(im.identifier))
-                            .Concat(installing?.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)) ?? Array.Empty<InstalledModule>())
-                            .ToList(),
+                            .ToArray(),
+                        installing ?? new List<CkanModule>(),
                         instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
                     .Select(im => im.identifier))
-                .ToList();
+                .ToArray();
 
             // If there is nothing to uninstall, skip out.
-            if (goners.Count == 0)
+            if (goners.Length == 0)
             {
                 return;
             }
@@ -849,9 +857,6 @@ namespace CKAN.IO
                 {
                     if (registry.InstalledModule(ident) is InstalledModule instMod)
                     {
-                        User.RaiseMessage(Properties.Resources.ModuleInstallerRemovingMod,
-                                          registry.InstalledModule(ident)?.Module.name
-                                                                         ?? ident);
                         Uninstall(ident, ref possibleConfigOnlyDirs, registry,
                                   new ProgressImmediate<long>(bytes =>
                                   {
@@ -862,9 +867,6 @@ namespace CKAN.IO
                                       User.RaiseProgress(rateCounter);
                                   }));
                         modRemoveCompletedBytes += instMod?.Module.install_size ?? 0;
-                        User.RaiseMessage(Properties.Resources.ModuleInstallerRemovedMod,
-                                          registry.InstalledModule(ident)?.Module.name
-                                                                         ?? ident);
                     }
                 }
 
@@ -903,6 +905,8 @@ namespace CKAN.IO
                     log.ErrorFormat("Trying to uninstall {0} but it's not installed", identifier);
                     throw new ModNotInstalledKraken(identifier);
                 }
+                User.RaiseMessage(Properties.Resources.ModuleInstallerRemovingMod,
+                                  $"{instMod.Module.name} {instMod.Module.version}");
 
                 // Walk our registry to find all files for this mod.
                 var modFiles = instMod.Files.ToArray();
@@ -1066,6 +1070,8 @@ namespace CKAN.IO
                 }
                 log.InfoFormat("Removed {0}", identifier);
                 transaction.Complete();
+                User.RaiseMessage(Properties.Resources.ModuleInstallerRemovedMod,
+                                  $"{instMod.Module.name} {instMod.Module.version}");
             }
         }
 
@@ -1286,15 +1292,35 @@ namespace CKAN.IO
         {
             var registry = registry_manager.registry;
 
+            var removingIdents = registry.InstalledModules.Select(im => im.identifier)
+                                         .Intersect(modules.Select(m => m.identifier))
+                                         .ToHashSet();
+            var autoRemoving = registry
+                .FindRemovableAutoInstalled(
+                    // Conjure the future state of the installed modules list after upgrading
+                    registry.InstalledModules
+                            .Where(im => !removingIdents.Contains(im.identifier))
+                            .ToArray(),
+                    modules,
+                    instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
+                .ToHashSet();
+
             var resolver = new RelationshipResolver(
                 modules,
                 modules.Select(m => registry.InstalledModule(m.identifier)?.Module)
-                       .OfType<CkanModule>(),
+                       .OfType<CkanModule>()
+                       .Concat(autoRemoving.Select(im => im.Module)),
                 RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
                 registry,
                 instance.game, instance.VersionCriteria());
-            modules = resolver.ModList().ToArray();
+            modules = resolver.ModList()
+                              .ToArray();
             var autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
+            // Skip removing ones we still need
+            autoRemoving.RemoveWhere(im => modules.Contains(im.Module));
+            // Don't install stuff that's already there
+            modules = modules.Except(registry.InstalledModules.Select(im => im.Module))
+                             .ToArray();
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToUpgrade);
             User.RaiseMessage("");
@@ -1318,22 +1344,22 @@ namespace CKAN.IO
                         if (inProgressFile.Exists)
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingResuming,
-                                module.name, module.version,
-                                string.Join(", ", PrioritizedHosts(config, module.download)),
-                                CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                                              module.name, module.version,
+                                              string.Join(", ", PrioritizedHosts(config, module.download)),
+                                              CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingUncached,
-                                module.name, module.version,
-                                string.Join(", ", PrioritizedHosts(config, module.download)),
-                                CkanModule.FmtSize(module.download_size));
+                                              module.name, module.version,
+                                              string.Join(", ", PrioritizedHosts(config, module.download)),
+                                              CkanModule.FmtSize(module.download_size));
                         }
                     }
                     else
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeInstallingCached,
-                            module.name, module.version);
+                                          module.name, module.version);
                     }
                 }
                 else
@@ -1345,12 +1371,12 @@ namespace CKAN.IO
                     if (installed.version.IsEqualTo(module.version))
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeReinstalling,
-                            module.name, module.version);
+                                          module.name, module.version);
                     }
                     else if (installed.version.IsGreaterThan(module.version))
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeDowngrading,
-                            module.name, installed.version, module.version);
+                                          module.name, installed.version, module.version);
                     }
                     else
                     {
@@ -1360,37 +1386,27 @@ namespace CKAN.IO
                             if (inProgressFile.Exists)
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingResuming,
-                                    module.name, installed.version, module.version,
-                                    string.Join(", ", PrioritizedHosts(config, module.download)),
-                                    CkanModule.FmtSize(module.download_size - inProgressFile.Length));
+                                                  module.name, installed.version, module.version,
+                                                  string.Join(", ", PrioritizedHosts(config, module.download)),
+                                                  CkanModule.FmtSize(module.download_size - inProgressFile.Length));
                             }
                             else
                             {
                                 User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingUncached,
-                                    module.name, installed.version, module.version,
-                                    string.Join(", ", PrioritizedHosts(config, module.download)),
-                                    CkanModule.FmtSize(module.download_size));
+                                                  module.name, installed.version, module.version,
+                                                  string.Join(", ", PrioritizedHosts(config, module.download)),
+                                                  CkanModule.FmtSize(module.download_size));
                             }
                         }
                         else
                         {
                             User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeUpgradingCached,
-                                module.name, installed.version, module.version);
+                                              module.name, installed.version, module.version);
                         }
                     }
                 }
             }
 
-            var removingIdents = to_remove.Select(im => im.identifier).ToHashSet();
-            var autoRemoving = registry
-                .FindRemovableAutoInstalled(
-                    // Conjure the future state of the installed modules list after upgrading
-                    registry.InstalledModules
-                            .Where(im => !removingIdents.Contains(im.identifier))
-                            .Concat(modules.Select(m => new InstalledModule(null, m, Array.Empty<string>(), false)))
-                            .ToList(),
-                    instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
-                .ToList();
             if (autoRemoving.Count > 0)
             {
                 foreach (var im in autoRemoving)

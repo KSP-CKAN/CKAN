@@ -361,6 +361,14 @@ namespace CKAN.GUI
             }
         }
 
+        private void VersionsListView_OnResize(object sender, EventArgs e)
+        {
+            VersionsListView.BeginUpdate();
+            VersionsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            VersionsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            VersionsListView.EndUpdate();
+        }
+
         private void UpdateStabilityToleranceComboBox(GUIMod gmod)
         {
             if (currentInstance != null && interactive)
