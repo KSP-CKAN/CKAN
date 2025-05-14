@@ -562,7 +562,7 @@ namespace CKAN.GUI
             this.hiddenTagsLabelsLinkList.Padding = new System.Windows.Forms.Padding(0, 5, 0, 5);
             this.hiddenTagsLabelsLinkList.Location = new System.Drawing.Point(0, 0);
             this.hiddenTagsLabelsLinkList.Name = "hiddenTagsLabelsLinkList";
-            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 22);
+            this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 24);
             this.hiddenTagsLabelsLinkList.TagClicked += this.hiddenTagsLabelsLinkList_TagClicked;
             this.hiddenTagsLabelsLinkList.LabelClicked += this.hiddenTagsLabelsLinkList_LabelClicked;
             resources.ApplyResources(this.hiddenTagsLabelsLinkList, "hiddenTagsLabelsLinkList");
