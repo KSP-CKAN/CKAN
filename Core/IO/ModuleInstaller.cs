@@ -1181,15 +1181,15 @@ namespace CKAN.IO
         /// <param name="downloader">Downloader to use</param>
         /// <param name="deduper">Deduplicator to use</param>
         /// <param name="enforceConsistency">Whether to enforce consistency</param>
-        private void AddRemove(ref HashSet<string>?          possibleConfigOnlyDirs,
-                               RegistryManager               registry_manager,
-                               RelationshipResolver          resolver,
-                               ICollection<CkanModule>       add,
-                               IDictionary<CkanModule, bool> autoInstalled,
-                               ICollection<InstalledModule>  remove,
-                               IDownloader                   downloader,
-                               bool                          enforceConsistency,
-                               InstalledFilesDeduplicator?   deduper = null)
+        private void AddRemove(ref HashSet<string>?            possibleConfigOnlyDirs,
+                               RegistryManager                 registry_manager,
+                               RelationshipResolver            resolver,
+                               IReadOnlyCollection<CkanModule> add,
+                               IDictionary<CkanModule, bool>   autoInstalled,
+                               ICollection<InstalledModule>    remove,
+                               IDownloader                     downloader,
+                               bool                            enforceConsistency,
+                               InstalledFilesDeduplicator?     deduper = null)
         {
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
@@ -1282,13 +1282,13 @@ namespace CKAN.IO
         /// Will *re-install* or *downgrade* (with a warning) as well as upgrade.
         /// Throws ModuleNotFoundKraken if a module is not installed.
         /// </summary>
-        public void Upgrade(ICollection<CkanModule>     modules,
-                            IDownloader                 downloader,
-                            ref HashSet<string>?        possibleConfigOnlyDirs,
-                            RegistryManager             registry_manager,
-                            InstalledFilesDeduplicator? deduper            = null,
-                            bool                        enforceConsistency = true,
-                            bool                        ConfirmPrompt      = true)
+        public void Upgrade(in IReadOnlyCollection<CkanModule> modules,
+                            IDownloader                        downloader,
+                            ref HashSet<string>?               possibleConfigOnlyDirs,
+                            RegistryManager                    registry_manager,
+                            InstalledFilesDeduplicator?        deduper            = null,
+                            bool                               enforceConsistency = true,
+                            bool                               ConfirmPrompt      = true)
         {
             var registry = registry_manager.registry;
 
@@ -1313,14 +1313,15 @@ namespace CKAN.IO
                 RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
                 registry,
                 instance.game, instance.VersionCriteria());
-            modules = resolver.ModList()
-                              .ToArray();
-            var autoInstalled = modules.ToDictionary(m => m, resolver.IsAutoInstalled);
+            var fullChangeset = resolver.ModList().ToArray();
             // Skip removing ones we still need
-            autoRemoving.RemoveWhere(im => modules.Contains(im.Module));
-            // Don't install stuff that's already there
-            modules = modules.Except(registry.InstalledModules.Select(im => im.Module))
-                             .ToArray();
+            autoRemoving.RemoveWhere(im => fullChangeset.Contains(im.Module));
+            // Only install stuff that's already there if explicitly requested in param
+            var toInstall = fullChangeset.Except(registry.InstalledModules
+                                                         .Select(im => im.Module)
+                                                         .Except(modules))
+                                         .ToArray();
+            var autoInstalled = toInstall.ToDictionary(m => m, resolver.IsAutoInstalled);
 
             User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToUpgrade);
             User.RaiseMessage("");
@@ -1329,10 +1330,10 @@ namespace CKAN.IO
             // adding everything that needs installing (which may involve new mods to
             // satisfy dependencies). We always know the list passed in is what we need to
             // install, but we need to calculate what needs to be removed.
-            var to_remove = new List<InstalledModule>();
+            var toRemove = new List<InstalledModule>();
 
             // Let's discover what we need to do with each module!
-            foreach (CkanModule module in modules)
+            foreach (CkanModule module in toInstall)
             {
                 var installed_mod = registry.InstalledModule(module.identifier);
 
@@ -1365,7 +1366,7 @@ namespace CKAN.IO
                 else
                 {
                     // Module already installed. We'll need to remove it first.
-                    to_remove.Add(installed_mod);
+                    toRemove.Add(installed_mod);
 
                     CkanModule installed = installed_mod.Module;
                     if (installed.version.IsEqualTo(module.version))
@@ -1414,7 +1415,7 @@ namespace CKAN.IO
                     User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeAutoRemoving,
                                       im.Module.name, im.Module.version);
                 }
-                to_remove.AddRange(autoRemoving);
+                toRemove.AddRange(autoRemoving);
             }
 
             if (ConfirmPrompt && !User.RaiseYesNoDialog(Properties.Resources.ModuleInstallerContinuePrompt))
@@ -1425,9 +1426,9 @@ namespace CKAN.IO
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
                       resolver,
-                      modules,
+                      toInstall,
                       autoInstalled,
-                      to_remove,
+                      toRemove,
                       downloader,
                       enforceConsistency,
                       deduper);

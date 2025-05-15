@@ -102,20 +102,20 @@ namespace CKAN
         /// <param name="installed">Modules that are already installed</param>
         /// <param name="toInstall">Modules that are planned to be installed</param>
         /// <returns></returns>
-        public CkanModule? Latest(StabilityToleranceConfig stabilityTolerance,
-                                  GameVersionCriteria?     ksp_version  = null,
-                                  RelationshipDescriptor?  relationship = null,
-                                  ICollection<CkanModule>? installed    = null,
-                                  ICollection<CkanModule>? toInstall    = null)
+        public CkanModule? Latest(StabilityToleranceConfig         stabilityTolerance,
+                                  GameVersionCriteria?             ksp_version  = null,
+                                  RelationshipDescriptor?          relationship = null,
+                                  IReadOnlyCollection<CkanModule>? installed    = null,
+                                  IReadOnlyCollection<CkanModule>? toInstall    = null)
             => Latest(stabilityTolerance.ModStabilityTolerance(identifier)
                       ?? stabilityTolerance.OverallStabilityTolerance,
                       ksp_version, relationship, installed, toInstall);
 
-        public CkanModule? Latest(ReleaseStatus            stabilityTolerance,
-                                  GameVersionCriteria?     ksp_version  = null,
-                                  RelationshipDescriptor?  relationship = null,
-                                  ICollection<CkanModule>? installed    = null,
-                                  ICollection<CkanModule>? toInstall    = null)
+        public CkanModule? Latest(ReleaseStatus                    stabilityTolerance,
+                                  GameVersionCriteria?             ksp_version  = null,
+                                  RelationshipDescriptor?          relationship = null,
+                                  IReadOnlyCollection<CkanModule>? installed    = null,
+                                  IReadOnlyCollection<CkanModule>? toInstall    = null)
         {
             var modules = module_version.Values
                                         .Where(m => m.release_status <= stabilityTolerance)
@@ -139,8 +139,8 @@ namespace CKAN
             return modules.FirstOrDefault();
         }
 
-        public static bool DependsAndConflictsOK(CkanModule              module,
-                                                 ICollection<CkanModule> others)
+        public static bool DependsAndConflictsOK(CkanModule                      module,
+                                                 IReadOnlyCollection<CkanModule> others)
         {
             if (module.depends != null)
             {

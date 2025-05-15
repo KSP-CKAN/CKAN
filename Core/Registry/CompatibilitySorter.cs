@@ -32,7 +32,7 @@ namespace CKAN
                                    IEnumerable<Dictionary<string, AvailableModule>> available,
                                    IDictionary<string, AvailableModule[]>           providers,
                                    IDictionary<string, InstalledModule>             installed,
-                                   ICollection<string>                              dlls,
+                                   IReadOnlyCollection<string>                      dlls,
                                    IDictionary<string, UnmanagedModuleVersion>      dlc)
         {
             StabilityTolerance = stabilityTolerance;
@@ -114,7 +114,7 @@ namespace CKAN
         }
 
         private readonly IDictionary<string, InstalledModule>        installed;
-        private readonly ICollection<string>                         dlls;
+        private readonly IReadOnlyCollection<string>                 dlls;
         private readonly IDictionary<string, UnmanagedModuleVersion> dlc;
 
         private List<CkanModule>? latestCompatible;
