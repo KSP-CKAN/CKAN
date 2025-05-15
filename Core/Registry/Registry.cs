@@ -119,7 +119,7 @@ namespace CKAN
         /// <summary>
         /// Returns the names of installed DLLs.
         /// </summary>
-        [JsonIgnore] public ICollection<string> InstalledDlls
+        [JsonIgnore] public IReadOnlyCollection<string> InstalledDlls
             => installed_dlls.Keys;
 
         /// <summary>
@@ -666,12 +666,12 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
-        public CkanModule? LatestAvailable(string                   identifier,
-                                           StabilityToleranceConfig stabilityTolerance,
-                                           GameVersionCriteria?     gameVersion,
-                                           RelationshipDescriptor?  relationshipDescriptor = null,
-                                           ICollection<CkanModule>? installed              = null,
-                                           ICollection<CkanModule>? toInstall              = null)
+        public CkanModule? LatestAvailable(string                           identifier,
+                                           StabilityToleranceConfig         stabilityTolerance,
+                                           GameVersionCriteria?             gameVersion,
+                                           RelationshipDescriptor?          relationshipDescriptor = null,
+                                           IReadOnlyCollection<CkanModule>? installed              = null,
+                                           IReadOnlyCollection<CkanModule>? toInstall              = null)
             => getAvail(identifier)?.Select(am => am.Latest(stabilityTolerance, gameVersion, relationshipDescriptor,
                                                             installed, toInstall))
                                     .OfType<CkanModule>()
@@ -806,12 +806,12 @@ namespace CKAN
         /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailableWithProvides" />
         /// </summary>
-        public List<CkanModule> LatestAvailableWithProvides(string                   identifier,
-                                                            StabilityToleranceConfig stabilityTolerance,
-                                                            GameVersionCriteria?     gameVersion,
-                                                            RelationshipDescriptor?  relationship = null,
-                                                            ICollection<CkanModule>? installed    = null,
-                                                            ICollection<CkanModule>? toInstall    = null)
+        public List<CkanModule> LatestAvailableWithProvides(string                           identifier,
+                                                            StabilityToleranceConfig         stabilityTolerance,
+                                                            GameVersionCriteria?             gameVersion,
+                                                            RelationshipDescriptor?          relationship = null,
+                                                            IReadOnlyCollection<CkanModule>? installed    = null,
+                                                            IReadOnlyCollection<CkanModule>? toInstall    = null)
             => ((providers ?? BuildProvidesIndex())
                     is Dictionary<string, AvailableModule[]> allProvs
                 && allProvs.TryGetValue(identifier, out AvailableModule[]? provs)
@@ -1136,10 +1136,10 @@ namespace CKAN
         /// <param name="satisfiedFilter">Optional filter to apply to the dependencies</param>
         /// <returns>List of modules whose dependencies are about to be or already removed.</returns>
         public static IEnumerable<string> FindReverseDependencies(
-            ICollection<string>                         modulesToRemove,
-            ICollection<CkanModule>?                    modulesToInstall,
-            ICollection<CkanModule>                     origInstalled,
-            ICollection<string>                         dlls,
+            IReadOnlyCollection<string>                 modulesToRemove,
+            IReadOnlyCollection<CkanModule>?            modulesToInstall,
+            IReadOnlyCollection<CkanModule>             origInstalled,
+            IReadOnlyCollection<string>                 dlls,
             IDictionary<string, UnmanagedModuleVersion> dlc,
             Func<RelationshipDescriptor, bool>?         satisfiedFilter = null)
         {
@@ -1220,8 +1220,8 @@ namespace CKAN
         /// Return modules which are dependent on the modules passed in or modules in the return list
         /// </summary>
         public IEnumerable<string> FindReverseDependencies(
-                ICollection<string>                 modulesToRemove,
-                ICollection<CkanModule>?            modulesToInstall = null,
+                IReadOnlyCollection<string>         modulesToRemove,
+                IReadOnlyCollection<CkanModule>?    modulesToInstall = null,
                 Func<RelationshipDescriptor, bool>? satisfiedFilter  = null)
             => FindReverseDependencies(modulesToRemove, modulesToInstall,
                                        installed_modules.Values.Select(im => im.Module)

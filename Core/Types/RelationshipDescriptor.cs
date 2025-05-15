@@ -14,29 +14,29 @@ namespace CKAN
 {
     public abstract class RelationshipDescriptor : IEquatable<RelationshipDescriptor>
     {
-        public bool MatchesAny(ICollection<CkanModule>                      modules,
-                               ICollection<string>?                         dlls,
+        public bool MatchesAny(IReadOnlyCollection<CkanModule>              modules,
+                               IReadOnlyCollection<string>?                 dlls,
                                IDictionary<string, UnmanagedModuleVersion>? dlc)
             => MatchesAny(modules, dlls, dlc, out CkanModule? _);
 
-        public abstract bool MatchesAny(ICollection<CkanModule>                      modules,
-                                        ICollection<string>?                         dlls,
+        public abstract bool MatchesAny(IReadOnlyCollection<CkanModule>              modules,
+                                        IReadOnlyCollection<string>?                 dlls,
                                         IDictionary<string, UnmanagedModuleVersion>? dlc,
                                         out CkanModule?                              matched);
 
         public abstract bool WithinBounds(CkanModule otherModule);
 
-        public abstract List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier         registry,
-                                                                     StabilityToleranceConfig stabilityTolerance,
-                                                                     GameVersionCriteria?     crit,
-                                                                     ICollection<CkanModule>? installed = null,
-                                                                     ICollection<CkanModule>? toInstall = null);
+        public abstract List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier                 registry,
+                                                                     StabilityToleranceConfig         stabilityTolerance,
+                                                                     GameVersionCriteria?             crit,
+                                                                     IReadOnlyCollection<CkanModule>? installed = null,
+                                                                     IReadOnlyCollection<CkanModule>? toInstall = null);
 
-        public abstract CkanModule? ExactMatch(IRegistryQuerier         registry,
-                                               StabilityToleranceConfig stabilityTolerance,
-                                               GameVersionCriteria?     crit,
-                                               ICollection<CkanModule>? installed = null,
-            ICollection<CkanModule>? toInstall = null);
+        public abstract CkanModule? ExactMatch(IRegistryQuerier                 registry,
+                                               StabilityToleranceConfig         stabilityTolerance,
+                                               GameVersionCriteria?             crit,
+                                               IReadOnlyCollection<CkanModule>? installed = null,
+                                               IReadOnlyCollection<CkanModule>? toInstall = null);
 
         public override bool Equals(object? other)
             => Equals(other as RelationshipDescriptor);
@@ -126,8 +126,8 @@ namespace CKAN
         /// <returns>
         /// true if any of the modules match this descriptor, false otherwise.
         /// </returns>
-        public override bool MatchesAny(ICollection<CkanModule>                      modules,
-                                        ICollection<string>?                         dlls,
+        public override bool MatchesAny(IReadOnlyCollection<CkanModule>              modules,
+                                        IReadOnlyCollection<string>?                 dlls,
                                         IDictionary<string, UnmanagedModuleVersion>? dlc,
                                         out CkanModule?                              matched)
         {
@@ -149,19 +149,19 @@ namespace CKAN
                                && WithinBounds(dlcVer);
         }
 
-        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier         registry,
-                                                                     StabilityToleranceConfig stabilityTolerance,
-                                                                     GameVersionCriteria?     crit,
-                                                                     ICollection<CkanModule>? installed = null,
-                                                                     ICollection<CkanModule>? toInstall = null)
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier                 registry,
+                                                                     StabilityToleranceConfig         stabilityTolerance,
+                                                                     GameVersionCriteria?             crit,
+                                                                     IReadOnlyCollection<CkanModule>? installed = null,
+                                                                     IReadOnlyCollection<CkanModule>? toInstall = null)
             => registry.LatestAvailableWithProvides(name, stabilityTolerance,
                                                     crit, this, installed, toInstall);
 
-        public override CkanModule? ExactMatch(IRegistryQuerier         registry,
-                                               StabilityToleranceConfig stabilityTolerance,
-                                               GameVersionCriteria?     crit,
-                                               ICollection<CkanModule>? installed = null,
-                                               ICollection<CkanModule>? toInstall = null)
+        public override CkanModule? ExactMatch(IRegistryQuerier                 registry,
+                                               StabilityToleranceConfig         stabilityTolerance,
+                                               GameVersionCriteria?             crit,
+                                               IReadOnlyCollection<CkanModule>? installed = null,
+                                               IReadOnlyCollection<CkanModule>? toInstall = null)
             => Utilities.DefaultIfThrows(() => registry.LatestAvailable(name, stabilityTolerance,
                                                                         crit, this, installed, toInstall));
 
@@ -244,8 +244,8 @@ namespace CKAN
         public override bool WithinBounds(CkanModule otherModule)
             => any_of?.Any(r => r.WithinBounds(otherModule)) ?? false;
 
-        public override bool MatchesAny(ICollection<CkanModule>                      modules,
-                                        ICollection<string>?                         dlls,
+        public override bool MatchesAny(IReadOnlyCollection<CkanModule>              modules,
+                                        IReadOnlyCollection<string>?                 dlls,
                                         IDictionary<string, UnmanagedModuleVersion>? dlc,
                                         out CkanModule?                              matched)
         {
@@ -257,22 +257,22 @@ namespace CKAN
             return matched != null;
         }
 
-        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier         registry,
-                                                                     StabilityToleranceConfig stabilityTolerance,
-                                                                     GameVersionCriteria?     crit,
-                                                                     ICollection<CkanModule>? installed = null,
-                                                                     ICollection<CkanModule>? toInstall = null)
+        public override List<CkanModule> LatestAvailableWithProvides(IRegistryQuerier                 registry,
+                                                                     StabilityToleranceConfig         stabilityTolerance,
+                                                                     GameVersionCriteria?             crit,
+                                                                     IReadOnlyCollection<CkanModule>? installed = null,
+                                                                     IReadOnlyCollection<CkanModule>? toInstall = null)
             => (any_of?.SelectMany(r => r.LatestAvailableWithProvides(registry, stabilityTolerance, crit, installed, toInstall))
                        .Distinct()
                       ?? Enumerable.Empty<CkanModule>())
                       .ToList();
 
         // Exact match is not possible for any_of
-        public override CkanModule? ExactMatch(IRegistryQuerier         registry,
-                                               StabilityToleranceConfig stabilityTolerance,
-                                               GameVersionCriteria?     crit,
-                                               ICollection<CkanModule>? installed = null,
-                                               ICollection<CkanModule>? toInstall = null)
+        public override CkanModule? ExactMatch(IRegistryQuerier                 registry,
+                                               StabilityToleranceConfig         stabilityTolerance,
+                                               GameVersionCriteria?             crit,
+                                               IReadOnlyCollection<CkanModule>? installed = null,
+                                               IReadOnlyCollection<CkanModule>? toInstall = null)
             => null;
 
         public override bool Equals(RelationshipDescriptor? other)

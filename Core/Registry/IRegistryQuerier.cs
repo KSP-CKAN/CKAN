@@ -19,7 +19,7 @@ namespace CKAN
     {
         ReadOnlyDictionary<string, Repository>      Repositories     { get; }
         IEnumerable<InstalledModule>                InstalledModules { get; }
-        ICollection<string>                         InstalledDlls    { get; }
+        IReadOnlyCollection<string>                 InstalledDlls    { get; }
         IDictionary<string, UnmanagedModuleVersion> InstalledDlc     { get; }
 
         /// <summary>
@@ -44,12 +44,12 @@ namespace CKAN
         /// If no ksp_version is provided, the latest module for *any* KSP version is returned.
         /// <exception cref="ModuleNotFoundKraken">Throws if asked for a non-existent module.</exception>
         /// </summary>
-        CkanModule? LatestAvailable(string                   identifier,
-                                    StabilityToleranceConfig stabilityTolerance,
-                                    GameVersionCriteria?     ksp_version,
-                                    RelationshipDescriptor?  relationship_descriptor = null,
-                                    ICollection<CkanModule>? installed               = null,
-                                    ICollection<CkanModule>? toInstall               = null);
+        CkanModule? LatestAvailable(string                           identifier,
+                                    StabilityToleranceConfig         stabilityTolerance,
+                                    GameVersionCriteria?             ksp_version,
+                                    RelationshipDescriptor?          relationship_descriptor = null,
+                                    IReadOnlyCollection<CkanModule>? installed               = null,
+                                    IReadOnlyCollection<CkanModule>? toInstall               = null);
 
         /// <summary>
         /// Returns the max game version that is compatible with the given mod.
@@ -73,12 +73,12 @@ namespace CKAN
         /// Returns an empty list if nothing is available for our system, which includes if no such module exists.
         /// If no KSP version is provided, the latest module for *any* KSP version is given.
         /// </summary>
-        List<CkanModule> LatestAvailableWithProvides(string                   identifier,
-                                                     StabilityToleranceConfig stabilityTolerance,
-                                                     GameVersionCriteria?     ksp_version,
-                                                     RelationshipDescriptor?  relationship_descriptor = null,
-                                                     ICollection<CkanModule>? installed               = null,
-                                                     ICollection<CkanModule>? toInstall               = null);
+        List<CkanModule> LatestAvailableWithProvides(string                           identifier,
+                                                     StabilityToleranceConfig         stabilityTolerance,
+                                                     GameVersionCriteria?             ksp_version,
+                                                     RelationshipDescriptor?          relationship_descriptor = null,
+                                                     IReadOnlyCollection<CkanModule>? installed               = null,
+                                                     IReadOnlyCollection<CkanModule>? toInstall               = null);
 
         /// <summary>
         /// Checks the sanity of the registry, to ensure that all dependencies are met,
@@ -90,8 +90,8 @@ namespace CKAN
         /// <summary>
         /// Finds and returns all modules that could not exist without the listed modules installed, including themselves.
         /// </summary>
-        IEnumerable<string> FindReverseDependencies(ICollection<string>                 modulesToRemove,
-                                                    ICollection<CkanModule>?            modulesToInstall = null,
+        IEnumerable<string> FindReverseDependencies(IReadOnlyCollection<string>         modulesToRemove,
+                                                    IReadOnlyCollection<CkanModule>?    modulesToInstall = null,
                                                     Func<RelationshipDescriptor, bool>? satisfiedFilter  = null);
 
         /// <summary>
@@ -186,14 +186,14 @@ namespace CKAN
         /// <param name="checkMissingFiles">If true, check if any of the files or directories are missing</param>
         /// <param name="latestMod">The latest mod if an update is available</param>
         /// <param name="installed">The installed modules to check against</param>
-        public static bool HasUpdate(this IRegistryQuerier    querier,
-                                     string                   identifier,
-                                     StabilityToleranceConfig stabilityTolerance,
-                                     GameInstance?            instance,
-                                     HashSet<string>          filters,
-                                     bool                     checkMissingFiles,
-                                     out CkanModule?          latestMod,
-                                     ICollection<CkanModule>? installed = null)
+        public static bool HasUpdate(this IRegistryQuerier            querier,
+                                     string                           identifier,
+                                     StabilityToleranceConfig         stabilityTolerance,
+                                     GameInstance?                    instance,
+                                     HashSet<string>                  filters,
+                                     bool                             checkMissingFiles,
+                                     out CkanModule?                  latestMod,
+                                     IReadOnlyCollection<CkanModule>? installed = null)
         {
             // Check if it's installed (including manually!)
             var instVer = querier.InstalledVersion(identifier);
@@ -479,12 +479,12 @@ namespace CKAN
         /// Sequence of removable auto-installed modules, if any
         /// </returns>
         public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
-            this IRegistryQuerier        querier,
-            ICollection<InstalledModule> installed,
-            ICollection<CkanModule>      installing,
-            IGame                        game,
-            StabilityToleranceConfig     stabilityTolerance,
-            GameVersionCriteria          crit)
+            this IRegistryQuerier                querier,
+            IReadOnlyCollection<InstalledModule> installed,
+            IReadOnlyCollection<CkanModule>      installing,
+            IGame                                game,
+            StabilityToleranceConfig             stabilityTolerance,
+            GameVersionCriteria                  crit)
         {
             log.DebugFormat("Finding removable autoInstalled for: {0}",
                             string.Join(", ", installed.Select(im => im.identifier)));

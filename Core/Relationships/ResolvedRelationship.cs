@@ -31,7 +31,7 @@ namespace CKAN
         public virtual bool Unsatisfied()
             => false;
 
-        public virtual bool Unsatisfied(ICollection<CkanModule> installing)
+        public virtual bool Unsatisfied(IReadOnlyCollection<CkanModule> installing)
             => false;
 
         public override string ToString()
@@ -136,19 +136,19 @@ namespace CKAN
         {
         }
 
-        public ResolvedByNew(CkanModule               source,
-                             RelationshipDescriptor   relationship,
-                             SelectionReason          reason,
-                             IEnumerable<CkanModule>  providers,
-                             ICollection<CkanModule>  definitelyInstalling,
-                             ICollection<CkanModule>  allInstalling,
-                             IRegistryQuerier         registry,
-                             ICollection<string>      dlls,
-                             ICollection<CkanModule>  installed,
-                             StabilityToleranceConfig stabilityTolerance,
-                             GameVersionCriteria      crit,
-                             OptionalRelationships    optRels,
-                             RelationshipCache        relationshipCache)
+        public ResolvedByNew(CkanModule                      source,
+                             RelationshipDescriptor          relationship,
+                             SelectionReason                 reason,
+                             IEnumerable<CkanModule>         providers,
+                             IReadOnlyCollection<CkanModule> definitelyInstalling,
+                             IReadOnlyCollection<CkanModule> allInstalling,
+                             IRegistryQuerier                registry,
+                             IReadOnlyCollection<string>     dlls,
+                             IReadOnlyCollection<CkanModule> installed,
+                             StabilityToleranceConfig        stabilityTolerance,
+                             GameVersionCriteria             crit,
+                             OptionalRelationships           optRels,
+                             RelationshipCache               relationshipCache)
              : this(source, relationship, reason,
                     providers.ToDictionary(prov => prov,
                                            prov => ResolvedRelationshipsTree.ResolveModule(
@@ -177,7 +177,7 @@ namespace CKAN
             => reason is SelectionReason.Depends
                && !resolved.Keys.Any(m => !m.IsDLC);
 
-        public override bool Unsatisfied(ICollection<CkanModule> installing)
+        public override bool Unsatisfied(IReadOnlyCollection<CkanModule> installing)
             => reason is SelectionReason.Depends
                && !resolved.Any(kvp => !kvp.Key.IsDLC
                                        && AvailableModule.DependsAndConflictsOK(kvp.Key, installing)

@@ -371,7 +371,7 @@ namespace Tests.Core.Relationships
 
         private static void TestDepends(List<string>                                to_remove,
                                         HashSet<CkanModule>                         mods,
-                                        ICollection<string>                         dlls,
+                                        IReadOnlyCollection<string>                 dlls,
                                         IDictionary<string, UnmanagedModuleVersion> dlc,
                                         List<string>                                expected,
                                         string                                      message)
