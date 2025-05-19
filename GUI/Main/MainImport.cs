@@ -13,7 +13,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void importDownloadsToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void ImportDownloadsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             ImportModules();
         }

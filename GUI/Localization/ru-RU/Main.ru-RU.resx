@@ -120,31 +120,31 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Файл</value>
   </data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Управление сборками игры</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Открыть папку с игрой</value>
   </data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Установить из .ckan...</value>
   </data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Сохранить установленный список модов (невозможно импортировать снова)...</value>
   </data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Экспортировать модпак (возможно импортировать снова)...</value>
   </data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Импортировать &amp;загруженные моды...</value>
   </data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>Проверить &amp;рекомендации</value>
   </data>
-  <data name="ExitToolButton.Text" xml:space="preserve">
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Выход</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
@@ -222,7 +222,7 @@
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
     <value>Запустить игру</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
     <value>Открыть папку с игрой</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
@@ -231,7 +231,7 @@
   <data name="quitToolStripMenuItem.Text" xml:space="preserve">
     <value>Выход</value>
   </data>
-  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>Время &amp;игры...</value>
   </data>
 </root>

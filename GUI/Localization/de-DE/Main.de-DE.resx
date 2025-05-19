@@ -120,31 +120,31 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
     <value>Datei</value>
   </data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>Spielinstanzen verwalten</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>Spieleverzeichnis öffnen</value>
   </data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>Von .ckan installieren</value>
   </data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>Liste installierter Mods speichern...</value>
   </data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>Modpack exportieren ...</value>
   </data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Heruntergeladene Mods &amp;importieren</value>
   </data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>Empfehlungen installierter Mods</value>
   </data>
-  <data name="ExitToolButton.Text" xml:space="preserve">
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Beenden</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
@@ -234,7 +234,7 @@
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
     <value>Spiel starten</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
     <value>Spielverzeichnis öffnen</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
@@ -243,13 +243,13 @@
   <data name="quitToolStripMenuItem.Text" xml:space="preserve">
     <value>Beenden</value>
   </data>
-  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>Spielzeit</value>
   </data>
-  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
     <value>Nicht verwaltete Dateien...</value>
   </data>
-  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
     <value>Installations-Chronik...</value>
   </data>
 </root>

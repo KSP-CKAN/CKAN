@@ -31,19 +31,24 @@ namespace CKAN.GUI
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Main));
             this.MainMenu = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.manageGameInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openGameDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ManageGameInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenGameDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.installFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportModPackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InstallationHistoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InstallFromckanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ImportDownloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.DeduplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.importDownloadsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deduplicateToolstripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExportModListToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExportModPackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.auditRecommendationsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExitToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.AuditRecommendationsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
+            this.ViewPlayTimeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ViewUnmanagedFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
+            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pluginsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -96,15 +101,10 @@ namespace CKAN.GUI
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.openCKANToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openGameDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenGameDirectoryToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.cKANSettingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
             this.quitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewPlayTimeStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.viewUnmanagedFilesStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.installationHistoryStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.DeleteDirectoriesTabPage = new System.Windows.Forms.TabPage();
             this.DeleteDirectories = new CKAN.GUI.DeleteDirectories();
             this.EditModpackTabPage = new System.Windows.Forms.TabPage();
@@ -136,7 +136,7 @@ namespace CKAN.GUI
             //
             this.MainMenu.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.MainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fileToolStripMenuItem,
+            this.FileToolStripMenuItem,
             this.settingsToolStripMenuItem,
             this.helpToolStripMenuItem});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
@@ -145,118 +145,139 @@ namespace CKAN.GUI
             this.MainMenu.Size = new System.Drawing.Size(1544, 35);
             this.MainMenu.TabIndex = 0;
             //
-            // fileToolStripMenuItem
+            // FileToolStripMenuItem
             //
-            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.manageGameInstancesMenuItem,
-            this.openGameDirectoryToolStripMenuItem,
+            this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ManageGameInstancesToolStripMenuItem,
+            this.OpenGameDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
-            this.installationHistoryStripMenuItem,
-            this.installFromckanToolStripMenuItem,
-            this.importDownloadsToolStripMenuItem,
-            this.deduplicateToolstripMenuItem,
+            this.InstallationHistoryToolStripMenuItem,
+            this.InstallFromckanToolStripMenuItem,
+            this.ImportDownloadsToolStripMenuItem,
+            this.DeduplicateToolStripMenuItem,
             this.toolStripSeparator2,
-            this.exportModListToolStripMenuItem,
-            this.exportModPackToolStripMenuItem,
+            this.ExportModListToolStripMenuItem,
+            this.ExportModPackToolStripMenuItem,
             this.toolStripSeparator3,
-            this.auditRecommendationsMenuItem,
+            this.AuditRecommendationsToolStripMenuItem,
             this.toolStripSeparator7,
-            this.viewPlayTimeStripMenuItem,
-            this.viewUnmanagedFilesStripMenuItem,
+            this.ViewPlayTimeToolStripMenuItem,
+            this.ViewUnmanagedFilesToolStripMenuItem,
             this.toolStripSeparator8,
-            this.ExitToolButton});
-            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
-            resources.ApplyResources(this.fileToolStripMenuItem, "fileToolStripMenuItem");
+            this.ExitToolStripMenuItem});
+            this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
+            this.FileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
+            resources.ApplyResources(this.FileToolStripMenuItem, "FileToolStripMenuItem");
             //
-            // manageGameInstancesMenuItem
+            // ManageGameInstancesToolStripMenuItem
             //
-            this.manageGameInstancesMenuItem.Name = "manageGameInstancesMenuItem";
-            this.manageGameInstancesMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.manageGameInstancesMenuItem.Click += new System.EventHandler(this.manageGameInstancesMenuItem_Click);
-            resources.ApplyResources(this.manageGameInstancesMenuItem, "manageGameInstancesMenuItem");
+            this.ManageGameInstancesToolStripMenuItem.Name = "ManageGameInstancesToolStripMenuItem";
+            this.ManageGameInstancesToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.ManageGameInstancesToolStripMenuItem.Click += new System.EventHandler(this.ManageGameInstancesToolStripMenuItem_Click);
+            resources.ApplyResources(this.ManageGameInstancesToolStripMenuItem, "ManageGameInstancesToolStripMenuItem");
             //
-            // openGameDirectoryToolStripMenuItem
+            // OpenGameDirectoryToolStripMenuItem
             //
-            this.openGameDirectoryToolStripMenuItem.Name = "openGameDirectoryToolStripMenuItem";
-            this.openGameDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.openGameDirectoryToolStripMenuItem.Click += new System.EventHandler(this.openGameDirectoryToolStripMenuItem_Click);
-            resources.ApplyResources(this.openGameDirectoryToolStripMenuItem, "openGameDirectoryToolStripMenuItem");
+            this.OpenGameDirectoryToolStripMenuItem.Name = "OpenGameDirectoryToolStripMenuItem";
+            this.OpenGameDirectoryToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.OpenGameDirectoryToolStripMenuItem.Click += new System.EventHandler(this.OpenGameDirectoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.OpenGameDirectoryToolStripMenuItem, "OpenGameDirectoryToolStripMenuItem");
             //
             // toolStripSeparator1
             //
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(278, 6);
             //
-            // installFromckanToolStripMenuItem
+            // InstallationHistoryToolStripMenuItem
             //
-            this.installFromckanToolStripMenuItem.Name = "installFromckanToolStripMenuItem";
-            this.installFromckanToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.installFromckanToolStripMenuItem.Click += new System.EventHandler(this.installFromckanToolStripMenuItem_Click);
-            resources.ApplyResources(this.installFromckanToolStripMenuItem, "installFromckanToolStripMenuItem");
+            this.InstallationHistoryToolStripMenuItem.Name = "InstallationHistoryToolStripMenuItem";
+            this.InstallationHistoryToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.InstallationHistoryToolStripMenuItem.Click += new System.EventHandler(this.InstallationHistoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.InstallationHistoryToolStripMenuItem, "InstallationHistoryToolStripMenuItem");
             //
-            // exportModListToolStripMenuItem
+            // InstallFromckanToolStripMenuItem
             //
-            this.exportModListToolStripMenuItem.Name = "exportModListToolStripMenuItem";
-            this.exportModListToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.exportModListToolStripMenuItem.Click += new System.EventHandler(this.exportModListToolStripMenuItem_Click);
-            resources.ApplyResources(this.exportModListToolStripMenuItem, "exportModListToolStripMenuItem");
+            this.InstallFromckanToolStripMenuItem.Name = "InstallFromckanToolStripMenuItem";
+            this.InstallFromckanToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.InstallFromckanToolStripMenuItem.Click += new System.EventHandler(this.InstallFromckanToolStripMenuItem_Click);
+            resources.ApplyResources(this.InstallFromckanToolStripMenuItem, "InstallFromckanToolStripMenuItem");
             //
-            // exportModPackToolStripMenuItem
+            // ImportDownloadsToolStripMenuItem
             //
-            this.exportModPackToolStripMenuItem.Name = "exportModPackToolStripMenuItem";
-            this.exportModPackToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.exportModPackToolStripMenuItem.Click += new System.EventHandler(this.exportModPackToolStripMenuItem_Click);
-            resources.ApplyResources(this.exportModPackToolStripMenuItem, "exportModPackToolStripMenuItem");
+            this.ImportDownloadsToolStripMenuItem.Name = "ImportDownloadsToolStripMenuItem";
+            this.ImportDownloadsToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.ImportDownloadsToolStripMenuItem.Click += new System.EventHandler(this.ImportDownloadsToolStripMenuItem_Click);
+            resources.ApplyResources(this.ImportDownloadsToolStripMenuItem, "ImportDownloadsToolStripMenuItem");
+            //
+            // DeduplicateToolStripMenuItem
+            //
+            this.DeduplicateToolStripMenuItem.Name = "DeduplicateToolStripMenuItem";
+            this.DeduplicateToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.DeduplicateToolStripMenuItem.Click += new System.EventHandler(this.DeduplicateToolStripMenuItem_Click);
+            resources.ApplyResources(this.DeduplicateToolStripMenuItem, "DeduplicateToolStripMenuItem");
             //
             // toolStripSeparator2
             //
             this.toolStripSeparator2.Name = "toolStripSeparator2";
             this.toolStripSeparator2.Size = new System.Drawing.Size(278, 6);
             //
-            // importDownloadsToolStripMenuItem
+            // ExportModListToolStripMenuItem
             //
-            this.importDownloadsToolStripMenuItem.Name = "importDownloadsToolStripMenuItem";
-            this.importDownloadsToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.importDownloadsToolStripMenuItem.Click += new System.EventHandler(this.importDownloadsToolStripMenuItem_Click);
-            resources.ApplyResources(this.importDownloadsToolStripMenuItem, "importDownloadsToolStripMenuItem");
+            this.ExportModListToolStripMenuItem.Name = "ExportModListToolStripMenuItem";
+            this.ExportModListToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.ExportModListToolStripMenuItem.Click += new System.EventHandler(this.ExportModListToolStripMenuItem_Click);
+            resources.ApplyResources(this.ExportModListToolStripMenuItem, "ExportModListToolStripMenuItem");
             //
-            // deduplicateToolstripMenuItem
+            // ExportModPackToolStripMenuItem
             //
-            this.deduplicateToolstripMenuItem.Name = "deduplicateToolstripMenuItem";
-            this.deduplicateToolstripMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.deduplicateToolstripMenuItem.Click += new System.EventHandler(this.deduplicateToolstripMenuItem_Click);
-            resources.ApplyResources(this.deduplicateToolstripMenuItem, "deduplicateToolstripMenuItem");
+            this.ExportModPackToolStripMenuItem.Name = "ExportModPackToolStripMenuItem";
+            this.ExportModPackToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.ExportModPackToolStripMenuItem.Click += new System.EventHandler(this.ExportModPackToolStripMenuItem_Click);
+            resources.ApplyResources(this.ExportModPackToolStripMenuItem, "ExportModPackToolStripMenuItem");
             //
             // toolStripSeparator3
             //
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(278, 6);
             //
+            // AuditRecommendationsToolStripMenuItem
+            //
+            this.AuditRecommendationsToolStripMenuItem.Name = "AuditRecommendationsToolStripMenuItem";
+            this.AuditRecommendationsToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.AuditRecommendationsToolStripMenuItem.Click += new System.EventHandler(this.AuditRecommendationsToolStripMenuItem_Click);
+            resources.ApplyResources(this.AuditRecommendationsToolStripMenuItem, "AuditRecommendationsToolStripMenuItem");
+            //
             // toolStripSeparator7
             //
             this.toolStripSeparator7.Name = "toolStripSeparator7";
             this.toolStripSeparator7.Size = new System.Drawing.Size(278, 6);
+            //
+            // ViewPlayTimeToolStripMenuItem
+            //
+            this.ViewPlayTimeToolStripMenuItem.Name = "ViewPlayTimeToolStripMenuItem";
+            this.ViewPlayTimeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ViewPlayTimeToolStripMenuItem.Click += new System.EventHandler(this.ViewPlayTimeToolStripMenuItem_Click);
+            resources.ApplyResources(this.ViewPlayTimeToolStripMenuItem, "ViewPlayTimeToolStripMenuItem");
+            //
+            // ViewUnmanagedFilesToolStripMenuItem
+            //
+            this.ViewUnmanagedFilesToolStripMenuItem.Name = "ViewUnmanagedFilesToolStripMenuItem";
+            this.ViewUnmanagedFilesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.ViewUnmanagedFilesToolStripMenuItem.Click += new System.EventHandler(this.ViewUnmanagedFilesToolStripMenuItem_Click);
+            resources.ApplyResources(this.ViewUnmanagedFilesToolStripMenuItem, "ViewUnmanagedFilesToolStripMenuItem");
             //
             // toolStripSeparator8
             //
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(278, 6);
             //
-            // auditRecommendationsMenuItem
+            // ExitToolStripMenuItem
             //
-            this.auditRecommendationsMenuItem.Name = "auditRecommendationsMenuItem";
-            this.auditRecommendationsMenuItem.Size = new System.Drawing.Size(281, 30);
-            this.auditRecommendationsMenuItem.Click += new System.EventHandler(this.auditRecommendationsMenuItem_Click);
-            resources.ApplyResources(this.auditRecommendationsMenuItem, "auditRecommendationsMenuItem");
-            //
-            // ExitToolButton
-            //
-            this.ExitToolButton.Name = "ExitToolButton";
-            this.ExitToolButton.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.ExitToolButton.Size = new System.Drawing.Size(281, 30);
-            this.ExitToolButton.Click += new System.EventHandler(this.ExitToolButton_Click);
-            resources.ApplyResources(this.ExitToolButton, "ExitToolButton");
+            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
+            this.ExitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
+            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(281, 30);
+            this.ExitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
+            resources.ApplyResources(this.ExitToolStripMenuItem, "ExitToolStripMenuItem");
             //
             // settingsToolStripMenuItem
             //
@@ -487,8 +508,8 @@ namespace CKAN.GUI
             //
             this.ManageMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ManageMods.Location = new System.Drawing.Point(0, 0);
-            this.ManageMods.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.ManageMods.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.ManageMods.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.ManageMods.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.ManageMods.Name = "ManageMods";
             this.ManageMods.Size = new System.Drawing.Size(500, 500);
             this.ManageMods.TabIndex = 4;
@@ -520,8 +541,8 @@ namespace CKAN.GUI
             //
             this.Changeset.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Changeset.Location = new System.Drawing.Point(0, 0);
-            this.Changeset.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Changeset.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Changeset.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Changeset.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Changeset.Name = "Changeset";
             this.Changeset.Size = new System.Drawing.Size(500, 500);
             this.Changeset.TabIndex = 32;
@@ -546,8 +567,8 @@ namespace CKAN.GUI
             //
             this.Wait.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Wait.Location = new System.Drawing.Point(0, 0);
-            this.Wait.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Wait.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Wait.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Wait.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Wait.Name = "Wait";
             this.Wait.Size = new System.Drawing.Size(500, 500);
             this.Wait.TabIndex = 32;
@@ -570,8 +591,8 @@ namespace CKAN.GUI
             //
             this.ChooseRecommendedMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ChooseRecommendedMods.Location = new System.Drawing.Point(0, 0);
-            this.ChooseRecommendedMods.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.ChooseRecommendedMods.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.ChooseRecommendedMods.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.ChooseRecommendedMods.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.ChooseRecommendedMods.Name = "ChooseRecommendedMods";
             this.ChooseRecommendedMods.Size = new System.Drawing.Size(500, 500);
             this.ChooseRecommendedMods.TabIndex = 32;
@@ -594,8 +615,8 @@ namespace CKAN.GUI
             //
             this.PlayTime.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PlayTime.Location = new System.Drawing.Point(0, 0);
-            this.PlayTime.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.PlayTime.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.PlayTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.PlayTime.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.PlayTime.Name = "PlayTime";
             this.PlayTime.Size = new System.Drawing.Size(500, 500);
             this.PlayTime.TabIndex = 32;
@@ -617,8 +638,8 @@ namespace CKAN.GUI
             //
             this.UnmanagedFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UnmanagedFiles.Location = new System.Drawing.Point(0, 0);
-            this.UnmanagedFiles.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.UnmanagedFiles.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.UnmanagedFiles.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.UnmanagedFiles.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.UnmanagedFiles.Name = "UnmanagedFiles";
             this.UnmanagedFiles.Size = new System.Drawing.Size(500, 500);
             this.UnmanagedFiles.TabIndex = 32;
@@ -640,8 +661,8 @@ namespace CKAN.GUI
             //
             this.InstallationHistory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.InstallationHistory.Location = new System.Drawing.Point(0, 0);
-            this.InstallationHistory.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.InstallationHistory.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.InstallationHistory.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.InstallationHistory.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.InstallationHistory.Name = "InstallationHistory";
             this.InstallationHistory.Size = new System.Drawing.Size(500, 500);
             this.InstallationHistory.TabIndex = 32;
@@ -665,8 +686,8 @@ namespace CKAN.GUI
             //
             this.ChooseProvidedMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ChooseProvidedMods.Location = new System.Drawing.Point(0, 0);
-            this.ChooseProvidedMods.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.ChooseProvidedMods.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.ChooseProvidedMods.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.ChooseProvidedMods.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.ChooseProvidedMods.Name = "ChooseProvidedMods";
             this.ChooseProvidedMods.Size = new System.Drawing.Size(500, 500);
             this.ChooseProvidedMods.TabIndex = 32;
@@ -677,9 +698,9 @@ namespace CKAN.GUI
             this.DeleteDirectoriesTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.DeleteDirectoriesTabPage.Controls.Add(this.DeleteDirectories);
             this.DeleteDirectoriesTabPage.Location = new System.Drawing.Point(0, 0);
-            this.DeleteDirectoriesTabPage.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectoriesTabPage.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.DeleteDirectoriesTabPage.Name = "DeleteDirectoriesTabPage";
-            this.DeleteDirectoriesTabPage.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectoriesTabPage.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.DeleteDirectoriesTabPage.Size = new System.Drawing.Size(500, 500);
             this.DeleteDirectoriesTabPage.TabIndex = 31;
             resources.ApplyResources(this.DeleteDirectoriesTabPage, "DeleteDirectoriesTabPage");
@@ -688,8 +709,8 @@ namespace CKAN.GUI
             //
             this.DeleteDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DeleteDirectories.Location = new System.Drawing.Point(0, 0);
-            this.DeleteDirectories.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.DeleteDirectories.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.DeleteDirectories.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.DeleteDirectories.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.DeleteDirectories.Name = "DeleteDirectories";
             this.DeleteDirectories.Size = new System.Drawing.Size(500, 500);
             this.DeleteDirectories.TabIndex = 32;
@@ -699,9 +720,9 @@ namespace CKAN.GUI
             this.EditModpackTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.EditModpackTabPage.Controls.Add(this.EditModpack);
             this.EditModpackTabPage.Location = new System.Drawing.Point(0, 0);
-            this.EditModpackTabPage.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpackTabPage.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.EditModpackTabPage.Name = "EditModpackTabPage";
-            this.EditModpackTabPage.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpackTabPage.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.EditModpackTabPage.Size = new System.Drawing.Size(500, 500);
             this.EditModpackTabPage.TabIndex = 31;
             resources.ApplyResources(this.EditModpackTabPage, "EditModpackTabPage");
@@ -710,8 +731,8 @@ namespace CKAN.GUI
             //
             this.EditModpack.Dock = System.Windows.Forms.DockStyle.Fill;
             this.EditModpack.Location = new System.Drawing.Point(0, 0);
-            this.EditModpack.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.EditModpack.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.EditModpack.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.EditModpack.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.EditModpack.Name = "EditModpack";
             this.EditModpack.Size = new System.Drawing.Size(500, 500);
             this.EditModpack.TabIndex = 32;
@@ -736,7 +757,7 @@ namespace CKAN.GUI
             this.toolStripSeparator5,
             this.openCKANToolStripMenuItem,
             this.openGameToolStripMenuItem,
-            this.openGameDirectoryToolStripMenuItem1,
+            this.OpenGameDirectoryToolStripMenuItem1,
             this.cKANSettingsToolStripMenuItem1,
             this.toolStripSeparator6,
             this.quitToolStripMenuItem});
@@ -792,12 +813,12 @@ namespace CKAN.GUI
             this.openGameToolStripMenuItem.Click += new System.EventHandler(this.openGameToolStripMenuItem_Click);
             resources.ApplyResources(this.openGameToolStripMenuItem, "openGameToolStripMenuItem");
             //
-            // openGameDirectoryToolStripMenuItem1
+            // OpenGameDirectoryToolStripMenuItem1
             //
-            this.openGameDirectoryToolStripMenuItem1.Name = "openGameDirectoryToolStripMenuItem1";
-            this.openGameDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
-            this.openGameDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.openGameDirectoryToolStripMenuItem_Click);
-            resources.ApplyResources(this.openGameDirectoryToolStripMenuItem1, "openGameDirectoryToolStripMenuItem1");
+            this.OpenGameDirectoryToolStripMenuItem1.Name = "OpenGameDirectoryToolStripMenuItem1";
+            this.OpenGameDirectoryToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+            this.OpenGameDirectoryToolStripMenuItem1.Click += new System.EventHandler(this.OpenGameDirectoryToolStripMenuItem_Click);
+            resources.ApplyResources(this.OpenGameDirectoryToolStripMenuItem1, "OpenGameDirectoryToolStripMenuItem1");
             //
             // cKANSettingsToolStripMenuItem1
             //
@@ -815,29 +836,8 @@ namespace CKAN.GUI
             //
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
             this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.quitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolButton_Click);
+            this.quitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItem_Click);
             resources.ApplyResources(this.quitToolStripMenuItem, "quitToolStripMenuItem");
-            //
-            // viewPlayTimeStripMenuItem
-            //
-            this.viewPlayTimeStripMenuItem.Name = "viewPlayTimeStripMenuItem";
-            this.viewPlayTimeStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.viewPlayTimeStripMenuItem.Click += new System.EventHandler(this.viewPlayTimeStripMenuItem_Click);
-            resources.ApplyResources(this.viewPlayTimeStripMenuItem, "viewPlayTimeStripMenuItem");
-            //
-            // viewUnmanagedFilesStripMenuItem
-            //
-            this.viewUnmanagedFilesStripMenuItem.Name = "viewUnmanagedFilesStripMenuItem";
-            this.viewUnmanagedFilesStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.viewUnmanagedFilesStripMenuItem.Click += new System.EventHandler(this.viewUnmanagedFilesStripMenuItem_Click);
-            resources.ApplyResources(this.viewUnmanagedFilesStripMenuItem, "viewUnmanagedFilesStripMenuItem");
-            //
-            // installationHistoryStripMenuItem
-            //
-            this.installationHistoryStripMenuItem.Name = "installationHistoryStripMenuItem";
-            this.installationHistoryStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.installationHistoryStripMenuItem.Click += new System.EventHandler(this.installationHistoryStripMenuItem_Click);
-            resources.ApplyResources(this.installationHistoryStripMenuItem, "installationHistoryStripMenuItem");
             //
             // Main
             //
@@ -900,19 +900,24 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.MenuStrip MainMenu;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem manageGameInstancesMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ManageGameInstancesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenGameDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem installFromckanToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportModListToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem exportModPackToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem InstallationHistoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem InstallFromckanToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ImportDownloadsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem DeduplicateToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem importDownloadsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deduplicateToolstripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExportModListToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExportModPackToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripMenuItem auditRecommendationsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ExitToolButton;
+        private System.Windows.Forms.ToolStripMenuItem AuditRecommendationsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+        private System.Windows.Forms.ToolStripMenuItem ViewPlayTimeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ViewUnmanagedFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
         public System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pluginsToolStripMenuItem;
@@ -969,14 +974,9 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem openCKANToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openGameToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openGameDirectoryToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem OpenGameDirectoryToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem cKANSettingsToolStripMenuItem1;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem quitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewPlayTimeStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem viewUnmanagedFilesStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem installationHistoryStripMenuItem;
     }
 }

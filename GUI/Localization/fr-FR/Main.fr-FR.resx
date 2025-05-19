@@ -120,67 +120,67 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Fichier</value>
   </data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Gérer les instances de jeu</value>
   </data>
-  <data name="manageGameInstancesMenuItem.ToolTipText" xml:space="preserve">
+  <data name="ManageGameInstancesToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Ajouter, cloner ou basculer vers d'autres instances de jeu</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Ouvrir le dossier du jeu</value>
   </data>
-  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Historique d'installation...</value>
   </data>
-  <data name="installationHistoryStripMenuItem.ToolTipText" xml:space="preserve">
+  <data name="InstallationHistoryToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Parcourir l'historique des mods installés par le passé</value>
   </data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Installer depuis .ckan...</value>
   </data>
-  <data name="installFromckanToolStripMenuItem.ToolTipText" xml:space="preserve">
+  <data name="InstallFromckanToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Choisissez un fichier .ckan contenant des métadonnées pour un module et installez-le</value>
   </data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Importer des &amp;mods téléchargés...</value>
   </data>
-  <data name="importDownloadsToolStripMenuItem.ToolTipText" xml:space="preserve">
+  <data name="ImportDownloadsToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Choisissez les fichiers ZIP téléchargés en dehors de CKAN et mettez-les dans le cache pour l'installation</value>
   </data>
-  <data name="deduplicateToolstripMenuItem.Text" xml:space="preserve">
+  <data name="DeduplicateToolStripMenuItem.Text" xml:space="preserve">
     <value>Dédupliquer les fichiers installés...</value>
   </data>
-  <data name="deduplicateToolstripMenuItem.ToolTipText" xml:space="preserve">
+  <data name="DeduplicateToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Analyser les fichiers installés dans toutes les instances de jeu et partager ceux qui le peuvent</value>
   </data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>Créer un fichier &amp;texte avec les mods installés (ne peut pas être réimporté)...</value>
   </data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Sauver le modpack dans un fichier (peut être réimporté)...</value>
   </data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>Voir les &amp;recommandations</value>
   </data>
-  <data name="auditRecommendationsMenuItem.ToolTipText" xml:space="preserve">
+  <data name="AuditRecommendationsToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Revoir les recommandations et suggestions de tous les mods installés</value>
   </data>
-  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Temps de jeu...</value>
   </data>
-  <data name="viewPlayTimeStripMenuItem.ToolTipText" xml:space="preserve">
+  <data name="ViewPlayTimeToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Voir et modifier combien de temps vous avez joué chaque instance de jeu</value>
   </data>
-  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
     <value>Fichiers &amp;non gérés...</value>
   </data>
-  <data name="viewUnmanagedFilesStripMenuItem.ToolTipText" xml:space="preserve">
+  <data name="ViewUnmanagedFilesToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Lister les fichiers de cette instance de jeu qui n'ont pas été installés par CKAN</value>
   </data>
-  <data name="ExitToolButton.Text" xml:space="preserve">
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Quitter</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
@@ -252,7 +252,7 @@
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
     <value>Lancer le Jeu</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
     <value>Ouvrir le Dossier du Jeu</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">

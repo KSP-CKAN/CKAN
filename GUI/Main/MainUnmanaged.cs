@@ -7,7 +7,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void viewUnmanagedFilesStripMenuItem_Click(object? sender, EventArgs? e)
+        private void ViewUnmanagedFilesToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (Manager.CurrentInstance != null)
             {

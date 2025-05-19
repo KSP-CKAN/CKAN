@@ -12,7 +12,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void installationHistoryStripMenuItem_Click(object? sender, EventArgs? e)
+        private void InstallationHistoryToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (CurrentInstance != null && configuration != null)
             {

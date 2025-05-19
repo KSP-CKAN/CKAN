@@ -120,31 +120,31 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
     <value>Bestand</value>
   </data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Beheer spel instanties</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Open spel map</value>
   </data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Installeren vanuit .ckan...</value>
   </data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Geïnstalleerde mod lijst opslaan (kan niet opnieuw worden geïmporteerd)...</value>
   </data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Exporteer modpack (kan opnieuw worden geïmporteerd)...</value>
   </data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Importeer &amp;gedownloade mods...</value>
   </data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Aanbevelingen controleren</value>
   </data>
-  <data name="ExitToolButton.Text" xml:space="preserve">
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Afsluiten</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
@@ -231,7 +231,7 @@
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
     <value>Spel Starten</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
     <value>Open game map</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
@@ -240,13 +240,13 @@
   <data name="quitToolStripMenuItem.Text" xml:space="preserve">
     <value>Afsluiten</value>
   </data>
-  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>Speeltijd...</value>
   </data>
-  <data name="viewUnmanagedFilesStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Onbeheerde Bestanden...</value>
   </data>
-  <data name="installationHistoryStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
     <value>Installatiegeschiedenis...</value>
   </data>
 </root>

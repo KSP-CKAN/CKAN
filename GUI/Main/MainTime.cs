@@ -7,7 +7,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void viewPlayTimeStripMenuItem_Click(object? sender, EventArgs? e)
+        private void ViewPlayTimeToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             PlayTime.loadAllPlayTime(Manager);
             tabController.ShowTab(PlayTimeTabPage.Name, 2);

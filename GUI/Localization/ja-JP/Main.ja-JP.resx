@@ -120,15 +120,15 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve"><value>ファイル</value></data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve"><value>インスタンスを管理</value></data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>ゲームファイルの場所を開く</value></data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve"><value>.ckanからインストール...</value></data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;インストール済みModリストを保存...</value></data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Modパックをエクスポート...</value></data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;ダウンロード済みModをインポート...</value></data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve"><value>推奨されるModの確認</value></data>
-  <data name="ExitToolButton.Text" xml:space="preserve"><value>終&amp;了</value></data>
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve"><value>ファイル</value></data>
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve"><value>インスタンスを管理</value></data>
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve"><value>ゲームファイルの場所を開く</value></data>
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve"><value>.ckanからインストール...</value></data>
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve"><value>&amp;インストール済みModリストを保存...</value></data>
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve"><value>Modパックをエクスポート...</value></data>
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;ダウンロード済みModをインポート...</value></data>
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve"><value>推奨されるModの確認</value></data>
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve"><value>終&amp;了</value></data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve"><value>設定</value></data>
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve"><value>CKAN設定</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>CKANプラグイン</value></data>
@@ -150,7 +150,7 @@
   <data name="pauseToolStripMenuItem.Text" xml:space="preserve"><value>ポーズ</value></data>
   <data name="openCKANToolStripMenuItem.Text" xml:space="preserve"><value>CKANを開く</value></data>
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve"><value>ゲームを起動</value></data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>ゲームフォルダを開く</value></data>
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve"><value>ゲームフォルダを開く</value></data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve"><value>CKAN設定</value></data>
   <data name="quitToolStripMenuItem.Text" xml:space="preserve"><value>止める</value></data>
 </root>

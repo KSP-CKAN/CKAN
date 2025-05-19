@@ -28,7 +28,7 @@ namespace CKAN.GUI
             StatusLabel.ToolTipText = StatusLabel.Text = message;
         }
 
-        private void auditRecommendationsMenuItem_Click(object? sender, EventArgs? e)
+        private void AuditRecommendationsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (CurrentInstance != null)
             {
