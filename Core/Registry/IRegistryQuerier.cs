@@ -18,7 +18,7 @@ namespace CKAN
     public interface IRegistryQuerier
     {
         ReadOnlyDictionary<string, Repository>      Repositories     { get; }
-        IEnumerable<InstalledModule>                InstalledModules { get; }
+        IReadOnlyCollection<InstalledModule>        InstalledModules { get; }
         IReadOnlyCollection<string>                 InstalledDlls    { get; }
         IDictionary<string, UnmanagedModuleVersion> InstalledDlc     { get; }
 
@@ -515,6 +515,24 @@ namespace CKAN
                         querier.InstalledDlls,
                         querier.InstalledDlc)));
         }
+
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="instance">The game instance</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            this IRegistryQuerier querier,
+            GameInstance          instance)
+            => querier.FindRemovableAutoInstalled(querier.InstalledModules,
+                                                  Array.Empty<CkanModule>(),
+                                                  instance.game,
+                                                  instance.StabilityToleranceConfig,
+                                                  instance.VersionCriteria());
 
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
     }

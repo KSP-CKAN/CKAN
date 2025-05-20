@@ -44,7 +44,7 @@ namespace CKAN
 
         [JsonProperty]
         [JsonConverter(typeof(JsonParallelDictionaryConverter<InstalledModule>))]
-        private readonly IDictionary<string, InstalledModule> installed_modules;
+        private readonly Dictionary<string, InstalledModule> installed_modules;
 
         // filename (case insensitive on Windows) => module
         [JsonProperty]
@@ -113,7 +113,7 @@ namespace CKAN
         /// <summary>
         /// Returns all the installed modules
         /// </summary>
-        [JsonIgnore] public IEnumerable<InstalledModule> InstalledModules
+        [JsonIgnore] public IReadOnlyCollection<InstalledModule> InstalledModules
             => installed_modules.Values;
 
         /// <summary>
@@ -357,7 +357,7 @@ namespace CKAN
         }
 
         public Registry(RepositoryDataManager?               repoData,
-                        IDictionary<string, InstalledModule> installed_modules,
+                        Dictionary<string, InstalledModule>  installed_modules,
                         Dictionary<string, string>           installed_dlls,
                         IDictionary<string, string>          installed_files,
                         SortedDictionary<string, Repository> repositories)
