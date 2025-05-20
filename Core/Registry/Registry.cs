@@ -833,10 +833,10 @@ namespace CKAN
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
         /// </summary>
-        public void RegisterModule(CkanModule          mod,
-                                   ICollection<string> absoluteFiles,
-                                   GameInstance        inst,
-                                   bool                autoInstalled)
+        public InstalledModule RegisterModule(CkanModule          mod,
+                                              ICollection<string> absoluteFiles,
+                                              GameInstance        inst,
+                                              bool                autoInstalled)
         {
             log.DebugFormat("Registering module {0}", mod);
             EnlistWithTransaction();
@@ -890,12 +890,14 @@ namespace CKAN
                                               || relativeFiles.Contains(kvp.Value));
 
             // Finally register our module proper
-            installed_modules.Add(mod.identifier,
-                                  new InstalledModule(inst, mod, relativeFiles, autoInstalled));
+            var instMod = new InstalledModule(inst, mod, relativeFiles, autoInstalled);
+            installed_modules.Add(mod.identifier, instMod);
 
             // Installing and uninstalling mods can change compatibility due to conflicts,
             // so we'll need to reset the compatibility sorter
             InvalidateInstalledCaches();
+
+            return instMod;
         }
 
         /// <summary>

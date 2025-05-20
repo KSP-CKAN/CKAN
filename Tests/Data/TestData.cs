@@ -899,6 +899,7 @@ namespace Tests.Data
                 ""name"":       ""KopernicusTech"",
                 ""version"":    ""1.0"",
                 ""download"":   ""https://github.com/"",
+                ""depends"":    [ { ""name"": ""ModuleManager"" } ],
                 ""conflicts"":  [ { ""name"": ""Kopernicus"" } ],
                 ""install"":    [ { ""find"":       ""DogeCoinFlag"",
                                     ""install_to"": ""GameData/KopernicusTech"" } ]
@@ -908,7 +909,8 @@ namespace Tests.Data
                 ""name"":       ""Kopernicus"",
                 ""version"":    ""1.0"",
                 ""download"":   ""https://github.com/"",
-                ""depends"":    [ { ""name"": ""ModularFlightIntegrator"" } ],
+                ""depends"":    [ { ""name"": ""ModuleManager"" },
+                                  { ""name"": ""ModularFlightIntegrator"" } ],
                 ""install"":    [ { ""find"":       ""DogeCoinFlag"",
                                     ""install_to"": ""GameData/Kopernicus"" } ]
             }",
@@ -919,6 +921,14 @@ namespace Tests.Data
                 ""download"":   ""https://github.com/"",
                 ""install"":    [ { ""find"":       ""DogeCoinFlag"",
                                     ""install_to"": ""GameData/ModularFlightIntegrator"" } ]
+            }",
+            @"{
+                ""identifier"": ""ModuleManager"",
+                ""name"":       ""ModuleManager"",
+                ""version"":    ""1.0"",
+                ""download"":   ""https://github.com/"",
+                ""install"":    [ { ""find"":       ""DogeCoinFlag"",
+                                    ""install_to"": ""GameData/ModuleManager"" } ]
             }",
         };
     }

@@ -458,26 +458,25 @@ namespace Tests.Core.Registry
         }
 
         [Test]
-        public void FindRemovableAutoInstalled_InstallingDepWithConflict_FindsOldConflictingDep()
+        public void FindRemovableAutoInstalled_StillNeeded_Kept()
         {
             // Arrange
             var user = new NullUser();
             using (var gameInstWrapper = new DisposableKSP())
-            using (var repo = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
-            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var repo            = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
+            using (var repoData        = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                var firstChosen = registry.GetModuleByVersion("OuterPlanetsMod", "1.0")!;
-                var secondChosen = registry.GetModuleByVersion("OuterPlanetsMod", "2.0")!;
-                var firstDependency = registry.GetModuleByVersion("KopernicusTech", "1.0")!;
-                var secondDependency = registry.GetModuleByVersion("Kopernicus", "1.0")!;
-                registry.RegisterModule(firstChosen, Array.Empty<string>(),
-                                        gameInstWrapper.KSP, false);
-                registry.RegisterModule(firstDependency, Array.Empty<string>(),
-                                        gameInstWrapper.KSP, true);
-                var autoInstDep = registry.InstalledModule(firstDependency.identifier)!;
-                var installed = new InstalledModule[] { registry.InstalledModule(firstDependency.identifier)! };
-                var installing = new CkanModule[] { secondChosen };
+                var chosen   = registry.GetModuleByVersion("OuterPlanetsMod", "1.0")!;
+                var kopt     = registry.GetModuleByVersion("KopernicusTech",  "1.0")!;
+                var mm       = registry.GetModuleByVersion("ModuleManager",   "1.0")!;
+                registry.RegisterModule(chosen, Array.Empty<string>(), gameInstWrapper.KSP, false);
+                registry.RegisterModule(kopt,   Array.Empty<string>(), gameInstWrapper.KSP, true);
+                registry.RegisterModule(mm,     Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var autoInstDep = registry.InstalledModule(kopt.identifier)!;
+                var installed   = new InstalledModule[] { registry.InstalledModule(chosen.identifier)!,
+                                                          registry.InstalledModule(kopt.identifier)!, };
+                var installing  = Array.Empty<CkanModule>();
 
                 // Act
                 var removable = registry.FindRemovableAutoInstalled(
@@ -487,7 +486,75 @@ namespace Tests.Core.Registry
                                     gameInstWrapper.KSP.VersionCriteria());
 
                 // Assert
-                CollectionAssert.AreEquivalent(new InstalledModule[] { autoInstDep },
+                CollectionAssert.AreEquivalent(Array.Empty<InstalledModule>(),
+                                               removable);
+            }
+        }
+
+        [Test]
+        public void FindRemovableAutoInstalled_StillNeeded2_Kept()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var repo            = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
+            using (var repoData        = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var chosen   = registry.GetModuleByVersion("OuterPlanetsMod",         "2.0")!;
+                var kop      = registry.GetModuleByVersion("Kopernicus",              "1.0")!;
+                var mfi      = registry.GetModuleByVersion("ModularFlightIntegrator", "1.0")!;
+                var mm       = registry.GetModuleByVersion("ModuleManager",           "1.0")!;
+                var instChosen = registry.RegisterModule(chosen, Array.Empty<string>(), gameInstWrapper.KSP, false);
+                var instKop    = registry.RegisterModule(kop,    Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var instMfi    = registry.RegisterModule(mfi,    Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var instMM     = registry.RegisterModule(mm,     Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var installed  = new InstalledModule[] { instChosen, instKop, instMfi, instMM, };
+                var installing = Array.Empty<CkanModule>();
+
+                // Act
+                var removable = registry.FindRemovableAutoInstalled(
+                                    installed, installing,
+                                    gameInstWrapper.KSP.game,
+                                    stabilityTolerance,
+                                    gameInstWrapper.KSP.VersionCriteria());
+
+                // Assert
+                CollectionAssert.AreEquivalent(Array.Empty<InstalledModule>(),
+                                               removable);
+            }
+        }
+
+        [Test]
+        public void FindRemovableAutoInstalled_InstallingDepWithConflict_FindsOldConflictingDep()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var repo            = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
+            using (var repoData        = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry     = new CKAN.Registry(repoData.Manager, repo.repo);
+                var firstChosen  = registry.GetModuleByVersion("OuterPlanetsMod", "1.0")!;
+                var kopt         = registry.GetModuleByVersion("KopernicusTech",  "1.0")!;
+                var secondChosen = registry.GetModuleByVersion("OuterPlanetsMod", "2.0")!;
+                var mm           = registry.GetModuleByVersion("ModuleManager",   "1.0")!;
+                registry.RegisterModule(firstChosen, Array.Empty<string>(), gameInstWrapper.KSP, false);
+                var instKopt = registry.RegisterModule(kopt, Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var instMM   = registry.RegisterModule(mm,   Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var autoInstDeps = new InstalledModule[] { instKopt, };
+                var installed    = new InstalledModule[] { instKopt, instMM, };
+                var installing   = new CkanModule[] { secondChosen };
+
+                // Act
+                var removable = registry.FindRemovableAutoInstalled(
+                                    installed, installing,
+                                    gameInstWrapper.KSP.game,
+                                    stabilityTolerance,
+                                    gameInstWrapper.KSP.VersionCriteria());
+
+                // Assert
+                CollectionAssert.AreEquivalent(autoInstDeps,
                                                removable);
             }
         }
