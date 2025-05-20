@@ -1171,13 +1171,21 @@ namespace CKAN.GUI
                         updateCell.Value = false;
                     }
                 }
-                if (ChangeSet != null)
+                if (ChangeSet != null && currentInstance != null)
                 {
+                    var registry  = RegistryManager.Instance(currentInstance, repoData).registry;
+                    var removable = registry.FindRemovableAutoInstalled(currentInstance)
+                                            .Select(im => im.Module)
+                                            .ToHashSet();
+                    removable.RemoveWhere(m => removable.Any(other => other.depends is List<RelationshipDescriptor> deps
+                                                                      && deps.Any(dep => dep.MatchesAny(new CkanModule[] { m },
+                                                                                                        null, null))));
                     // Marking a mod as AutoInstalled can immediately queue it for removal if there is no dependent mod.
                     // Reset the state of the AutoInstalled checkbox for these by deducing it from the changeset.
                     var noLongerUsed = ChangeSet.Where(ch => ch.ChangeType == GUIModChangeType.Remove
                                                              && ch.Reasons.Any(r => r is SelectionReason.NoLongerUsed))
                                                 .Select(ch => ch.Mod)
+                                                .Intersect(removable)
                                                 .ToArray();
                     foreach (var mod in noLongerUsed)
                     {

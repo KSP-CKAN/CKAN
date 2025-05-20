@@ -18,7 +18,7 @@ namespace CKAN
     public interface IRegistryQuerier
     {
         ReadOnlyDictionary<string, Repository>      Repositories     { get; }
-        IEnumerable<InstalledModule>                InstalledModules { get; }
+        IReadOnlyCollection<InstalledModule>        InstalledModules { get; }
         IReadOnlyCollection<string>                 InstalledDlls    { get; }
         IDictionary<string, UnmanagedModuleVersion> InstalledDlc     { get; }
 
@@ -489,32 +489,96 @@ namespace CKAN
             log.DebugFormat("Finding removable autoInstalled for: {0}",
                             string.Join(", ", installed.Select(im => im.identifier)));
 
-            var autoInstMods = installed.Where(im => im.AutoInstalled).ToArray();
-            var autoInstIds  = autoInstMods.Select(im => im.Module.identifier).ToHashSet();
-
             var opts = RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance);
             opts.without_toomanyprovides_kraken = true;
             opts.without_enforce_consistency    = true;
             opts.proceed_with_inconsistencies   = true;
-            return autoInstMods.Where(
-                im => autoInstIds.IsSupersetOf(
-                    Registry.FindReverseDependencies(
-                        new string[] { im.identifier },
-                        installing,
-                        new RelationshipResolver(
-                            // DLC silently crashes the resolver
-                            installed.Where(other => !other.Module.IsDLC
-                                                     && other != im)
-                                     .Select(other => other.Module),
-                            querier.InstalledModules.Except(installed)
-                                                    .Append(im)
-                                                    .Select(other => other.Module),
-                            opts, querier, game, crit)
-                                .ModList()
-                                .ToArray(),
-                        querier.InstalledDlls,
-                        querier.InstalledDlc)));
+
+            // Calculate the full changeset for the mods we're installing
+            // (the already installed ones already have their dependencies in the registry)
+            var resolver = new RelationshipResolver(
+                               installing,
+                               querier.InstalledModules.Except(installed.Where(im => !im.AutoInstalled))
+                                                       .Select(other => other.Module),
+                               opts, querier, game, crit);
+            // Keep the mods that are not auto-installed
+            var keeping = installed.Where(im => !im.AutoInstalled)
+                                   .Select(im => im.Module)
+                                   // Don't remove anything we still need for newly installed mods
+                                   .Concat(resolver.ModList())
+                                   .Distinct()
+                                   .ToHashSet();
+            // Treat any auto-installed mods that aren't marked as needed as initially removable
+            var removable = installed.Where(im => im.AutoInstalled
+                                                  && !keeping.Contains(im.Module))
+                                     .ToList();
+            // Get the unsatisfied relationships of mods we're installing or not removing
+            var depends = keeping.SelectMany(m => m.depends
+                                                  ?? Enumerable.Empty<RelationshipDescriptor>())
+                                 .Distinct()
+                                 .Where(dep => !dep.MatchesAny(keeping, null, null))
+                                 .ToArray();
+            if (depends.Length > 0)
+            {
+                while (true)
+                {
+                    // Find previously-removable modules that satisfy previously unsatisfied relationships
+                    var stillNeeded = removable.Select(im => depends.Where(dep => dep.MatchesAny(new CkanModule[] { im.Module },
+                                                                                                 null, null))
+                                                                    .ToArray()
+                                                             is { Length: > 0 } deps
+                                                                 ? (KeyValuePair<InstalledModule, RelationshipDescriptor[]>?)
+                                                                   new KeyValuePair<InstalledModule, RelationshipDescriptor[]>(im, deps)
+                                                                 : null)
+                                               .OfType<KeyValuePair<InstalledModule, RelationshipDescriptor[]>>()
+                                               .ToDictionary();
+                    if (stillNeeded.Count > 0)
+                    {
+                        // Move this pass of mods we still need from removable into keeping
+                        removable.RemoveAll(stillNeeded.ContainsKey);
+                        keeping.UnionWith(stillNeeded.Keys.Select(im => im.Module));
+
+                        // Remove relationships that are satisfied by this pass of mods we still need
+                        depends = depends.Except(stillNeeded.Values.SelectMany(deps => deps))
+                                         // Add relationships from this pass of mods...
+                                         .Concat(stillNeeded.Keys.SelectMany(im => im.Module.depends
+                                                                                   ?? Enumerable.Empty<RelationshipDescriptor>())
+                                                            // ... except for ones that are already satisfied
+                                                            .Where(dep => !dep.MatchesAny(keeping, null, null)))
+                                         .Distinct()
+                                         .ToArray();
+                        // If no relationships still need to be satisfied, we are done
+                        if (depends.Length < 1)
+                        {
+                            return removable;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return removable;
         }
+
+        /// <summary>
+        /// Find auto-installed modules that have no depending modules
+        /// or only auto-installed depending modules.
+        /// </summary>
+        /// <param name="querier">A registry</param>
+        /// <param name="instance">The game instance</param>
+        /// <returns>
+        /// Sequence of removable auto-installed modules, if any
+        /// </returns>
+        public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            this IRegistryQuerier querier,
+            GameInstance          instance)
+            => querier.FindRemovableAutoInstalled(querier.InstalledModules,
+                                                  Array.Empty<CkanModule>(),
+                                                  instance.game,
+                                                  instance.StabilityToleranceConfig,
+                                                  instance.VersionCriteria());
 
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
     }

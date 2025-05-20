@@ -666,12 +666,12 @@ namespace Tests.CmdLine
          // then upgrade to the Kopernicus-depending version
          TestCase(new string[] { "OuterPlanetsMod=1.0" },
                   new string[] { "OuterPlanetsMod" },
-                  new string[] { "OuterPlanetsMod", "Kopernicus", "ModularFlightIntegrator" }),
+                  new string[] { "OuterPlanetsMod", "Kopernicus", "ModularFlightIntegrator", "ModuleManager" }),
          // Install the Kopernicus-depending version
          // then downgrade to the old KopernicusTech-depending version,
          TestCase(new string[] { "OuterPlanetsMod" },
                   new string[] { "OuterPlanetsMod=1.0" },
-                  new string[] { "OuterPlanetsMod", "KopernicusTech" })]
+                  new string[] { "OuterPlanetsMod", "KopernicusTech", "ModuleManager" })]
         public void RunCommand_UpOrDowngradeWithAutoDepConflict_Works(string[] toInstall,
                                                                       string[] toUpgrade,
                                                                       string[] finalInstalled)

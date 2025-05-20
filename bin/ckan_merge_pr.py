@@ -30,7 +30,7 @@ class CkanRepo(Repo):
 
     def remote_primary(self) -> RemoteReference:
         """Looks up the main branch in the repo on GitHub"""
-        return next(filter(self.ref_is_head, self.refs))
+        return next(filter(self.ref_is_head, self.remotes[0].refs))
 
     @staticmethod
     def ref_is_head(ref: RemoteReference) -> bool:
