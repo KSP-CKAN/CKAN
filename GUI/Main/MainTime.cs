@@ -16,10 +16,10 @@ namespace CKAN.GUI
 
         private void PlayTime_Done()
         {
+            EnableMainWindow();
             UpdateStatusBar();
             tabController.ShowTab(ManageModsTabPage.Name);
             tabController.HideTab(PlayTimeTabPage.Name);
-            EnableMainWindow();
         }
     }
 }

@@ -32,9 +32,9 @@ namespace CKAN.GUI
                     EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
                     // This will block till the user is done
                     EditModpack.Wait(currentUser);
+                    EnableMainWindow();
                     tabController.ShowTab(ManageModsTabPage.Name);
                     tabController.HideTab(EditModpackTabPage.Name);
-                    EnableMainWindow();
                 });
             }
         }

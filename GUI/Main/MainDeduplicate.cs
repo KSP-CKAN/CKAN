@@ -27,6 +27,7 @@ namespace CKAN.GUI
                 },
                 (sender, e) =>
                 {
+                    EnableMainWindow();
                     switch (e?.Error)
                     {
                         case CancelledActionKraken:
@@ -37,7 +38,6 @@ namespace CKAN.GUI
                             break;
                     }
                     Wait.Finish();
-                    EnableMainWindow();
                 },
                 false,
                 null);

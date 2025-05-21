@@ -13,11 +13,13 @@ namespace CKAN.GUI
             {
                 UnmanagedFiles.LoadFiles(Manager.CurrentInstance, repoData, currentUser);
                 tabController.ShowTab(UnmanagedFilesTabPage.Name, 2);
+                DisableMainWindow();
             }
         }
 
         private void UnmanagedFiles_Done()
         {
+            EnableMainWindow();
             UpdateStatusBar();
             tabController.ShowTab(ManageModsTabPage.Name);
             tabController.HideTab(UnmanagedFilesTabPage.Name);
