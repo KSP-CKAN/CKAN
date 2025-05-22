@@ -392,6 +392,10 @@ namespace CKAN
                 ).ToList();
         }
 
+        public IEnumerable<(string hash, long size)> CachedHashesAndSizes()
+            => allFiles(false).Select(fi => (hash: fi.Name[..8],
+                                             size: fi.Length));
+
         /// <summary>
         /// Stores the results of a given URL in the cache.
         /// Description is adjusted to be filesystem-safe and then appended to the file hash when saving.

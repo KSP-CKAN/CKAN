@@ -18,7 +18,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Exports installed mods to a .ckan file.
         /// </summary>
-        private void exportModPackToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void ExportModPackToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (CurrentInstance != null)
             {
@@ -32,9 +32,9 @@ namespace CKAN.GUI
                     EditModpack.LoadModule(mgr.GenerateModpack(false, true), mgr.registry);
                     // This will block till the user is done
                     EditModpack.Wait(currentUser);
+                    EnableMainWindow();
                     tabController.ShowTab(ManageModsTabPage.Name);
                     tabController.HideTab(EditModpackTabPage.Name);
-                    EnableMainWindow();
                 });
             }
         }
@@ -71,7 +71,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Exports installed mods to a non-.ckan file.
         /// </summary>
-        private void exportModListToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void ExportModListToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (CurrentInstance != null)
             {

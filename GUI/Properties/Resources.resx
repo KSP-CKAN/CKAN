@@ -532,4 +532,7 @@ This action cannot be undone!</value></data>
   <data name="MainDeduplicateScanning" xml:space="preserve"><value>Scanning for duplicate installed files...</value></data>
   <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Add {0}</value></data>
   <data name="InstallFiltersGlobalFiltersForGame" xml:space="preserve"><value>Global Filters for {0}</value></data>
+  <data name="DownloadStatisticsPieChartTitle" xml:space="preserve"><value>Downloads by Host</value></data>
+  <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve"><value>Donate</value></data>
+  <data name="DownloadStatisticsTableDonateLinkToolTip" xml:space="preserve"><value>Click to open the donation link for {0} in your browser</value></data>
 </root>

@@ -76,8 +76,8 @@ namespace CKAN.GUI
                 catch
                 {
                     // If we failed, do the clean-up normally done by PostInstallMods.
-                    HideWaitDialog();
                     EnableMainWindow();
+                    HideWaitDialog();
                 }
             }
         }
@@ -498,8 +498,8 @@ namespace CKAN.GUI
 
                     case CancelledActionKraken exc:
                         // User already knows they cancelled, get out
-                        HideWaitDialog();
                         EnableMainWindow();
+                        HideWaitDialog();
                         break;
 
                     case MissingCertificateKraken exc:

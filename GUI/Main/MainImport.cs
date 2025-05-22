@@ -13,7 +13,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void importDownloadsToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void ImportDownloadsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             ImportModules();
         }
@@ -66,6 +66,7 @@ namespace CKAN.GUI
                         },
                         (sender, e) =>
                         {
+                            EnableMainWindow();
                             if (e?.Error == null && e?.Result is bool result && result)
                             {
                                 // Put GUI back the way we found it
@@ -80,7 +81,6 @@ namespace CKAN.GUI
                                 }
                                 Wait.Finish();
                             }
-                            EnableMainWindow();
                         },
                         false,
                         null);

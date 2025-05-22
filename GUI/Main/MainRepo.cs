@@ -176,13 +176,14 @@ namespace CKAN.GUI
                 switch (e.Error)
                 {
                     case CancelledActionKraken k:
-                        HideWaitDialog();
                         EnableMainWindow();
+                        HideWaitDialog();
                         break;
 
                     case TransactionException texc:
                         // "Failed to roll back" is useless by itself,
                         // so show all inner exceptions too
+                        EnableMainWindow();
                         foreach (var exc in texc.TraverseNodes<Exception>(ex => ex.InnerException)
                                                 .Reverse())
                         {
@@ -191,10 +192,10 @@ namespace CKAN.GUI
                         }
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
-                        EnableMainWindow();
                         break;
 
                     case AggregateException exc:
+                        EnableMainWindow();
                         foreach (var inner in exc.InnerExceptions
                                                  .SelectMany(inner =>
                                                      inner.TraverseNodes(ex => ex.InnerException)
@@ -205,15 +206,14 @@ namespace CKAN.GUI
                         }
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
-                        EnableMainWindow();
                         break;
 
                     case Exception exc:
                         log.Error(exc.Message, exc);
+                        EnableMainWindow();
                         currentUser.RaiseMessage("{0}", exc.Message);
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
-                        EnableMainWindow();
                         break;
                 }
             }
@@ -233,8 +233,8 @@ namespace CKAN.GUI
                         else
                         {
                             // Nothing changed, just go back
-                            HideWaitDialog();
                             EnableMainWindow();
+                            HideWaitDialog();
                             Util.Invoke(this, ManageMods.ModGrid.Select);
                         }
                         break;

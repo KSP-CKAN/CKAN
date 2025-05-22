@@ -6,7 +6,7 @@ namespace CKAN.GUI
 {
     public partial class Main
     {
-        private void deduplicateToolstripMenuItem_Click(object? sender, EventArgs? evt)
+        private void DeduplicateToolStripMenuItem_Click(object? sender, EventArgs? evt)
         {
             // Show WaitTabPage (status page) and lock it.
             tabController.RenameTab(WaitTabPage.Name,
@@ -27,6 +27,7 @@ namespace CKAN.GUI
                 },
                 (sender, e) =>
                 {
+                    EnableMainWindow();
                     switch (e?.Error)
                     {
                         case CancelledActionKraken:
@@ -37,7 +38,6 @@ namespace CKAN.GUI
                             break;
                     }
                     Wait.Finish();
-                    EnableMainWindow();
                 },
                 false,
                 null);

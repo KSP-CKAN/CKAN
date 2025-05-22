@@ -342,6 +342,15 @@ namespace CKAN
             return false;
         }
 
+        public IReadOnlyDictionary<string, long> CachedFileSizeByHost(IReadOnlyDictionary<string, Uri> hashToURL)
+            => cache.CachedHashesAndSizes()
+                    // Skip downloads that changed URLs after downloading
+                    .Where(tuple => hashToURL.ContainsKey(tuple.hash))
+                    .GroupBy(tuple => hashToURL[tuple.hash].Host,
+                             tuple => tuple.size)
+                    .ToDictionary(grp => grp.Key,
+                                  grp => grp.Sum());
+
         private readonly NetFileCache cache;
     }
 }

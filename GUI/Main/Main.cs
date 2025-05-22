@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 #if NET5_0_OR_GREATER
@@ -118,7 +119,7 @@ namespace CKAN.GUI
             if (Platform.IsMono)
             {
                 MainMenu.Renderer = new FlatToolStripRenderer();
-                fileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+                FileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
                 minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
@@ -361,7 +362,7 @@ namespace CKAN.GUI
             return gotInstance;
         }
 
-        private void manageGameInstancesMenuItem_Click(object? sender, EventArgs? e)
+        private void ManageGameInstancesToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             var old_instance = CurrentInstance;
             var result = new ManageGameInstancesDialog(Manager, !actuallyVisible, currentUser).ShowDialog(this);
@@ -482,6 +483,7 @@ namespace CKAN.GUI
             }
 
             configuration?.Save();
+
             configuration = GUIConfigForInstance(Manager.SteamLibrary, CurrentInstance);
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
@@ -718,7 +720,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void ExitToolButton_Click(object? sender, EventArgs? e)
+        private void ExitToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             Close();
         }
@@ -809,7 +811,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void installFromckanToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void InstallFromckanToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             OpenFileDialog open_file_dialog = new OpenFileDialog()
             {
@@ -1029,12 +1031,12 @@ namespace CKAN.GUI
                     changeset,
                     conflicts.ToDictionary(item => item.Key.ToCkanModule(),
                                            item => item.Value));
-                auditRecommendationsMenuItem.Enabled = false;
+                AuditRecommendationsToolStripMenuItem.Enabled = false;
             }
             else
             {
                 tabController.HideTab(ChangesetTabPage.Name);
-                auditRecommendationsMenuItem.Enabled = true;
+                AuditRecommendationsToolStripMenuItem.Enabled = true;
             }
         }
 
@@ -1126,7 +1128,7 @@ namespace CKAN.GUI
             UpdateTrayState();
         }
 
-        private void openGameDirectoryToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void OpenGameDirectoryToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (CurrentInstance != null)
             {

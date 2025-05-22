@@ -29,11 +29,11 @@ namespace CKAN.GUI
             Util.Invoke(this, () =>
             {
                 MetadataTable.SuspendLayout();
-                MetadataModuleVersionTextBox.Text = gui_module.LatestVersion.ToString();
-                MetadataModuleLicenseTextBox.Text = string.Join(", ", module.license);
+                VersionTextBox.Text = gui_module.LatestVersion.ToString();
+                LicenseTextBox.Text = string.Join(", ", module.license);
                 UpdateAuthorLinks(gui_module.Authors);
 
-                MetadataIdentifierTextBox.Text = module.identifier;
+                IdentifierTextBox.Text = module.identifier;
 
                 if (gui_module.DownloadCount is null or 0)
                 {
@@ -50,19 +50,19 @@ namespace CKAN.GUI
                 if (module.release_status is null or ReleaseStatus.stable)
                 {
                     ReleaseLabel.Visible = false;
-                    MetadataModuleReleaseStatusTextBox.Visible = false;
+                    ReleaseStatusTextBox.Visible = false;
                 }
                 else
                 {
                     ReleaseLabel.Visible = true;
-                    MetadataModuleReleaseStatusTextBox.Visible = true;
-                    MetadataModuleReleaseStatusTextBox.Text = module.release_status.LocalizeName();
+                    ReleaseStatusTextBox.Visible = true;
+                    ReleaseStatusTextBox.Text = module.release_status.LocalizeName();
                 }
 
                 var compatMod = gui_module.LatestCompatibleMod
                                 ?? gui_module.LatestAvailableMod
                                 ?? gui_module.ToModule();
-                MetadataModuleGameCompatibilityTextBox.Text = string.Format(
+                GameCompatibilityTextBox.Text = string.Format(
                     Properties.Resources.GUIModGameCompatibilityLong,
                     gui_module.GameCompatibility,
                     compatMod.version);

@@ -120,31 +120,31 @@
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>32</value>
   </metadata>
-  <data name="fileToolStripMenuItem.Text" xml:space="preserve">
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
     <value>파일</value>
   </data>
-  <data name="manageGameInstancesMenuItem.Text" xml:space="preserve">
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>게임 인스턴스 관리</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>게임 경로 열기</value>
   </data>
-  <data name="installFromckanToolStripMenuItem.Text" xml:space="preserve">
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>.ckan으로 설치...</value>
   </data>
-  <data name="exportModListToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;설치한 모드 리스트 저장...</value>
   </data>
-  <data name="exportModPackToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>모드팩 내보내기...</value>
   </data>
-  <data name="importDownloadsToolStripMenuItem.Text" xml:space="preserve">
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;다운로드한 모드들 내보내기...</value>
   </data>
-  <data name="auditRecommendationsMenuItem.Text" xml:space="preserve">
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>추천 모드 심사</value>
   </data>
-  <data name="ExitToolButton.Text" xml:space="preserve">
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>나&amp;가기</value>
   </data>
   <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
@@ -222,7 +222,7 @@
   <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
     <value>게임 실행</value>
   </data>
-  <data name="openGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
     <value>게임 경로 열기</value>
   </data>
   <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
@@ -231,7 +231,7 @@
   <data name="quitToolStripMenuItem.Text" xml:space="preserve">
     <value>나가기</value>
   </data>
-  <data name="viewPlayTimeStripMenuItem.Text" xml:space="preserve">
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>플레이 타임...</value>
   </data>
 </root>
