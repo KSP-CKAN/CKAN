@@ -100,6 +100,8 @@ namespace CKAN.GUI
             }
         }
 
+        #region Menu
+
         private void updatesToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             OpenWindow();
@@ -134,6 +136,14 @@ namespace CKAN.GUI
             OpenWindow();
         }
 
+        private void openGameToolStripMenuItem_Click(object? sender, EventArgs? e)
+        {
+            if (configuration != null)
+            {
+                LaunchGame(configuration.CommandLines.First());
+            }
+        }
+
         private void cKANSettingsToolStripMenuItem1_Click(object? sender, EventArgs? e)
         {
             OpenWindow();
@@ -148,6 +158,8 @@ namespace CKAN.GUI
                     .ShowDialog(this);
             }
         }
+
+        #endregion
 
         private void minimizedContextMenuStrip_Opening(object? sender, CancelEventArgs? e)
         {
