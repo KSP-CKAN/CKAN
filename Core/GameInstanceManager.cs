@@ -31,6 +31,7 @@ namespace CKAN
         public IUser          User            { get; set; }
         public IConfiguration Configuration   { get; set; }
         public GameInstance?  CurrentInstance { get; private set; }
+        public event Action<GameInstance?, GameInstance?>? InstanceChanged;
 
         public NetModuleCache? Cache { get; private set; }
         public event Action<NetModuleCache>? CacheChanged;
@@ -491,6 +492,7 @@ namespace CKAN
                 RegistryManager.DisposeInstance(prev);
             }
             CurrentInstance = instance;
+            InstanceChanged?.Invoke(prev, instance);
         }
 
         public void SetCurrentInstanceByPath(string path)

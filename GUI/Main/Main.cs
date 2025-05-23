@@ -163,6 +163,7 @@ namespace CKAN.GUI
 
             Manager.CacheChanged += OnCacheChanged;
             OnCacheChanged(null);
+            Manager.InstanceChanged += Manager_InstanceChanged;
 
             tabController = new TabController(MainTabControl);
             tabController.ShowTab(ManageModsTabPage.Name);
@@ -442,6 +443,20 @@ namespace CKAN.GUI
             }
         }
 
+        private void Manager_InstanceChanged(GameInstance? previous, GameInstance? current)
+        {
+            if (needRegistrySave && previous != null)
+            {
+                using (var transaction = CkanTransaction.CreateTransactionScope())
+                {
+                    // Save registry
+                    RegistryManager.Instance(previous, repoData).Save(false);
+                    transaction.Complete();
+                    needRegistrySave = false;
+                }
+            }
+        }
+
         /// <summary>
         /// React to switching to a new game instance
         /// </summary>
@@ -619,6 +634,7 @@ namespace CKAN.GUI
                     // Save registry
                     RegistryManager.Instance(CurrentInstance, repoData).Save(false);
                     transaction.Complete();
+                    needRegistrySave = false;
                 }
             }
 
