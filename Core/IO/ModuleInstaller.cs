@@ -815,8 +815,10 @@ namespace CKAN.IO
                             .Where(im => !revdep.Contains(im.identifier))
                             .ToArray(),
                         installing ?? new List<CkanModule>(),
-                        instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
+                        instance.game, instance.StabilityToleranceConfig,
+                        instance.VersionCriteria())
                     .Select(im => im.identifier))
+                .OrderBy(ident => ident)
                 .ToArray();
 
             // If there is nothing to uninstall, skip out.
