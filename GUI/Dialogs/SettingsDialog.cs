@@ -586,11 +586,15 @@ namespace CKAN.GUI
             };
             Button acceptButton = new Button()
             {
+                AutoSize     = true,
+                AutoSizeMode = AutoSizeMode.GrowOnly,
                 DialogResult = DialogResult.OK,
+                FlatStyle    = FlatStyle.Flat,
                 Name         = "okButton",
                 Size         = new Size(75, 23),
                 Text         = Properties.Resources.AddAuthTokenAccept,
-                Location     = new Point((newAuthTokenPopup.ClientSize.Width - 80 - 80) / 2, 64)
+                UseVisualStyleBackColor = true,
+                Location     = new Point((newAuthTokenPopup.Width - 80 - 80) / 2, 64)
             };
             acceptButton.Click += (origin, evt) =>
             {
@@ -600,10 +604,14 @@ namespace CKAN.GUI
             };
             Button cancelButton = new Button()
             {
+                AutoSize     = true,
+                AutoSizeMode = AutoSizeMode.GrowOnly,
                 DialogResult = DialogResult.Cancel,
+                FlatStyle    = FlatStyle.Flat,
                 Name         = "cancelButton",
                 Size         = new Size(75, 23),
                 Text         = Properties.Resources.AddAuthTokenCancel,
+                UseVisualStyleBackColor = true,
                 Location     = new Point(acceptButton.Location.X + acceptButton.Size.Width + 5, 64)
             };
 
