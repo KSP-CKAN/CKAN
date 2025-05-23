@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 
 using CKAN.IO;
+using CKAN.Extensions;
 using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 
@@ -21,6 +22,8 @@ namespace CKAN.Configuration
     {
         #region JSON structures
 
+        [JsonObject(MemberSerialization   = MemberSerialization.OptOut,
+                    ItemNullValueHandling = NullValueHandling.Ignore)]
         [JsonConverter(typeof(ConfigConverter))]
         private class Config
         {
@@ -31,7 +34,7 @@ namespace CKAN.Configuration
             public string?                       Language             { get; set; }
             public IList<GameInstanceEntry>?     GameInstances        { get; set; } = new List<GameInstanceEntry>();
             public IDictionary<string, string>?  AuthTokens           { get; set; } = new Dictionary<string, string>();
-            [JsonProperty("GlobalInstallFiltersByGame", NullValueHandling = NullValueHandling.Ignore)]
+            [JsonProperty("GlobalInstallFiltersByGame")]
             [JsonConverter(typeof(JsonToGamesDictionaryConverter))]
             public Dictionary<string, string[]>? GlobalInstallFilters { get; set; } = new Dictionary<string, string[]>();
             public string?[]?                    PreferredHosts       { get; set; } = Array.Empty<string>();
@@ -202,30 +205,62 @@ namespace CKAN.Configuration
 
         public void SetAuthToken(string host, string? token)
         {
-            if (token == null || string.IsNullOrEmpty(token))
+            if (token is {Length: > 0})
             {
-                config.AuthTokens?.Remove(host);
+                config.AuthTokens ??= new Dictionary<string, string>();
+                config.AuthTokens[host] = token;
+            }
+            else if (config.AuthTokens != null
+                     && config.AuthTokens.ContainsKey(host))
+            {
+                if (config.AuthTokens.Count > 1)
+                {
+                    config.AuthTokens.Remove(host);
+                }
+                else
+                {
+                    config.AuthTokens = null;
+                }
             }
             else
             {
-                if (config.AuthTokens is not null)
-                {
-                    config.AuthTokens[host] = token;
-                }
+                // No changes needed, skip saving
+                return;
             }
             SaveConfig();
         }
 
         public string[] GetGlobalInstallFilters(IGame game)
-            => config.GlobalInstallFilters != null
-               && config.GlobalInstallFilters.TryGetValue(game.ShortName, out string[]? value)
-                   ? value
-                   : Array.Empty<string>();
+            => config.GlobalInstallFilters?.GetOrDefault(game.ShortName)
+                                          ?? Array.Empty<string>();
 
         public void SetGlobalInstallFilters(IGame game, string[] value)
         {
-            config.GlobalInstallFilters ??= new Dictionary<string, string[]>();
-            config.GlobalInstallFilters[game.ShortName] = value;
+            if (value.Length > 0)
+            {
+                // Set the list for this game
+                config.GlobalInstallFilters ??= new Dictionary<string, string[]>();
+                config.GlobalInstallFilters[game.ShortName] = value;
+            }
+            else if (config.GlobalInstallFilters != null
+                     && config.GlobalInstallFilters.ContainsKey(game.ShortName))
+            {
+                if (config.GlobalInstallFilters.Count > 1)
+                {
+                    // Purge this game's entry
+                    config.GlobalInstallFilters.Remove(game.ShortName);
+                }
+                else
+                {
+                    // Discard empty dictionary
+                    config.GlobalInstallFilters = null;
+                }
+            }
+            else
+            {
+                // No changes needed, skip saving and notifications
+                return;
+            }
             SaveConfig();
             // Refresh the Contents tab
             OnPropertyChanged();
@@ -233,12 +268,11 @@ namespace CKAN.Configuration
 
         public string?[] PreferredHosts
         {
-            get => config.PreferredHosts
-                   ?? Array.Empty<string>();
+            get => config.PreferredHosts ?? Array.Empty<string>();
 
             set
             {
-                config.PreferredHosts = value;
+                config.PreferredHosts = value is {Length: > 0} ? value : null;
                 SaveConfig();
             }
         }
@@ -294,7 +328,6 @@ namespace CKAN.Configuration
                         e.Game ??= gameName;
                     }
                 }
-                config.AuthTokens ??= new Dictionary<string, string>();
             }
             catch (Exception ex) when (ex is FileNotFoundException or DirectoryNotFoundException)
             {
