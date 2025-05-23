@@ -31,15 +31,12 @@ namespace Tests.GUI
             using (var repo = new TemporaryRepository(TestData.kOS_014()))
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-            using (var manager = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = tidy.KSP
-                })
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("kOS", "0.14");
 
-                var mod = new GUIMod(ckan_mod!, repoData.Manager, registry, manager.CurrentInstance.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
+                var mod = new GUIMod(ckan_mod!, repoData.Manager, registry,
+                                     tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                      null, false, false);
                 Assert.True(mod.SelectedMod == mod.InstalledMod?.Module);
             }

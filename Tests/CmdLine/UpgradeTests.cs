@@ -69,11 +69,9 @@ namespace Tests.CmdLine
             using (var repo     = new TemporaryRepository(modules))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager  = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = inst.KSP,
-                })
+            using (var manager  = new GameInstanceManager(user, config))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);
@@ -611,11 +609,9 @@ namespace Tests.CmdLine
                                                                      .ToArray()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager  = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = inst.KSP,
-                })
+            using (var manager  = new GameInstanceManager(user, config))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);
@@ -683,14 +679,12 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config = new FakeConfiguration(gameInstWrapper.KSP,
                                                       gameInstWrapper.KSP.Name))
-            using (var manager = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = gameInstWrapper.KSP,
-                })
+            using (var manager  = new GameInstanceManager(user, config))
             using (var regMgr = RegistryManager.Instance(gameInstWrapper.KSP,
                                                          repoData.Manager,
                                                          new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(gameInstWrapper.KSP);
                 foreach (var m in repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
                                                   .SelectMany(am => am.AllAvailable()))
                 {

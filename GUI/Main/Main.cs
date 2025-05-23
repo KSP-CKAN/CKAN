@@ -283,7 +283,7 @@ namespace CKAN.GUI
                                     else
                                     {
                                         // Couldn't get the lock, there is no current instance
-                                        Manager.CurrentInstance = null;
+                                        Manager.SetCurrentInstance((GameInstance?)null);
                                         if (Manager.Instances.Values.All(inst => !inst.Valid || inst.IsMaybeLocked))
                                         {
                                             // Everything's invalid or locked, give up
@@ -301,7 +301,7 @@ namespace CKAN.GUI
                                     }
                                     else
                                     {
-                                        Manager.CurrentInstance = null;
+                                        Manager.SetCurrentInstance((GameInstance?)null);
                                         if (Manager.Instances.Values.All(inst => !inst.Valid || inst.IsMaybeLocked))
                                         {
                                             // Everything's invalid or locked, give up
@@ -393,7 +393,7 @@ namespace CKAN.GUI
                         else
                         {
                             // Couldn't get the lock, revert to previous instance
-                            Manager.CurrentInstance = old_instance;
+                            Manager.SetCurrentInstance(old_instance);
                             CurrentInstanceUpdated();
                             done = true;
                         }
@@ -408,7 +408,7 @@ namespace CKAN.GUI
                         }
                         else
                         {
-                            Manager.CurrentInstance = old_instance;
+                            Manager.SetCurrentInstance(old_instance);
                             CurrentInstanceUpdated();
                             done = true;
                         }

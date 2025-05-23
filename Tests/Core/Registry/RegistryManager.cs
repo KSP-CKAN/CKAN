@@ -200,8 +200,7 @@ namespace Tests.Core.Registry
                 var registry = regMgr.registry;
                 var absReg   = registered.Select(dispInst.KSP.ToAbsoluteGameDir)
                                                 .ToList();
-                var absUnreg = unregistered.Select(dispInst.KSP.ToAbsoluteGameDir)
-                                                  .ToArray();
+                var absUnreg = unregistered.Select(dispInst.KSP.ToAbsoluteGameDir);
 
                 // Create all the files
                 foreach (var filename in absReg.Concat(absUnreg))
@@ -225,8 +224,7 @@ namespace Tests.Core.Registry
                 // Assert
                 CollectionAssert.AreEquivalent(
                     unregistered,
-                    registry.InstalledDlls.Select(registry.DllPath)
-                                          .ToArray());
+                    registry.InstalledDlls.Select(registry.DllPath));
             }
         }
     }

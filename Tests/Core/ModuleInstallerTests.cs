@@ -390,23 +390,21 @@ namespace Tests.Core
             using (var tidy     = new DisposableKSP())
             using (var config   = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(nullUser))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = tidy.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(tidy.KSP, repoData.Manager))
             {
+                manager.SetCurrentInstance(tidy.KSP);
                 Assert.Throws<ModNotInstalledKraken>(delegate
                 {
                     HashSet<string>? possibleConfigOnlyDirs = null;
                     // This should throw, as our tidy KSP has no mods installed.
-                    new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
+                    new ModuleInstaller(tidy.KSP, manager.Cache!, config, nullUser)
                         .UninstallList(new List<string> {"Foo"},
                                        ref possibleConfigOnlyDirs, regMgr);
                 });
 
                 // I weep even more.
-                manager.CurrentInstance = null;
+                manager.SetCurrentInstance((GameInstance?)null);
             }
         }
 
@@ -420,13 +418,11 @@ namespace Tests.Core
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var ksp      = new DisposableKSP())
             using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = ksp.KSP
-                })
-            using (var regMgr   = RegistryManager.Instance(manager.CurrentInstance, repoData.Manager,
+            using (var manager  = new GameInstanceManager(nullUser, config))
+            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(ksp.KSP);
                 // Make sure the mod is not installed.
                 string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
 
@@ -473,13 +469,11 @@ namespace Tests.Core
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var ksp      = new DisposableKSP())
             using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = ksp.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(ksp.KSP);
                 string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
 
                 // Install the test mod.
@@ -493,7 +487,7 @@ namespace Tests.Core
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules, new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
 
@@ -501,7 +495,7 @@ namespace Tests.Core
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 // Attempt to uninstall it.
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs, regMgr);
 
@@ -521,13 +515,11 @@ namespace Tests.Core
             // Create a new disposable KSP instance to run the test on.
             using (var ksp      = new DisposableKSP())
             using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var manager  = new GameInstanceManager(new NullUser(), config)
-                {
-                    CurrentInstance = ksp.KSP
-                })
+            using (var manager  = new GameInstanceManager(new NullUser(), config))
             using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(ksp.KSP);
                 string directoryPath = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), emptyFolderName);
 
                 // Install the base test mod.
@@ -541,7 +533,7 @@ namespace Tests.Core
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
@@ -555,7 +547,7 @@ namespace Tests.Core
 
                 modules.Add(TestData.DogeCoinPlugin_module());
 
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
@@ -570,7 +562,7 @@ namespace Tests.Core
                 modules.Add(TestData.DogeCoinFlag_101_module());
                 modules.Add(TestData.DogeCoinPlugin_module());
 
-                new ModuleInstaller(manager.CurrentInstance, manager.Cache!, config, nullUser)
+                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs, regMgr);
 
@@ -728,13 +720,11 @@ namespace Tests.Core
                 using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
                 using (var ksp      = new DisposableKSP())
                 using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-                using (var manager  = new GameInstanceManager(nullUser, config)
-                    {
-                        CurrentInstance = ksp.KSP
-                    })
+                using (var manager  = new GameInstanceManager(nullUser, config))
                 using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                                new Repository[] { repo.repo }))
                 {
+                    manager.SetCurrentInstance(ksp.KSP);
                     var registry = regMgr.registry;
                     registry.RepositoriesClear();
                     registry.RepositoriesAdd(repo.repo);
@@ -954,13 +944,11 @@ namespace Tests.Core
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var ksp      = new DisposableKSP())
             using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = ksp.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(ksp.KSP);
                 var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
@@ -995,13 +983,11 @@ namespace Tests.Core
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var ksp      = new DisposableKSP())
             using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = ksp.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(ksp.KSP);
                 var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
@@ -1136,13 +1122,11 @@ namespace Tests.Core
                 }"))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = inst.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var registry = regMgr.registry;
                 IRegistryQuerier querier = registry;
                 var replaced = registry.GetModuleByVersion("replaced", "1.0")!;
@@ -1205,13 +1189,11 @@ namespace Tests.Core
                 }"))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = inst.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var registry = regMgr.registry;
                 IRegistryQuerier querier = registry;
                 var replaced = registry.GetModuleByVersion("replaced", "1.0")!;
@@ -1276,15 +1258,13 @@ namespace Tests.Core
             // Arrange
             using (var inst    = new DisposableKSP())
             using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = inst.KSP
-                })
+            using (var manager = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var registry  = regMgr.registry;
                 var possibleConfigOnlyDirs = new HashSet<string>();
@@ -1308,7 +1288,7 @@ namespace Tests.Core
 
                 // Assert
                 CollectionAssert.AreEquivalent(correctRemainingIdentifiers,
-                                               registry.InstalledModules.Select(im => im.identifier).ToArray());
+                                               registry.InstalledModules.Select(im => im.identifier));
             }
         }
 
@@ -1360,15 +1340,13 @@ namespace Tests.Core
             // Arrange
             using (var inst    = new DisposableKSP())
             using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = inst.KSP
-                })
+            using (var manager = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(regularMods.Concat(autoInstMods).ToArray()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
                 var registry   = regMgr.registry;
@@ -1409,7 +1387,7 @@ namespace Tests.Core
 
                 // Assert
                 CollectionAssert.AreEquivalent(correctRemainingIdentifiers,
-                                               registry.InstalledModules.Select(im => im.identifier).ToArray());
+                                               registry.InstalledModules.Select(im => im.identifier));
             }
         }
 
@@ -1444,13 +1422,11 @@ namespace Tests.Core
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var inst     = new DisposableKSP())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager  = new GameInstanceManager(nullUser, config)
-                {
-                    CurrentInstance = inst.KSP
-                })
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var module    = CkanModule.FromJson(moduleJson);
                 var modules   = new List<CkanModule> { module };
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
