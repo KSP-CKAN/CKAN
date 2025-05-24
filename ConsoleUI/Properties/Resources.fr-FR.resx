@@ -844,7 +844,7 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
     <value>Recherche de redondances dans les instances...</value>
   </data>
   <data name="ModListDeduplicateInstalledFilesScanning" xml:space="preserve">
-    <value>Recherche de redondances dans les instances...</value>
+    <value>Recherche de fichiers dupliqués dans les instances...</value>
   </data>
   <data name="ModListHelpMenu" xml:space="preserve">
     <value>Aide</value>
