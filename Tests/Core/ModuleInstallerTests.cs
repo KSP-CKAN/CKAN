@@ -1392,6 +1392,108 @@ namespace Tests.Core
             }
         }
 
+        [TestCase(new string[] {
+                      @"{
+                          ""identifier"": ""UniversalStorage2"",
+                          ""name"":       ""UniversalStorage2"",
+                          ""version"":    ""1.0"",
+                          ""depends"": [
+                              { ""name"": ""CommunityResourcePack"" }
+                          ],
+                          ""download"":   ""https://github.com/""
+                      }",
+                  },
+                  new string[] {
+                      @"{
+                          ""identifier"":     ""CommunityResourcePack"",
+                          ""name"":           ""CommunityResourcePack"",
+                          ""version"":        ""2.0-pre"",
+                          ""release_status"": ""testing"",
+                          ""download"":       ""https://github.com/""
+                      }",
+                  },
+                  new string[] {
+                      @"{
+                          ""identifier"": ""CommunityResourcePack"",
+                          ""name"":       ""CommunityResourcePack"",
+                          ""version"":    ""1.0"",
+                          ""download"":   ""https://github.com/""
+                      }",
+                  },
+                  new string[] {
+                      @"{
+                          ""identifier"": ""UniversalStorage2"",
+                          ""name"": ""UniversalStorage2"",
+                          ""version"":    ""2.0"",
+                          ""depends"": [
+                              { ""name"": ""CommunityResourcePack"" }
+                          ],
+                          ""download"":   ""https://github.com/"",
+                          ""install"": [
+                              {
+                                  ""find"":       ""DogeCoinFlag"",
+                                  ""install_to"": ""GameData/UniversalStorage2""
+                              }
+                          ]
+                      }",
+                  }),
+        ]
+        public void Upgrade_WithUnstableAutoinstDep_NotRemoved(string[] regularInstalled,
+                                                               string[] autoInstalled,
+                                                               string[] notInstalled,
+                                                               string[] toUpgrade)
+        {
+            // Arrange
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager  = new GameInstanceManager(nullUser, config))
+            using (var repo     = new TemporaryRepository(regularInstalled.Concat(autoInstalled)
+                                                                          .Concat(notInstalled)
+                                                                          .Concat(toUpgrade)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                manager.SetCurrentInstance(inst.KSP);
+                var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
+                var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
+                var registry   = regMgr.registry;
+                registry.RepositoriesSet(new SortedDictionary<string, Repository>()
+                {
+                    { "testRepo", repo.repo }
+                });
+                var possibleConfigOnlyDirs = new HashSet<string>();
+                foreach (var m in regularInstalled)
+                {
+                    registry.RegisterModule(CkanModule.FromJson(m),
+                                            new List<string>(), inst.KSP, false);
+                }
+                foreach (var m in autoInstalled)
+                {
+                    registry.RegisterModule(CkanModule.FromJson(m),
+                                            new List<string>(), inst.KSP, true);
+                }
+                foreach (var m in notInstalled.Concat(toUpgrade))
+                {
+                    manager.Cache?.Store(CkanModule.FromJson(m),
+                                         TestData.DogeCoinFlagZip(), null);
+                }
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    installer.Upgrade(toUpgrade.Select(CkanModule.FromJson)
+                                               .ToArray(),
+                                      downloader, ref possibleConfigOnlyDirs,
+                                      regMgr, null, false);
+                });
+                CollectionAssert.AreEquivalent(registry.InstalledModules.Select(im => im.Module),
+                                               autoInstalled.Select(CkanModule.FromJson)
+                                                            .Concat(toUpgrade.Select(CkanModule.FromJson)));
+            }
+        }
+
         [TestCase]
         public void Install_WithMatchedUnmanagedDll_Throws()
         {

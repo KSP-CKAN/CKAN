@@ -1315,11 +1315,22 @@ namespace CKAN.IO
                 RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
                 registry,
                 instance.game, instance.VersionCriteria());
-            var fullChangeset = resolver.ModList().ToArray();
+            var fullChangeset = resolver.ModList()
+                                        .ToDictionary(m => m.identifier,
+                                                      m => m);
+
             // Skip removing ones we still need
-            autoRemoving.RemoveWhere(im => fullChangeset.Contains(im.Module));
+            var keepIdents = fullChangeset.Keys.Intersect(autoRemoving.Select(im => im.Module.identifier))
+                                               .ToHashSet();
+            autoRemoving.RemoveWhere(im => keepIdents.Contains(im.Module.identifier));
+            foreach (var ident in keepIdents)
+            {
+                fullChangeset.Remove(ident);
+            }
+
             // Only install stuff that's already there if explicitly requested in param
-            var toInstall = fullChangeset.Except(registry.InstalledModules
+            var toInstall = fullChangeset.Values
+                                         .Except(registry.InstalledModules
                                                          .Select(im => im.Module)
                                                          .Except(modules))
                                          .ToArray();
