@@ -68,11 +68,9 @@ namespace Tests.CmdLine
             using (var repo     = new TemporaryRepository(modules))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
-            using (var manager  = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = inst.KSP,
-                })
+            using (var manager  = new GameInstanceManager(user, config))
             {
+                manager.SetCurrentInstance(inst.KSP);
                 var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);

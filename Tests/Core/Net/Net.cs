@@ -6,6 +6,7 @@ using NUnit.Framework;
 namespace Tests.Core.Net
 {
     [TestFixture]
+    [Category("Online")]
     public class NetTests
     {
         // TODO: Test certificate errors. How?
@@ -13,7 +14,6 @@ namespace Tests.Core.Net
         private const string KnownURL = "http://example.com/";
 
         [Test]
-        [Category("Online")]
         public void DownloadThrowsOnInvalidURL()
         {
             // Download should throw an exception on an invalid URL.
@@ -25,7 +25,6 @@ namespace Tests.Core.Net
         }
 
         [Test]
-        [Category("Online")]
         public void DownloadReturnsSavefileNameAndSavefileExists()
         {
             // Three-argument test, should save to the file we supply
@@ -37,7 +36,6 @@ namespace Tests.Core.Net
         }
 
         [Test]
-        [Category("Online")]
         public void SingleArgumentDownloadSavesToTemporaryFile()
         {
             string downloaded = CKAN.Net.Download(KnownURL);
@@ -46,7 +44,7 @@ namespace Tests.Core.Net
         }
 
         [Test]
-        [Category("FlakyNetwork"), Category("Online")]
+        [Category("FlakyNetwork")]
         public void SpaceDockSSL()
         {
             string downloaded = CKAN.Net.Download("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1");

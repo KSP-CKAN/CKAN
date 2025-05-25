@@ -30,7 +30,8 @@ namespace CKAN
         /// </summary>
         public IUser          User            { get; set; }
         public IConfiguration Configuration   { get; set; }
-        public GameInstance?  CurrentInstance { get; set; }
+        public GameInstance?  CurrentInstance { get; private set; }
+        public event Action<GameInstance?, GameInstance?>? InstanceChanged;
 
         public NetModuleCache? Cache { get; private set; }
         public event Action<NetModuleCache>? CacheChanged;
@@ -466,23 +467,32 @@ namespace CKAN
         /// </summary>
         public void SetCurrentInstance(string name)
         {
-            if (!HasInstance(name))
+            if (!instances.TryGetValue(name, out GameInstance? inst))
             {
                 throw new InvalidKSPInstanceKraken(name);
             }
-            else if (!instances[name].Valid)
+            else if (!inst.Valid)
             {
-                throw new NotKSPDirKraken(instances[name].GameDir());
+                throw new NotKSPDirKraken(inst.GameDir());
             }
+            else
+            {
+                SetCurrentInstance(inst);
+            }
+        }
 
+        public void SetCurrentInstance(GameInstance? instance)
+        {
+            var prev = CurrentInstance;
             // Don't try to Dispose a null CurrentInstance.
-            if (CurrentInstance != null && !CurrentInstance.Equals(instances[name]))
+            if (prev != null && !prev.Equals(instance))
             {
                 // Dispose of the old registry manager to release the registry
                 // (without accidentally locking/loading/etc it).
-                RegistryManager.DisposeInstance(CurrentInstance);
+                RegistryManager.DisposeInstance(prev);
             }
-            CurrentInstance = instances[name];
+            CurrentInstance = instance;
+            InstanceChanged?.Invoke(prev, instance);
         }
 
         public void SetCurrentInstanceByPath(string path)
@@ -500,7 +510,7 @@ namespace CKAN
                         matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
                     if (ksp.Valid)
                     {
-                        CurrentInstance = ksp;
+                        SetCurrentInstance(ksp);
                     }
                     else
                     {

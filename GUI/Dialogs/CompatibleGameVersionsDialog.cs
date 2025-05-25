@@ -161,7 +161,9 @@ namespace CKAN.GUI
 
         private void ClearSelectionButton_Click(object? sender, EventArgs? e)
         {
-            foreach (int index in SelectedVersionsCheckedListBox.CheckedIndices)
+            foreach (int index in SelectedVersionsCheckedListBox.CheckedIndices
+                                                                .OfType<int>()
+                                                                .ToArray())
             {
                 SelectedVersionsCheckedListBox.SetItemChecked(index, false);
             }

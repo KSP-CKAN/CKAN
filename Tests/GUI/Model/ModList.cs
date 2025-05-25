@@ -47,10 +47,6 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-            using (var manager = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = tidy.KSP
-                })
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("Firespitter", "6.3.5");
@@ -58,10 +54,10 @@ namespace Tests.GUI
 
                 var item = new ModList();
                 Assert.That(item.IsVisible(
-                    new GUIMod(ckan_mod!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
+                    new GUIMod(ckan_mod!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                null, false, false),
-                    manager.CurrentInstance.Name,
-                    manager.CurrentInstance.game,
+                    tidy.KSP.Name,
+                    tidy.KSP.game,
                     registry));
             }
         }
@@ -89,23 +85,19 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-            using (var manager = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = tidy.KSP
-                })
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var main_mod_list = new ModList();
                 var mod_list = main_mod_list.ConstructModList(
                     new List<GUIMod>
                     {
-                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
+                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false),
-                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, manager.CurrentInstance.VersionCriteria(),
+                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false)
                     },
-                    manager.CurrentInstance.Name,
-                    manager.CurrentInstance.game
+                    tidy.KSP.Name,
+                    tidy.KSP.game
                 );
                 Assert.That(mod_list, Has.Count.EqualTo(2));
             }
@@ -155,11 +147,9 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var instance = new DisposableKSP())
             using (var config = new FakeConfiguration(instance.KSP, instance.KSP.Name))
-            using (var manager = new GameInstanceManager(user, config)
-                {
-                    CurrentInstance = instance.KSP
-                })
+            using (var manager = new GameInstanceManager(user, config))
             {
+                manager.SetCurrentInstance(instance.KSP);
                 var registryManager = RegistryManager.Instance(instance.KSP, repoData.Manager);
                 var registry = registryManager.registry;
                 registry.RepositoriesClear();

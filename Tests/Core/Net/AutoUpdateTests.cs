@@ -14,12 +14,11 @@ namespace Tests.Core.Net.AutoUpdateTests
     [TestFixture]
     public class AutoUpdateTests
     {
-        [Test]
-        [TestCase(true)]
-        [TestCase(false)]
-        [Category("Online")]
+        [TestCase(true),
+         TestCase(false)]
         // This could fail if run during a release, so it's marked as Flaky.
-        [Category("FlakyNetwork")]
+        [Category("FlakyNetwork"),
+         Category("Online")]
         public void GetUpdate_DevBuildOrStable_Works(bool devBuild)
         {
             // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.

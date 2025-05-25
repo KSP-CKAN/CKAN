@@ -13,6 +13,8 @@ using Tests.Data;
 namespace Tests.NetKAN.Sources.Jenkins
 {
     [TestFixture]
+    [Category("FlakyNetwork"),
+     Category("Online")]
     public sealed class JenkinsApiTests
     {
         [OneTimeSetUp]
@@ -38,8 +40,6 @@ namespace Tests.NetKAN.Sources.Jenkins
 
 
         [Test]
-        [Category("FlakyNetwork")]
-        [Category("Online")]
         public void GetLatestBuild_ModuleManager_Works()
         {
             // Arrange

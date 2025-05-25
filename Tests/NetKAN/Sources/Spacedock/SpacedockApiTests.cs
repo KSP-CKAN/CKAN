@@ -12,8 +12,8 @@ using Tests.Data;
 namespace Tests.NetKAN.Sources.Spacedock
 {
     [TestFixture]
-    [Category("FlakyNetwork")]
-    [Category("Online")]
+    [Category("FlakyNetwork"),
+     Category("Online")]
     public sealed class SpacedockApiTests
     {
         private string?       _cachePath;
@@ -41,7 +41,6 @@ namespace Tests.NetKAN.Sources.Spacedock
         }
 
         [Test]
-        [Category("FlakyNetwork"), Category("Online")]
         public void GetsModCorrectly()
         {
             // Arrange
@@ -69,7 +68,6 @@ namespace Tests.NetKAN.Sources.Spacedock
         }
 
         [Test]
-        [Category("FlakyNetwork"), Category("Online")]
         public void ThrowsWhenModMissing()
         {
             // Arrange

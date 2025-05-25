@@ -145,10 +145,10 @@
     <value>Choisissez un fichier .ckan contenant des métadonnées pour un module et installez-le</value>
   </data>
   <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Importer des &amp;mods téléchargés...</value>
+    <value>Importer des mods &amp;téléchargés...</value>
   </data>
   <data name="ImportDownloadsToolStripMenuItem.ToolTipText" xml:space="preserve">
-    <value>Choisissez les fichiers ZIP téléchargés en dehors de CKAN et mettez-les dans le cache pour l'installation</value>
+    <value>Choisissez des fichiers ZIP téléchargés en dehors de CKAN et mettez-les dans le cache pour l'installation</value>
   </data>
   <data name="DeduplicateToolStripMenuItem.Text" xml:space="preserve">
     <value>Dédupliquer les fichiers installés...</value>
@@ -157,22 +157,25 @@
     <value>Analyser les fichiers installés dans toutes les instances de jeu et partager ceux qui le peuvent</value>
   </data>
   <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
-    <value>Créer un fichier &amp;texte avec les mods installés (ne peut pas être réimporté)...</value>
+    <value>Créer un fichier texte avec les &amp;mods installés (ne peut pas être réimporté)...</value>
   </data>
   <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Sauver le modpack dans un fichier (peut être réimporté)...</value>
   </data>
   <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Voir les &amp;recommandations</value>
+    <value>&amp;Voir les recommandations</value>
   </data>
   <data name="AuditRecommendationsToolStripMenuItem.ToolTipText" xml:space="preserve">
     <value>Revoir les recommandations et suggestions de tous les mods installés</value>
   </data>
+  <data name="DownloadStatisticsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Télécharger les statistiques...</value>
+  </data>
   <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
-    <value>&amp;Temps de jeu...</value>
+    <value>Temps de &amp;jeu...</value>
   </data>
   <data name="ViewPlayTimeToolStripMenuItem.ToolTipText" xml:space="preserve">
-    <value>Voir et modifier combien de temps vous avez joué chaque instance de jeu</value>
+    <value>Voir et modifier combien de temps vous avez joué à chaque instance de jeu</value>
   </data>
   <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
     <value>Fichiers &amp;non gérés...</value>
@@ -290,5 +293,11 @@
   </data>
   <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
     <value>Historique d'installation</value>
+  </data>
+  <data name="DownloadStatisticsTabPage.Text" xml:space="preserve">
+    <value>Télécharger Statistiques</value>
+  </data>
+  <data name="DownloadStatisticsOKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

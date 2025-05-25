@@ -1200,4 +1200,13 @@ Cette action est irréversible !</value>
   <data name="InstallFiltersGlobalFiltersForGame" xml:space="preserve">
     <value>Filtres globaux pour {0}</value>
   </data>
+  <data name="DownloadStatisticsPieChartTitle" xml:space="preserve">
+    <value>Téléchargements par Hôte</value>
+  </data>
+  <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve">
+    <value>Faire un don</value>
+  </data>
+  <data name="DownloadStatisticsTableDonateLinkToolTip" xml:space="preserve">
+    <value>Cliquez pour ouvrir le lien de don de {0} dans votre navigateur</value>
+  </data>
 </root>

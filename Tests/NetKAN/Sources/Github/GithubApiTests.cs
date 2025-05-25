@@ -13,6 +13,8 @@ using Tests.Data;
 namespace Tests.NetKAN.Sources.Github
 {
     [TestFixture]
+    [Category("FlakyNetwork"),
+     Category("Online")]
     public sealed class GithubApiTests
     {
         // Ironically, despite the fact that these run in CI, which is strongly integrated
@@ -44,8 +46,6 @@ namespace Tests.NetKAN.Sources.Github
         }
 
         [Test]
-        [Category("FlakyNetwork")]
-        [Category("Online")]
         public void GetsLatestReleaseCorrectly()
         {
             // Arrange
