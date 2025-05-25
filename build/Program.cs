@@ -353,15 +353,21 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 NoRestore        = true,
                 NoBuild          = true,
                 NoLogo           = true,
-                Filter           = where?.Replace("class=", "FullyQualifiedName="),
+                Filter           = where?.Replace("class=", "FullyQualifiedName=",
+                                                  StringComparison.CurrentCultureIgnoreCase)
+                                         .Replace("category=", "TestCategory=",
+                                                  StringComparison.CurrentCultureIgnoreCase)
+                                         .Replace("category!=", "TestCategory!=",
+                                                  StringComparison.CurrentCultureIgnoreCase),
                 ResultsDirectory = nunitOutputDirectory,
                 Verbosity        = DotNetVerbosity.Minimal,
             });
-            var testFile = context.Paths.OutDirectory.Combine("CKAN.Tests")
-                .Combine(context.BuildConfiguration)
-                .Combine("bin")
-                .Combine(context.BuildNetFramework)
-                .CombineWithFilePath("CKAN.Tests.dll");
+            var testFile = context.Paths.OutDirectory
+                                        .Combine("CKAN.Tests")
+                                        .Combine(context.BuildConfiguration)
+                                        .Combine("bin")
+                                        .Combine(context.BuildNetFramework)
+                                        .CombineWithFilePath("CKAN.Tests.dll");
             context.NUnit3(testFile.FullPath, new NUnit3Settings
             {
                 Configuration = context.BuildConfiguration,

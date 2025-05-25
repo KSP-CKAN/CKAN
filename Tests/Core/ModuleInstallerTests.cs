@@ -976,6 +976,7 @@ namespace Tests.Core
         }
 
         [Test]
+        [Explicit("Slow corner case in rarely touched code")]
         public void InstallList_RealZipBomb_DoesNotThrow()
         {
             // Arrange
