@@ -121,6 +121,7 @@
   <data name="AlwaysUncheckAllButton.Text" xml:space="preserve"><value>Always uncheck all</value></data>
   <data name="CheckAllButton.Text" xml:space="preserve"><value>Check All</value></data>
   <data name="CheckRecommendationsButton.Text" xml:space="preserve"><value>Check Recommendations</value></data>
+  <data name="CheckSuggestionsButton.Text" xml:space="preserve"><value>Check Suggestions</value></data>
   <data name="RecommendedModsCancelButton.Text" xml:space="preserve"><value>Cancel</value></data>
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve"><value>Continue</value></data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve"><value>The chosen modules recommend, suggest, or are supported by the following modules:</value></data>

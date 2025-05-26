@@ -37,6 +37,7 @@ namespace CKAN.GUI
             this.UncheckCheckSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.CheckAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.CheckRecommendationsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.CheckSuggestionsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.RecommendedDialogLabel = new System.Windows.Forms.Label();
             this.RecommendedModsListView = new ThemedListView();
             this.RecommendationsGroup = new System.Windows.Forms.ListViewGroup();
@@ -60,7 +61,8 @@ namespace CKAN.GUI
             this.UncheckAllButton,
             this.UncheckCheckSeparator,
             this.CheckAllButton,
-            this.CheckRecommendationsButton});
+            this.CheckRecommendationsButton,
+            this.CheckSuggestionsButton});
             this.Toolbar.CanOverflow = true;
             this.Toolbar.Location = new System.Drawing.Point(0, 0);
             this.Toolbar.Name = "Toolbar";
@@ -117,6 +119,16 @@ namespace CKAN.GUI
             this.CheckRecommendationsButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
             this.CheckRecommendationsButton.Click += new System.EventHandler(this.CheckRecommendationsButton_Click);
             resources.ApplyResources(this.CheckRecommendationsButton, "CheckRecommendationsButton");
+            //
+            // CheckSuggestionsButton
+            //
+            this.CheckSuggestionsButton.Image = global::CKAN.GUI.EmbeddedImages.checkSuggestions;
+            this.CheckSuggestionsButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.SizeToFit;
+            this.CheckSuggestionsButton.Name = "CheckSuggestionsButton";
+            this.CheckSuggestionsButton.Size = new System.Drawing.Size(114, 56);
+            this.CheckSuggestionsButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            this.CheckSuggestionsButton.Click += new System.EventHandler(this.CheckSuggestionsButton_Click);
+            resources.ApplyResources(this.CheckSuggestionsButton, "CheckSuggestionsButton");
             //
             // RecommendedDialogLabel
             //
@@ -243,6 +255,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripSeparator UncheckCheckSeparator;
         private System.Windows.Forms.ToolStripMenuItem CheckAllButton;
         private System.Windows.Forms.ToolStripMenuItem CheckRecommendationsButton;
+        private System.Windows.Forms.ToolStripMenuItem CheckSuggestionsButton;
         private System.Windows.Forms.Label RecommendedDialogLabel;
         private CKAN.GUI.ThemedListView RecommendedModsListView;
         private System.Windows.Forms.ListViewGroup RecommendationsGroup;

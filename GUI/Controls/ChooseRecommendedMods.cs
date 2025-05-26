@@ -269,6 +269,11 @@ namespace CKAN.GUI
             CheckUncheckRows(RecommendationsGroup.Items, true);
         }
 
+        private void CheckSuggestionsButton_Click(object? sender, EventArgs? e)
+        {
+            CheckUncheckRows(SuggestionsGroup.Items, true);
+        }
+
         private void CheckUncheckRows(ListView.ListViewItemCollection items,
                                       bool check)
         {
