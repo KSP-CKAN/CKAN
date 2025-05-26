@@ -162,8 +162,7 @@ namespace CKAN.ConsoleUI {
         {
             if (manager.CurrentInstance is GameInstance instance
                 && ModuleInstaller.FindRecommendations(
-                    instance,
-                    inst, new List<CkanModule>(inst), registry,
+                    instance, inst, inst, rejected, registry,
                     out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                     out Dictionary<CkanModule, List<string>> suggestions,
                     out Dictionary<CkanModule, HashSet<string>> supporters

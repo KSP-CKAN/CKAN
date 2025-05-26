@@ -50,7 +50,8 @@ namespace CKAN.GUI
                 if (ModuleInstaller.FindRecommendations(
                         CurrentInstance,
                         registry.InstalledModules.Select(im => im.Module).ToHashSet(),
-                        new List<CkanModule>(),
+                        Array.Empty<CkanModule>(),
+                        Array.Empty<CkanModule>(),
                         registry,
                         out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                         out Dictionary<CkanModule, List<string>> suggestions,
@@ -59,7 +60,7 @@ namespace CKAN.GUI
                 {
                     tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                     ChooseRecommendedMods.LoadRecommendations(
-                        registry, new List<CkanModule>(), new HashSet<CkanModule>(),
+                        registry, Array.Empty<CkanModule>(), Array.Empty<CkanModule>(),
                         versionCriteria, Manager.Cache,
                         CurrentInstance.game,
                         ModuleLabelList.ModuleLabels

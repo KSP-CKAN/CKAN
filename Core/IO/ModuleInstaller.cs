@@ -1566,6 +1566,7 @@ namespace CKAN.IO
         /// <param name="instance">Game instance to use</param>
         /// <param name="sourceModules">Modules to check for relationships</param>
         /// <param name="toInstall">Modules already being installed, to be omitted from search</param>
+        /// <param name="exclude">Modules the user has already seen and decided not to install</param>
         /// <param name="registry">Registry to use</param>
         /// <param name="recommendations">Modules that are recommended to install</param>
         /// <param name="suggestions">Modules that are suggested to install</param>
@@ -1576,6 +1577,7 @@ namespace CKAN.IO
         public static bool FindRecommendations(GameInstance                                          instance,
                                                ICollection<CkanModule>                               sourceModules,
                                                ICollection<CkanModule>                               toInstall,
+                                               ICollection<CkanModule>                               exclude,
                                                Registry                                              registry,
                                                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                                out Dictionary<CkanModule, List<string>>              suggestions,
@@ -1591,6 +1593,7 @@ namespace CKAN.IO
             log.DebugFormat("Recommenders: {0}", string.Join(", ", recommenders));
 
             var checkedRecs = resolver.Recommendations(recommenders)
+                                      .Except(exclude)
                                       .Where(m => resolver.ReasonsFor(m)
                                                           .Any(r => r is SelectionReason.Recommended { ProvidesIndex: 0 }))
                                       .ToHashSet();
@@ -1602,6 +1605,7 @@ namespace CKAN.IO
             checkedRecs.ExceptWith(conflicting);
 
             recommendations = resolver.Recommendations(recommenders)
+                                      .Except(exclude)
                                       .ToDictionary(m => m,
                                                     m => new Tuple<bool, List<string>>(
                                                              checkedRecs.Contains(m),
@@ -1614,6 +1618,7 @@ namespace CKAN.IO
                                                                      .ToList()));
             suggestions = resolver.Suggestions(recommenders,
                                                recommendations.Keys.ToList())
+                                  .Except(exclude)
                                   .ToDictionary(m => m,
                                                 m => resolver.ReasonsFor(m)
                                                              .OfType<SelectionReason.Suggested>()
@@ -1627,7 +1632,8 @@ namespace CKAN.IO
             supporters = resolver.Supporters(recommenders,
                                              recommenders.Concat(recommendations.Keys)
                                                          .Concat(suggestions.Keys))
-                                 .Where(kvp => CanInstall(toInstall.Append(kvp.Key).ToList(),
+                                 .Where(kvp => !exclude.Contains(kvp.Key)
+                                               && CanInstall(toInstall.Append(kvp.Key).ToList(),
                                                           opts, registry, instance.game, crit))
                                  .ToDictionary();
 
