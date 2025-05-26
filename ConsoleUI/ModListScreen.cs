@@ -464,7 +464,7 @@ namespace CKAN.ConsoleUI {
                     }
                 }
                 try {
-                    DependencyScreen ds = new DependencyScreen(theme, manager, manager.CurrentInstance, registry, userAgent, reinstall, new HashSet<string>(), debug);
+                    DependencyScreen ds = new DependencyScreen(theme, manager, manager.CurrentInstance, registry, userAgent, reinstall, new HashSet<CkanModule>(), debug);
                     if (ds.HaveOptions()) {
                         LaunchSubScreen(ds);
                         bool needRefresh = false;
