@@ -18,6 +18,8 @@ namespace CKAN.GUI
     #endif
     public static class Util
     {
+        #region Threading
+
         /// <summary>
         /// Invokes an action on the UI thread, or directly if we're
         /// on the UI thread.
@@ -53,18 +55,67 @@ namespace CKAN.GUI
             }
         }
 
-        // hides the console window on windows
-        // useful when running the GUI
-        [DllImport("kernel32.dll", SetLastError=true)]
-        private static extern int FreeConsole();
-
-        public static void HideConsoleWindow()
+        /// <summary>
+        /// Coalesce multiple events from a busy event source into single delayed reactions
+        ///
+        /// See: https://www.freecodecamp.org/news/javascript-debounce-example/
+        ///
+        /// Additional convenience features:
+        ///   - Ability to do something immediately unconditionally
+        ///   - Execute immediately if a condition is met
+        ///   - Pass the events to the functions
+        /// </summary>
+        /// <param name="startFunc">Called immediately when the event is fired, for fast parts of the handling</param>
+        /// <param name="immediateFunc">If this returns true for an event, truncate the delay and fire doneFunc immediately</param>
+        /// <param name="abortFunc">If this returns true for an event, ignore it completely (e.g. for setting text box contents programmatically)</param>
+        /// <param name="doneFunc">Called after timeoutMs milliseconds, or immediately if immediateFunc returns true</param>
+        /// <param name="timeoutMs">Number of milliseconds between the last event and when to call doneFunc</param>
+        /// <typeparam name="EventT">Event type handled</typeparam>
+        /// <returns>A new event handler that wraps the given functions using the timer</returns>
+        public static EventHandler<EventT> Debounce<EventT>(
+            EventHandler<EventT>        startFunc,
+            Func<object?, EventT, bool> immediateFunc,
+            Func<object?, EventT, bool> abortFunc,
+            EventHandler<EventT?>       doneFunc,
+            int timeoutMs = 500)
         {
-            if (Platform.IsWindows)
+            // Store the most recent event we received
+            object? receivedFrom = null;
+            EventT? received     = default;
+
+            // Set up the timer that will track the delay
+            Timer timer = new Timer() { Interval = timeoutMs };
+            timer.Tick += (sender, evt) =>
             {
-                FreeConsole();
-            }
+                timer.Stop();
+                doneFunc(receivedFrom, received);
+            };
+
+            return (sender, evt) =>
+            {
+                if (!abortFunc(sender, evt))
+                {
+                    timer.Stop();
+                    startFunc(sender, evt);
+                    if (immediateFunc(sender, evt))
+                    {
+                        doneFunc(sender, evt);
+                        receivedFrom = null;
+                        received     = default;
+                    }
+                    else
+                    {
+                        receivedFrom = sender;
+                        received     = evt;
+                        timer.Start();
+                    }
+                }
+            };
         }
+
+        #endregion
+
+        #region Link handling
 
         /// <summary>
         /// Returns true if the string could be a valid http address.
@@ -159,6 +210,10 @@ namespace CKAN.GUI
             menu.Show(where ?? Cursor.Position);
         }
 
+        #endregion
+
+        #region Window positioning
+
         /// <summary>
         /// Find a screen that the given box overlaps
         /// </summary>
@@ -237,63 +292,9 @@ namespace CKAN.GUI
             return ClampedLocation(location - topLeftMargin, size + topLeftMargin + bottomRightMargin, screen) + topLeftMargin;
         }
 
-        /// <summary>
-        /// Coalesce multiple events from a busy event source into single delayed reactions
-        ///
-        /// See: https://www.freecodecamp.org/news/javascript-debounce-example/
-        ///
-        /// Additional convenience features:
-        ///   - Ability to do something immediately unconditionally
-        ///   - Execute immediately if a condition is met
-        ///   - Pass the events to the functions
-        /// </summary>
-        /// <param name="startFunc">Called immediately when the event is fired, for fast parts of the handling</param>
-        /// <param name="immediateFunc">If this returns true for an event, truncate the delay and fire doneFunc immediately</param>
-        /// <param name="abortFunc">If this returns true for an event, ignore it completely (e.g. for setting text box contents programmatically)</param>
-        /// <param name="doneFunc">Called after timeoutMs milliseconds, or immediately if immediateFunc returns true</param>
-        /// <param name="timeoutMs">Number of milliseconds between the last event and when to call doneFunc</param>
-        /// <typeparam name="EventT">Event type handled</typeparam>
-        /// <returns>A new event handler that wraps the given functions using the timer</returns>
-        public static EventHandler<EventT> Debounce<EventT>(
-            EventHandler<EventT>        startFunc,
-            Func<object?, EventT, bool> immediateFunc,
-            Func<object?, EventT, bool> abortFunc,
-            EventHandler<EventT?>        doneFunc,
-            int timeoutMs = 500)
-        {
-            // Store the most recent event we received
-            object? receivedFrom = null;
-            EventT? received     = default;
+        #endregion
 
-            // Set up the timer that will track the delay
-            Timer timer = new Timer() { Interval = timeoutMs };
-            timer.Tick += (sender, evt) =>
-            {
-                timer.Stop();
-                doneFunc(receivedFrom, received);
-            };
-
-            return (sender, evt) =>
-            {
-                if (!abortFunc(sender, evt))
-                {
-                    timer.Stop();
-                    startFunc(sender, evt);
-                    if (immediateFunc(sender, evt))
-                    {
-                        doneFunc(sender, evt);
-                        receivedFrom = null;
-                        received     = default;
-                    }
-                    else
-                    {
-                        receivedFrom = sender;
-                        received     = evt;
-                        timer.Start();
-                    }
-                }
-            };
-        }
+        #region Color manipulation
 
         public static Color BlendColors(Color[] colors)
             => colors.Length <  1 ? Color.Empty
@@ -320,6 +321,15 @@ namespace CKAN.GUI
                               a.G + b.G,
                               a.B + b.B);
 
+        public static Color? ForeColorForBackColor(this Color backColor)
+            => backColor == Color.Transparent || backColor == Color.Empty ? null
+             : backColor.GetBrightness() >= 0.5                           ? Color.Black
+             :                                                              Color.White;
+
+        #endregion
+
+        #region Bitmap manipulation
+
         public static Bitmap LerpBitmaps(Bitmap a, Bitmap b,
                                          float amount)
             => amount <= 0 ? a
@@ -344,6 +354,10 @@ namespace CKAN.GUI
             }
             return c;
         }
+
+        #endregion
+
+        #region Text sizing
 
         /// <summary>
         /// Simple syntactic sugar around Graphics.MeasureString
@@ -371,6 +385,21 @@ namespace CKAN.GUI
                                   + StringHeight(g, lbl.Text, lbl.Font,
                                                  (lbl.Width - lbl.Margin.Horizontal
                                                             - lbl.Padding.Horizontal))));
+
+        #endregion
+
+        // Hides the console window on Windows
+        // useful when running the GUI
+        [DllImport("kernel32.dll", SetLastError=true)]
+        private static extern int FreeConsole();
+
+        public static void HideConsoleWindow()
+        {
+            if (Platform.IsWindows)
+            {
+                FreeConsole();
+            }
+        }
 
         private static float XScale(Graphics g) => g.DpiX / 96f;
         private static float YScale(Graphics g) => g.DpiY / 96f;
