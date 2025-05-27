@@ -373,6 +373,7 @@ namespace CKAN.GUI
                                           currentInstance.Name, currentInstance.game, registry);
                 ModuleLabelList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
                 UpdateHiddenTagsAndLabels();
+                OnSelectedModuleChanged?.Invoke(SelectedModule);
                 if (mlbl.HoldVersion || mlbl.IgnoreMissingFiles)
                 {
                     UpdateCol.Visible = UpdateAllToolButton.Enabled =
