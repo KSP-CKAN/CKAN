@@ -22,6 +22,8 @@ namespace CKAN.GUI
             InitializeComponent();
             Contents.OnDownloadClick += gmod => OnDownloadClick?.Invoke(gmod);
             Relationships.ModuleDoubleClicked += mod => ModuleDoubleClicked?.Invoke(mod);
+            tagsLabelsLinkList.ShowHideTag += t => ShowHideTag?.Invoke(t);
+            tagsLabelsLinkList.AddRemoveModuleLabel += l => AddRemoveModuleLabel?.Invoke(l);
         }
 
         public GUIMod? SelectedModule
@@ -56,6 +58,8 @@ namespace CKAN.GUI
         public event Action<GUIMod>?            OnDownloadClick;
         public event Action<SavedSearch, bool>? OnChangeFilter;
         public event Action<CkanModule>?        ModuleDoubleClicked;
+        public event Action<ModuleTag>?         ShowHideTag;
+        public event Action<ModuleLabel>?       AddRemoveModuleLabel;
 
         protected override void OnResize(EventArgs e)
         {

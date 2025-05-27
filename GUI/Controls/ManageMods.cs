@@ -13,6 +13,7 @@ using log4net;
 
 using CKAN.Configuration;
 using CKAN.IO;
+using CKAN.Games;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 
@@ -357,32 +358,10 @@ namespace CKAN.GUI
 
         private void labelMenuItem_Click(object? sender, EventArgs? e)
         {
-            if (user != null
-                && manager != null
-                && currentInstance != null
-                && SelectedModule != null
-                && sender is ToolStripMenuItem item
-                && item.Tag is ModuleLabel mlbl)
+            if (currentInstance != null && SelectedModule != null
+                && sender is ToolStripMenuItem { Tag: ModuleLabel mlbl })
             {
-                if (item.Checked)
-                {
-                    mlbl.Add(currentInstance.game, SelectedModule.Identifier);
-                }
-                else
-                {
-                    mlbl.Remove(currentInstance.game, SelectedModule.Identifier);
-                }
-                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-                mainModList.ReapplyLabels(SelectedModule, Conflicts?.ContainsKey(SelectedModule) ?? false,
-                                          currentInstance.Name, currentInstance.game, registry);
-                ModuleLabelList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
-                UpdateHiddenTagsAndLabels();
-                OnSelectedModuleChanged?.Invoke(SelectedModule);
-                if (mlbl.HoldVersion || mlbl.IgnoreMissingFiles)
-                {
-                    UpdateCol.Visible = UpdateAllToolButton.Enabled =
-                        mainModList.ResetHasUpdate(currentInstance, registry, ChangeSet, ModGrid.Rows);
-                }
+                ToggleModuleLabel(mlbl, currentInstance, SelectedModule);
             }
         }
 
@@ -1914,6 +1893,52 @@ namespace CKAN.GUI
         {
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.CustomLabel, null, label),
                    merge);
+        }
+
+        public void TagsLabelsLinkList_ShowHideTag(ModuleTag t)
+        {
+            if (ModuleTagList.ModuleTags.HiddenTags.Contains(t.Name))
+            {
+                ModuleTagList.ModuleTags.HiddenTags.Remove(t.Name);
+            }
+            else
+            {
+                ModuleTagList.ModuleTags.HiddenTags.Add(t.Name);
+            }
+            ModuleTagList.ModuleTags.Save(ModuleTagList.DefaultPath);
+            UpdateFilters();
+            UpdateHiddenTagsAndLabels();
+        }
+
+        public void TagsLabelsLinkList_AddRemoveModuleLabel(ModuleLabel l)
+        {
+            if (SelectedModule != null && currentInstance != null)
+            {
+                ToggleModuleLabel(l, currentInstance, SelectedModule);
+            }
+        }
+
+        private void ToggleModuleLabel(ModuleLabel label, GameInstance instance, GUIMod module)
+        {
+            if (label.ContainsModule(instance.game, module.Identifier))
+            {
+                label.Remove(instance.game, module.Identifier);
+            }
+            else
+            {
+                label.Add(instance.game, module.Identifier);
+            }
+            var registry = RegistryManager.Instance(instance, repoData).registry;
+            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
+                                      instance.Name, instance.game, registry);
+            ModuleLabelList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
+            UpdateHiddenTagsAndLabels();
+            OnSelectedModuleChanged?.Invoke(module);
+            if (label.HoldVersion || label.IgnoreMissingFiles)
+            {
+                UpdateCol.Visible = UpdateAllToolButton.Enabled =
+                    mainModList.ResetHasUpdate(instance, registry, ChangeSet, ModGrid.Rows);
+            }
         }
 
         #endregion
