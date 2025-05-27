@@ -319,6 +319,8 @@ namespace CKAN.GUI
                                                    {
                                                        Tag         = mlbl,
                                                        BackColor   = mlbl.Color ?? Color.Transparent,
+                                                       ForeColor   = mlbl.Color?.ForeColorForBackColor()
+                                                                               ?? SystemColors.ControlText,
                                                        ToolTipText = Properties.Resources.FilterLinkToolTip,
                                                    })
                                    .ToArray());
@@ -340,6 +342,8 @@ namespace CKAN.GUI
                         new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
                         {
                             BackColor    = mlbl.Color ?? Color.Transparent,
+                            ForeColor    = mlbl.Color?.ForeColorForBackColor()
+                                                     ?? SystemColors.ControlText,
                             Checked      = mlbl.ContainsModule(currentInstance.game, module.Identifier),
                             CheckOnClick = true,
                             Tag          = mlbl,

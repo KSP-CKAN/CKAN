@@ -309,7 +309,11 @@ namespace CKAN.GUI
             DataGridViewRow item = new DataGridViewRow() {Tag = mod};
 
             item.DefaultCellStyle.BackColor = GetRowBackground(mod, false, instanceName, game);
+            item.DefaultCellStyle.ForeColor = item.DefaultCellStyle.BackColor.ForeColorForBackColor()
+                                              ?? SystemColors.WindowText;
             item.DefaultCellStyle.SelectionBackColor = SelectionBlend(item.DefaultCellStyle.BackColor);
+            item.DefaultCellStyle.SelectionForeColor = item.DefaultCellStyle.SelectionBackColor.ForeColorForBackColor()
+                                                       ?? SystemColors.HighlightText;
 
             var myChange = changes?.FindLast(ch => ch.Mod.Equals(mod));
 
@@ -420,7 +424,11 @@ namespace CKAN.GUI
             if (full_list_of_mod_rows.TryGetValue(mod.Identifier, out DataGridViewRow? row))
             {
                 row.DefaultCellStyle.BackColor = GetRowBackground(mod, conflicted, instanceName, game);
+                row.DefaultCellStyle.ForeColor = row.DefaultCellStyle.BackColor.ForeColorForBackColor()
+                                                 ?? SystemColors.WindowText;
                 row.DefaultCellStyle.SelectionBackColor = SelectionBlend(row.DefaultCellStyle.BackColor);
+                row.DefaultCellStyle.SelectionForeColor = row.DefaultCellStyle.SelectionBackColor.ForeColorForBackColor()
+                                                          ?? SystemColors.HighlightText;
                 row.Visible = IsVisible(mod, instanceName, game, registry);
                 return row;
             }

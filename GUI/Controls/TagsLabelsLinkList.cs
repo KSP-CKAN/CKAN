@@ -85,7 +85,8 @@ namespace CKAN.GUI
             {
                 AutoSize     = true,
                 BackColor    = backColor,
-                LinkColor    = SystemColors.GrayText,
+                LinkColor    = backColor.ForeColorForBackColor()
+                               ?? SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
                 Margin       = new Padding(0, 2, 4, 2),
                 Text         = name,
