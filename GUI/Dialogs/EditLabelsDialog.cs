@@ -59,6 +59,7 @@ namespace CKAN.GUI
                                                // we have to make the default bold and then override it
                                                // for non-bold nodes.
                                                NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
+                                               BackColor = mlbl.Color ?? Color.Transparent,
                                                Tag      = mlbl,
                                            })
                                         .ToArray()))

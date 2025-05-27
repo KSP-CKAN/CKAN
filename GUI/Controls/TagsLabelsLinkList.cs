@@ -79,9 +79,12 @@ namespace CKAN.GUI
                                        string toolTip,
                                        LinkLabelLinkClickedEventHandler onClick)
         {
+            var backColor = (tag is ModuleLabel mlbl ? mlbl.Color : null)
+                            ?? Color.Transparent;
             var link = new LinkLabel()
             {
                 AutoSize     = true,
+                BackColor    = backColor,
                 LinkColor    = SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
                 Margin       = new Padding(0, 2, 4, 2),
