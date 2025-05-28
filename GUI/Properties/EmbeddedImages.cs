@@ -28,6 +28,7 @@ namespace CKAN.GUI
         public static Bitmap ballot               => get("ballot");
         public static Bitmap checkAll             => get("checkAll");
         public static Bitmap checkRecommendations => get("checkRecommendations");
+        public static Bitmap checkSuggestions     => get("checkSuggestions");
         public static Bitmap collapseAll          => get("collapseAll");
         public static Bitmap delete               => get("delete");
         public static Bitmap expandAll            => get("expandAll");

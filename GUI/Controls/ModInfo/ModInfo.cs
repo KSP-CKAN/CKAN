@@ -22,24 +22,28 @@ namespace CKAN.GUI
             InitializeComponent();
             Contents.OnDownloadClick += gmod => OnDownloadClick?.Invoke(gmod);
             Relationships.ModuleDoubleClicked += mod => ModuleDoubleClicked?.Invoke(mod);
+            tagsLabelsLinkList.ShowHideTag += t => ShowHideTag?.Invoke(t);
+            tagsLabelsLinkList.AddRemoveModuleLabel += l => AddRemoveModuleLabel?.Invoke(l);
         }
 
         public GUIMod? SelectedModule
         {
             set
             {
+                if (value != null
+                    && manager?.CurrentInstance?.VersionCriteria()
+                       is GameVersionCriteria crit)
+                {
+                    ModInfoTabControl.Enabled = true;
+                    UpdateHeaderInfo(value, crit);
+                }
+                else
+                {
+                    ModInfoTabControl.Enabled = false;
+                }
                 if (value != selectedModule)
                 {
                     selectedModule = value;
-                    if (value == null)
-                    {
-                        ModInfoTabControl.Enabled = false;
-                    }
-                    else if (manager?.CurrentInstance?.VersionCriteria() is GameVersionCriteria crit)
-                    {
-                        ModInfoTabControl.Enabled = true;
-                        UpdateHeaderInfo(value, crit);
-                    }
                     LoadTab(value);
                 }
             }
@@ -54,6 +58,8 @@ namespace CKAN.GUI
         public event Action<GUIMod>?            OnDownloadClick;
         public event Action<SavedSearch, bool>? OnChangeFilter;
         public event Action<CkanModule>?        ModuleDoubleClicked;
+        public event Action<ModuleTag>?         ShowHideTag;
+        public event Action<ModuleLabel>?       AddRemoveModuleLabel;
 
         protected override void OnResize(EventArgs e)
         {

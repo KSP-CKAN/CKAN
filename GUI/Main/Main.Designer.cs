@@ -454,6 +454,8 @@ namespace CKAN.GUI
             this.ModInfo.Size = new System.Drawing.Size(360, 836);
             this.ModInfo.TabIndex = 34;
             this.ModInfo.OnDownloadClick += this.ModInfo_OnDownloadClick;
+            this.ModInfo.AddRemoveModuleLabel += this.ManageMods.TagsLabelsLinkList_AddRemoveModuleLabel;
+            this.ModInfo.ShowHideTag += this.ManageMods.TagsLabelsLinkList_ShowHideTag;
             //
             // StatusLabel
             //

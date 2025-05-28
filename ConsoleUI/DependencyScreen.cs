@@ -33,7 +33,7 @@ namespace CKAN.ConsoleUI {
                                 Registry            reg,
                                 string?             userAgent,
                                 ChangePlan          cp,
-                                HashSet<string>     rej,
+                                HashSet<CkanModule> rej,
                                 bool                dbg)
             : base(theme)
         {
@@ -124,7 +124,7 @@ namespace CKAN.ConsoleUI {
             AddBinding(Keys.Escape, sender =>
             {
                 // Add everything to rejected
-                rejected.UnionWith(dependencies.Keys.Select(m => m.identifier));
+                rejected.UnionWith(dependencies.Keys);
                 return false;
             });
 
@@ -135,8 +135,7 @@ namespace CKAN.ConsoleUI {
                     plan.Install.UnionWith(accepted);
                     // Add the rest to rejected
                     rejected.UnionWith(dependencies.Keys
-                                                   .Except(accepted)
-                                                   .Select(m => m.identifier));
+                                                   .Except(accepted));
                     return false;
                 }
                 return true;
@@ -163,8 +162,7 @@ namespace CKAN.ConsoleUI {
         {
             if (manager.CurrentInstance is GameInstance instance
                 && ModuleInstaller.FindRecommendations(
-                    instance,
-                    inst, new List<CkanModule>(inst), registry,
+                    instance, inst, inst, rejected, registry,
                     out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                     out Dictionary<CkanModule, List<string>> suggestions,
                     out Dictionary<CkanModule, HashSet<string>> supporters
@@ -243,7 +241,7 @@ namespace CKAN.ConsoleUI {
         }
 
         private readonly HashSet<CkanModule> accepted = new HashSet<CkanModule>();
-        private readonly HashSet<string>     rejected;
+        private readonly HashSet<CkanModule> rejected;
 
         private readonly Registry            registry;
         private readonly GameInstanceManager manager;

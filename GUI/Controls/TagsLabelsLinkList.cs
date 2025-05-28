@@ -63,6 +63,8 @@ namespace CKAN.GUI
 
         public event Action<ModuleTag,   bool>? TagClicked;
         public event Action<ModuleLabel, bool>? LabelClicked;
+        public event Action<ModuleTag>?         ShowHideTag;
+        public event Action<ModuleLabel>?       AddRemoveModuleLabel;
 
         private string tagToolTip = Properties.Resources.FilterLinkToolTip;
 
@@ -79,10 +81,14 @@ namespace CKAN.GUI
                                        string toolTip,
                                        LinkLabelLinkClickedEventHandler onClick)
         {
+            var backColor = (tag is ModuleLabel mlbl ? mlbl.Color : null)
+                            ?? Color.Transparent;
             var link = new LinkLabel()
             {
                 AutoSize     = true,
-                LinkColor    = SystemColors.GrayText,
+                BackColor    = backColor,
+                LinkColor    = backColor.ForeColorForBackColor()
+                               ?? SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
                 Margin       = new Padding(0, 2, 4, 2),
                 Text         = name,
@@ -93,20 +99,57 @@ namespace CKAN.GUI
             return link;
         }
 
-        private void TagLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs? e)
+        private void TagLinkLabel_LinkClicked(object?                        sender,
+                                              LinkLabelLinkClickedEventArgs? e)
         {
-            if (sender is LinkLabel link && link.Tag is ModuleTag t)
+            if (sender is LinkLabel { Tag: ModuleTag t } llbl)
             {
-                TagClicked?.Invoke(t, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+                switch (e)
+                {
+                    case { Button: MouseButtons.Left }:
+                        TagClicked?.Invoke(t, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+                        break;
+
+                    case { Button: MouseButtons.Right }:
+                        var showHideLink = new ToolStripMenuItem(string.Format(Properties.Resources.UtilShowHideLink,
+                                                                               t.Name));
+                        showHideLink.Click += (sender, ev) => ShowHideTag?.Invoke(t);
+                        OpenLinkLabelContextMenu(llbl, showHideLink);
+                        break;
+                }
             }
         }
 
-        private void LabelLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs? e)
+        private void LabelLinkLabel_LinkClicked(object?                        sender,
+                                                LinkLabelLinkClickedEventArgs? e)
         {
-            if (sender is LinkLabel link && link.Tag is ModuleLabel l)
+            if (sender is LinkLabel { Tag: ModuleLabel l } llbl)
             {
-                LabelClicked?.Invoke(l, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+                switch (e)
+                {
+                    case { Button: MouseButtons.Left }:
+                        LabelClicked?.Invoke(l, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+                        break;
+                    case { Button: MouseButtons.Right }:
+                        var addRemoveLink = new ToolStripMenuItem(string.Format(Properties.Resources.UtilAddRemoveModuleLink,
+                                                                                l.Name));
+                        addRemoveLink.Click += (sender, ev) => AddRemoveModuleLabel?.Invoke(l);
+                        OpenLinkLabelContextMenu(llbl, addRemoveLink);
+                        break;
+                }
             }
+        }
+
+        private static void OpenLinkLabelContextMenu(LinkLabel                  label,
+                                                     params ToolStripMenuItem[] options)
+        {
+            var menu = new ContextMenuStrip();
+            if (Platform.IsMono)
+            {
+                menu.Renderer = new FlatToolStripRenderer();
+            }
+            menu.Items.AddRange(options);
+            menu.Show(label.PointToScreen(new Point(0, label.Height)));
         }
 
         private readonly ToolTip ToolTip = new ToolTip()

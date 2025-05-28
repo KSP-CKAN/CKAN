@@ -565,6 +565,8 @@ namespace CKAN.GUI
             this.hiddenTagsLabelsLinkList.Size = new System.Drawing.Size(500, 24);
             this.hiddenTagsLabelsLinkList.TagClicked += this.hiddenTagsLabelsLinkList_TagClicked;
             this.hiddenTagsLabelsLinkList.LabelClicked += this.hiddenTagsLabelsLinkList_LabelClicked;
+            this.hiddenTagsLabelsLinkList.AddRemoveModuleLabel += this.TagsLabelsLinkList_AddRemoveModuleLabel;
+            this.hiddenTagsLabelsLinkList.ShowHideTag += this.TagsLabelsLinkList_ShowHideTag;
             resources.ApplyResources(this.hiddenTagsLabelsLinkList, "hiddenTagsLabelsLinkList");
             //
             // ManageMods

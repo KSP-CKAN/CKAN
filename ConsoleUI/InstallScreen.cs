@@ -50,7 +50,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="process">Framework parameter not used by this object</param>
         public override void Run(Action? process = null)
         {
-            HashSet<string> rejected = new HashSet<string>();
+            var rejected = new HashSet<CkanModule>();
             DrawBackground();
             if (manager.CurrentInstance != null && manager.Cache != null)
             {

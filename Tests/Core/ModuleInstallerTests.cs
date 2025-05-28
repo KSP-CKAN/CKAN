@@ -869,7 +869,8 @@ namespace Tests.Core
                                                                  installIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
-                                                                 new List<CkanModule>(),
+                                                                 Array.Empty<CkanModule>(),
+                                                                 Array.Empty<CkanModule>(),
                                                                  registry,
                                                                  out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                                                  out Dictionary<CkanModule, List<string>> suggestions,
@@ -920,7 +921,8 @@ namespace Tests.Core
                                                                  installIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
-                                                                 new List<CkanModule>(),
+                                                                 Array.Empty<CkanModule>(),
+                                                                 Array.Empty<CkanModule>(),
                                                                  registry,
                                                                  out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                                                  out Dictionary<CkanModule, List<string>> suggestions,

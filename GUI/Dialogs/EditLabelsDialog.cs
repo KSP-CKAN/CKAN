@@ -58,8 +58,11 @@ namespace CKAN.GUI
                                                // than TreeNode.Font, so to ensure there's enough space,
                                                // we have to make the default bold and then override it
                                                // for non-bold nodes.
-                                               NodeFont = new Font(LabelSelectionTree.Font, FontStyle.Regular),
-                                               Tag      = mlbl,
+                                               NodeFont  = new Font(LabelSelectionTree.Font, FontStyle.Regular),
+                                               BackColor = mlbl.Color ?? Color.Transparent,
+                                               ForeColor = mlbl.Color?.ForeColorForBackColor()
+                                                                     ?? SystemColors.WindowText,
+                                               Tag       = mlbl,
                                            })
                                         .ToArray()))
                       .ToArray());
@@ -144,6 +147,8 @@ namespace CKAN.GUI
             if (dlg.ShowDialog(this) == DialogResult.OK)
             {
                 ColorButton.BackColor = dlg.Color;
+                ColorButton.ForeColor = dlg.Color.ForeColorForBackColor()
+                                        ?? SystemColors.ControlText;
             }
         }
 
@@ -200,6 +205,8 @@ namespace CKAN.GUI
 
             NameTextBox.Text                     = lbl.Name;
             ColorButton.BackColor                = lbl.Color ?? Color.Transparent;
+            ColorButton.ForeColor                = lbl.Color?.ForeColorForBackColor()
+                                                            ?? SystemColors.ControlText;
             InstanceNameComboBox.SelectedItem    = lbl.InstanceName;
             HideFromOtherFiltersCheckBox.Checked = lbl.Hide;
             NotifyOnChangesCheckBox.Checked      = lbl.NotifyOnChange;

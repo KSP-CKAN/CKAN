@@ -159,14 +159,18 @@ namespace CKAN.GUI
                 Util.Invoke(this, () => UseWaitCursor = true);
                 try
                 {
+                    var sourceModules = changes.Where(ch => ch.ChangeType is GUIModChangeType.Install
+                                                                          or GUIModChangeType.Update)
+                                               .Select(ch => ch.Mod)
+                                               .ToHashSet();
+                    var shown = new HashSet<CkanModule>();
                     // Prompt for recommendations and suggestions, if any
-                    if (ModuleInstaller.FindRecommendations(
-                        CurrentInstance,
-                        changes.Where(ch => ch.ChangeType == GUIModChangeType.Install)
-                               .Select(ch => ch.Mod)
-                               .ToHashSet(),
-                        toInstall,
-                        registry,
+                    var labels = ModuleLabelList.ModuleLabels
+                                                .LabelsFor(CurrentInstance.Name)
+                                                .ToList();
+                    var coreConfig = ServiceLocator.Container.Resolve<IConfiguration>();
+                    while (ModuleInstaller.FindRecommendations(
+                        CurrentInstance, sourceModules, toInstall, shown, registry,
                         out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                         out Dictionary<CkanModule, List<string>> suggestions,
                         out Dictionary<CkanModule, HashSet<string>> supporters)
@@ -176,16 +180,16 @@ namespace CKAN.GUI
                         ChooseRecommendedMods.LoadRecommendations(
                             registry, toInstall, toUninstall,
                             CurrentInstance.VersionCriteria(), Manager.Cache,
-                            CurrentInstance.game,
-                            ModuleLabelList.ModuleLabels
-                                           .LabelsFor(CurrentInstance.Name)
-                                           .ToList(),
-                            ServiceLocator.Container.Resolve<IConfiguration>(),
-                            configuration,
+                            CurrentInstance.game, labels, coreConfig, configuration,
                             recommendations, suggestions, supporters);
                         tabController.SetTabLock(true);
+                        shown.UnionWith(recommendations.Keys);
+                        shown.UnionWith(suggestions.Keys);
+                        shown.UnionWith(supporters.Keys);
                         Util.Invoke(this, () => UseWaitCursor = false);
+
                         var result = ChooseRecommendedMods.Wait();
+
                         tabController.SetTabLock(false);
                         tabController.HideTab(ChooseRecommendedModsTabPage.Name);
                         if (result == null)
@@ -195,6 +199,7 @@ namespace CKAN.GUI
                         }
                         else
                         {
+                            sourceModules.UnionWith(result);
                             toInstall = toInstall.Concat(result).Distinct().ToList();
                         }
                     }
