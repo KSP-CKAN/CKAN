@@ -323,8 +323,36 @@ namespace CKAN.GUI
 
         public static Color? ForeColorForBackColor(this Color backColor)
             => backColor == Color.Transparent || backColor == Color.Empty ? null
-             : backColor.GetBrightness() >= 0.5                           ? Color.Black
+             : backColor.GetLuminance() >= luminanceThreshold             ? Color.Black
              :                                                              Color.White;
+
+        /// <summary>
+        /// Below this is considered "dark," above is considered "light"
+        /// </summary>
+        private const double luminanceThreshold = 0.179128785;
+
+        /// <summary>
+        /// https://www.w3.org/WAI/GL/wiki/Relative_luminance
+        /// </summary>
+        /// <param name="color">The color for which to calculate the relative luminance</param>
+        /// <returns>Relative luminance (basically a better version of brightness) of the color</returns>
+        public static double GetLuminance(this Color color)
+            => GetLuminance(color.R, color.G, color.B);
+
+        private static double GetLuminance(byte R, byte G, byte B)
+            => GetLuminance(LuminanceTransform(R),
+                            LuminanceTransform(G),
+                            LuminanceTransform(B));
+
+        private static double GetLuminance(double Rs, double Gs, double Bs)
+            => (0.2126 * Rs) + (0.7152 * Gs) + (0.0722 * Bs);
+
+        private static double LuminanceTransform(byte value)
+            => LuminanceTransform(value / 255.0);
+
+        private static double LuminanceTransform(double value)
+            => value <= 0.03928 ? value / 12.92
+                                : Math.Pow((value + 0.055) / 1.055, 2.4);
 
         #endregion
 
