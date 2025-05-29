@@ -30,6 +30,10 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+# Coverage
+Tests/coverage.*.xml
+Tests/coverage.*.acv
+
 # Don't ignore the root bin folder
 !/bin/
 

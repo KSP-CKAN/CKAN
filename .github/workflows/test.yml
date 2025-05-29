@@ -1,9 +1,12 @@
 name: Test CKAN + NetKAN
 
 on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
   push:
-    branches-ignore:
-      - master
   workflow_call:
 
 jobs:
@@ -33,6 +36,10 @@ jobs:
           path: _build/repack/
       - name: Run tests
         run: xvfb-run ./build.sh test+only --configuration=Debug --where="Category!=FlakyNetwork"
+      - name: Report Coveralls
+        uses: coverallsapp/github-action@v2
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
 
   # notify:
   #   needs:

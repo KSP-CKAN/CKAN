@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -168,5 +169,19 @@ public partial class BuildContext : FrostingContext
         }
 
         return output;
+    }
+
+    public void RunAltCover(params string[] args)
+    {
+        if (this.StartProcess(Paths.AltCoverPath,
+                              new ProcessSettings
+                              {
+                                  WorkingDirectory = Paths.CoverageOutputDirectory,
+                                  Arguments        = string.Join(" ", args),
+                              })
+            is int exitCode and not 0)
+        {
+            throw new Exception($"AltCover failed with exit code: {exitCode}");
+        }
     }
 }

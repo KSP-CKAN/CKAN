@@ -6,7 +6,7 @@ namespace Build;
 public class BuildPaths
 {
     public DirectoryPath RootDirectory { get; init; }
-    public FilePath CoreProject { get; } 
+    public FilePath CoreProject { get; }
     public DirectoryPath BuildDirectory { get; }
     public DirectoryPath NugetDirectory { get; }
     public DirectoryPath OutDirectory { get; }
@@ -15,6 +15,13 @@ public class BuildPaths
     public FilePath CkanFile { get; }
     public FilePath UpdaterFile { get; }
     public FilePath NetkanFile { get; }
+    public DirectoryPath ToolsDirectory => BuildDirectory.Combine("tools");
+    public FilePath AltCoverPath => ToolsDirectory.Combine("altcover.api.9.0.1")
+                                                  .Combine("lib")
+                                                  .Combine("net472")
+                                                  .CombineWithFilePath("AltCover.exe");
+    public DirectoryPath CoverageOutputDirectory => BuildDirectory.Combine("test")
+                                                                  .Combine("coverage");
 
     public BuildPaths(DirectoryPath rootDirectory, string configuration, SemVersion version)
     {
