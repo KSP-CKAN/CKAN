@@ -248,10 +248,11 @@ namespace CKAN.GUI
 
         private void AlwaysUncheckAllButton_CheckedChanged(object? sender, EventArgs? e)
         {
-            if (guiConfig != null && guiConfig.SuppressRecommendations != AlwaysUncheckAllButton.Checked)
+            if (guiConfig != null && guiConfig.SuppressRecommendations != AlwaysUncheckAllButton.Checked
+                && Main.Instance?.CurrentInstance is GameInstance inst)
             {
                 guiConfig.SuppressRecommendations = AlwaysUncheckAllButton.Checked;
-                guiConfig.Save();
+                guiConfig.Save(inst);
                 if (guiConfig.SuppressRecommendations)
                 {
                     UncheckAllButton_Click(null, null);

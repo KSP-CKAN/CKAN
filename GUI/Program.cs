@@ -37,7 +37,7 @@ namespace CKAN.GUI
                 //Passing in null will cause a NullReferenceException if it tries to show the dialog
                 //asking for elevation permission, but we want that to happen. Doing that keeps us
                 //from getting in to a infinite loop of trying to register.
-                URLHandlers.RegisterURLHandler(null, null);
+                URLHandlers.RegisterURLHandler(null, null, null);
             }
             else
             {

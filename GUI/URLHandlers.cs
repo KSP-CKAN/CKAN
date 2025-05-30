@@ -45,7 +45,7 @@ namespace CKAN.GUI
             }
         }
 
-        public static void RegisterURLHandler(GUIConfiguration? config, IUser? user)
+        public static void RegisterURLHandler(GUIConfiguration? config, GameInstance? instance, IUser? user)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace CKAN.GUI
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        if (config == null || config.URLHandlerNoNag)
+                        if (config == null || config.URLHandlerNoNag || instance == null)
                         {
                             return;
                         }
@@ -81,7 +81,7 @@ namespace CKAN.GUI
                             });
                         }
                         config.URLHandlerNoNag = true;
-                        config.Save();
+                        config.Save(instance);
                         // Don't re-throw the exception because we just dealt with it
                     }
                 }
