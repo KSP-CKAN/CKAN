@@ -13,7 +13,6 @@ using log4net;
 
 using CKAN.Configuration;
 using CKAN.IO;
-using CKAN.Games;
 using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 

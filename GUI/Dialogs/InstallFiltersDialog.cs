@@ -36,7 +36,7 @@ namespace CKAN.GUI
                     Anchor                  = AnchorStyles.Top | AnchorStyles.Right,
                     FlatStyle               = FlatStyle.Flat,
                     Location                = new Point(GlobalFiltersTextBox.Right + hPadding, top),
-                    Size                    = new Size(GlobalFiltersGroupBox.Width - GlobalFiltersTextBox.Right - 2 * hPadding, 23),
+                    Size                    = new Size(GlobalFiltersGroupBox.Width - GlobalFiltersTextBox.Right - (2 * hPadding), 23),
                     Text                    = string.Format(Properties.Resources.InstallFiltersAddPreset,
                                                             name),
                     Tag                     = name,
