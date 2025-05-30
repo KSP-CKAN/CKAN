@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 using Cake.Common;
@@ -33,6 +34,7 @@ public static class Program
             })
             .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.27"))
             .InstallTool(new Uri("nuget:?package=NUnit.ConsoleRunner&version=3.16.3"))
+            .InstallTool(new Uri("nuget:?package=altcover.api&version=9.0.1"))
             .UseContext<BuildContext>()
             .UseLifetime<BuildLifetime>()
             .Run(args);
@@ -326,23 +328,40 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
     {
         var where = context.Argument<string?>("where", null);
         var labels = context.Argument<string>("labels", "Off");
-        var nunitOutputDirectory = context.Paths.BuildDirectory.Combine("test")
-            .Combine("nunit");
+        var nunitOutputDirectory = context.Paths.BuildDirectory
+                                                .Combine("test")
+                                                .Combine("nunit");
         context.CreateDirectory(nunitOutputDirectory);
+        context.CreateDirectory(context.Paths.CoverageOutputDirectory);
+        var testDir = context.Paths.OutDirectory
+                                   .Combine("CKAN.Tests")
+                                   .Combine(context.BuildConfiguration)
+                                   .Combine("bin")
+                                   .Combine(context.BuildNetFramework);
+        var instrumentedDir = testDir.GetParent()
+                                     .Combine($"{context.BuildNetFramework}__Instrumented");
+        var dotNetFilter = where?.Replace("class=", "FullyQualifiedName=",
+                                          StringComparison.CurrentCultureIgnoreCase)
+                                 .Replace("category=", "TestCategory=",
+                                          StringComparison.CurrentCultureIgnoreCase)
+                                 .Replace("category!=", "TestCategory!=",
+                                          StringComparison.CurrentCultureIgnoreCase);
+        var testFile = instrumentedDir.CombineWithFilePath("CKAN.Tests.dll");
+
         // Only Mono's msbuild can handle WinForms on Linux,
         // but dotnet build can handle multi-targeting on Windows
         if (context.IsRunningOnWindows())
         {
-            context.DotNetTest(context.Solution, new DotNetTestSettings
-            {
-                Configuration    = context.BuildConfiguration,
-                NoRestore        = true,
-                NoBuild          = true,
-                NoLogo           = true,
-                Filter           = where?.Replace("class=", "FullyQualifiedName="),
-                ResultsDirectory = nunitOutputDirectory,
-                Verbosity        = DotNetVerbosity.Minimal,
-            });
+                context.DotNetTest(context.Solution, new DotNetTestSettings
+                {
+                    Configuration    = context.BuildConfiguration,
+                    NoRestore        = true,
+                    NoBuild          = true,
+                    NoLogo           = true,
+                    Filter           = dotNetFilter,
+                    ResultsDirectory = nunitOutputDirectory,
+                    Verbosity        = DotNetVerbosity.Minimal,
+                });
         }
         else
         {
@@ -353,21 +372,19 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 NoRestore        = true,
                 NoBuild          = true,
                 NoLogo           = true,
-                Filter           = where?.Replace("class=", "FullyQualifiedName=",
-                                                  StringComparison.CurrentCultureIgnoreCase)
-                                         .Replace("category=", "TestCategory=",
-                                                  StringComparison.CurrentCultureIgnoreCase)
-                                         .Replace("category!=", "TestCategory!=",
-                                                  StringComparison.CurrentCultureIgnoreCase),
+                Filter           = dotNetFilter,
                 ResultsDirectory = nunitOutputDirectory,
                 Verbosity        = DotNetVerbosity.Minimal,
             });
-            var testFile = context.Paths.OutDirectory
-                                        .Combine("CKAN.Tests")
-                                        .Combine(context.BuildConfiguration)
-                                        .Combine("bin")
-                                        .Combine(context.BuildNetFramework)
-                                        .CombineWithFilePath("CKAN.Tests.dll");
+
+            // Add coverage instrumentation to our test assemblies
+            context.RunAltCover("-q",
+                                @"-e ""Microsoft|NUnit3|testhost|CKAN\\.Tests|IndexRange|OxyPlot""",
+                                @"-t ""System|Microsoft""",
+                                $"-i {testDir}",
+                                $"-o {instrumentedDir}",
+                                "--save");
+            // Run the tests
             context.NUnit3(testFile.FullPath, new NUnit3Settings
             {
                 Configuration = context.BuildConfiguration,
@@ -378,6 +395,12 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
                 Process       = NUnit3ProcessOption.InProcess,
             });
+            // Transform the raw coverage data into coverage.xml and print a summary
+            context.RunAltCover("runner", "--collect",
+                                "--summary=O",
+                                $"-r {instrumentedDir}",
+                                $"-l {context.Paths.CoverageOutputDirectory.CombineWithFilePath("lcov.info")}",
+                                $"-c {context.Paths.CoverageOutputDirectory.CombineWithFilePath("cobertura.xml")}");
         }
     }
 }
