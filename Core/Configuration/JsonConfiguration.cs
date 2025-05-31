@@ -335,52 +335,20 @@ namespace CKAN.Configuration
                 // Ensure the directory exists
                 new FileInfo(configFile).Directory?.Create();
 
-                // Try to migrate from the real registry
-                if (
-                    #if NET6_0_OR_GREATER
-                    Platform.IsWindows &&
-                    #endif
-                    Win32RegistryConfiguration.DoesRegistryConfigurationExist())
-                {
-                    // Try to migrate from the Windows registry
-                    config = FromWindowsRegistry(new Win32RegistryConfiguration());
+                // Create a new configuration
+                config = new Config();
 
-                    // TODO: At some point, we can uncomment this to clean up after ourselves.
-                    // Win32RegistryConfiguration.DeleteAllKeys();
-                }
-                else
-                {
-                    // Create a new configuration
-                    config = new Config();
-                }
                 SaveConfig();
             }
-        }
-
-        /// <summary>
-        /// Extract the configuration from the Windows registry
-        /// </summary>
-        #if NET5_0_OR_GREATER
-        [SupportedOSPlatform("windows")]
-        #endif
-        private static Config FromWindowsRegistry(Win32RegistryConfiguration regCfg)
-            => new Config()
+            if (
+                #if NET6_0_OR_GREATER
+                Platform.IsWindows &&
+                #endif
+                Win32RegistryConfiguration.DoesRegistryConfigurationExist())
             {
-                GameInstances     = regCfg.GetInstances()
-                                          .Select(inst => new GameInstanceEntry(inst.Item1,
-                                                                                inst.Item2,
-                                                                                inst.Item3))
-                                          .ToList(),
-                AutoStartInstance = regCfg.AutoStartInstance,
-                DownloadCacheDir  = regCfg.DownloadCacheDir,
-                CacheSizeLimit    = regCfg.CacheSizeLimit,
-                RefreshRate       = regCfg.RefreshRate,
-                AuthTokens        = regCfg.GetAuthTokenHosts()
-                                          .Select(host => regCfg.TryGetAuthToken(host, out string? token)
-                                                              ? new KeyValuePair<string, string>(host, token)
-                                                              : (KeyValuePair<string, string>?)null)
-                                          .OfType<KeyValuePair<string, string>>()
-                                          .ToDictionary(),
-            };
+                // Clean up very old Windows registry keys
+                Win32RegistryConfiguration.DeleteAllKeys();
+            }
+        }
     }
 }
