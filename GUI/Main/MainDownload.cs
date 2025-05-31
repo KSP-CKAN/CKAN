@@ -57,7 +57,8 @@ namespace CKAN.GUI
                 downloader.OverallDownloadProgress += currentUser.RaiseProgress;
                 for (bool done = false; !done; )
                 {
-                    try {
+                    try
+                    {
                         downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
                         done = true;
                     }

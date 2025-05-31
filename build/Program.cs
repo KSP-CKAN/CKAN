@@ -326,7 +326,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        var where = context.Argument<string?>("where", null);
+        var where  = context.Argument<string?>("where", null);
         var labels = context.Argument<string>("labels", "Off");
         var nunitOutputDirectory = context.Paths.BuildDirectory
                                                 .Combine("test")
@@ -352,16 +352,16 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
         // but dotnet build can handle multi-targeting on Windows
         if (context.IsRunningOnWindows())
         {
-                context.DotNetTest(context.Solution, new DotNetTestSettings
-                {
-                    Configuration    = context.BuildConfiguration,
-                    NoRestore        = true,
-                    NoBuild          = true,
-                    NoLogo           = true,
-                    Filter           = dotNetFilter,
-                    ResultsDirectory = nunitOutputDirectory,
-                    Verbosity        = DotNetVerbosity.Minimal,
-                });
+            context.DotNetTest(context.Solution, new DotNetTestSettings
+            {
+                Configuration    = context.BuildConfiguration,
+                NoRestore        = true,
+                NoBuild          = true,
+                NoLogo           = true,
+                Filter           = dotNetFilter,
+                ResultsDirectory = nunitOutputDirectory,
+                Verbosity        = DotNetVerbosity.Minimal,
+            });
         }
         else
         {
