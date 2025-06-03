@@ -148,12 +148,11 @@ namespace CKAN.GUI
     public class ModUpgrade : ModChange
     {
         public ModUpgrade(CkanModule       mod,
-                          GUIModChangeType changeType,
                           CkanModule       targetMod,
                           bool             userReinstall,
                           bool             metadataChanged,
                           IConfiguration   config)
-            : base(mod, changeType, config)
+            : base(mod, GUIModChangeType.Update, config)
         {
             this.targetMod       = targetMod;
             this.userReinstall   = userReinstall;

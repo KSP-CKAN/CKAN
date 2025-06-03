@@ -328,7 +328,6 @@ namespace CKAN.GUI
                     && SelectedMod == LatestAvailableMod)
                 {
                     yield return new ModUpgrade(Mod,
-                                                GUIModChangeType.Update,
                                                 SelectedMod,
                                                 false, false,
                                                 ServiceLocator.Container.Resolve<IConfiguration>());
@@ -351,7 +350,6 @@ namespace CKAN.GUI
             {
                 // Reinstall
                 yield return new ModUpgrade(Mod,
-                                            GUIModChangeType.Update,
                                             SelectedMod,
                                             false, metadataChanged,
                                             ServiceLocator.Container.Resolve<IConfiguration>());

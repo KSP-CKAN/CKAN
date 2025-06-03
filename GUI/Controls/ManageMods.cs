@@ -43,6 +43,12 @@ namespace CKAN.GUI
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
             ApplyToolButton.Enabled = false;
+            ModGrid.SelectionChanged += new EventHandler(
+                                            Util.Debounce<EventArgs>((sender, e) => {},
+                                                                     (sender, e) => false,
+                                                                     (sender, e) => false,
+                                                                     ModGrid_SelectionChanged,
+                                                                     100));
 
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
@@ -333,21 +339,38 @@ namespace CKAN.GUI
 
         private void LabelsContextMenuStrip_Opening(object? sender, CancelEventArgs? e)
         {
-            if (e != null && currentInstance != null && SelectedModule is GUIMod module)
+            if (e != null && currentInstance != null
+                && SelectedModules.ToArray() is { Length: > 0 } and var modules)
             {
                 LabelsContextMenuStrip.Items.Clear();
-                foreach (ModuleLabel mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
+                foreach (var mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
                 {
-                    LabelsContextMenuStrip.Items.Add(
-                        new ToolStripMenuItem(mlbl.Name, null, labelMenuItem_Click)
-                        {
-                            BackColor    = mlbl.Color ?? Color.Transparent,
-                            ForeColor    = mlbl.Color?.ForeColorForBackColor()
-                                                     ?? SystemColors.ControlText,
-                            Checked      = mlbl.ContainsModule(currentInstance.game, module.Identifier),
-                            CheckOnClick = true,
-                            Tag          = mlbl,
-                        });
+                    var idents = mlbl.IdentifiersFor(currentInstance.game)
+                                     .ToHashSet();
+                    var groups = modules.GroupBy(m => idents.Contains(m.Identifier))
+                                        .OrderBy(grp => grp.Key)
+                                        .ToArray();
+                    foreach (var grp in groups)
+                    {
+                        LabelsContextMenuStrip.Items.Add(
+                            new ToolStripMenuItem(groups.Length == 1
+                                                      ? mlbl.Name
+                                                      : string.Format(
+                                                            grp.Key
+                                                                ? Properties.Resources.ManageModsLabelRemoveMultiple
+                                                                : Properties.Resources.ManageModsLabelAddMultiple,
+                                                            mlbl.Name, grp.Count()),
+                                                  null, labelMenuItem_Click)
+                            {
+                                BackColor    = mlbl.Color ?? Color.Transparent,
+                                ForeColor    = mlbl.Color?.ForeColorForBackColor()
+                                                         ?? SystemColors.ControlText,
+                                Checked      = grp.Key,
+                                CheckOnClick = true,
+                                Tag          = (label:   mlbl,
+                                                modules: grp.ToArray()),
+                            });
+                    }
                 }
                 LabelsContextMenuStrip.Items.Add(labelToolStripSeparator);
                 LabelsContextMenuStrip.Items.Add(editLabelsToolStripMenuItem);
@@ -358,9 +381,9 @@ namespace CKAN.GUI
         private void labelMenuItem_Click(object? sender, EventArgs? e)
         {
             if (currentInstance != null && SelectedModule != null
-                && sender is ToolStripMenuItem { Tag: ModuleLabel mlbl })
+                && sender is ToolStripMenuItem { Tag: (ModuleLabel mlbl, GUIMod[] modules) })
             {
-                ToggleModuleLabel(mlbl, currentInstance, SelectedModule);
+                ToggleModuleLabel(mlbl, currentInstance, modules);
             }
         }
 
@@ -829,22 +852,34 @@ namespace CKAN.GUI
                     break;
 
                 case Keys.Space:
-                    // If they've focused one of the checkbox columns, don't intercept
-                    if (ModGrid.CurrentCell != null && ModGrid.CurrentCell.ColumnIndex > 3)
+                    // If they've selected one row and focused one of the checkbox columns,
+                    // don't intercept
+                    if (ModGrid.SelectedRows   is { Count: > 1 }
+                        || ModGrid.CurrentCell is { ColumnIndex: > 3 })
                     {
-                        DataGridViewRow row = ModGrid.CurrentRow;
                         // Toggle Update column if enabled, otherwise Install
-                        for (int colIndex = 2; colIndex >= 0; --colIndex)
+                        var cols = Enumerable.Range(Installed.Index,
+                                                    UpdateCol.Index - Installed.Index + 1)
+                                             // Don't toggle auto-installed on space
+                                             .Except(Enumerable.Repeat(AutoInstalled.Index, 1))
+                                             .Reverse()
+                                             .ToArray();
+                        WithFrozenChangeset(() =>
                         {
-                            if (row?.Cells[colIndex] is DataGridViewCheckBoxCell)
+                            foreach (var row in ModGrid.SelectedRows.OfType<DataGridViewRow>())
                             {
-                                // Need to change the state here, because the user hasn't clicked on a checkbox
-                                row.Cells[colIndex].Value = !(bool)row.Cells[colIndex].Value;
-                                ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
-                                e.Handled = true;
-                                break;
+                                if (cols.Select(col => row.Cells[col])
+                                        .OfType<DataGridViewCheckBoxCell>()
+                                        .FirstOrDefault()
+                                    is DataGridViewCheckBoxCell cell)
+                                {
+                                    // Need to change the state here, because the user hasn't clicked on a checkbox
+                                    cell.Value = !(bool)cell.Value;
+                                }
                             }
-                        }
+                        });
+                        ModGrid.CommitEdit(DataGridViewDataErrorContexts.Commit);
+                        e.Handled = true;
                     }
                     break;
 
@@ -1293,14 +1328,18 @@ namespace CKAN.GUI
 
         private void ModGrid_MouseDown(object? sender, MouseEventArgs e)
         {
-            var rowIndex = ModGrid.HitTest(e.X, e.Y).RowIndex;
-
             // Ignore header column to prevent errors
-            if (rowIndex != -1 && e.Button == MouseButtons.Right)
+            if (ModGrid.HitTest(e.X, e.Y) is { Type:     DataGridViewHitTestType.Cell,
+                                               RowIndex: > -1 and int rowIndex }
+                && ModGrid.Rows[rowIndex] is DataGridViewRow row
+                && e is { Button: MouseButtons.Right})
             {
-                // Detect the clicked cell and select the row
-                ModGrid.ClearSelection();
-                ModGrid.Rows[rowIndex].Selected = true;
+                if (!row.Selected
+                    && !ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift))
+                {
+                    ModGrid.ClearSelection();
+                    row.Selected = true;
+                }
 
                 // Show the context menu
                 ShowModContextMenu();
@@ -1309,15 +1348,15 @@ namespace CKAN.GUI
 
         private bool ShowModContextMenu()
         {
-            var guiMod = SelectedModule;
-            if (guiMod != null)
+            if (SelectedModules.ToArray() is { Length: > 0 } and var modules)
             {
-                ModListContextMenuStrip.Show(Cursor.Position);
-                var isDownloadable = !guiMod.ToModule()?.IsMetapackage ?? false;
+                var downloadable = modules.Where(m => !m.ToModule().IsMetapackage)
+                                          .ToArray();
                 // Set the menu options
-                downloadContentsToolStripMenuItem.Enabled = isDownloadable && !guiMod.IsCached;
-                purgeContentsToolStripMenuItem.Enabled    = isDownloadable && guiMod.IsCached;
-                reinstallToolStripMenuItem.Enabled = guiMod.IsInstalled && !guiMod.IsAutodetected;
+                downloadContentsToolStripMenuItem.Enabled = downloadable.Any(m => !m.IsCached);
+                purgeContentsToolStripMenuItem.Enabled    = downloadable.Any(m =>  m.IsCached);
+                reinstallToolStripMenuItem.Enabled        = modules.Any(m => m.IsInstalled && !m.IsAutodetected);
+                ModListContextMenuStrip.Show(Cursor.Position);
                 return true;
             }
             return false;
@@ -1330,21 +1369,26 @@ namespace CKAN.GUI
 
         private void reinstallToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            var module = SelectedModule?.ToModule();
-            if (module != null && currentInstance != null)
+            if (SelectedModules.Where(m => m.IsInstalled && !m.IsAutodetected)
+                               .Select(m => m.ToModule())
+                               .ToArray()
+                is { Length: > 0 } and var modules
+                && currentInstance != null)
             {
-                IRegistryQuerier registry = RegistryManager.Instance(currentInstance, repoData).registry;
-                StartChangeSet?.Invoke(new List<ModChange>()
-                {
-                    // "Upgrade" to latest metadata for same module version
-                    // (avoids removing and re-installing dependencies)
-                    new ModUpgrade(module, GUIModChangeType.Update,
-                                   registry.GetModuleByVersion(module.identifier,
-                                                               module.version)
-                                           ?? module,
-                                   true, false,
-                                   ServiceLocator.Container.Resolve<IConfiguration>())
-                }, null);
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                var config = ServiceLocator.Container.Resolve<IConfiguration>();
+                StartChangeSet?.Invoke(
+                    modules.Select(module =>
+                                       // "Upgrade" to latest metadata for same module version
+                                       // (avoids removing and re-installing dependencies)
+                                       new ModUpgrade(module,
+                                                      registry.GetModuleByVersion(module.identifier,
+                                                                                  module.version)
+                                                              ?? module,
+                                                      true, false, config)
+                                       as ModChange)
+                           .ToList(),
+                    null);
             }
         }
 
@@ -1357,22 +1401,31 @@ namespace CKAN.GUI
         {
             // Purge other versions as well since the user is likely to want that
             // and has no other way to achieve it
-            var selected = SelectedModule;
-            if (selected != null
-                && currentInstance != null
-                && manager?.Cache != null)
+            if (currentInstance != null && manager?.Cache != null
+                && SelectedModules.Where(m => !m.ToModule().IsMetapackage
+                                              && m.IsCached)
+                                  .ToArray()
+                   is { Length: > 0 } and var modules)
             {
+                UseWaitCursor = true;
                 manager.Cache.Purge(
-                    RegistryManager.Instance(currentInstance, repoData)
-                                   .registry
-                                   .AvailableByIdentifier(selected.Identifier)
-                                   .ToArray());
+                    modules.SelectMany(m => RegistryManager.Instance(currentInstance, repoData)
+                                                           .registry
+                                                           .AvailableByIdentifier(m.Identifier))
+                           .ToArray());
+                UseWaitCursor = false;
             }
         }
 
         private void downloadContentsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            Main.Instance?.StartDownload(SelectedModule);
+            if (SelectedModules.Where(m => !m.ToModule().IsMetapackage
+                                           && !m.IsCached)
+                               .ToArray()
+                is { Length: > 0 } and var modules)
+            {
+                Main.Instance?.StartDownloads(modules);
+            }
         }
 
         private void EditModSearches_ApplySearches(List<ModSearch> searches)
@@ -1830,12 +1883,12 @@ namespace CKAN.GUI
             FocusMod(module.identifier, true);
         }
 
-        public GUIMod? SelectedModule =>
-            //ModGrid.SelectedRows is [{Tag: GUIMod gmod}, ..]
-            ModGrid.SelectedRows.Count > 0
-            && ModGrid.SelectedRows[0] is {Tag: GUIMod gmod}
-                ? gmod
-                : null;
+        public GUIMod? SelectedModule => SelectedModules.FirstOrDefault();
+
+        public IEnumerable<GUIMod> SelectedModules => ModGrid.SelectedRows
+                                                             .OfType<DataGridViewRow>()
+                                                             .Select(r => r.Tag)
+                                                             .OfType<GUIMod>();
 
         public void CloseSearch(Point screenCoords)
         {
@@ -1917,27 +1970,40 @@ namespace CKAN.GUI
             }
         }
 
-        private void ToggleModuleLabel(ModuleLabel label, GameInstance instance, GUIMod module)
+        private void ToggleModuleLabel(ModuleLabel label, GameInstance instance,
+                                       IEnumerable<GUIMod> modules)
         {
-            if (label.ContainsModule(instance.game, module.Identifier))
-            {
-                label.Remove(instance.game, module.Identifier);
-            }
-            else
-            {
-                label.Add(instance.game, module.Identifier);
-            }
             var registry = RegistryManager.Instance(instance, repoData).registry;
-            mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
-                                      instance.Name, instance.game, registry);
+            foreach (var module in modules)
+            {
+                if (label.ContainsModule(instance.game, module.Identifier))
+                {
+                    label.Remove(instance.game, module.Identifier);
+                }
+                else
+                {
+                    label.Add(instance.game, module.Identifier);
+                }
+                mainModList.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
+                                          instance.Name, instance.game, registry);
+                if (module == SelectedModule)
+                {
+                    OnSelectedModuleChanged?.Invoke(module);
+                }
+            }
             ModuleLabelList.ModuleLabels.Save(ModuleLabelList.DefaultPath);
             UpdateHiddenTagsAndLabels();
-            OnSelectedModuleChanged?.Invoke(module);
             if (label.HoldVersion || label.IgnoreMissingFiles)
             {
                 UpdateCol.Visible = UpdateAllToolButton.Enabled =
                     mainModList.ResetHasUpdate(instance, registry, ChangeSet, ModGrid.Rows);
             }
+        }
+
+        private void ToggleModuleLabel(ModuleLabel label, GameInstance instance,
+                                       GUIMod module)
+        {
+            ToggleModuleLabel(label, instance, Enumerable.Repeat(module, 1));
         }
 
         #endregion
