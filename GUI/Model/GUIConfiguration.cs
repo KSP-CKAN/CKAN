@@ -1,14 +1,21 @@
 using System;
-using System.Xml;
+using System.IO;
+using System.Drawing;
 using System.Collections.Generic;
 using System.Linq;
-using System.Drawing;
-using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
+using System.ComponentModel;
+
+using Newtonsoft.Json;
+
+using CKAN.IO;
 
 namespace CKAN.GUI
 {
     [XmlRoot("Configuration")]
+    [JsonObject(MemberSerialization   = MemberSerialization.OptOut,
+                ItemNullValueHandling = NullValueHandling.Ignore)]
     public class GUIConfiguration
     {
         public string? CommandLineArguments = null;
@@ -16,26 +23,57 @@ namespace CKAN.GUI
         [XmlArray, XmlArrayItem(ElementName = "CommandLine")]
         public List<string> CommandLines = new List<string>();
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool URLHandlerNoNag = false;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool CheckForUpdatesOnLaunch = false;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool CheckForUpdatesOnLaunchNoNag = false;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool EnableTrayIcon = false;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool MinimizeToTray = false;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(true)]
         public bool HideEpochs = true;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool HideV = false;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         // Defaults to true, so everyone is forced to refresh on first start
+        [DefaultValue(true)]
         public bool RefreshOnStartup = true;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool RefreshOnStartupNoNag = false;
+
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool RefreshPaused = false;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(true)]
         public bool AutoSortByUpdate = true;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool SuppressRecommendations = false;
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(0)]
         public int ActiveFilter = 0;
 
         /// <summary>
@@ -46,6 +84,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Name of the label filter the user chose, if any
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public string? CustomLabelFilter = null;
 
         [XmlArray, XmlArrayItem(ElementName = "Search")]
@@ -74,12 +113,12 @@ namespace CKAN.GUI
             }
         }
 
-        private string path = "";
-
         /// <summary>
         /// Stores whether main window was maximised or not
         /// <para> Value is the default - window not maximised</para>
         /// </summary>
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [DefaultValue(false)]
         public bool IsWindowMaximised = false;
 
         private Point windowLocation = new Point(-1, -1);
@@ -102,158 +141,129 @@ namespace CKAN.GUI
         /// Stores distance from left of the split between the Main Mod List and the metadata panels
         /// <para> value is the default position used where there is no GUIConfig.xml file</para>
         /// </summary>
+        [DefaultValue(650)]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public int PanelPosition = 650;
 
-        public void Save()
+        public void Save(GameInstance instance)
         {
-            if (!string.IsNullOrEmpty(path))
-            {
-                SaveConfiguration(this);
-            }
+            File.WriteAllText(ConfigPath(instance),
+                              JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
         }
 
-        public static GUIConfiguration LoadOrCreateConfiguration(string       path,
+        public static DateTime LastWriteTime(GameInstance instance)
+            => File.GetLastWriteTime(ConfigPath(instance));
+
+        public static GUIConfiguration LoadOrCreateConfiguration(GameInstance instance,
+                                                                 SteamLibrary steamLib)
+            => LoadOrCreateConfiguration(instance,
+                                         instance.game
+                                                 .DefaultCommandLines(steamLib, new DirectoryInfo(instance.GameDir()))
+                                                 .ToList());
+
+        public static GUIConfiguration LoadOrCreateConfiguration(GameInstance instance,
                                                                  List<string> defaultCommandLines)
-        {
-            if (!File.Exists(path) || new FileInfo(path).Length == 0)
-            {
-                var configuration = new GUIConfiguration
-                {
-                    path         = path,
-                    CommandLines = defaultCommandLines,
-                };
+            => LoadJSON(ConfigPath(instance))
+               ?? LoadXML(instance, defaultCommandLines)
+               ?? new GUIConfiguration { CommandLines = defaultCommandLines };
 
-                SaveConfiguration(configuration);
-            }
+        private const string filename       = "GUIConfig.json";
+        private const string legacyFilename = "GUIConfig.xml";
 
-            return LoadConfiguration(path, defaultCommandLines);
-        }
+        private static string ConfigPath(GameInstance inst)
+            => Path.Combine(inst.CkanDir(), filename);
 
-        private static GUIConfiguration LoadConfiguration(string       path,
-                                                          List<string> defaultCommandLines)
+        private static string LegacyConfigPath(GameInstance inst)
+            => Path.Combine(inst.CkanDir(), legacyFilename);
+
+        private static GUIConfiguration? LoadJSON(string path)
+            => Utilities.DefaultIfThrows(() =>
+                   JsonConvert.DeserializeObject<GUIConfiguration>(
+                       File.ReadAllText(path)));
+
+        private static GUIConfiguration? LoadXML(GameInstance instance,
+                                                 List<string> defaultCommandLines)
         {
             var serializer = new XmlSerializer(typeof(GUIConfiguration));
-
-            GUIConfiguration configuration;
-            using (var stream = new StreamReader(path))
+            var xmlFI = new FileInfo(LegacyConfigPath(instance));
+            GUIConfiguration? configuration;
+            using (var stream = new StreamReader(xmlFI.OpenRead()))
             {
                 try
                 {
-                    configuration = serializer.Deserialize<GUIConfiguration>(stream);
+                    configuration = serializer.Deserialize(stream) as GUIConfiguration;
                 }
-                catch (Exception e)
+                catch (Exception e) when (e is InvalidOperationException or XmlException)
                 {
-                    string additionalErrorData = "";
-
-                    if (e is InvalidOperationException) // Exception thrown in Windows / .NET
-                    {
-                        if (e.InnerException != null)
-                        {
-                            additionalErrorData = ": " + e.InnerException.Message;
-                        }
-                    }
-                    else if (e is XmlException) // Exception thrown in Mono
-                    {
-                        additionalErrorData = ": " + e.Message;
-                    }
-                    else
-                    {
-                        throw;
-                    }
-
-                    var fi = new FileInfo(path);
-                    string message = string.Format(
-                        Properties.Resources.ConfigurationParseError,
-                        fi.FullName, additionalErrorData, fi.Name, fi.DirectoryName);
-                    throw new Kraken(message);
+                    throw new Kraken(
+                        string.Format(Properties.Resources.ConfigurationParseError,
+                                      xmlFI.FullName,
+                                      e switch
+                                      {
+                                          // Exception thrown in Windows / .NET
+                                          InvalidOperationException { InnerException: Exception inner }
+                                                          => inner.Message,
+                                          // Exception thrown in Mono
+                                          XmlException xe => xe.Message,
+                                          _               => "",
+                                      },
+                                      xmlFI.Name, xmlFI.DirectoryName),
+                        e);
                 }
             }
-
-            configuration.path = path;
-            if (DeserializationFixes(configuration, defaultCommandLines))
+            if (configuration != null)
             {
-                SaveConfiguration(configuration);
+                // KSPCompatibility column got renamed to GameCompatibility
+                configuration.FixColumnName("KSPCompatibility", "GameCompatibility");
+
+                // SizeCol column got renamed to DownloadSize
+                configuration.FixColumnName("SizeCol", "DownloadSize");
+
+                if (!string.IsNullOrEmpty(configuration.CommandLineArguments))
+                {
+                    configuration.CommandLines.AddRange(
+                        Enumerable.Repeat(configuration.CommandLineArguments, 1)
+                                  .Concat(defaultCommandLines)
+                                  .OfType<string>()
+                                  .Distinct());
+                    configuration.CommandLineArguments = null;
+                }
+                else if (configuration.CommandLines.Count < 1)
+                {
+                    // Don't leave the list empty if user switches CKAN versions
+                    configuration.CommandLines.AddRange(defaultCommandLines);
+                }
+                // Convert to JSON
+                configuration.Save(instance);
+                // Delete XML
+                xmlFI.Delete();
             }
             return configuration;
         }
 
-        /// <summary>
-        /// Apply fixes and migrations after deserialization.
-        /// </summary>
-        /// <param name="configuration">The current configuration to apply the fixes on</param>
-        /// <returns>A bool indicating whether something changed and the configuration should be saved to disk</returns>
-        private static bool DeserializationFixes(GUIConfiguration configuration,
-                                                 List<string>     defaultCommandLines)
+        private void FixColumnName(string oldName, string newName)
         {
-            bool needsSave = false;
-
-            // KSPCompatibility column got renamed to GameCompatibility
-            needsSave = FixColumnName(configuration.SortColumns,       "KSPCompatibility", "GameCompatibility") || needsSave;
-            needsSave = FixColumnName(configuration.HiddenColumnNames, "KSPCompatibility", "GameCompatibility") || needsSave;
-
-            // SizeCol column got renamed to DownloadSize
-            needsSave = FixColumnName(configuration.SortColumns,       "SizeCol", "DownloadSize") || needsSave;
-            needsSave = FixColumnName(configuration.HiddenColumnNames, "SizeCol", "DownloadSize") || needsSave;
-
-            if (!string.IsNullOrEmpty(configuration.CommandLineArguments))
-            {
-                configuration.CommandLines.AddRange(
-                    Enumerable.Repeat(configuration.CommandLineArguments, 1)
-                              .Concat(defaultCommandLines)
-                              .OfType<string>()
-                              .Distinct());
-                configuration.CommandLineArguments = null;
-                needsSave = true;
-            }
-            else if (configuration.CommandLines.Count < 1)
-            {
-                // Don't leave the list empty if user switches CKAN versions
-                configuration.CommandLines.AddRange(defaultCommandLines);
-                needsSave = true;
-            }
-
-            return needsSave;
+            FixColumnName(SortColumns,       oldName, newName);
+            FixColumnName(HiddenColumnNames, oldName, newName);
         }
 
-        private static bool FixColumnName(List<string> columnNames, string oldName, string newName)
+        private static void FixColumnName(List<string> columnNames, string oldName, string newName)
         {
             int columnIndex = columnNames.IndexOf(oldName);
             if (columnIndex > -1)
             {
                 columnNames[columnIndex] = newName;
-                return true;
-            }
-            return false;
-        }
-
-        private static void SaveConfiguration(GUIConfiguration configuration)
-        {
-            var serializer = new XmlSerializer(typeof(GUIConfiguration));
-            using (var writer = new StreamWriter(configuration.path))
-            {
-                serializer.Serialize(writer, configuration);
-                writer.Close();
             }
         }
     }
 
     [XmlRoot("SavedSearch")]
+    [JsonObject(MemberSerialization   = MemberSerialization.OptOut,
+                ItemNullValueHandling = NullValueHandling.Ignore)]
     public class SavedSearch
     {
         public string       Name   = "";
         [XmlArray, XmlArrayItem(ElementName = "Search")]
         public List<string> Values = new List<string>();
     }
-
-    /// <summary>
-    /// We only use XML format for the GUI config
-    /// </summary>
-    public static class XmlSerializerExtensions
-    {
-        public static T Deserialize<T>(this XmlSerializer serializer,
-                                       StreamReader s)
-            where T: class
-            => (serializer.Deserialize(s) as T)!;
-    }
-
 }

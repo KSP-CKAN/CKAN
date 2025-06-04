@@ -18,34 +18,34 @@ namespace CKAN.GUI
             StartDownload(gmod);
         }
 
-        public void StartDownload(GUIMod? module)
+        public void StartDownloads(IEnumerable<GUIMod> modules)
         {
-            if (module == null || !module.IsCKAN)
-            {
-                return;
-            }
-
             ShowWaitDialog();
             if (downloader != null)
             {
                 Task.Factory.StartNew(() =>
                 {
                     // Just pass to the existing worker
-                    downloader.DownloadModules(new List<CkanModule> { module.ToCkanModule() });
+                    downloader.DownloadModules(modules.Select(m => m.ToModule()));
                 });
             }
             else
             {
                 // Start up a new worker
-                Wait.StartWaiting(CacheMod, PostModCaching, true, module);
+                Wait.StartWaiting(CacheMods, PostModCaching, true, modules.ToArray());
             }
         }
 
+        public void StartDownload(GUIMod module)
+        {
+            StartDownloads(Enumerable.Repeat(module, 1));
+        }
+
         [ForbidGUICalls]
-        private void CacheMod(object? sender, DoWorkEventArgs? e)
+        private void CacheMods(object? sender, DoWorkEventArgs? e)
         {
             if (e != null
-                && e.Argument is GUIMod gm
+                && e.Argument is ICollection<GUIMod> modules
                 && Manager?.Cache != null)
             {
                 var cancelTokenSrc = new CancellationTokenSource();
@@ -57,8 +57,9 @@ namespace CKAN.GUI
                 downloader.OverallDownloadProgress += currentUser.RaiseProgress;
                 for (bool done = false; !done; )
                 {
-                    try {
-                        downloader.DownloadModules(new List<CkanModule> { gm.ToCkanModule() });
+                    try
+                    {
+                        downloader.DownloadModules(modules.Select(m => m.ToModule()));
                         done = true;
                     }
                     catch (ModuleDownloadErrorsKraken k)
@@ -71,7 +72,7 @@ namespace CKAN.GUI
                                 Properties.Resources.ModDownloadsFailedColHdr,
                                 Properties.Resources.ModDownloadsFailedAbortBtn,
                                 k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                    new CkanModule[] { gm.ToCkanModule() }, kvp.Value)),
+                                    modules.Select(m => m.ToModule()).ToArray(), kvp.Value)),
                                 (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
                              dfd.ShowDialog(this);
                         });

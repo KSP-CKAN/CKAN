@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Add download count to Metadata Tab (#4363, #4368 by: averageksp; reviewed: HebaruSan)
 - [GUI] Calculate size of cached files per host (#4377 by: HebaruSan)
 - [GUI] Show recommendations of chosen recommendations in GUI, readable foreground colors for labels (#4381, #4382 by: HebaruSan)
+- [Multiple] Mod list multi-select (#4386 by: HebaruSan)
 
 ### Bugfixes
 

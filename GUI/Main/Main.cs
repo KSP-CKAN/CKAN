@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 #if NET5_0_OR_GREATER
@@ -192,7 +191,7 @@ namespace CKAN.GUI
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
 
-            URLHandlers.RegisterURLHandler(configuration, currentUser);
+            URLHandlers.RegisterURLHandler(configuration, CurrentInstance, currentUser);
 
             Util.Invoke(this, () => Text = $"CKAN {Meta.GetVersion()}");
 
@@ -202,22 +201,13 @@ namespace CKAN.GUI
             base.OnLoad(e);
         }
 
-        private const string GUIConfigFilename = "GUIConfig.xml";
-
-        private static string GUIConfigPath(GameInstance inst)
-            => Path.Combine(inst.CkanDir(), GUIConfigFilename);
-
         private static GUIConfiguration GUIConfigForInstance(SteamLibrary steamLib, GameInstance? inst)
             => inst == null ? new GUIConfiguration()
-                            : GUIConfiguration.LoadOrCreateConfiguration(
-                                GUIConfigPath(inst),
-                                inst.game.DefaultCommandLines(steamLib,
-                                                              new DirectoryInfo(inst.GameDir()))
-                                         .ToList());
+                            : GUIConfiguration.LoadOrCreateConfiguration(inst, steamLib);
 
         private static GameInstance? InstanceWithNewestGUIConfig(IEnumerable<GameInstance> instances)
             => instances.Where(inst => inst.Valid)
-                        .OrderByDescending(inst => File.GetLastWriteTime(GUIConfigPath(inst)))
+                        .OrderByDescending(GUIConfiguration.LastWriteTime)
                         .ThenBy(inst => inst.Name)
                         .FirstOrDefault();
 
@@ -390,16 +380,21 @@ namespace CKAN.GUI
 
         private void Manager_InstanceChanged(GameInstance? previous, GameInstance? current)
         {
-            if (needRegistrySave && previous != null)
+            if (previous != null)
             {
-                using (var transaction = CkanTransaction.CreateTransactionScope())
+                if (needRegistrySave)
                 {
-                    // Save registry
-                    RegistryManager.Instance(previous, repoData).Save(false);
-                    transaction.Complete();
-                    needRegistrySave = false;
+                    using (var transaction = CkanTransaction.CreateTransactionScope())
+                    {
+                        // Save registry
+                        RegistryManager.Instance(previous, repoData).Save(false);
+                        transaction.Complete();
+                        needRegistrySave = false;
+                    }
                 }
+                configuration?.Save(previous);
             }
+            configuration = GUIConfigForInstance(Manager.SteamLibrary, current);
         }
 
         /// <summary>
@@ -408,7 +403,7 @@ namespace CKAN.GUI
         /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
         private void CurrentInstanceUpdated()
         {
-            if (CurrentInstance == null)
+            if (CurrentInstance == null || configuration == null)
             {
                 return;
             }
@@ -441,10 +436,6 @@ namespace CKAN.GUI
                 regMgr.previousCorruptedMessage = null;
                 regMgr.previousCorruptedPath = null;
             }
-
-            configuration?.Save();
-
-            configuration = GUIConfigForInstance(Manager.SteamLibrary, CurrentInstance);
 
             var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
             if (!Directory.Exists(pluginsPath))
@@ -569,7 +560,10 @@ namespace CKAN.GUI
                 configuration.PanelPosition = splitContainer1.SplitterDistance;
 
                 // Save settings
-                configuration.Save();
+                if (CurrentInstance != null)
+                {
+                    configuration.Save(CurrentInstance);
+                }
             }
 
             if (needRegistrySave && CurrentInstance != null)

@@ -350,7 +350,7 @@ namespace CKAN.GUI
             this.Description});
             this.ModGrid.Location = new System.Drawing.Point(0, 111);
             this.ModGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.ModGrid.MultiSelect = false;
+            this.ModGrid.MultiSelect = true;
             this.ModGrid.Name = "ModGrid";
             this.ModGrid.RowHeadersVisible = false;
             this.ModGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -360,7 +360,6 @@ namespace CKAN.GUI
             this.ModGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModGrid_CellContentClick);
             this.ModGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModGrid_CellMouseDoubleClick);
             this.ModGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModGrid_HeaderMouseClick);
-            this.ModGrid.SelectionChanged += new System.EventHandler(this.ModGrid_SelectionChanged);
             this.ModGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModGrid_KeyDown);
             this.ModGrid.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModGrid_KeyPress);
             this.ModGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModGrid_MouseDown);

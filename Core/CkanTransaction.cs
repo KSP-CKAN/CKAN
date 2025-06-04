@@ -1,6 +1,8 @@
 using System;
 using System.Transactions;
+#if !NET7_0_OR_GREATER
 using System.Reflection;
+#endif
 
 using log4net;
 
@@ -87,7 +89,7 @@ namespace CKAN
                     SetField(t, "s_cachedMaxTimeout", true);
                     SetField(t, "s_maximumTimeout",   timeout);
                 }
-            
+
 #endif
             }
         }
