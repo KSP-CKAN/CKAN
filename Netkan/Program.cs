@@ -7,7 +7,6 @@ using System.Text;
 
 using CommandLine;
 using log4net;
-using log4net.Core;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using YamlDotNet.RepresentationModel;
@@ -85,13 +84,8 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
-                if (Options.File != null)
+                if (Options.Files != null)
                 {
-                    Log.InfoFormat("Transforming {0}", Options.File);
-
-                    var netkans = ReadNetkans(Options);
-                    Log.Info("Finished reading input");
-
                     var inf = new Inflator(Options.CacheDir,
                                            Options.OverwriteCache,
                                            Options.GitHubToken,
@@ -99,20 +93,28 @@ namespace CKAN.NetKAN
                                            Options.NetUserAgent,
                                            Options.PreRelease,
                                            game);
-                    var ckans = inf.Inflate(
-                            Options.File,
-                            netkans,
-                            new TransformOptions(
-                                ParseReleases(Options.Releases),
-                                ParseSkipReleases(Options.SkipReleases),
-                                ParseHighestVersion(Options.HighestVersion),
-                                ParseHighestVersion(Options.HighestVersionPrerelease),
-                                netkans.First().Staged,
-                                netkans.First().StagingReason))
-                        .ToArray();
-                    foreach (Metadata ckan in ckans)
+                    var useragent = Options.NetUserAgent ?? Net.UserAgentString;
+                    foreach (var file in Options.Files)
                     {
-                        WriteCkan(Options.OutputDir, ckan.AllJson);
+                        Log.InfoFormat("Transforming {0}", file);
+                        var netkans = ReadNetkans(file, useragent);
+                        var ckans = inf.Inflate(
+                                file,
+                                netkans,
+                                new TransformOptions(
+                                    Options.ParseReleases(),
+                                    Options.ParseSkipReleases(),
+                                    Options.ParseHighestVersion(),
+                                    Options.ParseHighestVersion(),
+                                    netkans.Any(nk => nk.Staged),
+                                    string.Join(Environment.NewLine,
+                                                netkans.Select(nk => nk.StagingReason)
+                                                       .OfType<string>())))
+                            .ToArray();
+                        foreach (Metadata ckan in ckans)
+                        {
+                            WriteCkan(Options.OutputDir, ckan.AllJson);
+                        }
                     }
                 }
                 else
@@ -140,18 +142,6 @@ namespace CKAN.NetKAN
             return ExitOk;
         }
 
-        private static int? ParseReleases(string? val)
-            => val == null  ? 1
-             : val == "all" ? null
-             : int.Parse(val);
-
-        private static int? ParseSkipReleases(string? val)
-            => string.IsNullOrWhiteSpace(val) ? null : int.Parse(val);
-
-        private static ModuleVersion? ParseHighestVersion(string? val)
-            => val == null ? null
-                           : new ModuleVersion(val);
-
         private static CmdLineOptions ProcessArgs(string[] args)
         {
             if (args.Contains("--debugger"))
@@ -164,23 +154,19 @@ namespace CKAN.NetKAN
 
             Logging.Initialize();
 
-            LogManager.GetRepository().Threshold =
-                  Options.Verbose ? Level.Info
-                : Options.Debug   ? Level.Debug
-                :                   Level.Warn;
+            LogManager.GetRepository().Threshold = Options.GetLogLevel();
 
             return Options;
         }
 
-        private static Metadata[] ReadNetkans(CmdLineOptions Options)
+        private static Metadata[] ReadNetkans(string file, string useragent)
         {
-            if (!Options.File?.EndsWith(".netkan", StringComparison.OrdinalIgnoreCase)
-                             ?? false)
+            if (!file.EndsWith(".netkan", StringComparison.OrdinalIgnoreCase))
             {
-                Log.WarnFormat("Input is not a .netkan file");
+                Log.WarnFormat("Input {0} is not a .netkan file", file);
             }
 
-            return ArgContents(Options.NetUserAgent ?? Net.UserAgentString, Options.File)
+            return ArgContents(useragent, file)
                        .Select(ymap => new Metadata(ymap))
                        .ToArray();
         }
