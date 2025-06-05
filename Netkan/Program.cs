@@ -62,8 +62,7 @@ namespace CKAN.NetKAN
                     return ExitOk;
                 }
 
-                if (Options.Queues != null
-                    && !string.IsNullOrEmpty(Options.Queues)
+                if (Options.Queues is string { Length: > 0 }
                     && Options.Queues.Split(new char[] { ',' }, 2)
                        //is [var input, var output]
                        is string[] array
@@ -154,7 +153,7 @@ namespace CKAN.NetKAN
 
         private static CmdLineOptions ProcessArgs(string[] args)
         {
-            if (args.Any(i => i == "--debugger"))
+            if (args.Contains("--debugger"))
             {
                 Debugger.Launch();
             }
@@ -205,21 +204,18 @@ namespace CKAN.NetKAN
         {
             var finalPath = CkanFileName(outputDir, json);
 
-            var sb = new StringBuilder();
-            var sw = new StringWriter(sb);
-
-            using (var writer = new JsonTextWriter(sw))
+            using (var swriter = new StringWriter(new StringBuilder()))
+            using (var jwriter = new JsonTextWriter(swriter))
             {
-                writer.Formatting = Formatting.Indented;
-                writer.Indentation = 4;
-                writer.IndentChar = ' ';
+                jwriter.Formatting = Formatting.Indented;
+                jwriter.Indentation = 4;
+                jwriter.IndentChar = ' ';
 
                 var serializer = new JsonSerializer();
-                serializer.Serialize(writer, json);
+                serializer.Serialize(jwriter, json);
+
+                File.WriteAllText(finalPath, swriter + Environment.NewLine);
             }
-
-            File.WriteAllText(finalPath, sw + Environment.NewLine);
-
             Log.InfoFormat("Transformation written to {0}", finalPath);
         }
 

@@ -43,23 +43,18 @@ namespace CKAN
         public Uri? manual;
 
         [JsonProperty("metanetkan", Order = 10, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri? metanetkan;
 
         [JsonProperty("remote-avc", Order = 11, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri? remoteAvc;
 
         [JsonProperty("remote-swinfo", Order = 12, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri? remoteSWInfo;
 
         [JsonProperty("store", Order = 13, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri? store;
 
         [JsonProperty("steamstore", Order = 14, NullValueHandling = NullValueHandling.Ignore)]
-        [JsonConverter(typeof(JsonOldResourceUrlConverter))]
         public Uri? steamstore;
     }
 }
