@@ -72,15 +72,18 @@ namespace CKAN.NetKAN.Processors
                                    .ToList();
                 log.Debug("Finished transformation");
 
-                if (ckans.Count(m => !m.Prerelease) > (opts?.Releases ?? 1))
+                // null means "all"
+                if (opts.Releases is int relsRequested)
                 {
-                    throw new Kraken(string.Format("Generated {0} modules but only {1} requested: {2}",
-                                                   ckans.Count,
-                                                   opts?.Releases ?? 1,
-                                                   string.Join("; ", ckans.Select(DescribeHosting))));
+                    if (ckans.Count(m => !m.Prerelease) > relsRequested)
+                    {
+                        throw new Kraken(string.Format("Generated {0} modules but only {1} requested: {2}",
+                                                       ckans.Count,
+                                                       relsRequested,
+                                                       string.Join("; ", ckans.Select(DescribeHosting))));
+                    }
+                    ckans = ckans.Take(relsRequested).ToList();
                 }
-
-                ckans = ckans.Take(opts?.Releases ?? 1).ToList();
 
                 foreach (Metadata ckan in ckans)
                 {
