@@ -8,8 +8,9 @@ using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Solution.Project.Properties;
 using Cake.Common.Tools.DotNet;
-using Cake.Common.Tools.DotNet.Build;
 using Cake.Common.Tools.DotNet.Restore;
+using Cake.Common.Tools.DotNet.Build;
+using Cake.Common.Tools.DotNet.Publish;
 using Cake.Common.Tools.DotNet.Test;
 using Cake.Common.Tools.ILMerge;
 using Cake.Common.Tools.ILRepack;
@@ -130,6 +131,14 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             context.DotNetBuild(context.Paths.CoreProject.FullPath, new DotNetBuildSettings
             {
                 Configuration = context.BuildConfiguration,
+            });
+            // Publish Netkan for Inflator container
+            context.DotNetPublish(context.Paths.NetkanProject.FullPath, new DotNetPublishSettings
+            {
+                Configuration  = context.BuildConfiguration,
+                Framework      = "net8.0",
+                Runtime        = "linux-x64",
+                SelfContained  = true,
             });
 
             // Use Mono to build for net48 since dotnet can't use WinForms on Linux

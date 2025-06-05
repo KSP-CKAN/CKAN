@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:latest
 
 # Don't prompt for time zone
 ENV DEBIAN_FRONTEND noninteractive
@@ -6,16 +6,10 @@ ENV DEBIAN_FRONTEND noninteractive
 # Properly handle Unicode
 ENV LANG C.utf-8
 
-# Set up Mono's APT repo
+# Install dotnet dependencies
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates gnupg \
-    && gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-    && echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
-    && apt-get update
-
-# Install the necessary pieces of Mono
-RUN apt-get install -y --no-install-recommends \
-    mono-runtime ca-certificates-mono libmono-microsoft-csharp4.0-cil libmono-system-data4.0-cil libmono-system-runtime-serialization4.0-cil libmono-system-transactions4.0-cil libmono-system-net-http-webrequest4.0-cil libmono-system-xml-linq4.0-cil libmono-system-servicemodel4.0a-cil
+    && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends ca-certificates libicu74
 
 # Purge APT download cache, package lists, and logs
 RUN apt-get clean \
@@ -24,7 +18,7 @@ RUN apt-get clean \
 RUN useradd -ms /bin/bash netkan
 USER netkan
 WORKDIR /home/netkan
-ADD --chown=netkan netkan.exe .
-ENTRYPOINT /usr/bin/mono netkan.exe --game ${GAME:-KSP} --queues $QUEUES \
-  --net-useragent "Mozilla/5.0 (compatible; Netkanbot/1.0; CKAN/$(/usr/bin/mono netkan.exe --version); +https://github.com/KSP-CKAN/NetKAN-Infra)" \
+ADD --chown=netkan . .
+ENTRYPOINT ./CKAN-NetKAN --game ${GAME:-KSP} --queues $QUEUES \
+  --net-useragent "Mozilla/5.0 (compatible; Netkanbot/1.0; CKAN/$(./CKAN-NetKAN --version); +https://github.com/KSP-CKAN/NetKAN-Infra)" \
   --github-token $GH_Token --gitlab-token "$GL_Token" --cachedir ckan_cache -v
