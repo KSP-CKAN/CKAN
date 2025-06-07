@@ -49,6 +49,7 @@ jobs:
         with:
           name: ${{ inputs.configuration }}-out-unsigned
           path: _build/out/
+          include-hidden-files: true
           retention-days: 1
       - name: Bundle assets for signing
         if: inputs.configuration == 'Release'
