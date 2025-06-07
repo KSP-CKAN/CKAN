@@ -1,5 +1,7 @@
 .dockerignore
-log4net.xml
+
+# We don't need logging-to-file or code documentation in Docker
+*.xml
 
 # We don't need symbols in Docker
 *.pdb
