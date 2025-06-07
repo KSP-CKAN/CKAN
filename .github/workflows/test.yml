@@ -31,8 +31,8 @@ jobs:
           path: _build/out/
       - name: Restore permissions discarded by zip/unzip of artifact
         run: |
-          chmod a+x _build/out/Build/*/bin/net8.0/Build
-          ls -ld /home/runner/work/CKAN/CKAN/_build/out/Build/VSCodeIDE/bin/net8.0/Build /home/runner/work/CKAN/CKAN/build
+          chmod a+x _build/out/Build/*/bin/net8.0/Build _build/out/Build/*/obj/*/net8.0/apphost
+          ls -ld /home/runner/work/CKAN/CKAN/_build/out/Build/VSCodeIDE/bin/net8.0/Build /home/runner/work/CKAN/CKAN/build _build/out/Build/*/obj/*/net8.0/apphost
       - name: Download repack artifact
         uses: actions/download-artifact@v4
         with:
