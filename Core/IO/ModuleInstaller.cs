@@ -145,8 +145,11 @@ namespace CKAN.IO
                             ref possibleConfigOnlyDirs,
                             new ProgressImmediate<long>(bytes =>
                             {
-                                InstallProgress?.Invoke(mod, mod.install_size - bytes, mod.install_size);
-                                installedBytes = modInstallCompletedBytes + bytes;
+                                InstallProgress?.Invoke(mod,
+                                                        Math.Max(0,     mod.install_size - bytes),
+                                                        Math.Max(bytes, mod.install_size));
+                                installedBytes = modInstallCompletedBytes
+                                                 + Math.Min(bytes, mod.install_size);
                                 rateCounter.BytesLeft = downloadBytes - downloadedBytes
                                                       + installBytes  - installedBytes;
                                 User.RaiseProgress(rateCounter);
@@ -863,9 +866,10 @@ namespace CKAN.IO
                                   new ProgressImmediate<long>(bytes =>
                                   {
                                       RemoveProgress?.Invoke(instMod,
-                                                             instMod.Module.install_size - bytes,
-                                                             instMod.Module.install_size);
-                                      rateCounter.BytesLeft = removeBytes - (modRemoveCompletedBytes + bytes);
+                                                             Math.Max(0,     instMod.Module.install_size - bytes),
+                                                             Math.Max(bytes, instMod.Module.install_size));
+                                      rateCounter.BytesLeft = removeBytes - (modRemoveCompletedBytes
+                                                                             + Math.Min(bytes, instMod.Module.install_size));
                                       User.RaiseProgress(rateCounter);
                                   }));
                         modRemoveCompletedBytes += instMod?.Module.install_size ?? 0;
@@ -1233,9 +1237,10 @@ namespace CKAN.IO
                               new ProgressImmediate<long>(bytes =>
                               {
                                   RemoveProgress?.Invoke(instMod,
-                                                         instMod.Module.install_size - bytes,
-                                                         instMod.Module.install_size);
-                                  removedBytes = modRemoveCompletedBytes + bytes;
+                                                         Math.Max(0,     instMod.Module.install_size - bytes),
+                                                         Math.Max(bytes, instMod.Module.install_size));
+                                  removedBytes = modRemoveCompletedBytes
+                                                 + Math.Min(bytes, instMod.Module.install_size);
                                   rateCounter.BytesLeft = removeBytes   - removedBytes
                                                         + downloadBytes - downloadedBytes
                                                         + installBytes  - installedBytes;
@@ -1262,9 +1267,10 @@ namespace CKAN.IO
                             new ProgressImmediate<long>(bytes =>
                             {
                                 InstallProgress?.Invoke(mod,
-                                                        mod.install_size - bytes,
-                                                        mod.install_size);
-                                installedBytes = modInstallCompletedBytes + bytes;
+                                                        Math.Max(0,     mod.install_size - bytes),
+                                                        Math.Max(bytes, mod.install_size));
+                                installedBytes = modInstallCompletedBytes
+                                                 + Math.Min(bytes, mod.install_size);
                                 rateCounter.BytesLeft = removeBytes   - removedBytes
                                                       + downloadBytes - downloadedBytes
                                                       + installBytes  - installedBytes;

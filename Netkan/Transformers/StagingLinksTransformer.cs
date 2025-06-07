@@ -38,7 +38,7 @@ namespace CKAN.NetKAN.Transformers
             table.AppendLine($"download | {downloads}");
             if (metadata.Resources != null)
             {
-                foreach ((string name, string value) in metadata.Resources
+                foreach ((string name, object value) in metadata.Resources
                                                                 .OrderBy(kvp => kvp.Key))
                 {
                     table.AppendLine($"{name} | <{value}>");

@@ -258,6 +258,8 @@ jobs:
         with:
           name: Release-repack-unsigned
           path: _build/repack/
+      - name: Copy config file to build context
+        run: cp Netkan/metadata.ini _build/repack/Release
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log in to Docker Hub

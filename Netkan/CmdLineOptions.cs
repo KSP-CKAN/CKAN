@@ -1,4 +1,9 @@
+using System.Collections.Generic;
+
 using CommandLine;
+using log4net.Core;
+
+using CKAN.Versioning;
 
 namespace CKAN.NetKAN
 {
@@ -61,7 +66,41 @@ namespace CKAN.NetKAN
         [Option("game", DefaultValue = "KSP", HelpText = "Short name of the game for which to inflate mods")]
         public string? Game { get; set; }
 
-        [ValueOption(0)]
-        public string? File { get; set; }
+        [ValueList(typeof(List<string>))]
+        public List<string>? Files { get; set; }
+
+        public Level GetLogLevel()
+            => Debug   ? Level.Debug
+             : Verbose ? Level.Info
+             :           Level.Warn;
+
+        public int? ParseReleases()
+            => Releases switch
+               {
+                   null  => 1,
+                   "all" => null,
+                   _     => int.Parse(Releases),
+               };
+
+        public int ParseSkipReleases()
+            => SkipReleases switch
+               {
+                   { Length: > 0 } => int.Parse(SkipReleases),
+                   _               => 0,
+               };
+
+        public ModuleVersion? ParseHighestVersion()
+            => HighestVersion switch
+               {
+                   { Length: > 0 } => new ModuleVersion(HighestVersion),
+                   _               => null,
+               };
+
+        public ModuleVersion? ParseHighestPrereleaseVersion()
+            => HighestVersionPrerelease switch
+               {
+                   { Length: > 0 } => new ModuleVersion(HighestVersionPrerelease),
+                   _               => null,
+               };
     }
 }

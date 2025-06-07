@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using Autofac;
 using log4net;
 
@@ -67,19 +68,22 @@ namespace CKAN.NetKAN.Processors
                                    .Select(grp => Metadata.Merge(grp.ToArray()))
                                    .SelectMany(merged => specVersionTransformer.Transform(merged, opts))
                                    .SelectMany(withSpecVersion => sortTransformer.Transform(withSpecVersion, opts))
-                                   .OrderBy(m => !m.Prerelease)
+                                   .OrderByDescending(m => m.Prerelease)
                                    .ToList();
                 log.Debug("Finished transformation");
 
-                if (ckans.Count(m => !m.Prerelease) > (opts?.Releases ?? 1))
+                // null means "all"
+                if (opts.Releases is int relsRequested)
                 {
-                    throw new Kraken(string.Format("Generated {0} modules but only {1} requested: {2}",
-                                                   ckans.Count,
-                                                   opts?.Releases ?? 1,
-                                                   string.Join("; ", ckans.Select(DescribeHosting))));
+                    if (ckans.Count(m => !m.Prerelease) > relsRequested)
+                    {
+                        throw new Kraken(string.Format("Generated {0} modules but only {1} requested: {2}",
+                                                       ckans.Count,
+                                                       relsRequested,
+                                                       string.Join("; ", ckans.Select(DescribeHosting))));
+                    }
+                    ckans = ckans.Take(relsRequested).ToList();
                 }
-
-                ckans = ckans.Take(opts?.Releases ?? 1).ToList();
 
                 foreach (Metadata ckan in ckans)
                 {
@@ -139,22 +143,21 @@ namespace CKAN.NetKAN.Processors
             log.Debug("Deleting downloads for failed inflation");
             if (http != null && cache != null)
             {
-                foreach (Uri url in http.RequestedURLs)
-                {
-                    cache.Remove(url);
-                }
+                cache.Remove(http.RequestedURLs);
             }
         }
 
         private string DescribeHosting(Metadata metadata)
-            => $"{metadata.Version} on {string.Join(", ", metadata.Hosts)}";
+            => metadata.Prerelease
+                   ? $"{metadata.Version} (pre-release) on {string.Join(", ", metadata.Hosts)}"
+                   : $"{metadata.Version} on {string.Join(", ", metadata.Hosts)}";
 
         private readonly NetFileCache cache;
         private readonly IHttpService http;
 
         private readonly NetkanTransformer       transformer;
         private readonly SpecVersionTransformer  specVersionTransformer = new SpecVersionTransformer();
-        private readonly PropertySortTransformer sortTransformer = new PropertySortTransformer();
+        private readonly PropertySortTransformer sortTransformer        = new PropertySortTransformer();
 
         private readonly NetkanValidator netkanValidator = new NetkanValidator();
         private readonly CkanValidator   ckanValidator;

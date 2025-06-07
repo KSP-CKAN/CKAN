@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Generate and tidy up XML docs for Core (#4351 by: HebaruSan)
 - [Core] Use setter instead of reflection to set max transaction timeout (#4365 by: doinkythederp; reviewed: HebaruSan)
 - [Build] Coverage (#4383 by: HebaruSan)
+- [Multiple] Switch Inflator from Mono to dotnet (#4387 by: HebaruSan)
 
 ## v1.36.0 (Quasar)
 

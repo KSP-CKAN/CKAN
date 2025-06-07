@@ -13,5 +13,8 @@
     },
     "nunitTestRunner.projectsPatterns": [
         "_build/out/**/*.Tests.dll"
-    ]
+    ],
+    "[csharp]": {
+        "editor.formatOnType": false
+    }
 }

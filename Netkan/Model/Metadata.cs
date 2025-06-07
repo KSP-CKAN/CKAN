@@ -95,7 +95,7 @@ namespace CKAN.NetKAN.Model
                                                 or CKAN.ReleaseStatus.testing;
 
         [JsonProperty("resources", NullValueHandling = NullValueHandling.Ignore)]
-        public readonly Dictionary<string, string>? Resources;
+        public readonly Dictionary<string, object>? Resources;
 
         [JsonProperty("x_netkan_staging", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
                                           NullValueHandling    = NullValueHandling.Ignore)]

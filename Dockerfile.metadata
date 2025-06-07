@@ -55,6 +55,9 @@ RUN apt-get clean \
 # Extract built Python packages from the build image
 COPY --from=build /usr/local /usr/local
 
+# Install the config file that tells the meta tester how to run ckan and netkan
+ADD metadata.ini /usr/local/etc/.
+
 # Install the .NET assemblies the meta tester uses
 ADD netkan.exe /usr/local/bin/.
 ADD ckan.exe /usr/local/bin/.
