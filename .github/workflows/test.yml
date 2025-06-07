@@ -30,7 +30,9 @@ jobs:
           name: Debug-out-unsigned
           path: _build/out/
       - name: Restore permissions discarded by zip/unzip of artifact
-        run: chmod a+x _build/out/Build/*/bin/net8.0/Build
+        run: |
+          chmod a+x _build/out/Build/*/bin/net8.0/Build
+          ls -l _build/out/Build/*/bin/net8.0
       - name: Download repack artifact
         uses: actions/download-artifact@v4
         with:
