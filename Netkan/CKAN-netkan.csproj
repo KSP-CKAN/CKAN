@@ -58,9 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.xml" />
-    <Content Include=".dockerignore">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include=".dockerignore" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
       <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
     </Compile>
