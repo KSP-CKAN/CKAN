@@ -175,7 +175,10 @@ namespace Tests.Data
                     ],
                     ""resources"": {
                         ""kerbalstuff"": ""https://kerbalstuff.com/mod/269/Dogecoin%20Flag"",
-                        ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
+                        ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/"",
+                        ""curse"": {
+                            ""url"": ""https://www.curseforge.com/kerbal""
+                        }
                     },
                     ""name"": ""Dogecoin Flag"",
                     ""license"": ""CC-BY"",
@@ -246,7 +249,8 @@ namespace Tests.Data
                         }
                     ],
                     ""resources"": {
-                        ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/""
+                        ""homepage"": ""https://www.reddit.com/r/dogecoin/comments/1tdlgg/i_made_a_more_accurate_dogecoin_and_a_ksp_flag/"",
+                        ""curse"": ""https://www.curseforge.com/kerbal""
                     },
                     ""name"": ""Dogetoken Flag"",
                     ""license"": ""CC-BY"",
