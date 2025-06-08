@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,9 +26,9 @@ namespace CKAN.NetKAN.Model
                 JsonSerializer.CreateDefault(UtcSettings)
                               .Populate(json.CreateReader(), this);
             }
-            catch (TargetInvocationException exc)
+            catch (TargetInvocationException tiExc) when (tiExc is { InnerException: Exception exc })
             {
-                throw exc.GetBaseException();
+                ExceptionDispatchInfo.Capture(exc).Throw();
             }
             catch (JsonException jsonExc)
             {

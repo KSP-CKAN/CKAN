@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.ExceptionServices;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -363,11 +364,11 @@ namespace CKAN
             {
                 JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
             }
-            catch (TargetInvocationException exc) when (exc.InnerException != null)
+            catch (TargetInvocationException tiExc) when (tiExc is { InnerException: Exception exc })
             {
                 // "The exception that is thrown by methods invoked through reflection."
                 // The JSON library uses reflection for OnDeserialized.
-                throw exc.InnerException;
+                ExceptionDispatchInfo.Capture(exc).Throw();
             }
             log.Debug("Registry loaded and parsed");
             log.InfoFormat("Loaded CKAN registry at {0}", path);

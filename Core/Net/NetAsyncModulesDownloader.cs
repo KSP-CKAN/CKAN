@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Security.Cryptography;
+using System.Runtime.ExceptionServices;
 
 using log4net;
 using Autofac;
@@ -144,12 +145,12 @@ namespace CKAN
                 dlTask.Wait();
                 if (dlTask.Exception is AggregateException { InnerException: Exception exc })
                 {
-                    throw exc;
+                    ExceptionDispatchInfo.Capture(exc).Throw();
                 }
             }
             catch (AggregateException agExc) when (agExc.InnerException is Exception exc)
             {
-                throw exc;
+                ExceptionDispatchInfo.Capture(exc).Throw();
             }
         }
 
@@ -165,7 +166,7 @@ namespace CKAN
                                                   OneComplete -= oneComplete;
                                                   if (t.Exception is AggregateException { InnerException: Exception exc })
                                                   {
-                                                      throw exc;
+                                                      ExceptionDispatchInfo.Capture(exc).Throw();
                                                   }
                                               }),
                     blockingQueue);
