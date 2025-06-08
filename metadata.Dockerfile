@@ -1,32 +1,26 @@
 # Everything we need in both the build and prod images
-FROM ubuntu:22.04 AS base
+FROM ubuntu:latest AS base
+
+ARG configuration=Debug
 
 # Don't prompt for time zone
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Properly handle Unicode
-ENV LANG C.utf-8
+ENV LANG=C.utf-8
 
 # Put user-installed Python code in path
-ENV PATH "$PATH:/root/.local/bin"
+ENV PATH="$PATH:/root/.local/bin"
 
 # Install Git and Python
 RUN apt-get update \
+    && apt-get update -y \
     && apt-get install -y --no-install-recommends \
-        ca-certificates gnupg git libffi-dev \
+        ca-certificates libicu74 git libffi-dev \
         python3 python-is-python3
 
 # Trust all git repos
 RUN git config --global --add safe.directory '*'
-
-# Set up Mono's APT repo
-RUN gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
-    && echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/ubuntu stable-focal main" | tee /etc/apt/sources.list.d/mono-official-stable.list \
-    && apt-get update
-
-# Install the necessary pieces of Mono
-RUN apt-get install -y --no-install-recommends \
-    mono-runtime ca-certificates-mono libmono-microsoft-csharp4.0-cil libmono-system-data4.0-cil libmono-system-runtime-serialization4.0-cil libmono-system-transactions4.0-cil libmono-system-net-http-webrequest4.0-cil libmono-system-servicemodel4.0a-cil
 
 # Isolate Python build stuff in a separate container
 FROM base AS build
@@ -36,9 +30,8 @@ RUN apt-get install -y --no-install-recommends \
     python3-pip python3-setuptools python3-dev
 
 # Install the meta tester's Python code and its Infra dep
-ENV PIP_ROOT_USER_ACTION ignore
-ENV PIP_BREAK_SYSTEM_PACKAGES 1
-RUN pip3 install --upgrade pip
+ENV PIP_ROOT_USER_ACTION=ignore
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 RUN pip3 install 'git+https://github.com/KSP-CKAN/NetKAN-Infra#subdirectory=netkan'
 RUN pip3 install 'git+https://github.com/KSP-CKAN/xKAN-meta_testing'
 
@@ -46,7 +39,7 @@ RUN pip3 install 'git+https://github.com/KSP-CKAN/xKAN-meta_testing'
 RUN pip3 --no-input uninstall -y flask gunicorn werkzeug
 
 # The image we'll actually use
-FROM base as prod
+FROM base AS prod
 
 # Purge APT download cache, package lists, and logs
 RUN apt-get clean \
@@ -56,10 +49,10 @@ RUN apt-get clean \
 COPY --from=build /usr/local /usr/local
 
 # Install the config file that tells the meta tester how to run ckan and netkan
-ADD metadata.ini /usr/local/etc/.
+ADD Netkan/metadata.ini /usr/local/etc/.
 
 # Install the .NET assemblies the meta tester uses
-ADD netkan.exe /usr/local/bin/.
-ADD ckan.exe /usr/local/bin/.
+ADD _build/out/CKAN-CmdLine/${configuration}/bin/net8.0/linux-x64/publish/. /usr/local/bin/.
+ADD _build/out/CKAN-NetKAN/${configuration}/bin/net8.0/linux-x64/publish/. /usr/local/bin/.
 
 ENTRYPOINT ["ckanmetatester"]
