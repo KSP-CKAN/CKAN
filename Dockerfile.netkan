@@ -15,7 +15,7 @@ RUN apt-get update \
 RUN apt-get clean \
     && rm -r /var/lib/apt/lists /var/log/dpkg.log /var/log/apt
 
-RUN useradd -ms /bin/bash netkan
+RUN groupmod -n netkan ubuntu && usermod -l netkan -d /home/netkan -m ubuntu
 USER netkan
 WORKDIR /home/netkan
 ADD --chown=netkan . .
