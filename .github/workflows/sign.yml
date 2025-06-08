@@ -15,7 +15,7 @@ jobs:
       - test-release
       - smoke-inflator
     steps:
-      - uses: SignPath/github-action-submit-signing-request@v1.1
+      - uses: SignPath/github-action-submit-signing-request@v1
         id: sign
         with:
           project-slug: CKAN
