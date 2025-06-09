@@ -258,6 +258,10 @@ jobs:
         with:
           name: Release-out-unsigned
           path: _build/out/
+      - name: Restore permissions discarded by zip/unzip of artifact
+        run: |
+          chmod a+x _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish/CKAN-NetKAN \
+                    _build/out/CKAN-CmdLine/Release/bin/net8.0/linux-x64/publish/CKAN-CmdLine
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log in to Docker Hub
