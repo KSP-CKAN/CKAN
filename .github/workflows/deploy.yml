@@ -253,13 +253,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Download repack artifact
+      - name: Download out artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
-      - name: Copy config file to build context
-        run: cp Netkan/metadata.ini _build/repack/Release
+          name: Release-out-unsigned
+          path: _build/out/
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Log in to Docker Hub
@@ -268,10 +266,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Generate metadata tester Docker image and publish to Hub
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
-          file: Dockerfile.metadata
-          context: _build/repack/Release
+          file: metadata.Dockerfile
+          context: .
+          build-args: configuration=Release
           tags: kspckan/metadata
           push: true
 

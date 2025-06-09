@@ -1,10 +1,10 @@
 FROM ubuntu:latest
 
 # Don't prompt for time zone
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Properly handle Unicode
-ENV LANG C.utf-8
+ENV LANG=C.utf-8
 
 # Install dotnet dependencies
 RUN apt-get update \

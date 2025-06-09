@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 using CommandLine;
+using DotNet.Globbing;
 
 namespace CKAN.CmdLine
 {
@@ -26,18 +26,12 @@ namespace CKAN.CmdLine
                 .Where(m => !m.IsDLC)
                 .OrderBy(m => m.identifier);
 
-            if (opts.globs != null)
+            if (opts.globs is { Count: > 0 })
             {
-                var regexes = opts.globs
-                                  .Select(str => new Regex("^"
-                                                           + str.Replace("?", ".")
-                                                                .Replace("*", ".*")
-                                                           + "$",
-                                                           RegexOptions.Compiled
-                                                           | RegexOptions.IgnoreCase))
-                                  .ToArray();
-                compatible = compatible.Where(m => regexes.Any(re => re.IsMatch(m.identifier)
-                                                                     || re.IsMatch(m.name)));
+                GlobOptions.Default.Evaluation.CaseInsensitive = true;
+                var globs = opts.globs.Select(Glob.Parse).ToArray();
+                compatible = compatible.Where(m => globs.Any(gl => gl.IsMatch(m.identifier)
+                                                                   || gl.IsMatch(m.name)));
             }
 
             user.RaiseMessage(Properties.Resources.AvailableHeader,

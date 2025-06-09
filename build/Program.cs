@@ -132,8 +132,16 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             {
                 Configuration = context.BuildConfiguration,
             });
-            // Publish Netkan for Inflator container
+            // Publish Netkan for Inflator and Metadata containers
             context.DotNetPublish(context.Paths.NetkanProject.FullPath, new DotNetPublishSettings
+            {
+                Configuration  = context.BuildConfiguration,
+                Framework      = "net8.0",
+                Runtime        = "linux-x64",
+                SelfContained  = true,
+            });
+            // Publish Cmdline for Metadata container
+            context.DotNetPublish(context.Paths.CmdlineProject.FullPath, new DotNetPublishSettings
             {
                 Configuration  = context.BuildConfiguration,
                 Framework      = "net8.0",

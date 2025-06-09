@@ -35,7 +35,7 @@ jobs:
       - name: Build Inflator image
         uses: docker/build-push-action@v5
         with:
-          file: Dockerfile.netkan
+          file: netkan.Dockerfile
           context: _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish
           tags: kspckan/inflator
           outputs: |
@@ -48,7 +48,7 @@ jobs:
       - name: Export Inflator image tar file
         uses: docker/build-push-action@v5
         with:
-          file: Dockerfile.netkan
+          file: netkan.Dockerfile
           context: _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish
           tags: kspckan/inflator
           outputs: type=docker,dest=/tmp/inflator-image.tar
