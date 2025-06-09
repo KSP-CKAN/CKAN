@@ -1,78 +1,12 @@
 #!/bin/bash
 
-supports_32_bit() {
-    MACOS_VER=$(sw_vers -productVersion)
-    MAJOR=$(echo $MACOS_VER | cut -d. -f1)
-    MINOR=$(echo $MACOS_VER | cut -d. -f2)
-    # 9.X => true
-    if (( $MAJOR < 10 ))
-    then
-        return 0
-    fi
-    # 11.X => false
-    if (( $MAJOR > 10 ))
-    then
-        return 1
-    fi
-    # 10.15+ => false
-    if (( $MINOR >= 15 ))
-    then
-        return 1
-    fi
-    return 0
-}
+# The script is in the same folder as the arch-specific folders, go there now.
+# uname -m is either x86_64 or arm64.
+MACOS_PATH="$(cd "$(dirname "$0")/$(uname -m)" && pwd)"
+cd "$MACOS_PATH"
 
-# Check El Capitan's Mono install location
-# And Mono 5's install location
-# And the configured location in /etc/paths.d
-MONO_FRAMEWORK_PATH=/Library/Frameworks/Mono.framework/Versions/Current
-PATH="${PATH}:/usr/local/bin:${MONO_FRAMEWORK_PATH}/Commands"
-if [ -r /etc/paths.d/mono-commands ]
-then
-    PATH="${PATH}:$(cat /etc/paths.d/mono-commands)"
-fi
-export PATH
-
-# Look for mono now that we've assembled our PATH
-MONO=$(which mono)
-
-if [ -z "$MONO" -o ! -x "$MONO" ]
-then
-    # We could not find mono. The wiki explains how to install.
-    open 'https://github.com/KSP-CKAN/CKAN/wiki/Installing-CKAN-on-macOS'
-else
-    # Mono found, so we can run CKAN
-    # The exe is called ckan.exe
-    ASSEMBLY=ckan.exe
-
-    MONO_ARGS="--arch=32"
-    for ARG in "$@"
-    do
-        # If we want to run the GUI, set mono to 32bit mode. If not, go 64bit.
-        if [[ ! $ARG =~ ^- && $ARG != gui ]]
-        then
-            MONO_ARGS="--arch=64"
-            break
-        fi
-    done
-
-    # The script and ckan.exe are in the same folder, go there now
-    MACOS_PATH="$(cd "$(dirname "$0")" && pwd)"
-    cd "$MACOS_PATH"
-    # Set up and run mono
-    export MONO_MWF_USE_CARBON_BACKEND=1
-    export GDIPLUS_NOX=1
-    export DYLD_FALLBACK_LIBRARY_PATH="$MACOS_PATH:$MONO_FRAMEWORK_PATH/lib:/lib:/usr/lib"
-
-    # Default to consoleui on Catalina and later if they double click
-    if ! supports_32_bit && [[ "$@" == "" ]]
-    then
-        osascript <<END
+osascript <<END
 tell application "Terminal"
-    do script "cd \"`pwd`\"; \"$MONO\" \"$ASSEMBLY\" consoleui"
+    do script "cd \"`pwd`\"; ./CKAN-CmdLine consoleui"
 end tell
 END
-    else
-        "$MONO" "$MONO_ARGS" "$ASSEMBLY" "$@"
-    fi
-fi
