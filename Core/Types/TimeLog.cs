@@ -3,6 +3,7 @@ using System.IO;
 using System.Diagnostics;
 
 using Newtonsoft.Json;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -29,7 +30,8 @@ namespace CKAN
 
         public void Save(string path)
         {
-            File.WriteAllText(path, JsonConvert.SerializeObject(this, Formatting.Indented));
+            JsonConvert.SerializeObject(this, Formatting.Indented)
+                       .WriteThroughTo(path);
         }
 
         public override string ToString()

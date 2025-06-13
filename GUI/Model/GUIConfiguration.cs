@@ -10,6 +10,7 @@ using System.ComponentModel;
 using Newtonsoft.Json;
 
 using CKAN.IO;
+using CKAN.Extensions;
 
 namespace CKAN.GUI
 {
@@ -147,8 +148,8 @@ namespace CKAN.GUI
 
         public void Save(GameInstance instance)
         {
-            File.WriteAllText(ConfigPath(instance),
-                              JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
+            JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented)
+                       .WriteThroughTo(ConfigPath(instance));
         }
 
         public static DateTime LastWriteTime(GameInstance instance)

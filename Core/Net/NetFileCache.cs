@@ -674,7 +674,7 @@ namespace CKAN
                     cache.Add(filePath, hash);
                     if (Path.GetDirectoryName(hashFile) == cachePath.FullName)
                     {
-                        File.WriteAllText(hashFile, hash);
+                        hash.WriteThroughTo(hashFile);
                     }
                     return hash;
                 }

@@ -15,6 +15,7 @@ using CKAN.IO;
 using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -138,16 +139,14 @@ namespace CKAN
 
         private void SaveCompatibleVersions()
         {
-            File.WriteAllText(
-                CompatibleGameVersionsFile(),
-                JsonConvert.SerializeObject(new CompatibleGameVersions()
+            JsonConvert.SerializeObject(new CompatibleGameVersions()
                 {
                     GameVersionWhenWritten = Version()?.ToString(),
                     Versions               = _compatibleVersions.Select(v => v.ToString())
                                                                 .OfType<string>()
                                                                 .ToList()
                 })
-            );
+                .WriteThroughTo(CompatibleGameVersionsFile());
             GameVersionWhenCompatibleVersionsWereStored = Version();
         }
 
@@ -203,7 +202,8 @@ namespace CKAN
             #pragma warning disable IDE0027
             set
             {
-                File.WriteAllText(InstallFiltersFile, JsonConvert.SerializeObject(value));
+                JsonConvert.SerializeObject(value)
+                           .WriteThroughTo(InstallFiltersFile);
             }
             #pragma warning restore IDE0027
         }

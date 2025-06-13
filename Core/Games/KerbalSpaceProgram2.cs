@@ -156,7 +156,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
                     // Save to disk if download and parse succeeds
                     new FileInfo(cachedBuildMapPath).Directory?.Create();
-                    File.WriteAllText(cachedBuildMapPath, json);
+                    json.WriteThroughTo(cachedBuildMapPath);
                 }
             }
             catch (Exception e)

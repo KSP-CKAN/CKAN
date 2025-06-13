@@ -7,6 +7,8 @@ using Microsoft.Win32;
 using System.Runtime.Versioning;
 #endif
 
+using CKAN.Extensions;
+
 using IniParser;
 using IniParser.Exceptions;
 using IniParser.Model;
@@ -193,7 +195,7 @@ namespace CKAN.GUI
                 File.Delete(handlerPath);
             }
 
-            File.WriteAllText(handlerPath, "");
+            "".WriteThroughTo(handlerPath);
             data = parser.ReadFile(handlerPath);
             data.Sections.AddSection("Desktop Entry");
             data["Desktop Entry"].AddKey("Version", "1.0");

@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 
 using CKAN.Versioning;
 using CKAN.Games;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -461,7 +462,7 @@ namespace CKAN
 
         public static void ToFile(CkanModule module, string filename)
         {
-            File.WriteAllText(filename, ToJson(module));
+            ToJson(module).WriteThroughTo(filename);
         }
 
         public static string ToJson(CkanModule module)

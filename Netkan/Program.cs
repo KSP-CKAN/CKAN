@@ -201,7 +201,7 @@ namespace CKAN.NetKAN
                 var serializer = new JsonSerializer();
                 serializer.Serialize(jwriter, json);
 
-                File.WriteAllText(finalPath, swriter + Environment.NewLine);
+                (swriter + Environment.NewLine).WriteThroughTo(finalPath);
             }
             Log.InfoFormat("Transformation written to {0}", finalPath);
         }

@@ -295,8 +295,8 @@ namespace CKAN.Configuration
         // </summary>
         private void SaveConfig()
         {
-            File.WriteAllText(configFile,
-                              JsonConvert.SerializeObject(config, Formatting.Indented));
+            JsonConvert.SerializeObject(config, Formatting.Indented)
+                       .WriteThroughTo(configFile);
         }
 
         /// <summary>
