@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -17,18 +18,13 @@ namespace CKAN.NetKAN.Transformers
     /// </summary>
     internal sealed class SpacedockTransformer : ITransformer
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
-
-        private readonly ISpacedockApi _api;
-        private readonly IGithubApi    _githubApi;
-
-        public string Name => "spacedock";
-
         public SpacedockTransformer(ISpacedockApi api, IGithubApi githubApi)
         {
             _api       = api;
             _githubApi = githubApi;
         }
+
+        public string Name => "spacedock";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
@@ -51,7 +47,7 @@ namespace CKAN.NetKAN.Transformers
                         versions = versions.Take(opts.Releases.Value);
                     }
                     bool returnedAny = false;
-                    foreach (SDVersion vers in versions)
+                    foreach (var vers in versions)
                     {
                         returnedAny = true;
                         yield return TransformOne(metadata, metadata.Json(), sdMod, vers);
@@ -69,7 +65,8 @@ namespace CKAN.NetKAN.Transformers
             }
         }
 
-        private Metadata TransformOne(Metadata metadata, JObject json, SpacedockMod sdMod, SDVersion latestVersion)
+        private Metadata TransformOne(Metadata metadata, JObject json,
+                                      SpacedockMod sdMod, SpacedockVersion latestVersion)
         {
             Log.InfoFormat("Found SpaceDock mod: {0} {1}", sdMod.name, latestVersion.friendly_version);
 
@@ -190,5 +187,10 @@ namespace CKAN.NetKAN.Transformers
         private static readonly Regex githubUrlPathPattern =
             new Regex("^/(?<owner>[^/]+)/(?<repo>[^/]+)",
                       RegexOptions.Compiled);
+
+        private readonly ISpacedockApi _api;
+        private readonly IGithubApi    _githubApi;
+
+        private static readonly ILog Log = LogManager.GetLogger(typeof(SpacedockTransformer));
     }
 }

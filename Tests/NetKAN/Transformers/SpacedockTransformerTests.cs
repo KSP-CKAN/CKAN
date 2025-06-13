@@ -1,8 +1,9 @@
 using System;
 using System.Linq;
-using Moq;
+
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using Moq;
 
 using CKAN.Versioning;
 using CKAN.NetKAN.Model;
@@ -30,9 +31,9 @@ namespace Tests.NetKAN.Transformers
                     short_description = "Such test. Very unit. Wow.",
                     author            = "pjf",
                     license           = "CC-BY",
-                    versions          = new SDVersion[1]
+                    versions          = new SpacedockVersion[1]
                     {
-                        new SDVersion()
+                        new SpacedockVersion()
                         {
                             friendly_version = new ModuleVersion("0.25"),
                             download_path    = new Uri("http://example.com/")

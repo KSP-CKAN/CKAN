@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -50,7 +51,7 @@ namespace Tests.NetKAN.Sources.Spacedock
             var result = sut.GetMod(20); // PlaneMode
 
             // Assert
-            var latestVersion = result?.Latest();
+            var latestVersion = result?.All().FirstOrDefault();
 
             Assert.That(result?.id, Is.EqualTo(20));
             Assert.That(result?.author, Is.Not.Null);
