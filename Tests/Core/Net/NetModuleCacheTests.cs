@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Threading;
 using System.Globalization;
 
@@ -14,52 +13,34 @@ namespace Tests.Core
     [Category("Cache")]
     public class NetModuleCacheTests
     {
-        private string?         cache_dir;
-        private NetModuleCache? module_cache;
-
-        [SetUp]
-        public void MakeCache()
-        {
-            cache_dir = TestData.NewTempDir();
-            Directory.CreateDirectory(cache_dir);
-            module_cache = new NetModuleCache(cache_dir);
-        }
-
-        [TearDown]
-        public void RemoveCache()
-        {
-            module_cache?.Dispose();
-            module_cache = null;
-            if (cache_dir != null)
-            {
-                Directory.Delete(cache_dir, true);
-            }
-        }
-
         [Test]
-        public void StoreInvalid()
+        public void Store_Invalid_Throws()
         {
-            // Try to store a nonexistent zip into a NetModuleCache
-            // and expect an FileNotFoundKraken
-            Assert.Throws<FileNotFoundKraken>(() =>
-                module_cache?.Store(
-                    TestData.DogeCoinFlag_101_LZMA_module,
-                    "/DoesNotExist.zip", new Progress<long>(bytes => {})));
+            using (var dir   = new TemporaryDirectory())
+            using (var cache = new NetModuleCache(dir.Path.FullName))
+            {
+                // Try to store a nonexistent zip into a NetModuleCache
+                // and expect an FileNotFoundKraken
+                Assert.Throws<FileNotFoundKraken>(() =>
+                    cache?.Store(
+                        TestData.DogeCoinFlag_101_LZMA_module,
+                        "/DoesNotExist.zip", new Progress<long>(bytes => {})));
 
-            // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
-            // and expect an InvalidModuleFileKraken
-            Assert.Throws<InvalidModuleFileKraken>(() =>
-                module_cache?.Store(
-                    TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZipLZMA, new Progress<long>(bytes => {})));
+                // Try to store the LZMA-format DogeCoin zip into a NetModuleCache
+                // and expect an InvalidModuleFileKraken
+                Assert.Throws<InvalidModuleFileKraken>(() =>
+                    cache?.Store(
+                        TestData.DogeCoinFlag_101_LZMA_module,
+                        TestData.DogeCoinFlagZipLZMA, new Progress<long>(bytes => {})));
 
-            // Try to store the normal DogeCoin zip into a NetModuleCache
-            // using the WRONG metadata (file size and hashes)
-            // and expect an InvalidModuleFileKraken
-            Assert.Throws<InvalidModuleFileKraken>(() =>
-                module_cache?.Store(
-                    TestData.DogeCoinFlag_101_LZMA_module,
-                    TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {})));
+                // Try to store the normal DogeCoin zip into a NetModuleCache
+                // using the WRONG metadata (file size and hashes)
+                // and expect an InvalidModuleFileKraken
+                Assert.Throws<InvalidModuleFileKraken>(() =>
+                    cache?.Store(
+                        TestData.DogeCoinFlag_101_LZMA_module,
+                        TestData.DogeCoinFlagZip(), new Progress<long>(bytes => {})));
+            }
         }
 
         [Test]
