@@ -17,26 +17,10 @@ namespace Tests.Core.Registry
     [TestFixture]
     public class RegistryTests
     {
-        private string? repoDataDir;
         private readonly StabilityToleranceConfig stabilityTolerance = new StabilityToleranceConfig("");
 
         private static readonly GameVersionCriteria v0_24_2 = new GameVersionCriteria(GameVersion.Parse("0.24.2"));
         private static readonly GameVersionCriteria v0_25_0 = new GameVersionCriteria(GameVersion.Parse("0.25.0"));
-
-        [SetUp]
-        public void Setup()
-        {
-            repoDataDir = TestData.NewTempDir();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            if (repoDataDir != null)
-            {
-                Directory.Delete(repoDataDir, true);
-            }
-        }
 
         [Test]
         public void Empty()
