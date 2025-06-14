@@ -173,6 +173,9 @@ namespace CKAN.NetKAN.Services
             _requestedURLs?.Clear();
         }
 
+        public Uri? ResolveRedirect(Uri url, string? userAgent)
+            => Net.ResolveRedirect(url, userAgent);
+
         private static readonly ILog log = LogManager.GetLogger(typeof(CachingHttpService));
     }
 

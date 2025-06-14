@@ -10,6 +10,8 @@ namespace CKAN.NetKAN.Services
         string? DownloadText(Uri url);
         string? DownloadText(Uri url, string? authToken, string? mimeType);
 
+        Uri? ResolveRedirect(Uri url, string? userAgent);
+
         IEnumerable<Uri> RequestedURLs { get; }
         void ClearRequestedURLs();
     }
