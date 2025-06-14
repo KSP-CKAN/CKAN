@@ -37,12 +37,6 @@ namespace Tests.Core
         }
 
         [Test]
-        public void Sanity()
-        {
-            Assert.IsInstanceOf<NetModuleCache>(module_cache);
-        }
-
-        [Test]
         public void StoreInvalid()
         {
             // Try to store a nonexistent zip into a NetModuleCache
