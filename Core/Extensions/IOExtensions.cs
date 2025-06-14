@@ -18,6 +18,25 @@ namespace CKAN.Extensions
             => Utilities.DefaultIfThrows(() => new DriveInfo(dir.FullName));
 
         /// <summary>
+        /// File.WriteAllText replacement that doesn't sometimes write all NULs instead on Windows.
+        /// https://stackoverflow.com/questions/54078564
+        /// </summary>
+        /// <param name="contents">The string to write</param>
+        /// <param name="path">Where to save it</param>
+        public static void WriteThroughTo(this string contents, string path)
+        {
+            using (var stream = File.Create(path, contents.Length + 1,
+                                            FileOptions.WriteThrough))
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.Write(contents);
+                // If we don't Flush, the file can be truncated,
+                // and if we Close, the 'using' block throws an exception
+                writer.Flush();
+            }
+        }
+
+        /// <summary>
         /// A version of Stream.CopyTo with progress updates.
         /// </summary>
         /// <param name="src">Stream from which to copy</param>

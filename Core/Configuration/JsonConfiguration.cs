@@ -3,9 +3,6 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-#if NET5_0_OR_GREATER
-using System.Runtime.Versioning;
-#endif
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
@@ -298,8 +295,8 @@ namespace CKAN.Configuration
         // </summary>
         private void SaveConfig()
         {
-            File.WriteAllText(configFile,
-                              JsonConvert.SerializeObject(config, Formatting.Indented));
+            JsonConvert.SerializeObject(config, Formatting.Indented)
+                       .WriteThroughTo(configFile);
         }
 
         /// <summary>

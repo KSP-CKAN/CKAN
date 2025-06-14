@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 using NUnit.Framework;
 
 using CKAN;
@@ -13,50 +10,27 @@ using Tests.Data;
 namespace Tests.NetKAN.Sources.Jenkins
 {
     [TestFixture]
-    [Category("FlakyNetwork"),
-     Category("Online")]
+    [Category("Online")]
     public sealed class JenkinsApiTests
     {
-        [OneTimeSetUp]
-        public void TestFixtureSetup()
-        {
-            _cachePath = TestData.NewTempDir();
-            var path = Path.Combine(_cachePath, Guid.NewGuid().ToString("N"));
-
-            Directory.CreateDirectory(path);
-            _cache = new NetFileCache(path);
-        }
-
-        [OneTimeTearDown]
-        public void TestFixtureTearDown()
-        {
-            _cache?.Dispose();
-            _cache = null;
-            if (_cachePath != null)
-            {
-                Directory.Delete(_cachePath, recursive: true);
-            }
-        }
-
-
         [Test]
         public void GetLatestBuild_ModuleManager_Works()
         {
             // Arrange
-            IJenkinsApi sut = new JenkinsApi(new CachingHttpService(_cache!));
+            using (var dir   = new TemporaryDirectory())
+            using (var cache = new NetFileCache(dir.Path.FullName))
+            {
+                var sut        = new JenkinsApi(new CachingHttpService(cache));
+                var jenkinsRef = new JenkinsRef("#/ckan/jenkins/https://ksp.sarbian.com/jenkins/job/ModuleManager/");
 
-            // Act
-            var build = sut.GetLatestBuild(
-                new JenkinsRef("#/ckan/jenkins/https://ksp.sarbian.com/jenkins/job/ModuleManager/"),
-                new JenkinsOptions());
+                // Act
+                var build = sut.GetLatestBuild(jenkinsRef, new JenkinsOptions());
 
-            // Assert
-            Assert.IsNotNull(build?.Url);
-            Assert.IsNotNull(build?.Artifacts);
-            Assert.IsNotNull(build?.Timestamp);
+                // Assert
+                Assert.IsNotNull(build?.Url);
+                Assert.IsNotNull(build?.Artifacts);
+                Assert.IsNotNull(build?.Timestamp);
+            }
         }
-
-        private string?       _cachePath;
-        private NetFileCache? _cache;
     }
 }

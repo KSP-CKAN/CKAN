@@ -344,7 +344,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var where  = context.Argument<string?>("where", null);
-        var labels = context.Argument<string>("labels", "Off");
+        var labels = context.Argument("labels", "Off");
         var nunitOutputDirectory = context.Paths.BuildDirectory
                                                 .Combine("test")
                                                 .Combine("nunit");
@@ -398,6 +398,9 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
             context.RunAltCover("-q",
                                 @"-e ""Microsoft|NUnit3|testhost|CKAN\\.Tests|IndexRange|OxyPlot""",
                                 @"-t ""System|Microsoft""",
+                                "-p _build",
+                                "-p Tests",
+                                "-p ConsoleUI",
                                 $"-i {testDir}",
                                 $"-o {instrumentedDir}",
                                 "--save");

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 using CKAN.IO;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
 {
@@ -144,7 +145,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
                 {
                     // Save to disk if parse succeeds
                     new FileInfo(cachedBuildMapPath).Directory?.Create();
-                    File.WriteAllText(cachedBuildMapPath, json);
+                    json.WriteThroughTo(cachedBuildMapPath);
                     return true;
                 }
             }

@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Coverage (#4383 by: HebaruSan)
 - [Multiple] Switch Inflator from Mono to dotnet (#4387 by: HebaruSan)
 - [Multiple] Migrate metadata tester from Mono to dotnet (#4390 by: HebaruSan)
+- [Multiple] Writethrough when saving files, add Netkan tests (#4392 by: HebaruSan)
 
 ## v1.36.0 (Quasar)
 

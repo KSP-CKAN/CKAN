@@ -7,7 +7,7 @@ using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Sources.Spacedock
 {
-    public class SDVersion
+    public class SpacedockVersion
     {
         // These all get filled by JSON deserialisation.
 

@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using log4net;
 
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -36,7 +37,8 @@ namespace CKAN
 
         public void SaveTo(string filename)
         {
-            File.WriteAllText(filename, JsonConvert.SerializeObject(this));
+            JsonConvert.SerializeObject(this)
+                       .WriteThroughTo(filename);
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SuppressedCompatWarningIdentifiers));

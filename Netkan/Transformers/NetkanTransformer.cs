@@ -47,7 +47,7 @@ namespace CKAN.NetKAN.Transformers
                 new GithubTransformer(ghApi, prerelease),
                 new GitlabTransformer(glApi),
                 new SourceForgeTransformer(sfApi),
-                new HttpTransformer(userAgent),
+                new HttpTransformer(http, userAgent),
                 new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http, ghApi),
                 new InternalCkanTransformer(http, moduleService, game),

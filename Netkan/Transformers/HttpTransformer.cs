@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
-using CKAN.NetKAN.Model;
+
 using log4net;
+
+using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Services;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -10,15 +13,13 @@ namespace CKAN.NetKAN.Transformers
     /// </summary>
     internal sealed class HttpTransformer : ITransformer
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(HttpTransformer));
-
-        public string Name => "http";
-        private readonly string? userAgent;
-
-        public HttpTransformer(string? userAgent = null)
+        public HttpTransformer(IHttpService httpSvc, string? userAgent = null)
         {
             this.userAgent = userAgent;
+            http           = httpSvc;
         }
+
+        public string Name => "http";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
@@ -29,7 +30,7 @@ namespace CKAN.NetKAN.Transformers
 
                 if (Uri.IsWellFormedUriString(metadata.Kref.Id, UriKind.Absolute))
                 {
-                    var resolvedUri = Net.ResolveRedirect(new Uri(metadata.Kref.Id), userAgent);
+                    var resolvedUri = http.ResolveRedirect(new Uri(metadata.Kref.Id), userAgent);
 
                     Log.InfoFormat("URL {0} resolved to {1}", metadata.Kref.Id, resolvedUri);
 
@@ -56,5 +57,10 @@ namespace CKAN.NetKAN.Transformers
             }
             yield return metadata;
         }
+
+        private readonly string?      userAgent;
+        private readonly IHttpService http;
+
+        private static readonly ILog Log = LogManager.GetLogger(typeof(HttpTransformer));
     }
 }
