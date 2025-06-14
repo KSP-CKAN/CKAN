@@ -12,14 +12,9 @@ using Tests.Data;
 namespace Tests.NetKAN.Sources.Github
 {
     [TestFixture]
-    [Category("FlakyNetwork"),
-     Category("Online")]
+    [Category("Online")]
     public sealed class GithubApiTests
     {
-        // Ironically, despite the fact that these run in CI, which is strongly integrated
-        // with GitHub, these sometimes cause test failures because github will throw random
-        // 403s. (Hence we disable them in CI with --where="Category!=FlakyNetwork")
-
         [Test]
         public void GetRepoLatestReleaseAndOrgMembers_CKANTest_Works()
         {

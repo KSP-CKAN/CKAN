@@ -10,8 +10,7 @@ using Tests.Data;
 namespace Tests.NetKAN.Sources.Jenkins
 {
     [TestFixture]
-    [Category("FlakyNetwork"),
-     Category("Online")]
+    [Category("Online")]
     public sealed class JenkinsApiTests
     {
         [Test]
