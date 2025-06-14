@@ -109,7 +109,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void CalculatesRepositoryUrlCorrectly()
+        public void Transform_ExampleProject_SetsRepositoryResource()
         {
             // Arrange
             var json = new JObject();
