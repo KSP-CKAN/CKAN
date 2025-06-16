@@ -94,6 +94,40 @@ namespace CKAN.Extensions
                    : Enumerable.Empty<(T First, V Second)>();
 
         /// <summary>
+        /// Insert new elements between consecutive pairs of existing elements,
+        /// preserving the original elements in order, and using null to
+        /// represent the elements before the beginning and after the end.
+        /// </summary>
+        /// <param name="source">Sequence into which to inject</param>
+        /// <param name="inBetween">Function to generate the new elements</param>
+        /// <returns>Sequence with new elements in it</returns>
+        public static IEnumerable<T> Inject<T>(this IEnumerable<T> source,
+                                               Func<T?, T?, T>     inBetween)
+            where T : class
+        {
+            using (var e = source.GetEnumerator())
+            {
+                if (e.MoveNext())
+                {
+                    yield return inBetween(null, e.Current);
+                    yield return e.Current;
+                    var prev = e.Current;
+                    while (e.MoveNext())
+                    {
+                        yield return inBetween(prev, e.Current);
+                        yield return e.Current;
+                        prev = e.Current;
+                    }
+                    yield return inBetween(prev, null);
+                }
+                else
+                {
+                    yield return inBetween(null, null);
+                }
+            }
+        }
+
+        /// <summary>
         /// Generate a sequence from a linked list
         /// </summary>
         /// <param name="start">The first node</param>

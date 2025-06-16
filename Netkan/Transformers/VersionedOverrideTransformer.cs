@@ -17,29 +17,19 @@ namespace CKAN.NetKAN.Transformers
     /// </summary>
     internal sealed class VersionedOverrideTransformer : ITransformer
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(VersionedOverrideTransformer));
-
-        private readonly List<string?> _before;
-        private readonly List<string?> _after;
-
-        public string Name => "versioned_override";
-
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="before">The steps before which this override should be applied. If null, apply in the default transformer between the epoch transformer and the download attribute transformer.</param>
+        /// <param name="after">The steps after which this override should be applied. If null, apply in the default transformer between the epoch transformer and the download attribute transformer.</param>
         public VersionedOverrideTransformer(IEnumerable<string?> before,
                                             IEnumerable<string?> after)
         {
-            _before = new List<string?>(before);
-            _after  = new List<string?>(after);
+            _before = before.ToArray();
+            _after  = after.ToArray();
         }
 
-        public void AddBefore(string before)
-        {
-            _before.Add(before);
-        }
-
-        public void AddAfter(string after)
-        {
-            _after.Add(after);
-        }
+        public string Name => "versioned_override";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
@@ -169,5 +159,10 @@ namespace CKAN.NetKAN.Transformers
                                     string.Format("Unknown x_netkan_override comparator: {0}",
                                                   op)),
                };
+
+        private readonly string?[] _before;
+        private readonly string?[] _after;
+
+        private static readonly ILog Log = LogManager.GetLogger(typeof(VersionedOverrideTransformer));
     }
 }
