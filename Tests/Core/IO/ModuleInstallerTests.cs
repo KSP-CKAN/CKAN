@@ -16,7 +16,7 @@ using CKAN.Games.KerbalSpaceProgram;
 using Tests.Core.Configuration;
 using Tests.Data;
 
-namespace Tests.Core
+namespace Tests.Core.IO
 {
     [TestFixture]
     public class ModuleInstallerTests
