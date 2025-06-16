@@ -1,6 +1,6 @@
-using CKAN;
-
 using NUnit.Framework;
+
+using CKAN;
 
 namespace Tests.Core.Types
 {

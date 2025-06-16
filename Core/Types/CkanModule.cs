@@ -46,6 +46,7 @@ namespace CKAN
         [JsonProperty("kind", Order = 31,
                       NullValueHandling = NullValueHandling.Ignore,
                       DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
+        [JsonConverter(typeof(JsonReleaseStatusConverter))]
         [DefaultValue(ModuleKind.package)]
         public ModuleKind kind = ModuleKind.package;
 
