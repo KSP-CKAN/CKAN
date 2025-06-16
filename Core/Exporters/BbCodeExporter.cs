@@ -1,5 +1,6 @@
 using System.IO;
 using System.Linq;
+using System.Text;
 
 namespace CKAN.Exporters
 {
@@ -7,7 +8,7 @@ namespace CKAN.Exporters
     {
         public void Export(RegistryManager manager, IRegistryQuerier registry, Stream stream)
         {
-            using (var writer = new StreamWriter(stream))
+            using (var writer = new StreamWriter(stream, Encoding.UTF8, 4096, true))
             {
                 writer.WriteLine("[LIST]");
 
