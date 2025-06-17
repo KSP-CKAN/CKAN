@@ -403,6 +403,8 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                 "-p _build",
                                 "-p Tests",
                                 "-p ConsoleUI",
+                                "-p GUI/Dialogs",
+                                "-p GUI/Controls",
                                 $"-i {testDir}",
                                 $"-o {instrumentedDir}",
                                 "--save");

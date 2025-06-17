@@ -62,7 +62,7 @@ public partial class BuildContext : FrostingContext
     {
         var rootDirectory = Environment.WorkingDirectory.GetParent();
 
-        var versionMatch = System.IO.File
+        var versionMatch = File
             .ReadAllLines(rootDirectory.CombineWithFilePath("CHANGELOG.md").FullPath)
             .Select(i => VersionRegex().Match(i))
             .First(i => i.Success);
@@ -148,9 +148,8 @@ public partial class BuildContext : FrostingContext
             return null;
         }
 
-        var quotes = System.IO.File
-            .ReadAllText(file.FullPath)
-            .Split("%", StringSplitOptions.RemoveEmptyEntries);
+        var quotes = File.ReadAllText(file.FullPath)
+                         .Split("%", StringSplitOptions.RemoveEmptyEntries);
 
         return quotes.Length > 0 ? quotes[new Random().Next(quotes.Length)] : null;
     }
