@@ -36,7 +36,8 @@ namespace CKAN
         public NetModuleCache? Cache { get; private set; }
         public event Action<NetModuleCache>? CacheChanged;
 
-        public readonly SteamLibrary SteamLibrary = new SteamLibrary();
+        public  SteamLibrary  SteamLibrary => steamLib ??= new SteamLibrary();
+        private SteamLibrary? steamLib;
 
         private static readonly ILog log = LogManager.GetLogger(typeof (GameInstanceManager));
 
