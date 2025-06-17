@@ -672,11 +672,11 @@ namespace CKAN
                                            RelationshipDescriptor?          relationshipDescriptor = null,
                                            IReadOnlyCollection<CkanModule>? installed              = null,
                                            IReadOnlyCollection<CkanModule>? toInstall              = null)
-            => getAvail(identifier)?.Select(am => am.Latest(stabilityTolerance, gameVersion, relationshipDescriptor,
-                                                            installed, toInstall))
-                                    .OfType<CkanModule>()
-                                    .OrderByDescending(m => m.version)
-                                    .FirstOrDefault();
+            => getAvail(identifier).Select(am => am.Latest(stabilityTolerance, gameVersion, relationshipDescriptor,
+                                                           installed, toInstall))
+                                   .OfType<CkanModule>()
+                                   .OrderByDescending(m => m.version)
+                                   .FirstOrDefault();
 
         /// <summary>
         /// Find modules with a given identifier
