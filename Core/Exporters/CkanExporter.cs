@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 
 namespace CKAN.Exporters
 {
@@ -8,7 +9,7 @@ namespace CKAN.Exporters
                            IRegistryQuerier registry,
                            Stream           stream)
         {
-            using (var writer = new StreamWriter(stream))
+            using (var writer = new StreamWriter(stream, Encoding.UTF8, 4096, true))
             {
                 writer.Write(CkanModule.ToJson(manager.GenerateModpack(false, false)));
             }

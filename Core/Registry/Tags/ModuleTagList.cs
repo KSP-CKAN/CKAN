@@ -10,7 +10,7 @@ namespace CKAN
     public class ModuleTagList
     {
         [JsonProperty("hidden_tags")]
-        public HashSet<string> HiddenTags = new HashSet<string>();
+        public readonly HashSet<string> HiddenTags = new HashSet<string>();
 
         public static readonly string DefaultPath =
             Path.Combine(CKANPathUtils.AppDataPath, "tags.json");

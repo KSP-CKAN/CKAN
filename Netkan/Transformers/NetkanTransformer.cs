@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using CKAN.Games;
+using CKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
@@ -9,7 +11,6 @@ using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Sources.Gitlab;
 using CKAN.NetKAN.Sources.Jenkins;
 using CKAN.NetKAN.Sources.Spacedock;
-using CKAN.Games;
 using CKAN.NetKAN.Sources.SourceForge;
 
 namespace CKAN.NetKAN.Transformers
@@ -19,11 +20,6 @@ namespace CKAN.NetKAN.Transformers
     /// </summary>
     internal sealed class NetkanTransformer : ITransformer
     {
-        private readonly List<ITransformer> _transformers;
-        private readonly IValidator _validator;
-
-        public string Name => "netkan";
-
         public NetkanTransformer(IHttpService   http,
                                  IFileService   fileService,
                                  IModuleService moduleService,
@@ -38,7 +34,7 @@ namespace CKAN.NetKAN.Transformers
             var ghApi = new GithubApi(http, githubToken);
             var glApi = new GitlabApi(http, gitlabToken);
             var sfApi = new SourceForgeApi(http);
-            _transformers = InjectVersionedOverrideTransformers(new List<ITransformer>
+            _transformers = InjectVersionedOverrideTransformers(new ITransformer[]
             {
                 new StagingTransformer(game),
                 new MetaNetkanTransformer(http, ghApi),
@@ -68,8 +64,10 @@ namespace CKAN.NetKAN.Transformers
                 new OptimusPrimeTransformer(),
                 new StripNetkanMetadataTransformer(),
                 new PropertySortTransformer()
-            });
+            }).ToArray();
         }
+
+        public string Name => "netkan";
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
@@ -87,41 +85,22 @@ namespace CKAN.NetKAN.Transformers
                                        (modules, tr) => modules.SelectMany(meta => tr.Transform(meta, opts))
                                                                .ToArray());
 
-        private static List<ITransformer> InjectVersionedOverrideTransformers(List<ITransformer> transformers)
-        {
-            var result = new List<ITransformer>();
+        private static IEnumerable<ITransformer> InjectVersionedOverrideTransformers(IEnumerable<ITransformer> transformers)
+            => transformers.Inject((after, before) => (after, before) switch
+                                   {
+                                       (null, ITransformer b) =>
+                                           new VersionedOverrideTransformer(new[] { b.Name, "$all" },
+                                                                            Enumerable.Repeat("$none", 1)),
+                                       (ITransformer a, ITransformer b) =>
+                                           new VersionedOverrideTransformer(Enumerable.Repeat(b.Name, 1),
+                                                                            Enumerable.Repeat(a.Name, 1)),
+                                       (ITransformer a, null) =>
+                                           new VersionedOverrideTransformer(Enumerable.Repeat("$none", 1),
+                                                                            new[] { a.Name, "$all" }),
+                                       _ => throw new Kraken(),
+                                   });
 
-            for (var i = 0; i < transformers.Count; i++)
-            {
-                var before = new List<string>();
-                var after = new List<string>();
-
-                before.Add(transformers[i].Name);
-
-                if (i - 1 >= 0)
-                {
-                    after.Add(transformers[i - 1].Name);
-                }
-
-                result.Add(new VersionedOverrideTransformer(before, after));
-                result.Add(transformers[i]);
-            }
-
-            if (result.Count != 0)
-            {
-                if (result.First() is VersionedOverrideTransformer firstVersionedOverride)
-                {
-                    firstVersionedOverride.AddBefore("$all");
-                    firstVersionedOverride.AddAfter("$none");
-                }
-
-                result.Add(new VersionedOverrideTransformer(
-                    new[] { "$none" },
-                    new[] { result.Last().Name, "$all" }
-                ));
-            }
-
-            return result;
-        }
+        private readonly ITransformer[] _transformers;
+        private readonly IValidator     _validator;
     }
 }

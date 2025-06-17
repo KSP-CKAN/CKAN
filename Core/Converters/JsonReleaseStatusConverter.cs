@@ -20,8 +20,5 @@ namespace CKAN
                 _       => base.ReadJson(reader, objectType,
                                          existingValue, serializer),
             };
-
-        public override bool CanWrite => true;
-        public override bool CanConvert(Type object_type) => false;
     }
 }

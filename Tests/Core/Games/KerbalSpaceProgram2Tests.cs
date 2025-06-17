@@ -1,8 +1,9 @@
+using System.Linq;
+
 using NUnit.Framework;
 
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram2;
-using System.Linq;
 
 namespace Tests.Core.Games
 {

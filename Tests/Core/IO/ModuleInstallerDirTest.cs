@@ -12,7 +12,7 @@ using Tests.Data;
 
 using CKAN.IO;
 
-namespace Tests.Core
+namespace Tests.Core.IO
 {
     /// <summary>
     /// Tests the AddParentDirectories method in CKAN.ModuleInstaller

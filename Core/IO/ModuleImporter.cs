@@ -57,9 +57,7 @@ namespace CKAN.IO
                                   string.Join(", ", notFound.Select(fi => fi.Name)));
             }
             var installable = matched.Values.SelectMany(modules => modules)
-                                            .Where(m => registry.IdentifierCompatible(m.identifier,
-                                                                                      instance.StabilityToleranceConfig,
-                                                                                      instance.VersionCriteria()))
+                                            .Where(m => m.IsCompatible(instance.VersionCriteria()))
                                             .ToHashSet();
 
             var deletable = matched.Keys.ToList();

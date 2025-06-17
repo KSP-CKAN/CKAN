@@ -10,7 +10,7 @@ using CKAN.IO;
 
 using Tests.Data;
 
-namespace Tests.Core
+namespace Tests.Core.IO
 {
     [TestFixture]
     public class FileIdentifierTests

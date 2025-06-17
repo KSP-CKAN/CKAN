@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Tests.Core.Types
 {
     [TestFixture]
-    public class License
+    public class LicenseTests
     {
         [Test]
         public void LicenseGood()
@@ -25,4 +25,3 @@ namespace Tests.Core.Types
         }
     }
 }
-

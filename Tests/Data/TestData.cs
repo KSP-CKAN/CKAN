@@ -37,6 +37,12 @@ namespace Tests.Data
             => Path.Combine(DataDir(), "DogeCoinFlag-1.01-avc.zip");
 
         /// <summary>
+        /// Returns the full path to DogeCoinFlag-1.01-avc.zip
+        /// </summary>
+        public static string DogeCoinFlagImportableZip()
+            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-importable.zip");
+
+        /// <summary>
         /// Returns DogeCoinFlag.zip, with extra files inside.
         /// Great for testing filters.
         /// </summary>
