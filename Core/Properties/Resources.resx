@@ -171,6 +171,7 @@ Update CKAN to load this game instance.</value></data>
   <data name="ModuleInstallDescriptorInvalidInstallPath" xml:space="preserve"><value>Invalid installation path: {0}</value></data>
   <data name="ModuleInstallDescriptorUnknownInstallPath" xml:space="preserve"><value>Unknown install_to: {0}</value></data>
   <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve"><value>No files found matching {0} to install!</value></data>
+  <data name="ModuleInstallDescriptorNotMatchingLeadingPath" xml:space="preserve"><value>Output file name ({0}) not matching leading path of stanza ({1})</value></data>
   <data name="ModuleInstallDescriptorAsNoPathSeparators" xml:space="preserve"><value>`as` may not include path separators</value></data>
   <data name="RelationshipDescriptorMinVersionOnly" xml:space="preserve"><value>{0} {1} or later</value></data>
   <data name="RelationshipDescriptorMaxVersionOnly" xml:space="preserve"><value>{0} {1} or earlier</value></data>

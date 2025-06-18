@@ -496,7 +496,7 @@ namespace CKAN
                 if (!leadingRE.IsMatch(outputName))
                 {
                     throw new BadMetadataKraken(null, string.Format(
-                        "Output file name ({0}) not matching leading path of stanza ({1})",
+                        Properties.Resources.ModuleInstallDescriptorNotMatchingLeadingPath,
                         outputName, leadingPathToRemove));
                 }
                 // Strip off leading path name
