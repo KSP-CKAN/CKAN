@@ -101,10 +101,10 @@ namespace CKAN.NetKAN.Transformers
                     return new Metadata(json);
 
                 case 0:
-                    throw new Exception("Could not find any matching artifacts");
+                    throw new Kraken("Could not find any matching artifacts");
 
                 default:
-                    throw new Exception("Found too many matching artifacts");
+                    throw new Kraken("Found too many matching artifacts");
             }
         }
 

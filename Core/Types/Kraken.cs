@@ -637,12 +637,12 @@ namespace CKAN
         }
     }
 
-    public class InvalidModuleAttributesException : Exception
+    public class InvalidModuleAttributesKraken : Kraken
     {
         private readonly CkanModule? module;
         private readonly string      why;
 
-        public InvalidModuleAttributesException(string why, CkanModule? module = null)
+        public InvalidModuleAttributesKraken(string why, CkanModule? module = null)
             : base(why)
         {
             this.why = why;
@@ -658,7 +658,7 @@ namespace CKAN
                 modname = module.identifier;
             }
 
-            return string.Format("[InvalidModuleAttributesException] {0} in {1}", why, modname);
+            return string.Format("[InvalidModuleAttributesKraken] {0} in {1}", why, modname);
         }
     }
 }
