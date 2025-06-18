@@ -3,8 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
 
 using NUnit.Framework;
+using log4net;
+using log4net.Core;
 
 using CKAN.IO;
 using Tests.Data;
@@ -61,6 +64,7 @@ namespace Tests.Core.IO
         public void Constructor_WithCorruptedLibrary_Works()
         {
             // Arrange
+            LogManager.GetRepository(Assembly.GetExecutingAssembly()).Threshold = Level.Off;
             using (var dir = new TemporaryDirectory())
             {
                 // Library folder - Non-consecutive indexes
