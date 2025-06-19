@@ -1,5 +1,6 @@
-using CKAN;
 using NUnit.Framework;
+
+using CKAN;
 
 namespace Tests.Core.Types
 {
@@ -9,8 +10,8 @@ namespace Tests.Core.Types
         [Test]
         public void LicenseGood()
         {
-            var license = new CKAN.License("GPL-3.0");
-            Assert.IsInstanceOf<CKAN.License>(license);
+            var license = new License("GPL-3.0");
+            Assert.IsInstanceOf<License>(license);
             Assert.AreEqual("GPL-3.0", license.ToString());
         }
 
@@ -20,7 +21,7 @@ namespace Tests.Core.Types
             Assert.Throws<BadMetadataKraken>(delegate
             {
                 // Not a valid license string, contains spaces.
-                new CKAN.License("GPL 3.0");
+                new License("GPL 3.0");
             });
         }
     }
