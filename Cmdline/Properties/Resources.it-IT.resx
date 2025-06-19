@@ -213,10 +213,6 @@ Aggiornamento consigliato!</value>
   <data name="UserSelectionTooSmall" xml:space="preserve">
     <value>Il numero inserito è troppo piccolo</value>
   </data>
-  <data name="UserProgressDownloadSubstring" xml:space="preserve">
-    <value>download</value>
-    <comment>Progress update messages containing this will display a percentage and overwrite the same line on the screen</comment>
-  </data>
   <data name="AuthTokenHostHeader" xml:space="preserve">
     <value>Host</value>
   </data>
@@ -517,9 +513,6 @@ Prova con `ckan list` per avere un elenco delle mod installate.</value>
   <data name="RemoveCancelled" xml:space="preserve">
     <value>Rimozione interrotta: {0}</value>
   </data>
-  <data name="RemoveNothing" xml:space="preserve">
-    <value>Nessuna mod selezionata, nessuna operazione da eseguire</value>
-  </data>
   <data name="RepairHelpSummary" xml:space="preserve">
     <value>Tentativo di varie riparazioni automatiche</value>
   </data>
@@ -543,9 +536,6 @@ Prova con `ckan list` per avere un elenco delle mod installate.</value>
   </data>
   <data name="ReplaceCancelled" xml:space="preserve">
     <value>Sostituzione annullata su richiesta dell'utente</value>
-  </data>
-  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve">
-    <value>Dipendenze non soddisfatte per la sostituzione, {0} richiede {1} {2} ma non è presente nell'indice o non è disponibile per la tua versione di {3}</value>
   </data>
   <data name="ReplaceNotFound" xml:space="preserve">
     <value>Nessuna sostituzione trovata</value>
@@ -600,9 +590,6 @@ Prova con `ckan list` per avere un elenco delle mod installate.</value>
   </data>
   <data name="RepoSet" xml:space="preserve">
     <value>Imposta {0} repository a '{1}'</value>
-  </data>
-  <data name="SearchNoTerm" xml:space="preserve">
-    <value>Nessun termine di ricerca?</value>
   </data>
   <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve">
     <value>Trovate {0} mod compatibili e {1} incompatibili che corrispondono a "{2}" per "{3}"</value>

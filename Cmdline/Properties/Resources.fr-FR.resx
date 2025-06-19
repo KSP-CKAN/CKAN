@@ -217,10 +217,6 @@ Si vous n'avez vraiment pas le choix, le paramètre "--asroot" permet d'utiliser
   <data name="UserSelectionTooSmall" xml:space="preserve">
     <value>Le nombre saisi est trop petit</value>
   </data>
-  <data name="UserProgressDownloadSubstring" xml:space="preserve">
-    <value>téléchargement</value>
-    <comment>Progress update messages containing this will display a percentage and overwrite the same line on the screen</comment>
-  </data>
   <data name="AuthTokenHostHeader" xml:space="preserve">
     <value>Hôte</value>
   </data>
@@ -532,9 +528,6 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="RemoveCancelled" xml:space="preserve">
     <value>Retrait annulé : {0}</value>
   </data>
-  <data name="RemoveNothing" xml:space="preserve">
-    <value>Aucun mod sélectionné, rien à faire</value>
-  </data>
   <data name="RepairHelpSummary" xml:space="preserve">
     <value>Essayer des réparations automatiques diverses</value>
   </data>
@@ -558,9 +551,6 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   </data>
   <data name="ReplaceCancelled" xml:space="preserve">
     <value>Remplacements annulés à la demande de l'utilisateur</value>
-  </data>
-  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve">
-    <value>Dépendances insatisfaites pour le remplacement, {0} nécessite {1} {2} mais il n'est pas listé dans l'index, ou indisponible pour votre version de {3}</value>
   </data>
   <data name="ReplaceNotFound" xml:space="preserve">
     <value>Aucun remplacement trouvé</value>
@@ -615,9 +605,6 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   </data>
   <data name="RepoSet" xml:space="preserve">
     <value>Mettre {0} le répertoire à '{1}'</value>
-  </data>
-  <data name="SearchNoTerm" xml:space="preserve">
-    <value>Aucun terme à chercher ?</value>
   </data>
   <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve">
     <value>{0} mod·s compatible·s et {1} mod·s incompatible·s correspondent à "{2}" par "{3}"</value>

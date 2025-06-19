@@ -246,9 +246,6 @@
   <data name="FileSelectSelect" xml:space="preserve">
     <value>Wybierz</value>
   </data>
-  <data name="FileSelectImport" xml:space="preserve">
-    <value>Import</value>
-  </data>
   <data name="FileSelectDirSize" xml:space="preserve">
     <value>&lt;DIR&gt;</value>
   </data>
@@ -452,10 +449,6 @@ Edytować tokeny uwierzytelniania?</value>
   <data name="InstallBadMetadata" xml:space="preserve">
     <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
   </data>
-  <data name="InstallUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} wymaga {1}, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji gry.
-{2}</value>
-  </data>
   <data name="InstallModuleNotFound" xml:space="preserve">
     <value>Moduł {0} wymagany, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji gry.
 {1}</value>
@@ -615,9 +608,6 @@ Jeśli go odinstalujesz, CKAN nie będzie mógł go ponownie zainstalować.</val
   </data>
   <data name="ModInfoDownloading" xml:space="preserve">
     <value>Pobieranie {0}</value>
-  </data>
-  <data name="ModInfoDownloadCorrupted" xml:space="preserve">
-    <value>Pobieranie nie powiodło się, plik jest uszkodzony</value>
   </data>
   <data name="ModInfoDownloadFailed" xml:space="preserve">
     <value>Pobieranie nie powiodło się: {0}</value>

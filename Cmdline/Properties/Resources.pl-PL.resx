@@ -502,9 +502,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   <data name="RemoveCancelled" xml:space="preserve">
     <value>Usuwanie przerwane: {0}</value>
   </data>
-  <data name="RemoveNothing" xml:space="preserve">
-    <value>Nie wybrano modyfikacji, nie ma nic do zrobienia</value>
-  </data>
   <data name="RepairHelpSummary" xml:space="preserve">
     <value>Próba różnych automatycznych napraw</value>
   </data>
@@ -529,9 +526,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   <data name="ReplaceCancelled" xml:space="preserve">
     <value>Stosowanie zamienników anulowane na żądanie użytkownika</value>
   </data>
-  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve">
-    <value>Brakujące zależności dla zamiennika, {0} wymaga {1} {2}, ale nie są wymienione w indeksie lub nie są dostępne dla twojej wersji {3}</value>
-  </data>
   <data name="ReplaceNotFound" xml:space="preserve">
     <value>Nie znaleziono zamienników</value>
   </data>
@@ -546,9 +540,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   </data>
   <data name="RepoAvailableFailed" xml:space="preserve">
     <value>Nie można pobrać głównej listy repozytoriów CKAN z {0}</value>
-  </data>
-  <data name="RepoListHeader" xml:space="preserve">
-    <value>Wyświetlanie wszystkich znanych repozytoriów:</value>
   </data>
   <data name="RepoAddNotFound" xml:space="preserve">
     <value>Nazwa {0} nie została znaleziona na liście głównej, proszę podać nazwę i adres Url</value>
@@ -570,9 +561,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   </data>
   <data name="RepoSet" xml:space="preserve">
     <value>Ustaw repozytorium {0} na '{1}'</value>
-  </data>
-  <data name="SearchNoTerm" xml:space="preserve">
-    <value>Brak wyszukiwanego wyrażenia?</value>
   </data>
   <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve">
     <value>Znaleziono {0} kompatybilne i {1} niekompatybilne modyfikacje pasujące do "{2}" przez "{3}"</value>

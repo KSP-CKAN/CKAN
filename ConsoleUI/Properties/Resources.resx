@@ -160,7 +160,6 @@
   <data name="FileSelectTimestampHeader" xml:space="preserve"><value>Accessed</value></data>
   <data name="FileSelectChangeDirectory" xml:space="preserve"><value>Change directory</value></data>
   <data name="FileSelectSelect" xml:space="preserve"><value>Select</value></data>
-  <data name="FileSelectImport" xml:space="preserve"><value>Import</value></data>
   <data name="FileSelectDirSize" xml:space="preserve"><value>&lt;DIR&gt;</value></data>
   <data name="AuthTokenListTitle" xml:space="preserve"><value>Authentication Tokens</value></data>
   <data name="AuthTokenListGitHubLink" xml:space="preserve"><value>Make a GitHub API token</value></data>
@@ -233,8 +232,6 @@ Please manually uninstall the mod that owns this file to install {2}.</value></d
 Edit authentication tokens now?</value></data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve"><value>Name</value></data>
   <data name="InstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for {0}: {1}</value></data>
-  <data name="InstallUnsatisfiedDependency" xml:space="preserve"><value>{0} requires {1}, but it is not listed in the index, or not available for your version of the game.
-{2}</value></data>
   <data name="InstallModuleNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your version of the game.
 {1}</value></data>
   <data name="InstallNotInstalled" xml:space="preserve"><value>{0} is not installed, can't remove</value></data>
@@ -302,7 +299,6 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModInfoBuyFromSteamStore" xml:space="preserve"><value>Buy from Steam store</value></data>
   <data name="ModInfoBuyFromKSPStoreOrSteamStore" xml:space="preserve"><value>Buy from KSP store or Steam store</value></data>
   <data name="ModInfoDownloading" xml:space="preserve"><value>Downloading {0}</value></data>
-  <data name="ModInfoDownloadCorrupted" xml:space="preserve"><value>Download failed, file is corrupted</value></data>
   <data name="ModInfoDownloadFailed" xml:space="preserve"><value>Download failed: {0}</value></data>
   <data name="ProgressTitle" xml:space="preserve"><value>Progress</value></data>
   <data name="ProgressMessages" xml:space="preserve"><value>Messages</value></data>
@@ -350,7 +346,6 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModListExportMenuTip" xml:space="preserve"><value>Save your mod list</value></data>
   <data name="ModListInstallFromCkanMenu" xml:space="preserve"><value>Install from .ckan file...</value></data>
   <data name="ModListInstallFromCkanMenuTip" xml:space="preserve"><value>Install modpacks or custom modules</value></data>
-  <data name="ModListInstallFromCkanFailed" xml:space="preserve"><value>Install from .ckan file failed!</value></data>
   <data name="CkanFileSelectTitle" xml:space="preserve"><value>Choose .ckan Files to Install</value></data>
   <data name="CkanFileSelectHeader" xml:space="preserve"><value>Install</value></data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve"><value>Game instance settings...</value></data>

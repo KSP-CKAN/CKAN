@@ -140,12 +140,6 @@
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
     <value>Pobieranie anulowane przez użytkownika</value>
   </data>
-  <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/sek - {1} pozostało</value>
-  </data>
-  <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
-    <value>Nie udało się pobrać "{0}", próbuje ponownie z "{1}"</value>
-  </data>
   <data name="NetAsyncDownloaderValidating" xml:space="preserve">
     <value>Zakończono pobieranie {0}, weryfikowanie i zapisywanie do pamięci podręcznej...</value>
   </data>
@@ -172,9 +166,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
     <value>{0}: {1} nie jest prawidłowym plikiem ZIP: {2}</value>
   </data>
-  <data name="NetModuleCacheMismatchSHA1" xml:space="preserve">
-    <value>{0}: {1} ma SHA1 {2}, powinno być {3}</value>
-  </data>
   <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
     <value>{0}: {1} ma SHA256 {2}, powinno być {3}</value>
   </data>
@@ -192,27 +183,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   </data>
   <data name="NetRepoUpdating" xml:space="preserve">
     <value>Aktualizowanie {0}</value>
-  </data>
-  <data name="NetRepoUpdated" xml:space="preserve">
-    <value>Zaktualizowano {0} ({1} modułów)</value>
-  </data>
-  <data name="NetRepoSaving" xml:space="preserve">
-    <value>Zapisywanie modułów do rejestru</value>
-  </data>
-  <data name="NetRepoSaved" xml:space="preserve">
-    <value>Rejestr zapisany</value>
-  </data>
-  <data name="NetRepoUpdatedAll" xml:space="preserve">
-    <value>Repozytoria zaktualizowane</value>
-  </data>
-  <data name="NetRepoNoModules" xml:space="preserve">
-    <value>Nie znaleziono modułów!</value>
-  </data>
-  <data name="NetRepoFailedDownload" xml:space="preserve">
-    <value>Nie udało się pobrać {0}: {1}</value>
-  </data>
-  <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
-    <value>Znaleziono następujące niespójności:</value>
   </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` nie powinno być połączone z `{0}`</value>
@@ -246,9 +216,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   </data>
   <data name="CkanModuleNotAvailable" xml:space="preserve">
     <value>Moduł {0} wersja {1} nie jest dostępny</value>
-  </data>
-  <data name="CkanModuleNotInstalledOrAvailable" xml:space="preserve">
-    <value>Moduł {0} nie jest zainstalowany lub dostępny</value>
   </data>
   <data name="CkanModuleAllVersions" xml:space="preserve">
     <value>Wszystkie wersje</value>
@@ -388,9 +355,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>Nie można uruchomić gry.
 
 {0}</value></data>
-  <data name="ModuleInstallerDownloading" xml:space="preserve">
-    <value>Pobieranie "{0}"</value>
-  </data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve">
     <value>Nic do zainstalowania</value>
   </data>
@@ -409,9 +373,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="ModuleInstallerCommitting" xml:space="preserve">
     <value>Zatwierdzanie zmian systemu plików</value>
   </data>
-  <data name="ModuleInstallerRescanning" xml:space="preserve">
-    <value>Ponowne skanowanie {0}</value>
-  </data>
   <data name="ModuleInstallerDone" xml:space="preserve">
     <value>Gotowe!</value>
   </data>
@@ -420,9 +381,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   </data>
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve">
     <value>Próbuje zainstalować {0} ale plik nie jest pobrany bądź jest uszkodzony</value>
-  </data>
-  <data name="ModuleInstallerMetapackage" xml:space="preserve">
-    <value>Nie można zainstalować Metapackage!</value>
   </data>
   <data name="ModuleInstallerDLC" xml:space="preserve">
     <value>Nie można zainstalować DLC!</value>
@@ -492,14 +450,8 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve">
     <value>Nie można zastąpić {0} ponieważ nie jest zainstalowany. Spróbuj zainstalować {1}.</value>
   </data>
-  <data name="ModuleInstallerImporting" xml:space="preserve">
-    <value>Importowanie {0}...</value>
-  </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>Już w folderze cache: {0}</value>
-  </data>
-  <data name="ModuleInstallerImportingMod" xml:space="preserve">
-    <value>Importowanie {0} {1}...</value>
   </data>
   <data name="ModuleInstallerImportNotFound" xml:space="preserve">
     <value>Nie znaleziono w indeksie: {0}</value>
@@ -515,12 +467,6 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   </data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve">
     <value>Nie znaleziono modułu: {0} {1}</value>
-  </data>
-  <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve">
-    <value>{0} zależność od {1} w wersji {2} nie jest spełniona</value>
-  </data>
-  <data name="KrakenAny" xml:space="preserve">
-    <value>(dowolne)</value>
   </data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve">
     <value>Moduł {0} jest dostarczony przez więcej niż jeden dostępny moduł. Wybierz jeden z następujących:</value>
@@ -566,9 +512,6 @@ Oznacza to, że inna instancja CKAN prawdopodobnie ma dostęp do tej instalacji 
 
 Czy chcesz usunąć ten plik blokady, aby wymusić dostęp?</value>
   </data>
-  <data name="NotEnoughSpaceToDownload" xml:space="preserve">
-    <value>Za mało miejsca w folderze tymczasowym do pobrania modułów!</value>
-  </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>Za mało miejsca w folderze cache, aby przechowywać moduły!</value>
   </data>
@@ -593,12 +536,6 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   <data name="RelationshipResolverAnUnmanaged" xml:space="preserve">
     <value>niezarządzane DLL lub DLC</value>
   </data>
-  <data name="RelationshipResolverUnmanaged" xml:space="preserve">
-    <value>Niezarządzany</value>
-  </data>
-  <data name="RelationshipResolverModNotInList" xml:space="preserve">
-    <value>Modyfikacja {0} nie znajduje się na liście</value>
-  </data>
   <data name="RelationshipResolverInstalledReason" xml:space="preserve">
     <value>Aktualnie zainstalowane</value>
   </data>
@@ -619,9 +556,6 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>Zalecane przez {0}</value>
-  </data>
-  <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} ma niespełnioną zależność: {1} nie jest zainstalowany</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapackage)</value>

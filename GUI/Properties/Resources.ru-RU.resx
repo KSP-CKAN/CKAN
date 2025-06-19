@@ -126,9 +126,7 @@
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>Конечная папка не пуста: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Клонирование не удалось: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Клонирование успешно завершено.</value></data>
-  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>Создание новой сборки...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>Это название уже используется.</value></data>
-  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>Создание успешно завершено.</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;НЕТ&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>Игра была обновлена с последнего изменения данных настроек. Убедитесь в их правильности.</value></data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (предыдущая версия игры: {1})</value></data>
@@ -144,13 +142,11 @@
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>Существуют неразрешённые конфликты. Выйти?&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>Выйти</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>Вернуться</value></data>
-  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>Найдены неустановленные зависимости. Выйти?</value></data>
   <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>Некоторые изменения не применены. Выйти?
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>Обновление CKAN</value></data>
   <data name="MainUpgradingTo" xml:space="preserve"><value>Обновление CKAN до {0}</value></data>
-  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0} зависит {1}, который несовместим с установленной версией игры</value></data>
   <data name="MainFilterAll" xml:space="preserve"><value>Фильтр (Все)</value></data>
   <data name="MainFilterIncompatible" xml:space="preserve"><value>Фильтр (Несовместимые)</value></data>
   <data name="MainFilterInstalled" xml:space="preserve"><value>Фильтр (Установленные)</value></data>
@@ -192,7 +188,6 @@
   <data name="MainImportFilter" xml:space="preserve"><value>Модификации (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Журнал</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Журнал</value></data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0} требует {1}, которого нет в списке, или он недоступен для установленной версии игры.</value></data>
   <data name="MainInstallNotFound" xml:space="preserve"><value>Требуется модуль {0}, которого нет в списке, или он недоступен для установленной версии игры.</value></data>
   <data name="MainInstallBadMetadata" xml:space="preserve"><value>Для модуля {0} обнаружены некорректные метаданные: {1}</value></data>
   <data name="MainInstallFileExists" xml:space="preserve"><value>О нет!
@@ -232,21 +227,12 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Открыть настройки сейчас?</value></data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>Открыть настройки</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>Нет</value></data>
-  <data name="MainInstallModSuccess" xml:space="preserve"><value>Модуль «{0}» успешно установлен</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>Успех!</value></data>
-  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>Отмена совершена слишком поздно, процесс завершён!</value></data>
-  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>Пользователь отменил процесс, однако модификации уже были установлены/удалены.</value></data>
-  <data name="MainInstallProcessComplete" xml:space="preserve"><value>Процесс завершён!</value></data>
-  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>Процесс отменён пользователем!</value></data>
-  <data name="MainInstallCanceledManually" xml:space="preserve"><value>Пользователь отменил процесс!</value></data>
-  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>Установка/удаление отменены!</value></data>
   <data name="MainInstallErrorInstalling" xml:space="preserve"><value>Ошибка в процессе установки!</value></data>
-  <data name="MainInstallUnknownError" xml:space="preserve"><value>Возникла неизвестная ошибка, попробуйте ещё раз!</value></data>
   <data name="MainInstallKnownError" xml:space="preserve"><value>Если сообщение выше сообщает об ошибке загрузки, попробуйте ещё раз. В противном случае отправьте отчёт об ошибке.
 Если вы подозреваете ошибку в метаданных: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Если вы подозреваете ошибку в клиенте: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Установка не удалась!</value></data>
-  <data name="MainInstallProvidedBy" xml:space="preserve"><value>Модуль {0} содержится в нескольких модулях, выберите один из них:</value></data>
   <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение '{0}'.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>Н/Д</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (виртуальный)</value></data>
@@ -269,9 +255,6 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Загрузка модулей</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>Загрузка реестра...</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>Загрузка установленных модулей...</value></data>
-  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>Загрузка доступных модулей...</value></data>
-  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>Загрузка несовместимых модулей...</value></data>
-  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>Восстановление списка изменений...</value></data>
   <data name="MainModListPreservingNew" xml:space="preserve"><value>Сохранение новых флагов...</value></data>
   <data name="MainModListPopulatingList" xml:space="preserve"><value>Заполнение списка модификаций...</value></data>
   <data name="MainModListUpdatingFilters" xml:space="preserve"><value>Обновление фильтров...</value></data>
@@ -285,16 +268,12 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
   <data name="MainModListNotInstalled" xml:space="preserve"><value>Не установленные ({0})</value></data>
   <data name="MainModListIncompatible" xml:space="preserve"><value>Несовместимые ({0})</value></data>
   <data name="MainModListAll" xml:space="preserve"><value>Все ({0})</value></data>
-  <data name="MainModListUpdatingTray" xml:space="preserve"><value>Обновление панели...</value></data>
   <data name="MainModListAutoDetected" xml:space="preserve"><value>АВ</value></data>
-  <data name="MainModListUnknownFilter" xml:space="preserve"><value>Неизвестный тип фильтра {0} в IsModInFilter</value></data>
-  <data name="MainRecommendationsTitle" xml:space="preserve"><value>Выберите рекомендованные, предложенные или вспомогательные модификации</value></data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>Не найдено рекомендованных, предложенных или вспомогательных модификаций.</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>Обновление репозиториев</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>Поиск DLC и вручную установленных модулей...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>Соединение с репозиторием...</value></data>
   <data name="MainRepoUpdating" xml:space="preserve"><value>Обновление репозиториев...</value></data>
-  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>Не удалось подключиться к репозиторию. Исключение: {0}</value></data>
   <data name="MainRepoUpToDate" xml:space="preserve"><value>Репозитории уже обновлены.</value></data>
   <data name="MainRepoFailed" xml:space="preserve"><value>Не удалось обновить репозитории!</value></data>
   <data name="MainRepoSuccess" xml:space="preserve"><value>Репозитории успешно обновлены.</value></data>
@@ -311,7 +290,6 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>Папка «{0}» не существует.</value></data>
   <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (НЕВЕРНО)</value></data>
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (ЗАБЛОКИРОВАНО)</value></data>
-  <data name="NewRepoDialogFailed" xml:space="preserve"><value>Не удалось получить список.</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>Плагины CKAN (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} файлов, {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>Неверный путь: {0}</value></data>

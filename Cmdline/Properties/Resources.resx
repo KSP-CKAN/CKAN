@@ -158,7 +158,6 @@ If you must run as an administrator, the `--asroot` parameter will bypass this c
   <data name="UserSelectionNotNumber" xml:space="preserve"><value>The input is not a number</value></data>
   <data name="UserSelectionTooLarge" xml:space="preserve"><value>The number in the input is too large</value></data>
   <data name="UserSelectionTooSmall" xml:space="preserve"><value>The number in the input is too small</value></data>
-  <data name="UserProgressDownloadSubstring" xml:space="preserve"><value>download</value><comment>Progress update messages containing this will display a percentage and overwrite the same line on the screen</comment></data>
   <data name="AuthTokenHostHeader" xml:space="preserve"><value>Host</value></data>
   <data name="AuthTokenTokenHeader" xml:space="preserve"><value>Token</value></data>
   <data name="AuthTokenHelpSummary" xml:space="preserve"><value>Manage authentication tokens</value></data>
@@ -292,7 +291,6 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="RemoveDLCStorePage" xml:space="preserve"><value>To remove this expansion, follow the instructions for the store page from which you purchased it:
 {0}</value></data>
   <data name="RemoveCancelled" xml:space="preserve"><value>Remove aborted: {0}</value></data>
-  <data name="RemoveNothing" xml:space="preserve"><value>No mod selected, nothing to do</value></data>
   <data name="RepairHelpSummary" xml:space="preserve"><value>Attempt various automatic repairs</value></data>
   <data name="RepairUnknownCommand" xml:space="preserve"><value>Unknown command: repair {0}</value></data>
   <data name="Repaired" xml:space="preserve"><value>Registry repairs attempted. Hope it helped.</value></data>
@@ -301,7 +299,6 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="ReplaceFound" xml:space="preserve"><value>Replacement {0} {1} found for {2} {3}</value></data>
   <data name="ReplaceContinuePrompt" xml:space="preserve"><value>Continue?</value></data>
   <data name="ReplaceCancelled" xml:space="preserve"><value>Replacements canceled at user request</value></data>
-  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve"><value>Dependencies not satisfied for replacement, {0} requires {1} {2} but it is not listed in the index, or not available for your version of {3}</value></data>
   <data name="ReplaceNotFound" xml:space="preserve"><value>No replacements found</value></data>
   <data name="RepoHelpSummary" xml:space="preserve"><value>Manage CKAN repositories</value></data>
   <data name="RepoUnknownCommand" xml:space="preserve"><value>Unknown command: repo {0}</value></data>
@@ -320,7 +317,6 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="RepoForgetRemoving" xml:space="preserve"><value>Removing insensitive match "{0}"</value></data>
   <data name="RepoForgetRemoved" xml:space="preserve"><value>Successfully removed "{0}"</value></data>
   <data name="RepoSet" xml:space="preserve"><value>Set {0} repository to '{1}'</value></data>
-  <data name="SearchNoTerm" xml:space="preserve"><value>No search term?</value></data>
   <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve"><value>Found {0} compatible and {1} incompatible mods matching "{2}" by "{3}"</value></data>
   <data name="SearchFoundWithIncompat" xml:space="preserve"><value>Found {0} compatible and {1} incompatible mods matching "{2}"</value></data>
   <data name="SearchFoundByAuthor" xml:space="preserve"><value>Found {0} compatible mods matching "{1}" by "{2}"</value></data>

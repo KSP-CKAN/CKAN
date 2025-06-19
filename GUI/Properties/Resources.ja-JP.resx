@@ -128,9 +128,7 @@
   <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>複製先のフォルダが空ではありません: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>インスタンスの複製に失敗しました。: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>インスタンスの複製に成功しました。</value></data>
-  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve"><value>新規インスタンスを作成中...</value></data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>この名前は既に使われています。</value></data>
-  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve"><value>インスタンスの作成に成功しました。</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve"><value>最新の対応するゲームバージョンを確認したため、ゲームはアップデートされました。設定が正しいか確認してください。</value></data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve"><value>{0} (以前のゲームバージョン: {1})</value></data>
@@ -146,13 +144,11 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainQuitWithConflicts" xml:space="preserve"><value>衝突があります。本当に止めますか？&#xD;&#xA;&#xD;&#xA;{0}</value></data>
   <data name="MainQuit" xml:space="preserve"><value>止める</value></data>
   <data name="MainGoBack" xml:space="preserve"><value>戻る</value></data>
-  <data name="MainQuitWithUnmetDeps" xml:space="preserve"><value>依存の問題が解消されていません。本当に止めますか？</value></data>
   <data name="MainQuitWithUnappliedChanges" xml:space="preserve"><value>変更を破棄します。本当に止めますか？
 
 {0}</value></data>
   <data name="MainUpgradingWaitTitle" xml:space="preserve"><value>CKANアップデート</value></data>
   <data name="MainUpgradingTo" xml:space="preserve"><value>{0}へアップデート中</value></data>
-  <data name="MainDepNotSatisfied" xml:space="preserve"><value>{0}は{1}に依存しています, これは現在インストールされているゲームのバージョンに対応していません。</value></data>
   <data name="MainFilterAll" xml:space="preserve"><value>フィルター (全て)</value></data>
   <data name="MainFilterIncompatible" xml:space="preserve"><value>フィルター (非対応)</value></data>
   <data name="MainFilterInstalled" xml:space="preserve"><value>フィルター (インストール済)</value></data>
@@ -192,7 +188,6 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mod (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve"><value>{0}は{1}が必要ですがインデックスにリストされていません、または現在のゲームバージョンに対応していません。</value></data>
   <data name="MainInstallNotFound" xml:space="preserve"><value>Mod{0}が必要ですがインデックスにリストされていません、または現在のゲームバージョンに対応していません。</value></data>
   <data name="MainInstallBadMetadata" xml:space="preserve"><value>不正なメタデータが検出されました。Mod {0}: {1}</value></data>
   <data name="MainInstallFileExists" xml:space="preserve"><value>他のModが所有しているファイルに上書きしようとしました！
@@ -228,21 +223,12 @@ CKAN バージョン   : {3}</value></data>
 設定を開きますか？</value></data>
   <data name="MainInstallOpenSettings" xml:space="preserve"><value>設定を開く</value></data>
   <data name="MainInstallNo" xml:space="preserve"><value>いいえ</value></data>
-  <data name="MainInstallModSuccess" xml:space="preserve"><value>Mod "{0}" は無事にインストールされました。</value></data>
   <data name="MainInstallSuccess" xml:space="preserve"><value>成功!</value></data>
-  <data name="MainInstallCancelTooLate" xml:space="preserve"><value>キャンセルが遅すぎたため、プロセスは完了しました！</value></data>
-  <data name="MainInstallCancelAfterInstall" xml:space="preserve"><value>ユーザーが手動でプロセスを中止しましたが、全てのModは既に(アン)インストール/更新されました。</value></data>
-  <data name="MainInstallProcessComplete" xml:space="preserve"><value>プロセスが完了しました！</value></data>
-  <data name="MainInstallProcessCanceled" xml:space="preserve"><value>プロセスがユーザーにより中止されました！</value></data>
-  <data name="MainInstallCanceledManually" xml:space="preserve"><value>ユーザーが手動でプロセスを中止しました！</value></data>
-  <data name="MainInstallInstallCanceled" xml:space="preserve"><value>(アン)インストール/更新は中止されました！</value></data>
   <data name="MainInstallErrorInstalling" xml:space="preserve"><value>インストール中にエラーが発生しました！</value></data>
-  <data name="MainInstallUnknownError" xml:space="preserve"><value>不明なエラーが発生しました、もう一度お試しください！</value></data>
   <data name="MainInstallKnownError" xml:space="preserve"><value>上記のメッセージがダウンロード関連のエラーを示すのであれば、もう一度お試しください。そうでない場合は、問題解決に協力してくださる方は、問題提起をお願いします。
 メタデータの問題だと疑うのであれば: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 クライアントのバグが疑わしい時は: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>インストール失敗！</value></data>
-  <data name="MainInstallProvidedBy" xml:space="preserve"><value>Mod {0} は1つ以上の利用可能なModで提供されています、次のうちの一つを選んでください。:</value></data>
   <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN は拡張 '{0}' をインストールできません。</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (仮想)</value></data>
@@ -265,9 +251,6 @@ CKAN バージョン   : {3}</value></data>
   <data name="MainModListWaitTitle" xml:space="preserve"><value>Modのロード</value></data>
   <data name="MainModListLoadingRegistry" xml:space="preserve"><value>レジストリのロード中...</value></data>
   <data name="MainModListLoadingInstalled" xml:space="preserve"><value>インストールしたModをロード中...</value></data>
-  <data name="MainModListLoadingAvailable" xml:space="preserve"><value>利用可能なModをロード中...</value></data>
-  <data name="MainModListLoadingIncompatible" xml:space="preserve"><value>非対応のModをロード中...</value></data>
-  <data name="MainModListRestoringChangeset" xml:space="preserve"><value>変更セットをリストア中...</value></data>
   <data name="MainModListPreservingNew" xml:space="preserve"><value>新規フラグを保存しています...</value></data>
   <data name="MainModListPopulatingList" xml:space="preserve"><value>Modリストを集めています...</value></data>
   <data name="MainModListUpdatingFilters" xml:space="preserve"><value>フィルターを更新中...</value></data>
@@ -281,16 +264,12 @@ CKAN バージョン   : {3}</value></data>
   <data name="MainModListNotInstalled" xml:space="preserve"><value>未インストール ({0})</value></data>
   <data name="MainModListIncompatible" xml:space="preserve"><value>非対応 ({0})</value></data>
   <data name="MainModListAll" xml:space="preserve"><value>All ({0})</value></data>
-  <data name="MainModListUpdatingTray" xml:space="preserve"><value>トレイを更新中...</value></data>
   <data name="MainModListAutoDetected" xml:space="preserve"><value>AD</value></data>
-  <data name="MainModListUnknownFilter" xml:space="preserve"><value>不明なフィルタータイプ {0} ですIsModInFilter</value></data>
-  <data name="MainRecommendationsTitle" xml:space="preserve"><value>推奨、提案、サポートするModを選んでください。</value></data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve"><value>推奨、提案、またはサポートするModが見つかりませんでした。</value></data>
   <data name="MainRepoWaitTitle" xml:space="preserve"><value>リポジトリの更新</value></data>
   <data name="MainRepoScanning" xml:space="preserve"><value>DLCsと手動で導入されたModをスキャン中...</value></data>
   <data name="MainRepoContacting" xml:space="preserve"><value>リポジトリに接続中...</value></data>
   <data name="MainRepoUpdating" xml:space="preserve"><value>リポジトリの更新中...</value></data>
-  <data name="MainRepoFailedToConnect" xml:space="preserve"><value>リポジトリに接続できません。 Exception: {0}</value></data>
   <data name="MainRepoUpToDate" xml:space="preserve"><value>リポジトリは既に最新です。</value></data>
   <data name="MainRepoFailed" xml:space="preserve"><value>リポジトリの更新に失敗!</value></data>
   <data name="MainRepoSuccess" xml:space="preserve"><value>リポジトリを更新しました。</value></data>
@@ -307,7 +286,6 @@ CKAN バージョン   : {3}</value></data>
   <data name="ManageGameInstancesDirectoryDeleted" xml:space="preserve"><value>フォルダ "{0}" は存在しません。</value></data>
   <data name="ManageGameInstancesNameColumnInvalid" xml:space="preserve"><value>{0} (不正)</value></data>
   <data name="ManageGameInstancesNameColumnLocked" xml:space="preserve"><value>{0} (ロック)</value></data>
-  <data name="NewRepoDialogFailed" xml:space="preserve"><value>リストのフェッチに失敗しました。</value></data>
   <data name="PluginsDialogFilter" xml:space="preserve"><value>CKANプラグイン (*.dll)|*.dll</value></data>
   <data name="SettingsDialogSummmary" xml:space="preserve"><value>{0} 個のファイル、 {1}</value></data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve"><value>不正な場所: {0}</value></data>

@@ -246,9 +246,6 @@
   <data name="FileSelectSelect" xml:space="preserve">
     <value>选择</value>
   </data>
-  <data name="FileSelectImport" xml:space="preserve">
-    <value>导入</value>
-  </data>
   <data name="FileSelectDirSize" xml:space="preserve">
     <value>&lt;目录&gt;</value>
   </data>
@@ -452,10 +449,6 @@
   <data name="InstallBadMetadata" xml:space="preserve">
     <value>检测到 {0} 的元数据错误: {1}</value>
   </data>
-  <data name="InstallUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的游戏版本.
-{2}</value>
-  </data>
   <data name="InstallModuleNotFound" xml:space="preserve">
     <value>需要Mod {0} 但它未在索引中列出或不兼容您当前的游戏版本.
 {1}</value>
@@ -639,9 +632,6 @@
   <data name="ModInfoDownloading" xml:space="preserve">
     <value>正在下载 {0}</value>
   </data>
-  <data name="ModInfoDownloadCorrupted" xml:space="preserve">
-    <value>下载失败，文件已损坏</value>
-  </data>
   <data name="ModInfoDownloadFailed" xml:space="preserve">
     <value>下载失败: {0}</value>
   </data>
@@ -782,9 +772,6 @@
   </data>
   <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
     <value>安装modpacks或自定义模块</value>
-  </data>
-  <data name="ModListInstallFromCkanFailed" xml:space="preserve">
-    <value>从 .ckan 文件安装失败！</value>
   </data>
   <data name="CkanFileSelectTitle" xml:space="preserve">
     <value>选择要安装的 .ckan 文件</value>

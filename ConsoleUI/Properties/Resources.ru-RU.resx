@@ -246,9 +246,6 @@
   <data name="FileSelectSelect" xml:space="preserve">
     <value>Выбрать</value>
   </data>
-  <data name="FileSelectImport" xml:space="preserve">
-    <value>Импортировать</value>
-  </data>
   <data name="FileSelectDirSize" xml:space="preserve">
     <value>&lt;DIR&gt;</value>
   </data>
@@ -452,10 +449,6 @@
   <data name="InstallBadMetadata" xml:space="preserve">
     <value>Найдены некорректные метаданные {0}: {1}</value>
   </data>
-  <data name="InstallUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} требует {1}, но он отсутствует в указателе или недоступен для вашей версии игры.
-{2}</value>
-  </data>
   <data name="InstallModuleNotFound" xml:space="preserve">
     <value>Требуется модуль {0}, но он отсутствует в указателе или недоступен для вашей версии игры.
 {1}</value>
@@ -615,9 +608,6 @@
   </data>
   <data name="ModInfoDownloading" xml:space="preserve">
     <value>Загрузка «{0}»</value>
-  </data>
-  <data name="ModInfoDownloadCorrupted" xml:space="preserve">
-    <value>Загрузка не завершена, файл повреждён</value>
   </data>
   <data name="ModInfoDownloadFailed" xml:space="preserve">
     <value>Загрузка не завершена: {0}</value>
