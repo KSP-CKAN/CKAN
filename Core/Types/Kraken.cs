@@ -649,6 +649,8 @@ namespace CKAN
                    ?? (new Uri?[] {
                           module.resources?.store,
                           module.resources?.steamstore,
+                          module.resources?.gogstore,
+                          module.resources?.epicstore,
                        }
                            .OfType<Uri>()
                            .ToArray()

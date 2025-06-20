@@ -311,6 +311,8 @@ Press tab to auto-complete commands and modules.
   <data name="ShowCurse" xml:space="preserve"><value>  Curse:	{0}</value></data>
   <data name="ShowStore" xml:space="preserve"><value>  Store:	{0}</value></data>
   <data name="ShowSteamStore" xml:space="preserve"><value>  Steam store:	{0}</value></data>
+  <data name="ShowGogStore" xml:space="preserve"><value>  GOG store:	{0}</value></data>
+  <data name="ShowEpicStore" xml:space="preserve"><value>  Epic Games Store:	{0}</value></data>
   <data name="ShowVersionFile" xml:space="preserve"><value>  Version file:	{0}</value></data>
   <data name="ShowSpaceWarpInfo" xml:space="preserve"><value>  SWInfo file:	{0}</value></data>
   <data name="ShowFileName" xml:space="preserve"><value>Filename: {0}</value></data>

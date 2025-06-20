@@ -288,6 +288,10 @@ namespace CKAN.CmdLine
                               module.resources.store);
                 RaiseResource(Properties.Resources.ShowSteamStore,
                               module.resources.steamstore);
+                RaiseResource(Properties.Resources.ShowGogStore,
+                              module.resources.gogstore);
+                RaiseResource(Properties.Resources.ShowEpicStore,
+                              module.resources.epicstore);
                 RaiseResource(Properties.Resources.ShowVersionFile,
                               module.resources.remoteAvc);
                 RaiseResource(Properties.Resources.ShowSpaceWarpInfo,

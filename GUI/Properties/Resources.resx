@@ -258,6 +258,8 @@ If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/
   <data name="ModInfoRemoteSWInfoLabel" xml:space="preserve"><value>Remote swinfo.json file:</value></data>
   <data name="ModInfoStoreLabel" xml:space="preserve"><value>Store:</value></data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve"><value>Steam store:</value></data>
+  <data name="ModInfoGogStoreLabel" xml:space="preserve"><value>GOG store:</value></data>
+  <data name="ModInfoEpicStoreLabel" xml:space="preserve"><value>Epic Games Store:</value></data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve"><value>Ctrl-click or Shift-click to make sticky</value></data>
   <data name="DownloadFailed" xml:space="preserve"><value>Download failed!</value></data>
   <data name="Downloading" xml:space="preserve"><value>Downloading {0}</value></data>

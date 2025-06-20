@@ -260,6 +260,16 @@
                     "description" : "Purchase DLC on Steam here",
                     "type"        : "string",
                     "format"      : "uri"
+                },
+                "gogstore": {
+                    "description" : "Purchase DLC on GOG here",
+                    "type"        : "string",
+                    "format"      : "uri"
+                },
+                "epicstore": {
+                    "description" : "Purchase DLC on Epic Games Store here",
+                    "type"        : "string",
+                    "format"      : "uri"
                 }
             }
         },
