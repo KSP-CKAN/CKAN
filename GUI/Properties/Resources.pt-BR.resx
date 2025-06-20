@@ -182,36 +182,6 @@ Você quer realmente instalá-la?</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mods (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Log de Status</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Log de Status</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>O módulo {0} é necessário mas não está listado no índice, ou não disponível para a sua versão do jogo.</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Metadados corrompidos detectados para o módulo {0}: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>Ah não! Tentamos sobrescrever um arquivo controlado por outro mod!
-Por favor, atualize e tente novamente.
-
-Se o problema persistir, então talvez seja um problema de pacote.
-Por favor reporte-o em:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-Por favor inclua as seguintes informações no seu relatório:
-
-Arquivo: {0}
-Mod sendo instalado: {1}
-Mod controlador: {2}
-Versão do CKAN: {3}</value></data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>Ah não!
-
-Parece que você está tentando instalar um mod que já está instalado,
-ou que conflita com outro mod que já esteja instalado.
-
-Como medida de segurança, o CKAN *jamais* irá sobrescrever ou alterar um arquivo
-que ele mesmo não tenha instalado.
-
-Se você quiser instalar o mod {0} pelo CKAN,
-então por favor desinstale manualmente o mod que possuí:
-
-{1}
-
-e tente novamente.</value></data>
   <data name="MainInstallGameDataReverted" xml:space="preserve"><value>O seu jogo foi restaurado ao seu estado original.</value></data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
 
@@ -224,7 +194,6 @@ Abrir as configurações agora?</value></data>
 Se você suspeita de um problema com nos metadados: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Se você suspeita de um problema com no CKAN: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>A instalação falhou!</value></data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>O CKAN não pode instalar a expansão '{0}' para você.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/D</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtual)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (não indexado)</value></data>

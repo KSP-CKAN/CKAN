@@ -333,43 +333,6 @@ Na pewno chcesz je zainstalować? Anulowanie przerwie całą instalację.</value
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>Logi statusu</value>
   </data>
-  <data name="MainInstallNotFound" xml:space="preserve">
-    <value>Moduł {0} jest wymagany, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji.</value>
-  </data>
-  <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
-  </data>
-  <data name="MainInstallFileExists" xml:space="preserve">
-    <value>O nie! Próbowaliśmy nadpisać plik należący do innego moda!
-Spróbuj użyć `ckan update` i spróbować ponownie.
-
-Jeśli problem się powtórzy, może być to błąd programu.
-Proszę to zgłosić tutaj:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new
-
-Podaj następujące informacje w twoim zgłoszeniu (Oczywiście po angielsku):
-Plik           : {0}
-Instalowany mod : {1}
-Konfliktujący mod     : {2}
-Wersja CKAN    : {3}
-</value>
-  </data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>O nie!
-
-Wygląda na to, że próbujesz zainstalować moda, który jest już zainstalowany
-lub konfliktuje z innym już zainstalowanym modem.
-
-Jako funkcja bezpieczeństwa, CKAN *nigdy* nie nadpisze bądź przestawi plików których sam nie zainstalował
-
-Jeśli chcesz zainstalować {0} przez CKAN'a,
-proszę ręcznie odinstalować moda do którego należy:
-
-{1}
-
-i spróbuj ponownie.</value>
-  </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>Twój folder GameData wrócił do pierwotnego stanu.</value>
   </data>
@@ -397,9 +360,6 @@ Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="MainInstallFailed" xml:space="preserve">
     <value>Instalacja zakończyła się niepowodzeniem!</value>
-  </data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve">
-    <value>CKAN nie może zainstalować dodatku '{0}' dla ciebie.</value>
   </data>
   <data name="ModInfoNSlashA" xml:space="preserve">
     <value>N/A</value>

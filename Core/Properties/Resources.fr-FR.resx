@@ -440,9 +440,6 @@ Que voulez-vous faire ?</value>
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve">
     <value>Tentative d'installation de {0}, mais il n'est pas téléchargé ou le téléchargement est corrompu</value>
   </data>
-  <data name="ModuleInstallerDLC" xml:space="preserve">
-    <value>Un DLC ne peut pas être installé !</value>
-  </data>
   <data name="ModuleInstallerBadDLLLocation" xml:space="preserve">
     <value>Le DLL du module {0} a été trouvé à {1}, mais ce n'est pas là où CKAN l'installerait. Annulation pour éviter que plusieurs copies du même mod soient installées. Pour installer ce module, désinstallez-le manuellement puis réessayez.</value>
   </data>
@@ -461,9 +458,6 @@ Remplacer ?</value>
   </data>
   <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve">
     <value>Interdiction de remplacer les fichiers manuellement installés, impossible d'installer {0}</value>
-  </data>
-  <data name="ModuleInstallerFileExists" xml:space="preserve">
-    <value>Tentative d'écrire {0}, mais il existe déjà</value>
   </data>
   <data name="ModuleInstallerAboutToRemove" xml:space="preserve">
     <value>Vont être désinstallés :</value>
@@ -562,6 +556,54 @@ Si le jeu est toujours en cours d'exécution, fermez-le et réessayez. Sinon, v�
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} est en conflit avec {1}</value>
   </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>Oh non ! Nous avons essayé de remplacer un fichier appartenant à un autre mod !
+
+Si ce problème se produit de nouveau, il pourrait s'agir d'un bogue d'emballage.
+Veuillez le signaler à :
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Veuillez inclure les informations suivantes dans votre rapport :
+
+Fichier : {0}
+Mod à installer : {1}
+Mod propriétaire : {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>Oh non !
+
+On dirait que vous essayez d'installer un mod qui est déjà installé,
+ou qui est en conflit avec un autre mod déjà installé.
+
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
+qu'il n'a pas installé lui-même.
+
+Si vous souhaitez installer {1} via CKAN,
+alors veuillez désinstaller manuellement le mod qui possède :
+
+{0}
+
+et essayez de nouveau.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>Oh non !
+
+On dirait que vous essayez d'installer un mod qui est déjà installé,
+ou qui est en conflit avec un autre mod déjà installé.
+
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
+qu'il n'a pas installé lui-même.
+
+Veuillez désinstaller manuellement le mod qui possède :
+
+{0}
+
+et essayez de nouveau.</value>
+  </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Mauvaises métadonnées détectées pour le module {0} : {1}</value>
+  </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>Oh oh, Les choses suivantes se sont mal passées lors du téléchargement...</value>
   </data>
@@ -589,9 +631,16 @@ Consultez cette page pour obtenir de l'aide :
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN ne peut pas installer l'extension '{0}' pour vous.</value>
+  </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>Pour installer cette extension, achetez-la depuis l'une de ces boutiques :
+{0}</value>
   </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>Pas assez d'espace dans le dossier de cache pour enregistrer les modules !</value>

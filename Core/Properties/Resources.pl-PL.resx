@@ -382,9 +382,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve">
     <value>Próbuje zainstalować {0} ale plik nie jest pobrany bądź jest uszkodzony</value>
   </data>
-  <data name="ModuleInstallerDLC" xml:space="preserve">
-    <value>Nie można zainstalować DLC!</value>
-  </data>
   <data name="ModuleInstallerBadDLLLocation" xml:space="preserve">
     <value>Znaleziono DLL dla modułu {0} w {1}, ale nie jest to miejsce, w którym CKAN ma go zainstalować. Przerywanie, aby zapobiec instalacji wielu kopii tego samego moda. Aby zainstalować tą modyfikacje, odinstaluj ją ręcznie i spróbuj ponownie.</value>
   </data>
@@ -403,9 +400,6 @@ Nadpisać?</value>
   </data>
   <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve">
     <value>Nie nadpisuje ręcznie zainstalowanych plików, nie można zainstalować {0}</value>
-  </data>
-  <data name="ModuleInstallerFileExists" xml:space="preserve">
-    <value>Próba zapisania {0} ale to już istnieje</value>
   </data>
   <data name="ModuleInstallerAboutToRemove" xml:space="preserve">
     <value>Zaraz usunę:</value>
@@ -462,6 +456,16 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve">
     <value>Importowanie zakończone. Usunąć {0} starych plików?</value>
   </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN nie może zainstalować dodatku '{0}' dla ciebie.</value>
+  </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>Aby zainstalować ten dodatek, kup go z jednej z tych stron:
+{0}</value>
+  </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve">
     <value>Zależność od {0} w wersji {1} nie jest spełniona</value>
   </data>
@@ -479,6 +483,48 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} koliduje z {1}</value>
+  </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>O nie! Próbowaliśmy nadpisać plik należący do innego moda!
+
+Jeśli problem się powtórzy, może być to błąd programu.
+Proszę to zgłosić tutaj:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new
+
+Podaj następujące informacje w twoim zgłoszeniu (Oczywiście po angielsku):
+Plik           : {0}
+Instalowany mod : {1}
+Konfliktujący mod     : {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>O nie!
+
+Wygląda na to, że próbujesz zainstalować moda, który jest już zainstalowany
+lub konfliktuje z innym już zainstalowanym modem.
+
+Jako funkcja bezpieczeństwa, CKAN *nigdy* nie nadpisze bądź przestawi plików których sam nie zainstalował
+
+Jeśli chcesz zainstalować {1} przez CKAN'a,
+proszę ręcznie odinstalować moda do którego należy:
+
+{0}
+
+i spróbuj ponownie.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>O nie!
+
+Wygląda na to, że próbujesz zainstalować moda, który jest już zainstalowany
+lub konfliktuje z innym już zainstalowanym modem.
+
+Jako funkcja bezpieczeństwa, CKAN *nigdy* nie nadpisze bądź przestawi plików których sam nie zainstalował
+
+Proszę ręcznie odinstalować moda do którego należy:
+
+{0}
+
+i spróbuj ponownie.</value>
   </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>O nie, następujące rzeczy poszły nie tak podczas pobierania...</value>

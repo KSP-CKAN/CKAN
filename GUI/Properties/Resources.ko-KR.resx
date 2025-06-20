@@ -189,33 +189,6 @@
   <data name="MainImportFilter" xml:space="preserve"><value>모드들 (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>상태 기록</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>상태 기록</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>모듈 {0}이 필요하지만 리스트에 없거나, 이 게임 버전과 맞지 않아요.</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>나쁜 메타데이터가 모듈 {0}에서 감지됨: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>으악! 우리가 다른 모드의 파일을 덮어씌우려고 했어요!
-'CKAN 업데이트' 를 시도한 다음 다시 시도해주세요.
-
-만약 이 문제가 다시 생긴다면 패키징에 버그가 있을 수도 있어요.
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-에서 신고해주세요.
-
-다음의 정보들을 신고할 때 첨부해주세요.
-
-File      : {0}
-Installing Mod : {1}
-Owning Mod: {2}
-CKAN Version   : {3}</value></data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>으악!
-
-아마도 당신은 이미 설치되어 있는 모드를 설치하려고 한 것 같아요. 아니면 이미 설치되어 있는 모드와 충돌하는 모드를요.
-
-안전을 위해서, CKAN은 절대!! 자기자신이 설치하지 않은 파일은 덮어씌우거나 바꾸지 않아요.
-
-만약 {0}를 CKAN으로 깔고 싶으시다면, 먼저
-
-{1}
-
-을 가지는 모드를 수동으로 삭제한 다음 다시 시도해 주세요.</value></data>
   <data name="MainInstallGameDataReverted" xml:space="preserve"><value>당신의 GameData는 원상태로 돌아왔어요.</value></data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
 
@@ -228,7 +201,6 @@ CKAN Version   : {3}</value></data>
 메타데이터 문제 같다면: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 클라이언트 버그 같다면: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>설치 실패!</value></data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN은 당신을 위해서 {0} 확장을 설치할 수 없어요.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (가상)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (색인 없음)</value></data>

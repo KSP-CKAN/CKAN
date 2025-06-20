@@ -223,37 +223,7 @@ Are you sure you want to install them? Cancelling will abort the entire installa
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Status log</value></data>
   <data name="MainInstallInstallingMod" xml:space="preserve"><value>Installing {0}</value></data>
   <data name="MainInstallRemovingMod" xml:space="preserve"><value>Removing {0}</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your game version.</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for module {0}: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>Oh no! We tried to overwrite a file owned by another mod!
-Please try a `ckan update` and try again.
-
-If this problem re-occurs, then it may be a packaging bug.
-Please report it at:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-Please include the following information in your report:
-
-File: {0}
-Installing Mod: {1}
-Owning Mod: {2}
-CKAN Version: {3}</value></data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>Oh no!
-
-It looks like you're trying to install a mod which is already installed,
-or which conflicts with another mod which is already installed.
-
-As a safety feature, CKAN will *never* overwrite or alter a file
-that it did not install itself.
-
-If you wish to install {0} via CKAN,
-then please manually uninstall the mod which owns:
-
-{1}
-
-and try again.</value></data>
-  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Your GameData has been returned to its original state.</value></data>
+  <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Your game folder has been returned to its original state.</value></data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
 
 Open settings now?</value></data>
@@ -265,7 +235,6 @@ Open settings now?</value></data>
 If you suspect a metadata problem: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 If you suspect a bug in the client: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Installation failed!</value></data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN can't install expansion '{0}' for you.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (virtual)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (not indexed)</value></data>

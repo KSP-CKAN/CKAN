@@ -188,39 +188,6 @@
   <data name="MainImportFilter" xml:space="preserve"><value>Модификации (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>Журнал</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>Журнал</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>Требуется модуль {0}, которого нет в списке, или он недоступен для установленной версии игры.</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>Для модуля {0} обнаружены некорректные метаданные: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>О нет!
-
-Была совершена попытка перезаписать файл другой модификации!
-
-Пожалуйста, совершите `ckan update` и попробуйте заново.
-
-Если эта проблема возникает снова, возможно, это ошибка упаковки.
-Пожалуйста, отправьте отчёт о ней на:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-Включите в отчёт следующую информацию:
-
-Файл (File)      : {0}
-Устанавливаемая модификация (Installing Mod) : {1}
-Модификация-владелец (Owning Mod): {2}
-Версия CKAN (CKAN Version)   : {3}</value></data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>О нет!
-
-Похоже, что модификация, которую вы пытаетесь установить, уже
-установлена или конфликтует с уже установленной модификацией.
-
-В качестве меры безопасности CKAN *никогда* не перезаписывает
-или изменяет файлы, которые не установил сам.
-
-Если вы хотите установить {0} с помощью CKAN,
-пожалуйста, вручную удалите модификацию, владеющую
-
-{1}
-
-и попробуйте ещё раз.</value></data>
   <data name="MainInstallGameDataReverted" xml:space="preserve"><value>Папка «GameData» возвращена в изначальное состояние.</value></data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
 
@@ -233,7 +200,6 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Если вы подозреваете ошибку в метаданных: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Если вы подозреваете ошибку в клиенте: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>Установка не удалась!</value></data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение '{0}'.</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>Н/Д</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (виртуальный)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (не индексирован)</value></data>

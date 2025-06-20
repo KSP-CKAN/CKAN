@@ -427,14 +427,6 @@
   <data name="InstallMessage" xml:space="preserve">
     <value>Вычисление...</value>
   </data>
-  <data name="InstallOwnedFileConflict" xml:space="preserve">
-    <value>{0} пытался установить {1}, но {2} уже установил его.
-Пожалуйста, сообщите о проблеме по адресу https://github.com/KSP-CKAN/NetKAN/issues/new/choose</value>
-  </data>
-  <data name="InstallUnownedFileConflict" xml:space="preserve">
-    <value>{0} пытался установить {1}, но он был уже установлен.
-Для установки {2} вручную удалите модификацию, которой принадлежит этот файл.</value>
-  </data>
   <data name="InstallFilesReverted" xml:space="preserve">
     <value>Файлы игры возвращены.</value>
   </data>
@@ -445,16 +437,6 @@
   </data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Название</value>
-  </data>
-  <data name="InstallBadMetadata" xml:space="preserve">
-    <value>Найдены некорректные метаданные {0}: {1}</value>
-  </data>
-  <data name="InstallModuleNotFound" xml:space="preserve">
-    <value>Требуется модуль {0}, но он отсутствует в указателе или недоступен для вашей версии игры.
-{1}</value>
-  </data>
-  <data name="InstallNotInstalled" xml:space="preserve">
-    <value>{0} не установлен, невозможно удалить</value>
   </data>
   <data name="InstallModInstalled" xml:space="preserve">
     <value>{0} Успешно установлен {1} {2}</value>

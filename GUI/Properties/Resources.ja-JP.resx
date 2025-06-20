@@ -188,35 +188,6 @@ Try to move {2} out of {3} and restart CKAN.</value></data>
   <data name="MainImportFilter" xml:space="preserve"><value>Mod (*.zip)|*.zip</value></data>
   <data name="MainImportWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>
   <data name="MainInstallWaitTitle" xml:space="preserve"><value>ステータスログ</value></data>
-  <data name="MainInstallNotFound" xml:space="preserve"><value>Mod{0}が必要ですがインデックスにリストされていません、または現在のゲームバージョンに対応していません。</value></data>
-  <data name="MainInstallBadMetadata" xml:space="preserve"><value>不正なメタデータが検出されました。Mod {0}: {1}</value></data>
-  <data name="MainInstallFileExists" xml:space="preserve"><value>他のModが所有しているファイルに上書きしようとしました！
-CKANをアップデート後にもう一度お試しください。
-
-もしこの問題が再び発生するのであれば、パッケージ中のバグの可能性があります。
-こちらで報告をお願いします:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-以下の情報を含めて報告してください:
-
-ファイル      : {0}
-インストールしようとしているMod : {1}
-所持しているMod: {2}
-CKAN バージョン   : {3}</value></data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve"><value>Oh no!
-
-既にいんすとーるされたのModをインストールしようとしているか、
-いんすとーるされたの他のModと衝突している可能性があります。
-
-安全の為の機能として、CKAN自身がインストールしていないファイルを書き換えたり、別のファイルに置き換えたりすることは決してありません。
-
-もし {0} をCKANを通してインストールしたいのであれば,
-手動でこれらの既に所有済みのModをアンインストールしてから:
-
-{1}
-
-もう一度お試しください。</value></data>
   <data name="MainInstallGameDataReverted" xml:space="preserve"><value>あなたのゲームデータは元の状態に戻されました。</value></data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve"><value>{0}
 
@@ -229,7 +200,6 @@ CKAN バージョン   : {3}</value></data>
 メタデータの問題だと疑うのであれば: https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 クライアントのバグが疑わしい時は: https://github.com/KSP-CKAN/CKAN/issues/new/choose</value></data>
   <data name="MainInstallFailed" xml:space="preserve"><value>インストール失敗！</value></data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve"><value>CKAN は拡張 '{0}' をインストールできません。</value></data>
   <data name="ModInfoNSlashA" xml:space="preserve"><value>N/A</value></data>
   <data name="ModInfoVirtual" xml:space="preserve"><value>{0} (仮想)</value></data>
   <data name="ModInfoNotIndexed" xml:space="preserve"><value>{0} (非インデックス)</value></data>

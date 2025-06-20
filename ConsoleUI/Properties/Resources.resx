@@ -222,19 +222,11 @@
   <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="InstallTitle" xml:space="preserve"><value>Installing, Upgrading, and Removing Mods</value></data>
   <data name="InstallMessage" xml:space="preserve"><value>Calculating...</value></data>
-  <data name="InstallOwnedFileConflict" xml:space="preserve"><value>{0} tried to install {1}, but {2} has already installed it.
-Please report this problem at https://github.com/KSP-CKAN/NetKAN/issues/new/choose</value></data>
-  <data name="InstallUnownedFileConflict" xml:space="preserve"><value>{0} tried to install {1}, but it is already installed.
-Please manually uninstall the mod that owns this file to install {2}.</value></data>
   <data name="InstallFilesReverted" xml:space="preserve"><value>Game files reverted.</value></data>
   <data name="InstallAuthTokenPrompt" xml:space="preserve"><value>{0}
 
 Edit authentication tokens now?</value></data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve"><value>Name</value></data>
-  <data name="InstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for {0}: {1}</value></data>
-  <data name="InstallModuleNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your version of the game.
-{1}</value></data>
-  <data name="InstallNotInstalled" xml:space="preserve"><value>{0} is not installed, can't remove</value></data>
   <data name="InstallModInstalled" xml:space="preserve"><value>{0} Successfully installed {1} {2}</value></data>
   <data name="InstallDeduplicateScanning" xml:space="preserve"><value>Checking other game instances for possible duplicate installed files...</value></data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Delete Directories</value></data>

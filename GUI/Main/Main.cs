@@ -263,7 +263,7 @@ namespace CKAN.GUI
                                 catch (RegistryInUseKraken kraken)
                                 {
                                     if (YesNoDialog(
-                                        kraken.ToString(),
+                                        kraken.Message,
                                         Properties.Resources.MainDeleteLockfileYes,
                                         Properties.Resources.MainDeleteLockfileNo))
                                     {

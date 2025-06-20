@@ -326,44 +326,6 @@ Sei sicuro di volerli installare? L'annullamento interromperà l'intera installa
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>Registro</value>
   </data>
-  <data name="MainInstallNotFound" xml:space="preserve">
-    <value>Il modulo {0} è necessario ma non è elencato nell'indice o non è disponibile per la tua versione del gioco.</value>
-  </data>
-  <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>Rilevati metadati errati per il modulo {0}: {1}</value>
-  </data>
-  <data name="MainInstallFileExists" xml:space="preserve">
-    <value>Oh no! Abbiamo cercato di sovrascrivere un file di proprietà di un altra mod!
-Prova a eseguire 'ckan update` e ritenta.
-
-Se il problema si ripresenta, potrebbe trattarsi di un bug del pacchetto.
-Segnalalo a:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-Per favore, includi le seguenti informazioni nella tua segnalazione:
-
-File : {0}
-Mod di installazione: {1}
-Mod proprietario: {2}
-Versione CKAN: {3}</value>
-  </data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>Oh no!
-
-Sembra che tu stia cercando di installare una mod che è già installata,
-o che è in conflitto con un'altra mod già installata.
-
-Come caratteristica di sicurezza, CKAN non sovrascriverà o modificherà mai un file
-che non è stato installato da lui stesso.
-
-Se vuoi installare {0} tramite CKAN,
-disinstalla manualmente la mod che possiedi:
-
-{1}
-
-e riprova.</value>
-  </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>La cartella GameData è stata ripristinata allo stato originale.</value>
   </data>
@@ -391,9 +353,6 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   </data>
   <data name="MainInstallFailed" xml:space="preserve">
     <value>Installazione fallita!</value>
-  </data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve">
-    <value>CKAN non può installare l'espansione '{0}' per te.</value>
   </data>
   <data name="ModInfoNSlashA" xml:space="preserve">
     <value>N/D</value>

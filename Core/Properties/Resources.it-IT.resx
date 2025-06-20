@@ -385,9 +385,6 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve">
     <value>Sto cercando di installare {0}, ma non è stato scaricato o il download è danneggiato</value>
   </data>
-  <data name="ModuleInstallerDLC" xml:space="preserve">
-    <value>Il DLC non può essere installato!</value>
-  </data>
   <data name="ModuleInstallerBadDLLLocation" xml:space="preserve">
     <value>DLL per il modulo {0} trovata in {1}, ma non è dove CKAN la installerebbe. Si interrompe per evitare che vengano installate più copie dello stesso modulo. Per installare questo modulo, disinstallalo manualmente e riprova.</value>
   </data>
@@ -406,9 +403,6 @@ Sovrascrivere?</value>
   </data>
   <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve">
     <value>Impossibile sostituire i file installati manualmente, installazione di {0} impossibile</value>
-  </data>
-  <data name="ModuleInstallerFileExists" xml:space="preserve">
-    <value>Tentativo di scrivere {0}, ma è già esistente</value>
   </data>
   <data name="ModuleInstallerAboutToRemove" xml:space="preserve">
     <value>Stai per rimuovere:</value>
@@ -471,6 +465,16 @@ Rimuovilo manualmente prima di provare a installarlo.</value>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve">
     <value>Importazione completata. Eliminare {0} file vecchi?</value>
   </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Rilevati metadati errati per il modulo {0}: {1}</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN non può installare l'espansione '{0}' per te.</value>
+  </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>Per installare questa espansione, acquistala da una delle pagine del negozio:
+{0}</value>
+  </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve">
     <value>Dipendenza su {0} versione {1} non soddisfatta</value>
   </data>
@@ -495,6 +499,51 @@ Se il gioco è ancora in esecuzione, chiuderlo e riprovare. Altrimenti controlla
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} conflitti con {1}</value>
+  </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>Oh no! Abbiamo cercato di sovrascrivere un file di proprietà di un altra mod!
+
+Se il problema si ripresenta, potrebbe trattarsi di un bug del pacchetto.
+Segnalalo a:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Per favore, includi le seguenti informazioni nella tua segnalazione:
+
+File : {0}
+Mod di installazione: {1}
+Mod proprietario: {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>Oh no!
+
+Sembra che tu stia cercando di installare una mod che è già installata,
+o che è in conflitto con un'altra mod già installata.
+
+Come caratteristica di sicurezza, CKAN non sovrascriverà o modificherà mai un file
+che non è stato installato da lui stesso.
+
+Se vuoi installare {1} tramite CKAN,
+disinstalla manualmente la mod che possiedi:
+
+{0}
+
+e riprova.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>Oh no!
+
+Sembra che tu stia cercando di installare una mod che è già installata,
+o che è in conflitto con un'altra mod già installata.
+
+Come caratteristica di sicurezza, CKAN non sovrascriverà o modificherà mai un file
+che non è stato installato da lui stesso.
+
+Disinstalla manualmente la mod che possiedi:
+
+{0}
+
+e riprova.</value>
   </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>Uh oh, le seguenti cose sono andate storte durante il download...</value>

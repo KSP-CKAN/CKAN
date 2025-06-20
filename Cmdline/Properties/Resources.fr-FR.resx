@@ -393,52 +393,6 @@ Vous pouvez utiliser la commande `ckan compat` pour changer les versions de jeu 
 Si une version compatible a été récemment publiée, vous pouvez taper `ckan update` et réessayer.
 Ou `ckan install --allow-incompatible` pour ignorer la compatibilité des modules (mais pas de leurs dépendances).</value>
   </data>
-  <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">
-    <value>Le module {0} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de {1}</value>
-  </data>
-  <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve">
-    <value>Le module {0} {1} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de {2}</value>
-  </data>
-  <data name="InstallBadMetadata" xml:space="preserve">
-    <value>Mauvaises métadonnées détectées pour le module {0} : {1}</value>
-  </data>
-  <data name="InstallFileConflictOwned" xml:space="preserve">
-    <value>Oh non ! Nous avons essayé de remplacer un fichier appartenant à un autre mod !
-Veuillez taper `ckan update` puis réessayez.
-
-Si ce problème se produit de nouveau, c'est peut-être un bogue d'emballage.
-Veuillez le signaler à :
-
-https://github.com/KSP-CKAN/NetKAN/issues/new
-
-Veuillez inclure les informations suivantes dans votre rapport :
-
-Fichier             : {0}
-Mod en installation : {1}
-Mod propriétaire    : {2}
-Version CKAN        : {3}
-</value>
-  </data>
-  <data name="InstallFileConflictUnowned" xml:space="preserve">
-    <value>Oh non !
-
-On dirait que vous essayez d'installer un mod qui est déjà installé,
-ou qui est en conflit avec un autre mod déjà installé.
-
-Par mesure de précaution, CKAN ne remplace ou n'altère *jamais*
-un fichier qu'il n'a pas installé lui-même.
-
-Si vous souhaitez installer {0} avec CKAN,
-alors veuillez désinstaller manuellement le mod auquel appartient :
-
-{1}
-
-et réessayez.
-</value>
-  </data>
-  <data name="InstallGamedataReturned" xml:space="preserve">
-    <value>Votre {0} a été remis dans son état original</value>
-  </data>
   <data name="InstallCancelled" xml:space="preserve">
     <value>Installation annulée. Vos fichiers ont été remis dans leur état initial.</value>
   </data>
@@ -447,16 +401,6 @@ et réessayez.
   </data>
   <data name="InstallTryAuthToken" xml:space="preserve">
     <value>Essayez la commande authtoken. Voir {0} pour plus de détails.</value>
-  </data>
-  <data name="InstallDownloadFailed" xml:space="preserve">
-    <value>Un ou plusieurs fichiers n'ont pu être téléchargés, arrêt</value>
-  </data>
-  <data name="InstallDLC" xml:space="preserve">
-    <value>CKAN ne peut pas installer l'extension '{0}' pour vous.</value>
-  </data>
-  <data name="InstallDLCStorePage" xml:space="preserve">
-    <value>Pour installer cette extension, achetez-la depuis l'une de ces boutiques :
-{0}</value>
   </data>
   <data name="ListUnknownFormat" xml:space="preserve">
     <value>Format d'exportation inconnu : {0}</value>
@@ -513,17 +457,6 @@ Appuyez sur tabulation pour compléter les commandes et les modules.
   </data>
   <data name="PromptWithoutInstance" xml:space="preserve">
     <value>CKAN {0}&gt; </value>
-  </data>
-  <data name="RemoveNotInstalled" xml:space="preserve">
-    <value>Impossible, {0} n'est pas installé.
-Essayez `ckan list` pour une liste des mods installés.</value>
-  </data>
-  <data name="RemoveDLC" xml:space="preserve">
-    <value>CKAN ne peut pas retirer l'extension '{0}' pour vous.</value>
-  </data>
-  <data name="RemoveDLCStorePage" xml:space="preserve">
-    <value>Pour retirer cette extension, suivez les instructions pour la boutique depuis laquelle vous l'avez achetée :
-{0}</value>
   </data>
   <data name="RemoveCancelled" xml:space="preserve">
     <value>Retrait annulé : {0}</value>
@@ -780,21 +713,11 @@ Essayez `ckan list` pour une liste des mods installés.</value>
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Mise à niveau annulée : {0}</value>
   </data>
-  <data name="UpgradeNotFound" xml:space="preserve">
-    <value>Le module {0} est introuvable</value>
-  </data>
   <data name="UpgradeAlreadyUpToDate" xml:space="preserve">
     <value>Le module {0} est déjà à jour</value>
   </data>
   <data name="UpgradeAllUpToDate" xml:space="preserve">
     <value>Tous les modules sont à jour</value>
-  </data>
-  <data name="UpgradeDLC" xml:space="preserve">
-    <value>CKAN ne peut pas mettre à niveau l'extension '{0}' pour vous</value>
-  </data>
-  <data name="UpgradeDLCStorePage" xml:space="preserve">
-    <value>Pour mettre à niveau cette extension, téléchargez les éventuelles mises à jour depuis la boutique où vous l'avez achetée :
-{0}</value>
   </data>
   <data name="ScanNotSaved" xml:space="preserve">
     <value>Le répertoire n'a pas été sauvegardé</value>

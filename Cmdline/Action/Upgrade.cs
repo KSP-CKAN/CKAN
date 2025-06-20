@@ -151,27 +151,14 @@ namespace CKAN.CmdLine
                 user.RaiseMessage(Properties.Resources.UpgradeAborted, k.Message);
                 return Exit.ERROR;
             }
-            catch (ModuleNotFoundKraken kraken)
+            catch (Kraken kraken)
             {
-                user.RaiseMessage(Properties.Resources.UpgradeNotFound, $"{kraken.module} {kraken.version}");
+                user.RaiseMessage("{0}", kraken.Message);
                 return Exit.ERROR;
             }
-            catch (InconsistentKraken kraken)
+            catch (Exception exc)
             {
-                user.RaiseMessage("{0}", kraken.ToString());
-                return Exit.ERROR;
-            }
-            catch (ModuleIsDLCKraken kraken)
-            {
-                user.RaiseMessage(Properties.Resources.UpgradeDLC, kraken.module.name);
-                var res = kraken?.module?.resources;
-                var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
-                    .OfType<Uri>()
-                    .Aggregate("", (a, b) => $"{a}\r\n- {b}");
-                if (!string.IsNullOrEmpty(storePagesMsg))
-                {
-                    user.RaiseMessage(Properties.Resources.UpgradeDLCStorePage, storePagesMsg);
-                }
+                user.RaiseMessage("{0}", exc.ToString());
                 return Exit.ERROR;
             }
 

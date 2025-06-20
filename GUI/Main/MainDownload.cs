@@ -110,7 +110,7 @@ namespace CKAN.GUI
 
                     default:
                         FailWaitDialog(Properties.Resources.DownloadFailed,
-                                       e.Error.ToString(),
+                                       e.Error.Message,
                                        Properties.Resources.DownloadFailed);
                         break;
 

@@ -210,7 +210,6 @@
   <data name="ModuleInstallerDone" xml:space="preserve"><value>Готово!</value></data>
   <data name="ModuleInstallerAlreadyInstalled" xml:space="preserve"><value>{0} {1} уже установлен, пропуск</value></data>
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve"><value>Попытка установить {0}, но она не была загружена или оказалась повреждена</value></data>
-  <data name="ModuleInstallerDLC" xml:space="preserve"><value>DLC не могут быть установлены!</value></data>
   <data name="ModuleInstallerBadDLLLocation" xml:space="preserve"><value>DLL для модуля «{0}» найдена в {1}, но не там, где её бы установил CKAN. Во избежание установки нескольких копий модификации операция отменена. Вручную удалите модуль и попробуйте снова.</value></data>
   <data name="ModuleInstallerFileSame" xml:space="preserve"><value>тот же</value></data>
   <data name="ModuleInstallerFileDifferent" xml:space="preserve"><value>ДРУГОЙ</value></data>
@@ -220,7 +219,6 @@
 
 Перезаписать?</value></data>
   <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve"><value>Установленные вручную файлы не перезаписаны, установка невозможна {0}</value></data>
-  <data name="ModuleInstallerFileExists" xml:space="preserve"><value>Совершена попытка записать {0}, но файл уже существует</value></data>
   <data name="ModuleInstallerAboutToRemove" xml:space="preserve"><value>Будут удалены:</value></data>
   <data name="ModuleInstallerContinuePrompt" xml:space="preserve"><value>Продолжить?</value></data>
   <data name="ModuleInstallerRemoveAborted" xml:space="preserve"><value>Пользователь отменил удаление</value></data>
@@ -240,12 +238,56 @@
   <data name="ModuleInstallerImportNotFound" xml:space="preserve"><value>Не найдено в указателе: {0}</value></data>
   <data name="ModuleInstallerImportInstallPrompt" xml:space="preserve"><value>Установить {0} совместимых импортированных модификаций в сборку игры {1} ({2})?</value></data>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve"><value>Импортирование завершено. Удалить {0} старых файлов?</value></data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Найдены некорректные метаданные {0}: {1}</value>
+  </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve"><value>Зависимость от {0} версии {1} не удовлетворена</value></data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve"><value>Модуль не найден: {0} {1}</value></data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>Модуль «{0}» предоставлен несколькими модулями. Выберите один из них:</value></data>
   <data name="KrakenInconsistenciesHeader" xml:space="preserve"><value>Были найдены следующие несоответствия:</value></data>
   <data name="KrakenMissingDependency" xml:space="preserve"><value>{0}: отсутствует зависимость {1}</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} конфликтует с {1}</value></data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve"><value>О нет!
+
+Была совершена попытка перезаписать файл другой модификации!
+
+Если эта проблема возникает снова, возможно, это ошибка упаковки.
+Пожалуйста, отправьте отчёт о ней на:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Включите в отчёт следующую информацию:
+
+Файл (File)      : {0}
+Устанавливаемая модификация (Installing Mod) : {1}
+Модификация-владелец (Owning Mod): {2}</value></data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve"><value>О нет!
+
+Похоже, что модификация, которую вы пытаетесь установить, уже
+установлена или конфликтует с уже установленной модификацией.
+
+В качестве меры безопасности CKAN *никогда* не перезаписывает
+или изменяет файлы, которые не установил сам.
+
+Если вы хотите установить {1} с помощью CKAN,
+пожалуйста, вручную удалите модификацию, владеющую
+
+{0}
+
+и попробуйте ещё раз.</value></data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve"><value>О нет!
+
+Похоже, что модификация, которую вы пытаетесь установить, уже
+установлена или конфликтует с уже установленной модификацией.
+
+В качестве меры безопасности CKAN *никогда* не перезаписывает
+или изменяет файлы, которые не установил сам.
+
+Пожалуйста, вручную удалите модификацию, владеющую
+
+{0}
+
+и попробуйте ещё раз.</value></data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve"><value>Ой, при загрузке произошли следующие проблемы...</value></data>
   <data name="KrakenModuleDownloadErrorsHeader" xml:space="preserve"><value>Одна или несколько загрузок завершились неудачно:</value></data>
   <data name="KrakenModuleDownloadError" xml:space="preserve"><value>Ошибка загрузки {0}: {1}</value></data>

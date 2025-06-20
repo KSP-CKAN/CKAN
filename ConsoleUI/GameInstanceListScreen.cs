@@ -221,7 +221,7 @@ namespace CKAN.ConsoleUI {
 
                     ConsoleMessageDialog md = new ConsoleMessageDialog(
                         theme,
-                        k.ToString(),
+                        k.Message,
                         new List<string>() {
                             Properties.Resources.Cancel,
                             Properties.Resources.Force

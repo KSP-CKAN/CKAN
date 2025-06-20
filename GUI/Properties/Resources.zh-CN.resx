@@ -372,41 +372,6 @@
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>状态日志</value>
   </data>
-  <data name="MainInstallNotFound" xml:space="preserve">
-    <value>需要模组 {0} 但它未在索引中列出或不兼容您当前的游戏版本.</value>
-  </data>
-  <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>检测到损坏的元数据，来自模组 {0}: {1}</value>
-  </data>
-  <data name="MainInstallFileExists" xml:space="preserve">
-    <value>我们正在尝试去覆盖其它模组（或游戏本体）已经安装的文件！
-请尝试 `ckan更新` 并重试.
-
-如果这个问题反复出现，可能是由于打包时出现bug.
-请在此处报告:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-报告时请包括以下信息:
-
-File(文件)      : {0}
-Installing Mod(正在安装的Mod) : {1}
-Owning Mod(已有Mod): {2}
-CKAN Version(CKAN版本)   : {3}</value>
-  </data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>
-看起来您正在尝试安装一个已经安装的Mod，或者正在尝试安装已经与其它已安装Mod冲突的Mod.
-
-作为一个安全特性，CKAN*永远不会*覆写或修改并非由自己安装的文件.
-
-如果您想要用CKAN安装 {0},
-请手动卸载以下Mod:
-
-{1}
-
-并重试.</value>
-  </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>您的GameData已恢复原样.</value>
   </data>
@@ -434,9 +399,6 @@ CKAN Version(CKAN版本)   : {3}</value>
   </data>
   <data name="MainInstallFailed" xml:space="preserve">
     <value>安装失败！</value>
-  </data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve">
-    <value>CKAN无法安装扩展‘ {0}’。</value>
   </data>
   <data name="ModInfoNSlashA" xml:space="preserve">
     <value>N/A</value>

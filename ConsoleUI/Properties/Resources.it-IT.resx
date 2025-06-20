@@ -427,14 +427,6 @@
   <data name="InstallMessage" xml:space="preserve">
     <value>Calcolo in corso...</value>
   </data>
-  <data name="InstallOwnedFileConflict" xml:space="preserve">
-    <value>{0} ha provato a installare {1}, ma {2} lo ha già installato.
-Segnala questo problema a https://github.com/KSP-CKAN/NetKAN/issues/new/choose</value>
-  </data>
-  <data name="InstallUnownedFileConflict" xml:space="preserve">
-    <value>{0} ha provato ad installare {1}, ma è già installato.
-Disinstalla manualmente la Mod che possiede questo file per installare {2}.</value>
-  </data>
   <data name="InstallFilesReverted" xml:space="preserve">
     <value>File di gioco ripristinati.</value>
   </data>
@@ -445,16 +437,6 @@ Modificaew i token di autenticazione adesso?</value>
   </data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nome</value>
-  </data>
-  <data name="InstallBadMetadata" xml:space="preserve">
-    <value>Rilevati metadati errati per {0}: {1}</value>
-  </data>
-  <data name="InstallModuleNotFound" xml:space="preserve">
-    <value>Il modulo {0} è necessario ma non è elencato nell'indice o non è disponibile per la tua versione del gioco.
-{1}</value>
-  </data>
-  <data name="InstallNotInstalled" xml:space="preserve">
-    <value>{0} non è installato, impossibile rimuovere</value>
   </data>
   <data name="InstallModInstalled" xml:space="preserve">
     <value>{0} installato con successo {1} {2}</value>
