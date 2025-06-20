@@ -376,6 +376,7 @@ Try `ckan list` for a list of installed mods.</value></data>
   <data name="UpgradeAlreadyHaveLatest" xml:space="preserve"><value>You already have the latest version</value></data>
   <data name="UpgradeAborted" xml:space="preserve"><value>Upgrade aborted: {0}</value></data>
   <data name="UpgradeNotFound" xml:space="preserve"><value>Module {0} not found</value></data>
+  <data name="UpgradeFailed" xml:space="preserve"><value>Upgrade failed: {0}"</value></data>
   <data name="UpgradeAlreadyUpToDate" xml:space="preserve"><value>Module {0} is already up to date</value></data>
   <data name="UpgradeAllUpToDate" xml:space="preserve"><value>All modules are up to date</value></data>
   <data name="UpgradeDLC" xml:space="preserve"><value>CKAN can't upgrade expansion '{0}' for you</value></data>

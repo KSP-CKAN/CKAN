@@ -110,7 +110,7 @@ namespace CKAN.CmdLine
                 }
                 catch (Exception exc)
                 {
-                    user.RaiseError("Upgrade failed: {0}", exc.Message);
+                    user.RaiseError(Properties.Resources.UpgradeFailed, exc.Message);
                     return Exit.ERROR;
                 }
             }
