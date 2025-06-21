@@ -1033,12 +1033,10 @@ namespace Tests.Core.IO
                 const string targetFramework =
                     #if NETFRAMEWORK
                         "net481";
-                    #elif NET8_0
-                        #if WINDOWS
-                            "net8.0-windows";
-                        #else
-                            "net8.0";
-                        #endif
+                    #elif WINDOWS
+                        "net8.0-windows";
+                    #else
+                        "net8.0";
                     #endif
                 // Do not Dispose this, we want it to persist for GitHub workflow caching
                 var cacheDir = TestData.DataDir($"../../_build/test/cache/{targetFramework}");

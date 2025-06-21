@@ -23,8 +23,9 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var http = new Mock<IHttpService>();
-            http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.Contains("/api/mod/"))))
-                .Returns((Uri u) => $@"{{
+            http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.Contains("/api/mod/")),
+                                           It.IsAny<string?>(), It.IsAny<string?>()))
+                .Returns((Uri u, string? _, string? _) => $@"{{
                                         ""id"":                 1,
                                         ""name"":               ""Dogecoin Flag"",
                                         ""short_description"":  ""Such test. Very unit. Wow."",

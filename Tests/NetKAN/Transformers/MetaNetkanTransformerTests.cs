@@ -49,7 +49,7 @@ namespace Tests.NetKAN.Transformers
 
             var mHttp = new Mock<IHttpService>();
 
-            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
+            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .Returns(targetJson.ToString());
 
             var sut = new MetaNetkanTransformer(mHttp.Object, null);
@@ -77,7 +77,7 @@ namespace Tests.NetKAN.Transformers
 
             var mHttp = new Mock<IHttpService>();
 
-            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
+            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .Returns(targetJson.ToString());
 
             var sut = new MetaNetkanTransformer(mHttp.Object, null);
@@ -106,7 +106,7 @@ namespace Tests.NetKAN.Transformers
 
             var mHttp = new Mock<IHttpService>();
 
-            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
+            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .Returns(targetJson.ToString());
 
             var sut = new MetaNetkanTransformer(mHttp.Object, null);

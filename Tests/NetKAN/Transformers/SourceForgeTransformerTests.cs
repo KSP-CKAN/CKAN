@@ -20,7 +20,7 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var http     = new Mock<IHttpService>();
-            http.Setup(h => h.DownloadText(It.IsAny<Uri>()))
+            http.Setup(h => h.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .Returns($@"<?xml version=""1.0"" encoding=""utf-8""?>
                             <rss xmlns:content=""http://purl.org/rss/1.0/modules/content/"" version=""2.0"">
                               <channel>
