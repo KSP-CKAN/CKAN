@@ -22,7 +22,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>SYSLIB0050,IDE0090</WarningsNotAsErrors>
     <NoWarn>IDE1006,CS1591</NoWarn>
-    <TargetFrameworks>netstandard2.0;net48;net8.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net481;net8.0</TargetFrameworks>
     <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
   </PropertyGroup>
   <PropertyGroup>

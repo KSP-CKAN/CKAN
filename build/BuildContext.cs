@@ -16,7 +16,7 @@ namespace Build;
 
 public partial class BuildContext : FrostingContext
 {
-    public string BuildNetFramework { get; } = "net48";
+    public string BuildNetFramework { get; } = "net481";
 
     public string Target { get; }
 

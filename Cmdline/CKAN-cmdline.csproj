@@ -21,7 +21,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <StartupObject>CKAN.CmdLine.MainClass</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworks>net48;net8.0;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net481;net8.0;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
@@ -37,7 +37,7 @@
     <PackageReference Include="ReadLine" Version="1.2.0" />
     <PackageReference Include="DotNet.Glob" Version="3.1.3" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">
     <Reference Include="System" />
     <Reference Include="System.Transactions" />
   </ItemGroup>
