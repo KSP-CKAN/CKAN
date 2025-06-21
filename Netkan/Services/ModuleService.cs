@@ -182,9 +182,9 @@ namespace CKAN.NetKAN.Services
                 if (avcEntry == null)
                 {
                     throw new Kraken(
-                        string.Format("AVC: Invalid path to remote {0}, doesn't match any of: {1}",
-                        internalFilePath,
-                        string.Join(", ", files.Select(f => f.Name))));
+                        string.Format("Invalid $vref path/regexp {0}, doesn't match any of: {1}",
+                                      internalFilePath,
+                                      string.Join(", ", files.Select(f => f.Name))));
                 }
                 return new Tuple<ZipEntry, bool>(avcEntry, installable);
             }
