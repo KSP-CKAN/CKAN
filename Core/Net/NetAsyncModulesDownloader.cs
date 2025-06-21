@@ -148,7 +148,7 @@ namespace CKAN
                     ExceptionDispatchInfo.Capture(exc).Throw();
                 }
             }
-            catch (AggregateException agExc) when (agExc.InnerException is Exception exc)
+            catch (AggregateException agExc) when (agExc is { InnerException: Exception exc })
             {
                 ExceptionDispatchInfo.Capture(exc).Throw();
             }
@@ -159,16 +159,16 @@ namespace CKAN
             var blockingQueue = new BlockingCollection<CkanModule>(new ConcurrentQueue<CkanModule>());
             Action<CkanModule> oneComplete = m => blockingQueue.Add(m);
             OneComplete += oneComplete;
-            return (Task.Factory.StartNew(() => DownloadModules(toDownload))
-                                .ContinueWith(t =>
-                                              {
-                                                  blockingQueue.CompleteAdding();
-                                                  OneComplete -= oneComplete;
-                                                  if (t.Exception is AggregateException { InnerException: Exception exc })
-                                                  {
-                                                      ExceptionDispatchInfo.Capture(exc).Throw();
-                                                  }
-                                              }),
+            return (Task.Run(() => DownloadModules(toDownload))
+                        .ContinueWith(t =>
+                                      {
+                                          blockingQueue.CompleteAdding();
+                                          OneComplete -= oneComplete;
+                                          if (t.Exception is AggregateException { InnerException: Exception exc })
+                                          {
+                                              ExceptionDispatchInfo.Capture(exc).Throw();
+                                          }
+                                      }),
                     blockingQueue);
         }
 

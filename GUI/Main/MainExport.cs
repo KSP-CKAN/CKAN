@@ -23,7 +23,7 @@ namespace CKAN.GUI
             if (CurrentInstance != null)
             {
                 // Background thread so GUI thread can work with the controls
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     currentUser.RaiseMessage("");
                     tabController.ShowTab(EditModpackTabPage.Name, 2);

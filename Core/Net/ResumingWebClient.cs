@@ -33,7 +33,7 @@ namespace CKAN
         {
             this.hasher = hasher;
             contentLength = 0;
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 var fi = new FileInfo(path);
                 if (fi.Exists)
@@ -63,7 +63,7 @@ namespace CKAN
         {
             this.hasher = hasher;
             contentLength = 0;
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 bytesToSkip = 0;
                 OpenReadAsync(url, stream);

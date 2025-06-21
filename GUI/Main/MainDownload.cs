@@ -23,7 +23,7 @@ namespace CKAN.GUI
             ShowWaitDialog();
             if (downloader != null)
             {
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     // Just pass to the existing worker
                     downloader.DownloadModules(modules.Select(m => m.ToModule()));

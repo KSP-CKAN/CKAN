@@ -355,7 +355,7 @@ namespace CKAN.GUI
                         VersionsListView.EndUpdate();
                         // Check installability in the background because it's slow
                         UseWaitCursor = true;
-                        Task.Factory.StartNew(() => checkInstallable(items));
+                        Task.Run(() => checkInstallable(items));
                     }
                 });
             }

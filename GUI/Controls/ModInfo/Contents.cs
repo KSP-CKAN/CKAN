@@ -204,7 +204,7 @@ namespace CKAN.GUI
                         ContentsPreviewTree.Enabled = true;
 
                         UseWaitCursor = true;
-                        Task.Factory.StartNew(() =>
+                        Task.Run(() =>
                         {
                             var filters = ServiceLocator.Container.Resolve<IConfiguration>()
                                                                   .GetGlobalInstallFilters(inst.game)

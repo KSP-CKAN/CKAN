@@ -101,7 +101,7 @@ namespace CKAN.GUI
             if (manager?.Cache != null)
             {
                 // Background thread in case GetSizeInfo takes a while
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     try
                     {
@@ -385,7 +385,7 @@ namespace CKAN.GUI
             {
                 UseWaitCursor = true;
                 // Save registry in background thread to keep GUI responsive
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     // Visual cue that we're doing something
                     regMgr.Save();

@@ -119,12 +119,11 @@ namespace CKAN.GUI
                         // when coming back to the mods tab from updating the repo
                         if (control is SplitContainer splitter)
                         {
-                            Task.Factory.StartNew(
-                                () =>
-                                {
-                                    Thread.Sleep(500);
-                                    splitter.Panel1.Refresh();
-                                });
+                            Task.Run(() =>
+                            {
+                                Thread.Sleep(500);
+                                splitter.Panel1.Refresh();
+                            });
                         }
                     }
                 }

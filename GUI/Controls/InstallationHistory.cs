@@ -32,7 +32,7 @@ namespace CKAN.GUI
                 ModsListView.Items.Clear();
                 ModsListView.Items.Add(LoadingMessage);
                 UseWaitCursor = true;
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     var items = inst.InstallHistoryFiles()
                                     .Select(fi => new ListViewItem(fi.CreationTime.ToString("g"))
@@ -83,7 +83,7 @@ namespace CKAN.GUI
         private void HistoryListView_ItemSelectionChanged(object? sender, ListViewItemSelectionChangedEventArgs? e)
         {
             UseWaitCursor = true;
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 try
                 {
