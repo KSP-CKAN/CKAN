@@ -136,35 +136,6 @@ namespace CKAN.ConsoleUI {
 
                             HandlePossibleConfigOnlyDirs(theme, registry, possibleConfigOnlyDirs);
 
-                        } catch (CancelledActionKraken) {
-                            // Don't need to tell the user they just cancelled out.
-                        } catch (FileNotFoundKraken ex) {
-                            // Possible file corruption
-                            RaiseError("{0}", ex.Message);
-                        } catch (DirectoryNotFoundKraken ex) {
-                            RaiseError("{0}", ex.Message);
-                        } catch (FileExistsKraken ex) {
-                            if (ex.owningModule != null) {
-                                RaiseMessage(Properties.Resources.InstallOwnedFileConflict, ex.installingModule?.ToString() ?? "", ex.filename, ex.owningModule);
-                            } else {
-                                RaiseMessage(Properties.Resources.InstallUnownedFileConflict, ex.installingModule?.ToString() ?? "", ex.filename, ex.installingModule?.ToString() ?? "");
-                            }
-                            RaiseError(Properties.Resources.InstallFilesReverted);
-                        } catch (DownloadErrorsKraken ex) {
-                            RaiseError("{0}", ex.ToString());
-                        } catch (ModuleDownloadErrorsKraken ex) {
-                            RaiseError("{0}", ex.ToString());
-                        } catch (RequestThrottledKraken ex) {
-                            if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.Message))) {
-                                if (ex.infoUrl != null) {
-                                    ModInfoScreen.LaunchURL(theme, ex.infoUrl);
-                                }
-                                LaunchSubScreen(new AuthTokenScreen(theme));
-                            }
-                        } catch (MissingCertificateKraken ex) {
-                            RaiseError("{0}", ex.ToString());
-                        } catch (InconsistentKraken ex) {
-                            RaiseError("{0}", ex.Message);
                         } catch (TooManyModsProvideKraken ex) {
 
                             var ch = new ConsoleChoiceDialog<CkanModule>(
@@ -182,16 +153,23 @@ namespace CKAN.ConsoleUI {
                                 retry = true;
                             }
 
-                        } catch (BadMetadataKraken ex) {
-                            RaiseError(Properties.Resources.InstallBadMetadata, ex.module?.ToString() ?? "", ex.Message);
-                        } catch (DependenciesNotSatisfiedKraken ex) {
-                            RaiseError("{0}", ex.Message);
-                        } catch (ModuleNotFoundKraken ex) {
-                            RaiseError(Properties.Resources.InstallModuleNotFound, ex.module, ex.Message);
-                        } catch (ModNotInstalledKraken ex) {
-                            RaiseError(Properties.Resources.InstallNotInstalled, ex.mod);
-                        } catch (DllLocationMismatchKraken ex) {
-                            RaiseError("{0}", ex.Message);
+                        } catch (CancelledActionKraken) {
+                            // Don't need to tell the user they just cancelled out.
+                        } catch (RequestThrottledKraken ex) {
+                            if (RaiseYesNoDialog(string.Format(Properties.Resources.InstallAuthTokenPrompt, ex.Message))) {
+                                if (ex.infoUrl != null) {
+                                    ModInfoScreen.LaunchURL(theme, ex.infoUrl);
+                                }
+                                LaunchSubScreen(new AuthTokenScreen(theme));
+                            }
+                        } catch (Kraken kraken) {
+                            // Show nice message for mod problems
+                            RaiseError("{0}", kraken.Message);
+                            RaiseMessage(Properties.Resources.InstallFilesReverted);
+                        } catch (Exception exc) {
+                            // Show stack trace for code problems
+                            RaiseError("{0}", exc.ToString());
+                            RaiseMessage(Properties.Resources.InstallFilesReverted);
                         }
                     } while (retry);
                 }

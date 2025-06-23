@@ -180,20 +180,6 @@ namespace CKAN.GUI
                         HideWaitDialog();
                         break;
 
-                    case TransactionException texc:
-                        // "Failed to roll back" is useless by itself,
-                        // so show all inner exceptions too
-                        EnableMainWindow();
-                        foreach (var exc in texc.TraverseNodes<Exception>(ex => ex.InnerException)
-                                                .Reverse())
-                        {
-                            log.Error(exc.Message, exc);
-                            currentUser.RaiseMessage("{0}", exc.Message);
-                        }
-                        currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
-                        Wait.Finish();
-                        break;
-
                     case AggregateException exc:
                         EnableMainWindow();
                         foreach (var inner in exc.InnerExceptions
@@ -208,10 +194,20 @@ namespace CKAN.GUI
                         Wait.Finish();
                         break;
 
+                    case Kraken kraken:
+                        // Show nice message for known problems
+                        log.Error(kraken.Message, kraken);
+                        EnableMainWindow();
+                        currentUser.RaiseMessage("{0}", kraken.Message);
+                        currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
+                        Wait.Finish();
+                        break;
+
                     case Exception exc:
+                        // Show stack trace for code problems
                         log.Error(exc.Message, exc);
                         EnableMainWindow();
-                        currentUser.RaiseMessage("{0}", exc.Message);
+                        currentUser.RaiseMessage("{0}", exc.ToString());
                         currentUser.RaiseMessage(Properties.Resources.MainRepoFailed);
                         Wait.Finish();
                         break;

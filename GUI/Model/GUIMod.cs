@@ -313,19 +313,21 @@ namespace CKAN.GUI
                                                     bool replaceChecked,
                                                     bool metadataChanged)
         {
+            var installed = InstalledMod?.Module;
             if (replaceChecked)
             {
                 yield return new ModChange(Mod, GUIModChangeType.Replace,
                                            ServiceLocator.Container.Resolve<IConfiguration>());
             }
-            else if (!(SelectedMod?.Equals(InstalledMod?.Module)
-                       ?? InstalledMod?.Module?.Equals(SelectedMod)
+            else if (!(SelectedMod?.Equals(installed)
+                       ?? installed?.Equals(SelectedMod)
                        // Both null
                        ?? true))
             {
-                if (InstalledMod != null
+                if (installed != null
                     && SelectedMod != null
-                    && SelectedMod == LatestAvailableMod)
+                    && SelectedMod == LatestAvailableMod
+                    && SelectedMod.version > installed.version)
                 {
                     yield return new ModUpgrade(Mod,
                                                 SelectedMod,
@@ -334,9 +336,9 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    if (InstalledMod != null)
+                    if (installed != null)
                     {
-                        yield return new ModChange(InstalledMod.Module!, GUIModChangeType.Remove,
+                        yield return new ModChange(installed, GUIModChangeType.Remove,
                                                    ServiceLocator.Container.Resolve<IConfiguration>());
                     }
                     if (SelectedMod != null)

@@ -12,7 +12,7 @@ namespace CKAN
         {
             if (!stream.CanRead)
             {
-                throw new ArgumentException("stream");
+                throw new ArgumentException(nameof(stream));
             }
             this.progress = progress;
         }

@@ -1,7 +1,10 @@
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 using NUnit.Framework;
+using log4net;
+using log4net.Core;
 
 using CKAN;
 using CKAN.Versioning;
@@ -110,6 +113,7 @@ namespace Tests.Core.Registry
         public void Registry_ZeroByteRegistryJson_EmptyRegistryWithoutCrash()
         {
             // Arrange
+            LogManager.GetRepository(Assembly.GetExecutingAssembly()).Threshold = Level.Off;
             string registryPath = TestData.DataDir("zero-byte-registry.json");
 
             // Act

@@ -97,6 +97,8 @@ namespace CKAN.GUI
                     AddResourceLink(Properties.Resources.ModInfoRemoteSWInfoLabel,          res.remoteSWInfo);
                     AddResourceLink(Properties.Resources.ModInfoStoreLabel,                 res.store);
                     AddResourceLink(Properties.Resources.ModInfoSteamStoreLabel,            res.steamstore);
+                    AddResourceLink(Properties.Resources.ModInfoGogStoreLabel,              res.gogstore);
+                    AddResourceLink(Properties.Resources.ModInfoEpicStoreLabel,             res.epicstore);
                 }
                 MetadataTable.ResumeLayout();
             });

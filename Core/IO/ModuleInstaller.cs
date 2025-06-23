@@ -75,9 +75,10 @@ namespace CKAN.IO
                                                     instance.game, instance.VersionCriteria());
             var modsToInstall = resolver.ModList().ToList();
             // Alert about attempts to install DLC before downloading or installing anything
-            if (modsToInstall.Any(m => m.IsDLC))
+            var dlc = modsToInstall.Where(m => m.IsDLC).ToArray();
+            if (dlc.Length > 0)
             {
-                throw new BadCommandKraken(Properties.Resources.ModuleInstallerDLC);
+                throw new ModuleIsDLCKraken(dlc.First());
             }
 
             // Make sure we have enough space to install this stuff
@@ -312,13 +313,13 @@ namespace CKAN.IO
 
         /// <summary>
         /// Check if the given module is a DLC:
-        /// if it is, throws a BadCommandKraken.
+        /// if it is, throws ModuleIsDLCKraken.
         /// </summary>
         private static void CheckKindInstallationKraken(CkanModule module)
         {
             if (module.IsDLC)
             {
-                throw new BadCommandKraken(Properties.Resources.ModuleInstallerDLC);
+                throw new ModuleIsDLCKraken(module);
             }
         }
 
@@ -561,34 +562,24 @@ namespace CKAN.IO
         /// </summary>
         public static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, GameInstance ksp)
         {
-            var files = new List<InstallableFile>();
-
             try
             {
                 // Use the provided stanzas, or use the default install stanza if they're absent.
-                if (module.install != null && module.install.Length != 0)
-                {
-                    foreach (ModuleInstallDescriptor stanza in module.install)
-                    {
-                        files.AddRange(stanza.FindInstallableFiles(zipfile, ksp));
-                    }
-                }
-                else
-                {
-                    files.AddRange(ModuleInstallDescriptor
-                        .DefaultInstallStanza(ksp.game, module.identifier)
-                        .FindInstallableFiles(zipfile, ksp));
-                }
+                return module.install is { Length: > 0 }
+                    ? module.install
+                            .SelectMany(stanza => stanza.FindInstallableFiles(zipfile, ksp))
+                            .ToList()
+                    : ModuleInstallDescriptor.DefaultInstallStanza(ksp.game,
+                                                                   module.identifier)
+                                             .FindInstallableFiles(zipfile, ksp);
             }
             catch (BadMetadataKraken kraken)
             {
                 // Decorate our kraken with the current module, as the lower-level
                 // methods won't know it.
-                kraken.module = module;
+                kraken.module ??= module;
                 throw;
             }
-
-            return files;
         }
 
         /// <summary>
@@ -677,6 +668,7 @@ namespace CKAN.IO
         /// <returns>
         /// Path of file or directory that was created.
         /// May differ from the input fullPath!
+        /// Throws a FileExistsKraken if we were going to overwrite the file.
         /// </returns>
         internal static string? InstallFile(ZipFile          zipfile,
                                             ZipEntry         entry,
@@ -718,7 +710,7 @@ namespace CKAN.IO
                 // We don't allow for the overwriting of files. See #208.
                 if (file_transaction.FileExists(fullPath))
                 {
-                    throw new FileExistsKraken(fullPath, string.Format(Properties.Resources.ModuleInstallerFileExists, fullPath));
+                    throw new FileExistsKraken(fullPath);
                 }
 
                 // Snapshot whatever was there before. If there's nothing, this will just

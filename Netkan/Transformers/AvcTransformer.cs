@@ -49,7 +49,7 @@ namespace CKAN.NetKAN.Transformers
             if (metadata.Vref?.Source == "ksp-avc")
             {
 
-                Log.InfoFormat("Executing internal AVC transformation with {0}", metadata.Kref);
+                Log.InfoFormat("Executing internal AVC transformation with {0}", metadata.Vref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
                 var noVersion = metadata.Version == null;

@@ -369,50 +369,6 @@ Upewnij się, że wprowadziłeś wersję w postaci Maj.Min - np. 1.5</value>
     <value>Jeśli masz szczęście, możesz wykonać `ckan update` i spróbować ponownie.
 Lub `ckan install --allow-niecompatible` aby zignorować kompatybilność modułów.</value>
   </data>
-  <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve">
-    <value>Moduł {0} jest wymagany, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji {1}</value>
-  </data>
-  <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve">
-    <value>Moduł {0} {1} jest wymagany, ale nie jest wymieniony w indeksie lub nie jest dostępny dla Twojej wersji {2}</value>
-  </data>
-  <data name="InstallBadMetadata" xml:space="preserve">
-    <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
-  </data>
-  <data name="InstallFileConflictOwned" xml:space="preserve">
-    <value>O nie! Próbowaliśmy nadpisać plik należący do innego moda!
-Spróbuj użyć `ckan update` i spróbować ponownie.
-
-Jeśli problem się powtórzy, może być to błąd programu.
-Proszę to zgłosić tutaj:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new
-
-Podaj następujące informacje w twoim zgłoszeniu (Oczywiście po angielsku):
-Plik           : {0}
-Instalowany mod : {1}
-Konfliktujący mod     : {2}
-Wersja CKAN    : {3}
-</value>
-  </data>
-  <data name="InstallFileConflictUnowned" xml:space="preserve">
-    <value>O nie!
-
-Wygląda na to, że próbujesz zainstalować moda, który jest już zainstalowany
-lub konfliktuje z innym już zainstalowanym modem.
-
-Jako funkcja bezpieczeństwa, CKAN *nigdy* nie nadpisze bądź przestawi plików których sam nie zainstalował
-
-Jeśli chcesz zainstalować {0} przez CKAN'a,
-proszę ręcznie odinstalować moda do którego należy:
-
-{1}
-
-i spróbuj ponownie.
-</value>
-  </data>
-  <data name="InstallGamedataReturned" xml:space="preserve">
-    <value>Twój {0} wrócił do pierwotnego stanu</value>
-  </data>
   <data name="InstallCancelled" xml:space="preserve">
     <value>Instalacja anulowana. Twoje pliki zostały przywrócone do stanu początkowego.</value>
   </data>
@@ -421,16 +377,6 @@ i spróbuj ponownie.
   </data>
   <data name="InstallTryAuthToken" xml:space="preserve">
     <value>Wypróbuj polecenie authtoken. Zobacz {0} po więcej szczegółów.</value>
-  </data>
-  <data name="InstallDownloadFailed" xml:space="preserve">
-    <value>Nie udało się pobrać jednego lub więcej plików, zatrzymano</value>
-  </data>
-  <data name="InstallDLC" xml:space="preserve">
-    <value>CKAN nie może zainstalować dodatku '{0}' dla ciebie.</value>
-  </data>
-  <data name="InstallDLCStorePage" xml:space="preserve">
-    <value>Aby zainstalować ten dodatek, kup go z jednej z tych stron:
-{0}</value>
   </data>
   <data name="ListUnknownFormat" xml:space="preserve">
     <value>Nieznany format eksportu: {0}</value>
@@ -488,22 +434,8 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   <data name="PromptWithoutInstance" xml:space="preserve">
     <value>CKAN {0}&gt; </value>
   </data>
-  <data name="RemoveNotInstalled" xml:space="preserve">
-    <value>Nie mogę tego zrobić, {0} nie jest zainstalowany.
-Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
-  </data>
-  <data name="RemoveDLC" xml:space="preserve">
-    <value>CKAN nie może usunąć dodatku '{0}' dla ciebie.</value>
-  </data>
-  <data name="RemoveDLCStorePage" xml:space="preserve">
-    <value>Aby usunąć ten dodatek, postępuj zgodnie z instrukcjami strony internetowej, w której go kupiłeś:
-{0}</value>
-  </data>
   <data name="RemoveCancelled" xml:space="preserve">
     <value>Usuwanie przerwane: {0}</value>
-  </data>
-  <data name="RemoveNothing" xml:space="preserve">
-    <value>Nie wybrano modyfikacji, nie ma nic do zrobienia</value>
   </data>
   <data name="RepairHelpSummary" xml:space="preserve">
     <value>Próba różnych automatycznych napraw</value>
@@ -529,9 +461,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   <data name="ReplaceCancelled" xml:space="preserve">
     <value>Stosowanie zamienników anulowane na żądanie użytkownika</value>
   </data>
-  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve">
-    <value>Brakujące zależności dla zamiennika, {0} wymaga {1} {2}, ale nie są wymienione w indeksie lub nie są dostępne dla twojej wersji {3}</value>
-  </data>
   <data name="ReplaceNotFound" xml:space="preserve">
     <value>Nie znaleziono zamienników</value>
   </data>
@@ -546,9 +475,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   </data>
   <data name="RepoAvailableFailed" xml:space="preserve">
     <value>Nie można pobrać głównej listy repozytoriów CKAN z {0}</value>
-  </data>
-  <data name="RepoListHeader" xml:space="preserve">
-    <value>Wyświetlanie wszystkich znanych repozytoriów:</value>
   </data>
   <data name="RepoAddNotFound" xml:space="preserve">
     <value>Nazwa {0} nie została znaleziona na liście głównej, proszę podać nazwę i adres Url</value>
@@ -570,9 +496,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   </data>
   <data name="RepoSet" xml:space="preserve">
     <value>Ustaw repozytorium {0} na '{1}'</value>
-  </data>
-  <data name="SearchNoTerm" xml:space="preserve">
-    <value>Brak wyszukiwanego wyrażenia?</value>
   </data>
   <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve">
     <value>Znaleziono {0} kompatybilne i {1} niekompatybilne modyfikacje pasujące do "{2}" przez "{3}"</value>
@@ -723,16 +646,6 @@ Spróbuj `ckan list` aby wyświetlić listę zainstalowanych modów.</value>
   </data>
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Aktualizacja przerwana: {0}</value>
-  </data>
-  <data name="UpgradeNotFound" xml:space="preserve">
-    <value>Moduł {0} nie został znaleziony</value>
-  </data>
-  <data name="UpgradeDLC" xml:space="preserve">
-    <value>CKAN nie może zaktualizować dodatku '{0}' dla ciebie</value>
-  </data>
-  <data name="UpgradeDLCStorePage" xml:space="preserve">
-    <value>Aby zaktualizować ten dodatek, pobierz wszystkie aktualizacje ze strony, z którego go kupiłeś:
-{0}</value>
   </data>
   <data name="ScanNotSaved" xml:space="preserve">
     <value>Repozytorium nie zostało zapisane</value>

@@ -47,7 +47,7 @@ namespace CKAN.GUI
             UseWaitCursor    = true;
             pieChart.Visible = false;
             table.Visible    = false;
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
             {
                 if (cache.CachedFileSizeByHost(registry.GetDownloadUrlsByHash())
                     is IReadOnlyDictionary<string, long> bytesPerHost)

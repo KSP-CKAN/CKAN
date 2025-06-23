@@ -41,29 +41,29 @@ namespace CKAN.ConsoleUI.Toolkit {
             SetDimensions(left, top, right, bottom);
 
             AddObject(new ConsoleLabel(
-                left + 2, top + 2, left + 2 + labelW - 1,
+                left + 3, top + 2, left + 2 + labelW - 1,
                 () => Properties.Resources.FileSelectDirectory,
                 th => th.PopupBg,
                 th => th.PopupFg
             ));
 
             pathField = new ConsoleField(
-                left + 2 + labelW + 1, top + 2, right - 2,
+                left + 3 + labelW + 1, top + 2, right - 3,
                 curDir.FullName
             );
             pathField.OnChange += pathFieldChanged;
             AddObject(pathField);
 
             AddObject(new ConsoleLabel(
-                left + 2, bottom - 1, right - 2,
+                left + 3, bottom - 1, right - 3,
                 () => string.Format(Properties.Resources.FileSelectCountFooter, chosenFiles.Count, CkanModule.FmtSize(totalChosenSize())),
                 th => th.PopupBg,
                 th => th.PopupFg
             ));
 
-            // ListBox showing zip files in current dir
+            // ListBox showing matching files in current dir
             fileList = new ConsoleListBox<FileSystemInfo>(
-                left + 2, top + 4, right - 2, bottom - 2,
+                left + 3, top + 4, right - 3, bottom - 2,
                 getFileList(),
                 new List<ConsoleListBoxColumn<FileSystemInfo>>() {
                     new ConsoleListBoxColumn<FileSystemInfo>(
@@ -310,7 +310,7 @@ namespace CKAN.ConsoleUI.Toolkit {
         private static int labelW => Properties.Resources.FileSelectDirectory.Length;
         private const  int hPad   = 2;
         private const  int top    =  2;
-        private const  int bottom = -2;
+        private const  int bottom = -3;
     }
 
 }

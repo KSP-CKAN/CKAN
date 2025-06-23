@@ -101,7 +101,7 @@ namespace CKAN.GUI
             if (manager?.Cache != null)
             {
                 // Background thread in case GetSizeInfo takes a while
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     try
                     {
@@ -385,7 +385,7 @@ namespace CKAN.GUI
             {
                 UseWaitCursor = true;
                 // Save registry in background thread to keep GUI responsive
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     // Visual cue that we're doing something
                     regMgr.Save();
@@ -693,11 +693,15 @@ namespace CKAN.GUI
             LocalVersionLabel.Text = Meta.GetVersion();
             try
             {
-                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false, userAgent)
-                                           .Version;
-                LatestVersionLabel.Text = latestVersion?.ToString() ?? "";
-                // Allow downgrading in case they want to stop using dev builds
-                InstallUpdateButton.Enabled = !latestVersion?.Equals(new ModuleVersion(Meta.GetVersion())) ?? false;
+                if (updater.GetUpdate(coreConfig.DevBuilds ?? false,
+                                      userAgent)
+                           .Version
+                    is CkanModuleVersion latestVersion)
+                {
+                    LatestVersionLabel.Text = latestVersion.ToString();
+                    // Allow downgrading in case they want to stop using dev builds
+                    InstallUpdateButton.Enabled = !latestVersion.SameClientVersion(Meta.ReleaseVersion);
+                }
             }
             catch
             {

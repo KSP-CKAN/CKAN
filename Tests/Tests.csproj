@@ -22,7 +22,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>CS0436</WarningsNotAsErrors>
     <NoWarn>IDE1006,NU1701</NoWarn>
-    <TargetFrameworks>net48;net8.0;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net481;net8.0;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <DefaultItemExcludes Condition=" '$(TargetFramework)' == 'net8.0' ">$(DefaultItemExcludes);AutoUpdate\**;GUI\**</DefaultItemExcludes>
   </PropertyGroup>
@@ -37,7 +37,7 @@
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -12,6 +12,7 @@ using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
 using CKAN.Games;
+using CKAN.Extensions;
 
 namespace CKAN.NetKAN.Processors
 {
@@ -63,7 +64,7 @@ namespace CKAN.NetKAN.Processors
                 }
                 log.Debug("Input successfully passed pre-validation");
 
-                var ckans = netkans.SelectMany(netkan => transformer.Transform(netkan, opts))
+                var ckans = netkans.SelectManyTasks(netkan => transformer.Transform(netkan, opts))
                                    .GroupBy(module => module.Version)
                                    .Select(grp => Metadata.Merge(grp.ToArray()))
                                    .SelectMany(merged => specVersionTransformer.Transform(merged, opts))

@@ -152,14 +152,8 @@
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
     <value>成功克隆游戏实例.</value>
   </data>
-  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve">
-    <value>正在创建新游戏实例...</value>
-  </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
     <value>该游戏实例名称已被占用.</value>
-  </data>
-  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
-    <value>成功创建游戏实例.</value>
   </data>
   <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve">
     <value>在 Windows 系统中创建联接点，或在 Unix 系统中创建符号链接到原始目录，而不是复制它们。
@@ -226,9 +220,6 @@
   <data name="MainGoBack" xml:space="preserve">
     <value>返回</value>
   </data>
-  <data name="MainQuitWithUnmetDeps" xml:space="preserve">
-    <value>有没有安装的依赖性模组. 您真的要退出吗？</value>
-  </data>
   <data name="MainQuitWithUnappliedChanges" xml:space="preserve">
     <value>您还有模组安装设置未更改. 真的要退出吗？
 
@@ -239,9 +230,6 @@
   </data>
   <data name="MainUpgradingTo" xml:space="preserve">
     <value>更新CKAN到 {0}</value>
-  </data>
-  <data name="MainDepNotSatisfied" xml:space="preserve">
-    <value>模组 {0} 依赖于模组 {1}, 而模组 {1} 并不与当前安装的游戏版本兼容</value>
   </data>
   <data name="MainFilterAll" xml:space="preserve">
     <value>筛选 (全部模组)</value>
@@ -384,44 +372,6 @@
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>状态日志</value>
   </data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve">
-    <value>{0} 需要 {1} 但它未在索引中列出或不兼容您当前的游戏版本.</value>
-  </data>
-  <data name="MainInstallNotFound" xml:space="preserve">
-    <value>需要模组 {0} 但它未在索引中列出或不兼容您当前的游戏版本.</value>
-  </data>
-  <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>检测到损坏的元数据，来自模组 {0}: {1}</value>
-  </data>
-  <data name="MainInstallFileExists" xml:space="preserve">
-    <value>我们正在尝试去覆盖其它模组（或游戏本体）已经安装的文件！
-请尝试 `ckan更新` 并重试.
-
-如果这个问题反复出现，可能是由于打包时出现bug.
-请在此处报告:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-报告时请包括以下信息:
-
-File(文件)      : {0}
-Installing Mod(正在安装的Mod) : {1}
-Owning Mod(已有Mod): {2}
-CKAN Version(CKAN版本)   : {3}</value>
-  </data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>
-看起来您正在尝试安装一个已经安装的Mod，或者正在尝试安装已经与其它已安装Mod冲突的Mod.
-
-作为一个安全特性，CKAN*永远不会*覆写或修改并非由自己安装的文件.
-
-如果您想要用CKAN安装 {0},
-请手动卸载以下Mod:
-
-{1}
-
-并重试.</value>
-  </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>您的GameData已恢复原样.</value>
   </data>
@@ -436,35 +386,11 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="MainInstallNo" xml:space="preserve">
     <value>不</value>
   </data>
-  <data name="MainInstallModSuccess" xml:space="preserve">
-    <value>Mod "{0}" 已成功安装</value>
-  </data>
   <data name="MainInstallSuccess" xml:space="preserve">
     <value>成功！</value>
   </data>
-  <data name="MainInstallCancelTooLate" xml:space="preserve">
-    <value>取消时间过晚，进程已完成！</value>
-  </data>
-  <data name="MainInstallCancelAfterInstall" xml:space="preserve">
-    <value>用户手动取消进程但所有Mod已经安装/卸载/更新.</value>
-  </data>
-  <data name="MainInstallProcessComplete" xml:space="preserve">
-    <value>进程完成！</value>
-  </data>
-  <data name="MainInstallProcessCanceled" xml:space="preserve">
-    <value>进程被用户取消！</value>
-  </data>
-  <data name="MainInstallCanceledManually" xml:space="preserve">
-    <value>用户手动取消进程！</value>
-  </data>
-  <data name="MainInstallInstallCanceled" xml:space="preserve">
-    <value>安装/卸载/更新已取消！</value>
-  </data>
   <data name="MainInstallErrorInstalling" xml:space="preserve">
     <value>安装时发生错误！</value>
-  </data>
-  <data name="MainInstallUnknownError" xml:space="preserve">
-    <value>发生未知错误，请重试！如果仍然发生，请向https://github.com/KSP-CKAN/CKAN/issues/new/choose报告</value>
   </data>
   <data name="MainInstallKnownError" xml:space="preserve">
     <value>如果上面的消息指明是一个下载错误，请重试. 否则请向我们提交一个issue便于我们调查.
@@ -473,12 +399,6 @@ CKAN Version(CKAN版本)   : {3}</value>
   </data>
   <data name="MainInstallFailed" xml:space="preserve">
     <value>安装失败！</value>
-  </data>
-  <data name="MainInstallProvidedBy" xml:space="preserve">
-    <value>Mod {0} 由超过一个Mod提供，请选择以下Mod之一: </value>
-  </data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve">
-    <value>CKAN无法安装扩展‘ {0}’。</value>
   </data>
   <data name="ModInfoNSlashA" xml:space="preserve">
     <value>N/A</value>
@@ -564,15 +484,6 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="MainModListLoadingInstalled" xml:space="preserve">
     <value>正在加载已安装Mod...</value>
   </data>
-  <data name="MainModListLoadingAvailable" xml:space="preserve">
-    <value>正在加载可用Mod...</value>
-  </data>
-  <data name="MainModListLoadingIncompatible" xml:space="preserve">
-    <value>正在加载不可用Mod...</value>
-  </data>
-  <data name="MainModListRestoringChangeset" xml:space="preserve">
-    <value>恢复更改列表...</value>
-  </data>
   <data name="MainModListPreservingNew" xml:space="preserve">
     <value>保留新旗帜...</value>
   </data>
@@ -612,20 +523,11 @@ CKAN Version(CKAN版本)   : {3}</value>
   <data name="MainModListAll" xml:space="preserve">
     <value>所有 ({0})</value>
   </data>
-  <data name="MainModListUpdatingTray" xml:space="preserve">
-    <value>正在更新托盘...</value>
-  </data>
   <data name="MainModListAutoDetected" xml:space="preserve">
     <value>AD</value>
   </data>
   <data name="MainModListAutoInstalledToolTip" xml:space="preserve">
     <value>如果选中此项，在所有依赖它的模组被删除后，将自动删除此模组</value>
-  </data>
-  <data name="MainModListUnknownFilter" xml:space="preserve">
-    <value>未知筛选类型 {0} 在 IsModInFilter</value>
-  </data>
-  <data name="MainRecommendationsTitle" xml:space="preserve">
-    <value>选择推荐或建议Mod</value>
   </data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve">
     <value>没有找到推荐或建议Mod.</value>
@@ -644,9 +546,6 @@ CKAN Version(CKAN版本)   : {3}</value>
   </data>
   <data name="MainRepoUpdating" xml:space="preserve">
     <value>正在更新模组数据库...</value>
-  </data>
-  <data name="MainRepoFailedToConnect" xml:space="preserve">
-    <value>无法连接到模组数据库. 错误码: {0}</value>
   </data>
   <data name="MainRepoUpToDate" xml:space="preserve">
     <value>模组数据库已是最新.</value>
@@ -707,9 +606,6 @@ CKAN Version(CKAN版本)   : {3}</value>
 查找安装您的游戏的文件夹并选择其中一个文件：
 
 {1}</value>
-  </data>
-  <data name="NewRepoDialogFailed" xml:space="preserve">
-    <value>同步主列表失败.</value>
   </data>
   <data name="PluginsDialogFilter" xml:space="preserve">
     <value>CKAN Plugins (*.dll)|*.dll</value>

@@ -5,13 +5,6 @@ namespace CKAN.Versioning
     /// </summary>
     public sealed class CkanModuleVersion : ModuleVersion
     {
-        private readonly string _string;
-
-        /// <summary>
-        /// The human friendly name of the CKAN client release.
-        /// </summary>
-        public string Name { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CkanModuleVersion"/> class using the specified version string
         /// and human friendly name.
@@ -26,6 +19,11 @@ namespace CKAN.Versioning
         }
 
         /// <summary>
+        /// The human friendly name of the CKAN client release.
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
         /// Converts the value of the current <see cref="CkanModuleVersion"/> object to a <see cref="string"/>
         /// representation.
         /// </summary>
@@ -36,8 +34,12 @@ namespace CKAN.Versioning
         /// The returned value is not a real version string and is for display purposes only.
         /// </remarks>
         public override string ToString()
-        {
-            return _string;
-        }
+            => _string;
+
+        public bool SameClientVersion(ModuleVersion other)
+            => other.Equals(this)
+               || other.ToString().StartsWith($"{base.ToString()}.");
+
+        private readonly string _string;
     }
 }

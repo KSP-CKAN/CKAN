@@ -1031,14 +1031,12 @@ namespace Tests.Core.IO
                 // The tests for different targets can run in parallel,
                 // so they don't share a cache nicely
                 const string targetFramework =
-                    #if NET48
-                        "net48";
-                    #elif NET8_0
-                        #if WINDOWS
-                            "net8.0-windows";
-                        #else
-                            "net8.0";
-                        #endif
+                    #if NETFRAMEWORK
+                        "net481";
+                    #elif WINDOWS
+                        "net8.0-windows";
+                    #else
+                        "net8.0";
                     #endif
                 // Do not Dispose this, we want it to persist for GitHub workflow caching
                 var cacheDir = TestData.DataDir($"../../_build/test/cache/{targetFramework}");

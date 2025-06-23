@@ -181,8 +181,14 @@ namespace CKAN.NetKAN.Processors
                 // If you do this the sensible way, the C# compiler throws:
                 // error CS1631: Cannot yield a value in the body of a catch clause
                 caught        = true;
-                caughtMessage = e.Message;
-                if (e is RequestThrottledKraken k && k.retryTime is DateTime dt)
+                caughtMessage = e switch
+                {
+                    // Short error message for problems with mods
+                    Kraken k => k.Message,
+                    // Full message with stack trace for problems with code
+                    _ => e.ToString(),
+                };
+                if (e is RequestThrottledKraken rtk && rtk.retryTime is DateTime dt)
                 {
                     // Let the API credits recharge
                     var span = dt.Subtract(DateTime.UtcNow);

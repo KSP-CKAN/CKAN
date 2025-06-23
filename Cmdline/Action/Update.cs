@@ -96,8 +96,7 @@ namespace CKAN.CmdLine
             }
             catch (MissingCertificateKraken kraken)
             {
-                // Handling the kraken means we have prettier output.
-                user.RaiseMessage("{0}", kraken.ToString());
+                user.RaiseMessage("{0}", kraken.Message);
                 return Exit.ERROR;
             }
 

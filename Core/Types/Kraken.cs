@@ -18,7 +18,8 @@ namespace CKAN
     /// </summary>
     public class Kraken : Exception
     {
-        public Kraken(string? reason = null, Exception? innerException = null)
+        public Kraken(string?    reason         = null,
+                      Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -26,33 +27,36 @@ namespace CKAN
 
     public class FileNotFoundKraken : Kraken
     {
-        public readonly string? file;
-
-        public FileNotFoundKraken(string? file, string? reason = null, Exception? innerException = null)
+        public FileNotFoundKraken(string?    file,
+                                  string?    reason         = null,
+                                  Exception? innerException = null)
             : base(reason, innerException)
         {
             this.file = file;
         }
+
+        public readonly string? file;
     }
 
     public class DirectoryNotFoundKraken : Kraken
     {
-        public readonly string directory;
-
-        public DirectoryNotFoundKraken(string directory, string? reason = null, Exception? innerException = null)
+        public DirectoryNotFoundKraken(string     directory,
+                                       string?    reason         = null,
+                                       Exception? innerException = null)
             : base(reason, innerException)
         {
             this.directory = directory;
         }
+
+        public readonly string directory;
     }
 
     public class NotEnoughSpaceKraken : Kraken
     {
-        public readonly DirectoryInfo destination;
-        public readonly long          bytesFree;
-        public readonly long          bytesToStore;
-
-        public NotEnoughSpaceKraken(string description, DirectoryInfo destination, long bytesFree, long bytesToStore)
+        public NotEnoughSpaceKraken(string        description,
+                                    DirectoryInfo destination,
+                                    long          bytesFree,
+                                    long          bytesToStore)
             : base(string.Format(Properties.Resources.KrakenNotEnoughSpace,
                                  description, destination,
                                  CkanModule.FmtSize(bytesFree),
@@ -62,6 +66,10 @@ namespace CKAN
             this.bytesFree    = bytesFree;
             this.bytesToStore = bytesToStore;
         }
+
+        public readonly DirectoryInfo destination;
+        public readonly long          bytesFree;
+        public readonly long          bytesToStore;
     }
 
     /// <summary>
@@ -70,7 +78,8 @@ namespace CKAN
     /// </summary>
     public class BadInstallLocationKraken : Kraken
     {
-        public BadInstallLocationKraken(string? reason = null, Exception? innerException = null)
+        public BadInstallLocationKraken(string?    reason         = null,
+                                        Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -78,23 +87,24 @@ namespace CKAN
 
     public class ModuleNotFoundKraken : Kraken
     {
-        public readonly string  module;
-        public readonly string? version;
-
-        public ModuleNotFoundKraken(string module, string? version, string reason, Exception? innerException = null)
+        public ModuleNotFoundKraken(string     identifier,
+                                    string?    version        = null,
+                                    string?    reason         = null,
+                                    Exception? innerException = null)
             : base(reason
-                   ?? string.Format(Properties.Resources.KrakenDependencyNotSatisfied, module, version),
+                   ?? (version == null
+                       ? string.Format(Properties.Resources.KrakenDependencyModuleNotFound,
+                                       identifier, "")
+                       : string.Format(Properties.Resources.KrakenDependencyNotSatisfied,
+                                       identifier, version)),
                    innerException)
         {
-            this.module  = module;
-            this.version = version;
+            this.identifier = identifier;
+            this.version    = version;
         }
 
-        public ModuleNotFoundKraken(string module, string? version = null)
-            : this(module, version,
-                string.Format(Properties.Resources.KrakenDependencyModuleNotFound, module, version ?? ""))
-        { }
-
+        public readonly string  identifier;
+        public readonly string? version;
     }
 
     /// <summary>
@@ -161,18 +171,21 @@ namespace CKAN
 
     public class NotKSPDirKraken : Kraken
     {
-        public readonly string path;
-
-        public NotKSPDirKraken(string path, string? reason = null, Exception? innerException = null)
+        public NotKSPDirKraken(string     path,
+                               string?    reason         = null,
+                               Exception? innerException = null)
             : base(reason, innerException)
         {
             this.path = path;
         }
+
+        public readonly string path;
     }
 
     public class TransactionalKraken : Kraken
     {
-        public TransactionalKraken(string? reason = null, Exception? innerException = null)
+        public TransactionalKraken(string?    reason         = null,
+                                   Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -184,13 +197,21 @@ namespace CKAN
     /// </summary>
     public class BadMetadataKraken : Kraken
     {
-        public CkanModule? module;
-
-        public BadMetadataKraken(CkanModule? module, string? reason = null, Exception? innerException = null)
-            : base(reason, innerException)
+        public BadMetadataKraken(CkanModule? module,
+                                 string?     reason         = null,
+                                 Exception?  innerException = null)
+            : base(reason,
+                   innerException)
         {
             this.module = module;
         }
+
+        public override string Message =>
+            module != null ? string.Format(Properties.Resources.KrakenBadMetadata,
+                                           module, base.Message)
+                           : base.Message;
+
+        public CkanModule? module;
     }
 
     /// <summary>
@@ -198,29 +219,26 @@ namespace CKAN
     /// </summary>
     public class RegistryVersionNotSupportedKraken : Kraken
     {
-        public readonly int requestVersion;
-
-        public RegistryVersionNotSupportedKraken(int badVersion, string reason)
+        public RegistryVersionNotSupportedKraken(int    badVersion,
+                                                 string reason)
             : base(reason)
         {
             requestVersion = badVersion;
         }
+
+        public readonly int requestVersion;
     }
 
     public class TooManyModsProvideKraken : Kraken
     {
-        public readonly CkanModule       requester;
-        public readonly List<CkanModule> modules;
-        public readonly string           requested;
-        public readonly string?          choice_help_text;
-
         public TooManyModsProvideKraken(CkanModule       requester,
                                         string           requested,
                                         List<CkanModule> modules,
                                         string?          choice_help_text = null,
                                         Exception?       innerException   = null)
-            : base(choice_help_text ?? string.Format(Properties.Resources.KrakenProvidedByMoreThanOne,
-                                                     requested, requester.name),
+            : base(choice_help_text
+                   ?? string.Format(Properties.Resources.KrakenProvidedByMoreThanOne,
+                                    requested, requester.name),
                    innerException)
         {
             this.requester        = requester;
@@ -228,6 +246,11 @@ namespace CKAN
             this.modules          = modules;
             this.choice_help_text = choice_help_text;
         }
+
+        public readonly CkanModule       requester;
+        public readonly List<CkanModule> modules;
+        public readonly string           requested;
+        public readonly string?          choice_help_text;
     }
 
     /// <summary>
@@ -236,7 +259,8 @@ namespace CKAN
     /// </summary>
     public class InconsistentKraken : Kraken
     {
-        public InconsistentKraken(ICollection<string> inconsistencies, Exception? innerException = null)
+        public InconsistentKraken(ICollection<string> inconsistencies,
+                                  Exception?          innerException = null)
             : base(string.Join(Environment.NewLine,
                                new string[] { Properties.Resources.KrakenInconsistenciesHeader }
                                    .Concat(inconsistencies.Select(msg => $"* {msg}"))),
@@ -245,22 +269,21 @@ namespace CKAN
             this.inconsistencies = inconsistencies;
         }
 
-        public InconsistentKraken(string inconsistency, Exception? innerException = null)
+        public InconsistentKraken(string     inconsistency,
+                                  Exception? innerException = null)
             : this(new List<string> { inconsistency }, innerException)
         { }
 
         public string ShortDescription
             => string.Join("; ", inconsistencies);
 
-        public override string ToString()
-            => Message + Environment.NewLine + Environment.NewLine + StackTrace;
-
         private readonly ICollection<string> inconsistencies;
     }
 
     public class FailedToDeleteFilesKraken : Kraken
     {
-        public FailedToDeleteFilesKraken(string identifier, List<string> undeletableFiles)
+        public FailedToDeleteFilesKraken(string       identifier,
+                                         List<string> undeletableFiles)
             : base(string.Format(Properties.Resources.KrakenFailedToDeleteFiles,
                                  identifier,
                                  string.Join(Environment.NewLine,
@@ -277,24 +300,22 @@ namespace CKAN
     /// </summary>
     public class BadRelationshipsKraken : InconsistentKraken
     {
-        public BadRelationshipsKraken(
-            List<Tuple<CkanModule, RelationshipDescriptor>> depends,
-            modRelList conflicts
-        ) : base(
-            (depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency, dep.Item1, dep.Item2))
-                ?? Array.Empty<string>()
-            ).Concat(
-                conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith, conf.Item1, conf.Item2))
-                ?? Array.Empty<string>()
-            ).ToArray()
-        )
+        public BadRelationshipsKraken(List<Tuple<CkanModule, RelationshipDescriptor>> depends,
+                                      modRelList                                      conflicts)
+            : base((depends?.Select(dep => string.Format(Properties.Resources.KrakenMissingDependency,
+                                                         dep.Item1, dep.Item2))
+                           ?? Array.Empty<string>())
+                       .Concat(conflicts?.Select(conf => string.Format(Properties.Resources.KrakenConflictsWith,
+                                                                       conf.Item1, conf.Item2))
+                                        ?? Array.Empty<string>())
+                       .ToArray())
         {
             Depends   = depends   ?? new List<Tuple<CkanModule, RelationshipDescriptor>>();
             Conflicts = conflicts ?? new modRelList();
         }
 
         public readonly List<Tuple<CkanModule, RelationshipDescriptor>> Depends;
-        public readonly modRelList Conflicts;
+        public readonly modRelList                                      Conflicts;
     }
 
     /// <summary>
@@ -303,40 +324,56 @@ namespace CKAN
     /// </summary>
     public class FileExistsKraken : Kraken
     {
+        public FileExistsKraken(string     filename,
+                                string?    reason         = null,
+                                Exception? innerException = null)
+            : base(reason, innerException)
+        {
+            this.filename = filename;
+        }
+
+        public override string Message =>
+            base.Message
+            ?? (installingModule == null
+                    ? string.Format(Properties.Resources.KrakenFileExistsWithoutInstalling,
+                                    filename)
+                    : owningModule == null
+                        ? string.Format(Properties.Resources.KrakenFileExistsWithoutOwner,
+                                        filename, installingModule)
+                        : string.Format(Properties.Resources.KrakenFileExistsWithOwner,
+                                        filename, installingModule, owningModule.Module));
+
         public string filename;
 
         // These aren't set at construction time, but exist so that we can decorate the
         // kraken as appropriate.
         public CkanModule?      installingModule;
         public InstalledModule? owningModule;
-
-        public FileExistsKraken(string filename, string? reason = null, Exception? innerException = null)
-            : base(reason, innerException)
-        {
-            this.filename = filename;
-        }
     }
 
     /// <summary>
     /// The terrible state when errors occurred during downloading.
     /// Requires an IEnumerable list of exceptions on construction.
-    /// Has a specialised ToString() that shows everything that went wrong.
     /// </summary>
     public class DownloadErrorsKraken : Kraken
     {
         public DownloadErrorsKraken(List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>> errors)
             : base(string.Join(Environment.NewLine,
-                               new string[] { Properties.Resources.KrakenDownloadErrorsHeader, "" }
-                               .Concat(errors.Select(e => e.Value.Message))))
+                               errors.Select(e => e.Value.Message)
+                                     .Prepend("")
+                                     .Prepend(Properties.Resources.KrakenDownloadErrorsHeader)))
         {
             Exceptions = new List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>>(errors);
         }
 
         public DownloadErrorsKraken(NetAsyncDownloader.DownloadTarget target, Exception exc)
             : base(string.Join(Environment.NewLine,
-                               new string[] { Properties.Resources.KrakenDownloadErrorsHeader,
-                                              "",
-                                              exc.Message }))
+                               new string[]
+                               {
+                                   Properties.Resources.KrakenDownloadErrorsHeader,
+                                   "",
+                                   exc.Message
+                               }))
         {
             Exceptions = new List<KeyValuePair<NetAsyncDownloader.DownloadTarget, Exception>>
             {
@@ -355,10 +392,11 @@ namespace CKAN
     {
         public ModuleDownloadErrorsKraken(List<KeyValuePair<CkanModule, Exception>> errors)
             : base(string.Join(Environment.NewLine,
-                               new string[] { Properties.Resources.KrakenModuleDownloadErrorsHeader, "" }
-                               .Concat(errors.Select(kvp => string.Format(Properties.Resources.KrakenModuleDownloadError,
-                                                                          kvp.Key.ToString(),
-                                                                          kvp.Value.Message)))))
+                               errors.Select(kvp => string.Format(Properties.Resources.KrakenModuleDownloadError,
+                                                                  kvp.Key,
+                                                                  kvp.Value.Message))
+                                     .Prepend("")
+                                     .Prepend(Properties.Resources.KrakenModuleDownloadErrorsHeader)))
         {
             Exceptions = new List<KeyValuePair<CkanModule, Exception>>(errors);
         }
@@ -372,7 +410,8 @@ namespace CKAN
     /// </summary>
     public class CancelledActionKraken : Kraken
     {
-        public CancelledActionKraken(string? reason = null, Exception? innerException = null)
+        public CancelledActionKraken(string?    reason         = null,
+                                     Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -384,7 +423,8 @@ namespace CKAN
     /// </summary>
     public class UnsupportedKraken : Kraken
     {
-        public UnsupportedKraken(string reason, Exception? innerException = null)
+        public UnsupportedKraken(string     reason,
+                                 Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -396,35 +436,35 @@ namespace CKAN
     /// </summary>
     public class PathErrorKraken : Kraken
     {
-        public readonly string? path;
-
-        public PathErrorKraken(string? path, string? reason = null, Exception? innerException = null)
+        public PathErrorKraken(string?    path,
+                               string?    reason         = null,
+                               Exception? innerException = null)
             : base(reason, innerException)
         {
             this.path = path;
         }
+
+        public readonly string? path;
     }
 
     /// <summary>
     /// Tremble, mortal, for ye has summoned the kraken of mods which are not installed.
     /// Thou hast tried to remove or perform actions upon a mod that is not there!
-    /// This kraken provides a custom Message
     /// </summary>
     public class ModNotInstalledKraken : Kraken
     {
-        public readonly string mod;
-
-        public override string Message => string.Format(Properties.Resources.KrakenNotInstalled, mod);
-
-        // TODO: Since we override message, should we really allow users to pass in a reason
-        // here? Is there a way we can check if that was set, and then access it directly from
-        // our base class?
-
-        public ModNotInstalledKraken(string mod, string? reason = null, Exception? innerException = null)
-            : base(reason, innerException)
+        public ModNotInstalledKraken(string     mod,
+                                     string?    reason         = null,
+                                     Exception? innerException = null)
+            : base(reason
+                   ?? string.Format(Properties.Resources.KrakenNotInstalled,
+                                    mod),
+                   innerException)
         {
             this.mod = mod;
         }
+
+        public readonly string mod;
     }
 
     /// <summary>
@@ -432,7 +472,8 @@ namespace CKAN
     /// </summary>
     public class BadCommandKraken : Kraken
     {
-        public BadCommandKraken(string? reason = null, Exception? innerException = null)
+        public BadCommandKraken(string?    reason         = null,
+                                Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -440,32 +481,32 @@ namespace CKAN
 
     public class MissingCertificateKraken : Kraken
     {
-        public MissingCertificateKraken(string? reason = null, Exception? innerException = null)
-            : base(reason, innerException)
+        public MissingCertificateKraken(string?    reason         = null,
+                                        Exception? innerException = null)
+            : base(reason
+                   ?? (Platform.IsUnix
+                          ? string.Format(Properties.Resources.KrakenMissingCertificateUnix,
+                                          HelpURLs.CertificateErrors)
+                          : Properties.Resources.KrakenMissingCertificateNotUnix),
+                   innerException)
         {
-        }
-
-        public override string ToString()
-        {
-            return Platform.IsUnix
-                ? string.Format(Properties.Resources.KrakenMissingCertificateUnix, HelpURLs.CertificateErrors)
-                : Properties.Resources.KrakenMissingCertificateNotUnix;
         }
     }
 
     public class RequestThrottledKraken : Kraken
     {
-        public readonly Uri       throttledUrl;
-        public readonly Uri       infoUrl;
-        public readonly DateTime? retryTime;
-
-        public RequestThrottledKraken(Uri url, Uri info, WebException exc, string? reason = null)
+        public RequestThrottledKraken(Uri          url,
+                                      Uri          info,
+                                      WebException exc,
+                                      string?      reason = null)
             : this(url, info, ExceptionRetryTimes(exc).Max(), reason)
         {
         }
 
-        public RequestThrottledKraken(Uri url, Uri info,
-                                      DateTime? retryTime, string? reason = null)
+        public RequestThrottledKraken(Uri       url,
+                                      Uri       info,
+                                      DateTime? retryTime,
+                                      string?   reason = null)
             : base(reason
                    ?? string.Format(Properties.Resources.KrakenDownloadThrottled,
                                     url.Host))
@@ -474,6 +515,10 @@ namespace CKAN
             infoUrl        = info;
             this.retryTime = retryTime;
         }
+
+        public readonly Uri       throttledUrl;
+        public readonly Uri       infoUrl;
+        public readonly DateTime? retryTime;
 
         // https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#handle-rate-limit-errors-appropriately
         private static IEnumerable<DateTime> ExceptionRetryTimes(WebException exc)
@@ -502,17 +547,18 @@ namespace CKAN
 
     public class RegistryInUseKraken : Kraken
     {
-        public readonly string lockfilePath;
-
-        public RegistryInUseKraken(string path, string? reason = null, Exception? inner_exception = null)
-            :base(reason, inner_exception)
+        public RegistryInUseKraken(string     path,
+                                   string?    reason          = null,
+                                   Exception? inner_exception = null)
+            : base(reason
+                   ?? string.Format(Properties.Resources.KrakenAlreadyRunning,
+                                    Platform.FormatPath(path)),
+                   inner_exception)
         {
             lockfilePath = path;
         }
 
-        public override string ToString()
-            => string.Format(Properties.Resources.KrakenAlreadyRunning,
-                             Platform.FormatPath(lockfilePath));
+        public readonly string lockfilePath;
     }
 
     /// <summary>
@@ -526,6 +572,21 @@ namespace CKAN
     public class InvalidModuleFileKraken : Kraken
     {
         /// <summary>
+        /// Release the kraken
+        /// </summary>
+        /// <param name="module">Module to check against path</param>
+        /// <param name="path">Path to the file to check against module</param>
+        /// <param name="reason">Human-readable description of the problem</param>
+        public InvalidModuleFileKraken(CkanModule module,
+                                       string     path,
+                                       string?    reason = null)
+            : base(reason)
+        {
+            this.module = module;
+            this.path   = path;
+        }
+
+        /// <summary>
         /// The module that doesn't match the file
         /// </summary>
         public readonly CkanModule module;
@@ -534,19 +595,6 @@ namespace CKAN
         /// Path to the file that doesn't match the module
         /// </summary>
         public readonly string     path;
-
-        /// <summary>
-        /// Release the kraken
-        /// </summary>
-        /// <param name="module">Module to check against path</param>
-        /// <param name="path">Path to the file to check against module</param>
-        /// <param name="reason">Human-readable description of the problem</param>
-        public InvalidModuleFileKraken(CkanModule module, string path, string? reason = null)
-            : base(reason)
-        {
-            this.module = module;
-            this.path   = path;
-        }
     }
 
     /// <summary>
@@ -554,7 +602,8 @@ namespace CKAN
     /// </summary>
     public class BadGameVersionKraken : Kraken
     {
-        public BadGameVersionKraken(string? reason = null, Exception? inner_exception = null)
+        public BadGameVersionKraken(string?    reason          = null,
+                                    Exception? inner_exception = null)
             : base(reason, inner_exception)
         {
         }
@@ -566,13 +615,15 @@ namespace CKAN
     /// </summary>
     public class WrongGameVersionKraken : Kraken
     {
-        public readonly GameVersion version;
-
-        public WrongGameVersionKraken(GameVersion version, string? reason = null, Exception? inner_exception = null)
+        public WrongGameVersionKraken(GameVersion version,
+                                      string?     reason          = null,
+                                      Exception?  inner_exception = null)
             : base(reason, inner_exception)
         {
             this.version = version;
         }
+
+        public readonly GameVersion version;
     }
 
     /// <summary>
@@ -580,27 +631,43 @@ namespace CKAN
     /// </summary>
     public class InstanceNameTakenKraken : Kraken
     {
-        public readonly string instName;
-
-        public InstanceNameTakenKraken(string name, string? reason = null)
+        public InstanceNameTakenKraken(string  name,
+                                       string? reason = null)
             : base(reason)
         {
             instName = name;
         }
+
+        public readonly string instName;
     }
 
     public class ModuleIsDLCKraken : Kraken
     {
+        public ModuleIsDLCKraken(CkanModule module,
+                                 string?    reason = null)
+            : base(reason
+                   ?? (new Uri?[] {
+                          module.resources?.store,
+                          module.resources?.steamstore,
+                          module.resources?.gogstore,
+                          module.resources?.epicstore,
+                       }
+                           .OfType<Uri>()
+                           .ToArray()
+                       is Uri[] { Length: > 0 } urls
+                           ? Properties.Resources.KrakenIsDLC
+                             + string.Format(Properties.Resources.KrakenIsDLCStorePage,
+                                             string.Join(Environment.NewLine,
+                                                         urls.Select(u => $"- {u}")))
+                           : Properties.Resources.KrakenIsDLC))
+        {
+            this.module = module;
+        }
+
         /// <summary>
         /// The DLC module that can't be operated upon
         /// </summary>
         public readonly CkanModule module;
-
-        public ModuleIsDLCKraken(CkanModule module, string? reason = null)
-            : base(reason)
-        {
-            this.module = module;
-        }
     }
 
     /// <summary>
@@ -609,18 +676,20 @@ namespace CKAN
     /// </summary>
     public class DllLocationMismatchKraken : Kraken
     {
-        public readonly string path;
-
-        public DllLocationMismatchKraken(string path, string? reason = null)
+        public DllLocationMismatchKraken(string  path,
+                                         string? reason = null)
             : base(reason)
         {
             this.path = path;
         }
+
+        public readonly string path;
     }
 
     public class KSPManagerKraken : Kraken
     {
-        public KSPManagerKraken(string? reason = null, Exception? innerException = null)
+        public KSPManagerKraken(string?    reason         = null,
+                                Exception? innerException = null)
             : base(reason, innerException)
         {
         }
@@ -628,37 +697,27 @@ namespace CKAN
 
     public class InvalidKSPInstanceKraken : Kraken
     {
-        public readonly string instance;
-
-        public InvalidKSPInstanceKraken(string instance, string? reason = null, Exception? innerException = null)
+        public InvalidKSPInstanceKraken(string     instance,
+                                        string?    reason         = null,
+                                        Exception? innerException = null)
             : base(reason, innerException)
         {
             this.instance = instance;
         }
+
+        public readonly string instance;
     }
 
-    public class InvalidModuleAttributesException : Exception
+    public class InvalidModuleAttributesKraken : Kraken
     {
-        private readonly CkanModule? module;
-        private readonly string      why;
-
-        public InvalidModuleAttributesException(string why, CkanModule? module = null)
-            : base(why)
+        public InvalidModuleAttributesKraken(string      why,
+                                             CkanModule? module = null)
+            : base(string.Format("[InvalidModuleAttributesKraken] {0} in {1}",
+                                 why, module?.identifier ?? "unknown"))
         {
-            this.why = why;
             this.module = module;
         }
 
-        public override string ToString()
-        {
-            string modname = "unknown";
-
-            if (module != null)
-            {
-                modname = module.identifier;
-            }
-
-            return string.Format("[InvalidModuleAttributesException] {0} in {1}", why, modname);
-        }
+        public readonly CkanModule? module;
     }
 }

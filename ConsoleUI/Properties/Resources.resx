@@ -160,7 +160,6 @@
   <data name="FileSelectTimestampHeader" xml:space="preserve"><value>Accessed</value></data>
   <data name="FileSelectChangeDirectory" xml:space="preserve"><value>Change directory</value></data>
   <data name="FileSelectSelect" xml:space="preserve"><value>Select</value></data>
-  <data name="FileSelectImport" xml:space="preserve"><value>Import</value></data>
   <data name="FileSelectDirSize" xml:space="preserve"><value>&lt;DIR&gt;</value></data>
   <data name="AuthTokenListTitle" xml:space="preserve"><value>Authentication Tokens</value></data>
   <data name="AuthTokenListGitHubLink" xml:space="preserve"><value>Make a GitHub API token</value></data>
@@ -223,21 +222,11 @@
   <data name="InstanceListNoVersion" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
   <data name="InstallTitle" xml:space="preserve"><value>Installing, Upgrading, and Removing Mods</value></data>
   <data name="InstallMessage" xml:space="preserve"><value>Calculating...</value></data>
-  <data name="InstallOwnedFileConflict" xml:space="preserve"><value>{0} tried to install {1}, but {2} has already installed it.
-Please report this problem at https://github.com/KSP-CKAN/NetKAN/issues/new/choose</value></data>
-  <data name="InstallUnownedFileConflict" xml:space="preserve"><value>{0} tried to install {1}, but it is already installed.
-Please manually uninstall the mod that owns this file to install {2}.</value></data>
   <data name="InstallFilesReverted" xml:space="preserve"><value>Game files reverted.</value></data>
   <data name="InstallAuthTokenPrompt" xml:space="preserve"><value>{0}
 
 Edit authentication tokens now?</value></data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve"><value>Name</value></data>
-  <data name="InstallBadMetadata" xml:space="preserve"><value>Bad metadata detected for {0}: {1}</value></data>
-  <data name="InstallUnsatisfiedDependency" xml:space="preserve"><value>{0} requires {1}, but it is not listed in the index, or not available for your version of the game.
-{2}</value></data>
-  <data name="InstallModuleNotFound" xml:space="preserve"><value>Module {0} required but it is not listed in the index, or not available for your version of the game.
-{1}</value></data>
-  <data name="InstallNotInstalled" xml:space="preserve"><value>{0} is not installed, can't remove</value></data>
   <data name="InstallModInstalled" xml:space="preserve"><value>{0} Successfully installed {1} {2}</value></data>
   <data name="InstallDeduplicateScanning" xml:space="preserve"><value>Checking other game instances for possible duplicate installed files...</value></data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Delete Directories</value></data>
@@ -302,7 +291,6 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModInfoBuyFromSteamStore" xml:space="preserve"><value>Buy from Steam store</value></data>
   <data name="ModInfoBuyFromKSPStoreOrSteamStore" xml:space="preserve"><value>Buy from KSP store or Steam store</value></data>
   <data name="ModInfoDownloading" xml:space="preserve"><value>Downloading {0}</value></data>
-  <data name="ModInfoDownloadCorrupted" xml:space="preserve"><value>Download failed, file is corrupted</value></data>
   <data name="ModInfoDownloadFailed" xml:space="preserve"><value>Download failed: {0}</value></data>
   <data name="ProgressTitle" xml:space="preserve"><value>Progress</value></data>
   <data name="ProgressMessages" xml:space="preserve"><value>Messages</value></data>
@@ -350,7 +338,6 @@ If you uninstall it, CKAN will not be able to re-install it.</value></data>
   <data name="ModListExportMenuTip" xml:space="preserve"><value>Save your mod list</value></data>
   <data name="ModListInstallFromCkanMenu" xml:space="preserve"><value>Install from .ckan file...</value></data>
   <data name="ModListInstallFromCkanMenuTip" xml:space="preserve"><value>Install modpacks or custom modules</value></data>
-  <data name="ModListInstallFromCkanFailed" xml:space="preserve"><value>Install from .ckan file failed!</value></data>
   <data name="CkanFileSelectTitle" xml:space="preserve"><value>Choose .ckan Files to Install</value></data>
   <data name="CkanFileSelectHeader" xml:space="preserve"><value>Install</value></data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve"><value>Game instance settings...</value></data>

@@ -463,52 +463,10 @@ namespace CKAN.GUI
             {
                 switch (e.Error)
                 {
-                    case DependenciesNotSatisfiedKraken exc:
-                        currentUser.RaiseMessage("{0}", exc.Message);
-                        break;
-
-                    case ModuleNotFoundKraken exc:
-                        currentUser.RaiseMessage(Properties.Resources.MainInstallNotFound, exc.module);
-                        break;
-
-                    case BadMetadataKraken exc:
-                        currentUser.RaiseMessage(Properties.Resources.MainInstallBadMetadata,
-                                                 exc.module?.ToString() ?? "", exc.Message);
-                        break;
-
-                    case NotEnoughSpaceKraken exc:
-                        currentUser.RaiseMessage("{0}", exc.Message);
-                        break;
-
-                    case FileExistsKraken exc:
-                        if (exc.owningModule != null)
-                        {
-                            currentUser.RaiseMessage(
-                                Properties.Resources.MainInstallFileExists,
-                                exc.filename, exc.installingModule?.ToString() ?? "", exc.owningModule,
-                                Meta.GetVersion());
-                        }
-                        else
-                        {
-                            currentUser.RaiseMessage(
-                                Properties.Resources.MainInstallUnownedFileExists,
-                                exc.installingModule?.ToString() ?? "", exc.filename);
-                        }
-                        currentUser.RaiseMessage(Properties.Resources.MainInstallGameDataReverted);
-                        break;
-
-                    case InconsistentKraken exc:
-                        currentUser.RaiseMessage("{0}", exc.Message);
-                        break;
-
                     case CancelledActionKraken exc:
                         // User already knows they cancelled, get out
                         EnableMainWindow();
                         HideWaitDialog();
-                        break;
-
-                    case MissingCertificateKraken exc:
-                        currentUser.RaiseMessage("{0}", exc.ToString());
                         break;
 
                     case RequestThrottledKraken exc:
@@ -537,16 +495,6 @@ namespace CKAN.GUI
                         }
                         break;
 
-                    case DirectoryNotFoundKraken exc:
-                        currentUser.RaiseMessage("\r\n{0}", exc.Message);
-                        break;
-
-                    case ModuleIsDLCKraken exc:
-                        string dlcMsg = string.Format(Properties.Resources.MainInstallCantInstallDLC, exc.module.name);
-                        currentUser.RaiseMessage("{0}", dlcMsg);
-                        currentUser.RaiseError("{0}", dlcMsg);
-                        break;
-
                     case TransactionalKraken exc:
                         // Thrown when the Registry tries to enlist with multiple different transactions
                         // Want to see the stack trace for this one
@@ -554,19 +502,16 @@ namespace CKAN.GUI
                         currentUser.RaiseError("{0}", exc.ToString());
                         break;
 
-                    case TransactionException texc:
-                        // "Failed to roll back" is useless by itself,
-                        // so show all inner exceptions too
-                        foreach (var exc in texc.TraverseNodes<Exception>(ex => ex.InnerException)
-                                                .Reverse())
-                        {
-                            log.Error(exc.Message, exc);
-                            currentUser.RaiseMessage("{0}", exc.Message);
-                        }
+                    case Kraken kraken:
+                        // Show nice message for mod problems
+                        currentUser.RaiseMessage("{0}", kraken.Message);
+                        currentUser.RaiseMessage(Properties.Resources.MainInstallGameDataReverted);
                         break;
 
                     default:
+                        // Show stack trace for code problems
                         currentUser.RaiseMessage("{0}", e.Error.ToString());
+                        currentUser.RaiseMessage(Properties.Resources.MainInstallGameDataReverted);
                         break;
                 }
 
@@ -576,7 +521,7 @@ namespace CKAN.GUI
                                Properties.Resources.MainInstallFailed);
             }
             // The Result property throws if InstallMods threw (!!!)
-            else if (e?.Result is (bool success, List<ModChange> changes))
+            else if (e?.Result is (bool, List<ModChange>))
             {
                 currentUser.RaiseMessage(Properties.Resources.MainInstallSuccess);
                 // Rebuilds the list of GUIMods

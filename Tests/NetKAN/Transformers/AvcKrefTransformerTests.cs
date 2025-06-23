@@ -43,7 +43,7 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var mHttp = new Mock<IHttpService>();
-            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>()))
+            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .Returns(remoteAvc);
 
             // Act

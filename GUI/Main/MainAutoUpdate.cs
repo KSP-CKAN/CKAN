@@ -50,10 +50,11 @@ namespace CKAN.GUI
                 {
                     log.Info("Making auto-update call");
                     var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
-                    var update = updater.GetUpdate(mainConfig.DevBuilds ?? false, userAgent);
+                    var update = updater.GetUpdate(mainConfig.DevBuilds ?? false,
+                                                   userAgent);
 
                     if (update.Version is CkanModuleVersion latestVersion
-                        && latestVersion.IsGreaterThan(Meta.ReleaseVersion))
+                        && !latestVersion.SameClientVersion(Meta.ReleaseVersion))
                     {
                         log.DebugFormat("Found higher CKAN version: {0}", latestVersion);
                         var releaseNotes = update.ReleaseNotes;

@@ -656,6 +656,8 @@ are described. Unless specified otherwise, these are URLs:
 - `remote-swinfo` : URL of remote `swinfo.json` file. The `version_check` property from the internal `swinfo.json` file will be assigned to this field.
 - `store`:  (**v1.28**) URL where you can purchase a DLC
 - `steamstore`:  (**v1.28**) URL where you can purchase a DLC on Steam
+- `gogstore`:  (**v1.36**) URL where you can purchase a DLC on GOG
+- `epicstore`:  (**v1.36**) URL where you can purchase a DLC on the Epic Games Store
 
 Example resources:
 

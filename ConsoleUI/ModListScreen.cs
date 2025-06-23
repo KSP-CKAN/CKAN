@@ -482,7 +482,7 @@ namespace CKAN.ConsoleUI {
                         RaiseError(Properties.Resources.ModListAuditNotFound);
                     }
                 } catch (ModuleNotFoundKraken k) {
-                    RaiseError("{0} {1}: {2}", k.module, k.version ?? "", k.Message);
+                    RaiseError("{0} {1}: {2}", k.identifier, k.version ?? "", k.Message);
                 }
             }
             return true;

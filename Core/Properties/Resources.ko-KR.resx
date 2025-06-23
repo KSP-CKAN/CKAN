@@ -123,4 +123,38 @@
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>즐겨찾기</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>숨겨짐</value></data>
   <data name="ModuleLabelListHeld" xml:space="preserve"><value>유지</value></data>
+  <data name="KrakenBadMetadata" xml:space="preserve"><value>나쁜 메타데이터가 모듈 {0}에서 감지됨: {1}</value></data>
+  <data name="KrakenIsDLC" xml:space="preserve"><value>CKAN은 당신을 위해서 {0} 확장을 설치할 수 없어요.</value></data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve"><value>으악! 우리가 다른 모드의 파일을 덮어씌우려고 했어요!
+
+만약 이 문제가 다시 생긴다면 패키징에 버그가 있을 수도 있어요.
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+에서 신고해주세요.
+
+다음의 정보들을 신고할 때 첨부해주세요.
+
+File      : {0}
+Installing Mod : {1}
+Owning Mod: {2}</value></data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve"><value>으악!
+
+아마도 당신은 이미 설치되어 있는 모드를 설치하려고 한 것 같아요. 아니면 이미 설치되어 있는 모드와 충돌하는 모드를요.
+
+안전을 위해서, CKAN은 절대!! 자기자신이 설치하지 않은 파일은 덮어씌우거나 바꾸지 않아요.
+
+만약 {1}를 CKAN으로 깔고 싶으시다면, 먼저
+
+{0}
+
+을 가지는 모드를 수동으로 삭제한 다음 다시 시도해 주세요.</value></data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve"><value>으악!
+
+아마도 당신은 이미 설치되어 있는 모드를 설치하려고 한 것 같아요. 아니면 이미 설치되어 있는 모드와 충돌하는 모드를요.
+
+안전을 위해서, CKAN은 절대!! 자기자신이 설치하지 않은 파일은 덮어씌우거나 바꾸지 않아요.
+
+{0}
+
+을 가지는 모드를 수동으로 삭제한 다음 다시 시도해 주세요.</value></data>
 </root>

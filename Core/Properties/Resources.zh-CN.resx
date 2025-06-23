@@ -140,12 +140,6 @@
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
     <value>用户取消下载</value>
   </data>
-  <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/s - 剩余 {1} </value>
-  </data>
-  <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
-    <value>下载 "{0}" 失败，尝试回滚到 "{1}"</value>
-  </data>
   <data name="NetAsyncDownloaderValidating" xml:space="preserve">
     <value>下载 {0} 完成，验证并存储到缓存中...</value>
   </data>
@@ -172,9 +166,6 @@
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
     <value>{0}: {1} 并不是一个有效的 ZIP 文件: {2}</value>
   </data>
-  <data name="NetModuleCacheMismatchSHA1" xml:space="preserve">
-    <value>{0}: {1} 的 SHA1 值为 {2}，但应该为 {3}</value>
-  </data>
   <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
     <value>{0}: {1} 的 SHA256 值为 {2}，但应该为 {3}</value>
   </data>
@@ -192,34 +183,6 @@
   </data>
   <data name="NetRepoUpdating" xml:space="preserve">
     <value>正在更新 {0}</value>
-  </data>
-  <data name="NetRepoUpdated" xml:space="preserve">
-    <value>已更新 {0} ({1} 个模组)</value>
-  </data>
-  <data name="NetRepoSaving" xml:space="preserve">
-    <value>保存模组到注册表中</value>
-  </data>
-  <data name="NetRepoSaved" xml:space="preserve">
-    <value>注册表已保存</value>
-  </data>
-  <data name="NetRepoUpdatedAll" xml:space="preserve">
-    <value>数据库已更新</value>
-  </data>
-  <data name="NetRepoNoModules" xml:space="preserve">
-    <value>没有找到模组!</value>
-  </data>
-  <data name="NetRepoFailedDownload" xml:space="preserve">
-    <value>下载 {0} 失败: {1}</value>
-  </data>
-  <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
-    <value>发现以下冲突:</value>
-  </data>
-  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
-    <value>从下载的 {0} 仓库加载模块...</value>
-    <comment>Should contain UserProgressDownloadSubstring from CmdLine</comment>
-  </data>
-  <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
-    <value>从 {0} 仓库加载的下载次数</value>
   </data>
   <data name="NetRepoNotATarGz" xml:space="preserve">
     <value>不是 .tar.gz 或 .zip, 无法处理: {0}</value>
@@ -259,9 +222,6 @@
   </data>
   <data name="CkanModuleNotAvailable" xml:space="preserve">
     <value>模组 {0} 的版本 {1} 不可用</value>
-  </data>
-  <data name="CkanModuleNotInstalledOrAvailable" xml:space="preserve">
-    <value>模组 {0} 未安装或不可用</value>
   </data>
   <data name="CkanModuleAllVersions" xml:space="preserve">
     <value>所有版本</value>
@@ -401,9 +361,6 @@
   <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>无法启动游戏.
 
 {0}</value></data>
-  <data name="ModuleInstallerDownloading" xml:space="preserve">
-    <value>正在下载 "{0}"</value>
-  </data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve">
     <value>没有需要安装的</value>
   </data>
@@ -422,9 +379,6 @@
   <data name="ModuleInstallerCommitting" xml:space="preserve">
     <value>正在提交文件系统更改</value>
   </data>
-  <data name="ModuleInstallerRescanning" xml:space="preserve">
-    <value>重新扫描 {0}</value>
-  </data>
   <data name="ModuleInstallerDone" xml:space="preserve">
     <value>完成！</value>
   </data>
@@ -433,12 +387,6 @@
   </data>
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve">
     <value>尝试安装 {0}，但它没有被下载或下载被中断了</value>
-  </data>
-  <data name="ModuleInstallerMetapackage" xml:space="preserve">
-    <value>元安装包无法安装！</value>
-  </data>
-  <data name="ModuleInstallerDLC" xml:space="preserve">
-    <value>DLC 无法安装！</value>
   </data>
   <data name="ModuleInstallerBadDLLLocation" xml:space="preserve">
     <value>在 {1} 发现了模组 {0} 的 DLL 文件 ，但 CKAN 无法在该位置安装它。正在中止安装以避免安装多个重复的模组。请手动卸载该模组并重试以安装它。</value>
@@ -458,9 +406,6 @@
   </data>
   <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve">
     <value>取消覆盖手动安装文件，无法安装 {0}</value>
-  </data>
-  <data name="ModuleInstallerFileExists" xml:space="preserve">
-    <value>尝试写入 {0} 但它已经存在</value>
   </data>
   <data name="ModuleInstallerAboutToRemove" xml:space="preserve">
     <value>中止删除:</value>
@@ -510,14 +455,8 @@
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve">
     <value>无法替换 {0} 因为它还未安装。请尝试安装 {1}。</value>
   </data>
-  <data name="ModuleInstallerImporting" xml:space="preserve">
-    <value>导入 {0}...</value>
-  </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>已缓存: {0}</value>
-  </data>
-  <data name="ModuleInstallerImportingMod" xml:space="preserve">
-    <value>导入 {0} {1}...</value>
   </data>
   <data name="ModuleInstallerImportNotFound" xml:space="preserve">
     <value>未找到索引: {0}</value>
@@ -528,17 +467,17 @@
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve">
     <value>导入完成。 删除 {0} 个旧文件吗？</value>
   </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>检测到 {0} 的元数据错误: {1}</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN无法安装扩展‘ {0}’。</value>
+  </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve">
     <value> {0} 版本 {1} 的依赖项未满足</value>
   </data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve">
     <value>模组未找到: {0} {1}</value>
-  </data>
-  <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve">
-    <value>{0} 的依赖项 {1} 版本 {2} 未满足</value>
-  </data>
-  <data name="KrakenAny" xml:space="preserve">
-    <value>(任意)</value>
   </data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve">
     <value>{1} 需要 {0}，可以由多个模组提供。
@@ -560,6 +499,45 @@
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} 与 {1} 冲突</value>
+  </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>我们正在尝试去覆盖其它模组（或游戏本体）已经安装的文件！
+
+如果这个问题反复出现，可能是由于打包时出现bug.
+请在此处报告:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+报告时请包括以下信息:
+
+File(文件)      : {0}
+Installing Mod(正在安装的Mod) : {1}
+Owning Mod(已有Mod): {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>
+看起来您正在尝试安装一个已经安装的Mod，或者正在尝试安装已经与其它已安装Mod冲突的Mod.
+
+作为一个安全特性，CKAN*永远不会*覆写或修改并非由自己安装的文件.
+
+如果您想要用CKAN安装 {1},
+请手动卸载以下Mod:
+
+{0}
+
+并重试.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>
+看起来您正在尝试安装一个已经安装的Mod，或者正在尝试安装已经与其它已安装Mod冲突的Mod.
+
+作为一个安全特性，CKAN*永远不会*覆写或修改并非由自己安装的文件.
+
+请手动卸载以下Mod:
+
+{0}
+
+并重试.</value>
   </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>Uh oh，下载时以下东西出现了问题...</value>
@@ -592,9 +570,6 @@
 如果您确定这里不是，请删除:
 "{0}"</value>
   </data>
-  <data name="NotEnoughSpaceToDownload" xml:space="preserve">
-    <value>临时文件夹空间不足，无法下载模块！</value>
-  </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>缓存文件夹中没有足够空间来存储模块 ！</value>
   </data>
@@ -622,12 +597,6 @@
   <data name="RelationshipResolverAnUnmanaged" xml:space="preserve">
     <value>一个未管理的 DLL 或 DLC</value>
   </data>
-  <data name="RelationshipResolverUnmanaged" xml:space="preserve">
-    <value>未管理</value>
-  </data>
-  <data name="RelationshipResolverModNotInList" xml:space="preserve">
-    <value>模组 {0} 不在列表中</value>
-  </data>
   <data name="RelationshipResolverInstalledReason" xml:space="preserve">
     <value>已安装</value>
   </data>
@@ -651,9 +620,6 @@
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>由 {0} 推荐</value>
-  </data>
-  <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} 有一个未满足的依赖项: {1} 未安装</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapackage)</value>

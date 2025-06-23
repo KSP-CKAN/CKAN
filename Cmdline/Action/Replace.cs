@@ -136,7 +136,7 @@ namespace CKAN.CmdLine
                     }
                     catch (ModuleNotFoundKraken kraken)
                     {
-                        user.RaiseMessage(Properties.Resources.ReplaceModuleNotFound, kraken.module);
+                        user.RaiseMessage(Properties.Resources.ReplaceModuleNotFound, kraken.identifier);
                     }
                 }
             }

@@ -165,7 +165,7 @@ namespace CKAN.GUI
                     // Copy start's value to a variable that won't change as we loop
                     int threadStart = start;
                     int nodesLeft   = node.Nodes.Count - start;
-                    Task.Factory.StartNew(() =>
+                    Task.Run(() =>
                         ExpandOnePage(
                             registry, Manager.CurrentInstance.StabilityToleranceConfig,
                             node, threadStart,

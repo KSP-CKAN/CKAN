@@ -246,9 +246,6 @@
   <data name="FileSelectSelect" xml:space="preserve">
     <value>Sélectionner</value>
   </data>
-  <data name="FileSelectImport" xml:space="preserve">
-    <value>Importer</value>
-  </data>
   <data name="FileSelectDirSize" xml:space="preserve">
     <value>&lt;DOSSIER&gt;</value>
   </data>
@@ -433,14 +430,6 @@
   <data name="InstallMessage" xml:space="preserve">
     <value>Calcul en cours...</value>
   </data>
-  <data name="InstallOwnedFileConflict" xml:space="preserve">
-    <value>{0} a essayé d'installer {1}, mais {2} l'a déjà installé.
-Veuillez signaler ce problème à https://github.com/KSP-CKAN/NetKAN/issues/new/choose</value>
-  </data>
-  <data name="InstallUnownedFileConflict" xml:space="preserve">
-    <value>{0} a essayé d'installer {1}, mais {2} l'a déjà installé.
-Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pouvoir installer {2}.</value>
-  </data>
   <data name="InstallFilesReverted" xml:space="preserve">
     <value>Fichiers de jeu restaurés.</value>
   </data>
@@ -451,20 +440,6 @@ Veuillez désinstaller manuellement le mod auquel ce fichier appartient pour pou
   </data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nom</value>
-  </data>
-  <data name="InstallBadMetadata" xml:space="preserve">
-    <value>Métadonnées incorrectes détectées pour {0} : {1}</value>
-  </data>
-  <data name="InstallUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} nécessite {1}, mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.
-{2}</value>
-  </data>
-  <data name="InstallModuleNotFound" xml:space="preserve">
-    <value>Le module {0} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.
-{1}</value>
-  </data>
-  <data name="InstallNotInstalled" xml:space="preserve">
-    <value>{0} n'est pas installé, impossible de le retirer</value>
   </data>
   <data name="InstallModInstalled" xml:space="preserve">
     <value>{0} installé avec succès {1} {2}</value>
@@ -654,9 +629,6 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   <data name="ModInfoDownloading" xml:space="preserve">
     <value>Téléchargement de {0}</value>
   </data>
-  <data name="ModInfoDownloadCorrupted" xml:space="preserve">
-    <value>Échec du téléchargement, le fichier est corrompu</value>
-  </data>
   <data name="ModInfoDownloadFailed" xml:space="preserve">
     <value>Échec du téléchargement : {0}</value>
   </data>
@@ -797,9 +769,6 @@ Si vous le retirez, CKAN ne pourra pas le réinstaller.</value>
   </data>
   <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
     <value>Installer des modpacks ou des modules personnalisés</value>
-  </data>
-  <data name="ModListInstallFromCkanFailed" xml:space="preserve">
-    <value>L'installation à partir du fichier .ckan a échoué !</value>
   </data>
   <data name="CkanFileSelectTitle" xml:space="preserve">
     <value>Choisir des fichiers .ckan à installer</value>

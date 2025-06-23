@@ -86,7 +86,7 @@ namespace CKAN.NetKAN.Transformers
                             var extractedVersion = match.Groups["version"];
                             if (!extractedVersion.Success)
                             {
-                                throw new Exception("version_from_asset contains no 'version' capturing group");
+                                throw new Kraken("version_from_asset contains no 'version' capturing group");
                             }
 
                             returnedAny = true;

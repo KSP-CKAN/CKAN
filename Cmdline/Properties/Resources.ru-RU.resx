@@ -207,47 +207,9 @@
   <data name="InstallNotFound" xml:space="preserve"><value>Файл не найден, выход: {0}</value></data>
   <data name="InstallTryAgain" xml:space="preserve"><value>Попробуйте совершить `ckan update` и попытайтесь заново.
 Либо используйте `ckan install --allow-incompatible`, чтобы игнорировать проблемы совместимости.</value></data>
-  <data name="InstallUnversionedDependencyNotSatisfied" xml:space="preserve"><value>Необходим модуль {0}, но он отсутствует в указателе либо недоступен для вашей версии {1}</value></data>
-  <data name="InstallVersionedDependencyNotSatisfied" xml:space="preserve"><value>Необходим модуль {0} {1}, но он отсутствует в указателе либо недоступен для вашей версии {2}</value></data>
-  <data name="InstallBadMetadata" xml:space="preserve"><value>Обнаружены некорректные метаданные для модуля {0}: {1}</value></data>
-  <data name="InstallFileConflictOwned" xml:space="preserve"><value>О нет! Была произведена попытка перезаписать файл, принадлежащий другой модификации!
-Произведите `ckan update` и попытайтесь заново.
-
-Если проблема повторяется, это может означать ошибку упаковки пакета.
-Пожалуйста, отправьте отчёт об ошибке на:
-
-https://github.com/KSP-CKAN/NetKAN/issues/new
-
-Включите в отчёт следующую информацию:
-
-File           : {0} (Файл)
-Installing Mod : {1} (Устанавливающаяся модификация)
-Owning Mod     : {2} (Модификация-владелец файла)
-CKAN Version   : {3} (Версия CKAN)
-</value></data>
-  <data name="InstallFileConflictUnowned" xml:space="preserve"><value>О нет!
-
-Похоже, что вы пытаетесь установить модификацию, которая уже установлена
-или конфликтует с другой уже установленной модификацией.
-
-В качестве меры безопасности CKAN *никогда* не меняет файлы,
-которые не установила сама.
-
-Если вы хотите установить {0} с помощью CKAN,
-вручную удалите модификацию, которой принадлежит файл:
-
-{1}
-
-и попытайтесь заново.
-</value></data>
-  <data name="InstallGamedataReturned" xml:space="preserve"><value>{0} возвращена в изначальное состояние</value></data>
   <data name="InstallCancelled" xml:space="preserve"><value>Установка отменена. Ваши файлы возвращены в изначальное состояние.</value></data>
   <data name="InstallAborted" xml:space="preserve"><value>Установка отменена: {0}</value></data>
   <data name="InstallTryAuthToken" xml:space="preserve"><value>Используйте команду authtoken. Используйте {0} для справки.</value></data>
-  <data name="InstallDownloadFailed" xml:space="preserve"><value>Не удалось загрузить один или несколько файлов, остановка</value></data>
-  <data name="InstallDLC" xml:space="preserve"><value>CKAN не может установить дополнение '{0}'.</value></data>
-  <data name="InstallDLCStorePage" xml:space="preserve"><value>Для установки дополнений приобретите их в соответствующем магазине:
-{0}</value></data>
   <data name="ListUnknownFormat" xml:space="preserve"><value>Неизвестный формат экспорта: {0}</value></data>
   <data name="ListGameFound" xml:space="preserve"><value>{0} найден по пути: {1}</value></data>
   <data name="ListGameVersion" xml:space="preserve"><value>{0} версия: {1}</value></data>
@@ -269,13 +231,7 @@ CKAN Version   : {3} (Версия CKAN)
 </value></data>
   <data name="PromptWithInstance" xml:space="preserve"><value>CKAN {0}: {1} {2} ({3})&gt; </value></data>
   <data name="PromptWithoutInstance" xml:space="preserve"><value>CKAN {0}&gt; </value></data>
-  <data name="RemoveNotInstalled" xml:space="preserve"><value>Невозможно выполнить, {0} не установлена.
-Используйте `ckan list` для вывода списка установленных модификаций.</value></data>
-  <data name="RemoveDLC" xml:space="preserve"><value>CKAN не может удалить дополнение '{0}'.</value></data>
-  <data name="RemoveDLCStorePage" xml:space="preserve"><value>Чтобы удалить дополнение, следуйте инструкциям на странице магазина, где оно было приобретено:
-{0}</value></data>
   <data name="RemoveCancelled" xml:space="preserve"><value>Удаление отменено: {0}</value></data>
-  <data name="RemoveNothing" xml:space="preserve"><value>Не выбрано ни обной модификации</value></data>
   <data name="RepairHelpSummary" xml:space="preserve"><value>Способы автоматического восстановления</value></data>
   <data name="RepairUnknownCommand" xml:space="preserve"><value>Неизвестная команда: repair {0}</value></data>
   <data name="Repaired" xml:space="preserve"><value>Произведена попытка восстановления реестра.</value></data>
@@ -284,13 +240,11 @@ CKAN Version   : {3} (Версия CKAN)
   <data name="ReplaceFound" xml:space="preserve"><value>Для {2} {3} найден заменяющий модуль {0} {1}</value></data>
   <data name="ReplaceContinuePrompt" xml:space="preserve"><value>Продолжить?</value></data>
   <data name="ReplaceCancelled" xml:space="preserve"><value>Операция замены отменена по запросу пользователя</value></data>
-  <data name="ReplaceDependencyNotSatisfied" xml:space="preserve"><value>Не удовлетворены зависимости для замены, {0} требует {1} {2}, но его нет в указателе либо он недоступен для вашей версии {3}</value></data>
   <data name="ReplaceNotFound" xml:space="preserve"><value>Замен не найдено</value></data>
   <data name="RepoHelpSummary" xml:space="preserve"><value>Управление репозиториями CKAN</value></data>
   <data name="RepoUnknownCommand" xml:space="preserve"><value>Неизвестная команда: repo {0}</value></data>
   <data name="RepoAvailableHeader" xml:space="preserve"><value>Все доступные (основные) репозитории CKAN:</value></data>
   <data name="RepoAvailableFailed" xml:space="preserve"><value>Не удалось загрузить список репозиториев CKAN из {0}</value></data>
-  <data name="RepoListHeader" xml:space="preserve"><value>Список известных репозиториев:</value></data>
   <data name="RepoAddNotFound" xml:space="preserve"><value>{0} не найден в основном списке, предоставьте имя и URI</value></data>
   <data name="RepoAddDuplicate" xml:space="preserve"><value>Репозиторий с именем "{0}" уже существует, операция не выполнена</value></data>
   <data name="RepoAdded" xml:space="preserve"><value>Добавлен репозиторий '{0}' - '{1}'</value></data>
@@ -298,7 +252,6 @@ CKAN Version   : {3} (Версия CKAN)
   <data name="RepoForgetRemoving" xml:space="preserve"><value>Удаление нечувствительного совпадения "{0}"</value></data>
   <data name="RepoForgetRemoved" xml:space="preserve"><value>"{0}" успешно удален</value></data>
   <data name="RepoSet" xml:space="preserve"><value>Репозиторий {0} установлен в '{1}'</value></data>
-  <data name="SearchNoTerm" xml:space="preserve"><value>Отсутствует запрос?</value></data>
   <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve"><value>Найдено {0} совместимых и {1} несовместимых модификаций, совпадающих с "{2}" от "{3}"</value></data>
   <data name="SearchFoundWithIncompat" xml:space="preserve"><value>Найдено {0} совместимых и {1} несовместимых модификаций, совпадающих с "{2}"</value></data>
   <data name="SearchFoundByAuthor" xml:space="preserve"><value>Найдено {0} совместимых модификаций, совпадающих с "{1}" от "{2}"</value></data>
@@ -349,10 +302,6 @@ CKAN Version   : {3} (Версия CKAN)
   <data name="UpgradePleaseWait" xml:space="preserve"><value>Обновление CKAN, пожалуйста, подождите...</value></data>
   <data name="UpgradeAlreadyHaveLatest" xml:space="preserve"><value>Ваша версия уже является последней</value></data>
   <data name="UpgradeAborted" xml:space="preserve"><value>Обновление отменено: {0}</value></data>
-  <data name="UpgradeNotFound" xml:space="preserve"><value>Модуль {0} не найден</value></data>
-  <data name="UpgradeDLC" xml:space="preserve"><value>CKAN не может обновить дополнение '{0}'u</value></data>
-  <data name="UpgradeDLCStorePage" xml:space="preserve"><value>Для обновления дополнений загрузите их со страницы магазина, в котором они были приобретены:
-{0}</value></data>
   <data name="ScanNotSaved" xml:space="preserve"><value>Репозиторий не сохранён</value></data>
   <data name="ScanPreliminaryInconsistent" xml:space="preserve"><value>Предварительное сканирование показывает, что сборка находится в несогласованном состоянии.
 Используйте ckan.exe для сканирования.

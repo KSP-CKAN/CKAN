@@ -81,11 +81,10 @@ namespace CKAN.CmdLine
                 try
                 {
                     var upd = new AutoUpdate();
-                    var update = upd.GetUpdate(config.DevBuilds ?? false, options.NetUserAgent);
-                    var latestVersion = update.Version;
-                    var currentVersion = new ModuleVersion(Meta.GetVersion());
-
-                    if (!currentVersion.Equals(latestVersion))
+                    var update = upd.GetUpdate(config.DevBuilds ?? false,
+                                               options.NetUserAgent);
+                    if (update.Version is CkanModuleVersion latestVersion
+                        && !latestVersion.SameClientVersion(Meta.ReleaseVersion))
                     {
                         user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable,
                                           latestVersion?.ToString() ?? "");
@@ -110,7 +109,7 @@ namespace CKAN.CmdLine
                 }
                 catch (Exception exc)
                 {
-                    user.RaiseError("Upgrade failed: {0}", exc.Message);
+                    user.RaiseError(Properties.Resources.UpgradeFailed, exc.Message);
                     return Exit.ERROR;
                 }
             }
@@ -151,27 +150,14 @@ namespace CKAN.CmdLine
                 user.RaiseMessage(Properties.Resources.UpgradeAborted, k.Message);
                 return Exit.ERROR;
             }
-            catch (ModuleNotFoundKraken kraken)
+            catch (Kraken kraken)
             {
-                user.RaiseMessage(Properties.Resources.UpgradeNotFound, $"{kraken.module} {kraken.version}");
+                user.RaiseMessage("{0}", kraken.Message);
                 return Exit.ERROR;
             }
-            catch (InconsistentKraken kraken)
+            catch (Exception exc)
             {
-                user.RaiseMessage("{0}", kraken.ToString());
-                return Exit.ERROR;
-            }
-            catch (ModuleIsDLCKraken kraken)
-            {
-                user.RaiseMessage(Properties.Resources.UpgradeDLC, kraken.module.name);
-                var res = kraken?.module?.resources;
-                var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
-                    .OfType<Uri>()
-                    .Aggregate("", (a, b) => $"{a}\r\n- {b}");
-                if (!string.IsNullOrEmpty(storePagesMsg))
-                {
-                    user.RaiseMessage(Properties.Resources.UpgradeDLCStorePage, storePagesMsg);
-                }
+                user.RaiseMessage("{0}", exc.ToString());
                 return Exit.ERROR;
             }
 

@@ -150,12 +150,6 @@
   <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
     <value>Téléchargement annulé par l'utilisateur</value>
   </data>
-  <data name="NetAsyncDownloaderProgress" xml:space="preserve">
-    <value>{0}/s - {1} restant</value>
-  </data>
-  <data name="NetAsyncDownloaderTryingFallback" xml:space="preserve">
-    <value>Échec du téléchargement de "{0}", essai du lien de secours "{1}"</value>
-  </data>
   <data name="NetAsyncDownloaderValidating" xml:space="preserve">
     <value>Téléchargement de {0} terminé, validation et mise en cache...</value>
   </data>
@@ -182,9 +176,6 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
     <value>{0} : {1} n'est pas un fichier ZIP valide : {2}</value>
   </data>
-  <data name="NetModuleCacheMismatchSHA1" xml:space="preserve">
-    <value>{0} : {1} a un SHA1 de {2}, au lieu de {3}</value>
-  </data>
   <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
     <value>{0} : {1} a un SHA256 {2}, au lieu de {3}</value>
   </data>
@@ -202,34 +193,6 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   </data>
   <data name="NetRepoUpdating" xml:space="preserve">
     <value>Mise à jour de {0}</value>
-  </data>
-  <data name="NetRepoUpdated" xml:space="preserve">
-    <value>{0} a été mis à jour ({1} modules)</value>
-  </data>
-  <data name="NetRepoSaving" xml:space="preserve">
-    <value>Sauvegarde des modules dans le registre</value>
-  </data>
-  <data name="NetRepoSaved" xml:space="preserve">
-    <value>Registre sauvegardé</value>
-  </data>
-  <data name="NetRepoUpdatedAll" xml:space="preserve">
-    <value>Répertoire mis à jour</value>
-  </data>
-  <data name="NetRepoNoModules" xml:space="preserve">
-    <value>Aucun module trouvé !</value>
-  </data>
-  <data name="NetRepoFailedDownload" xml:space="preserve">
-    <value>Échec du téléchargement de {0} : {1}</value>
-  </data>
-  <data name="NetRepoInconsistenciesHeader" xml:space="preserve">
-    <value>Les incohérences suivantes ont été trouvées :</value>
-  </data>
-  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
-    <value>Chargement des modules depuis le dépôt téléchargé {0}...</value>
-    <comment>Should contain UserProgressDownloadSubstring from CmdLine</comment>
-  </data>
-  <data name="NetRepoLoadedDownloadCounts" xml:space="preserve">
-    <value>Réception des compteurs de téléchargement du répertoire {0}</value>
   </data>
   <data name="NetRepoNotATarGz" xml:space="preserve">
     <value>Le fichier doit être un tar.gz ou un zip, impossible de traiter : {0}</value>
@@ -277,9 +240,6 @@ Mettez à jour CKAN pour charger cette instance de jeu.</value>
   </data>
   <data name="CkanModuleNotAvailable" xml:space="preserve">
     <value>Le module {0} version {1} n'est pas disponible</value>
-  </data>
-  <data name="CkanModuleNotInstalledOrAvailable" xml:space="preserve">
-    <value>Le module {0} n'est pas installé ou indisponible</value>
   </data>
   <data name="CkanModuleAllVersions" xml:space="preserve">
     <value>Toutes les versions</value>
@@ -450,9 +410,6 @@ Que voulez-vous faire ?</value>
 
 {0}</value>
   </data>
-  <data name="ModuleInstallerDownloading" xml:space="preserve">
-    <value>Téléchargement de {0} ...</value>
-  </data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve">
     <value>Rien à installer</value>
   </data>
@@ -474,9 +431,6 @@ Que voulez-vous faire ?</value>
   <data name="ModuleInstallerCommitting" xml:space="preserve">
     <value>Validation des changements du système de fichiers</value>
   </data>
-  <data name="ModuleInstallerRescanning" xml:space="preserve">
-    <value>Nouvelle analyse de {0}</value>
-  </data>
   <data name="ModuleInstallerDone" xml:space="preserve">
     <value>Terminé !</value>
   </data>
@@ -485,12 +439,6 @@ Que voulez-vous faire ?</value>
   </data>
   <data name="ModuleInstallerZIPNotInCache" xml:space="preserve">
     <value>Tentative d'installation de {0}, mais il n'est pas téléchargé ou le téléchargement est corrompu</value>
-  </data>
-  <data name="ModuleInstallerMetapackage" xml:space="preserve">
-    <value>Les Métapaquets ne peuvent pas être installés !</value>
-  </data>
-  <data name="ModuleInstallerDLC" xml:space="preserve">
-    <value>Un DLC ne peut pas être installé !</value>
   </data>
   <data name="ModuleInstallerBadDLLLocation" xml:space="preserve">
     <value>Le DLL du module {0} a été trouvé à {1}, mais ce n'est pas là où CKAN l'installerait. Annulation pour éviter que plusieurs copies du même mod soient installées. Pour installer ce module, désinstallez-le manuellement puis réessayez.</value>
@@ -510,9 +458,6 @@ Remplacer ?</value>
   </data>
   <data name="ModuleInstallerOverwriteCancelled" xml:space="preserve">
     <value>Interdiction de remplacer les fichiers manuellement installés, impossible d'installer {0}</value>
-  </data>
-  <data name="ModuleInstallerFileExists" xml:space="preserve">
-    <value>Tentative d'écrire {0}, mais il existe déjà</value>
   </data>
   <data name="ModuleInstallerAboutToRemove" xml:space="preserve">
     <value>Vont être désinstallés :</value>
@@ -569,14 +514,8 @@ Veuillez le retirer manuellement avant d'essayer de l'installer.</value>
   <data name="ModuleInstallerImportScanningFiles" xml:space="preserve">
     <value>Analyse des fichiers...</value>
   </data>
-  <data name="ModuleInstallerImporting" xml:space="preserve">
-    <value>Importation de {0}...</value>
-  </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>Déjà en cache : {0}</value>
-  </data>
-  <data name="ModuleInstallerImportingMod" xml:space="preserve">
-    <value>Import de {0} {1}...</value>
   </data>
   <data name="ModuleInstallerImportNotFound" xml:space="preserve">
     <value>Introuvable dans l'index : {0}</value>
@@ -592,12 +531,6 @@ Veuillez le retirer manuellement avant d'essayer de l'installer.</value>
   </data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve">
     <value>Module introuvable : {0} {1}</value>
-  </data>
-  <data name="KrakenParentDependencyNotSatisfied" xml:space="preserve">
-    <value>La dépendance de {0} sur {1} version {2} n'est pas satisfaite</value>
-  </data>
-  <data name="KrakenAny" xml:space="preserve">
-    <value>(toutes)</value>
   </data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve">
     <value>{1} nécessite {0}, qui peut être fourni par plusieurs mods.
@@ -622,6 +555,54 @@ Si le jeu est toujours en cours d'exécution, fermez-le et réessayez. Sinon, v�
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} est en conflit avec {1}</value>
+  </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>Oh non ! Nous avons essayé de remplacer un fichier appartenant à un autre mod !
+
+Si ce problème se produit de nouveau, il pourrait s'agir d'un bogue d'emballage.
+Veuillez le signaler à :
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Veuillez inclure les informations suivantes dans votre rapport :
+
+Fichier : {0}
+Mod à installer : {1}
+Mod propriétaire : {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>Oh non !
+
+On dirait que vous essayez d'installer un mod qui est déjà installé,
+ou qui est en conflit avec un autre mod déjà installé.
+
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
+qu'il n'a pas installé lui-même.
+
+Si vous souhaitez installer {1} via CKAN,
+alors veuillez désinstaller manuellement le mod qui possède :
+
+{0}
+
+et essayez de nouveau.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>Oh non !
+
+On dirait que vous essayez d'installer un mod qui est déjà installé,
+ou qui est en conflit avec un autre mod déjà installé.
+
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
+qu'il n'a pas installé lui-même.
+
+Veuillez désinstaller manuellement le mod qui possède :
+
+{0}
+
+et essayez de nouveau.</value>
+  </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Mauvaises métadonnées détectées pour le module {0} : {1}</value>
   </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>Oh oh, Les choses suivantes se sont mal passées lors du téléchargement...</value>
@@ -650,12 +631,16 @@ Consultez cette page pour obtenir de l'aide :
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
-  <data name="NotEnoughSpaceToDownload" xml:space="preserve">
-    <value>Pas assez d'espace dans le dossier temporaire pour télécharger les modules !</value>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN ne peut pas installer l'extension '{0}' pour vous.</value>
+  </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>Pour installer cette extension, achetez-la depuis l'une de ces boutiques :
+{0}</value>
   </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>Pas assez d'espace dans le dossier de cache pour enregistrer les modules !</value>
@@ -684,12 +669,6 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   <data name="RelationshipResolverAnUnmanaged" xml:space="preserve">
     <value>un DLL ou un DLC non géré</value>
   </data>
-  <data name="RelationshipResolverUnmanaged" xml:space="preserve">
-    <value>Non géré</value>
-  </data>
-  <data name="RelationshipResolverModNotInList" xml:space="preserve">
-    <value>Le mod {0} n'est pas dans la liste</value>
-  </data>
   <data name="RelationshipResolverInstalledReason" xml:space="preserve">
     <value>Installé actuellement</value>
   </data>
@@ -713,9 +692,6 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>Recommandé par {0}</value>
-  </data>
-  <data name="SanityCheckerUnsatisfiedDependency" xml:space="preserve">
-    <value>{0} a une dépendance insatisfaite : {1} n'est pas installé</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (méta-paquet)</value>

@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -70,7 +69,7 @@ namespace CKAN.NetKAN.Transformers
         {
             if (!opts.UseSourceArchive)
             {
-                throw new Exception("'x_netkan_gitlab.use_source_archive' missing or false; GitLab ONLY supports source archives!");
+                throw new Kraken("'x_netkan_gitlab.use_source_archive' missing or false; GitLab ONLY supports source archives!");
             }
 
             json.SafeAdd("name",     project.Name);

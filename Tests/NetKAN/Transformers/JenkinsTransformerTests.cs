@@ -20,8 +20,9 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var http = new Mock<IHttpService>();
-            http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.EndsWith("/api/json"))))
-                    .Returns((Uri u) => $@"{{
+            http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.EndsWith("/api/json")),
+                                           It.IsAny<string?>(), It.IsAny<string?>()))
+                    .Returns((Uri u, string? _, string? _) => $@"{{
                                             ""builds"": [
                                                 {{
                                                     ""number"": 3,
@@ -39,8 +40,8 @@ namespace Tests.NetKAN.Transformers
                                         }}");
             http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.EndsWith("1/api/json")
                                                            || u.AbsolutePath.EndsWith("2/api/json")
-                                                           || u.AbsolutePath.EndsWith("3/api/json"))))
-                .Returns((Uri u) => $@"{{
+                                                           || u.AbsolutePath.EndsWith("3/api/json")), It.IsAny<string?>(), It.IsAny<string?>()))
+                .Returns((Uri u, string? _, string? _) => $@"{{
                                         ""result"": ""SUCCESS"",
                                         ""url"":    ""{u.ToString().Replace("api/json", "")}"",
                                         ""artifacts"": [

@@ -71,20 +71,11 @@ namespace CKAN.NetKAN.Services
                 .FirstOrDefault();
 
         public bool HasInstallableFiles(CkanModule module, string filePath)
-        {
-            try
-            {
-                ModuleInstaller.FindInstallableFiles(module, filePath,
-                    new GameInstance(game, "/", "dummy", new NullUser()));
-            }
-            catch (BadMetadataKraken)
-            {
-                // TODO: DBB: Let's not use exceptions for flow control
-                return false;
-            }
-
-            return true;
-        }
+            // TODO: DBB: Let's not use exceptions for flow control
+            => Utilities.DefaultIfThrows(() =>
+                   ModuleInstaller.FindInstallableFiles(module, filePath,
+                       new GameInstance(game, "/", "dummy", new NullUser())))
+                           != null;
 
         public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, GameInstance inst)
             => GetFilesBySuffix(module, zip, ".cfg", inst);
@@ -182,9 +173,9 @@ namespace CKAN.NetKAN.Services
                 if (avcEntry == null)
                 {
                     throw new Kraken(
-                        string.Format("AVC: Invalid path to remote {0}, doesn't match any of: {1}",
-                        internalFilePath,
-                        string.Join(", ", files.Select(f => f.Name))));
+                        string.Format("Invalid $vref path/regexp {0}, doesn't match any of: {1}",
+                                      internalFilePath,
+                                      string.Join(", ", files.Select(f => f.Name))));
                 }
                 return new Tuple<ZipEntry, bool>(avcEntry, installable);
             }

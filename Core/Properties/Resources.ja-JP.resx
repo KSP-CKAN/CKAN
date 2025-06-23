@@ -123,4 +123,44 @@
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>お気に入り</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>非表示</value></data>
   <data name="ModuleLabelListHeld" xml:space="preserve"><value>保持</value></data>
+  <data name="KrakenBadMetadata" xml:space="preserve"><value>不正なメタデータが検出されました。Mod {0}: {1}</value></data>
+  <data name="KrakenIsDLC" xml:space="preserve"><value>CKAN は拡張 '{0}' をインストールできません。</value></data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve"><value>他のModが所有しているファイルに上書きしようとしました！
+CKANをアップデート後にもう一度お試しください。
+
+もしこの問題が再び発生するのであれば、パッケージ中のバグの可能性があります。
+こちらで報告をお願いします:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+以下の情報を含めて報告してください:
+
+ファイル      : {0}
+インストールしようとしているMod : {1}
+所持しているMod: {2}</value></data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve"><value>Oh no!
+
+既にいんすとーるされたのModをインストールしようとしているか、
+いんすとーるされたの他のModと衝突している可能性があります。
+
+安全の為の機能として、CKAN自身がインストールしていないファイルを書き換えたり、別のファイルに置き換えたりすることは決してありません。
+
+もし {1} をCKANを通してインストールしたいのであれば,
+手動でこれらの既に所有済みのModをアンインストールしてから:
+
+{0}
+
+もう一度お試しください。</value></data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve"><value>Oh no!
+
+既にいんすとーるされたのModをインストールしようとしているか、
+いんすとーるされたの他のModと衝突している可能性があります。
+
+安全の為の機能として、CKAN自身がインストールしていないファイルを書き換えたり、別のファイルに置き換えたりすることは決してありません。
+
+手動でこれらの既に所有済みのModをアンインストールしてから:
+
+{0}
+
+もう一度お試しください。</value></data>
 </root>

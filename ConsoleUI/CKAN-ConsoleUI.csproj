@@ -19,7 +19,7 @@
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworks>net48;net8.0</TargetFrameworks>
+    <TargetFrameworks>net481;net8.0</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,7 +33,7 @@
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
     <PackageReference Include="IndexRange" Version="1.0.3" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.ServiceModel" />

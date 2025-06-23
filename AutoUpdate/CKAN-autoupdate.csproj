@@ -20,7 +20,7 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net481;net8.0-windows</TargetFrameworks>
     <UseWindowsForms Condition=" '$(TargetFramework)' == 'net8.0-windows' ">true</UseWindowsForms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <FileAlignment>512</FileAlignment>
@@ -29,7 +29,7 @@
     <NoWarn>IDE1006</NoWarn>
     <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
   </PropertyGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net48' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />

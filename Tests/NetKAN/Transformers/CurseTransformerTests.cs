@@ -20,7 +20,7 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var http = new Mock<IHttpService>();
-            http.Setup(h => h.DownloadText(It.IsAny<Uri>()))
+            http.Setup(h => h.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
                 .Returns(@"{
                              ""title"":       ""Dogecoin Flag"",
                              ""description"": ""Such test. Very unit. Wow."",

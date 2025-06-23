@@ -66,7 +66,7 @@ namespace CKAN.GUI
                     "folder", "folder");
 
                 UseWaitCursor = true;
-                Task.Factory.StartNew(() =>
+                Task.Run(() =>
                 {
                     var paths = inst.UnmanagedFiles(registry).ToArray()
                         ?? Array.Empty<string>();

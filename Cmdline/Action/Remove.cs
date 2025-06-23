@@ -89,27 +89,19 @@ namespace CKAN.CmdLine
                     installer.UninstallList(options.modules, ref possibleConfigOnlyDirs, regMgr);
                     user.RaiseMessage("");
                 }
-                catch (ModNotInstalledKraken kraken)
-                {
-                    user.RaiseMessage(Properties.Resources.RemoveNotInstalled, kraken.mod);
-                    return Exit.BADOPT;
-                }
-                catch (ModuleIsDLCKraken kraken)
-                {
-                    user.RaiseMessage(Properties.Resources.RemoveDLC, kraken.module.name);
-                    var res = kraken?.module?.resources;
-                    var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
-                        .OfType<Uri>()
-                        .Aggregate("", (a, b) => $"{a}\r\n- {b}");
-                    if (!string.IsNullOrEmpty(storePagesMsg))
-                    {
-                        user.RaiseMessage(Properties.Resources.RemoveDLCStorePage, storePagesMsg);
-                    }
-                    return Exit.BADOPT;
-                }
                 catch (CancelledActionKraken k)
                 {
                     user.RaiseMessage(Properties.Resources.RemoveCancelled, k.Message);
+                    return Exit.ERROR;
+                }
+                catch (Kraken kraken)
+                {
+                    user.RaiseMessage("{0}", kraken.Message);
+                    return Exit.ERROR;
+                }
+                catch (Exception exc)
+                {
+                    user.RaiseMessage("{0}", exc.ToString());
                     return Exit.ERROR;
                 }
             }

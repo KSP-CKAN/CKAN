@@ -5,7 +5,7 @@ using CKAN.Versioning;
 namespace Tests.Core.Versioning
 {
     [TestFixture]
-    public class Version
+    public class ModuleVersionTests
     {
         [Test]
         public void Alpha()

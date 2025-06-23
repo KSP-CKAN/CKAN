@@ -56,5 +56,11 @@ namespace CKAN
 
         [JsonProperty("steamstore", Order = 14, NullValueHandling = NullValueHandling.Ignore)]
         public Uri? steamstore;
+
+        [JsonProperty("gogstore", Order = 15, NullValueHandling = NullValueHandling.Ignore)]
+        public Uri? gogstore;
+
+        [JsonProperty("epicstore", Order = 15, NullValueHandling = NullValueHandling.Ignore)]
+        public Uri? epicstore;
     }
 }

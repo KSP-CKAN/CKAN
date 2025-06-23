@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Runtime.ExceptionServices;
 
 namespace CKAN.Extensions
 {
@@ -123,6 +125,42 @@ namespace CKAN.Extensions
                 else
                 {
                     yield return inBetween(null, null);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Poor man's PLINQ, a trivially parallelized SelectMany that
+        /// runs one process per item in the source sequence.
+        /// For short sequences and long-running functions,
+        /// when you don't feel like fighting with Partitioner.Create
+        /// over how many items should be in each partition.
+        /// </summary>
+        /// <param name="source">The sequence to process</param>
+        /// <param name="func">The function to apply to each item in the sequence</param>
+        /// <returns>Sequence of all values from the function</returns>
+        public static IEnumerable<V> SelectManyTasks<T, V>(this ICollection<T>     source,
+                                                           Func<T, IEnumerable<V>> func)
+        {
+            if (source.Count <= 1)
+            {
+                return source.SelectMany(func);
+            }
+            else
+            {
+                var tasks = source.Select(item => Task.Run(() => func(item).ToArray()))
+                                  // Force non-lazy creation of tasks
+                                  .ToArray();
+                // Without this, later tasks don't finish if an earlier one throws
+                Task.WaitAll(tasks);
+                try
+                {
+                    return tasks.SelectMany(task => task.Result);
+                }
+                catch (AggregateException agExc) when (agExc is { InnerException: Exception exc })
+                {
+                    ExceptionDispatchInfo.Capture(exc).Throw();
+                    throw;
                 }
             }
         }

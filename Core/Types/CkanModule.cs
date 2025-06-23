@@ -404,7 +404,7 @@ namespace CKAN
             if (ksp_version != null && (ksp_version_max != null || ksp_version_min != null))
             {
                 // KSP version mixed with min/max.
-                throw new InvalidModuleAttributesException(Properties.Resources.CkanModuleKspVersionMixed, this);
+                throw new InvalidModuleAttributesKraken(Properties.Resources.CkanModuleKspVersionMixed, this);
             }
 
             license   ??= new List<License> { License.UnknownLicense };

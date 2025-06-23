@@ -122,4 +122,49 @@
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoriten</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Versteckt</value></data>
   <data name="ModuleLabelListHeld" xml:space="preserve"><value>Zurückgehalten</value></data>
+  <data name="KrakenBadMetadata" xml:space="preserve"><value>Fehlerhafte Metadaten für das Modul {0} erkannt: {1}</value></data>
+  <data name="KrakenIsDLC" xml:space="preserve"><value>CKAN kann die Erweiterung '{0}' nicht für dich installieren.</value></data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>Oh nein! Wir haben versucht, eine Datei zu überschreiben, die einer anderen Mod gehört!
+
+Wenn dieses Problem wieder auftritt, dann ist es vielleicht ein Paketfehler.
+Bitte melde es unter:
+
+https://github.com/KSP-CKAN/NetKAN/issues/new/choose
+
+Bitte gib die folgenden Informationen mit an:
+
+Datei: {0}
+Installierende Mod: {1}
+Besitzende Mod: {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>Oh nein!
+
+Es sieht so aus, als ob du versuchst, eine Mod zu installieren, die bereits installiert ist,
+oder die mit einer anderen Mod, die bereits installiert ist, in Konflikt steht.
+
+Aus Sicherheitsgründen wird CKAN *nie* eine Datei überschreiben oder ändern, die es nicht selbst installiert hat.
+
+Wenn du {1} über das CKAN installieren möchtest,
+dann deinstalliere bitte manuell die Mod, die folgende Dateien besitzt:
+
+{0}
+
+und versuche es erneut.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>Oh nein!
+
+Es sieht so aus, als ob du versuchst, eine Mod zu installieren, die bereits installiert ist,
+oder die mit einer anderen Mod, die bereits installiert ist, in Konflikt steht.
+
+Aus Sicherheitsgründen wird CKAN *nie* eine Datei überschreiben oder ändern, die es nicht selbst installiert hat.
+
+Deinstalliere bitte manuell die Mod, die folgende Dateien besitzt:
+
+{0}
+
+und versuche es erneut.</value>
+  </data>
 </root>

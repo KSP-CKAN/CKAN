@@ -149,7 +149,7 @@ public sealed class BuildTask : FrostingTask<BuildContext>
                 SelfContained  = true,
             });
 
-            // Use Mono to build for net48 since dotnet can't use WinForms on Linux
+            // Use Mono to build for net481 since dotnet can't use WinForms on Linux
             context.MSBuild(context.Solution, new MSBuildSettings
             {
                 Configuration = context.BuildConfiguration,

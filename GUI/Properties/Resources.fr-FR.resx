@@ -152,14 +152,8 @@
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
     <value>Instance clonée avec succès.</value>
   </data>
-  <data name="CloneFakeKspDialogCreatingInstance" xml:space="preserve">
-    <value>Création de la nouvelle instance...</value>
-  </data>
   <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
     <value>Ce nom est déjà utilisé.</value>
-  </data>
-  <data name="CloneFakeKspDialogSuccessfulCreate" xml:space="preserve">
-    <value>Instance créée avec succès.</value>
   </data>
   <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve">
     <value>Créer des points de jonction (Windows) ou des liens symboliques (Unix) vers les dossiers de jeu communs au lieu de les copier.
@@ -227,9 +221,6 @@ Quelle version souhaitez-vous utiliser ?
   <data name="MainGoBack" xml:space="preserve">
     <value>Revenir</value>
   </data>
-  <data name="MainQuitWithUnmetDeps" xml:space="preserve">
-    <value>Il y a des dépendances insatisfaites. Voulez-vous vraiment quitter ?</value>
-  </data>
   <data name="MainQuitWithUnappliedChanges" xml:space="preserve">
     <value>Il y a des changements non pris en compte. Voulez-vous vraiment quitter ?
 
@@ -240,9 +231,6 @@ Quelle version souhaitez-vous utiliser ?
   </data>
   <data name="MainUpgradingTo" xml:space="preserve">
     <value>Mise à niveau de CKAN vers la {0}</value>
-  </data>
-  <data name="MainDepNotSatisfied" xml:space="preserve">
-    <value>{0} dépend de {1}, qui n'est pas compatible avec la version du jeu installée actuellement</value>
   </data>
   <data name="MainFilterAll" xml:space="preserve">
     <value>Filtre (Tout)</value>
@@ -396,47 +384,6 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
   <data name="MainInstallRemovingMod" xml:space="preserve">
     <value>Suppression de {0}</value>
   </data>
-  <data name="MainInstallDepNotSatisfied" xml:space="preserve">
-    <value>{0} nécessite {1} mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.</value>
-  </data>
-  <data name="MainInstallNotFound" xml:space="preserve">
-    <value>Le module {0} est requis, mais il n'est pas listé dans l'index, ou indisponible pour votre version de jeu.</value>
-  </data>
-  <data name="MainInstallBadMetadata" xml:space="preserve">
-    <value>Mauvaises métadonnées détectées pour le module {0} : {1}</value>
-  </data>
-  <data name="MainInstallFileExists" xml:space="preserve">
-    <value>Oh non ! Nous avons essayé de remplacer un fichier appartenant à un autre mod !
-Veuillez essayer `ckan update` avant de réessayer.
-
-Si ce problème se produit de nouveau, il pourrait s'agir d'un bogue d'emballage.
-Veuillez le signaler à :
-
-https://github.com/KSP-CKAN/NetKAN/issues/new/choose
-
-Veuillez inclure les informations suivantes dans votre rapport :
-
-Fichier : {0}
-Mod à installer : {1}
-Mod propriétaire : {2}
-Version CKAN : {3}</value>
-  </data>
-  <data name="MainInstallUnownedFileExists" xml:space="preserve">
-    <value>Oh non !
-
-On dirait que vous essayez d'installer un mod qui est déjà installé,
-ou qui est en conflit avec un autre mod déjà installé.
-
-Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
-qu'il n'a pas installé lui-même.
-
-Si vous souhaitez installer {0} via CKAN,
-alors veuillez désinstaller manuellement le mod qui possède :
-
-{1}
-
-et essayez de nouveau.</value>
-  </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>Votre dossier GameData a été remis dans son état initial.</value>
   </data>
@@ -451,35 +398,11 @@ Ouvrir les paramètres maintenant ?</value>
   <data name="MainInstallNo" xml:space="preserve">
     <value>Non</value>
   </data>
-  <data name="MainInstallModSuccess" xml:space="preserve">
-    <value>Installation réussie de {0}</value>
-  </data>
   <data name="MainInstallSuccess" xml:space="preserve">
     <value>Succès !</value>
   </data>
-  <data name="MainInstallCancelTooLate" xml:space="preserve">
-    <value>Annulation trop tardive, le processus est terminé !</value>
-  </data>
-  <data name="MainInstallCancelAfterInstall" xml:space="preserve">
-    <value>L'utilisateur a annulé le processus manuellement, mais tous les mods ont déjà été (Dés)installés/mis à niveau.</value>
-  </data>
-  <data name="MainInstallProcessComplete" xml:space="preserve">
-    <value>Processus terminé !</value>
-  </data>
-  <data name="MainInstallProcessCanceled" xml:space="preserve">
-    <value>Processus annulé par l'utilisateur !</value>
-  </data>
-  <data name="MainInstallCanceledManually" xml:space="preserve">
-    <value>L'utilisateur a annulé le processus manuellement !</value>
-  </data>
-  <data name="MainInstallInstallCanceled" xml:space="preserve">
-    <value>(Dés)Installation/Mise à niveau annulée !</value>
-  </data>
   <data name="MainInstallErrorInstalling" xml:space="preserve">
     <value>Erreur lors de l'installation !</value>
-  </data>
-  <data name="MainInstallUnknownError" xml:space="preserve">
-    <value>Une erreur inconnue s'est produite, veuillez réessayer !</value>
   </data>
   <data name="MainInstallKnownError" xml:space="preserve">
     <value>Si le message ci-dessus indique une erreur de téléchargement, veuillez réessayer. Sinon, veuillez signaler le problème pour que nous puissions enquêter.
@@ -488,12 +411,6 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="MainInstallFailed" xml:space="preserve">
     <value>Échec de l'installation !</value>
-  </data>
-  <data name="MainInstallProvidedBy" xml:space="preserve">
-    <value>Le module {0} est fourni par plusieurs modules possibles, veuillez choisir l'un des mods suivants :</value>
-  </data>
-  <data name="MainInstallCantInstallDLC" xml:space="preserve">
-    <value>CKAN ne peut pas installer l'extension "{0}" pour vous.</value>
   </data>
   <data name="ModInfoNSlashA" xml:space="preserve">
     <value>N/A</value>
@@ -585,15 +502,6 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="MainModListLoadingInstalled" xml:space="preserve">
     <value>Chargement des modules installés...</value>
   </data>
-  <data name="MainModListLoadingAvailable" xml:space="preserve">
-    <value>Chargement des modules disponibles...</value>
-  </data>
-  <data name="MainModListLoadingIncompatible" xml:space="preserve">
-    <value>Chargement des modules incompatibles...</value>
-  </data>
-  <data name="MainModListRestoringChangeset" xml:space="preserve">
-    <value>Restauration du résumé des changements...</value>
-  </data>
   <data name="MainModListPreservingNew" xml:space="preserve">
     <value>Préservation des nouveaux drapeaux...</value>
   </data>
@@ -633,20 +541,11 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   <data name="MainModListAll" xml:space="preserve">
     <value>Tout ({0})</value>
   </data>
-  <data name="MainModListUpdatingTray" xml:space="preserve">
-    <value>Mise à jour de l'icône...</value>
-  </data>
   <data name="MainModListAutoDetected" xml:space="preserve">
     <value>AD</value>
   </data>
   <data name="MainModListAutoInstalledToolTip" xml:space="preserve">
     <value>Si coché, désinstaller automatiquement ce mod si tout ce qui en dépend est supprimé</value>
-  </data>
-  <data name="MainModListUnknownFilter" xml:space="preserve">
-    <value>Type de filtre inconnu {0} dans IsModInFilter</value>
-  </data>
-  <data name="MainRecommendationsTitle" xml:space="preserve">
-    <value>Choisissez les mods recommandés, suggérés ou supportés</value>
   </data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve">
     <value>Aucun mod recommandé, suggéré ou supporté trouvé.</value>
@@ -665,9 +564,6 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="MainRepoUpdating" xml:space="preserve">
     <value>Mise à jour des répertoires...</value>
-  </data>
-  <data name="MainRepoFailedToConnect" xml:space="preserve">
-    <value>Échec de la connection au répertoire. Exception : {0}</value>
   </data>
   <data name="MainRepoUpToDate" xml:space="preserve">
     <value>Répertoire déjà à jour.</value>
@@ -732,9 +628,6 @@ Si vous avez sélectionné un raccourci, cela ne fonctionnera pas ; Windows ne p
 Trouvez le dossier où votre jeu est installé et sélectionnez l'un de ces fichiers :
 
 {1}</value>
-  </data>
-  <data name="NewRepoDialogFailed" xml:space="preserve">
-    <value>Échec de récupération de la liste maîtresse.</value>
   </data>
   <data name="PluginsDialogFilter" xml:space="preserve">
     <value>Plugins CKAN (*.dll)|*.dll</value>

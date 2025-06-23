@@ -9,7 +9,6 @@ using log4net;
 
 using CKAN.Configuration;
 using CKAN.IO;
-using CKAN.Versioning;
 
 namespace CKAN.CmdLine
 {
@@ -134,33 +133,6 @@ namespace CKAN.CmdLine
                     user.RaiseMessage("");
                     done = true;
                 }
-                catch (DependenciesNotSatisfiedKraken ex)
-                {
-                    user.RaiseError("{0}", ex.Message);
-                    user.RaiseMessage(Properties.Resources.InstallTryAgain);
-                    return Exit.ERROR;
-                }
-                catch (ModuleNotFoundKraken ex)
-                {
-                    if (ex.version == null)
-                    {
-                        user.RaiseError(Properties.Resources.InstallUnversionedDependencyNotSatisfied,
-                                        ex.module, instance.game.ShortName);
-                    }
-                    else
-                    {
-                        user.RaiseError(Properties.Resources.InstallVersionedDependencyNotSatisfied,
-                                        ex.module, ex.version, instance.game.ShortName);
-                    }
-                    user.RaiseMessage(Properties.Resources.InstallTryAgain);
-                    return Exit.ERROR;
-                }
-                catch (BadMetadataKraken ex)
-                {
-                    user.RaiseError(Properties.Resources.InstallBadMetadata,
-                                    ex.module?.ToString() ?? "", ex.Message);
-                    return Exit.ERROR;
-                }
                 catch (TooManyModsProvideKraken ex)
                 {
                     // Request the user selects one of the mods
@@ -169,9 +141,9 @@ namespace CKAN.CmdLine
                     {
                         result = user.RaiseSelectionDialog(
                             ex.Message,
-                            ex.modules
-                                .Select(m => string.Format("{0} ({1})", m.identifier, m.name))
-                                .ToArray());
+                            ex.modules.Select(m => string.Format("{0} ({1})",
+                                                                 m.identifier, m.name))
+                                      .ToArray());
                     }
                     catch (Kraken e)
                     {
@@ -189,72 +161,35 @@ namespace CKAN.CmdLine
                     modules.Add(ex.modules[result]);
                     // DON'T return so we can loop around and try again
                 }
-                catch (FileExistsKraken ex)
-                {
-                    if (ex.owningModule != null)
-                    {
-                        user.RaiseError(Properties.Resources.InstallFileConflictOwned,
-                                        ex.filename, ex.installingModule?.ToString() ?? "", ex.owningModule,
-                                        Meta.GetVersion(VersionFormat.Full));
-                    }
-                    else
-                    {
-                        user.RaiseError(Properties.Resources.InstallFileConflictUnowned,
-                                        ex.installingModule?.ToString() ?? "", ex.filename);
-                    }
-
-                    user.RaiseMessage(Properties.Resources.InstallGamedataReturned, instance.game.PrimaryModDirectoryRelative);
-                    return Exit.ERROR;
-                }
-                catch (InconsistentKraken ex)
-                {
-                    user.RaiseError("{0}", ex.Message);
-                    user.RaiseMessage(Properties.Resources.InstallCancelled);
-                    return Exit.ERROR;
-                }
                 catch (CancelledActionKraken k)
                 {
-                    user.RaiseError(Properties.Resources.InstallAborted, k.Message);
-                    return Exit.ERROR;
-                }
-                catch (MissingCertificateKraken kraken)
-                {
-                    // Another very pretty kraken.
-                    user.RaiseError("{0}", kraken.ToString());
+                    user.RaiseError(Properties.Resources.InstallAborted,
+                                    k.Message);
                     return Exit.ERROR;
                 }
                 catch (RequestThrottledKraken kraken)
                 {
                     user.RaiseError("{0}", kraken.Message);
-                    user.RaiseMessage(Properties.Resources.InstallTryAuthToken, kraken.infoUrl);
+                    user.RaiseMessage(Properties.Resources.InstallTryAuthToken,
+                                      kraken.infoUrl);
                     return Exit.ERROR;
                 }
-                catch (DownloadErrorsKraken)
+                catch (Kraken kraken)
                 {
-                    user.RaiseError(Properties.Resources.InstallDownloadFailed);
-                    return Exit.ERROR;
-                }
-                catch (ModuleDownloadErrorsKraken kraken)
-                {
-                    user.RaiseError("{0}", kraken.ToString());
-                    return Exit.ERROR;
-                }
-                catch (DirectoryNotFoundKraken kraken)
-                {
+                    // Show nice message for mod problems
                     user.RaiseError("{0}", kraken.Message);
+                    user.RaiseMessage("{0}", kraken switch
+                    {
+                        DependenciesNotSatisfiedKraken or ModuleNotFoundKraken => Properties.Resources.InstallTryAgain,
+                        _ => Properties.Resources.InstallCancelled,
+                    });
                     return Exit.ERROR;
                 }
-                catch (ModuleIsDLCKraken kraken)
+                catch (Exception exc)
                 {
-                    user.RaiseError(Properties.Resources.InstallDLC, kraken.module.name);
-                    var res = kraken?.module?.resources;
-                    var storePagesMsg = new Uri?[] { res?.store, res?.steamstore }
-                        .OfType<Uri>()
-                        .Aggregate("", (a, b) => $"{a}\r\n- {b}");
-                    if (!string.IsNullOrEmpty(storePagesMsg))
-                    {
-                        user.RaiseMessage(Properties.Resources.InstallDLCStorePage, storePagesMsg);
-                    }
+                    // Show stack trace for code problems
+                    user.RaiseError("{0}", exc.ToString());
+                    user.RaiseMessage(Properties.Resources.InstallCancelled);
                     return Exit.ERROR;
                 }
             }

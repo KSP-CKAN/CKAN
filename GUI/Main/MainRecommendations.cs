@@ -33,7 +33,7 @@ namespace CKAN.GUI
             if (CurrentInstance != null)
             {
                 // Run in a background task so GUI thread can react to user
-                Task.Factory.StartNew(() => AuditRecommendations(
+                Task.Run(() => AuditRecommendations(
                     RegistryManager.Instance(CurrentInstance, repoData).registry,
                     CurrentInstance.VersionCriteria()));
             }
