@@ -81,11 +81,10 @@ namespace CKAN.CmdLine
                 try
                 {
                     var upd = new AutoUpdate();
-                    var update = upd.GetUpdate(config.DevBuilds ?? false, options.NetUserAgent);
-                    var latestVersion = update.Version;
-                    var currentVersion = new ModuleVersion(Meta.GetVersion());
-
-                    if (!currentVersion.Equals(latestVersion))
+                    var update = upd.GetUpdate(config.DevBuilds ?? false,
+                                               options.NetUserAgent);
+                    if (update.Version is CkanModuleVersion latestVersion
+                        && !latestVersion.SameClientVersion(Meta.ReleaseVersion))
                     {
                         user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable,
                                           latestVersion?.ToString() ?? "");

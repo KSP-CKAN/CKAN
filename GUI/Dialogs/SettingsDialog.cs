@@ -693,11 +693,15 @@ namespace CKAN.GUI
             LocalVersionLabel.Text = Meta.GetVersion();
             try
             {
-                var latestVersion = updater.GetUpdate(coreConfig.DevBuilds ?? false, userAgent)
-                                           .Version;
-                LatestVersionLabel.Text = latestVersion?.ToString() ?? "";
-                // Allow downgrading in case they want to stop using dev builds
-                InstallUpdateButton.Enabled = !latestVersion?.Equals(new ModuleVersion(Meta.GetVersion())) ?? false;
+                if (updater.GetUpdate(coreConfig.DevBuilds ?? false,
+                                      userAgent)
+                           .Version
+                    is CkanModuleVersion latestVersion)
+                {
+                    LatestVersionLabel.Text = latestVersion.ToString();
+                    // Allow downgrading in case they want to stop using dev builds
+                    InstallUpdateButton.Enabled = !latestVersion.SameClientVersion(Meta.ReleaseVersion);
+                }
             }
             catch
             {
