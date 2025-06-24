@@ -1,5 +1,4 @@
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 
@@ -22,41 +21,49 @@ namespace CKAN.NetKAN.Validators
         {
             Log.Debug("Validating that metadata is appropriate for DLLs");
 
-            JObject    json = metadata.AllJson;
-            CkanModule mod  = CkanModule.FromJson(json.ToString());
+            var json = metadata.AllJson;
+            var mod  = CkanModule.FromJson(json.ToString());
             if (!mod.IsDLC)
             {
                 var package = _http.DownloadModule(metadata);
                 if (!string.IsNullOrEmpty(package))
                 {
-                    ZipFile      zip  = new ZipFile(package);
-                    GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
+                    var zip  = new ZipFile(package);
+                    var inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
-                    var plugins    = _moduleService.GetPlugins(mod, zip, inst).ToList();
-                    bool hasPlugin = plugins.Count != 0;
-                    if (hasPlugin)
+                    if (_moduleService.GetPlugins(mod, zip, inst)
+                                      .Select(f => inst.ToRelativeGameDir(f.destination))
+                                      .OrderBy(f => f)
+                                      .ToArray()
+                        is { Length: > 0 } plugins)
                     {
-                        var dllPaths = plugins
-                            .Select(f => inst.ToRelativeGameDir(f.destination))
-                            .OrderBy(f => f)
-                            .ToList();
-                        var dllIdentifiers = dllPaths
-                            .Select(inst.DllPathToIdentifier)
-                            .Where(ident => !string.IsNullOrEmpty(ident)
-                                && !identifiersToIgnore.Contains(ident))
-                            .ToHashSet();
-                        if (dllIdentifiers.Count != 0 && !dllIdentifiers.Contains(metadata.Identifier))
+                        if (plugins.Select(inst.DllPathToIdentifier)
+                                   .OfType<string>()
+                                   .Where(ident => ident is { Length: > 0 }
+                                                   && !identifiersToIgnore.Contains(ident))
+                                   .ToHashSet()
+                            is { Count: > 0 } dllIdentifiers
+                            && !dllIdentifiers.Contains(metadata.Identifier))
                         {
-                            Log.WarnFormat(
-                                "No plugin matching the identifier, manual installations won't be detected: {0}",
-                                string.Join(", ", dllPaths));
+                            Log.WarnFormat("No plugin matching the identifier, manual installations won't be detected: {0}",
+                                           string.Join(", ", plugins));
                         }
 
-                        bool boundedCompatibility = json.ContainsKey("ksp_version") || json.ContainsKey("ksp_version_max");
+                        bool boundedCompatibility = json.ContainsKey("ksp_version")
+                                                    || json.ContainsKey("ksp_version_max");
                         if (!boundedCompatibility)
                         {
                             Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");
                         }
+                    }
+                    else if (_moduleService.GetSourceCode(mod, zip, inst)
+                                           .Select(f => inst.ToRelativeGameDir(f.destination))
+                                           .OrderBy(f => f)
+                                           .ToArray()
+                             is { Length: > 0 } sourceCode)
+                    {
+                        Log.WarnFormat("Found C# source code without DLL, mod may not have been compiled: {0}",
+                                       string.Join(", ", sourceCode));
                     }
                 }
             }
