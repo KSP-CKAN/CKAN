@@ -77,7 +77,7 @@ namespace CKAN.NetKAN.Validators
                         .ToList();
                     if (unmatchedIncludeOnlys.Count != 0)
                     {
-                        log.WarnFormat("No matches for includes_only: {0}",
+                        log.WarnFormat("No matches for include_only: {0}",
                                        string.Join(", ", unmatchedIncludeOnlys));
                     }
                 }

@@ -205,7 +205,7 @@ namespace Tests.Core.IO
         }
 
         [Test]
-        // Test includes_only and includes_only_regexp
+        // Test include_only and include_only_regexp
         public void FindInstallableFilesWithInclude()
         {
             string extra_doge = TestData.DogeCoinFlagZipWithExtras();
