@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
-using System.Runtime.ExceptionServices;
 
 namespace CKAN.Extensions
 {
@@ -157,9 +156,9 @@ namespace CKAN.Extensions
                 {
                     return tasks.SelectMany(task => task.Result);
                 }
-                catch (AggregateException agExc) when (agExc is { InnerException: Exception exc })
+                catch (AggregateException agExc)
                 {
-                    ExceptionDispatchInfo.Capture(exc).Throw();
+                    agExc.RethrowInner();
                     throw;
                 }
             }
