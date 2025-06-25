@@ -405,6 +405,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                 "-p ConsoleUI",
                                 "-p GUI/Dialogs",
                                 "-p GUI/Controls",
+                                "-p GUI/Main",
                                 $"-i {testDir}",
                                 $"-o {instrumentedDir}",
                                 "--save");
