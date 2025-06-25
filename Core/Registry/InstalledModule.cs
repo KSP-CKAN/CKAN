@@ -112,24 +112,15 @@ namespace CKAN
         /// Called when upgrading registry versions. Should be a no-op
         /// if called on newer registries.
         /// </summary>
-        public void Renormalise(GameInstance ksp)
+        public void Renormalise(GameInstance inst)
         {
-            // We need case insensitive path matching on Windows
-            var normalised_installed_files = new Dictionary<string, InstalledModuleFile>(Platform.PathComparer);
-
-            foreach (var tuple in installed_files)
-            {
-                string path = CKANPathUtils.NormalizePath(tuple.Key);
-
-                if (Path.IsPathRooted(path))
-                {
-                    path = ksp.ToRelativeGameDir(path);
-                }
-
-                normalised_installed_files[path] = tuple.Value;
-            }
-
-            installed_files = normalised_installed_files;
+            installed_files = installed_files.ToDictionary(
+                                  kvp => Path.IsPathRooted(kvp.Key)
+                                             ? inst.ToRelativeGameDir(kvp.Key)
+                                             : CKANPathUtils.NormalizePath(kvp.Key),
+                                  kvp => kvp.Value,
+                                  // We need case insensitive path matching on Windows
+                                  Platform.PathComparer);
         }
 
         #endregion
