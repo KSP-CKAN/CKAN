@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Diagnostics;
 using System.Threading;
@@ -482,8 +483,8 @@ namespace CKAN
         {
             try
             {
-                sha1Cache.Remove(file);
-                sha256Cache.Remove(file);
+                sha1Cache.TryRemove(file, out _);
+                sha256Cache.TryRemove(file, out _);
 
                 tx_file ??= new TxFileManager();
                 tx_file.Delete($"{file}.sha1");
@@ -646,42 +647,37 @@ namespace CKAN
         /// <returns>
         /// Hash, in all-caps hexadecimal format
         /// </returns>
-        private string GetFileHash(string                     filePath,
-                                   string                     hashSuffix,
-                                   Dictionary<string, string> cache,
-                                   Func<HashAlgorithm>        getHashAlgo,
-                                   IProgress<int>?            progress,
-                                   CancellationToken?         cancelToken)
-        {
-            string hashFile = $"{filePath}.{hashSuffix}";
-            if (cache.TryGetValue(filePath, out string? hash))
-            {
-                return hash;
-            }
-            else if (File.Exists(hashFile))
-            {
-                hash = File.ReadAllText(hashFile);
-                cache.Add(filePath, hash);
-                return hash;
-            }
-            else
-            {
-                using (FileStream     fs     = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                using (BufferedStream bs     = new BufferedStream(fs))
-                using (HashAlgorithm  hasher = getHashAlgo())
-                {
-                    hash = BitConverter.ToString(hasher.ComputeHash(bs, progress, cancelToken)).Replace("-", "");
-                    cache.Add(filePath, hash);
-                    if (Path.GetDirectoryName(hashFile) == cachePath.FullName)
-                    {
-                        hash.WriteThroughTo(hashFile);
-                    }
-                    return hash;
-                }
-            }
-        }
+        private string GetFileHash(string                               filePath,
+                                   string                               hashSuffix,
+                                   ConcurrentDictionary<string, string> cache,
+                                   Func<HashAlgorithm>                  getHashAlgo,
+                                   IProgress<int>?                      progress,
+                                   CancellationToken?                   cancelToken)
+            => cache.GetOrAdd(filePath, p =>
+               {
+                   var hashFile = $"{p}.{hashSuffix}";
+                   if (File.Exists(hashFile))
+                   {
+                       return File.ReadAllText(hashFile);
+                   }
+                   else
+                   {
+                       using (var fs     = new FileStream(p, FileMode.Open, FileAccess.Read))
+                       using (var bs     = new BufferedStream(fs))
+                       using (var hasher = getHashAlgo())
+                       {
+                           var hash = BitConverter.ToString(hasher.ComputeHash(bs, progress, cancelToken))
+                                                  .Replace("-", "");
+                           if (Path.GetDirectoryName(hashFile) == cachePath.FullName)
+                           {
+                               hash.WriteThroughTo(hashFile);
+                           }
+                           return hash;
+                       }
+                   }
+               });
 
-        private readonly Dictionary<string, string> sha1Cache   = new Dictionary<string, string>();
-        private readonly Dictionary<string, string> sha256Cache = new Dictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> sha1Cache   = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> sha256Cache = new ConcurrentDictionary<string, string>();
     }
 }
