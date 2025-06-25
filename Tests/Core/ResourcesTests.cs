@@ -1,7 +1,10 @@
 using System.Linq;
 using System.Resources;
 using System.Globalization;
+
 using NUnit.Framework;
+
+using CKAN;
 
 namespace Tests.Core
 {
@@ -18,7 +21,7 @@ namespace Tests.Core
         public void PropertiesResources_LanguageResource_NotSet()
         {
             // Arrange
-            ResourceManager resources = new CKAN.SingleAssemblyResourceManager(
+            ResourceManager resources = new SingleAssemblyResourceManager(
                 "CKAN.Properties.Resources", typeof(CKAN.Properties.Resources).Assembly);
 
             // Act/Assert
@@ -29,7 +32,7 @@ namespace Tests.Core
         }
 
         // The cultures to test
-        private static readonly CultureInfo[] cultures = CKAN.Utilities.AvailableLanguages
+        private static readonly CultureInfo[] cultures = Utilities.AvailableLanguages
             .Select(l => new CultureInfo(l))
             .ToArray();
     }

@@ -10,6 +10,8 @@ using System.Windows.Forms;
 
 using NUnit.Framework;
 
+using CKAN;
+
 namespace Tests.GUI
 {
     [TestFixture]
@@ -25,7 +27,7 @@ namespace Tests.GUI
         public void PropertiesResources_AllLocales_LanguageNotSetAndAllStrings()
         {
             // Arrange
-            ResourceManager resources = new CKAN.SingleAssemblyResourceManager(
+            ResourceManager resources = new SingleAssemblyResourceManager(
                 "CKAN.GUI.Properties.Resources", typeof(CKAN.GUI.Properties.Resources).Assembly);
 
             // Act/Assert
@@ -102,7 +104,7 @@ namespace Tests.GUI
 
         // The cultures to test
         private static readonly CultureInfo[] cultures =
-            CKAN.Utilities.AvailableLanguages
+            Utilities.AvailableLanguages
                           .Select(l => new CultureInfo(l))
                           .ToArray();
     }

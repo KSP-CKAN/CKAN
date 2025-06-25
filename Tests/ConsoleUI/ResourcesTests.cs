@@ -4,6 +4,8 @@ using System.Globalization;
 
 using NUnit.Framework;
 
+using CKAN;
+
 namespace Tests.ConsoleUI
 {
     [TestFixture]
@@ -19,7 +21,7 @@ namespace Tests.ConsoleUI
         public void PropertiesResources_LanguageResource_NotSet()
         {
             // Arrange
-            ResourceManager resources = new CKAN.SingleAssemblyResourceManager(
+            ResourceManager resources = new SingleAssemblyResourceManager(
                 "CKAN.ConsoleUI.Properties.Resources", typeof(CKAN.ConsoleUI.Properties.Resources).Assembly);
 
             // Act/Assert
@@ -30,7 +32,7 @@ namespace Tests.ConsoleUI
         }
 
         // The cultures to test
-        private static readonly CultureInfo[] cultures = CKAN.Utilities.AvailableLanguages
+        private static readonly CultureInfo[] cultures = Utilities.AvailableLanguages
             .Select(l => new CultureInfo(l))
             .ToArray();
     }
