@@ -39,6 +39,13 @@ namespace System.Linq
             => pairs.ToDictionary(kvp => kvp.Key,
                                   kvp => kvp.Value);
 
+        public static Dictionary<K, V> ToDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs,
+                                                          IEqualityComparer<K>                 comparer)
+            where K: class
+            => pairs.ToDictionary(kvp => kvp.Key,
+                                  kvp => kvp.Value,
+                                  comparer);
+
         public static Dictionary<K, V> ToDictionary<K, V>(this ParallelQuery<KeyValuePair<K, V>> pairs) where K: class
             => pairs.ToDictionary(kvp => kvp.Key,
                                   kvp => kvp.Value);

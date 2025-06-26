@@ -143,7 +143,7 @@ namespace Tests.Core.Configuration
 
             set
             {
-                if (CKAN.Utilities.AvailableLanguages.Contains(value))
+                if (Utilities.AvailableLanguages.Contains(value))
                 {
                     _Language = value;
                 }

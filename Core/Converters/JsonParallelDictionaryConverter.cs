@@ -26,7 +26,7 @@ namespace CKAN
                                  serializer);
 
         private static object ParseWithProgress(JProperty[]    properties,
-                                         JsonSerializer serializer)
+                                                JsonSerializer serializer)
             => Partitioner.Create(properties, true)
                           .AsParallel()
                           .WithMergeOptions(ParallelMergeOptions.NotBuffered)

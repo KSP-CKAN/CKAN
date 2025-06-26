@@ -58,7 +58,7 @@ namespace CKAN.NetKAN.Services
         /// <param name="zip">The ZipFile to search</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        private JObject? GetInternalCkan(CkanModule module, ZipFile zip, GameInstance inst)
+        private static JObject? GetInternalCkan(CkanModule module, ZipFile zip, GameInstance inst)
             => (module.install != null
                     // Find embedded .ckan files that would be included in the install
                     ? GetFilesBySuffix(module, zip, ".ckan", inst)
@@ -86,9 +86,24 @@ namespace CKAN.NetKAN.Services
         public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst)
             => GetFilesBySuffix(module, zip, ".craft", inst);
 
-        private IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule module, ZipFile zip, string suffix, GameInstance inst)
+        private static IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule   module,
+                                                                     ZipFile      zip,
+                                                                     string       suffix,
+                                                                     GameInstance inst)
             => ModuleInstaller.FindInstallableFiles(module, zip, inst)
                               .Where(instF => instF.destination.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase));
+
+        public IEnumerable<InstallableFile> GetSourceCode(CkanModule module, ZipFile zip, GameInstance inst)
+            => GetFilesBySuffixes(module, zip, sourceCodeSuffixes, inst);
+
+        private static readonly string[] sourceCodeSuffixes = new string[] { ".cs", ".csproj", ".sln" };
+
+        private static IEnumerable<InstallableFile> GetFilesBySuffixes(CkanModule          module,
+                                                                       ZipFile             zip,
+                                                                       ICollection<string> suffixes,
+                                                                       GameInstance        inst)
+            => ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                              .Where(instF => suffixes.Any(suffix => instF.destination.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase)));
 
         public IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip, GameInstance inst)
             => ModuleInstaller.FindInstallableFiles(module, zip, inst)

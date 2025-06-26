@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Writethrough when saving files, add Netkan tests (#4392 by: HebaruSan)
 - [Core] More tests for Core (#4396 by: HebaruSan)
 - [Multiple] Exception handling revamp, parallel multi-host inflation (#4398 by: HebaruSan)
+- [Multiple] Make hash caches thread-safe, Netkan warning for uncompiled plugins (#4400 by: HebaruSan)
 
 ## v1.36.0 (Quasar)
 

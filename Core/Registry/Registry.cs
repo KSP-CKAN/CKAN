@@ -171,12 +171,8 @@ namespace CKAN
                                   "registry.json"));
             }
 
-            // Our context is our game instance.
-            var ksp = context.Context as GameInstance;
-
             // Older registries didn't have the installed_files list, so we create one
             // if absent.
-
             if (installed_files == null)
             {
                 log.Warn("Older registry format detected, adding installed files manifest...");
@@ -185,38 +181,25 @@ namespace CKAN
 
             // If we have no registry version at all, then we're from the pre-release period.
             // We would check for a null here, but ints *can't* be null.
-            if (registry_version == 0)
+            if (registry_version < 1)
             {
                 log.Warn("Older registry format detected, normalising paths...");
 
-                // We need case insensitive path matching on Windows
-                var normalised_installed_files = new Dictionary<string, string>(Platform.PathComparer);
-
-                foreach (KeyValuePair<string, string> tuple in installed_files)
+                // Our context is our game instance.
+                if (context.Context is GameInstance inst)
                 {
-                    string path = CKANPathUtils.NormalizePath(tuple.Key);
-
-                    if (ksp != null && Path.IsPathRooted(path))
+                    installed_files = installed_files.ToDictionary(
+                                          kvp => Path.IsPathRooted(kvp.Key)
+                                                     ? inst.ToRelativeGameDir(kvp.Key)
+                                                     // Already relative.
+                                                     : CKANPathUtils.NormalizePath(kvp.Key),
+                                          kvp => kvp.Value,
+                                          // We need case insensitive path matching on Windows
+                                          Platform.PathComparer);
+                    // Now update all our module file manifests.
+                    foreach (var module in installed_modules.Values)
                     {
-                        path = ksp.ToRelativeGameDir(path);
-                        normalised_installed_files[path] = tuple.Value;
-                    }
-                    else
-                    {
-                        // Already relative.
-                        normalised_installed_files[path] = tuple.Value;
-                    }
-                }
-
-                installed_files = normalised_installed_files;
-
-                // Now update all our module file manifests.
-
-                if (ksp != null)
-                {
-                    foreach (InstalledModule module in installed_modules.Values)
-                    {
-                        module.Renormalise(ksp);
+                        module.Renormalise(inst);
                     }
                 }
 
@@ -241,7 +224,7 @@ namespace CKAN
 
                 if (installed_modules.TryGetValue("001ControlLock", out InstalledModule? control_lock_entry))
                 {
-                    if (ksp == null)
+                    if (context.Context is not GameInstance inst)
                     {
                         throw new Kraken("Internal bug: No KSP instance provided on registry deserialisation");
                     }
@@ -259,7 +242,7 @@ namespace CKAN
 
                     // Prepare to re-index.
                     var new_control_lock_installed = new InstalledModule(
-                        ksp,
+                        inst,
                         control_lock_mod,
                         control_lock_entry.Files,
                         control_lock_entry.AutoInstalled
@@ -279,12 +262,14 @@ namespace CKAN
 
             var oldDefaultRepo = new Uri("https://github.com/KSP-CKAN/CKAN-meta/archive/master.zip");
             if (repositories != null
-                && repositories.TryGetValue(Repository.default_ckan_repo_name, out Repository? default_repo)
+                && repositories.TryGetValue(Repository.default_ckan_repo_name,
+                                            out Repository? default_repo)
                 && default_repo.uri == oldDefaultRepo
-                && ksp != null)
+                && context.Context is GameInstance gameInst)
             {
-                log.InfoFormat("Updating default metadata URL from {0} to {1}", oldDefaultRepo, ksp.game.DefaultRepositoryURL);
-                repositories[Repository.default_ckan_repo_name].uri = ksp.game.DefaultRepositoryURL;
+                log.InfoFormat("Updating default metadata URL from {0} to {1}",
+                               oldDefaultRepo, gameInst.game.DefaultRepositoryURL);
+                repositories[Repository.default_ckan_repo_name].uri = gameInst.game.DefaultRepositoryURL;
             }
 
             if (repositories != null)
@@ -310,17 +295,14 @@ namespace CKAN
         [MemberNotNull(nameof(installed_files))]
         public void ReindexInstalled()
         {
-            // We need case insensitive path matching on Windows
-            installed_files = new Dictionary<string, string>(Platform.PathComparer);
-
-            foreach (InstalledModule module in installed_modules.Values)
-            {
-                foreach (string file in module.Files)
-                {
-                    // Register each file we know about as belonging to the given module.
-                    installed_files[file] = module.identifier;
-                }
-            }
+            installed_files = installed_modules
+                .Values
+                .SelectMany(module => module.Files
+                                            // Register each file we know about as belonging to the given module.
+                                            .Select(file => new KeyValuePair<string, string>(file,
+                                                                                             module.identifier)))
+                // We need case insensitive path matching on Windows
+                .ToDictionary(Platform.PathComparer);
         }
 
         /// <summary>
