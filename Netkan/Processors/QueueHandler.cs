@@ -188,7 +188,7 @@ namespace CKAN.NetKAN.Processors
                     // Full message with stack trace for problems with code
                     _ => e.ToString(),
                 };
-                if (e is RequestThrottledKraken rtk && rtk.retryTime is DateTime dt)
+                if (e is RequestThrottledKraken { retryTime: DateTime dt })
                 {
                     // Let the API credits recharge
                     var span = dt.Subtract(DateTime.UtcNow);

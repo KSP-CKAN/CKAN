@@ -503,10 +503,10 @@ namespace CKAN
         {
         }
 
-        public RequestThrottledKraken(Uri       url,
-                                      Uri       info,
-                                      DateTime? retryTime,
-                                      string?   reason = null)
+        private RequestThrottledKraken(Uri      url,
+                                       Uri      info,
+                                       DateTime retryTime,
+                                       string?  reason = null)
             : base(reason
                    ?? string.Format(Properties.Resources.KrakenDownloadThrottled,
                                     url.Host))
@@ -516,9 +516,9 @@ namespace CKAN
             this.retryTime = retryTime;
         }
 
-        public readonly Uri       throttledUrl;
-        public readonly Uri       infoUrl;
-        public readonly DateTime? retryTime;
+        public readonly Uri      throttledUrl;
+        public readonly Uri      infoUrl;
+        public readonly DateTime retryTime;
 
         // https://docs.github.com/en/rest/using-the-rest-api/best-practices-for-using-the-rest-api?apiVersion=2022-11-28#handle-rate-limit-errors-appropriately
         private static IEnumerable<DateTime> ExceptionRetryTimes(WebException exc)
