@@ -178,7 +178,11 @@ namespace CKAN.NetKAN.Sources.Github
             catch (WebException k)
             {
                 if (((HttpWebResponse?)k.Response)?.StatusCode is HttpStatusCode.Forbidden
+                                                               #if NETFRAMEWORK
+                                                               or (HttpStatusCode)429
+                                                               #else
                                                                or HttpStatusCode.TooManyRequests
+                                                               #endif
                                                                or HttpStatusCode.ServiceUnavailable
                     && k.Response.Headers["X-RateLimit-Remaining"] == "0"
                     && Net.ThrottledHosts.TryGetValue(url.Host, out Uri? infoUrl)
