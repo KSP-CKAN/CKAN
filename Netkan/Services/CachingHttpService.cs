@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 
 using LazyCache;
@@ -23,7 +24,7 @@ namespace CKAN.NetKAN.Services
 
         public string? DownloadModule(Metadata metadata)
         {
-            if (metadata.Download == null)
+            if (metadata.Download is not { Count: > 0 })
             {
                 return null;
             }
@@ -60,14 +61,15 @@ namespace CKAN.NetKAN.Services
             {
                 primaryUrl = url;
             }
-            if (_overwriteCache && !_requestedURLs.Contains(url))
+            if (_overwriteCache && !_requestedURLs.ContainsKey(url))
             {
                 // Discard cached file if command line says so,
                 // but only the first time in each run
                 _cache.Remove(url);
             }
 
-            _requestedURLs.Add(url);
+            // There is no ConcurrentHashSet, so we have to store a null byte as the Value
+            _requestedURLs.TryAdd(url, default);
 
             var cachedFile = _cache.GetCachedFilename(primaryUrl, updated);
 
@@ -138,20 +140,21 @@ namespace CKAN.NetKAN.Services
                                                             10000),
                                      DateTimeOffset.Now + stringCacheLifetime);
 
-        public IEnumerable<Uri> RequestedURLs => _requestedURLs;
+        public IEnumerable<Uri> RequestedURLs => _requestedURLs.Keys;
         public void ClearRequestedURLs()
         {
-            _requestedURLs?.Clear();
+            _requestedURLs.Clear();
         }
 
         public Uri? ResolveRedirect(Uri url, string? userAgent)
             => Net.ResolveRedirect(url, userAgent);
 
-        private readonly NetFileCache _cache;
-        private readonly string?      _userAgent;
-        private readonly HashSet<Uri> _requestedURLs  = new HashSet<Uri>();
-        private readonly bool         _overwriteCache = false;
-        private readonly IAppCache    _stringCache    = new CachingService();
+        private readonly NetFileCache                    _cache;
+        private readonly string?                         _userAgent;
+        // Microsoft declined to implement ConcurrentHashSet in favor of this
+        private readonly ConcurrentDictionary<Uri, byte> _requestedURLs  = new ConcurrentDictionary<Uri, byte>();
+        private readonly bool                            _overwriteCache = false;
+        private readonly IAppCache                       _stringCache    = new CachingService();
 
         // Re-use string value URLs within 15 minutes
         private static readonly TimeSpan stringCacheLifetime = new TimeSpan(0, 15, 0);
