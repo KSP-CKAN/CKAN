@@ -134,11 +134,12 @@ namespace CKAN.NetKAN.Services
         public string? DownloadText(Uri     url,
                                     string? authToken = null,
                                     string? mimeType  = null)
-            => _stringCache.GetOrAdd(url.OriginalString,
-                                     () => Net.DownloadText(url,
-                                                            _userAgent, authToken, mimeType,
-                                                            10000),
-                                     DateTimeOffset.Now + stringCacheLifetime);
+            => Utilities.WithRethrowInner(() =>
+                   _stringCache.GetOrAdd(url.OriginalString,
+                                         () => Net.DownloadText(url, _userAgent,
+                                                                authToken, mimeType,
+                                                                10000),
+                                         DateTimeOffset.Now + stringCacheLifetime));
 
         public IEnumerable<Uri> RequestedURLs => _requestedURLs.Keys;
         public void ClearRequestedURLs()

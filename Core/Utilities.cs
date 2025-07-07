@@ -8,6 +8,7 @@ using ChinhDo.Transactions.FileManager;
 using log4net;
 
 using CKAN.IO;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -47,6 +48,24 @@ namespace CKAN
             catch (Exception exc)
             {
                 return onThrow?.Invoke(exc) ?? default;
+            }
+        }
+
+        /// <summary>
+        /// Extract and rethrow the (first) inner exception if an aggregate exception is thrown
+        /// </summary>
+        /// <param name="func">Function to call</param>
+        /// <returns>Return value of func, unless an exception is thrown</returns>
+        public static T? WithRethrowInner<T>(Func<T?> func)
+        {
+            try
+            {
+                return func();
+            }
+            catch (AggregateException agExc)
+            {
+                agExc.RethrowInner();
+                throw;
             }
         }
 
