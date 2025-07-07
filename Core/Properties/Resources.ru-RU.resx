@@ -119,7 +119,6 @@
   </resheader>
   <data name="AutoUpdateNotFetched" xml:space="preserve"><value>Не загружена информация об обновлении.</value></data>
   <data name="NetDownloading" xml:space="preserve"><value>Загрузка {0}</value></data>
-  <data name="NetMissingCertFailed" xml:space="preserve"><value>Не удалось загрузить {0}</value></data>
   <data name="NetInvalidLocation" xml:space="preserve"><value>Неверный URL в заголовке расположения: {0}</value></data>
   <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/сек - осталось {1} ({2}) - {3}%</value></data>
   <data name="ByteRateCounterSummary" xml:space="preserve"><value>осталось {0} - {1}%</value></data>
@@ -292,11 +291,11 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
   <data name="KrakenModuleDownloadErrorsHeader" xml:space="preserve"><value>Одна или несколько загрузок завершились неудачно:</value></data>
   <data name="KrakenModuleDownloadError" xml:space="preserve"><value>Ошибка загрузки {0}: {1}</value></data>
   <data name="KrakenNotInstalled" xml:space="preserve"><value>Модуль «{0}» не установлен!</value></data>
-  <data name="KrakenMissingCertificateUnix" xml:space="preserve"><value>О нет! Загрузка не завершена из-за ошибки сертификата!
+  <data name="KrakenMissingCertificateUnix" xml:space="preserve"><value>Загрузка не завершена из-за ошибки сертификата!
 
 Посетите эту страницу для получения справки:
 https://github.com/KSP-CKAN/CKAN/wiki/SSL-certificate-errors</value></data>
-  <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>О нет! Загрузка не завершена из-за ошибки сертификата!</value></data>
+  <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>Загрузка не завершена из-за ошибки сертификата!</value></data>
   <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Загрузка из {0} была ограничена.
 Для увеличения квоты добавьте токен аутентификации.</value></data>
   <data name="KrakenAlreadyRunning" xml:space="preserve"><value>Блокирующий файл с ID процесса найден в {0}

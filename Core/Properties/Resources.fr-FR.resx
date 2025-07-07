@@ -123,9 +123,6 @@
   <data name="NetDownloading" xml:space="preserve">
     <value>Téléchargement de {0}</value>
   </data>
-  <data name="NetMissingCertFailed" xml:space="preserve">
-    <value>Échec du téléchargement de {0}</value>
-  </data>
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Adresse invalide dans l'en-tête d'emplacement : {0}</value>
   </data>
@@ -617,13 +614,13 @@ et essayez de nouveau.</value>
     <value>Le module {0} n'est pas installé !</value>
   </data>
   <data name="KrakenMissingCertificateUnix" xml:space="preserve">
-    <value>Oh non ! Le téléchargement a échoué avec une erreur de certificat !
+    <value>Le téléchargement a échoué avec une erreur de certificat !
 
 Consultez cette page pour obtenir de l'aide :
 {0}</value>
   </data>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
-    <value>Oh non ! Le téléchargement a échoué avec une erreur de certificat !</value>
+    <value>Le téléchargement a échoué avec une erreur de certificat !</value>
   </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>Requête à {0} restreinte</value>

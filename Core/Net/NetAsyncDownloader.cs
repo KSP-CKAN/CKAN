@@ -157,13 +157,17 @@ namespace CKAN
                                       .OfType<KeyValuePair<DownloadTarget, Exception>>()
                                       .ToList();
 
-            if (exceptions.Select(kvp => kvp.Value)
-                          .OfType<WebException>()
-                          // Check if it's a certificate error. If so, report that instead,
-                          // as this is common (and user-fixable) under Linux.
-                          .Any(exc => exc.Status == WebExceptionStatus.SecureChannelFailure))
+            if (exceptions.FirstOrDefault(pair => pair.Value is WebException
+                                                  {
+                                                      Status: WebExceptionStatus.SecureChannelFailure,
+                                                  })
+                is KeyValuePair<DownloadTarget, Exception>
+                {
+                    Key:   DownloadTarget { urls: { Count: > 0 } urls },
+                    Value: WebException wex,
+                })
             {
-                throw new MissingCertificateKraken();
+                throw new MissingCertificateKraken(urls.First(), null, wex);
             }
 
             var throttled = exceptions.Select(kvp => kvp.Value is WebException wex

@@ -76,33 +76,13 @@ namespace CKAN
         /// Throws a MissingCertificateException *and* prints a message to the
         /// console if we detect missing certificates (common on a fresh Linux/mono install)
         /// </summary>
-        public static string Download(Uri     url,
-                                      string? userAgent = null,
-                                      string? filename  = null,
-                                      IUser?  user      = null)
-            => Download(url, out _, userAgent, filename, user);
-
         public static string Download(Uri         url,
                                       out string? etag,
                                       string?     userAgent = null,
-                                      string?     filename = null,
-                                      IUser?      user = null)
-            => Download(url.OriginalString, out etag, userAgent, filename, user);
-
-        public static string Download(string      url,
-                                      string?     userAgent = null,
-                                      string?     filename = null,
-                                      IUser?      user     = null)
-            => Download(url, out _, userAgent, filename, user);
-
-        public static string Download(string      url,
-                                      out string? etag,
-                                      string?     userAgent = null,
-                                      string?     filename = null,
-                                      IUser?      user     = null)
+                                      string?     filename  = null,
+                                      IUser?      user      = null)
         {
-            user ??= new NullUser();
-            user.RaiseMessage(Properties.Resources.NetDownloading, url);
+            user?.RaiseMessage(Properties.Resources.NetDownloading, url);
             var FileTransaction = new TxFileManager();
 
             // Generate a temporary file if none is provided.
@@ -119,48 +99,48 @@ namespace CKAN
                 agent.DownloadFile(url, filename);
                 etag = agent.ResponseHeaders?.Get("ETag")?.Replace("\"", "");
             }
-            catch (Exception exc)
+            catch (WebException wex)
+            when (wex is
+                  {
+                      Status:   WebExceptionStatus.ProtocolError,
+                      Response: HttpWebResponse
+                                {
+                                    StatusCode: HttpStatusCode.Redirect
+                                }
+                                response,
+                  })
             {
                 // Get redirect if redirected.
                 // This is needed when redirecting from HTTPS to HTTP on .NET Core.
-                if (exc is WebException
-                           {
-                               Status:   WebExceptionStatus.ProtocolError,
-                               Response: HttpWebResponse
-                                         {
-                                             StatusCode: HttpStatusCode.Redirect
-                                         }
-                                         response,
-                           })
-                {
-                    var loc = response.GetResponseHeader("Location");
-                    log.InfoFormat("Redirected to {0}", loc);
-                    return Download(loc, out etag, userAgent, filename, user);
-                    // Otherwise it's a valid failure from the server (probably a 404), keep it
-                }
-
-                // Clean up our file, it's unlikely to be complete.
-                // We do this even though we're using transactional files, as we may not be in a transaction.
-                // It's okay if this fails.
+                var loc = new Uri(response.GetResponseHeader("Location"));
+                log.InfoFormat("Redirected to {0}", loc);
+                return Download(loc, out etag, userAgent, filename, user);
+            }
+            catch (WebException wex)
+            when (wex is { Status: WebExceptionStatus.SecureChannelFailure })
+            {
+                throw new MissingCertificateKraken(url, null, wex);
+            }
+            catch (WebException wex)
+            when (wex is { InnerException: Exception inner })
+            {
+                throw new DownloadErrorsKraken(new NetAsyncDownloader.DownloadTargetFile(url),
+                                               inner);
+            }
+            // Otherwise it's a valid failure from the server (probably a 404), keep it
+            catch
+            {
                 try
                 {
+                    // Clean up our file, it's unlikely to be complete.
+                    // We do this even though we're using transactional files, as we may not be in a transaction.
                     log.DebugFormat("Removing {0} after web error failure", filename);
                     FileTransaction.Delete(filename);
                 }
                 catch
                 {
-                    // Apparently we need a catch, even if we do nothing.
+                    // It's okay if this fails.
                 }
-
-                // Look for an exception regarding the authentication.
-                if (Regex.IsMatch(exc.ToString(), "The authentication or decryption has failed."))
-                {
-                    throw new MissingCertificateKraken(
-                        string.Format(Properties.Resources.NetMissingCertFailed, url),
-                        exc);
-                }
-
-                // Not the exception we were looking for! Throw it further upwards!
                 throw;
             }
 
@@ -204,14 +184,21 @@ namespace CKAN
             {
                 try
                 {
-                    string content = agent.DownloadString(url.OriginalString);
+                    var content = agent.DownloadString(url.OriginalString);
                     var header  = agent.ResponseHeaders?.ToString();
 
                     log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);
 
                     return content;
                 }
-                catch (WebException wex) when (wex.Status != WebExceptionStatus.ProtocolError && whichAttempt < MaxRetries)
+                catch (WebException wex)
+                when (wex.Status == WebExceptionStatus.Timeout)
+                {
+                    throw new RequestTimedOutKraken(url, wex);
+                }
+                catch (WebException wex)
+                when (wex.Status != WebExceptionStatus.ProtocolError
+                      && whichAttempt < MaxRetries)
                 {
                     log.DebugFormat("Web request failed with non-protocol error, retrying in {0} milliseconds: {1}", RetryDelayMilliseconds * whichAttempt, wex.Message);
                     Thread.Sleep(RetryDelayMilliseconds * whichAttempt);
@@ -288,14 +275,9 @@ namespace CKAN
                 escaped = "http://" + escaped;
             }
 
-            if (Uri.IsWellFormedUriString(escaped, UriKind.Absolute))
-            {
-                return escaped;
-            }
-            else
-            {
-                return null;
-            }
+            return Uri.IsWellFormedUriString(escaped, UriKind.Absolute)
+                       ? escaped
+                       : null;
         }
 
         private static string UriEscapeAll(string orig, params char[] characters)

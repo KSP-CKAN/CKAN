@@ -79,7 +79,7 @@ namespace CKAN.NetKAN.Services
             }
             else
             {
-                var downloadedFile = Net.Download(url, _userAgent,
+                var downloadedFile = Net.Download(url, out _, _userAgent,
                                                   _cache.GetInProgressFileName(url,
                                                                                $"netkan-{identifier}")
                                                         .FullName);

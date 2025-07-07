@@ -481,16 +481,38 @@ namespace CKAN
 
     public class MissingCertificateKraken : Kraken
     {
-        public MissingCertificateKraken(string?    reason         = null,
+        public MissingCertificateKraken(Uri        url,
+                                        string?    reason         = null,
                                         Exception? innerException = null)
             : base(reason
-                   ?? (Platform.IsUnix
+                   ?? (Platform.IsMono
                           ? string.Format(Properties.Resources.KrakenMissingCertificateUnix,
-                                          HelpURLs.CertificateErrors)
-                          : Properties.Resources.KrakenMissingCertificateNotUnix),
+                                          HelpURLs.CertificateErrors,
+                                          url.OriginalString)
+                          : string.Format(Properties.Resources.KrakenMissingCertificateNotUnix,
+                                          url.OriginalString)),
                    innerException)
         {
+            this.url = url;
         }
+
+        public readonly Uri url;
+    }
+
+    public class RequestTimedOutKraken : Kraken
+    {
+        public RequestTimedOutKraken(Uri          url,
+                                     WebException innerExc,
+                                     string?      reason = null)
+            : base(reason
+                   ?? string.Format(Properties.Resources.KrakenRequestTimedOut,
+                                    url.OriginalString),
+                   innerExc)
+        {
+            this.url = url;
+        }
+
+        public readonly Uri url;
     }
 
     public class RequestThrottledKraken : Kraken
