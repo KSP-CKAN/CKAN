@@ -123,9 +123,6 @@
   <data name="NetDownloading" xml:space="preserve">
     <value>正在下载 {0} </value>
   </data>
-  <data name="NetMissingCertFailed" xml:space="preserve">
-    <value>下载 {0} 失败</value>
-  </data>
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Location Header含有无效URL: {0}</value>
   </data>
@@ -552,13 +549,13 @@ Owning Mod(已有Mod): {2}</value>
     <value>模组 {0} 未安装！</value>
   </data>
   <data name="KrakenMissingCertificateUnix" xml:space="preserve">
-    <value>Oh no! 我们的下载由于证书错误失败了！
+    <value>我们的下载由于证书错误失败了！
 
 查看以下页面以获得帮助:
 {0}</value>
   </data>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
-    <value>Oh no! 我们的下载由于证书错误失败了！</value>
+    <value>我们的下载由于证书错误失败了！</value>
   </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>从 {0} 下载时被限速了。

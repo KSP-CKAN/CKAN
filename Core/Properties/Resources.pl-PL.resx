@@ -123,9 +123,6 @@
   <data name="NetDownloading" xml:space="preserve">
     <value>Pobieranie {0}</value>
   </data>
-  <data name="NetMissingCertFailed" xml:space="preserve">
-    <value>Błąd pobierania {0}</value>
-  </data>
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Nieprawidłowy adres URL w nagłówku lokalizacji: {0}</value>
   </data>
@@ -539,13 +536,13 @@ i spróbuj ponownie.</value>
     <value>Moduł {0} nie jest zainstalowany!</value>
   </data>
   <data name="KrakenMissingCertificateUnix" xml:space="preserve">
-    <value>O nie! Nasze pobieranie nie powiodło się z błędem certyfikatu!
+    <value>Nasze pobieranie nie powiodło się z błędem certyfikatu!
 
 Odwiedź tę stronę, aby uzyskać pomoc:
 {0}</value>
   </data>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
-    <value>O nie! Nasze pobieranie nie powiodło się z błędem certyfikatu!</value>
+    <value>Nasze pobieranie nie powiodło się z błędem certyfikatu!</value>
   </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>Pobieranie z {0} zostało ograniczone.

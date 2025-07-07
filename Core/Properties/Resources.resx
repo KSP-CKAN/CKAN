@@ -119,7 +119,6 @@
   </resheader>
   <data name="AutoUpdateNotFetched" xml:space="preserve"><value>We have not fetched the release info yet. Can't update.</value></data>
   <data name="NetDownloading" xml:space="preserve"><value>Downloading {0}</value></data>
-  <data name="NetMissingCertFailed" xml:space="preserve"><value>Failed downloading {0}</value></data>
   <data name="NetInvalidLocation" xml:space="preserve"><value>Invalid URL in Location header: {0}</value></data>
   <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sec - {1} ({2}) left - {3}%</value></data>
   <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} left - {1}%</value></data>
@@ -311,11 +310,12 @@ and try again.</value></data>
   <data name="KrakenModuleDownloadErrorsHeader" xml:space="preserve"><value>One or more downloads were unsuccessful:</value></data>
   <data name="KrakenModuleDownloadError" xml:space="preserve"><value>Error downloading {0}: {1}</value></data>
   <data name="KrakenNotInstalled" xml:space="preserve"><value>Module {0} is not installed!</value></data>
-  <data name="KrakenMissingCertificateUnix" xml:space="preserve"><value>Oh no! Our download failed with a certificate error!
+  <data name="KrakenMissingCertificateUnix" xml:space="preserve"><value>Download failed with certificate error: {1}
 
 Consult this page for help:
 {0}</value></data>
-  <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>Oh no! Our download failed with a certificate error!</value></data>
+  <data name="KrakenMissingCertificateNotUnix" xml:space="preserve"><value>Download failed with certificate error: {0}</value></data>
+  <data name="KrakenRequestTimedOut" xml:space="preserve"><value>URL timed out: {0}</value></data>
   <data name="KrakenDownloadThrottled" xml:space="preserve"><value>Request to {0} throttled</value></data>
   <data name="KrakenAlreadyRunning" xml:space="preserve"><value>Lock file with live process ID found at:
 {0}
