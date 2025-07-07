@@ -60,5 +60,59 @@ namespace Tests.Core.Net
             File.Delete(downloaded);
         }
 
+        [TestCase("https://www.kerbaltek.com/_IamCKAN_Gimme_hyperedit_")]
+        public void Download_Redirect_Works(string url)
+        {
+            // Arrange
+            var uri = new Uri(url);
+
+            // Act
+            var downloaded = Net.Download(uri, out _);
+
+            // Assert
+            Assert.That(File.Exists(downloaded));
+
+            // Teardown
+            File.Delete(downloaded);
+        }
+
+        [TestCase("https://github.com/")]
+        public void CurrentETag_ValidHost_NonEmpty(string url)
+        {
+            // Arrange
+            var uri = new Uri(url);
+
+            // Act
+            var etag = Net.CurrentETag(uri);
+
+            // Assert
+            Assert.IsNotEmpty(etag);
+        }
+
+        [TestCase("https://github.com/",
+                  ExpectedResult = "https://github.com/")]
+        [TestCase("www.google.com",
+                  ExpectedResult = "http://www.google.com")]
+        [TestCase("https://spacedock.info/1234/A mod name with spaces",
+                  ExpectedResult = "https://spacedock.info/1234/A+mod+name+with+spaces")]
+        [TestCase("https://spacedock.info/1234/A\"Mod\"NameWith\"Quotes\"",
+                  ExpectedResult = "https://spacedock.info/1234/A%22Mod%22NameWith%22Quotes%22")]
+        [TestCase("gopher://gopher-is-dead\test",
+                  ExpectedResult = null)]
+        public string? NormalizeUri(string url)
+            => Net.NormalizeUri(url);
+
+        [TestCase("https://notgithub.com/",
+                  ExpectedResult = "https://notgithub.com/")]
+        [TestCase("https://github.com/KSP-CKAN/CKAN/raw/whatever",
+                  ExpectedResult = "https://github.com/KSP-CKAN/CKAN/raw/whatever")]
+        [TestCase("https://github.com/KSP-CKAN/CKAN/blob/branchname/whatever",
+                  ExpectedResult = "https://raw.githubusercontent.com:443/KSP-CKAN/CKAN/branchname/whatever")]
+        [TestCase("https://github.com/KSP-CKAN/CKAN/tree/branchname/whatever",
+                  ExpectedResult = "https://raw.githubusercontent.com:443/KSP-CKAN/CKAN/branchname/whatever")]
+        [TestCase("https://github.com/KSP-CKAN/CKAN/releases/lastest/download/whatever",
+                  ExpectedResult = "https://github.com/KSP-CKAN/CKAN/releases/lastest/download/whatever")]
+        public string GetRawUri(string url)
+            => Net.GetRawUri(new Uri(url)).OriginalString;
     }
 }
