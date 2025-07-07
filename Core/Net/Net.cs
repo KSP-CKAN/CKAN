@@ -184,7 +184,7 @@ namespace CKAN
             {
                 try
                 {
-                    var content = agent.DownloadString(url);
+                    var content = Utilities.WithRethrowInner(() => agent.DownloadString(url));
                     var header  = agent.ResponseHeaders?.ToString();
 
                     log.DebugFormat("Response from {0}:\r\n\r\n{1}\r\n{2}", url, header, content);

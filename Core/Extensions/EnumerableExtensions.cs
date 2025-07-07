@@ -152,15 +152,7 @@ namespace CKAN.Extensions
                                   .ToArray();
                 // Without this, later tasks don't finish if an earlier one throws
                 Task.WaitAll(tasks);
-                try
-                {
-                    return tasks.SelectMany(task => task.Result);
-                }
-                catch (AggregateException agExc)
-                {
-                    agExc.RethrowInner();
-                    throw;
-                }
+                return Utilities.WithRethrowInner(() => tasks.SelectMany(task => task.Result));
             }
         }
 

@@ -56,7 +56,7 @@ namespace CKAN
         /// </summary>
         /// <param name="func">Function to call</param>
         /// <returns>Return value of func, unless an exception is thrown</returns>
-        public static T? WithRethrowInner<T>(Func<T?> func)
+        public static T WithRethrowInner<T>(Func<T> func)
         {
             try
             {
