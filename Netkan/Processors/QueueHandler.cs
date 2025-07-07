@@ -176,7 +176,6 @@ namespace CKAN.NetKAN.Processors
             }
             catch (Exception e)
             {
-                e = e.GetBaseException() ?? e;
                 log.InfoFormat("Inflation failed, sending error: {0}", e.Message);
                 // If you do this the sensible way, the C# compiler throws:
                 // error CS1631: Cannot yield a value in the body of a catch clause

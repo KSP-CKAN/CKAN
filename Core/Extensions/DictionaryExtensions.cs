@@ -14,7 +14,8 @@ namespace CKAN.Extensions
                            && b.Keys.All(k => a.ContainsKey(k)
                                               && EqualityComparer<V>.Default.Equals(a[k], b[k]));
 
-        public static V? GetOrDefault<K, V>(this Dictionary<K, V> dict, K key) where K : notnull
+        public static V? GetOrDefault<K, V>(this Dictionary<K, V> dict, K key)
+            where K : notnull
         {
             V? val = default;
             if (key != null)

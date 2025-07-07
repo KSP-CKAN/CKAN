@@ -110,7 +110,7 @@ namespace CKAN
                     kraken.Exceptions
                           .SelectMany(kvp => targetModules[kvp.Key]
                                              .Select(m => new KeyValuePair<CkanModule, Exception>(
-                                                              m, kvp.Value.GetBaseException() ?? kvp.Value)))
+                                                              m, kvp.Value.GetBaseException())))
                           .ToList());
                 // Clear this.modules because we're done with these
                 this.modules.Clear();
