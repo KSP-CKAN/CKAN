@@ -150,9 +150,12 @@ namespace CKAN.Extensions
                 var tasks = source.Select(item => Task.Run(() => func(item).ToArray()))
                                   // Force non-lazy creation of tasks
                                   .ToArray();
-                // Without this, later tasks don't finish if an earlier one throws
-                Task.WaitAll(tasks);
-                return Utilities.WithRethrowInner(() => tasks.SelectMany(task => task.Result));
+                return Utilities.WithRethrowInner(() =>
+                {
+                    // Without this, later tasks don't finish if an earlier one throws
+                    Task.WaitAll(tasks);
+                    return tasks.SelectMany(task => task.Result);
+                });
             }
         }
 
