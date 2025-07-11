@@ -187,7 +187,7 @@ namespace Tests.NetKAN.Transformers
         {
             // Arrange
             var sut      = new GithubTransformer(new GithubApi(httpSvcMockUp.Object), false);
-            var opts     = new TransformOptions(1, 3, null, null, false, null);
+            var opts     = new TransformOptions(1, 1, null, null, false, null);
             var metadata = new Metadata(new JObject()
             {
                 { "spec_version", 1                                                                                          },
