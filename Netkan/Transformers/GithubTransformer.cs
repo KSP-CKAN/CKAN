@@ -99,7 +99,7 @@ namespace CKAN.NetKAN.Transformers
                         if (assets.Length > 1)
                         {
                             Log.WarnFormat("Multiple assets found for {0} {1} without `version_from_asset`",
-                                metadata.Identifier, rel.Tag);
+                                           metadata.Identifier, rel.Tag);
                         }
                         returnedAny = true;
                         yield return TransformOne(metadata, metadata.Json(), ghRef, ghRepo, rel,
@@ -108,17 +108,20 @@ namespace CKAN.NetKAN.Transformers
                 }
                 if (!returnedAny)
                 {
-                    if (ghRef.Filter != Constants.DefaultAssetMatchPattern)
+                    if (ghRef.AssetMatch != Constants.DefaultAssetMatchPattern)
                     {
-                        Log.WarnFormat("No releases found for {0} with asset_match {1}", ghRef.Repository, ghRef.Filter);
+                        Log.WarnFormat("No releases found for {0} with asset_match {1}",
+                                       ghRef.Repository, ghRef.AssetMatch);
                     }
                     else if (ghRef.VersionFromAsset != null)
                     {
-                        Log.WarnFormat("No releases found for {0} with version_from_asset {1}", ghRef.Repository, ghRef.VersionFromAsset);
+                        Log.WarnFormat("No releases found for {0} with version_from_asset {1}",
+                                       ghRef.Repository, ghRef.VersionFromAsset);
                     }
                     else
                     {
-                        Log.WarnFormat("No releases found for {0}", ghRef.Repository);
+                        Log.WarnFormat("No releases found for {0}",
+                                       ghRef.Repository);
                     }
                     yield return metadata;
                 }
@@ -234,6 +237,7 @@ namespace CKAN.NetKAN.Transformers
             }
             if (repo.HasIssues)
             {
+                // issues_url ends with {/number} which makes it kind of useless
                 resources.SafeAdd("bugtracker", $"{repo.HtmlUrl}/issues");
             }
             if (repo.HasDiscussions)
@@ -246,8 +250,8 @@ namespace CKAN.NetKAN.Transformers
                                    GithubRelease release)
             => repo.TraverseNodes(r => r.ParentRepo == null
                                            ? null
-                                           : _api.GetRepo(new GithubRef($"#/ckan/github/{r.ParentRepo.FullName}",
-                                                          false)))
+                                           : _api.GetRepo(new GithubRef(r.ParentRepo.Owner?.Login ?? "",
+                                                                        r.ParentRepo.Name ?? "")))
                    .Reverse()
                    .Select(r => r.Owner)
                    .Append(release.Author)

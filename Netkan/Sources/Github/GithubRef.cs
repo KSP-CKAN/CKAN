@@ -1,44 +1,24 @@
 using System.Text.RegularExpressions;
+
 using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Sources.Github
 {
     internal sealed class GithubRef : RemoteRef
     {
-        private static readonly Regex Pattern = new Regex(
-            @"^(?<account>[^/]+)/(?<project>[^/]+)(?:(/asset_match/(?<filter>.+))|(/version_from_asset/(?<versionFromAsset>.+)))?$",
-            RegexOptions.Compiled
-        );
-
-        public string Account          { get; private set; }
-        public string Project          { get; private set; }
-        public string Repository       { get; private set; }
-        public Regex  Filter           { get; private set; }
-        public Regex? VersionFromAsset { get; private set; }
-        public bool   UseSourceArchive { get; private set; }
-
-        public GithubRef(string remoteRefToken, bool useSourceArchive)
-            : this(new RemoteRef(remoteRefToken), useSourceArchive) { }
-
         public GithubRef(RemoteRef remoteRef, bool useSourceArchive)
             : base(remoteRef)
         {
             if (remoteRef.Id != null
-                && Pattern.Match(remoteRef.Id) is Match match
-                && match.Success)
+                && Pattern.Match(remoteRef.Id) is Match { Success: true } match)
             {
                 Account = match.Groups["account"].Value;
                 Project = match.Groups["project"].Value;
-                Repository = string.Format("{0}/{1}", Account, Project);
+                Repository = $"{Account}/{Project}";
 
-                Filter = match.Groups["filter"].Success
-                    ? new Regex(match.Groups["filter"].Value, RegexOptions.Compiled)
-                    : Constants.DefaultAssetMatchPattern;
-
-                VersionFromAsset = match.Groups["versionFromAsset"].Success
-                    ? new Regex(match.Groups["versionFromAsset"].Value, RegexOptions.Compiled)
-                    : null;
-
+                AssetMatch       = RegexFrom(match, "assetMatch")
+                                   ?? Constants.DefaultAssetMatchPattern;
+                VersionFromAsset = RegexFrom(match, "versionFromAsset");
                 UseSourceArchive = useSourceArchive;
             }
             else
@@ -47,8 +27,34 @@ namespace CKAN.NetKAN.Sources.Github
             }
         }
 
-        public bool FilterMatches(GithubReleaseAsset asset)
-            => asset.Name is string name && Filter.IsMatch(name);
+        private static Regex? RegexFrom(Match match, string groupKey)
+            => match.Groups[groupKey] is Group { Success: true } group
+                   ? new Regex(group.Value, RegexOptions.Compiled)
+                   : null;
 
+        public GithubRef(string owner, string project)
+            : base($"#/ckan/github/{owner}/{project}")
+        {
+            Account          = owner;
+            Project          = project;
+            Repository       = $"{owner}/{project}";
+            AssetMatch       = Constants.DefaultAssetMatchPattern;
+            VersionFromAsset = null;
+        }
+
+        public string Account          { get; private set; }
+        public string Project          { get; private set; }
+        public string Repository       { get; private set; }
+        public Regex  AssetMatch       { get; private set; }
+        public Regex? VersionFromAsset { get; private set; }
+        public bool   UseSourceArchive { get; private set; }
+
+        public bool FilterMatches(GithubReleaseAsset asset)
+            => asset.Name is string name && (VersionFromAsset?.IsMatch(name)
+                                                             ?? AssetMatch.IsMatch(name));
+
+        private static readonly Regex Pattern = new Regex(
+            @"^(?<account>[^/]+)/(?<project>[^/]+)(?:(/asset_match/(?<assetMatch>.+))|(/version_from_asset/(?<versionFromAsset>.+)))?$",
+            RegexOptions.Compiled);
     }
 }

@@ -4,29 +4,26 @@ namespace CKAN.NetKAN.Model
 {
     internal class RemoteRef
     {
-        private static readonly Regex Pattern = new Regex(
-            @"^#/ckan/(?<source>[^/]+)(?:/(?<id>.+))?",
-            RegexOptions.Compiled
-        );
-
-        private readonly string _string;
-
-        public string Source { get; private set; }
-        public string? Id   { get; private set; }
-
-        public RemoteRef(string remoteRefToken)
-            : this(ParseArguments(remoteRefToken)) { }
+         public RemoteRef(string remoteRefToken)
+        {
+            if (Pattern.Match(remoteRefToken) is Match { Success: true } match)
+            {
+                Source  = match.Groups["source"].Value;
+                Id      = match.Groups["id"].Value;
+                _string = remoteRefToken;
+            }
+            else
+            {
+                throw new Kraken(string.Format(@"Could not parse reference: ""{0}""",
+                                               remoteRefToken));
+            }
+        }
 
         public RemoteRef(RemoteRef remoteRef)
-            : this(new Arguments(remoteRef.Source, remoteRef.Id)) { }
-
-        private RemoteRef(Arguments arguments)
         {
-            Source = arguments.Source;
-            Id = arguments.Id;
-
-            _string = Id == null ? $"#/ckan/{Source}"
-                                 : $"#/ckan/{Source}/{Id}";
+            Source  = remoteRef.Source;
+            Id      = remoteRef.Id;
+            _string = remoteRef.ToString();
         }
 
         public override string ToString()
@@ -37,30 +34,13 @@ namespace CKAN.NetKAN.Model
             return new RemoteRef(rref);
         }
 
-        private static Arguments ParseArguments(string refToken)
-        {
-            var match = Pattern.Match(refToken);
+        public string  Source { get; private set; }
+        public string? Id     { get; private set; }
 
-            if (match.Success)
-            {
-                return new Arguments(match.Groups["source"].Value, match.Groups["id"].Value);
-            }
-            else
-            {
-                throw new Kraken(string.Format(@"Could not parse reference: ""{0}""", refToken));
-            }
-        }
+        private static readonly Regex Pattern = new Regex(
+            @"^#/ckan/(?<source>[^/]+)(?:/(?<id>.+))?",
+            RegexOptions.Compiled);
 
-        private sealed class Arguments
-        {
-            public string  Source { get; private set; }
-            public string? Id     { get; private set; }
-
-            public Arguments(string source, string? id)
-            {
-                Source = source;
-                Id     = id;
-            }
-        }
+        private readonly string _string;
     }
 }

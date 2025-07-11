@@ -24,7 +24,7 @@ namespace Tests.NetKAN.Sources.Github
             {
                 var sut       = new GithubApi(new CachingHttpService(cache),
                                               Environment.GetEnvironmentVariable("GITHUB_TOKEN"));
-                var githubRef = new GithubRef("#/ckan/github/KSP-CKAN/Test", false);
+                var githubRef = new GithubRef("KSP-CKAN", "Test");
 
                 // Act
                 var repo    = sut.GetRepo(githubRef);

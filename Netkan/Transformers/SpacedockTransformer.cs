@@ -126,22 +126,17 @@ namespace CKAN.NetKAN.Transformers
                 try
                 {
                     var uri = new Uri(sdMod.source_code);
-                    if (uri.Host == "github.com")
+                    if (uri.Host == "github.com"
+                        && githubUrlPathPattern.Match(uri.AbsolutePath)
+                           is Match { Success: true } match
+                        && _githubApi.GetRepo(new GithubRef(match.Groups["owner"].Value,
+                                                            match.Groups["repo"].Value))
+                           is GithubRepo repoInfo)
                     {
-                        var match = githubUrlPathPattern.Match(uri.AbsolutePath);
-                        if (match.Success
-                            && _githubApi.GetRepo(new GithubRef(
-                                string.Format("#/ckan/github/{0}/{1}",
-                                              match.Groups["owner"].Value,
-                                              match.Groups["repo"].Value),
-                                false))
-                            is GithubRepo repoInfo)
+                        GithubTransformer.SetRepoResources(repoInfo, resourcesJson);
+                        if (repoInfo.Archived)
                         {
-                            GithubTransformer.SetRepoResources(repoInfo, resourcesJson);
-                            if (repoInfo.Archived)
-                            {
-                                Log.Warn("Repo is archived, consider freezing");
-                            }
+                            Log.Warn("Repo is archived, consider freezing");
                         }
                     }
                 }
