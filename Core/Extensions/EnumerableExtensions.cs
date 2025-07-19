@@ -194,11 +194,23 @@ namespace CKAN.Extensions
         /// <param name="onThrow">Function to call if there's an exception</param>
         /// <returns>Sequence of return values of given function</returns>
         public static IEnumerable<TDest?> SelectWithCatch<TSrc, TDest>(this IEnumerable<TSrc>       source,
-                                                                      Func<TSrc, TDest>             func,
-                                                                      Func<TSrc, Exception, TDest?> onThrow)
+                                                                       Func<TSrc, TDest>             func,
+                                                                       Func<TSrc, Exception, TDest?> onThrow)
                 where TDest : class
             => source.Select(item => Utilities.DefaultIfThrows(()  => func(item),
                                                                exc => onThrow(item, exc)));
+
+        /// <summary>
+        /// Apply a sequence-generating function to a sequence and combine the subsequences,
+        /// skipping elements in the input sequence that throw exceptions.
+        /// </summary>
+        /// <param name="source">The sequence to process</param>
+        /// <param name="func">The function that generates more subsequences</param>
+        /// <returns>Sequence of values</returns>
+        public static IEnumerable<V> SelectManyWithCatch<T, V>(this IEnumerable<T>     source,
+                                                               Func<T, IEnumerable<V>> func)
+            => source.SelectMany(elt => Utilities.DefaultIfThrows(() => func(elt))
+                                        ?? Enumerable.Empty<V>());
 
         /// <summary>
         /// Get a hash code for a sequence with a variable number of elements

@@ -500,23 +500,20 @@ namespace CKAN
         /// </summary>
         public void RemoveAll()
         {
-            var dirs = Enumerable.Repeat(cachePath, 1)
-                .Concat(Enumerable.Repeat(inProgressPath, 1))
-                .Concat(legacyDirs());
-            foreach (var dir in dirs)
+            foreach (var file in legacyDirs()
+                                 .Prepend(inProgressPath)
+                                 .Prepend(cachePath)
+                                 .SelectManyWithCatch(dir => dir.EnumerateFiles()))
             {
-                foreach (var file in dir.EnumerateFiles())
+                try
                 {
-                    try
-                    {
-                        file.Delete();
-                    }
-                    catch { }
+                    file.Delete();
                 }
+                catch { }
             }
-            OnCacheChanged();
             sha1Cache.Clear();
             sha256Cache.Clear();
+            OnCacheChanged();
         }
 
         /// <summary>
