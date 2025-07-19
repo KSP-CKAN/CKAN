@@ -1,0 +1,19 @@
+{
+    "repositories": [
+        {
+            "name":      "first",
+            "uri":       "https://host1.com/metadata.tar.gz",
+            "x_mirror":  true
+        },
+        {
+            "name":      "second",
+            "uri":       "https://host2.com/metadata.tar.gz",
+            "x_mirror":  false
+        },
+        {
+            "name":      "third",
+            "uri":       "https://host3.com/metadata.tar.gz",
+            "x_mirror":  false
+        }
+    ]
+}

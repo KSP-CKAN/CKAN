@@ -721,6 +721,9 @@ namespace Tests.Data
         public static string TestRepository()
             => DataDir("repository.json");
 
+        public static Uri TestRepositoriesURL()
+            => new Uri(DataDir("repositories.json"));
+
         /// <summary>
         /// A path to our test registry.json file. Please copy before using.
         /// </summary>

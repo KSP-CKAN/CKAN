@@ -656,6 +656,7 @@ namespace CKAN
                 }
                 else
                 {
+                    Directory.CreateDirectory(DefaultDownloadCacheDir);
                     Cache = new NetModuleCache(this, DefaultDownloadCacheDir);
                     Configuration.DownloadCacheDir = null;
                 }

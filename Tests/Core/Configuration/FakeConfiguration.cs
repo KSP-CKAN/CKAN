@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN;
 using CKAN.Configuration;
@@ -147,19 +148,26 @@ namespace Tests.Core.Configuration
         }
 
         public IEnumerable<string> GetAuthTokenHosts()
-        {
-            throw new NotImplementedException();
-        }
+            => authTokens.Keys;
 
         public void SetAuthToken(string host, string? token)
         {
-            throw new NotImplementedException();
+            switch (token)
+            {
+                case string t:
+                    authTokens.Add(host, t);
+                    break;
+                default:
+                    authTokens.Remove(host);
+                    break;
+            }
         }
 
-        public bool TryGetAuthToken(string host, out string token)
-        {
-            throw new NotImplementedException();
-        }
+        public bool TryGetAuthToken(string host,
+                                    [NotNullWhen(returnValue: true)] out string? token)
+            => authTokens.TryGetValue(host, out token);
+
+        private readonly Dictionary<string, string> authTokens = new Dictionary<string, string>();
 
         private string? _Language;
         public string? Language

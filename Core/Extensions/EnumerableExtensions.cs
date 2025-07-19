@@ -246,8 +246,14 @@ namespace CKAN.Extensions
             {
                 result = func(result, item);
                 yield return result;
+
+
             }
         }
+
+        public static IEnumerable<string> ExceptContainsAny(this   IEnumerable<string> source,
+                                                            params string[]            strings)
+            => source.Where(elt => !strings.Any(s => elt.Contains(s)));
     }
 
     /// <summary>
