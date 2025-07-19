@@ -47,14 +47,17 @@ namespace CKAN.CmdLine
 
     public class Repair : ISubCommand
     {
-        public Repair(RepositoryDataManager repoData)
+        public Repair(GameInstanceManager   manager,
+                      RepositoryDataManager repoData,
+                      IUser                 user)
         {
+            this.manager  = manager;
             this.repoData = repoData;
+            this.user     = user;
         }
 
-        public int RunSubCommand(GameInstanceManager? manager,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    unparsed)
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions unparsed)
         {
             int exitCode = Exit.OK;
             // Parse and process our sub-verbs
@@ -65,9 +68,7 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    User = new ConsoleUser(options.Headless);
-                    manager ??= new GameInstanceManager(User);
-                    exitCode = options.Handle(manager, User);
+                    exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                     {
                         return;
@@ -81,16 +82,17 @@ namespace CKAN.CmdLine
                             break;
 
                         default:
-                            User.RaiseMessage(Properties.Resources.RepairUnknownCommand, option);
+                            user.RaiseMessage(Properties.Resources.RepairUnknownCommand, option);
                             exitCode = Exit.BADOPT;
                             break;
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
-        private          IUser?                User { get; set; }
+        private readonly GameInstanceManager   manager;
+        private readonly IUser                 user;
         private readonly RepositoryDataManager repoData;
 
         /// <summary>
@@ -100,7 +102,7 @@ namespace CKAN.CmdLine
         {
             regMgr.registry.Repair();
             regMgr.Save();
-            User?.RaiseMessage(Properties.Resources.Repaired);
+            user.RaiseMessage(Properties.Resources.Repaired);
             return Exit.OK;
         }
     }

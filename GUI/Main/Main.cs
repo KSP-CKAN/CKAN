@@ -157,7 +157,7 @@ namespace CKAN.GUI
             }
             else
             {
-                Manager = new GameInstanceManager(currentUser);
+                Manager = new GameInstanceManager(currentUser, mainConfig);
             }
 
             Manager.CacheChanged += OnCacheChanged;

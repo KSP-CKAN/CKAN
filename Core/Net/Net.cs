@@ -251,6 +251,7 @@ namespace CKAN
             // escape them in its API. There's probably more in RFC 3986.
             var escaped = UriEscapeAll(uri.Replace(" ", "+"),
                                        '"', '<', '>', '^', '`',
+                                       '(', ')',
                                        '{', '|', '}', '[', ']');
 
             // Make sure we have a "http://" or "https://" start.

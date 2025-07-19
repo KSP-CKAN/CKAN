@@ -75,7 +75,7 @@ namespace CKAN.GUI
 
             UpdateRefreshRate();
 
-            UpdateCacheInfo(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
+            UpdateCacheInfo(coreConfig.DownloadCacheDir ?? GameInstanceManager.DefaultDownloadCacheDir);
             UpdateStabilityToleranceComboBox();
         }
 
@@ -153,7 +153,7 @@ namespace CKAN.GUI
                 case Keys.Escape:
                     e.Handled = true;
                     e.SuppressKeyPress = true;
-                    UpdateCacheInfo(coreConfig.DownloadCacheDir ?? JsonConfiguration.DefaultDownloadCacheDir);
+                    UpdateCacheInfo(coreConfig.DownloadCacheDir ?? GameInstanceManager.DefaultDownloadCacheDir);
                     break;
 
                 case Keys.Enter:
@@ -178,7 +178,7 @@ namespace CKAN.GUI
         private void CachePathCancelButton_Click(object? sender, EventArgs? e)
         {
             UpdateCacheInfo(coreConfig.DownloadCacheDir
-                            ?? JsonConfiguration.DefaultDownloadCacheDir);
+                            ?? GameInstanceManager.DefaultDownloadCacheDir);
         }
 
         private async Task<bool> TrySaveCachePath(string newPath)
@@ -206,7 +206,7 @@ namespace CKAN.GUI
                         {
                             // User cancelled the choice popup, reset UI
                             UpdateCacheInfo(coreConfig.DownloadCacheDir
-                                            ?? JsonConfiguration.DefaultDownloadCacheDir);
+                                            ?? GameInstanceManager.DefaultDownloadCacheDir);
                         }
                     });
                     return false;
@@ -250,7 +250,7 @@ namespace CKAN.GUI
             CachePathCancelButton.Visible = enable;
             ChangeCacheButton.Enabled     = !enable;
             ResetCacheButton.Enabled      = !enable
-                                            && CachePathTextBox.Text != JsonConfiguration.DefaultDownloadCacheDir;
+                                            && CachePathTextBox.Text != GameInstanceManager.DefaultDownloadCacheDir;
             ClearCacheButton.Enabled      = !enable;
             if (enable)
             {
@@ -289,7 +289,7 @@ namespace CKAN.GUI
                 Description         = Properties.Resources.SettingsDialogCacheDescrip,
                 RootFolder          = Environment.SpecialFolder.MyComputer,
                 SelectedPath        = coreConfig.DownloadCacheDir
-                                      ?? JsonConfiguration.DefaultDownloadCacheDir,
+                                      ?? GameInstanceManager.DefaultDownloadCacheDir,
                 ShowNewFolderButton = true
             };
             if (cacheChooser.ShowDialog(this) == DialogResult.OK)
@@ -341,13 +341,13 @@ namespace CKAN.GUI
         private async void ResetCacheButton_Click(object? sender, EventArgs? e)
         {
             // Reset to default cache path
-            await TrySaveCachePath(JsonConfiguration.DefaultDownloadCacheDir);
+            await TrySaveCachePath(GameInstanceManager.DefaultDownloadCacheDir);
         }
 
         private void OpenCacheButton_Click(object? sender, EventArgs? e)
         {
             Utilities.ProcessStartURL(coreConfig.DownloadCacheDir
-                                      ?? JsonConfiguration.DefaultDownloadCacheDir);
+                                      ?? GameInstanceManager.DefaultDownloadCacheDir);
         }
 
         #endregion

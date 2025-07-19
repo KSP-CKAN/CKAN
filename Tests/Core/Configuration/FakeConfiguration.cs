@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 using CKAN;
@@ -15,12 +14,15 @@ namespace Tests.Core.Configuration
 {
     public class FakeConfiguration : IConfiguration, IDisposable
     {
-        public FakeConfiguration(GameInstance instance, string autostart)
+        public FakeConfiguration(GameInstance instance,
+                                 string       autostart,
+                                 string?      downloadCachePath = null)
             : this(new List<Tuple<string, string, string>>
                    {
                        new Tuple<string, string, string>("test", instance.GameDir(), "KSP")
                    },
-                   autostart)
+                   autostart,
+                   downloadCachePath)
         {
         }
 
@@ -29,11 +31,15 @@ namespace Tests.Core.Configuration
         /// </summary>
         /// <param name="instances">List of name/path pairs for the instances</param>
         /// <param name="auto_start_instance">The auto start instance to use</param>
-        public FakeConfiguration(List<Tuple<string, string, string>> instances, string? auto_start_instance)
+        public FakeConfiguration(List<Tuple<string, string, string>> instances,
+                                 string?                             auto_start_instance,
+                                 string?                             downloadCachePath)
         {
             Instances         = instances;
             AutoStartInstance = auto_start_instance;
-            DownloadCacheDir  = TestData.NewTempDir();
+            downloadCacheDirs.Add(downloadCachePath == null
+                                      ? new TemporaryDirectory()
+                                      : new TemporaryDirectory(downloadCachePath));
         }
 
         /// <summary>
@@ -44,10 +50,25 @@ namespace Tests.Core.Configuration
         /// Build map for the fake registry
         /// </summary>
         public JBuilds?                    BuildMap         { get; set; }
+
         /// <summary>
         /// Path to download cache folder for the fake registry
         /// </summary>
-        public string?                     DownloadCacheDir { get; set; }
+        public string?                     DownloadCacheDir
+        {
+            get => downloadCacheDirs.Last()?.Path.FullName;
+            set
+            {
+                // The GameInstanceManager sometimes re-assigns the current value
+                if (value != downloadCacheDirs.Last()?.Path.FullName)
+                {
+                    downloadCacheDirs.Add(value == null ? null
+                                                        : new TemporaryDirectory(value));
+                }
+            }
+        }
+        private readonly List<TemporaryDirectory?> downloadCacheDirs = new List<TemporaryDirectory?>();
+
         /// <summary>
         /// Maximum number of bytes of downloads to retain on disk
         /// </summary>
@@ -172,10 +193,11 @@ namespace Tests.Core.Configuration
 
         public void Dispose()
         {
-            if (DownloadCacheDir != null)
+            foreach (var dir in downloadCacheDirs.OfType<TemporaryDirectory>())
             {
-                Directory.Delete(DownloadCacheDir, true);
+                dir.Dispose();
             }
+            GC.SuppressFinalize(this);
         }
     }
 }

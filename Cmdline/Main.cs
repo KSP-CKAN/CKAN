@@ -15,11 +15,12 @@ using Autofac;
 using log4net;
 using log4net.Core;
 
+using CKAN.Configuration;
 using CKAN.Versioning;
 
 namespace CKAN.CmdLine
 {
-    internal class MainClass
+    internal abstract class MainClass
     {
         private static readonly ILog log = LogManager.GetLogger(typeof (MainClass));
 
@@ -75,7 +76,9 @@ namespace CKAN.CmdLine
 
             try
             {
-                return Execute(null, null, args);
+                var user = new ConsoleUser(args.Contains("--headless"));
+                return Execute(new GameInstanceManager(user, ServiceLocator.Container.Resolve<IConfiguration>()),
+                               null, args, user);
             }
             finally
             {
@@ -83,7 +86,10 @@ namespace CKAN.CmdLine
             }
         }
 
-        public static int Execute(GameInstanceManager? manager, CommonOptions? opts, string[] args)
+        public static int Execute(GameInstanceManager manager,
+                                  CommonOptions?      opts,
+                                  string[]            args,
+                                  IUser               user)
         {
             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
             // We shouldn't instantiate Options if it's a subcommand.
@@ -95,38 +101,38 @@ namespace CKAN.CmdLine
                     switch (args[0])
                     {
                         case "repair":
-                            return (new Repair(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Repair(manager, repoData, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "instance":
-                            return (new GameInstance()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new GameInstance(manager, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "compat":
-                            return (new Compat()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Compat(manager, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "repo":
-                            return (new Repo(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Repo(manager, repoData, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "authtoken":
-                            return (new AuthToken()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new AuthToken(manager, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "cache":
-                            return (new Cache()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Cache(manager, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "mark":
-                            return (new Mark(repoData)).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Mark(manager, repoData, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "filter":
-                            return (new Filter()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Filter(manager, user)).RunSubCommand(opts, new SubCommandOptions(args));
 
                         case "stability":
-                            return (new Stability()).RunSubCommand(manager, opts, new SubCommandOptions(args));
+                            return (new Stability(manager, repoData, user)).RunSubCommand(opts, new SubCommandOptions(args));
                     }
                 }
             }
             catch (NoGameInstanceKraken)
             {
                 log.Info("CKAN exiting.");
-                return printMissingInstanceError(new ConsoleUser(false));
+                return printMissingInstanceError(user);
             }
 
             Options cmdline;
@@ -137,16 +143,15 @@ namespace CKAN.CmdLine
             catch (BadCommandKraken)
             {
                 log.Info("CKAN exiting.");
-                return AfterHelp();
+                return AfterHelp(user);
             }
 
             // Process commandline options.
             CommonOptions options = (CommonOptions)cmdline.options;
             options.Merge(opts);
-            IUser user = new ConsoleUser(options.Headless);
             if (manager == null)
             {
-                manager = new GameInstanceManager(user);
+                manager = new GameInstanceManager(user, ServiceLocator.Container.Resolve<IConfiguration>());
             }
             else
             {
@@ -169,11 +174,11 @@ namespace CKAN.CmdLine
             }
         }
 
-        public static int AfterHelp()
+        public static int AfterHelp(IUser user)
         {
             // Our help screen will already be shown. Let's add some extra data.
-            new ConsoleUser(false).RaiseMessage(
-                Properties.Resources.MainVersion, Meta.GetVersion(VersionFormat.Full));
+            user.RaiseMessage(Properties.Resources.MainVersion,
+                              Meta.GetVersion(VersionFormat.Full));
             return Exit.BADOPT;
         }
 
@@ -222,7 +227,7 @@ namespace CKAN.CmdLine
                         return ConsoleUi(manager, (ConsoleUIOptions)options);
 
                     case "prompt":
-                        return new Prompt(manager, repoData).RunCommand(cmdline.options);
+                        return new Prompt(manager, repoData, user).RunCommand(cmdline.options);
 
                     case "version":
                         return Version(user);
@@ -234,24 +239,24 @@ namespace CKAN.CmdLine
                         return (new Available(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "install":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        Scan(GetGameInstance(manager), user, repoData, cmdline.action);
                         return (new Install(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "scan":
-                        return Scan(GetGameInstance(manager), user);
+                        return Scan(GetGameInstance(manager), user, repoData);
 
                     case "list":
-                        return (new List(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return (new List(repoData, user, Console.OpenStandardOutput())).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "show":
                         return (new Show(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "replace":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        Scan(GetGameInstance(manager), user, repoData, cmdline.action);
                         return (new Replace(manager, repoData, user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
 
                     case "upgrade":
-                        Scan(GetGameInstance(manager), user, cmdline.action);
+                        Scan(GetGameInstance(manager), user, repoData, cmdline.action);
                         return (new Upgrade(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "search":
@@ -286,9 +291,6 @@ namespace CKAN.CmdLine
                 RegistryManager.DisposeAll();
             }
         }
-
-        internal static CkanModule LoadCkanFromFile(string ckan_file)
-            => CkanModule.FromFile(ckan_file);
 
         private static int printMissingInstanceError(IUser user)
         {
@@ -337,13 +339,13 @@ namespace CKAN.CmdLine
         /// <param name="user"></param>
         /// <param name="next_command">Changes the output message if set.</param>
         /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
-        private static int Scan(CKAN.GameInstance inst,
-                                IUser             user,
-                                string?           next_command = null)
+        private static int Scan(CKAN.GameInstance     inst,
+                                IUser                 user,
+                                RepositoryDataManager repoData,
+                                string?               next_command = null)
         {
             try
             {
-                var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                 RegistryManager.Instance(inst, repoData).ScanUnmanagedFiles();
                 return Exit.OK;
             }

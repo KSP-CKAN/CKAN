@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Collections.Generic;
 
-using Autofac;
 using CommandLine;
 using CommandLine.Text;
 
-using CKAN.Configuration;
 using CKAN.Games;
 
 namespace CKAN.CmdLine
@@ -18,7 +16,12 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Initialize the subcommand
         /// </summary>
-        public Filter() { }
+        public Filter(GameInstanceManager mgr,
+                      IUser               user)
+        {
+            manager   = mgr;
+            this.user = user;
+        }
 
         /// <summary>
         /// Run the subcommand
@@ -29,9 +32,8 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code
         /// </returns>
-        public int RunSubCommand(GameInstanceManager? mgr,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    unparsed)
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
             int exitCode = Exit.OK;
@@ -43,8 +45,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                     {
@@ -79,36 +79,34 @@ namespace CKAN.CmdLine
                         exitCode = Exit.BADOPT;
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
         private int ListFilters(FilterListOptions opts)
         {
-            int exitCode = manager != null && user != null
-                               ? opts.Handle(manager, user)
-                               : Exit.ERROR;
+            int exitCode = opts.Handle(manager, user);
             if (exitCode != Exit.OK)
             {
                 return exitCode;
             }
 
             var instance = MainClass.GetGameInstance(manager);
-                var game = GetGame(opts.gameId, instance);
-            var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            user?.RaiseMessage(Properties.Resources.FilterListGlobalHeader,
+            var game = GetGame(opts.gameId, instance);
+            user.RaiseMessage(Properties.Resources.FilterListGlobalHeader,
                                game.ShortName);
-            foreach (string filter in cfg.GetGlobalInstallFilters(game))
+            foreach (string filter in manager.Configuration
+                                             .GetGlobalInstallFilters(game))
             {
-                user?.RaiseMessage("\t- {0}", filter);
+                user.RaiseMessage("\t- {0}", filter);
             }
-            user?.RaiseMessage("");
+            user.RaiseMessage("");
 
-            user?.RaiseMessage(Properties.Resources.FilterListInstanceHeader,
-                               instance.Name);
+            user.RaiseMessage(Properties.Resources.FilterListInstanceHeader,
+                              instance.Name);
             foreach (string filter in instance.InstallFilters)
             {
-                user?.RaiseMessage("\t- {0}", filter);
+                user.RaiseMessage("\t- {0}", filter);
             }
             return Exit.OK;
         }
@@ -117,14 +115,12 @@ namespace CKAN.CmdLine
         {
             if (opts.filters?.Count < 1)
             {
-                user?.RaiseError(Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
-            int exitCode = manager != null && user != null
-                               ? opts.Handle(manager, user)
-                               : Exit.ERROR;
+            int exitCode = opts.Handle(manager, user);
             if (exitCode != Exit.OK)
             {
                 return exitCode;
@@ -134,39 +130,42 @@ namespace CKAN.CmdLine
             if (opts.global)
             {
                 var game = GetGame(opts.gameId, instance);
-                var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                var duplicates = cfg.GetGlobalInstallFilters(game)
-                    .Intersect(opts.filters ?? new List<string> { })
-                    .ToArray();
+                var duplicates = manager.Configuration
+                                        .GetGlobalInstallFilters(game)
+                                        .Intersect(opts.filters ?? Enumerable.Empty<string>())
+                                        .ToArray();
                 if (duplicates.Length > 0)
                 {
-                    user?.RaiseError(Properties.Resources.FilterAddGlobalDuplicateError,
-                                     string.Join(", ", duplicates));
+                    user.RaiseError(Properties.Resources.FilterAddGlobalDuplicateError,
+                                    string.Join(", ", duplicates));
                     return Exit.BADOPT;
                 }
                 else
                 {
-                    cfg.SetGlobalInstallFilters(game, cfg.GetGlobalInstallFilters(game)
-                        .Concat(opts.filters ?? new List<string> { })
-                        .Distinct()
-                        .ToArray());
+                    manager.Configuration.SetGlobalInstallFilters(
+                        game,
+                        manager.Configuration
+                               .GetGlobalInstallFilters(game)
+                               .Concat(opts.filters ?? Enumerable.Empty<string>())
+                               .Distinct()
+                               .ToArray());
                 }
             }
             else
             {
                 var duplicates = instance.InstallFilters
-                    .Intersect(opts.filters ?? new List<string> { })
-                    .ToArray();
+                                         .Intersect(opts.filters ?? Enumerable.Empty<string>())
+                                         .ToArray();
                     if (duplicates.Length > 0)
                     {
-                        user?.RaiseError(Properties.Resources.FilterAddInstanceDuplicateError,
+                        user.RaiseError(Properties.Resources.FilterAddInstanceDuplicateError,
                                          string.Join(", ", duplicates));
                         return Exit.BADOPT;
                     }
                     else
                     {
                         instance.InstallFilters = instance.InstallFilters
-                            .Concat(opts.filters ?? new List<string> { })
+                            .Concat(opts.filters ?? Enumerable.Empty<string>())
                             .Distinct()
                             .ToArray();
                     }
@@ -178,14 +177,12 @@ namespace CKAN.CmdLine
         {
             if (opts.filters?.Count < 1)
             {
-                user?.RaiseError(Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
-            int exitCode = manager != null && user != null
-                               ? opts.Handle(manager, user)
-                               : Exit.ERROR;
+            int exitCode = opts.Handle(manager, user);
             if (exitCode != Exit.OK)
             {
                 return exitCode;
@@ -195,39 +192,39 @@ namespace CKAN.CmdLine
             if (opts.global)
             {
                 var game = GetGame(opts.gameId, instance);
-                var cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                var notFound = (opts.filters  ?? new List<string> { })
-                    .Except(cfg.GetGlobalInstallFilters(game))
+                var notFound = (opts.filters ?? Enumerable.Empty<string>())
+                    .Except(manager.Configuration.GetGlobalInstallFilters(game))
                     .ToArray();
                 if (notFound.Length > 0)
                 {
-                    user?.RaiseError(
-                        Properties.Resources.FilterRemoveGlobalNotFoundError,
-                        string.Join(", ", notFound));
+                    user.RaiseError(Properties.Resources.FilterRemoveGlobalNotFoundError,
+                                    string.Join(", ", notFound));
                     return Exit.BADOPT;
                 }
                 else
                 {
-                    cfg.SetGlobalInstallFilters(game, cfg.GetGlobalInstallFilters(game)
-                        .Except(opts.filters ?? new List<string> { })
-                        .ToArray());
+                    manager.Configuration.SetGlobalInstallFilters(
+                        game,
+                        manager.Configuration.GetGlobalInstallFilters(game)
+                           .Except(opts.filters ?? Enumerable.Empty<string>())
+                           .ToArray());
                 }
             }
             else
             {
-                var notFound = (opts.filters ?? new List<string> { })
+                var notFound = (opts.filters ?? Enumerable.Empty<string>())
                     .Except(instance.InstallFilters)
                     .ToArray();
                 if (notFound.Length > 0)
                 {
-                    user?.RaiseError(Properties.Resources.FilterRemoveInstanceNotFoundError,
-                                     string.Join(", ", notFound));
+                    user.RaiseError(Properties.Resources.FilterRemoveInstanceNotFoundError,
+                                    string.Join(", ", notFound));
                     return Exit.BADOPT;
                 }
                 else
                 {
                     instance.InstallFilters = instance.InstallFilters
-                                                      .Except(opts.filters ?? new List<string> { })
+                                                      .Except(opts.filters ?? Enumerable.Empty<string>())
                                                       .ToArray();
                 }
             }
@@ -253,12 +250,12 @@ namespace CKAN.CmdLine
         {
             foreach (var h in FilterSubOptions.GetHelp(verb))
             {
-                user?.RaiseError("{0}", h);
+                user.RaiseError("{0}", h);
             }
         }
 
-        private GameInstanceManager? manager;
-        private IUser?               user;
+        private readonly GameInstanceManager manager;
+        private readonly IUser               user;
     }
 
     internal class FilterSubOptions : VerbCommandOptions

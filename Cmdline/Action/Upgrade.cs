@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Transactions;
 
 using CommandLine;
-using Autofac;
 
 using CKAN.IO;
 using CKAN.Versioning;
-using CKAN.Configuration;
 
 namespace CKAN.CmdLine
 {
@@ -40,7 +38,7 @@ namespace CKAN.CmdLine
 
             if (options.ckan_file != null)
             {
-                options.modules?.Add(MainClass.LoadCkanFromFile(options.ckan_file).identifier);
+                options.modules?.Add(CkanModule.FromFile(options.ckan_file).identifier);
             }
 
             if (options.modules?.Count == 0 && !options.upgrade_all)
@@ -65,7 +63,7 @@ namespace CKAN.CmdLine
                     user.RaiseMessage(Properties.Resources.UpgradeCannotCombineFlags);
                     return Exit.BADOPT;
                 }
-                var config = ServiceLocator.Container.Resolve<IConfiguration>();
+                var config = manager.Configuration;
                 var devBuild = options.dev_build
                                || (!options.stable_release && (config.DevBuilds ?? false));
                 if (devBuild != config.DevBuilds)
@@ -273,17 +271,17 @@ namespace CKAN.CmdLine
         /// <param name="instance">Game instance to use</param>
         /// <param name="attemptUpgradeCallback">Function to call to try to perform the actual upgrade, may throw TooManyModsProvideKraken</param>
         /// <param name="addUserChoiceCallback">Function to call when the user has requested a new module added to the change set in response to TooManyModsProvideKraken</param>
-        private static void UpgradeModules(NetModuleCache        cache,
-                                           string?               userAgent,
-                                           IUser                 user,
-                                           CKAN.GameInstance     instance,
-                                           RepositoryDataManager repoData,
-                                           AttemptUpgradeAction  attemptUpgradeCallback,
-                                           Action<CkanModule>    addUserChoiceCallback)
+        private void UpgradeModules(NetModuleCache        cache,
+                                    string?               userAgent,
+                                    IUser                 user,
+                                    CKAN.GameInstance     instance,
+                                    RepositoryDataManager repoData,
+                                    AttemptUpgradeAction  attemptUpgradeCallback,
+                                    Action<CkanModule>    addUserChoiceCallback)
         {
             using (TransactionScope transact = CkanTransaction.CreateTransactionScope()) {
                 var installer  = new ModuleInstaller(instance, cache,
-                                                     ServiceLocator.Container.Resolve<IConfiguration>(), user);
+                                                     manager.Configuration, user);
                 var downloader = new NetAsyncModulesDownloader(user, cache, userAgent);
                 var regMgr     = RegistryManager.Instance(instance, repoData);
                 HashSet<string>? possibleConfigOnlyDirs = null;

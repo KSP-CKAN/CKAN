@@ -8,13 +8,15 @@ using CommandLine;
 
 namespace CKAN.CmdLine
 {
-
     public class Prompt
     {
-        public Prompt(GameInstanceManager mgr, RepositoryDataManager repoData)
+        public Prompt(GameInstanceManager   mgr,
+                      RepositoryDataManager repoData,
+                      IUser                 user)
         {
-            manager = mgr;
+            manager       = mgr;
             this.repoData = repoData;
+            this.user     = user;
         }
 
         public int RunCommand(object raw_options)
@@ -53,7 +55,7 @@ namespace CKAN.CmdLine
                         // Parse input as if it was a normal command line,
                         // but with a persistent GameInstanceManager object.
                         int cmdExitCode = MainClass.Execute(manager, opts,
-                                                            ParseTextField(command));
+                                                            ParseTextField(command), user);
                         // Clear the command if no exception was thrown
                         if (headless && cmdExitCode != Exit.OK)
                         {
@@ -77,7 +79,7 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <param name="input">The string to parse</param>
         /// <returns>Array split by strings, with quoted parts joined together</returns>
-        private static string[] ParseTextField(string input)
+        internal static string[] ParseTextField(string input)
             => quotePattern.Matches(input)
                            .Cast<Match>()
                            .Select(m => m.Value)
@@ -106,7 +108,7 @@ namespace CKAN.CmdLine
             }
         }
 
-        private string[]? GetSuggestions(string text, int index)
+        internal string[]? GetSuggestions(string text, int index)
         {
             string[]     pieces = ParseTextField(text);
             TypeInfo     ti     = typeof(Actions).GetTypeInfo();
@@ -190,6 +192,7 @@ namespace CKAN.CmdLine
                                   .Select(m => m.identifier)
                                   .Where(ident => ident.StartsWith(prefix,
                                                                    StringComparison.InvariantCultureIgnoreCase))
+                                  .Order()
                                   .ToArray();
         }
 
@@ -205,6 +208,7 @@ namespace CKAN.CmdLine
                            .Keys
                            .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)
                                            && (!registry.GetInstalledVersion(ident)?.IsDLC ?? true))
+                           .Order()
                            .ToArray();
         }
 
@@ -220,6 +224,7 @@ namespace CKAN.CmdLine
 
         private readonly GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
         private const    string                exitCommand = "exit";
     }
 

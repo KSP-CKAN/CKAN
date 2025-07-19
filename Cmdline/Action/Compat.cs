@@ -93,9 +93,15 @@ namespace CKAN.CmdLine
 
     public class Compat : ISubCommand
     {
-        public int RunSubCommand(GameInstanceManager? mgr,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    options)
+        public Compat(GameInstanceManager mgr,
+                      IUser               user)
+        {
+            manager   = mgr;
+            this.user = user;
+        }
+
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions options)
         {
             var exitCode = Exit.OK;
 
@@ -106,8 +112,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions comOpts = (CommonOptions)suboptions;
                     comOpts.Merge(opts);
-                    user     = new ConsoleUser(comOpts.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
                     exitCode = comOpts.Handle(manager, user);
                     if (exitCode != Exit.OK)
                     {
@@ -154,7 +158,7 @@ namespace CKAN.CmdLine
                             break;
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
@@ -183,21 +187,21 @@ namespace CKAN.CmdLine
 
             const string columnFormat = "{0}  {1}";
 
-            user?.RaiseMessage(columnFormat,
-                               versionHeader.PadRight(versionWidth),
-                               actualHeader.PadRight(actualWidth));
+            user.RaiseMessage(columnFormat,
+                              versionHeader.PadRight(versionWidth),
+                              actualHeader.PadRight(actualWidth));
 
-            user?.RaiseMessage(columnFormat,
-                               new string('-', versionWidth),
-                               new string('-', actualWidth));
+            user.RaiseMessage(columnFormat,
+                              new string('-', versionWidth),
+                              new string('-', actualWidth));
 
             foreach (var line in output)
             {
-                user?.RaiseMessage(columnFormat,
-                                   (line.Version.ToString() ?? "")
-                                                .PadRight(versionWidth),
-                                   line.Actual.ToString()
-                                              .PadRight(actualWidth));
+                user.RaiseMessage(columnFormat,
+                                  (line.Version.ToString() ?? "")
+                                               .PadRight(versionWidth),
+                                  line.Actual.ToString()
+                                             .PadRight(actualWidth));
             }
             return true;
         }
@@ -214,7 +218,7 @@ namespace CKAN.CmdLine
         {
             if (addOptions.Versions?.Count < 1)
             {
-                user?.RaiseError(Properties.Resources.CompatMissing);
+                user.RaiseError(Properties.Resources.CompatMissing);
                 PrintUsage("add");
                 return false;
             }
@@ -222,7 +226,7 @@ namespace CKAN.CmdLine
                                   out GameVersion[] goodVers,
                                   out string[]      badVers))
             {
-                user?.RaiseError(Properties.Resources.CompatInvalid,
+                user.RaiseError(Properties.Resources.CompatInvalid,
                                 string.Join(", ", badVers));
                 return false;
             }
@@ -239,7 +243,7 @@ namespace CKAN.CmdLine
         {
             if (forgetOptions.Versions?.Count < 1)
             {
-                user?.RaiseError(Properties.Resources.CompatMissing);
+                user.RaiseError(Properties.Resources.CompatMissing);
                 PrintUsage("forget");
                 return false;
             }
@@ -247,8 +251,8 @@ namespace CKAN.CmdLine
                                   out GameVersion[] goodVers,
                                   out string[]      badVers))
             {
-                user?.RaiseError(Properties.Resources.CompatInvalid,
-                                 string.Join(", ", badVers));
+                user.RaiseError(Properties.Resources.CompatInvalid,
+                                string.Join(", ", badVers));
                 return false;
             }
             var rmActualVers = goodVers.Intersect(instance.Version() is GameVersion gv
@@ -258,8 +262,8 @@ namespace CKAN.CmdLine
                                        .ToArray();
             if (rmActualVers.Length > 0)
             {
-                user?.RaiseError(Properties.Resources.CompatCantForget,
-                                 string.Join(", ", rmActualVers));
+                user.RaiseError(Properties.Resources.CompatCantForget,
+                                string.Join(", ", rmActualVers));
                 return false;
             }
             instance.SetCompatibleVersions(instance.GetCompatibleVersions()
@@ -274,7 +278,7 @@ namespace CKAN.CmdLine
         {
             if (setOptions.Versions?.Count < 1)
             {
-                user?.RaiseError(Properties.Resources.CompatMissing);
+                user.RaiseError(Properties.Resources.CompatMissing);
                 PrintUsage("set");
                 return false;
             }
@@ -282,8 +286,8 @@ namespace CKAN.CmdLine
                                   out GameVersion[] goodVers,
                                   out string[]      badVers))
             {
-                user?.RaiseError(Properties.Resources.CompatInvalid,
-                                 string.Join(", ", badVers));
+                user.RaiseError(Properties.Resources.CompatInvalid,
+                                string.Join(", ", badVers));
                 return false;
             }
             instance.SetCompatibleVersions(goodVers.Distinct().ToList());
@@ -295,7 +299,7 @@ namespace CKAN.CmdLine
         {
             foreach (var h in CompatSubOptions.GetHelp(verb))
             {
-                user?.RaiseError("{0}", h);
+                user.RaiseError("{0}", h);
             }
         }
 
@@ -317,7 +321,7 @@ namespace CKAN.CmdLine
             return badVers.Length < 1;
         }
 
-        private IUser?               user;
-        private GameInstanceManager? manager;
+        private readonly IUser               user;
+        private readonly GameInstanceManager manager;
     }
 }

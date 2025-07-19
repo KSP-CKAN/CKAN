@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using CommandLine;
 using CommandLine.Text;
-using Autofac;
 
 using CKAN.Configuration;
 
@@ -59,7 +58,7 @@ namespace CKAN.CmdLine
                         yield return $"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] path";
                         break;
                     case "setlimit":
-                        yield return $"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] megabytes";
+                        yield return $"{Properties.Resources.Usage}: ckan cache {verb} [{Properties.Resources.Options}] mebibytes";
                         break;
 
                     // Now the commands with only --flag type options
@@ -84,12 +83,17 @@ namespace CKAN.CmdLine
     public class SetLimitOptions : CommonOptions
     {
         [ValueOption(0)]
-        public long Megabytes { get; set; } = -1;
+        public long Mebibytes { get; set; } = -1;
     }
 
     public class Cache : ISubCommand
     {
-        public Cache() { }
+        public Cache(GameInstanceManager mgr,
+                     IUser               user)
+        {
+            manager   = mgr;
+            this.user = user;
+        }
 
         /// <summary>
         /// Execute a cache subcommand
@@ -100,9 +104,8 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunSubCommand(GameInstanceManager? mgr,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    unparsed)
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -115,8 +118,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    manager  = mgr ?? new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
                     {
@@ -155,95 +156,88 @@ namespace CKAN.CmdLine
                             break;
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
         private int ListCacheDirectory()
         {
-            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            user?.RaiseMessage("{0}", cfg.DownloadCacheDir ?? "");
+            user.RaiseMessage("{0}", manager?.Configuration.DownloadCacheDir ?? "");
             printCacheInfo();
             return Exit.OK;
         }
 
         private int SetCacheDirectory(SetOptions options)
         {
-            if (string.IsNullOrEmpty(options.Path))
+            if (options.Path is not { Length: > 0 })
             {
-                user?.RaiseError(Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("set");
                 return Exit.BADOPT;
             }
 
-            if (manager != null)
+            if (manager.TrySetupCache(options.Path,
+                                      new Progress<int>(p => {}),
+                                      out string? failReason))
             {
-                if (manager.TrySetupCache(options.Path,
-                                          new Progress<int>(p => {}),
-                                          out string? failReason))
-                {
-                    IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                    user?.RaiseMessage(Properties.Resources.CacheSet, cfg.DownloadCacheDir ?? "");
-                    printCacheInfo();
-                    return Exit.OK;
-                }
-                else
-                {
-                    user?.RaiseError(Properties.Resources.CacheInvalidPath, failReason);
-                    return Exit.BADOPT;
-                }
+                user.RaiseMessage(Properties.Resources.CacheSet,
+                                  manager.Configuration.DownloadCacheDir ?? "");
+                printCacheInfo();
+                return Exit.OK;
             }
-            return Exit.ERROR;
+            else
+            {
+                user.RaiseError(Properties.Resources.CacheInvalidPath, failReason);
+                return Exit.BADOPT;
+            }
         }
 
         private int ClearCacheDirectory()
         {
             manager?.Cache?.RemoveAll();
-            user?.RaiseMessage(Properties.Resources.CacheCleared);
+            user.RaiseMessage(Properties.Resources.CacheCleared);
             printCacheInfo();
             return Exit.OK;
         }
 
         private int ResetCacheDirectory()
         {
-            if (manager != null)
+            if (manager.TrySetupCache(null,
+                                      new Progress<int>(p => {}),
+                                      out string? failReason))
             {
-                if (manager.TrySetupCache("",
-                                          new Progress<int>(p => {}),
-                                          out string? failReason))
-                {
-                    IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-                    user?.RaiseMessage(Properties.Resources.CacheReset, cfg.DownloadCacheDir ?? "");
-                    printCacheInfo();
-                }
-                else
-                {
-                    user?.RaiseError(Properties.Resources.CacheResetFailed, failReason);
-                }
+                user.RaiseMessage(Properties.Resources.CacheReset,
+                                  manager.Configuration.DownloadCacheDir ?? "");
+                printCacheInfo();
+            }
+            else
+            {
+                user.RaiseError(Properties.Resources.CacheResetFailed, failReason);
             }
             return Exit.OK;
         }
 
         private int ShowCacheSizeLimit()
         {
-            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            if (cfg.CacheSizeLimit.HasValue)
+            if (manager?.Configuration.CacheSizeLimit is long limit)
             {
-                user?.RaiseMessage("{0}", CkanModule.FmtSize(cfg.CacheSizeLimit.Value));
+                user.RaiseMessage("{0}", CkanModule.FmtSize(limit));
             }
             else
             {
-                user?.RaiseMessage(Properties.Resources.CacheUnlimited);
+                user.RaiseMessage(Properties.Resources.CacheUnlimited);
             }
             return Exit.OK;
         }
 
         private int SetCacheSizeLimit(SetLimitOptions options)
         {
-            IConfiguration cfg = ServiceLocator.Container.Resolve<IConfiguration>();
-            cfg.CacheSizeLimit = options.Megabytes < 0
-                ? null
-                : (options.Megabytes * 1024 * 1024);
+            if (manager?.Configuration is IConfiguration cfg)
+            {
+                cfg.CacheSizeLimit = options.Mebibytes < 0
+                    ? null
+                    : (options.Mebibytes * 1024 * 1024);
+            }
             return ShowCacheSizeLimit();
         }
 
@@ -254,16 +248,16 @@ namespace CKAN.CmdLine
                 manager.Cache.GetSizeInfo(out int fileCount, out long bytes, out long? bytesFree);
                 if (bytesFree.HasValue)
                 {
-                    user?.RaiseMessage(Properties.Resources.CacheInfo,
-                                       fileCount,
-                                       CkanModule.FmtSize(bytes),
-                                       CkanModule.FmtSize(bytesFree.Value));
+                    user.RaiseMessage(Properties.Resources.CacheInfo,
+                                      fileCount,
+                                      CkanModule.FmtSize(bytes),
+                                      CkanModule.FmtSize(bytesFree.Value));
                 }
                 else
                 {
-                    user?.RaiseMessage(Properties.Resources.CacheInfoFreeSpaceUnknown,
-                                       fileCount,
-                                       CkanModule.FmtSize(bytes));
+                    user.RaiseMessage(Properties.Resources.CacheInfoFreeSpaceUnknown,
+                                      fileCount,
+                                      CkanModule.FmtSize(bytes));
                 }
             }
         }
@@ -272,12 +266,12 @@ namespace CKAN.CmdLine
         {
             foreach (var h in CacheSubOptions.GetHelp(verb))
             {
-                user?.RaiseError("{0}", h);
+                user.RaiseError("{0}", h);
             }
         }
 
-        private IUser?               user;
-        private GameInstanceManager? manager;
+        private readonly GameInstanceManager manager;
+        private readonly IUser               user;
     }
 
 }

@@ -14,9 +14,13 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Initialize the subcommand
         /// </summary>
-        public Mark(RepositoryDataManager repoData)
+        public Mark(GameInstanceManager   mgr,
+                    RepositoryDataManager repoData,
+                    IUser                 user)
         {
+            manager       = mgr;
             this.repoData = repoData;
+            this.user     = user;
         }
 
         /// <summary>
@@ -28,9 +32,8 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code
         /// </returns>
-        public int RunSubCommand(GameInstanceManager? mgr,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    unparsed)
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
             int exitCode = Exit.OK;
@@ -42,8 +45,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    var user    = new ConsoleUser(options.Headless);
-                    var manager = mgr ?? new GameInstanceManager(user);
 
                     exitCode = options.Handle(manager, user);
                     if (exitCode != Exit.OK)
@@ -58,8 +59,7 @@ namespace CKAN.CmdLine
                                                 true,
                                                 option,
                                                 Properties.Resources.MarkAutoInstalled,
-                                                manager,
-                                                user);
+                                                manager);
                             break;
 
                         case "user":
@@ -67,8 +67,7 @@ namespace CKAN.CmdLine
                                                 false,
                                                 option,
                                                 Properties.Resources.MarkUserSelected,
-                                                manager,
-                                                user);
+                                                manager);
                             break;
 
                         default:
@@ -77,7 +76,7 @@ namespace CKAN.CmdLine
                             break;
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
@@ -85,13 +84,12 @@ namespace CKAN.CmdLine
                              bool                value,
                              string              verb,
                              string              descrip,
-                             GameInstanceManager manager,
-                             IUser               user)
+                             GameInstanceManager manager)
         {
             if (opts.modules == null || opts.modules.Count < 1)
             {
                 user.RaiseError(Properties.Resources.ArgumentMissing);
-                PrintUsage(user, verb);
+                PrintUsage(verb);
                 return Exit.BADOPT;
             }
 
@@ -143,7 +141,7 @@ namespace CKAN.CmdLine
             return Exit.ERROR;
         }
 
-        private static void PrintUsage(IUser user, string verb)
+        private void PrintUsage(string verb)
         {
             foreach (var h in MarkSubOptions.GetHelp(verb))
             {
@@ -151,7 +149,9 @@ namespace CKAN.CmdLine
             }
         }
 
+        private readonly GameInstanceManager   manager;
         private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
     }
 
     internal class MarkSubOptions : VerbCommandOptions

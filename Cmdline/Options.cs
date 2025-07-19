@@ -380,8 +380,6 @@ namespace CKAN.CmdLine
         [ValueList(typeof(List<string>))]
         public List<string> options { get; set; }
 
-        // public SubCommandOptions() { }
-
         public SubCommandOptions(string[] args)
         {
             options = new List<string>(args).GetRange(1, args.Length - 1);

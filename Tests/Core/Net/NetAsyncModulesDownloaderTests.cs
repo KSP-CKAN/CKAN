@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Tests.Data;
 using CKAN;
 using CKAN.IO;
+using Tests.Core.Configuration;
 
 namespace Tests.Core.Net
 {
@@ -40,9 +41,9 @@ namespace Tests.Core.Net
 
             repoData = new TemporaryRepositoryData(user, repos.Values);
 
-            manager = new GameInstanceManager(user);
             // Give us a registry to play with.
             ksp = new DisposableKSP();
+            manager = new GameInstanceManager(user, new FakeConfiguration(ksp.KSP, ksp.KSP.Name));
             registry_manager = RegistryManager.Instance(ksp.KSP, repoData.Manager);
             registry = registry_manager.registry;
             registry.Installed().Clear();

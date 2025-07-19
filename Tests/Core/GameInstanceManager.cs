@@ -270,7 +270,7 @@ namespace Tests.Core
         {
             using (var tidy2 = new DisposableKSP())
             {
-                cfg?.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir(), "KSP"));
+                cfg!.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir(), "KSP"));
                 // Make a new manager with the updated config
                 var multiMgr = new GameInstanceManager(new NullUser(), cfg);
                 multiMgr.ClearAutoStart();
@@ -311,6 +311,7 @@ namespace Tests.Core
                 {
                     new Tuple<string, string, string>(name, tidy?.KSP?.GameDir()!, "KSP")
                 },
+                null,
                 null);
         }
     }

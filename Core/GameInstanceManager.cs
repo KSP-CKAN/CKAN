@@ -66,10 +66,10 @@ namespace CKAN
 
         public SortedList<string, GameInstance> Instances => new SortedList<string, GameInstance>(instances);
 
-        public GameInstanceManager(IUser user, IConfiguration? configuration = null)
+        public GameInstanceManager(IUser user, IConfiguration configuration)
         {
             User = user;
-            Configuration = configuration ?? ServiceLocator.Container.Resolve<IConfiguration>();
+            Configuration = configuration;
             LoadInstances();
             LoadCacheSettings();
         }
@@ -600,7 +600,8 @@ namespace CKAN
 
         private void LoadCacheSettings()
         {
-            if (Configuration.DownloadCacheDir != null && !Directory.Exists(Configuration.DownloadCacheDir))
+            if (Configuration.DownloadCacheDir != null
+                && !Directory.Exists(Configuration.DownloadCacheDir))
             {
                 try
                 {
@@ -610,21 +611,20 @@ namespace CKAN
                 {
                     // Can't create the configured directory, try reverting it to the default
                     Configuration.DownloadCacheDir = null;
-                    if (Configuration.DownloadCacheDir is not null)
-                    {
-                        Directory.CreateDirectory(Configuration.DownloadCacheDir);
-                    }
+                    Directory.CreateDirectory(DefaultDownloadCacheDir);
                 }
             }
 
             var progress = new ProgressImmediate<int>(p => {});
             if (!TrySetupCache(Configuration.DownloadCacheDir,
                                progress,
-                               out string? failReason))
+                               out string? failReason)
+                && Configuration.DownloadCacheDir is { Length: > 0 })
             {
-                log.ErrorFormat("Cache not found at configured path {0}: {1}", Configuration.DownloadCacheDir, failReason);
+                log.ErrorFormat("Cache not found at configured path {0}: {1}",
+                                Configuration.DownloadCacheDir, failReason ?? "");
                 // Fall back to default path to minimize chance of ending up in an invalid state at startup
-                TrySetupCache("", progress, out _);
+                TrySetupCache(null, progress, out _);
             }
         }
 
@@ -637,25 +637,29 @@ namespace CKAN
         /// <returns>
         /// true if successful, false otherwise
         /// </returns>
-        public bool TrySetupCache(string? path,
+        public bool TrySetupCache(string?        path,
                                   IProgress<int> progress,
-                                  [NotNullWhen(returnValue: false)] out string? failureReason)
+                                  [NotNullWhen(returnValue: false)]
+                                  out string?    failureReason)
         {
             var origPath  = Configuration.DownloadCacheDir;
             var origCache = Cache;
             try
             {
-                if (path == null || string.IsNullOrEmpty(path))
+                if (path is { Length: > 0 })
                 {
-                    Configuration.DownloadCacheDir = "";
-                    Cache = new NetModuleCache(this, Configuration.DownloadCacheDir);
+                    Cache = new NetModuleCache(this, path);
+                    if (path != origPath)
+                    {
+                        Configuration.DownloadCacheDir = path;
+                    }
                 }
                 else
                 {
-                    Cache = new NetModuleCache(this, path);
-                    Configuration.DownloadCacheDir = path;
+                    Cache = new NetModuleCache(this, DefaultDownloadCacheDir);
+                    Configuration.DownloadCacheDir = null;
                 }
-                if (origPath != null && origCache != null)
+                if (origPath != null && origCache != null && path != origPath)
                 {
                     origCache.GetSizeInfo(out _, out long oldNumBytes, out _);
                     Cache.GetSizeInfo(out _, out _, out long? bytesFree);
@@ -681,6 +685,7 @@ namespace CKAN
                                 {
                                     Cache.MoveFrom(new DirectoryInfo(origPath), progress);
                                     CacheChanged?.Invoke(origCache);
+                                    origCache.Dispose();
                                 }
                                 else
                                 {
@@ -695,16 +700,19 @@ namespace CKAN
                             case 1:
                                 origCache.RemoveAll();
                                 CacheChanged?.Invoke(origCache);
+                                origCache.Dispose();
                                 break;
 
                             case 2:
                                 Utilities.OpenFileBrowser(origPath);
-                                Utilities.OpenFileBrowser(Configuration.DownloadCacheDir);
+                                Utilities.OpenFileBrowser(Configuration.DownloadCacheDir ?? DefaultDownloadCacheDir);
                                 CacheChanged?.Invoke(origCache);
+                                origCache.Dispose();
                                 break;
 
                             case 3:
                                 CacheChanged?.Invoke(origCache);
+                                origCache.Dispose();
                                 break;
 
                             case -1:
@@ -718,6 +726,7 @@ namespace CKAN
                     else
                     {
                         CacheChanged?.Invoke(origCache);
+                        origCache.Dispose();
                     }
                 }
                 failureReason = null;
@@ -748,11 +757,8 @@ namespace CKAN
         /// the <see cref="GameInstance"/> was occupying.</remarks>
         public void Dispose()
         {
-            if (Cache != null)
-            {
-                Cache.Dispose();
-                Cache = null;
-            }
+            Cache?.Dispose();
+            Cache = null;
 
             // Attempting to dispose of the related RegistryManager object here is a bad idea, it cause loads of failures
             GC.SuppressFinalize(this);
@@ -788,5 +794,8 @@ namespace CKAN
                     return selection >= 0 ? matchingGames[selection] : null;
             }
         }
+
+        public static readonly string DefaultDownloadCacheDir =
+            Path.Combine(CKANPathUtils.AppDataPath, "downloads");
     }
 }
