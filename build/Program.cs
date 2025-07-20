@@ -198,12 +198,12 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
             assemblyPaths,
             new ILRepackSettings
             {
-                Libs           = [cmdLineBinDirectory],
-                TargetPlatform = TargetPlatformVersion.v4,
-                Parallel       = true,
-                Verbose        = false,
+                Libs                 = [cmdLineBinDirectory],
+                TargetPlatform       = TargetPlatformVersion.v4,
+                Parallel             = true,
+                Verbose              = false,
                 SetupProcessSettings = BuildContext.RepackSilently,
-                Log            = ckanLogFile.FullPath,
+                Log                  = ckanLogFile.FullPath,
             });
 
         var autoupdateBinDirectory = context.Paths.OutDirectory.Combine("CKAN-AutoUpdateHelper")
@@ -227,10 +227,12 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
                 Log            = updaterLogFile.FullPath,
             });
 
-        context.CopyFile(context.Paths.CkanFile,
-            context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.CkanFile.GetFilename()));
+        var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.CkanFile.GetFilename());
+        context.CopyFile(context.Paths.CkanFile, finalExePath);
+        BuildContext.ChmodExecutable(finalExePath);
     }
 }
+
 
 [TaskName("Repack-Netkan")]
 [TaskDescription("Intermediate - Merge all the separate DLLs and EXEs to a single executable.")]
@@ -265,8 +267,9 @@ public sealed class RepackNetkanTask : FrostingTask<BuildContext>
             }
         );
 
-        context.CopyFile(context.Paths.NetkanFile,
-            context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.NetkanFile.GetFilename()));
+        var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.NetkanFile.GetFilename());
+        context.CopyFile(context.Paths.NetkanFile, finalExePath);
+        BuildContext.ChmodExecutable(finalExePath);
     }
 }
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 using Cake.Common;
 using Cake.Common.Diagnostics;
@@ -137,9 +139,23 @@ public partial class BuildContext : FrostingContext
 
     public static void RepackSilently(ProcessSettings settings)
         => settings.SetRedirectStandardOutput(true)
-            .SetRedirectedStandardOutputHandler(s => "")
-            .SetRedirectStandardError(true)
-            .SetRedirectedStandardErrorHandler(s => "");
+                   .SetRedirectedStandardOutputHandler(s => "")
+                   .SetRedirectStandardError(true)
+                   .SetRedirectedStandardErrorHandler(s => "");
+
+    public static void ChmodExecutable(FilePath path)
+    {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)
+            || RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            var proc = Process.Start(new ProcessStartInfo("chmod",
+                                                          $"+x \"{path}\"")
+            {
+                UseShellExecute = false,
+            });
+            proc?.WaitForExit();
+        }
+    }
 
     public string? GetQuote(FilePath file)
     {
