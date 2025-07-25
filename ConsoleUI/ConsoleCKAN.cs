@@ -61,7 +61,7 @@ namespace CKAN.ConsoleUI {
             {
                 Console.WriteLine(Properties.Resources.ThemeNotFound, themeName);
                 Console.WriteLine(Properties.Resources.ThemeList, string.Join(", ",
-                    ConsoleTheme.Themes.Keys.OrderBy(th => th)));
+                    ConsoleTheme.Themes.Keys.Order()));
             }
         }
 

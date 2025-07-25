@@ -168,7 +168,7 @@ namespace CKAN.CmdLine
                                            1)
                               : Enumerable.Empty<(GameVersion Version, bool Actual)>())
                 .Concat(instance.GetCompatibleVersions()
-                                .OrderByDescending(v => v)
+                                .OrderDescending()
                                 .Select(v => (Version: v,
                                               Actual:  false)))
                 .ToList();

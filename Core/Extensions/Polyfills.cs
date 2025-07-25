@@ -73,6 +73,26 @@ namespace System.Linq
             => seq1.Zip(seq2, (First, Second) => (First, Second));
 
         #endif
+
+        #if !NET7_0_OR_GREATER
+
+        /// <summary>
+        /// Sort the elements of the sequence in ascending order
+        /// </summary>
+        /// <param name="sequence">The sequence to sort</param>
+        /// <returns>Elements in sorted order</returns>
+        public static IEnumerable<T> Order<T>(this IEnumerable<T> sequence)
+            => sequence.OrderBy(elt => elt);
+
+        /// <summary>
+        /// Sort the elements of the sequence in descending order
+        /// </summary>
+        /// <param name="sequence">The sequence to sort</param>
+        /// <returns>Elements in sorted order</returns>
+        public static IEnumerable<T> OrderDescending<T>(this IEnumerable<T> sequence)
+            => sequence.OrderByDescending(elt => elt);
+
+        #endif
     }
 }
 

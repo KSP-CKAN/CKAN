@@ -1910,7 +1910,7 @@ namespace CKAN.GUI
                 var registry = RegistryManager.Instance(currentInstance, repoData).registry;
                 var tags = ModuleTagList.ModuleTags.HiddenTags
                                                    .Intersect(registry.Tags.Keys)
-                                                   .OrderByDescending(tagName => tagName)
+                                                   .OrderDescending()
                                                    .Select(tagName => registry.Tags[tagName])
                                                    .ToList();
                 var labels = ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name)

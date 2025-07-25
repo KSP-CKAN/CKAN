@@ -39,7 +39,7 @@ namespace CKAN.NetKAN.Validators
                         .Select(instF => instF.source.Name)
                         .Where(f => f.IndexOf("Harmony", Math.Max(0, f.LastIndexOf('/')),
                                               StringComparison.InvariantCultureIgnoreCase) != -1)
-                        .OrderBy(f => f)
+                        .Order()
                         .ToList();
                     bool bundlesHarmony   = harmonyDLLs.Count != 0;
                     bool providesHarmony1 = mod.ProvidesList.Contains("Harmony1");

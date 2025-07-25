@@ -206,7 +206,7 @@ namespace CKAN.CmdLine
                 }
                 if (module.localizations != null && module.localizations.Length > 0)
                 {
-                    user.RaiseMessage(Properties.Resources.ShowLanguages, string.Join(", ", module.localizations.OrderBy(l => l)));
+                    user.RaiseMessage(Properties.Resources.ShowLanguages, string.Join(", ", module.localizations.Order()));
                 }
                 #endregion
             }

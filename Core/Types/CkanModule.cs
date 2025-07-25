@@ -629,7 +629,7 @@ namespace CKAN
                 {
                     return false;
                 }
-                else if (!provides.OrderBy(i => i).SequenceEqual(other.provides.OrderBy(i => i)))
+                else if (!provides.Order().SequenceEqual(other.provides.Order()))
                 {
                     return false;
                 }

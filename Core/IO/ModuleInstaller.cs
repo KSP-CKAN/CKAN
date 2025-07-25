@@ -813,7 +813,7 @@ namespace CKAN.IO
                         instance.game, instance.StabilityToleranceConfig,
                         instance.VersionCriteria())
                     .Select(im => im.identifier))
-                .OrderBy(ident => ident)
+                .Order()
                 .ToArray();
 
             // If there is nothing to uninstall, skip out.

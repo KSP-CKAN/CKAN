@@ -170,17 +170,17 @@ namespace CKAN.ConsoleUI {
                 foreach ((CkanModule mod, Tuple<bool, List<string>> checkedAndDependents) in recommendations) {
                     dependencies.Add(mod, new Dependency(
                         mod,
-                        checkedAndDependents.Item2.OrderBy(d => d).ToList()));
+                        checkedAndDependents.Item2.Order().ToList()));
                 }
                 foreach ((CkanModule mod, List<string> dependents) in suggestions) {
                     dependencies.Add(mod, new Dependency(
                         mod,
-                        dependents.OrderBy(d => d).ToList()));
+                        dependents.Order().ToList()));
                 }
                 foreach ((CkanModule mod, HashSet<string> dependents) in supporters) {
                     dependencies.Add(mod, new Dependency(
                         mod,
-                        dependents.OrderBy(d => d).ToList()));
+                        dependents.Order().ToList()));
                 }
                 // Check the default checkboxes
                 accepted.UnionWith(recommendations.Where(kvp => kvp.Value.Item1)

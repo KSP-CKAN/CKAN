@@ -33,7 +33,7 @@ namespace CKAN.NetKAN.Validators
 
                     if (_moduleService.GetPlugins(mod, zip, inst)
                                       .Select(f => inst.ToRelativeGameDir(f.destination))
-                                      .OrderBy(f => f)
+                                      .Order()
                                       .ToArray()
                         is { Length: > 0 } plugins)
                     {
@@ -58,7 +58,7 @@ namespace CKAN.NetKAN.Validators
                     }
                     else if (_moduleService.GetSourceCode(mod, zip, inst)
                                            .Select(f => inst.ToRelativeGameDir(f.destination))
-                                           .OrderBy(f => f)
+                                           .Order()
                                            .ToArray()
                              is { Length: > 0 } sourceCode)
                     {

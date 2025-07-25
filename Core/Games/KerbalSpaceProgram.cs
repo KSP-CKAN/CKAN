@@ -219,7 +219,7 @@ namespace CKAN.Games.KerbalSpaceProgram
                                                  .KnownVersions
                                                  .Select(v => v.WithoutBuild)
                                                  .Distinct()
-                                                 .OrderBy(v => v)
+                                                 .Order()
                                                  .ToList();
                     }
                 }

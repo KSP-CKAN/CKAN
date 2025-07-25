@@ -198,7 +198,7 @@ namespace CKAN.NetKAN.Services
             {
                 throw new Kraken(
                     string.Format("Too many .version files located: {0}",
-                              string.Join(", ", files.Select(x => x.Name).OrderBy(f => f))));
+                              string.Join(", ", files.Select(x => x.Name).Order())));
             }
             else
             {

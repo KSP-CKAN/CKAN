@@ -140,7 +140,7 @@ namespace CKAN.CmdLine
                              ?? p.GetCustomAttribute<OptionArrayAttribute>()?.LongName
                              ?? p.GetCustomAttribute<OptionListAttribute>()?.LongName)
                 .Where(o => o != null && o.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
-                .OrderBy(o => o)
+                .Order()
                 .Select(o => $"--{o}")
                 .ToArray();
 
@@ -151,7 +151,7 @@ namespace CKAN.CmdLine
                              ?? p.GetCustomAttribute<OptionArrayAttribute>()?.ShortName
                              ?? p.GetCustomAttribute<OptionListAttribute>()?.ShortName)
                 .Where(o => o != null && $"{o}".StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
-                .OrderBy(o => o)
+                .Order()
                 .Select(o => $"-{o}")
                 .ToArray();
 
@@ -173,7 +173,7 @@ namespace CKAN.CmdLine
                  .OfType<string>()
                  .Concat(extras)
                  .Where(v => v.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
-                 .OrderBy(v => v)
+                 .Order()
                  .ToArray();
 
         private static bool WantsAvailIdentifiers(TypeInfo ti)

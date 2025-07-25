@@ -60,7 +60,7 @@ namespace CKAN.CmdLine
             user.RaiseMessage(Properties.Resources.StabilityOverallLabel,
                               stabilityTolerance.OverallStabilityTolerance);
             var rows = stabilityTolerance.OverriddenModIdentifiers
-                                         .OrderBy(ident => ident)
+                                         .Order()
                                          .Select(ident => stabilityTolerance.ModStabilityTolerance(ident)
                                                           is ReleaseStatus relStat
                                                               ? Tuple.Create(ident, relStat.ToString())

@@ -60,14 +60,14 @@ namespace CKAN.GUI
                             new GameVersion(v.Major, v.Minor)
                         })
                     .Distinct()
-                    .OrderByDescending(v => v)
+                    .OrderDescending()
                     .Select(v => v.ToString())
                     ?? Enumerable.Empty<string>());
                 GameVersionMinComboBox.DataSource = options.ToArray();
                 GameVersionMinComboBox.Text = (module.ksp_version_min ?? module.ksp_version)?.ToString();
                 GameVersionMaxComboBox.DataSource = options.ToArray();
                 GameVersionMaxComboBox.Text = (module.ksp_version_max ?? module.ksp_version)?.ToString();
-                LicenseComboBox.DataSource = License.valid_licenses.OrderBy(l => l).ToArray();
+                LicenseComboBox.DataSource = License.valid_licenses.Order().ToArray();
                 LicenseComboBox.Text = module.license?.FirstOrDefault()?.ToString();
                 LoadRelationships(module, registry);
             });
