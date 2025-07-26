@@ -1,7 +1,7 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
-using Autofac;
-using CKAN.Configuration;
+
 using CommandLine;
 using CommandLine.Text;
 
@@ -15,7 +15,12 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Initialize the subcommand
         /// </summary>
-        public AuthToken() { }
+        public AuthToken(GameInstanceManager manager,
+                         IUser               user)
+        {
+            this.manager = manager;
+            this.user    = user;
+        }
 
         /// <summary>
         /// Run the subcommand
@@ -26,9 +31,8 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code
         /// </returns>
-        public int RunSubCommand(GameInstanceManager? manager,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    unparsed)
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions unparsed)
         {
             string[] args     = unparsed.options.ToArray();
             int      exitCode = Exit.OK;
@@ -39,8 +43,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user      = new ConsoleUser(options.Headless);
-                    manager ??= new GameInstanceManager(user);
                     exitCode  = options.Handle(manager, user);
                     if (exitCode == Exit.OK)
                     {
@@ -58,7 +60,7 @@ namespace CKAN.CmdLine
                         }
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
@@ -66,7 +68,7 @@ namespace CKAN.CmdLine
         {
             string hostHeader  = Properties.Resources.AuthTokenHostHeader;
             string tokenHeader = Properties.Resources.AuthTokenTokenHeader;
-            List<string> hosts  = new List<string>(ServiceLocator.Container.Resolve<IConfiguration>().GetAuthTokenHosts());
+            List<string> hosts  = manager.Configuration.GetAuthTokenHosts().ToList();
             if (hosts.Count > 0)
             {
                 int longestHostLen  = hostHeader.Length;
@@ -74,7 +76,7 @@ namespace CKAN.CmdLine
                 foreach (string host in hosts)
                 {
                     longestHostLen = Math.Max(longestHostLen, host.Length);
-                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out string? token))
+                    if (manager.Configuration.TryGetAuthToken(host, out string? token))
                     {
                         longestTokenLen = Math.Max(longestTokenLen, token.Length);
                     }
@@ -82,15 +84,15 @@ namespace CKAN.CmdLine
                 // Create format string: {0,-longestHostLen}  {1,-longestTokenLen}
                 string fmt = string.Format("{0}0,-{2}{1}  {0}1,-{3}{1}",
                     "{", "}", longestHostLen, longestTokenLen);
-                user?.RaiseMessage(fmt, hostHeader, tokenHeader);
-                user?.RaiseMessage(fmt,
+                user.RaiseMessage(fmt, hostHeader, tokenHeader);
+                user.RaiseMessage(fmt,
                                    new string('-', longestHostLen),
                                    new string('-', longestTokenLen));
                 foreach (string host in hosts)
                 {
-                    if (ServiceLocator.Container.Resolve<IConfiguration>().TryGetAuthToken(host, out string? token))
+                    if (manager.Configuration.TryGetAuthToken(host, out string? token))
                     {
-                        user?.RaiseMessage(fmt, host, token);
+                        user.RaiseMessage(fmt, host, token);
                     }
                 }
             }
@@ -103,26 +105,27 @@ namespace CKAN.CmdLine
             {
                 if (Uri.CheckHostName(h) != UriHostNameType.Unknown)
                 {
-                    ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(h, opts.token);
+                    manager.Configuration.SetAuthToken(h, opts.token);
                 }
                 else
                 {
-                    user?.RaiseError(Properties.Resources.AuthTokenInvalidHostName, h);
+                    user.RaiseError(Properties.Resources.AuthTokenInvalidHostName, h);
                 }
             }
             return Exit.OK;
         }
 
-        private static int removeAuthToken(RemoveAuthTokenOptions opts)
+        private int removeAuthToken(RemoveAuthTokenOptions opts)
         {
             if (opts.host is string h)
             {
-                ServiceLocator.Container.Resolve<IConfiguration>().SetAuthToken(h, null);
+                manager.Configuration.SetAuthToken(h, null);
             }
             return Exit.OK;
         }
 
-        private IUser? user;
+        private readonly GameInstanceManager manager;
+        private readonly IUser               user;
     }
 
     internal class AuthTokenSubOptions : VerbCommandOptions

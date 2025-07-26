@@ -73,7 +73,7 @@ namespace CKAN.Exporters
         }
 
         private string WriteUri(Uri? uri)
-            => uri != null ? QuoteIfNecessary(uri.ToString())
+            => uri != null ? QuoteIfNecessary(Net.NormalizeUri(uri.OriginalString))
                            : string.Empty;
 
         private string WriteUri(List<Uri>? uris)
@@ -84,35 +84,12 @@ namespace CKAN.Exporters
                             ? uri
                             : null);
 
-        private string WriteRepository(ResourcesDescriptor? resources)
-            => resources != null && resources.repository != null
-                ? QuoteIfNecessary(resources.repository.ToString())
-                : string.Empty;
-
-        private string WriteHomepage(ResourcesDescriptor? resources)
-            => resources != null && resources.homepage != null
-                ? QuoteIfNecessary(resources.homepage.ToString())
-                : string.Empty;
-
-        private string WriteBugtracker(ResourcesDescriptor? resources)
-            => resources != null && resources.bugtracker != null
-                ? QuoteIfNecessary(resources.bugtracker.ToString())
-                : string.Empty;
-
-        private string WriteDiscussions(ResourcesDescriptor? resources)
-            => resources != null && resources.discussions != null
-                ? QuoteIfNecessary(resources.discussions.ToString())
-                : string.Empty;
-
-        private string WriteSpaceDock(ResourcesDescriptor? resources)
-            => resources != null && resources.spacedock != null
-                ? QuoteIfNecessary(resources.spacedock.ToString())
-                : string.Empty;
-
-        private string WriteCurse(ResourcesDescriptor? resources)
-            => resources != null && resources.curse != null
-                ? QuoteIfNecessary(resources.curse.ToString())
-                : string.Empty;
+        private string WriteRepository(ResourcesDescriptor? resources)  => WriteUri(resources?.repository);
+        private string WriteHomepage(ResourcesDescriptor? resources)    => WriteUri(resources?.homepage);
+        private string WriteBugtracker(ResourcesDescriptor? resources)  => WriteUri(resources?.bugtracker);
+        private string WriteDiscussions(ResourcesDescriptor? resources) => WriteUri(resources?.discussions);
+        private string WriteSpaceDock(ResourcesDescriptor? resources)   => WriteUri(resources?.spacedock);
+        private string WriteCurse(ResourcesDescriptor? resources)       => WriteUri(resources?.curse);
 
         private string QuoteIfNecessary(string? value)
             => value == null
@@ -124,7 +101,7 @@ namespace CKAN.Exporters
         public enum Delimiter
         {
             Comma,
-            Tab
+            Tab,
         }
 
         private readonly string _delimiter;

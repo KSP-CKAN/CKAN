@@ -1,4 +1,4 @@
-using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,10 +13,11 @@ namespace CKAN.CmdLine
 {
     public class List : ICommand
     {
-        public List(RepositoryDataManager repoData, IUser user)
+        public List(RepositoryDataManager repoData, IUser user, Stream outputStream)
         {
-            this.repoData = repoData;
-            this.user     = user;
+            this.repoData     = repoData;
+            this.user         = user;
+            this.outputStream = outputStream;
         }
 
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
@@ -153,10 +154,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                using (var stream = Console.OpenStandardOutput())
-                {
-                    new Exporter(exportFileType.Value).Export(regMgr, registry, stream);
-                }
+                new Exporter(exportFileType.Value).Export(regMgr, registry, outputStream);
             }
 
             if (!(options.porcelain) && exportFileType == null)
@@ -183,7 +181,7 @@ namespace CKAN.CmdLine
 
         private readonly RepositoryDataManager repoData;
         private readonly IUser                 user;
-
+        private readonly Stream                outputStream;
         private static readonly ILog log = LogManager.GetLogger(typeof(List));
     }
 

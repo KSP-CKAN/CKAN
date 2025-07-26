@@ -5,6 +5,7 @@ using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
 
+using CKAN;
 using CKAN.Configuration;
 using Tests.Data;
 
@@ -94,7 +95,7 @@ namespace Tests.Core.Configuration
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
 
             Assert.AreEqual("", reg.AutoStartInstance);
-            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.IsNull(reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
 
@@ -111,7 +112,7 @@ namespace Tests.Core.Configuration
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
 
             Assert.AreEqual("", reg.AutoStartInstance);
-            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.IsNull(reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(0, reg.RefreshRate);
 
@@ -251,7 +252,7 @@ namespace Tests.Core.Configuration
             File.Copy(tmpFile1, tmpFile2, true);
             JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
-            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.IsNull(reg.DownloadCacheDir);
 
             File.Delete(tmpFile1);
             File.Delete(tmpFile2);
@@ -270,7 +271,7 @@ namespace Tests.Core.Configuration
             File.Copy(tmpFile1, tmpFile2, true);
             JsonConfiguration reg = new JsonConfiguration(tmpFile2);
 
-            Assert.AreEqual(JsonConfiguration.DefaultDownloadCacheDir, reg.DownloadCacheDir);
+            Assert.IsNull(reg.DownloadCacheDir);
 
             File.Delete(tmpFile1);
             File.Delete(tmpFile2);
@@ -357,7 +358,7 @@ namespace Tests.Core.Configuration
                 string tmpFile1 = Path.GetTempFileName();
                 var reg = new JsonConfiguration(tmpFile1);
 
-                var sl = new SortedList<string, CKAN.GameInstance>();
+                var sl = new SortedList<string, GameInstance>();
                 sl.Add("instance_1", k1.KSP);
                 sl.Add("instance_2", k2.KSP);
                 reg.SetRegistryToInstances(sl);

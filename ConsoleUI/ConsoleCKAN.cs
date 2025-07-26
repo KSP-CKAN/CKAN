@@ -3,6 +3,7 @@ using System.Linq;
 
 using Autofac;
 
+using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -29,7 +30,9 @@ namespace CKAN.ConsoleUI {
                 // which only use it to inform the user about the creation of the CKAN/ folder.
                 // These aren't really intended to be displayed, so the manager
                 // can keep a NullUser reference forever.
-                GameInstanceManager manager = mgr ?? new GameInstanceManager(new NullUser());
+                GameInstanceManager manager = mgr
+                                              ?? new GameInstanceManager(new NullUser(),
+                                                                         ServiceLocator.Container.Resolve<IConfiguration>());
 
                 // The splash screen returns true when it's safe to run the rest of the app.
                 // This can be blocked by a lock file, for example.
@@ -61,7 +64,7 @@ namespace CKAN.ConsoleUI {
             {
                 Console.WriteLine(Properties.Resources.ThemeNotFound, themeName);
                 Console.WriteLine(Properties.Resources.ThemeList, string.Join(", ",
-                    ConsoleTheme.Themes.Keys.OrderBy(th => th)));
+                    ConsoleTheme.Themes.Keys.Order()));
             }
         }
 

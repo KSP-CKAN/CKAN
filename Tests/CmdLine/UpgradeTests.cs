@@ -70,9 +70,9 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);
                 var fromModule = regMgr.registry.GetModuleByVersion(identifier, fromVersion)!;
@@ -610,9 +610,9 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager);
                 regMgr.registry.RepositoriesClear();
                 regMgr.registry.RepositoriesAdd(repo.repo);
 

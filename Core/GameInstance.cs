@@ -132,7 +132,7 @@ namespace CKAN
         public void SetCompatibleVersions(List<GameVersion> compatibleVersions)
         {
             _compatibleVersions = compatibleVersions.Distinct()
-                                                    .OrderByDescending(v => v)
+                                                    .OrderDescending()
                                                     .ToList();
             SaveCompatibleVersions();
         }

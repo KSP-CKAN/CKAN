@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN;
 using CKAN.Configuration;
@@ -15,12 +15,17 @@ namespace Tests.Core.Configuration
 {
     public class FakeConfiguration : IConfiguration, IDisposable
     {
-        public FakeConfiguration(GameInstance instance, string autostart)
+        public FakeConfiguration(GameInstance instance,
+                                 string       autostart,
+                                 string?      downloadCachePath = null)
             : this(new List<Tuple<string, string, string>>
                    {
-                       new Tuple<string, string, string>("test", instance.GameDir(), "KSP")
+                       new Tuple<string, string, string>(instance.Name,
+                                                         instance.GameDir(),
+                                                         instance.game.ShortName)
                    },
-                   autostart)
+                   autostart,
+                   downloadCachePath)
         {
         }
 
@@ -29,11 +34,15 @@ namespace Tests.Core.Configuration
         /// </summary>
         /// <param name="instances">List of name/path pairs for the instances</param>
         /// <param name="auto_start_instance">The auto start instance to use</param>
-        public FakeConfiguration(List<Tuple<string, string, string>> instances, string? auto_start_instance)
+        public FakeConfiguration(List<Tuple<string, string, string>> instances,
+                                 string?                             auto_start_instance,
+                                 string?                             downloadCachePath)
         {
             Instances         = instances;
             AutoStartInstance = auto_start_instance;
-            DownloadCacheDir  = TestData.NewTempDir();
+            downloadCacheDirs.Add(downloadCachePath == null
+                                      ? new TemporaryDirectory()
+                                      : new TemporaryDirectory(downloadCachePath));
         }
 
         /// <summary>
@@ -44,10 +53,25 @@ namespace Tests.Core.Configuration
         /// Build map for the fake registry
         /// </summary>
         public JBuilds?                    BuildMap         { get; set; }
+
         /// <summary>
         /// Path to download cache folder for the fake registry
         /// </summary>
-        public string?                     DownloadCacheDir { get; set; }
+        public string?                     DownloadCacheDir
+        {
+            get => downloadCacheDirs.Last()?.Path.FullName;
+            set
+            {
+                // The GameInstanceManager sometimes re-assigns the current value
+                if (value != downloadCacheDirs.Last()?.Path.FullName)
+                {
+                    downloadCacheDirs.Add(value == null ? null
+                                                        : new TemporaryDirectory(value));
+                }
+            }
+        }
+        private readonly List<TemporaryDirectory?> downloadCacheDirs = new List<TemporaryDirectory?>();
+
         /// <summary>
         /// Maximum number of bytes of downloads to retain on disk
         /// </summary>
@@ -98,8 +122,10 @@ namespace Tests.Core.Configuration
         /// </returns>
         public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
-            Instances =
-                instances.Select(kvpair => new Tuple<string, string, string>(kvpair.Key, kvpair.Value.GameDir(), "KSP")).ToList();
+            Instances = instances.Select(kvpair => Tuple.Create(kvpair.Key,
+                                                                kvpair.Value.GameDir(),
+                                                                kvpair.Value.game.ShortName))
+                                 .ToList();
         }
 
         /// <summary>
@@ -122,19 +148,26 @@ namespace Tests.Core.Configuration
         }
 
         public IEnumerable<string> GetAuthTokenHosts()
-        {
-            throw new NotImplementedException();
-        }
+            => authTokens.Keys;
 
         public void SetAuthToken(string host, string? token)
         {
-            throw new NotImplementedException();
+            switch (token)
+            {
+                case string t:
+                    authTokens.Add(host, t);
+                    break;
+                default:
+                    authTokens.Remove(host);
+                    break;
+            }
         }
 
-        public bool TryGetAuthToken(string host, out string token)
-        {
-            throw new NotImplementedException();
-        }
+        public bool TryGetAuthToken(string host,
+                                    [NotNullWhen(returnValue: true)] out string? token)
+            => authTokens.TryGetValue(host, out token);
+
+        private readonly Dictionary<string, string> authTokens = new Dictionary<string, string>();
 
         private string? _Language;
         public string? Language
@@ -172,10 +205,11 @@ namespace Tests.Core.Configuration
 
         public void Dispose()
         {
-            if (DownloadCacheDir != null)
+            foreach (var dir in downloadCacheDirs.OfType<TemporaryDirectory>())
             {
-                Directory.Delete(DownloadCacheDir, true);
+                dir.Dispose();
             }
+            GC.SuppressFinalize(this);
         }
     }
 }

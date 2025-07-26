@@ -3,11 +3,9 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 
-using Autofac;
 using CommandLine;
 using log4net;
 
-using CKAN.Configuration;
 using CKAN.IO;
 
 namespace CKAN.CmdLine
@@ -61,7 +59,7 @@ namespace CKAN.CmdLine
                     log.DebugFormat("Urls: {0}", targets.SelectMany(t => t.urls));
                     new NetAsyncDownloader(new NullUser(), () => null, options.NetUserAgent).DownloadAndWait(targets);
                     log.DebugFormat("Files: {0}", targets.Select(t => t.filename));
-                    modules = targets.Select(t => MainClass.LoadCkanFromFile(t.filename))
+                    modules = targets.Select(t => CkanModule.FromFile(t.filename))
                                      .ToList();
                 }
                 catch (FileNotFoundKraken kraken)
@@ -107,7 +105,7 @@ namespace CKAN.CmdLine
             }
 
             var installer   = new ModuleInstaller(instance, manager.Cache,
-                                                  ServiceLocator.Container.Resolve<IConfiguration>(), user);
+                                                  manager.Configuration, user);
             var install_ops = new RelationshipResolverOptions(instance.StabilityToleranceConfig)
             {
                 with_all_suggests              = options?.with_all_suggests ?? false,

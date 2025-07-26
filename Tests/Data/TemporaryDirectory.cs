@@ -8,7 +8,7 @@ namespace Tests.Data
         public TemporaryDirectory(DirectoryInfo path)
         {
             Path = path;
-            Directory.CreateDirectory(Path.FullName);
+            Path.Create();
         }
 
         public TemporaryDirectory(string path)
@@ -23,7 +23,13 @@ namespace Tests.Data
 
         public void Dispose()
         {
-            Directory.Delete(Path.FullName, true);
+            try
+            {
+                Path.Delete(true);
+            }
+            catch
+            {
+            }
             GC.SuppressFinalize(this);
         }
 

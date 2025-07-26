@@ -409,7 +409,7 @@ namespace CKAN.GUI
                     user.RaiseError(Properties.Resources.ManageGameInstancesInvalidFileSelected,
                                     chosen,
                                     string.Join(Environment.NewLine,
-                                                allowed.OrderBy(f => f)
+                                                allowed.Order()
                                                        .Select(f => $"  - {f}")));
                 }
             }

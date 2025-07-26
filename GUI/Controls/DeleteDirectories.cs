@@ -35,7 +35,7 @@ namespace CKAN.GUI
         {
             instance = ksp;
             var items = possibleConfigOnlyDirs
-                .OrderBy(d => d)
+                .Order()
                 .Select(d => new ListViewItem(Platform.FormatPath(instance.ToRelativeGameDir(d)))
                     {
                         Tag     = d,

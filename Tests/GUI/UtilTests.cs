@@ -7,9 +7,21 @@ using CKAN.GUI;
 
 namespace Tests.GUI
 {
+    using Util = CKAN.GUI.Util;
+
     [TestFixture]
     public class UtilTests
     {
+        [TestCase("https://github.com/KSP-CKAN/CKAN",        ExpectedResult = true),
+         TestCase("http://status.ksp-ckan.space/",           ExpectedResult = true),
+         TestCase("https://google.com/",                     ExpectedResult = true),
+         TestCase("file://usr/lib/ckan/ckan.exe",            ExpectedResult = false),
+         TestCase("ftp://cdrom.com/kernel/vmlinuz-1.0.0.gz", ExpectedResult = false),
+         TestCase("/unix/path/without/protocol",             ExpectedResult = false),
+         TestCase(@"C:\Windows\Path\Without\Protocol",       ExpectedResult = false)]
+        public bool CheckURLValid_WithURL_ReturnsCorrectResult(string url)
+            => Util.CheckURLValid(url);
+
         // https://learn.microsoft.com/en-us/dotnet/media/art-color-table.png
         [TestCase("White"),
          TestCase("OrangeRed"), TestCase("LightCoral"),

@@ -18,15 +18,19 @@ namespace CKAN.Avc
         [JsonProperty("URL")]
         public string? Url;
 
+        [JsonProperty("VERSION")]
         [JsonConverter(typeof(JsonAvcToVersion))]
         public ModuleVersion? version;
 
+        [JsonProperty("KSP_VERSION")]
         [JsonConverter(typeof(JsonAvcToGameVersion))]
         public GameVersion? ksp_version;
 
+        [JsonProperty("KSP_VERSION_MIN")]
         [JsonConverter(typeof(JsonAvcToGameVersion))]
         public GameVersion? ksp_version_min;
 
+        [JsonProperty("KSP_VERSION_MAX")]
         [JsonConverter(typeof(JsonAvcToGameVersion))]
         public GameVersion? ksp_version_max;
 

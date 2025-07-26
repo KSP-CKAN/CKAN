@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Autofac;
 using CommandLine;
 using CommandLine.Text;
 
@@ -10,9 +9,17 @@ namespace CKAN.CmdLine
 {
     public class Stability : ISubCommand
     {
-        public int RunSubCommand(GameInstanceManager? manager,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    options)
+        public Stability(GameInstanceManager   manager,
+                         RepositoryDataManager repoData,
+                         IUser                 user)
+        {
+            this.manager  = manager;
+            this.repoData = repoData;
+            this.user     = user;
+        }
+
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions options)
         {
             int exitCode = Exit.OK;
             Parser.Default.ParseArgumentsStrict(options.options.ToArray(),
@@ -24,8 +31,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    var user = new ConsoleUser(options.Headless);
-                    manager ??= new GameInstanceManager(user);
                     exitCode = options.Handle(manager, user);
                     if (exitCode == Exit.OK)
                     {
@@ -50,7 +55,7 @@ namespace CKAN.CmdLine
                         }
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
@@ -60,7 +65,7 @@ namespace CKAN.CmdLine
             user.RaiseMessage(Properties.Resources.StabilityOverallLabel,
                               stabilityTolerance.OverallStabilityTolerance);
             var rows = stabilityTolerance.OverriddenModIdentifiers
-                                         .OrderBy(ident => ident)
+                                         .Order()
                                          .Select(ident => stabilityTolerance.ModStabilityTolerance(ident)
                                                           is ReleaseStatus relStat
                                                               ? Tuple.Create(ident, relStat.ToString())
@@ -91,7 +96,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
-        private static int Set(StabilitySetOptions opts, CKAN.GameInstance instance, IUser user)
+        private int Set(StabilitySetOptions opts, CKAN.GameInstance instance, IUser user)
         {
             var stabilityTolerance = instance.StabilityToleranceConfig;
             if (opts.Identifier == null)
@@ -109,11 +114,13 @@ namespace CKAN.CmdLine
             }
             else
             {
-                var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
-                var registry = RegistryManager.Instance(instance, repoData).registry;
-                var idents   = new List<string> { opts.Identifier };
-                Search.AdjustModulesCase(instance, registry, idents);
-                stabilityTolerance.SetModStabilityTolerance(idents[0], opts.Stability);
+                using (var regMgr = RegistryManager.Instance(instance, repoData))
+                {
+                    var registry = regMgr.registry;
+                    var idents   = new List<string> { opts.Identifier };
+                    Search.AdjustModulesCase(instance, registry, idents);
+                    stabilityTolerance.SetModStabilityTolerance(idents[0], opts.Stability);
+                }
             }
             List(instance, user);
             return Exit.OK;
@@ -126,6 +133,10 @@ namespace CKAN.CmdLine
                 user.RaiseError("{0}", h);
             }
         }
+
+        private readonly GameInstanceManager   manager;
+        private readonly RepositoryDataManager repoData;
+        private readonly IUser                 user;
     }
 
     public class StabilitySubOptions: VerbCommandOptions

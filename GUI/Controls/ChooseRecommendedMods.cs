@@ -210,7 +210,7 @@ namespace CKAN.GUI
                                                  .OrderBy(SecondColumn))
                               .Concat(supporters.Select(kvp => getRecSugItem(cache,
                                                                              kvp.Key,
-                                                                             string.Join(", ", kvp.Value.OrderBy(s => s)),
+                                                                             string.Join(", ", kvp.Value.Order()),
                                                                              SupportedByGroup,
                                                                              false,
                                                                              coreConfig))

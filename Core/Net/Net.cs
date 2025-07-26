@@ -21,23 +21,6 @@ namespace CKAN
 
     public static class Net
     {
-        // The user agent that we report to web sites
-        // Maybe overwritten by command line args
-        public static readonly string UserAgentString = $"Mozilla/5.0 (compatible; CKAN/{Meta.ReleaseVersion})";
-
-        private const int MaxRetries             = 3;
-        private const int RetryDelayMilliseconds = 100;
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(Net));
-
-        public static readonly Dictionary<string, Uri> ThrottledHosts = new Dictionary<string, Uri>()
-        {
-            {
-                "api.github.com",
-                new Uri(HelpURLs.AuthTokens)
-            }
-        };
-
         /// <summary>
         /// Make a HEAD request to get the ETag of a URL without downloading it
         /// </summary>
@@ -201,7 +184,9 @@ namespace CKAN
                       && whichAttempt < MaxRetries)
                 {
                     log.DebugFormat("Web request failed with non-protocol error, retrying in {0} milliseconds: {1}", RetryDelayMilliseconds * whichAttempt, wex.Message);
-                    Thread.Sleep(RetryDelayMilliseconds * whichAttempt);
+                    // Exponential backoff with jitter
+                    Thread.Sleep((int)(RetryDelayMilliseconds
+                                 * (Math.Pow(2, whichAttempt) + random.NextDouble())));
                 }
             }
             // Should never get here, because we don't catch any exceptions
@@ -266,6 +251,7 @@ namespace CKAN
             // escape them in its API. There's probably more in RFC 3986.
             var escaped = UriEscapeAll(uri.Replace(" ", "+"),
                                        '"', '<', '>', '^', '`',
+                                       '(', ')',
                                        '{', '|', '}', '[', ']');
 
             // Make sure we have a "http://" or "https://" start.
@@ -364,5 +350,24 @@ namespace CKAN
                 return remoteUri;
             }
         }
+
+        // The user agent that we report to web sites
+        // Maybe overwritten by command line args
+        public static readonly string UserAgentString = $"Mozilla/5.0 (compatible; CKAN/{Meta.ReleaseVersion})";
+
+        private const int MaxRetries             = 5;
+        private const int RetryDelayMilliseconds = 100;
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Net));
+
+        private static readonly Random random = new Random();
+
+        public static readonly Dictionary<string, Uri> ThrottledHosts = new Dictionary<string, Uri>()
+        {
+            {
+                "api.github.com",
+                new Uri(HelpURLs.AuthTokens)
+            }
+        };
     }
 }

@@ -46,7 +46,7 @@ namespace CKAN.NetKAN.Validators
                     var gamedatas = allFiles
                         .Where(p => p.StartsWith(dir, StringComparison.InvariantCultureIgnoreCase)
                                     && p.LastIndexOf($"/{dir}/", StringComparison.InvariantCultureIgnoreCase) > 0)
-                        .OrderBy(f => f)
+                        .Order()
                         .ToList();
                     if (gamedatas.Count != 0)
                     {
@@ -58,7 +58,7 @@ namespace CKAN.NetKAN.Validators
                 // Make sure we won't try to overwrite our own files
                 var duplicates = allFiles
                     .GroupBy(f => f)
-                    .SelectMany(grp => grp.Skip(1).OrderBy(f => f))
+                    .SelectMany(grp => grp.Skip(1).Order())
                     .ToList();
                 if (duplicates.Count != 0)
                 {

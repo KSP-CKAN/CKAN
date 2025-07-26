@@ -34,7 +34,7 @@ namespace CKAN.ConsoleUI {
 
             directories = new ConsoleListBox<string>(
                 1, 6, listWidth - 1, -2,
-                possibleConfigOnlyDirs.OrderBy(d => d).ToList(),
+                possibleConfigOnlyDirs.Order().ToList(),
                 new List<ConsoleListBoxColumn<string>>() {
                     new ConsoleListBoxColumn<string>(
                         "",
@@ -118,7 +118,7 @@ namespace CKAN.ConsoleUI {
                     : Directory.EnumerateFileSystemEntries(directories.Selection,
                                                            "*",
                                                            SearchOption.AllDirectories)
-                               .OrderBy(f => f)
+                               .Order()
                                .ToList(),
                 true);
         }

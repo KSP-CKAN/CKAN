@@ -108,15 +108,18 @@ namespace CKAN.CmdLine
 
     public class Repo : ISubCommand
     {
-        public Repo(RepositoryDataManager repoData)
+        public Repo(GameInstanceManager   manager,
+                    RepositoryDataManager repoData,
+                    IUser                 user)
         {
+            Manager       = manager;
             this.repoData = repoData;
+            this.user     = user;
         }
 
         // This is required by ISubCommand
-        public int RunSubCommand(GameInstanceManager? manager,
-                                 CommonOptions?       opts,
-                                 SubCommandOptions    unparsed)
+        public int RunSubCommand(CommonOptions?    opts,
+                                 SubCommandOptions unparsed)
         {
             string[] args = unparsed.options.ToArray();
 
@@ -144,8 +147,6 @@ namespace CKAN.CmdLine
                 {
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
-                    user     = new ConsoleUser(options.Headless);
-                    Manager  = manager ?? new GameInstanceManager(user);
                     exitCode = options.Handle(Manager, user);
                     if (exitCode != Exit.OK)
                     {
@@ -185,13 +186,13 @@ namespace CKAN.CmdLine
                             break;
                     }
                 }
-            }, () => { exitCode = MainClass.AfterHelp(); });
+            }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
         private int AvailableRepositories(string? userAgent)
         {
-            user?.RaiseMessage(Properties.Resources.RepoAvailableHeader);
+            user.RaiseMessage(Properties.Resources.RepoAvailableHeader);
 
             try
             {
@@ -203,17 +204,17 @@ namespace CKAN.CmdLine
                                              .Max(r => r.name.Length);
                     foreach (var repository in repoList.repositories)
                     {
-                        user?.RaiseMessage("  {0}: {1}",
-                                           repository.name.PadRight(maxNameLen),
-                                           repository.uri);
+                        user.RaiseMessage("  {0}: {1}",
+                                          repository.name.PadRight(maxNameLen),
+                                          repository.uri);
                     }
                     return Exit.OK;
                 }
             }
             catch
             {
-                user?.RaiseError(Properties.Resources.RepoAvailableFailed,
-                                 MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
+                user.RaiseError(Properties.Resources.RepoAvailableFailed,
+                                MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
             }
             return Exit.ERROR;
         }
@@ -237,20 +238,20 @@ namespace CKAN.CmdLine
 
             const string columnFormat = "{0}  {1}  {2}";
 
-            user?.RaiseMessage(columnFormat,
-                               priorityHeader.PadRight(priorityWidth),
-                               nameHeader.PadRight(nameWidth),
-                               urlHeader.PadRight(urlWidth));
-            user?.RaiseMessage(columnFormat,
-                               new string('-', priorityWidth),
-                               new string('-', nameWidth),
-                               new string('-', urlWidth));
+            user.RaiseMessage(columnFormat,
+                              priorityHeader.PadRight(priorityWidth),
+                              nameHeader.PadRight(nameWidth),
+                              urlHeader.PadRight(urlWidth));
+            user.RaiseMessage(columnFormat,
+                              new string('-', priorityWidth),
+                              new string('-', nameWidth),
+                              new string('-', urlWidth));
             foreach (Repository repository in repositories.Values.OrderBy(r => r.priority))
             {
-                user?.RaiseMessage(columnFormat,
-                                   repository.priority.ToString().PadRight(priorityWidth),
-                                   repository.name.PadRight(nameWidth),
-                                   repository.uri);
+                user.RaiseMessage(columnFormat,
+                                  repository.priority.ToString().PadRight(priorityWidth),
+                                  repository.name.PadRight(nameWidth),
+                                  repository.uri);
             }
             return Exit.OK;
         }
@@ -261,7 +262,7 @@ namespace CKAN.CmdLine
 
             if (options.name == null)
             {
-                user?.RaiseError(Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("add");
                 return Exit.BADOPT;
             }
@@ -284,8 +285,8 @@ namespace CKAN.CmdLine
                     // Nothing found in the master list?
                     if (options.uri == null)
                     {
-                        user?.RaiseMessage(Properties.Resources.RepoAddNotFound,
-                                           options.name);
+                        user.RaiseMessage(Properties.Resources.RepoAddNotFound,
+                                          options.name);
                         return Exit.BADOPT;
                     }
                 }
@@ -296,23 +297,23 @@ namespace CKAN.CmdLine
                 log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
                 if (manager.registry.Repositories.ContainsKey(options.name))
                 {
-                    user?.RaiseMessage(Properties.Resources.RepoAddDuplicate,
-                                       options.name);
+                    user.RaiseMessage(Properties.Resources.RepoAddDuplicate,
+                                      options.name);
                     return Exit.BADOPT;
                 }
                 if (manager.registry.Repositories.Values.Any(r => r.uri.ToString() == options.uri))
                 {
-                    user?.RaiseMessage(Properties.Resources.RepoAddDuplicateURL,
-                                       options.uri);
+                    user.RaiseMessage(Properties.Resources.RepoAddDuplicateURL,
+                                      options.uri);
                     return Exit.BADOPT;
                 }
 
                 manager.registry.RepositoriesAdd(new Repository(options.name, options.uri,
                                                                 manager.registry.Repositories.Count));
 
-                user?.RaiseMessage(Properties.Resources.RepoAdded,
-                                   options.name,
-                                   options.uri);
+                user.RaiseMessage(Properties.Resources.RepoAdded,
+                                  options.name,
+                                  options.uri);
                 manager.Save();
 
                 return Exit.OK;
@@ -324,7 +325,7 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                user?.RaiseError(Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("priority");
                 return Exit.BADOPT;
             }
@@ -333,9 +334,9 @@ namespace CKAN.CmdLine
             {
                 if (options.priority < 0 || options.priority >= repositories.Count)
                 {
-                    user?.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
-                                       options.priority,
-                                       repositories.Count - 1);
+                    user.RaiseMessage(Properties.Resources.RepoPriorityInvalid,
+                                      options.priority,
+                                      repositories.Count - 1);
                     return Exit.BADOPT;
                 }
 
@@ -369,8 +370,8 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    user?.RaiseMessage(Properties.Resources.RepoPriorityNotFound,
-                                       options.name);
+                    user.RaiseMessage(Properties.Resources.RepoPriorityNotFound,
+                                      options.name);
                 }
             }
             return Exit.BADOPT;
@@ -380,7 +381,7 @@ namespace CKAN.CmdLine
         {
             if (options.name == null)
             {
-                user?.RaiseError(Properties.Resources.ArgumentMissing);
+                user.RaiseError(Properties.Resources.ArgumentMissing);
                 PrintUsage("forget");
                 return Exit.BADOPT;
             }
@@ -396,12 +397,12 @@ namespace CKAN.CmdLine
                     name = repos.Keys.FirstOrDefault(repo => repo.Equals(options.name, StringComparison.OrdinalIgnoreCase));
                     if (name == null)
                     {
-                        user?.RaiseMessage(Properties.Resources.RepoForgetNotFound,
-                                           options.name);
+                        user.RaiseMessage(Properties.Resources.RepoForgetNotFound,
+                                          options.name);
                         return Exit.BADOPT;
                     }
-                    user?.RaiseMessage(Properties.Resources.RepoForgetRemoving,
-                                       name);
+                    user.RaiseMessage(Properties.Resources.RepoForgetRemoving,
+                                      name);
                 }
 
                 manager.registry.RepositoriesRemove(name);
@@ -410,8 +411,8 @@ namespace CKAN.CmdLine
                 {
                     remaining[i].priority = i;
                 }
-                user?.RaiseMessage(Properties.Resources.RepoForgetRemoved,
-                                   options.name);
+                user.RaiseMessage(Properties.Resources.RepoForgetRemoved,
+                                  options.name);
                 manager.Save();
 
                 return Exit.OK;
@@ -436,9 +437,9 @@ namespace CKAN.CmdLine
                 manager.registry.RepositoriesAdd(
                     new Repository(Repository.default_ckan_repo_name, uri, repositories.Count));
 
-                user?.RaiseMessage(Properties.Resources.RepoSet,
-                                   Repository.default_ckan_repo_name,
-                                   uri);
+                user.RaiseMessage(Properties.Resources.RepoSet,
+                                  Repository.default_ckan_repo_name,
+                                  uri);
                 manager.Save();
 
                 return Exit.OK;
@@ -450,13 +451,13 @@ namespace CKAN.CmdLine
         {
             foreach (var h in RepoSubOptions.GetHelp(verb))
             {
-                user?.RaiseError("{0}", h);
+                user.RaiseError("{0}", h);
             }
         }
 
-        private          GameInstanceManager?  Manager;
+        private readonly GameInstanceManager   Manager;
         private readonly RepositoryDataManager repoData;
-        private          IUser?                user;
+        private readonly IUser                 user;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Repo));
     }
