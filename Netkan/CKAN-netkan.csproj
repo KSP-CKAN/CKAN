@@ -27,6 +27,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <ILLinkTreatWarningsAsErrors>false</ILLinkTreatWarningsAsErrors>
     <NoWarn>IDE1006,NU1701</NoWarn>
+    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
@@ -58,7 +59,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="log4net.xml" />
+    <Content Include="log4net.xml" CopyToOutputDirectory="PreserveNewest" />
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">
       <Link>Properties\GlobalAssemblyVersionInfo.cs</Link>
     </Compile>

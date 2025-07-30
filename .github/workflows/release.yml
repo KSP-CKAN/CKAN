@@ -37,15 +37,11 @@ jobs:
       - sign-assets
     steps:
       - uses: actions/checkout@v4
-      - name: Install OSX build dependencies
-        run: sudo apt-get install -y libplist-utils xorriso
-      - name: Download repack artifact
+      - name: Download CKAN.dmg artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
-      - name: Build dmg
-        run: ./build.sh osx --configuration=Release --exclusive
+          name: CKAN.dmg
+          path: _build/osx
       - name: Upload OSX release asset
         run: gh release upload ${{ github.event.release.tag_name }} _build/osx/CKAN.dmg
         env:

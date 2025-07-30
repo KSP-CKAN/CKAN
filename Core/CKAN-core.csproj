@@ -94,9 +94,7 @@
                       Overwrite="true" />
   </Target>
   <ItemGroup>
-    <Content Include="log4net.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="log4net.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
