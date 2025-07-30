@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# dotnet uses a different SpecialFolder.LocalApplicationData path than Mono did
+MONO_DIR="${HOME}/.local/share/CKAN"
+DOTNET_DIR="${HOME}/Library/Application Support/CKAN"
+if [[ -d "${MONO_DIR}" && ! -e "${DOTNET_DIR}" ]]
+then
+    mv "${MONO_DIR}" "${DOTNET_DIR}"
+    ln -s "${DOTNET_DIR}" "${MONO_DIR}"
+fi
+
 # The script is in the same folder as the arch-specific folders, go there now.
 # uname -m is either x86_64 or arm64.
 MACOS_PATH="$(cd "$(dirname "$0")/$(uname -m)" && pwd)"
