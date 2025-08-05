@@ -95,16 +95,11 @@ jobs:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - name: Install OSX build dependencies
-        run: sudo apt-get install -y libplist-utils xorriso
-      - uses: actions/checkout@v4
-      - name: Download repack artifact
+      - name: Download CKAN.dmg artifact
         uses: actions/download-artifact@v4
         with:
-          name: Release-repack-unsigned
-          path: _build/repack/
-      - name: Build dmg
-        run: ./build.sh osx --configuration=Release --exclusive
+          name: CKAN.dmg
+          path: _build/osx
       - name: Push dmg to S3
         run: aws s3 cp _build/osx/CKAN.dmg s3://${AWS_S3_BUCKET} --follow-symlinks
 
