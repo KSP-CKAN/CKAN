@@ -91,7 +91,6 @@ namespace CKAN.ConsoleUI {
                             ModuleInstaller inst = new ModuleInstaller(manager.CurrentInstance, manager.Cache,
                                                                        ServiceLocator.Container.Resolve<IConfiguration>(),
                                                                        this);
-                            inst.OneComplete += OnModInstalled;
                             if (plan.Remove.Count > 0) {
                                 inst.UninstallList(plan.Remove, ref possibleConfigOnlyDirs, regMgr, true, new List<CkanModule>(plan.Install));
                                 plan.Remove.Clear();
@@ -130,7 +129,6 @@ namespace CKAN.ConsoleUI {
                             }
 
                             trans.Complete();
-                            inst.OneComplete -= OnModInstalled;
                             // Don't let the installer re-use old screen references
                             inst.User = new NullUser();
 
@@ -194,12 +192,6 @@ namespace CKAN.ConsoleUI {
                     LaunchSubScreen(new DeleteDirectoriesScreen(theme, manager.CurrentInstance, possibleConfigOnlyDirs));
                 }
             }
-        }
-
-        private void OnModInstalled(CkanModule mod)
-        {
-            RaiseMessage(Properties.Resources.InstallModInstalled,
-                         Symbols.checkmark, mod.name, mod.version.StripEpoch());
         }
 
         private IEnumerable<ModuleReplacement> AllReplacements(IEnumerable<string> identifiers)

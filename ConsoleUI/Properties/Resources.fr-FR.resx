@@ -441,9 +441,6 @@
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nom</value>
   </data>
-  <data name="InstallModInstalled" xml:space="preserve">
-    <value>{0} installé avec succès {1} {2}</value>
-  </data>
   <data name="InstallDeduplicateScanning" xml:space="preserve">
     <value>Vérification des autres instances de jeu pour d'éventuels fichiers installés redondants...</value>
   </data>

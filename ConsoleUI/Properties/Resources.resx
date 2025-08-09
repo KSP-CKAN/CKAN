@@ -227,7 +227,6 @@
 
 Edit authentication tokens now?</value></data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve"><value>Name</value></data>
-  <data name="InstallModInstalled" xml:space="preserve"><value>{0} Successfully installed {1} {2}</value></data>
   <data name="InstallDeduplicateScanning" xml:space="preserve"><value>Checking other game instances for possible duplicate installed files...</value></data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Delete Directories</value></data>
   <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Warning, some folders have been left behind because CKAN does not know whether it is safe to delete their remaining files. Keeping these folders may break other mods! If you do not need these files, deleting them is recommended.</value></data>
