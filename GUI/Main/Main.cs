@@ -15,7 +15,6 @@ using log4net;
 using Autofac;
 
 using CKAN.IO;
-using CKAN.Extensions;
 using CKAN.Versioning;
 using CKAN.GUI.Attributes;
 using CKAN.Configuration;
@@ -658,7 +657,7 @@ namespace CKAN.GUI
                             (GUIModFilter)configuration.ActiveFilter,
                             configuration.TagFilter == null
                                 ? null
-                                : registry.Tags.GetOrDefault(configuration.TagFilter),
+                                : registry.Tags.GetValueOrDefault(configuration.TagFilter),
                             ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                                 .FirstOrDefault(l => l.Name == configuration.CustomLabelFilter)),
                         false);
