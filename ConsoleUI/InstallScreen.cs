@@ -97,15 +97,15 @@ namespace CKAN.ConsoleUI {
                             }
                             NetAsyncModulesDownloader dl = new NetAsyncModulesDownloader(this, manager.Cache, userAgent);
                             if (plan.Install.Count > 0) {
+                                var installed = registry.InstalledModules
+                                                        .Select(im => im.Module)
+                                                        .ToArray();
                                 var iList = plan.Install
                                                 .Select(m => Utilities.DefaultIfThrows(() =>
                                                                  registry.LatestAvailable(m.identifier, stabilityTolerance,
                                                                                           manager.CurrentInstance.VersionCriteria(),
                                                                                           null,
-                                                                                          registry.InstalledModules
-                                                                                                  .Select(im => im.Module)
-                                                                                                  .ToArray(),
-                                                                                          plan.Install))
+                                                                                          installed, plan.Install))
                                                              ?? m)
                                                 .ToArray();
                                 inst.InstallList(iList, resolvOpts(stabilityTolerance), regMgr,
