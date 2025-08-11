@@ -438,9 +438,6 @@ Edytować tokeny uwierzytelniania?</value>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nazwa</value>
   </data>
-  <data name="InstallModInstalled" xml:space="preserve">
-    <value>{0} pomyślnie zainstalowano {1} {2}</value>
-  </data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Usuń foldery</value></data>
   <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Poniższe foldery są pozostałościami po usuniętych modach. Zawierają pliki które nie były pobierane przez CKAN (prawdopodobnie wygenerowane przez moda bądź zainstalowane ręcznie). CKAN nie usuwa plików których nie instalował ale możesz sam je usunąć jeśli uważasz że to bezpieczne (zalecane)
 Uważaj bo jeśli nie usuniesz folderu, ModuleManager może myśleć że mod jest nadal zainstalowany.</value></data>

@@ -14,17 +14,6 @@ namespace CKAN.Extensions
                            && b.Keys.All(k => a.ContainsKey(k)
                                               && EqualityComparer<V>.Default.Equals(a[k], b[k]));
 
-        public static V? GetOrDefault<K, V>(this Dictionary<K, V> dict, K key)
-            where K : notnull
-        {
-            V? val = default;
-            if (key != null)
-            {
-                dict.TryGetValue(key, out val);
-            }
-            return val;
-        }
-
         public static IEnumerable<Tuple<K, V1, V2>> KeyZip<K, V1, V2>(this IDictionary<K, V1> source,
                                                                       IDictionary<K, V2>      other)
             where K : notnull

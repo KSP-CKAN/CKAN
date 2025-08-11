@@ -438,9 +438,6 @@
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Название</value>
   </data>
-  <data name="InstallModInstalled" xml:space="preserve">
-    <value>{0} Успешно установлен {1} {2}</value>
-  </data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Удаление папок</value></data>
   <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Следующие папки остались после удаления модификаций. Они содержат файлы, не установленные CKAN (сгенерированные модификациями или установленные вручную). CKAN не удаляет сторонние файлы автоматически, однако вы можете удалить их вручную, если это безопасно.
 Обратите внимание, что если папки не будут удалены, ModuleManager может неверно посчитать, что модификации установлены.</value></data>

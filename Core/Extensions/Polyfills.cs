@@ -118,6 +118,21 @@ namespace System.Collections.Generic
             val = kvp.Value;
         }
     }
+
+    public static class CollectionExtensions
+    {
+        public static V? GetValueOrDefault<K, V>(this IReadOnlyDictionary<K, V> dict, K key)
+            where K : notnull
+        {
+            V? val = default;
+            if (key != null)
+            {
+                dict.TryGetValue(key, out val);
+            }
+            return val;
+        }
+
+    }
 }
 
 #endif

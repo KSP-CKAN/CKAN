@@ -1562,7 +1562,7 @@ namespace CKAN.IO
         /// Looks for optional related modules that could be installed alongside the given modules
         /// </summary>
         /// <param name="instance">Game instance to use</param>
-        /// <param name="sourceModules">Modules to check for relationships</param>
+        /// <param name="sourceModules">Modules to check for relationships, should contain the complete changeset including dependencies</param>
         /// <param name="toInstall">Modules already being installed, to be omitted from search</param>
         /// <param name="exclude">Modules the user has already seen and decided not to install</param>
         /// <param name="registry">Registry to use</param>

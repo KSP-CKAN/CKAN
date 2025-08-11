@@ -438,9 +438,6 @@
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>名称</value>
   </data>
-  <data name="InstallModInstalled" xml:space="preserve">
-    <value>{0} 成功安装 {1} {2}</value>
-  </data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve">
     <value>删除目录</value>
   </data>

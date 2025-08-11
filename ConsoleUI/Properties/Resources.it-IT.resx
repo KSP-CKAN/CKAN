@@ -438,9 +438,6 @@ Modificaew i token di autenticazione adesso?</value>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nome</value>
   </data>
-  <data name="InstallModInstalled" xml:space="preserve">
-    <value>{0} installato con successo {1} {2}</value>
-  </data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Elimina Cartelle</value></data>
   <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Le directory sottostanti sono dei residui rimasti a seguito della rimozione di alcune mod. Contengono file che non sono stati installati da CKAN (probabilmente generati da una mod o installati manualmente). CKAN non elimina automaticamente i file che non ha installato, ma puoi scegliere di rimuoverli se ti sembra sicuro farlo (scelta consigliata).
 Nota che se decidi di non rimuovere una cartella, ModuleManager potrebbe pensare erroneamente che il mod sia ancora installato.</value></data>

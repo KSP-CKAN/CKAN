@@ -182,7 +182,7 @@ namespace CKAN
             => identifiers.Contains(name);
 
         public override bool StartsWith(string prefix)
-            => name.IndexOf(prefix, StringComparison.CurrentCultureIgnoreCase) == 0;
+            => name.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase);
 
         /// <summary>
         /// Generate a user readable description of the relationship
@@ -210,7 +210,7 @@ namespace CKAN
                                                        .SelectMany(avail => avail.AllAvailable())
                                                        .Where(WithinBounds)
                                                        .ToArray())
-               is CkanModule[] { Length: >0 } modules
+               is CkanModule[] { Length: > 0 } modules
                    ? string.Format("{0} ({1})", ToString(),
                                                 DescribeCompatibility(modules, game))
                    : ToString();
@@ -281,7 +281,7 @@ namespace CKAN
         protected bool Equals(AnyOfRelationshipDescriptor? other)
             => other != null
                 && (any_of?.SequenceEqual(other.any_of ?? Enumerable.Empty<RelationshipDescriptor>())
-                          ?? other.any_of == null);
+                          ?? (other.any_of == null));
 
         public override int GetHashCode()
             => any_of?.ToSequenceHashCode() ?? 0;

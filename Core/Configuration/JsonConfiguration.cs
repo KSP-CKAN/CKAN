@@ -225,7 +225,7 @@ namespace CKAN.Configuration
         }
 
         public string[] GetGlobalInstallFilters(IGame game)
-            => config.GlobalInstallFilters?.GetOrDefault(game.ShortName)
+            => config.GlobalInstallFilters?.GetValueOrDefault(game.ShortName)
                                           ?? Array.Empty<string>();
 
         public void SetGlobalInstallFilters(IGame game, string[] value)
