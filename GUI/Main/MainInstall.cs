@@ -12,7 +12,6 @@ using System.Runtime.Versioning;
 using Autofac;
 
 using CKAN.IO;
-using CKAN.Extensions;
 using CKAN.GUI.Attributes;
 using CKAN.Configuration;
 
@@ -463,7 +462,7 @@ namespace CKAN.GUI
             {
                 switch (e.Error)
                 {
-                    case CancelledActionKraken exc:
+                    case CancelledActionKraken:
                         // User already knows they cancelled, get out
                         EnableMainWindow();
                         HideWaitDialog();
