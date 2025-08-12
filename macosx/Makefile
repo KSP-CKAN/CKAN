@@ -1,4 +1,4 @@
-.PHONY: clean
+.PHONY: clean app
 
 CONFIGURATION?=Debug
 NAME:=CKAN
@@ -21,19 +21,21 @@ PLISTDEST:=$(APPROOT)/Contents/Info.plist
 CHANGELOGSRC:=../CHANGELOG.md
 VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' )
 
-$(DMG): $(BUILDDIR_x86_64_DEST) $(BUILDDIR_arm64_DEST) $(SCRIPTDEST) $(ICNSDEST) $(PLISTDEST)
+$(DMG): app
+	mkdir -p $(OUTDIR)
+	genisoimage -V $(NAME) -D -R -apple -no-pad -o $@ $(DMGROOT)
+
+app: $(BUILDDIR_x86_64_DEST) $(BUILDDIR_arm64_DEST) $(SCRIPTDEST) $(ICNSDEST) $(PLISTDEST)
 	rdfind -minsize 10240 -makeresultsfile false -makesymlinks true $(BUILDDIR_x86_64_DEST) $(BUILDDIR_arm64_DEST)
 	symlinks -rc $(BUILDDIR_arm64_DEST)
-	mkdir -p $(OUTDIR)
-	xorrisofs -V $(NAME) -D -R -no-pad -o $@ $(DMGROOT)
 
 $(BUILDDIR_x86_64_DEST): $(BUILDDIR_x86_64_SRC)
 	mkdir -p $(shell dirname $@)
-	cp -r $< $@
+	cp -rT $< $@
 
 $(BUILDDIR_arm64_DEST): $(BUILDDIR_arm64_SRC)
 	mkdir -p $(shell dirname $@)
-	cp -r $< $@
+	cp -rT $< $@
 
 $(SCRIPTDEST): $(SCRIPTSRC)
 	mkdir -p $(shell dirname $@)

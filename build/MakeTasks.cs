@@ -9,10 +9,10 @@ using Cake.Common.Tools.DotNet.Publish;
 
 namespace Build;
 
-[TaskName("osx")]
-[TaskDescription("Build the macOS(OSX) dmg package.")]
+[TaskName("osx-app")]
+[TaskDescription("Build the macOS(OSX) app bundle.")]
 [IsDependentOn(typeof(CkanTask))]
-public sealed class OsxTask() : MakeTask("macosx")
+public sealed class OsxAppTask() : MakeTask("macosx", "app")
 {
     public override void Run(BuildContext context)
     {
@@ -35,6 +35,11 @@ public sealed class OsxTask() : MakeTask("macosx")
         base.Run(context);
     }
 }
+
+[TaskName("osx-dmg")]
+[TaskDescription("Build the macOS(OSX) dmg package.")]
+[IsDependentOn(typeof(OsxAppTask))]
+public sealed class OsxDmgTask() : MakeTask("macosx");
 
 [TaskName("osx-clean")]
 [TaskDescription("Clean the output directory of the macOS(OSX) package.")]

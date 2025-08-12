@@ -37,11 +37,25 @@ jobs:
           key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Build ckan.exe and netkan.exe
         run: ./build.sh --configuration=${{ inputs.configuration }}
+      - name: Build CKAN.app
+        if: inputs.configuration == 'Release'
+        run: |
+          sudo apt-get install -y libplist-utils rdfind symlinks genisoimage
+          ./build.sh osx-app --configuration=${{ inputs.configuration }} --exclusive
+      - name: Ad hoc codesign x86_64 binary
+        if: inputs.configuration == 'Release'
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/x86_64/CKAN-CmdLine
+      - name: Ad hoc codesign arm64 binary
+        if: inputs.configuration == 'Release'
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/arm64/CKAN-CmdLine
       - name: Build CKAN.dmg
         if: inputs.configuration == 'Release'
         run: |
-          sudo apt-get install -y libplist-utils xorriso rdfind symlinks
-          ./build.sh osx --configuration=${{ inputs.configuration }} --exclusive
+          ./build.sh osx-dmg --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload repack artifact
         id: upload-repack-artifact
         uses: actions/upload-artifact@v4
