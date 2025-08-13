@@ -37,6 +37,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Make hash caches thread-safe, Netkan warning for uncompiled plugins (#4400 by: HebaruSan)
 - [Netkan] Make CachingHttpService more thread-safe (#4402 by: HebaruSan)
 - [Netkan] Lookback for `version_from_asset` (#4407 by: HebaruSan)
+- [Build] Migrate Mac app bundle from Mono to dotnet (#4410 by: HebaruSan; reviewed: lewisfm)
 
 ## v1.36.0 (Quasar)
 

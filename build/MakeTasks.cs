@@ -4,13 +4,42 @@ using System.Collections.Generic;
 using Cake.Common;
 using Cake.Core.IO;
 using Cake.Frosting;
+using Cake.Common.Tools.DotNet;
+using Cake.Common.Tools.DotNet.Publish;
 
 namespace Build;
 
-[TaskName("osx")]
-[TaskDescription("Build the macOS(OSX) dmg package.")]
+[TaskName("osx-app")]
+[TaskDescription("Build the macOS(OSX) app bundle.")]
 [IsDependentOn(typeof(CkanTask))]
-public sealed class OsxTask() : MakeTask("macosx");
+public sealed class OsxAppTask() : MakeTask("macosx", "app")
+{
+    public override void Run(BuildContext context)
+    {
+        // Publish Cmdline for Mac arm64
+        context.DotNetPublish(context.Paths.CmdlineProject.FullPath, new DotNetPublishSettings
+        {
+            Configuration  = context.BuildConfiguration,
+            Framework      = "net8.0",
+            Runtime        = "osx-arm64",
+            SelfContained  = true,
+        });
+        // Publish Cmdline for Mac x64
+        context.DotNetPublish(context.Paths.CmdlineProject.FullPath, new DotNetPublishSettings
+        {
+            Configuration  = context.BuildConfiguration,
+            Framework      = "net8.0",
+            Runtime        = "osx-x64",
+            SelfContained  = true,
+        });
+        base.Run(context);
+    }
+}
+
+[TaskName("osx-dmg")]
+[TaskDescription("Build the macOS(OSX) dmg package.")]
+[IsDependentOn(typeof(OsxAppTask))]
+public sealed class OsxDmgTask() : MakeTask("macosx");
 
 [TaskName("osx-clean")]
 [TaskDescription("Clean the output directory of the macOS(OSX) package.")]
@@ -63,7 +92,10 @@ public abstract class MakeTask(string location, ProcessArgumentBuilder? args = n
         var exitCode = context.StartProcess("make", new ProcessSettings() {
             WorkingDirectory = context.Paths.RootDirectory.Combine(Location),
             Arguments = Args,
-            EnvironmentVariables = new Dictionary<string, string?> { { "CONFIGURATION", context.BuildConfiguration } }
+            EnvironmentVariables = new Dictionary<string, string?>
+            {
+                { "CONFIGURATION", context.BuildConfiguration },
+            }
         });
         if (exitCode != 0)
         {

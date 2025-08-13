@@ -37,13 +37,32 @@ jobs:
           key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Build ckan.exe and netkan.exe
         run: ./build.sh --configuration=${{ inputs.configuration }}
+      - name: Build CKAN.app
+        if: inputs.configuration == 'Release'
+        run: |
+          sudo apt-get install -y libplist-utils rdfind symlinks genisoimage
+          ./build.sh osx-app --configuration=${{ inputs.configuration }} --exclusive
+      - name: Ad hoc codesign x86_64 binary
+        if: inputs.configuration == 'Release'
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/x86_64/CKAN-CmdLine
+      - name: Ad hoc codesign arm64 binary
+        if: inputs.configuration == 'Release'
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/arm64/CKAN-CmdLine
+      - name: Build CKAN.dmg
+        if: inputs.configuration == 'Release'
+        run: |
+          ./build.sh osx-dmg --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload repack artifact
         id: upload-repack-artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.configuration }}-repack-unsigned
           path: _build/repack/
-          retention-days: 7
+          retention-days: 1
       - name: Upload out artifact
         uses: actions/upload-artifact@v4
         with:
@@ -61,11 +80,18 @@ jobs:
         with:
           name: unsigned
           path: _build/signpath/Release
-          retention-days: 7
+          retention-days: 1
       - name: Upload ckan.exe artifact
         if: inputs.configuration == 'Release'
         uses: actions/upload-artifact@v4
         with:
           name: ckan.exe
           path: _build/repack/Release/ckan.exe
+          retention-days: 7
+      - name: Upload CKAN.dmg artifact
+        if: inputs.configuration == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: CKAN.dmg
+          path: _build/osx/CKAN.dmg
           retention-days: 7
