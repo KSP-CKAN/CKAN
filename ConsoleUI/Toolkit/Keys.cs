@@ -7,6 +7,8 @@ namespace CKAN.ConsoleUI.Toolkit {
     /// </summary>
     public static class Keys {
 
+        #if NETFRAMEWORK
+
         private const char LinuxEnter   = (char)10;
         private const char WindowsEnter = (char)13;
 
@@ -18,8 +20,19 @@ namespace CKAN.ConsoleUI.Toolkit {
             ConsoleKey.Enter, false, false, false
         );
 
+        #else
+
         /// <summary>
         /// Representation of enter key for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo Enter = new ConsoleKeyInfo(
+            (char)13, ConsoleKey.Enter, false, false, false
+        );
+
+        #endif
+
+        /// <summary>
+        /// Representation of space bar for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo Space = new ConsoleKeyInfo(
             ' ', ConsoleKey.Spacebar, false, false, false
