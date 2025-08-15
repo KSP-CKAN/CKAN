@@ -10,8 +10,15 @@ then
 fi
 
 # The script is in the same folder as the arch-specific folders, go there now.
-# uname -m is either x86_64 or arm64.
-MACOS_PATH="$(cd "$(dirname "$0")/$(uname -m)" && pwd)"
+# Mac always runs bash scripts in an x86_64 environment if Rosetta 2 is installed,
+# which makes uname useless for determining architecture.
+if [[ $(sysctl -ni hw.optional.arm64) == 1 ]]
+then
+    ARCH=arm64
+else
+    ARCH=x86_64
+fi
+MACOS_PATH="$(cd "$(dirname "$0")/${ARCH}" && pwd)"
 cd "$MACOS_PATH"
 
 osascript <<END
