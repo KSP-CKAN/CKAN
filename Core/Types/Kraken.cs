@@ -169,11 +169,11 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(DependenciesNotSatisfiedKraken));
     }
 
-    public class NotKSPDirKraken : Kraken
+    public class NotGameDirKraken : Kraken
     {
-        public NotKSPDirKraken(string     path,
-                               string?    reason         = null,
-                               Exception? innerException = null)
+        public NotGameDirKraken(string     path,
+                                string?    reason         = null,
+                                Exception? innerException = null)
             : base(reason, innerException)
         {
             this.path = path;
@@ -632,7 +632,7 @@ namespace CKAN
     }
 
     /// <summary>
-    /// The version is a known and per se a valid KSP version, but is not allowed to be used for an action.
+    /// The version is a known and per se a valid Game version, but is not allowed to be used for an action.
     /// For example the given base game version is too low to fake a DLC in instance faking.
     /// </summary>
     public class WrongGameVersionKraken : Kraken
@@ -708,20 +708,20 @@ namespace CKAN
         public readonly string path;
     }
 
-    public class KSPManagerKraken : Kraken
+    public class GameManagerKraken : Kraken
     {
-        public KSPManagerKraken(string?    reason         = null,
-                                Exception? innerException = null)
+        public GameManagerKraken(string?    reason         = null,
+                                 Exception? innerException = null)
             : base(reason, innerException)
         {
         }
     }
 
-    public class InvalidKSPInstanceKraken : Kraken
+    public class InvalidGameInstanceKraken : Kraken
     {
-        public InvalidKSPInstanceKraken(string     instance,
-                                        string?    reason         = null,
-                                        Exception? innerException = null)
+        public InvalidGameInstanceKraken(string     instance,
+                                         string?    reason         = null,
+                                         Exception? innerException = null)
             : base(reason, innerException)
         {
             this.instance = instance;

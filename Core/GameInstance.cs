@@ -54,9 +54,9 @@ namespace CKAN
         #region Construction and Initialisation
 
         /// <summary>
-        /// Returns a KSP object.
-        /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
-        /// if the directory contains a valid KSP install.
+        /// Returns a game instance object.
+        /// Will initialise a CKAN instance in the game dir if it does not already exist,
+        /// if the directory contains a valid game install.
         /// </summary>
         public GameInstance(IGame game, string gameDir, string name, IUser? user)
         {
@@ -92,7 +92,7 @@ namespace CKAN
         /// true if the instance may be locked, false otherwise.
         /// Note that this is a tentative value; if it's true,
         /// we still need to try to acquire the lock to confirm it isn't stale.
-        /// NOTE: Will throw NotKSPDirKraken if the instance isn't valid!
+        /// NOTE: Will throw NotGameDirKraken if the instance isn't valid!
         ///       Either be prepared to catch that exception, or check Valid first to avoid it.
         /// </returns>
         public bool IsMaybeLocked => RegistryManager.IsInstanceMaybeLocked(CkanDir());
@@ -220,10 +220,10 @@ namespace CKAN
 
         #endregion
 
-        #region KSP Directory Detection and Versioning
+        #region Game Directory Detection and Versioning
 
         /// <summary>
-        /// Returns the path to our portable version of KSP if ckan.exe is in the same
+        /// Returns the path to our portable version of game if ckan.exe is in the same
         /// directory as the game, or if the game is in the current directory.
         /// Otherwise, returns null.
         /// </summary>
@@ -292,7 +292,7 @@ namespace CKAN
             if (!Valid)
             {
                 log.Error("Could not find game version");
-                throw new NotKSPDirKraken(gameDir, Properties.Resources.GameInstanceVersionNotFound);
+                throw new NotGameDirKraken(gameDir, Properties.Resources.GameInstanceVersionNotFound);
             }
             return CKANPathUtils.NormalizePath(
                 Path.Combine(GameDir(), "CKAN"));
@@ -321,13 +321,13 @@ namespace CKAN
         #endregion
 
         /// <summary>
-        /// Returns path relative to this KSP's GameDir.
+        /// Returns path relative to this instance's GameDir.
         /// </summary>
         public string ToRelativeGameDir(string path)
             => CKANPathUtils.ToRelative(path, GameDir());
 
         /// <summary>
-        /// Given a path relative to this KSP's GameDir, returns the
+        /// Given a path relative to this instance's GameDir, returns the
         /// absolute path on the system.
         /// </summary>
         public string ToAbsoluteGameDir(string path)

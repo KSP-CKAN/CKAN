@@ -175,7 +175,7 @@ namespace CKAN.GUI
                     UpdateInstancesList();
                 }
             }
-            catch (NotKSPDirKraken k)
+            catch (NotGameDirKraken k)
             {
                 user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
                                 k.path);
@@ -267,7 +267,7 @@ namespace CKAN.GUI
                     manager.SetAutoStart(inst.Name);
                     SetAsDefaultCheckbox.Checked = true;
                 }
-                catch (NotKSPDirKraken k)
+                catch (NotGameDirKraken k)
                 {
                     user.RaiseError(Properties.Resources.ManageGameInstancesNotValid, k.path);
                 }

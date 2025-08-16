@@ -324,7 +324,7 @@ namespace CKAN.CmdLine
                 }
                 return Exit.OK;
             }
-            catch (NotKSPDirKraken ex)
+            catch (NotGameDirKraken ex)
             {
                 user.RaiseMessage(Properties.Resources.InstanceNotInstance, ex.path);
                 return Exit.BADOPT;
@@ -376,7 +376,7 @@ namespace CKAN.CmdLine
                     throw new NoGameInstanceKraken();
                 }
             }
-            catch (NotKSPDirKraken kraken)
+            catch (NotGameDirKraken kraken)
             {
                 // Two possible reasons:
                 // First: The instance to clone is not a valid game instance.
@@ -514,7 +514,7 @@ namespace CKAN.CmdLine
                 {
                     Manager?.SetAutoStart(name);
                 }
-                catch (NotKSPDirKraken k)
+                catch (NotGameDirKraken k)
                 {
                     user.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
                     return Exit.BADOPT;
@@ -657,7 +657,7 @@ namespace CKAN.CmdLine
                 user.RaiseError("{0}", kraken.Message);
                 return badArgument();
             }
-            catch (NotKSPDirKraken kraken)
+            catch (NotGameDirKraken kraken)
             {
                 // Something went wrong adding the new instance to the registry,
                 // most likely because the newly created directory is somehow not valid.
@@ -665,7 +665,7 @@ namespace CKAN.CmdLine
                 user.RaiseError("{0}", kraken.Message);
                 return error();
             }
-            catch (InvalidKSPInstanceKraken)
+            catch (InvalidGameInstanceKraken)
             {
                 // Thrown by Manager.SetAutoStart() if Manager.HasInstance returns false.
                 // Will be checked again down below with a proper error message

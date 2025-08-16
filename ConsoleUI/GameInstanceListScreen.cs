@@ -152,7 +152,7 @@ namespace CKAN.ConsoleUI {
                     } else {
                         try {
                             manager.SetAutoStart(name);
-                        } catch (NotKSPDirKraken k) {
+                        } catch (NotGameDirKraken k) {
                             var errd = new ConsoleMessageDialog(
                                 theme,
                                 string.Format(Properties.Resources.InstanceListLoadingError, k.path, k.Message),
@@ -191,7 +191,7 @@ namespace CKAN.ConsoleUI {
         /// Try to load the registry of an instance
         /// </summary>
         /// <param name="theme">The visual theme to use to draw the dialog</param>
-        /// <param name="ksp">Game instance</param>
+        /// <param name="inst">Game instance</param>
         /// <param name="repoData">Repository data manager providing info from repos</param>
         /// <param name="render">Function that shows a loading message</param>
         /// <param name="progress">Function to call with progress updates 0-100</param>
@@ -199,7 +199,7 @@ namespace CKAN.ConsoleUI {
         /// True if successfully loaded, false if it's locked or the registry was corrupted, etc.
         /// </returns>
         public static bool TryGetInstance(ConsoleTheme          theme,
-                                          GameInstance          ksp,
+                                          GameInstance          inst,
                                           RepositoryDataManager repoData,
                                           Action<ConsoleTheme>  render,
                                           IProgress<int>?       progress)
@@ -212,10 +212,10 @@ namespace CKAN.ConsoleUI {
                     // Show loading message
                     render(theme);
                     // Try to get the lock; this will throw if another instance is in there
-                    var regMgr = RegistryManager.Instance(ksp, repoData);
+                    var regMgr = RegistryManager.Instance(inst, repoData);
                     repoData.Prepopulate(regMgr.registry.Repositories.Values.ToList(),
                                          progress);
-                    var compat = regMgr.registry.CompatibleModules(ksp.StabilityToleranceConfig, ksp.VersionCriteria());
+                    var compat = regMgr.registry.CompatibleModules(inst.StabilityToleranceConfig, inst.VersionCriteria());
 
                 } catch (RegistryInUseKraken k) {
 
@@ -236,11 +236,11 @@ namespace CKAN.ConsoleUI {
                         return false;
                     }
 
-                } catch (NotKSPDirKraken k) {
+                } catch (NotGameDirKraken k) {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         theme,
-                        string.Format(Properties.Resources.InstanceListLoadingError, ksp.GameDir(), k.Message),
+                        string.Format(Properties.Resources.InstanceListLoadingError, inst.GameDir(), k.Message),
                         new List<string>() { Properties.Resources.OK }
                     );
                     errd.Run();
@@ -251,7 +251,7 @@ namespace CKAN.ConsoleUI {
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         theme,
                         string.Format(Properties.Resources.InstanceListLoadingError,
-                                      Platform.FormatPath(Path.Combine(ksp.CkanDir(), "registry.json")),
+                                      Platform.FormatPath(Path.Combine(inst.CkanDir(), "registry.json")),
                                       e.ToString()),
                         new List<string>() { Properties.Resources.OK }
                     );
