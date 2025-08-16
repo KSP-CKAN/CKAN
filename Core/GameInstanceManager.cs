@@ -44,13 +44,14 @@ namespace CKAN
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 
         public string[] AllInstanceAnchorFiles => KnownGames.knownGames
-            .SelectMany(g => g.InstanceAnchorFiles)
-            .Distinct()
-            .ToArray();
+                                                            .SelectMany(g => g.InstanceAnchorFiles)
+                                                            .Distinct()
+                                                            .ToArray();
 
         public string? AutoStartInstance
         {
-            get => Configuration.AutoStartInstance != null && HasInstance(Configuration.AutoStartInstance)
+            get => Configuration.AutoStartInstance != null
+                   && HasInstance(Configuration.AutoStartInstance)
                        ? Configuration.AutoStartInstance
                        : null;
 
@@ -90,47 +91,55 @@ namespace CKAN
         /// Returns null if we have multiple instances, but none of them are preferred.
         /// </summary>
         public GameInstance? GetPreferredInstance()
-        {
-            CurrentInstance = _GetPreferredInstance();
-            return CurrentInstance;
-        }
+            => CurrentInstance ??= _GetPreferredInstance();
 
-        // Actual worker for GetPreferredInstance()
-        internal GameInstance? _GetPreferredInstance()
+        private GameInstance? _GetPreferredInstance()
         {
-            foreach (IGame game in KnownGames.knownGames)
+            // First check if we're part of a portable install
+            // Note that this *does not* register in the config.
+            switch (KnownGames.knownGames.Select(g => GameInstance.PortableDir(g)
+                                                      is string p
+                                                          ? new GameInstance(g, p,
+                                                                             Properties.Resources.GameInstanceManagerPortable,
+                                                                             User)
+                                                          : null)
+                                         .OfType<GameInstance>()
+                                         .Where(i => i.Valid)
+                                         .ToArray())
             {
-                // TODO: Check which ones match, prompt user if >1
+                case { Length: 1 } insts:
+                    return insts.Single();
 
-                // First check if we're part of a portable install
-                // Note that this *does not* register in the config.
-                string? path = GameInstance.PortableDir(game);
-
-                if (path != null)
-                {
-                    GameInstance portableInst = new GameInstance(
-                        game, path, Properties.Resources.GameInstanceManagerPortable, User);
-                    if (portableInst.Valid)
+                case { Length: > 1 } insts:
+                    if (User.RaiseSelectionDialog(
+                            string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
+                                          string.Join(", ", insts.Select(i => i.GameDir())
+                                                                 .Distinct()
+                                                                 .Select(Platform.FormatPath))),
+                            insts.Select(i => i.game.ShortName)
+                                 .ToArray())
+                        is int selection and >= 0)
                     {
-                        return portableInst;
+                        return insts[selection];
                     }
-                }
+                    break;
             }
 
             // If we only know of a single instance, return that.
-            if (instances.Count == 1 && instances.First().Value.Valid)
+            if (instances.Count == 1
+                && instances.Values.Single() is { Valid: true } and var inst)
             {
-                return instances.First().Value;
+                return inst;
             }
 
             // Return the autostart, if we can find it.
             // We check both null and "" as we can't write NULL to the config, so we write an empty string instead
             // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the config!
-            if (AutoStartInstance != null
-                && !string.IsNullOrEmpty(AutoStartInstance)
-                && instances[AutoStartInstance].Valid)
+            if (AutoStartInstance is { Length: > 0 }
+                && instances.TryGetValue(AutoStartInstance, out GameInstance? autoInst)
+                && autoInst.Valid)
             {
-                return instances[AutoStartInstance];
+                return autoInst;
             }
 
             // If we know of no instances, try to find one.
@@ -454,12 +463,18 @@ namespace CKAN
         /// </summary>
         public void RenameInstance(string from, string to)
         {
-            // TODO: What should we do if our target name already exists?
-            GameInstance ksp = instances[from];
-            instances.Remove(from);
-            ksp.Name = to;
-            instances.Add(to, ksp);
-            Configuration.SetRegistryToInstances(instances);
+            if (from != to)
+            {
+                if (instances.ContainsKey(to))
+                {
+                    throw new InstanceNameTakenKraken(to);
+                }
+                var inst = instances[from];
+                instances.Remove(from);
+                inst.Name = to;
+                instances.Add(to, inst);
+                Configuration.SetRegistryToInstances(instances);
+            }
         }
 
         /// <summary>
@@ -498,52 +513,30 @@ namespace CKAN
 
         public void SetCurrentInstanceByPath(string path)
         {
-            var matchingGames = KnownGames.knownGames
-                .Where(g => g.GameInFolder(new DirectoryInfo(path)))
-                .ToList();
-            switch (matchingGames.Count)
+            if (InstanceAt(path) is GameInstance inst)
             {
-                case 0:
-                    throw new NotGameDirKraken(path);
-
-                case 1:
-                    GameInstance ksp = new GameInstance(
-                        matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
-                    if (ksp.Valid)
-                    {
-                        SetCurrentInstance(ksp);
-                    }
-                    else
-                    {
-                        throw new NotGameDirKraken(ksp.GameDir());
-                    }
-                    break;
-
-                default:
-                    // TODO: Prompt user to choose
-                    break;
+                SetCurrentInstance(inst);
             }
         }
 
         public GameInstance? InstanceAt(string path)
         {
-            var matchingGames = KnownGames.knownGames
-                .Where(g => g.GameInFolder(new DirectoryInfo(path)))
-                .ToList();
-            switch (matchingGames.Count)
+            var di = new DirectoryInfo(path);
+            if (DetermineGame(di, User) is IGame game)
             {
-                case 0:
-                    return null;
-
-                case 1:
-                    return new GameInstance(
-                        matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
-
-                default:
-                    // TODO: Prompt user to choose
-                    return null;
-
+                var inst = new GameInstance(game, path,
+                                            Properties.Resources.GameInstanceByPathName,
+                                            User);
+                if (inst.Valid)
+                {
+                    return inst;
+                }
+                else
+                {
+                    throw new NotGameDirKraken(inst.GameDir());
+                }
             }
+            return null;
         }
 
         /// <summary>
@@ -776,25 +769,21 @@ namespace CKAN
         /// <returns>An instance of the matching game or null if the user cancelled</returns>
         /// <exception cref="NotGameDirKraken">Thrown when no games found</exception>
         public IGame? DetermineGame(DirectoryInfo path, IUser user)
-        {
-            var matchingGames = KnownGames.knownGames.Where(g => g.GameInFolder(path)).ToList();
-            switch (matchingGames.Count)
-            {
-                case 0:
-                    throw new NotGameDirKraken(path.FullName);
-
-                case 1:
-                    return matchingGames.First();
-
-                default:
-                    // Prompt user to choose
-                    int selection = user.RaiseSelectionDialog(
-                        string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
-                                      Platform.FormatPath(path.FullName)),
-                        matchingGames.Select(g => g.ShortName).ToArray());
-                    return selection >= 0 ? matchingGames[selection] : null;
-            }
-        }
+            => KnownGames.knownGames.Where(g => g.GameInFolder(path))
+                                    .ToArray()
+               switch
+               {
+                   { Length: 0 }       => throw new NotGameDirKraken(path.FullName),
+                   { Length: 1 } games => games.Single(),
+                   var games => user.RaiseSelectionDialog(
+                                    string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
+                                                  Platform.FormatPath(path.FullName)),
+                                    games.Select(g => g.ShortName)
+                                         .ToArray())
+                                is int selection and >= 0
+                                    ? games[selection]
+                                    : null
+               };
 
         public static readonly string DefaultDownloadCacheDir =
             Path.Combine(CKANPathUtils.AppDataPath, "downloads");
