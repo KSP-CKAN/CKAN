@@ -26,15 +26,15 @@ namespace CKAN.GUI
         }
 
         [ForbidGUICalls]
-        public void LoadRecommendations(IRegistryQuerier        registry,
-                                        ICollection<CkanModule> toInstall,
-                                        ICollection<CkanModule> toUninstall,
-                                        GameVersionCriteria     versionCrit,
-                                        NetModuleCache          cache,
-                                        IGame                   game,
-                                        List<ModuleLabel>       labels,
-                                        IConfiguration          coreConfig,
-                                        GUIConfiguration        guiConfig,
+        public void LoadRecommendations(IRegistryQuerier                registry,
+                                        IReadOnlyCollection<CkanModule> toInstall,
+                                        IReadOnlyCollection<CkanModule> toUninstall,
+                                        GameVersionCriteria             versionCrit,
+                                        NetModuleCache                  cache,
+                                        IGame                           game,
+                                        List<ModuleLabel>               labels,
+                                        IConfiguration                  coreConfig,
+                                        GUIConfiguration                guiConfig,
                                         Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                         Dictionary<CkanModule, List<string>>              suggestions,
                                         Dictionary<CkanModule, HashSet<string>>           supporters)
@@ -326,12 +326,12 @@ namespace CKAN.GUI
             RecommendedModsListView.ItemChecked -= RecommendedModsListView_ItemChecked;
         }
 
-        private IRegistryQuerier?       registry;
-        private ICollection<CkanModule> toInstall   = Array.Empty<CkanModule>();
-        private ICollection<CkanModule> toUninstall = Array.Empty<CkanModule>();
-        private GameVersionCriteria?    versionCrit;
-        private GUIConfiguration?       guiConfig;
-        private IGame?                  game;
+        private IRegistryQuerier?               registry;
+        private IReadOnlyCollection<CkanModule> toInstall   = Array.Empty<CkanModule>();
+        private IReadOnlyCollection<CkanModule> toUninstall = Array.Empty<CkanModule>();
+        private GameVersionCriteria?            versionCrit;
+        private GUIConfiguration?               guiConfig;
+        private IGame?                          game;
         private TaskCompletionSource<HashSet<CkanModule>?>? task;
     }
 }

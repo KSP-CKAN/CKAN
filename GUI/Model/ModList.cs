@@ -221,7 +221,8 @@ namespace CKAN.GUI
         /// <param name="crit">Compatible versions of current instance</param>
         /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
         private static IEnumerable<InstalledModule> InstalledAfterChanges(
-            IRegistryQuerier registry, ICollection<ModChange> changeSet)
+            IRegistryQuerier               registry,
+            IReadOnlyCollection<ModChange> changeSet)
         {
             var removingIdents = changeSet
                 .Where(ch => ch.ChangeType != GUIModChangeType.Install)

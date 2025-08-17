@@ -36,7 +36,7 @@ namespace CKAN
         /// </summary>
         event Action AllComplete;
 
-        IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule> cached,
-                                                    ICollection<CkanModule> toDownload);
+        IEnumerable<CkanModule> ModulesAsTheyFinish(IReadOnlyCollection<CkanModule> cached,
+                                                    IReadOnlyCollection<CkanModule> toDownload);
     }
 }

@@ -330,7 +330,7 @@ namespace CKAN
             return false;
         }
 
-        public bool Purge(ICollection<CkanModule> modules)
+        public bool Purge(IReadOnlyCollection<CkanModule> modules)
         {
             if (modules.Select(m => cache.Remove(m.download ?? Enumerable.Empty<Uri>()))
                        .ToArray()

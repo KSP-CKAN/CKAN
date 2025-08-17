@@ -815,10 +815,10 @@ namespace CKAN
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
         /// </summary>
-        public InstalledModule RegisterModule(CkanModule          mod,
-                                              ICollection<string> absoluteFiles,
-                                              GameInstance        inst,
-                                              bool                autoInstalled)
+        public InstalledModule RegisterModule(CkanModule                  mod,
+                                              IReadOnlyCollection<string> absoluteFiles,
+                                              GameInstance                inst,
+                                              bool                        autoInstalled)
         {
             log.DebugFormat("Registering module {0}", mod);
             EnlistWithTransaction();

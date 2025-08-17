@@ -69,7 +69,7 @@ namespace CKAN.Configuration
             }
         }
 
-        public ICollection<string> OverriddenModIdentifiers => modStabilityTolerance.Keys;
+        public IReadOnlyCollection<string> OverriddenModIdentifiers => modStabilityTolerance.Keys;
 
         public event Action<string?, ReleaseStatus?>? Changed;
 

@@ -17,6 +17,6 @@ namespace CKAN
         public string updaterFilename = $"{Path.GetTempPath()}{Guid.NewGuid()}.exe";
         public string ckanFilename    = $"{Path.GetTempPath()}{Guid.NewGuid()}.exe";
 
-        public abstract IList<NetAsyncDownloader.DownloadTarget> Targets { get; }
+        public abstract IReadOnlyCollection<NetAsyncDownloader.DownloadTarget> Targets { get; }
     }
 }

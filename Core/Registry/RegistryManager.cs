@@ -52,10 +52,10 @@ namespace CKAN
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string                  path,
-                                GameInstance            inst,
-                                RepositoryDataManager   repoData,
-                                ICollection<Repository> initialRepositories)
+        private RegistryManager(string                          path,
+                                GameInstance                    inst,
+                                RepositoryDataManager           repoData,
+                                IReadOnlyCollection<Repository> initialRepositories)
         {
             gameInstance = inst;
 
@@ -263,9 +263,9 @@ namespace CKAN
         /// Returns an instance of the registry manager for the game instance.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(GameInstance             inst,
-                                               RepositoryDataManager    repoData,
-                                               ICollection<Repository>? repositories = null)
+        public static RegistryManager Instance(GameInstance                     inst,
+                                               RepositoryDataManager            repoData,
+                                               IReadOnlyCollection<Repository>? repositories = null)
         {
             string directory = inst.CkanDir();
             if (!registryCache.ContainsKey(directory))
@@ -300,8 +300,8 @@ namespace CKAN
         }
 
         [MemberNotNull(nameof(registry))]
-        private void Load(RepositoryDataManager   repoData,
-                          ICollection<Repository> repositories)
+        private void Load(RepositoryDataManager           repoData,
+                          IReadOnlyCollection<Repository> repositories)
         {
             try
             {

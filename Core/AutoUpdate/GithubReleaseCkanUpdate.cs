@@ -64,7 +64,7 @@ namespace CKAN
             UpdaterSize     = updaterAsset.size;
         }
 
-        public override IList<NetAsyncDownloader.DownloadTarget> Targets => new[]
+        public override IReadOnlyCollection<NetAsyncDownloader.DownloadTarget> Targets => new[]
         {
             new NetAsyncDownloader.DownloadTargetFile(
                 UpdaterDownload, updaterFilename, UpdaterSize),
