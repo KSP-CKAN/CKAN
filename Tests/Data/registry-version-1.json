@@ -1,0 +1,15 @@
+{
+    "registry_version": 1,
+    "installed_modules": {
+        "001ControlLock": {
+            "source_module": {
+                "identifier": "001ControlLock",
+                "name": "Control Lock",
+                "abstract": "A mod that changed identifiers and has a built-in conversion",
+                "license": "unknown",
+                "version": "1.0",
+                "download": "https://github.com/controllock"
+            }
+        }
+    }
+}

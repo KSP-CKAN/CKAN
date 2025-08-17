@@ -546,6 +546,96 @@ namespace Tests.Core.Registry
         }
 
         [Test]
+        public void IncompatibleInstalled_WithSome_Works()
+        {
+            // Arrange
+            var user = new NullUser();
+            var repo = new Repository("test", "https://github.com/");
+            using (var repoData = new TemporaryRepositoryData(
+                                      user,
+                                      new Dictionary<Repository, RepositoryData>
+                                      {
+                                          {
+                                              repo,
+                                              RepositoryData.FromJson(TestData.TestRepository(), null)!
+                                          },
+                                      }))
+            using (var inst     = new DisposableKSP(TestData.TestRegistry()))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo }))
+            {
+                var registry = regMgr.registry;
+
+                // Act
+                var incomp = registry.IncompatibleInstalled(new GameVersionCriteria(new GameVersion(1, 12, 5)));
+
+                // Assert
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "AGExt",
+                                                   "AJE",
+                                                   "AlternateResourcePanel",
+                                                   "Chatterer",
+                                                   "CIT-Util",
+                                                   "CommunityResourcePack",
+                                                   "CommunityTechTree",
+                                                   "CrossFeedEnabler",
+                                                   "CustomBiomes",
+                                                   "DDSLoader",
+                                                   "DeadlyReentry",
+                                                   "DMagicOrbitalScience",
+                                                   "EngineIgnitor-Unofficial-Repack",
+                                                   "EVE-Overhaul-Core",
+                                                   "FerramAerospaceResearch",
+                                                   "FinalFrontier",
+                                                   "FinePrint",
+                                                   "HotRockets",
+                                                   "InfernalRobotics",
+                                                   "Karbonite",
+                                                   "KAS",
+                                                   "KerbalAlarmClock",
+                                                   "KerbalConstructionTime",
+                                                   "KerbalJointReinforcement",
+                                                   "kOS",
+                                                   "KronalVesselViewer",
+                                                   "MechJeb2",
+                                                   "ModuleManager",
+                                                   "ModuleRCSFX",
+                                                   "NathanKell-RVE-Haxx",
+                                                   "ORSX",
+                                                   "PartCatalog",
+                                                   "PlanetShine",
+                                                   "PreciseNode",
+                                                   "ProceduralDynamics",
+                                                   "ProceduralFairings",
+                                                   "ProceduralParts",
+                                                   "RealChute",
+                                                   "RealFuels",
+                                                   "RealismOverhaul",
+                                                   "RealSolarSystem",
+                                                   "RemoteTech-Config-RSS",
+                                                   "RemoteTech",
+                                                   "SCANsat",
+                                                   "ScienceAlert",
+                                                   "Service-Compartments-6S",
+                                                   "ShipManifest",
+                                                   "StageRecovery",
+                                                   "SXT",
+                                                   "TACLS",
+                                                   "TechManager",
+                                                   "Toolbar",
+                                                   "TweakScale",
+                                                   "UKS",
+                                                   "UniversalStorage-KAS",
+                                                   "UniversalStorage-TAC",
+                                                   "UniversalStorage",
+                                                   "USITools",
+                                               },
+                                               incomp.Select(im => im.identifier));
+            }
+        }
+
+        [Test]
         public void TxEmbeddedCommit()
         {
             // Our registry should work when we initialise it inside our Tx and commit.
