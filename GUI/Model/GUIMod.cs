@@ -128,14 +128,18 @@ namespace CKAN.GUI
         /// Initialize a GUIMod based on an InstalledModule
         /// </summary>
         /// <param name="instMod">The installed module to represent</param>
+        /// <param name="repoDataMgr">Repo data to get info about available modules</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="stabilityTolerance">User's prerelease config</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
-        public GUIMod(InstalledModule       instMod,
-                      RepositoryDataManager repoDataMgr,
-                      IRegistryQuerier      registry,
+        /// <param name="hideEpochs">If true, remove the epoch from the versions</param>
+        /// <param name="hideV">If true, remove 'v' prefix from the versions</param>
+        public GUIMod(InstalledModule          instMod,
+                      RepositoryDataManager    repoDataMgr,
+                      IRegistryQuerier         registry,
                       StabilityToleranceConfig stabilityTolerance,
-                      GameVersionCriteria   current_game_version,
+                      GameVersionCriteria      current_game_version,
                       bool? incompatible,
                       bool  hideEpochs,
                       bool  hideV)
@@ -160,9 +164,13 @@ namespace CKAN.GUI
         /// Initialize a GUIMod based on a CkanModule
         /// </summary>
         /// <param name="mod">The module to represent</param>
+        /// <param name="repoDataMgr">Repo data to get info about available modules</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
+        /// <param name="stabilityTolerance">User's prerelease config</param>
         /// <param name="current_game_version">Current game version</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
+        /// <param name="hideEpochs">If true, remove the epoch from the versions</param>
+        /// <param name="hideV">If true, remove 'v' prefix from the versions</param>
         public GUIMod(CkanModule               mod,
                       RepositoryDataManager    repoDataMgr,
                       IRegistryQuerier         registry,

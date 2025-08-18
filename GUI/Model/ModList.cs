@@ -104,8 +104,10 @@ namespace CKAN.GUI
         /// <summary>
         /// Returns a changeset and conflicts based on the selections of the user.
         /// </summary>
-        /// <param name="registry"></param>
-        /// <param name="changeSet"></param>
+        /// <param name="registry">The registry for getting available mods</param>
+        /// <param name="changeSet">User's choices of installation and removal</param>
+        /// <param name="game">Game of the game instance</param>
+        /// <param name="stabilityTolerance">Prerelease configuration</param>
         /// <param name="version">The version of the current game instance</param>
         public Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier         registry,
@@ -218,8 +220,6 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="registry">Registry with currently installed modules</param>
         /// <param name="changeSet">Changes to be made to the installed modules</param>
-        /// <param name="crit">Compatible versions of current instance</param>
-        /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
         private static IEnumerable<InstalledModule> InstalledAfterChanges(
             IRegistryQuerier               registry,
             IReadOnlyCollection<ModChange> changeSet)
@@ -272,6 +272,8 @@ namespace CKAN.GUI
         /// Manipulates <c>full_list_of_mod_rows</c>.
         /// </summary>
         /// <param name="modules">A list of modules that may require updating</param>
+        /// <param name="instanceName">Name of the game instance for getting labels</param>
+        /// <param name="game">Game of the game instance</param>
         /// <param name="mc">Changes the user has made</param>
         /// <returns>The mod list</returns>
         public IEnumerable<DataGridViewRow> ConstructModList(IReadOnlyCollection<GUIMod> modules,
@@ -402,6 +404,10 @@ namespace CKAN.GUI
         /// after it has been added to or removed from a label group
         /// </summary>
         /// <param name="mod">The mod that needs an update</param>
+        /// <param name="conflicted">True if mod should have a red background</param>
+        /// <param name="instanceName">Name of the game instance for finding labels</param>
+        /// <param name="game">Game of game instance for finding labels</param>
+        /// <param name="registry">Registry for finding mods</param>
         public DataGridViewRow? ReapplyLabels(GUIMod mod, bool conflicted,
                                              string instanceName, IGame game, Registry registry)
         {

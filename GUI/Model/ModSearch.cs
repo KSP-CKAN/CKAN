@@ -20,14 +20,25 @@ namespace CKAN.GUI
         /// Initialize a mod search object.
         /// Null or empty parameters are treated as matching everything.
         /// </summary>
+        /// <param name="instance">Game instance for finding labels to search</param>
         /// <param name="byName">String to search for in mod names, identifiers, and abbreviations</param>
         /// <param name="byAuthors">String to search for in author names</param>
         /// <param name="byDescription">String to search for in mod descriptions</param>
-        /// <param name="localizations">Language to search for in mod localizations</param>
+        /// <param name="licenses">Licenses to search for</param>
+        /// <param name="localizations">Languages to search for in mod localizations</param>
         /// <param name="depends">Identifier prefix to find in mod depends relationships</param>
         /// <param name="recommends">Identifier prefix to find in mod recommends relationships</param>
         /// <param name="suggests">Identifier prefix to find in mod suggests relationships</param>
         /// <param name="conflicts">Identifier prefix to find in mod conflicts relationships</param>
+        /// <param name="supports">Identifier prefix to find in mod supports relationships</param>
+        /// <param name="tagNames">Names of tags to search for</param>
+        /// <param name="labelNames">Names of labels to search for</param>
+        /// <param name="compatible">True to find only compatible mods, false to find only incompatible, null for both</param>
+        /// <param name="installed">True to find only installed mods, false to find only non-installed, null for both</param>
+        /// <param name="cached">True to find only cached mods, false to find only uncached, null for both</param>
+        /// <param name="newlyCompatible">True to find only newly compatible mods, false to find only non newly compatible, null for both</param>
+        /// <param name="upgradeable">True to find only upgradeable mods, false to find only non-upgradeable, null for both</param>
+        /// <param name="replaceable">True to find only replaceable mods, false to find only non-replaceable, null for both</param>
         /// <param name="combined">Full formatted search string if known, will be auto generated otherwise</param>
         public ModSearch(
             GameInstance instance,
@@ -175,6 +186,7 @@ namespace CKAN.GUI
         /// <summary>
         /// Create a new search from a list of authors
         /// </summary>
+        /// <param name="instance">Game instance for searching</param>
         /// <param name="authors">The authors for the search</param>
         /// <returns>A search for the authors</returns>
         public static ModSearch FromAuthors(GameInstance instance, IEnumerable<string> authors)
@@ -315,6 +327,7 @@ namespace CKAN.GUI
         /// May throw a Kraken if the syntax is bad.
         /// MUST be the inverse of getCombined!
         /// </summary>
+        /// <param name="instance">Game instance for searching</param>
         /// <param name="combined">Full formatted search string</param>
         /// <returns>
         /// New search object, or null if no search terms defined

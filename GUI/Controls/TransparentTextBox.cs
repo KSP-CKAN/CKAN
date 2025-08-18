@@ -10,7 +10,7 @@ namespace CKAN.GUI
     /// <para>
     /// Either set the BackColor to Color.Transparent or the color of the parent container.
     /// Multiline is set to true.
-    /// Used in <see cref="MainModInfo"/>.</para>
+    /// Used in <see cref="ModInfo"/>.</para>
     /// </summary>
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]

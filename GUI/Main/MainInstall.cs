@@ -42,7 +42,7 @@ namespace CKAN.GUI
         /// Initiate the GUI installer flow for one specific module
         /// </summary>
         /// <param name="registry">Reference to the registry</param>
-        /// <param name="module">Module to install</param>
+        /// <param name="modules">Modules to install</param>
         public void InstallModuleDriver(IRegistryQuerier registry, IEnumerable<CkanModule> modules)
         {
             if (CurrentInstance != null)

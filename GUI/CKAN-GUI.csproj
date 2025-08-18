@@ -19,9 +19,10 @@
     <Prefer32Bit>false</Prefer32Bit>
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsNotAsErrors>CS0618</WarningsNotAsErrors>
-    <NoWarn>IDE1006,NU1701</NoWarn>
+    <NoWarn>IDE1006,NU1701,CS1591</NoWarn>
     <TargetFrameworks>net481;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
     <UseWindowsForms Condition=" '$(TargetFramework)' == 'net8.0-windows' ">true</UseWindowsForms>

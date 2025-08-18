@@ -29,14 +29,14 @@ namespace CKAN.GUI
         /// This is separate from Wait so we can set up
         /// before the calling code switches to the tab.
         /// </summary>
+        /// <param name="inst">Game instance of the files we might delete</param>
         /// <param name="possibleConfigOnlyDirs">Directories that the user may want to delete</param>
         [ForbidGUICalls]
-        public void LoadDirs(GameInstance ksp, HashSet<string> possibleConfigOnlyDirs)
+        public void LoadDirs(GameInstance inst, HashSet<string> possibleConfigOnlyDirs)
         {
-            instance = ksp;
             var items = possibleConfigOnlyDirs
                 .Order()
-                .Select(d => new ListViewItem(Platform.FormatPath(instance.ToRelativeGameDir(d)))
+                .Select(d => new ListViewItem(Platform.FormatPath(inst.ToRelativeGameDir(d)))
                     {
                         Tag     = d,
                         Checked = true
@@ -151,6 +151,5 @@ namespace CKAN.GUI
         }
 
         private TaskCompletionSource<bool>? task     = null;
-        private GameInstance?               instance = null;
     }
 }

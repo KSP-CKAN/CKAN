@@ -43,7 +43,11 @@ namespace CKAN.GUI
         /// <summary>
         /// Initialize the form, loads the grid and sets the height to fit
         /// </summary>
+        /// <param name="TopLabelMessage">Text to put in the explanation label</param>
+        /// <param name="ModuleColumnHeader">Column header for the description of the item</param>
+        /// <param name="AbortButtonCaption">Text to put on the abort button</param>
         /// <param name="Exceptions">Sequence of arrays of objects representing downloads that failed and the exceptions they threw</param>
+        /// <param name="rowsLinked">Function to determine if two rows need to be toggled together</param>
         public DownloadsFailedDialog(
             string TopLabelMessage,
             string ModuleColumnHeader,
