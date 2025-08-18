@@ -666,7 +666,7 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    var searches = def.Select(s => ModSearch.Parse(CurrentInstance, s))
+                    var searches = def.Select(s => ModSearch.Parse(ModuleLabelList.ModuleLabels, CurrentInstance, s))
                                       .OfType<ModSearch>()
                                       .ToList();
                     ManageMods.SetSearches(searches);

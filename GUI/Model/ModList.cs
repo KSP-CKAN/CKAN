@@ -89,7 +89,7 @@ namespace CKAN.GUI
             => new SavedSearch()
             {
                 Name   = FilterName(filter, tag, label),
-                Values = new List<string>() { new ModSearch(instance, filter, tag, label).Combined ?? "" },
+                Values = new List<string>() { new ModSearch(ModuleLabelList.ModuleLabels, instance, filter, tag, label).Combined ?? "" },
             };
 
         private static RelationshipResolverOptions conflictOptions(StabilityToleranceConfig stabilityTolerance)
@@ -265,7 +265,7 @@ namespace CKAN.GUI
             => Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
 
         public int CountModsByFilter(GameInstance inst, GUIModFilter filter)
-            => CountModsBySearches(new List<ModSearch>() { new ModSearch(inst, filter, null, null) });
+            => CountModsBySearches(new List<ModSearch>() { new ModSearch(ModuleLabelList.ModuleLabels, inst, filter, null, null) });
 
         /// <summary>
         /// Constructs the mod list suitable for display to the user.

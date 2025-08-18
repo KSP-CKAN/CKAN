@@ -492,7 +492,7 @@ namespace CKAN.GUI
             if (currentInstance != null)
             {
                 var searches = search.Values
-                                     .Select(s => ModSearch.Parse(currentInstance!, s))
+                                     .Select(s => ModSearch.Parse(ModuleLabelList.ModuleLabels, currentInstance!, s))
                                      .OfType<ModSearch>()
                                      .ToList();
 

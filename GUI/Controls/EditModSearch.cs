@@ -138,7 +138,7 @@ namespace CKAN.GUI
                 if (Main.Instance?.CurrentInstance is GameInstance inst)
                 {
                     // Sync the search boxes immediately
-                    currentSearch = ModSearch.Parse(inst, FilterCombinedTextBox.Text);
+                    currentSearch = ModSearch.Parse(ModuleLabelList.ModuleLabels, inst, FilterCombinedTextBox.Text);
                 }
                 SearchToEditor();
             }
