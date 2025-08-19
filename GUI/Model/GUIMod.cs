@@ -197,7 +197,7 @@ namespace CKAN.GUI
                 }
             }
 
-            IsIncompatible = incompatible ?? LatestCompatibleMod == null;
+            IsIncompatible = incompatible ?? (LatestCompatibleMod == null);
 
             // Let's try to find the compatibility for this mod. If it's not in the registry at
             // all (because it's a DarkKAN mod) then this might fail.

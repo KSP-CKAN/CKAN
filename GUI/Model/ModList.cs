@@ -17,22 +17,6 @@ using CKAN.Games;
 
 namespace CKAN.GUI
 {
-    public enum GUIModFilter
-    {
-        Compatible               = 0,
-        Installed                = 1,
-        InstalledUpdateAvailable = 2,
-        NewInRepository          = 3,
-        NotInstalled             = 4,
-        Incompatible             = 5,
-        All                      = 6,
-        Cached                   = 7,
-        Replaceable              = 8,
-        Uncached                 = 9,
-        CustomLabel              = 10,
-        Tag                      = 11,
-    }
-
     /// <summary>
     /// The holder of the list of mods to be shown.
     /// Should be a pure data model and avoid UI stuff, but it's not there yet.
@@ -77,27 +61,26 @@ namespace CKAN.GUI
         private static string FilterName(GUIModFilter filter,
                                          ModuleTag?   tag   = null,
                                          ModuleLabel? label = null)
-        {
-            switch (filter)
-            {
-                case GUIModFilter.Compatible:               return Properties.Resources.MainFilterCompatible;
-                case GUIModFilter.Incompatible:             return Properties.Resources.MainFilterIncompatible;
-                case GUIModFilter.Installed:                return Properties.Resources.MainFilterInstalled;
-                case GUIModFilter.NotInstalled:             return Properties.Resources.MainFilterNotInstalled;
-                case GUIModFilter.InstalledUpdateAvailable: return Properties.Resources.MainFilterUpgradeable;
-                case GUIModFilter.Replaceable:              return Properties.Resources.MainFilterReplaceable;
-                case GUIModFilter.Cached:                   return Properties.Resources.MainFilterCached;
-                case GUIModFilter.Uncached:                 return Properties.Resources.MainFilterUncached;
-                case GUIModFilter.NewInRepository:          return Properties.Resources.MainFilterNew;
-                case GUIModFilter.All:                      return Properties.Resources.MainFilterAll;
-                case GUIModFilter.CustomLabel:              return string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM");
-                case GUIModFilter.Tag:
-                    return tag == null
-                        ? Properties.Resources.MainFilterUntagged
-                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
-            }
-            return "";
-        }
+            => filter switch
+               {
+                   GUIModFilter.Compatible               => Properties.Resources.MainFilterCompatible,
+                   GUIModFilter.Incompatible             => Properties.Resources.MainFilterIncompatible,
+                   GUIModFilter.Installed                => Properties.Resources.MainFilterInstalled,
+                   GUIModFilter.NotInstalled             => Properties.Resources.MainFilterNotInstalled,
+                   GUIModFilter.InstalledUpdateAvailable => Properties.Resources.MainFilterUpgradeable,
+                   GUIModFilter.Replaceable              => Properties.Resources.MainFilterReplaceable,
+                   GUIModFilter.Cached                   => Properties.Resources.MainFilterCached,
+                   GUIModFilter.Uncached                 => Properties.Resources.MainFilterUncached,
+                   GUIModFilter.NewInRepository          => Properties.Resources.MainFilterNew,
+                   GUIModFilter.All                      => Properties.Resources.MainFilterAll,
+                   GUIModFilter.CustomLabel              => string.Format(Properties.Resources.MainFilterLabel,
+                                                                          label?.Name ?? "CUSTOM"),
+                   GUIModFilter.Tag                      => tag == null
+                                                                ? Properties.Resources.MainFilterUntagged
+                                                                : string.Format(Properties.Resources.MainFilterTag,
+                                                                                tag.Name),
+                   _                                     => "",
+               };
 
         public static SavedSearch FilterToSavedSearch(GameInstance instance,
                                                       GUIModFilter filter,
@@ -379,13 +362,13 @@ namespace CKAN.GUI
                 Value = mod.LatestVersion
             };
 
-            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };
-            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility           };
-            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
-            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize                 };
-            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
-            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
-            var desc          = new DataGridViewTextBoxCell { Value = ToGridText(mod.Abstract)        };
+            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"   };
+            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility       };
+            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize            };
+            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize             };
+            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date };
+            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate             };
+            var desc          = new DataGridViewTextBoxCell { Value = ToGridText(mod.Abstract)    };
 
             item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, downloadSize, installSize, releaseDate, installDate, downloadCount, desc);
 

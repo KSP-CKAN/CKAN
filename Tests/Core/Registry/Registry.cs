@@ -484,11 +484,11 @@ namespace Tests.Core.Registry
             using (var repo            = new TemporaryRepository(TestData.OuterPlanetsLibraryMetadata))
             using (var repoData        = new TemporaryRepositoryData(user, repo.repo))
             {
-                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
-                var chosen   = registry.GetModuleByVersion("OuterPlanetsMod",         "2.0")!;
-                var kop      = registry.GetModuleByVersion("Kopernicus",              "1.0")!;
-                var mfi      = registry.GetModuleByVersion("ModularFlightIntegrator", "1.0")!;
-                var mm       = registry.GetModuleByVersion("ModuleManager",           "1.0")!;
+                var registry   = new CKAN.Registry(repoData.Manager, repo.repo);
+                var chosen     = registry.GetModuleByVersion("OuterPlanetsMod",         "2.0")!;
+                var kop        = registry.GetModuleByVersion("Kopernicus",              "1.0")!;
+                var mfi        = registry.GetModuleByVersion("ModularFlightIntegrator", "1.0")!;
+                var mm         = registry.GetModuleByVersion("ModuleManager",           "1.0")!;
                 var instChosen = registry.RegisterModule(chosen, Array.Empty<string>(), gameInstWrapper.KSP, false);
                 var instKop    = registry.RegisterModule(kop,    Array.Empty<string>(), gameInstWrapper.KSP, true);
                 var instMfi    = registry.RegisterModule(mfi,    Array.Empty<string>(), gameInstWrapper.KSP, true);
@@ -524,8 +524,10 @@ namespace Tests.Core.Registry
                 var secondChosen = registry.GetModuleByVersion("OuterPlanetsMod", "2.0")!;
                 var mm           = registry.GetModuleByVersion("ModuleManager",   "1.0")!;
                 registry.RegisterModule(firstChosen, Array.Empty<string>(), gameInstWrapper.KSP, false);
-                var instKopt = registry.RegisterModule(kopt, Array.Empty<string>(), gameInstWrapper.KSP, true);
-                var instMM   = registry.RegisterModule(mm,   Array.Empty<string>(), gameInstWrapper.KSP, true);
+                var instKopt     = registry.RegisterModule(kopt, Array.Empty<string>(),
+                                                           gameInstWrapper.KSP, true);
+                var instMM       = registry.RegisterModule(mm,   Array.Empty<string>(),
+                                                           gameInstWrapper.KSP, true);
                 var autoInstDeps = new InstalledModule[] { instKopt, };
                 var installed    = new InstalledModule[] { instKopt, instMM, };
                 var installing   = new CkanModule[] { secondChosen };
