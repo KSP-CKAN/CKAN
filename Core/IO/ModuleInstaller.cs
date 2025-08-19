@@ -1429,6 +1429,8 @@ namespace CKAN.IO
                 toRemove.AddRange(autoRemoving);
             }
 
+            CheckAddRemoveFreeSpace(toInstall, toRemove);
+
             if (ConfirmPrompt && !User.RaiseYesNoDialog(Properties.Resources.ModuleInstallerContinuePrompt))
             {
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUpgradeUserDeclined);
@@ -1535,6 +1537,7 @@ namespace CKAN.IO
                                                     instance.game, instance.VersionCriteria());
             var resolvedModsToInstall = resolver.ModList().ToArray();
 
+            CheckAddRemoveFreeSpace(resolvedModsToInstall, modsToRemove);
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
                       resolver,
@@ -1714,6 +1717,18 @@ namespace CKAN.IO
             if (config.CacheSizeLimit.HasValue)
             {
                 Cache.EnforceSizeLimit(config.CacheSizeLimit.Value, registry);
+            }
+        }
+
+        private void CheckAddRemoveFreeSpace(IEnumerable<CkanModule>      toInstall,
+                                             IEnumerable<InstalledModule> toRemove)
+        {
+            if (toInstall.Sum(m => m.install_size) - toRemove.Sum(im => im.ActualInstallSize(instance))
+                is > 0 and var spaceDelta)
+            {
+                CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
+                                             spaceDelta,
+                                             Properties.Resources.NotEnoughSpaceToInstall);
             }
         }
 
