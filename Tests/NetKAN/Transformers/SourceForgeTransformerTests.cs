@@ -18,7 +18,6 @@ namespace Tests.NetKAN.Transformers
         [Test]
         public void Transform_ExampleMod_Works()
         {
-            Console.WriteLine("{0:r}", DateTime.UtcNow);
             // Arrange
             var http     = new Mock<IHttpService>();
             http.Setup(h => h.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
