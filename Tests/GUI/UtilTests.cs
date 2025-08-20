@@ -1,5 +1,8 @@
 using System;
 using System.Drawing;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 using NUnit.Framework;
 
@@ -9,6 +12,9 @@ namespace Tests.GUI
 {
     using Util = CKAN.GUI.Util;
 
+    #if NET5_0_OR_GREATER
+    [SupportedOSPlatform("windows")]
+    #endif
     [TestFixture]
     public class UtilTests
     {

@@ -18,6 +18,7 @@ namespace Tests.NetKAN.Transformers
         [Test]
         public void Transform_ExampleMod_Works()
         {
+            Console.WriteLine("{0:r}", DateTime.UtcNow);
             // Arrange
             var http     = new Mock<IHttpService>();
             http.Setup(h => h.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
@@ -26,11 +27,11 @@ namespace Tests.NetKAN.Transformers
                               <channel>
                                 <title>Test Mod</title>
                                 <description>A hypothetical mod on SourceForge</description>
-                                <pubDate>{DateTime.UtcNow}</pubDate>
+                                <pubDate>{DateTime.UtcNow:r}</pubDate>
                                 <item>
                                   <title>Download-1.0.0.zip</title>
                                   <link>https://sourceforge.net/download</link>
-                                  <pubDate>{DateTime.UtcNow}</pubDate>
+                                  <pubDate>{DateTime.UtcNow:r}</pubDate>
                                 </item>
                               </channel>
                             </rss>");

@@ -47,7 +47,7 @@ namespace Tests.CmdLine
                 CollectionAssert.AreEqual(new string[]
                                           {
                                               "",
-                                              $"KSP found at: {inst.KSP.GameDir()}",
+                                              $"KSP found at: {Platform.FormatPath(inst.KSP.GameDir())}",
                                               "",
                                               "KSP version: 0.25.0.642",
                                               "",

@@ -173,7 +173,10 @@ namespace CKAN.GUI
             {
                 case MouseButtons.Left:
                     OpenLinkFromLinkLabel(url);
-                    e.Link.Visited = true;
+                    if (e.Link != null)
+                    {
+                        e.Link.Visited = true;
+                    }
                     break;
 
                 case MouseButtons.Right:

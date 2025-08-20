@@ -37,7 +37,7 @@ namespace Tests.CmdLine
                     {
                         $"Name        Game  Version     Default  {"Path".PadRight(dirLen)}",
                         $"----------  ----  ----------  -------  {new string('-', dirLen)}",
-                        $"disposable  KSP   0.25.0.642  Yes      {inst.KSP.GameDir()}",
+                        $"disposable  KSP   0.25.0.642  Yes      {Platform.FormatPath(inst.KSP.GameDir())}",
                     },
                     user.RaisedMessages);
             }
