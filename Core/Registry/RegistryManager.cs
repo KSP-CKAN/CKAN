@@ -140,15 +140,6 @@ namespace CKAN
             registryCache.Remove(directory);
         }
 
-        /// <summary>
-        /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="RegistryManager"/> is reclaimed by garbage collection.
-        /// </summary>
-        ~RegistryManager()
-        {
-            Dispose(false);
-        }
-
         #endregion
 
         /// <summary>
