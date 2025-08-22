@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.ExceptionServices;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -343,38 +342,10 @@ namespace CKAN
                                                    ? regMgr.registry
                                                    : LoadRegistry(inst, repoData));
 
-        private static Registry LoadRegistry(GameInstance            inst,
-                                             RepositoryDataManager   repoData)
-        {
-            var path = Path.Combine(inst.CkanDir(), "registry.json");
-            log.DebugFormat("Trying to load registry from {0}", path);
-            string json = File.ReadAllText(path);
-            log.Debug("Registry JSON loaded; parsing...");
-            var registry = new Registry(repoData);
-            try
-            {
-                JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
-            }
-            catch (TargetInvocationException tiExc) when (tiExc is { InnerException: Exception exc })
-            {
-                // "The exception that is thrown by methods invoked through reflection."
-                // The JSON library uses reflection for OnDeserialized.
-                ExceptionDispatchInfo.Capture(exc).Throw();
-            }
-            log.Debug("Registry loaded and parsed");
-            log.InfoFormat("Loaded CKAN registry at {0}", path);
-            return registry;
-        }
-
-        // Our registry needs to know our game instance when upgrading from older
-        // registry formats. This lets us encapsulate that to make it available
-        // after deserialisation.
-        private static JsonSerializerSettings LoadSettings(GameInstance inst)
-            => new JsonSerializerSettings
-               {
-                   DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                   Context = new StreamingContext(StreamingContextStates.Other, inst)
-               };
+        private static Registry LoadRegistry(GameInstance          inst,
+                                             RepositoryDataManager repoData)
+            => Registry.FromJson(inst, repoData,
+                                 File.ReadAllText(Path.Combine(inst.CkanDir(), "registry.json")));
 
         [MemberNotNull(nameof(registry))]
         private void Create(RepositoryDataManager   repoData,
