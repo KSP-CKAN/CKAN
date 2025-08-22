@@ -350,7 +350,7 @@ namespace CKAN.GUI
                     module.suggests = null;
                 }
                 module.spec_version = SpecVersionAnalyzer.MinimumSpecVersion(module);
-                CkanModule.ToFile(ApplyCheckboxes(module), filename);
+                ApplyCheckboxes(module).ToFile(filename);
                 Utilities.OpenFileBrowser(filename);
                 task?.SetResult(true);
             }
@@ -371,7 +371,7 @@ namespace CKAN.GUI
                 // BUT we don't want to purge them from the main module object
                 // in case the user changes the checkbox after cancelling out of the
                 // save popup. So we create a new CkanModule instead.
-                var newMod = CkanModule.FromJson(CkanModule.ToJson(input));
+                var newMod = CkanModule.FromJson(input.ToJson());
                 foreach (var rels in new List<List<RelationshipDescriptor>?>()
                     {
                         newMod.depends,
@@ -401,7 +401,7 @@ namespace CKAN.GUI
             }
             else
             {
-                var newMod = CkanModule.FromJson(CkanModule.ToJson(input));
+                var newMod = CkanModule.FromJson(input.ToJson());
                 if (newMod.depends != null)
                 {
                     foreach (var rel in newMod.depends)

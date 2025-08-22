@@ -488,7 +488,7 @@ namespace CKAN
         private string SerializeCurrentInstall(bool recommends = false, bool with_versions = true)
         {
             var pack = GenerateModpack(recommends, with_versions);
-            return CkanModule.ToJson(pack);
+            return pack.ToJson();
         }
 
         /// <summary>

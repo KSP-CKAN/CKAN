@@ -43,7 +43,7 @@ namespace Tests.GUI
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
         {
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(TestData.FireSpitterModule())))
+            using (var repo = new TemporaryRepository(TestData.FireSpitterModule().ToJson()))
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
@@ -80,7 +80,7 @@ namespace Tests.GUI
         public void ConstructModList_NumberOfRows_IsEqualToNumberOfMods()
         {
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(TestData.FireSpitterModule()),
+            using (var repo = new TemporaryRepository(TestData.FireSpitterModule().ToJson(),
                                                       TestData.kOS_014()))
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))

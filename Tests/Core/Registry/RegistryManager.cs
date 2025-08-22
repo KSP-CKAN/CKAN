@@ -114,15 +114,13 @@ namespace Tests.Core.Registry
         {
             // Arrange
             LogManager.GetRepository(Assembly.GetExecutingAssembly()).Threshold = Level.Off;
-            string registryPath = TestData.DataDir("zero-byte-registry.json");
 
             // Act
             var user = new NullUser();
-
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-            using (var dispksp  = new DisposableKSP(registryPath))
-            using (var regMgr   = RegistryManager.Instance(dispksp.KSP, repoData.Manager,
+            using (var inst     = new DisposableKSP(TestData.TestRegistryZeroBytes()))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
                 // Assert

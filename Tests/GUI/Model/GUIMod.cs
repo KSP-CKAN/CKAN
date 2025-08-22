@@ -49,14 +49,14 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             {
                 var generator = new RandomModuleGenerator(new Random(0451));
-                var old_version = generator.GeneratorRandomModule(version: new ModuleVersion("0.24"),
-                                                                  ksp_version: tidy.KSP.Version());
-                var new_version = generator.GeneratorRandomModule(version: new ModuleVersion("0.25"),
-                                                                  ksp_version: tidy.KSP.Version(),
-                                                                  identifier: old_version.identifier);
+                var old_version = generator.GenerateRandomModule(version: new ModuleVersion("0.24"),
+                                                                 ksp_version: tidy.KSP.Version());
+                var new_version = generator.GenerateRandomModule(version: new ModuleVersion("0.25"),
+                                                                 ksp_version: tidy.KSP.Version(),
+                                                                 identifier: old_version.identifier);
 
-                using (var repo = new TemporaryRepository(CkanModule.ToJson(old_version),
-                                                          CkanModule.ToJson(new_version)))
+                using (var repo = new TemporaryRepository(old_version.ToJson(),
+                                                          new_version.ToJson()))
                 using (var repoData = new TemporaryRepositoryData(user, repo.repo))
                 {
                     var registry = new Registry(repoData.Manager, repo.repo);

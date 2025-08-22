@@ -95,8 +95,8 @@ namespace Tests.Core.Registry
                 // Assert
                 Assert.AreEqual(0, sorter.LatestIncompatible.Count);
                 Assert.AreEqual(2, sorter.LatestCompatible.Count);
-                Assert.AreEqual(CkanModule.ToJson(highPrio!),
-                                CkanModule.ToJson(sorter.LatestCompatible.First(m => m.identifier == identifier)));
+                Assert.AreEqual(highPrio!.ToJson(),
+                                sorter.LatestCompatible.First(m => m.identifier == identifier).ToJson());
             }
         }
     }
