@@ -60,6 +60,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="cmdlineArgs">The strings from the command line that launched us</param>
         /// <param name="mgr">Game instance manager created by the cmdline handler</param>
+        /// <param name="userAgent">User agent to use for web queries</param>
         public Main(string[]             cmdlineArgs,
                     GameInstanceManager? mgr,
                     string?              userAgent)
@@ -399,7 +400,6 @@ namespace CKAN.GUI
         /// <summary>
         /// React to switching to a new game instance
         /// </summary>
-        /// <param name="allowRepoUpdate">true if a repo update is allowed if needed (e.g. on initial load), false otherwise</param>
         private void CurrentInstanceUpdated()
         {
             if (CurrentInstance == null || configuration == null)
@@ -666,7 +666,7 @@ namespace CKAN.GUI
                 }
                 else
                 {
-                    var searches = def.Select(s => ModSearch.Parse(CurrentInstance, s))
+                    var searches = def.Select(s => ModSearch.Parse(ModuleLabelList.ModuleLabels, CurrentInstance, s))
                                       .OfType<ModSearch>()
                                       .ToList();
                     ManageMods.SetSearches(searches);

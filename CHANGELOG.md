@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Propagate exceptions from downloader task (#4367 by: HebaruSan)
 - [Multiple] Fix upgrading with conflicts between old and new dependencies (#4369, #4371, #4374, #4378 by: HebaruSan)
 - [ConsoleUI] Recommendations of full changeset in ConsoleUI (#4416 by: HebaruSan)
+- [Multiple] More tests and fixes (#4420 by: HebaruSan)
 
 ### Internal
 

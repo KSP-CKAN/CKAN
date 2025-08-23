@@ -461,12 +461,12 @@ namespace CKAN
         public static CkanModule FromFile(string filename)
             => FromJson(File.ReadAllText(filename));
 
-        public static void ToFile(CkanModule module, string filename)
+        public void ToFile(string filename)
         {
-            ToJson(module).WriteThroughTo(filename);
+            ToJson().WriteThroughTo(filename);
         }
 
-        public static string ToJson(CkanModule module)
+        public string ToJson()
         {
             var sw = new StringWriter(new StringBuilder());
             using (var writer = new JsonTextWriter(sw))
@@ -474,7 +474,7 @@ namespace CKAN
                 writer.Formatting  = Formatting.Indented;
                 writer.Indentation = 4;
                 writer.IndentChar  = ' ';
-                new JsonSerializer().Serialize(writer, module);
+                new JsonSerializer().Serialize(writer, this);
             }
             return sw + Environment.NewLine;
         }

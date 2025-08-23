@@ -138,8 +138,8 @@ namespace CKAN.Extensions
         /// <param name="source">The sequence to process</param>
         /// <param name="func">The function to apply to each item in the sequence</param>
         /// <returns>Sequence of all values from the function</returns>
-        public static IEnumerable<V> SelectManyTasks<T, V>(this ICollection<T>     source,
-                                                           Func<T, IEnumerable<V>> func)
+        public static IEnumerable<V> SelectManyTasks<T, V>(this IReadOnlyCollection<T> source,
+                                                           Func<T, IEnumerable<V>>     func)
         {
             if (source.Count <= 1)
             {

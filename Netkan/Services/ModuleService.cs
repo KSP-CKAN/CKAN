@@ -98,10 +98,10 @@ namespace CKAN.NetKAN.Services
 
         private static readonly string[] sourceCodeSuffixes = new string[] { ".cs", ".csproj", ".sln" };
 
-        private static IEnumerable<InstallableFile> GetFilesBySuffixes(CkanModule          module,
-                                                                       ZipFile             zip,
-                                                                       ICollection<string> suffixes,
-                                                                       GameInstance        inst)
+        private static IEnumerable<InstallableFile> GetFilesBySuffixes(CkanModule                  module,
+                                                                       ZipFile                     zip,
+                                                                       IReadOnlyCollection<string> suffixes,
+                                                                       GameInstance                inst)
             => ModuleInstaller.FindInstallableFiles(module, zip, inst)
                               .Where(instF => suffixes.Any(suffix => instF.destination.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase)));
 

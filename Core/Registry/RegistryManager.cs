@@ -8,7 +8,6 @@ using System.Runtime.Serialization;
 using System.ComponentModel;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.ExceptionServices;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -52,10 +51,10 @@ namespace CKAN
 
         // We require our constructor to be private so we can
         // enforce this being an instance (via Instance() above)
-        private RegistryManager(string                  path,
-                                GameInstance            inst,
-                                RepositoryDataManager   repoData,
-                                ICollection<Repository> initialRepositories)
+        private RegistryManager(string                          path,
+                                GameInstance                    inst,
+                                RepositoryDataManager           repoData,
+                                IReadOnlyCollection<Repository> initialRepositories)
         {
             gameInstance = inst;
 
@@ -138,15 +137,6 @@ namespace CKAN
 
             log.DebugFormat("Dispose of registry at {0}", directory);
             registryCache.Remove(directory);
-        }
-
-        /// <summary>
-        /// Releases unmanaged resources and performs other cleanup operations before the
-        /// <see cref="RegistryManager"/> is reclaimed by garbage collection.
-        /// </summary>
-        ~RegistryManager()
-        {
-            Dispose(false);
         }
 
         #endregion
@@ -272,9 +262,9 @@ namespace CKAN
         /// Returns an instance of the registry manager for the game instance.
         /// The file `registry.json` is assumed.
         /// </summary>
-        public static RegistryManager Instance(GameInstance             inst,
-                                               RepositoryDataManager    repoData,
-                                               ICollection<Repository>? repositories = null)
+        public static RegistryManager Instance(GameInstance                     inst,
+                                               RepositoryDataManager            repoData,
+                                               IReadOnlyCollection<Repository>? repositories = null)
         {
             string directory = inst.CkanDir();
             if (!registryCache.ContainsKey(directory))
@@ -309,8 +299,8 @@ namespace CKAN
         }
 
         [MemberNotNull(nameof(registry))]
-        private void Load(RepositoryDataManager   repoData,
-                          ICollection<Repository> repositories)
+        private void Load(RepositoryDataManager           repoData,
+                          IReadOnlyCollection<Repository> repositories)
         {
             try
             {
@@ -352,38 +342,10 @@ namespace CKAN
                                                    ? regMgr.registry
                                                    : LoadRegistry(inst, repoData));
 
-        private static Registry LoadRegistry(GameInstance            inst,
-                                             RepositoryDataManager   repoData)
-        {
-            var path = Path.Combine(inst.CkanDir(), "registry.json");
-            log.DebugFormat("Trying to load registry from {0}", path);
-            string json = File.ReadAllText(path);
-            log.Debug("Registry JSON loaded; parsing...");
-            var registry = new Registry(repoData);
-            try
-            {
-                JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
-            }
-            catch (TargetInvocationException tiExc) when (tiExc is { InnerException: Exception exc })
-            {
-                // "The exception that is thrown by methods invoked through reflection."
-                // The JSON library uses reflection for OnDeserialized.
-                ExceptionDispatchInfo.Capture(exc).Throw();
-            }
-            log.Debug("Registry loaded and parsed");
-            log.InfoFormat("Loaded CKAN registry at {0}", path);
-            return registry;
-        }
-
-        // Our registry needs to know our game instance when upgrading from older
-        // registry formats. This lets us encapsulate that to make it available
-        // after deserialisation.
-        private static JsonSerializerSettings LoadSettings(GameInstance inst)
-            => new JsonSerializerSettings
-               {
-                   DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                   Context = new StreamingContext(StreamingContextStates.Other, inst)
-               };
+        private static Registry LoadRegistry(GameInstance          inst,
+                                             RepositoryDataManager repoData)
+            => Registry.FromJson(inst, repoData,
+                                 File.ReadAllText(Path.Combine(inst.CkanDir(), "registry.json")));
 
         [MemberNotNull(nameof(registry))]
         private void Create(RepositoryDataManager   repoData,
@@ -488,7 +450,7 @@ namespace CKAN
         private string SerializeCurrentInstall(bool recommends = false, bool with_versions = true)
         {
             var pack = GenerateModpack(recommends, with_versions);
-            return CkanModule.ToJson(pack);
+            return pack.ToJson();
         }
 
         /// <summary>

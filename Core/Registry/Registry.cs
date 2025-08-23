@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Reflection;
 using System.Transactions;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.ExceptionServices;
 
 using Autofac;
 using Newtonsoft.Json;
@@ -377,6 +379,40 @@ namespace CKAN
                             new Dictionary<string, string>(),
                             new Dictionary<string, string>(),
                             new SortedDictionary<string, Repository>());
+
+        public static Registry FromJson(GameInstance          inst,
+                                        RepositoryDataManager repoData,
+                                        string                json)
+        {
+            var registry = new Registry(repoData)
+            {
+                // Let DeSerialisationFixes detect if registry_version is missing
+                registry_version = 0,
+                // Let DeSerialisationFixes detect if installed_files is missing
+                installed_files  = null!,
+            };
+            try
+            {
+                JsonConvert.PopulateObject(json, registry, LoadSettings(inst));
+            }
+            catch (TargetInvocationException tiExc) when (tiExc is { InnerException: Exception exc })
+            {
+                // "The exception that is thrown by methods invoked through reflection."
+                // The JSON library uses reflection for OnDeserialized.
+                ExceptionDispatchInfo.Capture(exc).Throw();
+            }
+            return registry;
+        }
+
+        // Our registry needs to know our game instance when upgrading from older
+        // registry formats. This lets us encapsulate that to make it available
+        // after deserialisation.
+        private static JsonSerializerSettings LoadSettings(GameInstance inst)
+            => new JsonSerializerSettings
+               {
+                   DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                   Context = new StreamingContext(StreamingContextStates.Other, inst)
+               };
 
         #endregion
 
@@ -815,10 +851,10 @@ namespace CKAN
         /// Register the supplied module as having been installed, thereby keeping
         /// track of its metadata and files.
         /// </summary>
-        public InstalledModule RegisterModule(CkanModule          mod,
-                                              ICollection<string> absoluteFiles,
-                                              GameInstance        inst,
-                                              bool                autoInstalled)
+        public InstalledModule RegisterModule(CkanModule                  mod,
+                                              IReadOnlyCollection<string> absoluteFiles,
+                                              GameInstance                inst,
+                                              bool                        autoInstalled)
         {
             log.DebugFormat("Registering module {0}", mod);
             EnlistWithTransaction();

@@ -119,16 +119,16 @@ namespace CKAN
             }
         }
 
-        public IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule> cached,
-                                                           ICollection<CkanModule> toDownload)
+        public IEnumerable<CkanModule> ModulesAsTheyFinish(IReadOnlyCollection<CkanModule> cached,
+                                                           IReadOnlyCollection<CkanModule> toDownload)
         {
             var (dlTask, blockingQueue) = DownloadsCollection(toDownload);
             return ModulesAsTheyFinish(cached, dlTask, blockingQueue);
         }
 
-        private static IEnumerable<CkanModule> ModulesAsTheyFinish(ICollection<CkanModule>        cached,
-                                                                   Task                           dlTask,
-                                                                   BlockingCollection<CkanModule> blockingQueue)
+        private static IEnumerable<CkanModule> ModulesAsTheyFinish(IReadOnlyCollection<CkanModule> cached,
+                                                                   Task                            dlTask,
+                                                                   BlockingCollection<CkanModule>  blockingQueue)
         {
             foreach (var m in cached)
             {
@@ -153,7 +153,7 @@ namespace CKAN
             }
         }
 
-        private (Task dlTask, BlockingCollection<CkanModule> blockingQueue) DownloadsCollection(ICollection<CkanModule> toDownload)
+        private (Task dlTask, BlockingCollection<CkanModule> blockingQueue) DownloadsCollection(IReadOnlyCollection<CkanModule> toDownload)
         {
             var blockingQueue = new BlockingCollection<CkanModule>(new ConcurrentQueue<CkanModule>());
             Action<CkanModule> oneComplete = m => blockingQueue.Add(m);
@@ -265,7 +265,7 @@ namespace CKAN
         private const    string                  defaultMimeType = "application/octet-stream";
 
         private readonly List<CkanModule>         modules;
-        private          IDictionary<NetAsyncDownloader.DownloadTarget, CkanModule[]>? targetModules;
+        private          Dictionary<NetAsyncDownloader.DownloadTarget, CkanModule[]>? targetModules;
         private readonly NetAsyncDownloader       downloader;
         private          IUser                    User => downloader.User;
         private readonly NetModuleCache           cache;

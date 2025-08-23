@@ -54,9 +54,9 @@ namespace CKAN
         #region Construction and Initialisation
 
         /// <summary>
-        /// Returns a KSP object.
-        /// Will initialise a CKAN instance in the KSP dir if it does not already exist,
-        /// if the directory contains a valid KSP install.
+        /// Returns a game instance object.
+        /// Will initialise a CKAN instance in the game dir if it does not already exist,
+        /// if the directory contains a valid game install.
         /// </summary>
         public GameInstance(IGame game, string gameDir, string name, IUser? user)
         {
@@ -92,7 +92,7 @@ namespace CKAN
         /// true if the instance may be locked, false otherwise.
         /// Note that this is a tentative value; if it's true,
         /// we still need to try to acquire the lock to confirm it isn't stale.
-        /// NOTE: Will throw NotKSPDirKraken if the instance isn't valid!
+        /// NOTE: Will throw NotGameDirKraken if the instance isn't valid!
         ///       Either be prepared to catch that exception, or check Valid first to avoid it.
         /// </returns>
         public bool IsMaybeLocked => RegistryManager.IsInstanceMaybeLocked(CkanDir());
@@ -220,65 +220,32 @@ namespace CKAN
 
         #endregion
 
-        #region KSP Directory Detection and Versioning
+        #region Game Directory Detection and Versioning
 
         /// <summary>
-        /// Returns the path to our portable version of KSP if ckan.exe is in the same
+        /// Returns the path to our portable version of game if ckan.exe is in the same
         /// directory as the game, or if the game is in the current directory.
         /// Otherwise, returns null.
         /// </summary>
         public static string? PortableDir(IGame game)
-        {
-            string curDir = Directory.GetCurrentDirectory();
-
-            log.DebugFormat("Checking if {0} is in my current dir: {1}",
-                game.ShortName, curDir);
-
-            if (game.GameInFolder(new DirectoryInfo(curDir)))
-            {
-                log.InfoFormat("{0} found at {1}", game.ShortName, curDir);
-                return curDir;
-            }
-
-            // Find the directory our executable is stored in.
-            var exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            if (string.IsNullOrEmpty(exeDir)
-                && Process.GetCurrentProcess()?.MainModule?.FileName is string s)
-            {
-                exeDir = Path.GetDirectoryName(s);
-                if (string.IsNullOrEmpty(exeDir))
-                {
-                    log.InfoFormat("Executing assembly path and main module path not found");
-                    return null;
-                }
-                log.InfoFormat("Executing assembly path not found, main module path is {0}", exeDir);
-            }
-
-            log.DebugFormat("Checking if {0} is in my exe dir: {1}",
-                game.ShortName, exeDir);
-
-            if (curDir != exeDir && exeDir != null
-                && game.GameInFolder(new DirectoryInfo(exeDir)))
-            {
-                log.InfoFormat("{0} found at {1}", game.ShortName, exeDir);
-                return exeDir;
-            }
-
-            return null;
-        }
+            => new string?[]
+               {
+                   Assembly.GetExecutingAssembly()?.Location,
+                   Process.GetCurrentProcess()?.MainModule?.FileName,
+               }
+                   .OfType<string>()
+                   .Select(Path.GetDirectoryName)
+                   .OfType<string>()
+                   .Prepend(Directory.GetCurrentDirectory())
+                   .Select(path => new DirectoryInfo(path))
+                   .FirstOrDefault(game.GameInFolder)
+                   ?.FullName;
 
         /// <summary>
         /// Detects the version of a game in a given directory.
         /// </summary>
         private GameVersion? DetectVersion(string directory)
-        {
-            var version = game.DetectVersion(new DirectoryInfo(directory));
-            if (version != null)
-            {
-                log.DebugFormat("Found version {0}", version);
-            }
-            return version;
-        }
+            => game.DetectVersion(new DirectoryInfo(directory));
 
         #endregion
 
@@ -292,7 +259,7 @@ namespace CKAN
             if (!Valid)
             {
                 log.Error("Could not find game version");
-                throw new NotKSPDirKraken(gameDir, Properties.Resources.GameInstanceVersionNotFound);
+                throw new NotGameDirKraken(gameDir, Properties.Resources.GameInstanceVersionNotFound);
             }
             return CKANPathUtils.NormalizePath(
                 Path.Combine(GameDir(), "CKAN"));
@@ -310,10 +277,7 @@ namespace CKAN
                         .OrderByDescending(fi => fi.CreationTime);
 
         public GameVersion? Version()
-        {
-            version ??= DetectVersion(GameDir());
-            return version;
-        }
+            => version ??= DetectVersion(GameDir());
 
         public GameVersionCriteria VersionCriteria()
             => new GameVersionCriteria(Version(), _compatibleVersions);
@@ -321,13 +285,13 @@ namespace CKAN
         #endregion
 
         /// <summary>
-        /// Returns path relative to this KSP's GameDir.
+        /// Returns path relative to this instance's GameDir.
         /// </summary>
         public string ToRelativeGameDir(string path)
             => CKANPathUtils.ToRelative(path, GameDir());
 
         /// <summary>
-        /// Given a path relative to this KSP's GameDir, returns the
+        /// Given a path relative to this instance's GameDir, returns the
         /// absolute path on the system.
         /// </summary>
         public string ToAbsoluteGameDir(string path)
@@ -349,23 +313,18 @@ namespace CKAN
         /// <summary>
         /// Find the identifier associated with a manually installed DLL
         /// </summary>
-        /// <param name="relative_path">Path of the DLL relative to game root</param>
+        /// <param name="relPath">Path of the DLL relative to game root</param>
         /// <returns>
         /// Identifier if found otherwise null
         /// </returns>
-        public string? DllPathToIdentifier(string relative_path)
-        {
-            var paths = Enumerable.Repeat(game.PrimaryModDirectoryRelative, 1)
-                                  .Concat(game.AlternateModDirectoriesRelative);
-            if (!paths.Any(p => relative_path.StartsWith($"{p}/", Platform.PathComparison)))
-            {
-                // DLLs only live in the primary or alternate mod directories
-                return null;
-            }
-            Match match = dllPattern.Match(relative_path);
-            return match.Success ? Identifier.Sanitize(match.Groups["identifier"].Value)
-                                 : null;
-        }
+        public string? DllPathToIdentifier(string relPath)
+            // DLLs only live in the primary or alternate mod directories
+            => game.AlternateModDirectoriesRelative
+                   .Prepend(game.PrimaryModDirectoryRelative)
+                   .Any(p => relPath.StartsWith($"{p}/", Platform.PathComparison))
+               && dllPattern.Match(relPath) is { Success: true } match
+                   ? Identifier.Sanitize(match.Groups["identifier"].Value)
+                   : null;
 
         /// <summary>
         /// Generate a sequence of files in the game folder that weren't installed by CKAN

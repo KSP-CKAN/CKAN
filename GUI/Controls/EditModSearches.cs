@@ -101,11 +101,11 @@ namespace CKAN.GUI
             if (searches.Count > 0)
             {
                 // Merge inputs once for all editors
-                var merged = searches.Aggregate((search, newSearch) => search.MergedWith(newSearch));
+                var merged = searches.Aggregate((search, newSearch) => search.MergedWith(ModuleLabelList.ModuleLabels, newSearch));
                 foreach (var editor in editors)
                 {
                     // Combine all new with each existing (old AND new)
-                    editor.Search = editor.Search?.MergedWith(merged) ?? merged;
+                    editor.Search = editor.Search?.MergedWith(ModuleLabelList.ModuleLabels, merged) ?? merged;
                 }
                 Apply();
             }

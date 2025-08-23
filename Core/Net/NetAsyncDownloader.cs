@@ -62,9 +62,9 @@ namespace CKAN
             complete_or_canceled = new ManualResetEvent(false);
         }
 
-        public static void DownloadWithProgress(IList<DownloadTarget> downloadTargets,
-                                                string?               userAgent,
-                                                IUser?                user        = null)
+        public static void DownloadWithProgress(IReadOnlyCollection<DownloadTarget> downloadTargets,
+                                                string?                             userAgent,
+                                                IUser?                              user = null)
         {
             var downloader = new NetAsyncDownloader(user ?? new NullUser(), () => null, userAgent);
             downloader.onOneCompleted += (target, error, etag, hash) =>
@@ -81,7 +81,7 @@ namespace CKAN
         /// Start a new batch of downloads
         /// </summary>
         /// <param name="targets">The downloads to begin</param>
-        public void DownloadAndWait(ICollection<DownloadTarget> targets)
+        public void DownloadAndWait(IReadOnlyCollection<DownloadTarget> targets)
         {
             lock (dlMutex)
             {
@@ -200,7 +200,7 @@ namespace CKAN
         /// Downloads our files.
         /// </summary>
         /// <param name="targets">A collection of DownloadTargets</param>
-        private void Download(ICollection<DownloadTarget> targets)
+        private void Download(IReadOnlyCollection<DownloadTarget> targets)
         {
             downloads.Clear();
             queuedDownloads.Clear();

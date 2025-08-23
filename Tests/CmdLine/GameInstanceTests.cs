@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -131,6 +133,38 @@ namespace Tests.CmdLine
 
                 // Assert
                 CollectionAssert.DoesNotContain(manager.Instances.Keys.ToArray(), "renamed");
+            }
+        }
+
+        [Test]
+        public void RunSubCommand_Default_Works()
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst1   = new DisposableKSP())
+            using (var inst2   = new DisposableKSP())
+            using (var fakeDir = new TemporaryDirectory())
+            using (var config  = new FakeConfiguration(new List<Tuple<string, string, string>>()
+                                                       {
+                                                           new Tuple<string, string, string>("inst1",
+                                                                                             inst1.KSP.GameDir(),
+                                                                                             inst1.KSP.game.ShortName),
+                                                           new Tuple<string, string, string>("inst2",
+                                                                                             inst2.KSP.GameDir(),
+                                                                                             inst2.KSP.game.ShortName),
+                                                       },
+                                                       null,
+                                                       null))
+            using (var manager = new GameInstanceManager(user, config))
+            {
+                ISubCommand sut = new GameInstance(manager, user);
+
+                // Act / Assert
+                Assert.IsNull(manager.AutoStartInstance);
+                sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default", "inst2" }));
+                Assert.AreEqual("inst2", manager.AutoStartInstance);
+                sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default", "inst1" }));
+                Assert.AreEqual("inst1", manager.AutoStartInstance);
             }
         }
 

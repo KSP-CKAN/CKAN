@@ -45,7 +45,7 @@ namespace CKAN.GUI
         private void CacheMods(object? sender, DoWorkEventArgs? e)
         {
             if (e != null
-                && e.Argument is ICollection<GUIMod> modules
+                && e.Argument is IReadOnlyCollection<GUIMod> modules
                 && Manager?.Cache != null)
             {
                 var cancelTokenSrc = new CancellationTokenSource();

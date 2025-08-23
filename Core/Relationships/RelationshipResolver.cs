@@ -480,7 +480,8 @@ namespace CKAN
                              // Resolve ties in name order
                              .ThenBy(m => m.name);
 
-        public bool ReadyToInstall(CkanModule mod, ICollection<CkanModule> installed)
+        public bool ReadyToInstall(CkanModule                      mod,
+                                   IReadOnlyCollection<CkanModule> installed)
             => !modlist.Values.Distinct()
                               .Where(m => m != mod)
                               .Except(installed)
@@ -534,8 +535,8 @@ namespace CKAN
                                                                          .ToArray()))
                              .OrderByDescending(totalDependers);
 
-        public IEnumerable<CkanModule> Suggestions(HashSet<CkanModule> dependencies,
-                                                   List<CkanModule>    recommendations)
+        public IEnumerable<CkanModule> Suggestions(HashSet<CkanModule>             dependencies,
+                                                   IReadOnlyCollection<CkanModule> recommendations)
             => modlist.Values.Except(dependencies)
                              .Except(recommendations)
                              .Where(m => ValidRecSugReasons(dependencies,

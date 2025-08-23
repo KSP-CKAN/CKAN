@@ -120,11 +120,11 @@ namespace CKAN
         /// <param name="game">Game to use for formatting</param>
         /// <param name="resolved">Resolved relationships tree</param>
         /// <param name="innerException">Originating exception parameter for base class</param>
-        public DependenciesNotSatisfiedKraken(ICollection<ResolvedRelationship[]> unsatisfied,
-                                              IRegistryQuerier                    registry,
-                                              IGame                               game,
-                                              ResolvedRelationshipsTree           resolved,
-                                              Exception?                          innerException = null)
+        public DependenciesNotSatisfiedKraken(IReadOnlyCollection<ResolvedRelationship[]> unsatisfied,
+                                              IRegistryQuerier                            registry,
+                                              IGame                                       game,
+                                              ResolvedRelationshipsTree                   resolved,
+                                              Exception?                                  innerException = null)
             : base(string.Join(Environment.NewLine + Environment.NewLine,
                                unsatisfied.GroupBy(rrs => rrs.Last().relationship)
                                           .OrderByDescending(grp => grp.Count())
@@ -151,7 +151,7 @@ namespace CKAN
         {
         }
 
-        public readonly ICollection<ResolvedRelationship[]> unsatisfied;
+        public readonly IReadOnlyCollection<ResolvedRelationship[]> unsatisfied;
 
         private static string FormatDependsChain(ResolvedRelationship[] dependsChain)
             => dependsChain.Length == 1
@@ -169,11 +169,11 @@ namespace CKAN
         private static readonly ILog log = LogManager.GetLogger(typeof(DependenciesNotSatisfiedKraken));
     }
 
-    public class NotKSPDirKraken : Kraken
+    public class NotGameDirKraken : Kraken
     {
-        public NotKSPDirKraken(string     path,
-                               string?    reason         = null,
-                               Exception? innerException = null)
+        public NotGameDirKraken(string     path,
+                                string?    reason         = null,
+                                Exception? innerException = null)
             : base(reason, innerException)
         {
             this.path = path;
@@ -259,8 +259,8 @@ namespace CKAN
     /// </summary>
     public class InconsistentKraken : Kraken
     {
-        public InconsistentKraken(ICollection<string> inconsistencies,
-                                  Exception?          innerException = null)
+        public InconsistentKraken(IReadOnlyCollection<string> inconsistencies,
+                                  Exception?                  innerException = null)
             : base(string.Join(Environment.NewLine,
                                new string[] { Properties.Resources.KrakenInconsistenciesHeader }
                                    .Concat(inconsistencies.Select(msg => $"* {msg}"))),
@@ -277,7 +277,7 @@ namespace CKAN
         public string ShortDescription
             => string.Join("; ", inconsistencies);
 
-        private readonly ICollection<string> inconsistencies;
+        private readonly IReadOnlyCollection<string> inconsistencies;
     }
 
     public class FailedToDeleteFilesKraken : Kraken
@@ -632,7 +632,7 @@ namespace CKAN
     }
 
     /// <summary>
-    /// The version is a known and per se a valid KSP version, but is not allowed to be used for an action.
+    /// The version is a known and per se a valid Game version, but is not allowed to be used for an action.
     /// For example the given base game version is too low to fake a DLC in instance faking.
     /// </summary>
     public class WrongGameVersionKraken : Kraken
@@ -708,20 +708,20 @@ namespace CKAN
         public readonly string path;
     }
 
-    public class KSPManagerKraken : Kraken
+    public class GameManagerKraken : Kraken
     {
-        public KSPManagerKraken(string?    reason         = null,
-                                Exception? innerException = null)
+        public GameManagerKraken(string?    reason         = null,
+                                 Exception? innerException = null)
             : base(reason, innerException)
         {
         }
     }
 
-    public class InvalidKSPInstanceKraken : Kraken
+    public class InvalidGameInstanceKraken : Kraken
     {
-        public InvalidKSPInstanceKraken(string     instance,
-                                        string?    reason         = null,
-                                        Exception? innerException = null)
+        public InvalidGameInstanceKraken(string     instance,
+                                         string?    reason         = null,
+                                         Exception? innerException = null)
             : base(reason, innerException)
         {
             this.instance = instance;

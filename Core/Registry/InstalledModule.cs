@@ -132,6 +132,11 @@ namespace CKAN
                     .Select(instance.ToAbsoluteGameDir)
                     .All(p => Directory.Exists(p) || File.Exists(p));
 
+        public long ActualInstallSize(GameInstance instance)
+            => Files.Select(instance.ToAbsoluteGameDir)
+                    .Select(f => new FileInfo(f))
+                    .Sum(fi => fi.Exists ? fi.Length : 0);
+
         public override string ToString()
             => string.Format(AutoInstalled ? Properties.Resources.InstalledModuleToStringAutoInstalled
                                            : Properties.Resources.InstalledModuleToString,

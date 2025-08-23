@@ -19,7 +19,7 @@ using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 namespace CKAN
 {
     /// <summary>
-    /// Manage multiple KSP installs.
+    /// Manage multiple game installs.
     /// </summary>
     public class GameInstanceManager : IDisposable
     {
@@ -44,13 +44,14 @@ namespace CKAN
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 
         public string[] AllInstanceAnchorFiles => KnownGames.knownGames
-            .SelectMany(g => g.InstanceAnchorFiles)
-            .Distinct()
-            .ToArray();
+                                                            .SelectMany(g => g.InstanceAnchorFiles)
+                                                            .Distinct()
+                                                            .ToArray();
 
         public string? AutoStartInstance
         {
-            get => Configuration.AutoStartInstance != null && HasInstance(Configuration.AutoStartInstance)
+            get => Configuration.AutoStartInstance != null
+                   && HasInstance(Configuration.AutoStartInstance)
                        ? Configuration.AutoStartInstance
                        : null;
 
@@ -58,7 +59,7 @@ namespace CKAN
             {
                 if (value != null && !string.IsNullOrEmpty(value) && !HasInstance(value))
                 {
-                    throw new InvalidKSPInstanceKraken(value);
+                    throw new InvalidGameInstanceKraken(value);
                 }
                 Configuration.AutoStartInstance = value;
             }
@@ -77,60 +78,68 @@ namespace CKAN
         /// <summary>
         /// Returns the preferred game instance, or null if none can be found.
         ///
-        /// This works by checking to see if we're in a KSP dir first, then the
+        /// This works by checking to see if we're in a game dir first, then the
         /// config for an autostart instance, then will try to auto-populate
         /// by scanning for the game.
         ///
         /// This *will not* touch the config if we find a portable install.
         ///
-        /// This *will* run KSP instance autodetection if the config is empty.
+        /// This *will* run game instance autodetection if the config is empty.
         ///
         /// This *will* set the current instance, or throw an exception if it's already set.
         ///
         /// Returns null if we have multiple instances, but none of them are preferred.
         /// </summary>
         public GameInstance? GetPreferredInstance()
-        {
-            CurrentInstance = _GetPreferredInstance();
-            return CurrentInstance;
-        }
+            => CurrentInstance ??= _GetPreferredInstance();
 
-        // Actual worker for GetPreferredInstance()
-        internal GameInstance? _GetPreferredInstance()
+        private GameInstance? _GetPreferredInstance()
         {
-            foreach (IGame game in KnownGames.knownGames)
+            // First check if we're part of a portable install
+            // Note that this *does not* register in the config.
+            switch (KnownGames.knownGames.Select(g => GameInstance.PortableDir(g)
+                                                      is string p
+                                                          ? new GameInstance(g, p,
+                                                                             Properties.Resources.GameInstanceManagerPortable,
+                                                                             User)
+                                                          : null)
+                                         .OfType<GameInstance>()
+                                         .Where(i => i.Valid)
+                                         .ToArray())
             {
-                // TODO: Check which ones match, prompt user if >1
+                case { Length: 1 } insts:
+                    return insts.Single();
 
-                // First check if we're part of a portable install
-                // Note that this *does not* register in the config.
-                string? path = GameInstance.PortableDir(game);
-
-                if (path != null)
-                {
-                    GameInstance portableInst = new GameInstance(
-                        game, path, Properties.Resources.GameInstanceManagerPortable, User);
-                    if (portableInst.Valid)
+                case { Length: > 1 } insts:
+                    if (User.RaiseSelectionDialog(
+                            string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
+                                          string.Join(", ", insts.Select(i => i.GameDir())
+                                                                 .Distinct()
+                                                                 .Select(Platform.FormatPath))),
+                            insts.Select(i => i.game.ShortName)
+                                 .ToArray())
+                        is int selection and >= 0)
                     {
-                        return portableInst;
+                        return insts[selection];
                     }
-                }
+                    break;
             }
 
             // If we only know of a single instance, return that.
-            if (instances.Count == 1 && instances.First().Value.Valid)
+            if (instances.Count == 1
+                && instances.Values.Single() is { Valid: true } and var inst)
             {
-                return instances.First().Value;
+                return inst;
             }
 
             // Return the autostart, if we can find it.
             // We check both null and "" as we can't write NULL to the config, so we write an empty string instead
             // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the config!
-            if (AutoStartInstance != null
-                && !string.IsNullOrEmpty(AutoStartInstance)
-                && instances[AutoStartInstance].Valid)
+            if (AutoStartInstance is { Length: > 0 }
+                && instances.TryGetValue(AutoStartInstance, out GameInstance? autoInst)
+                && autoInst.Valid)
             {
-                return instances[AutoStartInstance];
+                return autoInst;
             }
 
             // If we know of no instances, try to find one.
@@ -150,7 +159,7 @@ namespace CKAN
         {
             if (instances.Count != 0)
             {
-                throw new KSPManagerKraken("Attempted to scan for defaults with instances");
+                throw new GameManagerKraken("Attempted to scan for defaults with instances");
             }
             var found = FindDefaultInstances();
             foreach (var inst in found)
@@ -210,7 +219,7 @@ namespace CKAN
         /// Adds a game instance to config.
         /// </summary>
         /// <returns>The resulting GameInstance object</returns>
-        /// <exception cref="NotKSPDirKraken">Thrown if the instance is not a valid game instance.</exception>
+        /// <exception cref="NotGameDirKraken">Thrown if the instance is not a valid game instance.</exception>
         public GameInstance AddInstance(GameInstance instance)
         {
             if (instance.Valid)
@@ -221,7 +230,7 @@ namespace CKAN
             }
             else
             {
-                throw new NotKSPDirKraken(instance.GameDir());
+                throw new NotGameDirKraken(instance.GameDir());
             }
             return instance;
         }
@@ -233,7 +242,7 @@ namespace CKAN
         /// <param name="name">The name of the instance</param>
         /// <param name="user">IUser object for interaction</param>
         /// <returns>The resulting GameInstance object</returns>
-        /// <exception cref="NotKSPDirKraken">Thrown if the instance is not a valid game instance.</exception>
+        /// <exception cref="NotGameDirKraken">Thrown if the instance is not a valid game instance.</exception>
         public GameInstance? AddInstance(string path, string name, IUser user)
         {
             var game = DetermineGame(new DirectoryInfo(path), user);
@@ -241,14 +250,14 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Clones an existing KSP installation.
+        /// Clones an existing game installation.
         /// </summary>
-        /// <param name="existingInstance">The KSP instance to clone.</param>
+        /// <param name="existingInstance">The game instance to clone.</param>
         /// <param name="newName">The name for the new instance.</param>
         /// <param name="newPath">The path where the new instance should be located.</param>
         /// <param name="shareStockFolders">True to make junctions or symlinks to stock folders instead of copying</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
-        /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if something went wrong with copying.</exception>
+        /// <exception cref="NotGameDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if something went wrong with copying.</exception>
         /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
         /// <exception cref="PathErrorKraken">Thrown by CopyDirectory() if the target folder already exists and is not empty.</exception>
         /// <exception cref="IOException">Thrown by CopyDirectory() if something goes wrong during the process.</exception>
@@ -263,15 +272,15 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Clones an existing KSP installation.
+        /// Clones an existing game installation.
         /// </summary>
-        /// <param name="existingInstance">The KSP instance to clone.</param>
+        /// <param name="existingInstance">The game instance to clone.</param>
         /// <param name="newName">The name for the new instance.</param>
         /// <param name="newPath">The path where the new instance should be located.</param>
         /// <param name="leaveEmpty">Dirs whose contents should not be copied</param>
         /// <param name="shareStockFolders">True to make junctions or symlinks to stock folders instead of copying</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
-        /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if something went wrong with copying.</exception>
+        /// <exception cref="NotGameDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if something went wrong with copying.</exception>
         /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
         /// <exception cref="PathErrorKraken">Thrown by CopyDirectory() if the target folder already exists and is not empty.</exception>
         /// <exception cref="IOException">Thrown by CopyDirectory() if something goes wrong during the process.</exception>
@@ -287,7 +296,7 @@ namespace CKAN
             }
             if (!existingInstance.Valid)
             {
-                throw new NotKSPDirKraken(existingInstance.GameDir(), string.Format(
+                throw new NotGameDirKraken(existingInstance.GameDir(), string.Format(
                     Properties.Resources.GameInstanceCloneInvalid, existingInstance.game.ShortName));
             }
 
@@ -302,7 +311,7 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Create a new fake KSP instance
+        /// Create a new fake game instance
         /// </summary>
         /// <param name="game">The game of the new instance.</param>
         /// <param name="newName">The name for the new instance.</param>
@@ -310,7 +319,7 @@ namespace CKAN
         /// <param name="version">The version of the new instance. Should have a build number.</param>
         /// <param name="dlcs">The IDlcDetector implementations for the DLCs that should be faked and the requested dlc version as a dictionary.</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
-        /// <exception cref="NotKSPDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if a write operation didn't complete for whatever reason.</exception>
+        /// <exception cref="NotGameDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if a write operation didn't complete for whatever reason.</exception>
         public void FakeInstance(IGame game, string newName, string newPath, GameVersion version,
                                  Dictionary<DLC.IDlcDetector, GameVersion>? dlcs = null)
         {
@@ -334,7 +343,7 @@ namespace CKAN
 
                 log.DebugFormat("Creating folder structure and text files at {0} for {1} version {2}", Path.GetFullPath(newPath), game.ShortName, version.ToString());
 
-                // Create a KSP root directory, containing a GameData folder, a buildID.txt/buildID64.txt and a readme.txt
+                // Create a game root directory, containing a GameData folder, a buildID.txt/buildID64.txt and a readme.txt
                 fileMgr.CreateDirectory(newPath);
                 fileMgr.CreateDirectory(Path.Combine(newPath, game.PrimaryModDirectoryRelative));
                 game.RebuildSubdirectories(newPath);
@@ -454,27 +463,33 @@ namespace CKAN
         /// </summary>
         public void RenameInstance(string from, string to)
         {
-            // TODO: What should we do if our target name already exists?
-            GameInstance ksp = instances[from];
-            instances.Remove(from);
-            ksp.Name = to;
-            instances.Add(to, ksp);
-            Configuration.SetRegistryToInstances(instances);
+            if (from != to)
+            {
+                if (instances.ContainsKey(to))
+                {
+                    throw new InstanceNameTakenKraken(to);
+                }
+                var inst = instances[from];
+                instances.Remove(from);
+                inst.Name = to;
+                instances.Add(to, inst);
+                Configuration.SetRegistryToInstances(instances);
+            }
         }
 
         /// <summary>
         /// Sets the current instance.
-        /// Throws an InvalidKSPInstanceKraken if not found.
+        /// Throws an InvalidGameInstanceKraken if not found.
         /// </summary>
         public void SetCurrentInstance(string name)
         {
             if (!instances.TryGetValue(name, out GameInstance? inst))
             {
-                throw new InvalidKSPInstanceKraken(name);
+                throw new InvalidGameInstanceKraken(name);
             }
             else if (!inst.Valid)
             {
-                throw new NotKSPDirKraken(inst.GameDir());
+                throw new NotGameDirKraken(inst.GameDir());
             }
             else
             {
@@ -498,52 +513,30 @@ namespace CKAN
 
         public void SetCurrentInstanceByPath(string path)
         {
-            var matchingGames = KnownGames.knownGames
-                .Where(g => g.GameInFolder(new DirectoryInfo(path)))
-                .ToList();
-            switch (matchingGames.Count)
+            if (InstanceAt(path) is GameInstance inst)
             {
-                case 0:
-                    throw new NotKSPDirKraken(path);
-
-                case 1:
-                    GameInstance ksp = new GameInstance(
-                        matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
-                    if (ksp.Valid)
-                    {
-                        SetCurrentInstance(ksp);
-                    }
-                    else
-                    {
-                        throw new NotKSPDirKraken(ksp.GameDir());
-                    }
-                    break;
-
-                default:
-                    // TODO: Prompt user to choose
-                    break;
+                SetCurrentInstance(inst);
             }
         }
 
         public GameInstance? InstanceAt(string path)
         {
-            var matchingGames = KnownGames.knownGames
-                .Where(g => g.GameInFolder(new DirectoryInfo(path)))
-                .ToList();
-            switch (matchingGames.Count)
+            var di = new DirectoryInfo(path);
+            if (DetermineGame(di, User) is IGame game)
             {
-                case 0:
-                    return null;
-
-                case 1:
-                    return new GameInstance(
-                        matchingGames.First(), path, Properties.Resources.GameInstanceByPathName, User);
-
-                default:
-                    // TODO: Prompt user to choose
-                    return null;
-
+                var inst = new GameInstance(game, path,
+                                            Properties.Resources.GameInstanceByPathName,
+                                            User);
+                if (inst.Valid)
+                {
+                    return inst;
+                }
+                else
+                {
+                    throw new NotGameDirKraken(inst.GameDir());
+                }
             }
+            return null;
         }
 
         /// <summary>
@@ -553,11 +546,11 @@ namespace CKAN
         {
             if (!HasInstance(name))
             {
-                throw new InvalidKSPInstanceKraken(name);
+                throw new InvalidGameInstanceKraken(name);
             }
             else if (!instances[name].Valid)
             {
-                throw new NotKSPDirKraken(instances[name].GameDir());
+                throw new NotGameDirKraken(instances[name].GameDir());
             }
             AutoStartInstance = name;
         }
@@ -774,27 +767,23 @@ namespace CKAN
         /// <param name="path">A DirectoryInfo of the path to check</param>
         /// <param name="user">IUser object for interaction</param>
         /// <returns>An instance of the matching game or null if the user cancelled</returns>
-        /// <exception cref="NotKSPDirKraken">Thrown when no games found</exception>
+        /// <exception cref="NotGameDirKraken">Thrown when no games found</exception>
         public IGame? DetermineGame(DirectoryInfo path, IUser user)
-        {
-            var matchingGames = KnownGames.knownGames.Where(g => g.GameInFolder(path)).ToList();
-            switch (matchingGames.Count)
-            {
-                case 0:
-                    throw new NotKSPDirKraken(path.FullName);
-
-                case 1:
-                    return matchingGames.First();
-
-                default:
-                    // Prompt user to choose
-                    int selection = user.RaiseSelectionDialog(
-                        string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
-                                      Platform.FormatPath(path.FullName)),
-                        matchingGames.Select(g => g.ShortName).ToArray());
-                    return selection >= 0 ? matchingGames[selection] : null;
-            }
-        }
+            => KnownGames.knownGames.Where(g => g.GameInFolder(path))
+                                    .ToArray()
+               switch
+               {
+                   { Length: 0 }       => throw new NotGameDirKraken(path.FullName),
+                   { Length: 1 } games => games.Single(),
+                   var games => user.RaiseSelectionDialog(
+                                    string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
+                                                  Platform.FormatPath(path.FullName)),
+                                    games.Select(g => g.ShortName)
+                                         .ToArray())
+                                is int selection and >= 0
+                                    ? games[selection]
+                                    : null
+               };
 
         public static readonly string DefaultDownloadCacheDir =
             Path.Combine(CKANPathUtils.AppDataPath, "downloads");

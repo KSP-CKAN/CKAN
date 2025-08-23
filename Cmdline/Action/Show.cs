@@ -131,7 +131,7 @@ namespace CKAN.CmdLine
             if (!opts.without_files && !module.Module.IsDLC)
             {
                 // Display InstalledModule specific information.
-                if (module.Files is ICollection<string> files)
+                if (module.Files is IReadOnlyCollection<string> files)
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage(Properties.Resources.ShowFilesHeader, files.Count);

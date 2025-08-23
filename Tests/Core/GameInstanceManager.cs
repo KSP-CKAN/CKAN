@@ -64,7 +64,7 @@ namespace Tests.Core
         public void SetAutoStart_InvalidName_DoesNotChangeAutoStart()
         {
             manager?.SetAutoStart(nameInReg);
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager?.SetAutoStart("invalid"));
+            Assert.Throws<InvalidGameInstanceKraken>(() => manager?.SetAutoStart("invalid"));
             Assert.That(manager?.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
@@ -128,7 +128,7 @@ namespace Tests.Core
             string tempdir = TestData.NewTempDir();
             GameInstance badKSP = new GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
 
-            Assert.Throws<NotKSPDirKraken>(() =>
+            Assert.Throws<NotGameDirKraken>(() =>
                 manager?.CloneInstance(badKSP, badName, tempdir));
             Assert.IsFalse(manager?.HasInstance(badName));
 
@@ -289,7 +289,7 @@ namespace Tests.Core
         [Test]
         public void SetCurrentInstance_NameNotInRepo_Throws()
         {
-            Assert.Throws<InvalidKSPInstanceKraken>(() => manager?.SetCurrentInstance("invalid"));
+            Assert.Throws<InvalidGameInstanceKraken>(() => manager?.SetCurrentInstance("invalid"));
         }
 
         [Test] //37a33

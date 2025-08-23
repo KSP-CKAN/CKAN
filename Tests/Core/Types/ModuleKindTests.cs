@@ -28,7 +28,7 @@ namespace Tests.Core.Types
                                         ModuleKind.metapackage);
 
             // Act
-            var serialized = CkanModule.ToJson(module);
+            var serialized = module.ToJson();
             var rawJson    = JObject.Parse(serialized);
 
             // Assert

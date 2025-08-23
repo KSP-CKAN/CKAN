@@ -20,16 +20,29 @@ namespace CKAN.GUI
         /// Initialize a mod search object.
         /// Null or empty parameters are treated as matching everything.
         /// </summary>
+        /// <param name="allLabels">List of labels to be searched</param>
+        /// <param name="instance">Game instance for finding labels to search</param>
         /// <param name="byName">String to search for in mod names, identifiers, and abbreviations</param>
         /// <param name="byAuthors">String to search for in author names</param>
         /// <param name="byDescription">String to search for in mod descriptions</param>
-        /// <param name="localizations">Language to search for in mod localizations</param>
+        /// <param name="licenses">Licenses to search for</param>
+        /// <param name="localizations">Languages to search for in mod localizations</param>
         /// <param name="depends">Identifier prefix to find in mod depends relationships</param>
         /// <param name="recommends">Identifier prefix to find in mod recommends relationships</param>
         /// <param name="suggests">Identifier prefix to find in mod suggests relationships</param>
         /// <param name="conflicts">Identifier prefix to find in mod conflicts relationships</param>
+        /// <param name="supports">Identifier prefix to find in mod supports relationships</param>
+        /// <param name="tagNames">Names of tags to search for</param>
+        /// <param name="labelNames">Names of labels to search for</param>
+        /// <param name="compatible">True to find only compatible mods, false to find only incompatible, null for both</param>
+        /// <param name="installed">True to find only installed mods, false to find only non-installed, null for both</param>
+        /// <param name="cached">True to find only cached mods, false to find only uncached, null for both</param>
+        /// <param name="newlyCompatible">True to find only newly compatible mods, false to find only non newly compatible, null for both</param>
+        /// <param name="upgradeable">True to find only upgradeable mods, false to find only non-upgradeable, null for both</param>
+        /// <param name="replaceable">True to find only replaceable mods, false to find only non-replaceable, null for both</param>
         /// <param name="combined">Full formatted search string if known, will be auto generated otherwise</param>
         public ModSearch(
+            ModuleLabelList allLabels,
             GameInstance instance,
             string byName, List<string> byAuthors, string byDescription,
             List<string>? licenses, List<string>? localizations,
@@ -57,7 +70,7 @@ namespace CKAN.GUI
 
             initStringList(TagNames,   tagNames);
             initStringList(LabelNames, labelNames);
-            LabelsByNegation = FindLabels(instance, LabelNames);
+            LabelsByNegation = FindLabels(allLabels, instance, LabelNames);
 
             Compatible      = compatible;
             Installed       = installed;
@@ -77,7 +90,8 @@ namespace CKAN.GUI
             }
         }
 
-        public ModSearch(GameInstance instance,
+        public ModSearch(ModuleLabelList allLabels,
+                         GameInstance instance,
                          GUIModFilter filter,
                          ModuleTag?   tag   = null,
                          ModuleLabel? label = null)
@@ -100,7 +114,7 @@ namespace CKAN.GUI
                 case GUIModFilter.All:
                     break;
             }
-            LabelsByNegation = FindLabels(instance, LabelNames);
+            LabelsByNegation = FindLabels(allLabels, instance, LabelNames);
             Combined = getCombined();
         }
 
@@ -175,10 +189,15 @@ namespace CKAN.GUI
         /// <summary>
         /// Create a new search from a list of authors
         /// </summary>
+        /// <param name="allLabels">List of labels for searching</param>
+        /// <param name="instance">Game instance for searching</param>
         /// <param name="authors">The authors for the search</param>
         /// <returns>A search for the authors</returns>
-        public static ModSearch FromAuthors(GameInstance instance, IEnumerable<string> authors)
+        public static ModSearch FromAuthors(ModuleLabelList     allLabels,
+                                            GameInstance        instance,
+                                            IEnumerable<string> authors)
             => new ModSearch(
+                allLabels,
                 instance,
                 // Can't search for spaces, so massage them like SearchableAuthors
                 "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "",
@@ -191,10 +210,13 @@ namespace CKAN.GUI
         /// <summary>
         /// Create a new search by merging this and another
         /// </summary>
+        /// <param name="allLabels">List of labels for searching</param>
         /// <param name="other">The other search for merging</param>
         /// <returns>A search containing all the search terms</returns>
-        public ModSearch MergedWith(ModSearch other)
+        public ModSearch MergedWith(ModuleLabelList allLabels,
+                                    ModSearch       other)
             => new ModSearch(
+                allLabels,
                 Instance,
                 Name + other.Name,
                 Authors.Concat(other.Authors).Distinct().ToList(),
@@ -315,11 +337,15 @@ namespace CKAN.GUI
         /// May throw a Kraken if the syntax is bad.
         /// MUST be the inverse of getCombined!
         /// </summary>
+        /// <param name="allLabels">List of labels for searching</param>
+        /// <param name="instance">Game instance for searching</param>
         /// <param name="combined">Full formatted search string</param>
         /// <returns>
         /// New search object, or null if no search terms defined
         /// </returns>
-        public static ModSearch? Parse(GameInstance instance, string combined)
+        public static ModSearch? Parse(ModuleLabelList allLabels,
+                                       GameInstance    instance,
+                                       string          combined)
         {
             if (string.IsNullOrWhiteSpace(combined))
             {
@@ -455,6 +481,7 @@ namespace CKAN.GUI
                 }
             }
             return new ModSearch(
+                allLabels,
                 instance,
                 byName, byAuthors, byDescription,
                 byLicenses, byLocalizations,
@@ -630,12 +657,10 @@ namespace CKAN.GUI
             => !Replaceable.HasValue || Replaceable.Value == (mod.IsInstalled && mod.HasReplacement);
 
         private static IDictionary<(bool negate, bool exclude), ModuleLabel[]> FindLabels(
+                ModuleLabelList     allLabels,
                 GameInstance        inst,
                 IEnumerable<string> names)
-            => FindLabels(ModuleLabelList.ModuleLabels
-                                         .LabelsFor(inst.Name)
-                                         .ToArray(),
-                          names);
+            => FindLabels(allLabels.LabelsFor(inst.Name).ToArray(), names);
 
         private static IDictionary<(bool negate, bool exclude), ModuleLabel[]> FindLabels(
                 ModuleLabel[]       instLabels,

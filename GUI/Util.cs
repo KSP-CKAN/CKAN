@@ -236,6 +236,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="location">Top left corner of box</param>
         /// <param name="size">Width and height of box</param>
+        /// <param name="screen">The screen to which to clamp, null for any screen</param>
         /// <returns>
         /// Original location if already fully on-screen, otherwise
         /// a position representing sliding it onto the screen
@@ -283,6 +284,7 @@ namespace CKAN.GUI
         /// <param name="size">Width and height of box</param>
         /// <param name="topLeftMargin">Size of space between window and top left edge of screen</param>
         /// <param name="bottomRightMargin">Size of space between window and bottom right edge of screen</param>
+        /// <param name="screen">The screen to which to clamp, null for any screen</param>
         /// <returns>
         /// Original location if already fully on-screen plus margins, otherwise
         /// a position representing sliding it onto the screen

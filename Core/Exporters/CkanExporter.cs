@@ -11,7 +11,7 @@ namespace CKAN.Exporters
         {
             using (var writer = new StreamWriter(stream, Encoding.UTF8, 4096, true))
             {
-                writer.Write(CkanModule.ToJson(manager.GenerateModpack(false, false)));
+                writer.Write(manager.GenerateModpack(false, false).ToJson());
             }
         }
     }

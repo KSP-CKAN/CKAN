@@ -24,7 +24,7 @@ namespace CKAN
             ReleaseDownload = new Uri(S3BaseUrl, CkanUrlPiece);
         }
 
-        public override IList<NetAsyncDownloader.DownloadTarget> Targets => new[]
+        public override IReadOnlyCollection<NetAsyncDownloader.DownloadTarget> Targets => new[]
         {
             new NetAsyncDownloader.DownloadTargetFile(UpdaterDownload, updaterFilename),
             new NetAsyncDownloader.DownloadTargetFile(ReleaseDownload, ckanFilename),

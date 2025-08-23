@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.IO;
 using System.Reflection;
@@ -114,15 +115,13 @@ namespace Tests.Core.Registry
         {
             // Arrange
             LogManager.GetRepository(Assembly.GetExecutingAssembly()).Threshold = Level.Off;
-            string registryPath = TestData.DataDir("zero-byte-registry.json");
 
             // Act
             var user = new NullUser();
-
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-            using (var dispksp  = new DisposableKSP(registryPath))
-            using (var regMgr   = RegistryManager.Instance(dispksp.KSP, repoData.Manager,
+            using (var inst     = new DisposableKSP(TestData.TestRegistryZeroBytes()))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
                 // Assert
@@ -136,6 +135,104 @@ namespace Tests.Core.Registry
                 // A default repo is set during load
                 CollectionAssert.AreEqual(new Repository[] { repo.repo },
                                           reg.Repositories.Values);
+            }
+        }
+
+        [Test]
+        public void Registry_WithVersionZero_InstalledFilePathsBecomeRelative()
+        {
+            // Arrange
+            var user   = new NullUser();
+            var modGen = new RandomModuleGenerator(new Random());
+            var mod1   = modGen.GenerateRandomModule();
+            var mod2   = modGen.GenerateRandomModule();
+            var mod3   = modGen.GenerateRandomModule();
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var inst     = new DisposableKSP())
+            {
+                var gamedata = inst.KSP.game.PrimaryModDirectory(inst.KSP);
+                Assert.IsTrue(Path.IsPathRooted(gamedata));
+                File.WriteAllText(Path.Combine(inst.KSP.CkanDir(), "registry.json"),
+                                  $@"{{
+                                      ""installed_modules"": {{
+                                          ""Mod1"": {{
+                                              ""source_module"": {mod1.ToJson()},
+                                              ""installed_files"": {{
+                                                  ""{gamedata}/Mod1.dll"": {{}}
+                                              }}
+                                          }},
+                                          ""Mod2"": {{
+                                              ""source_module"": {mod2.ToJson()},
+                                              ""installed_files"": {{
+                                                  ""{gamedata}/Mod2.dll"": {{}}
+                                              }}
+                                          }},
+                                          ""Mod3"": {{
+                                              ""source_module"": {mod3.ToJson()},
+                                              ""installed_files"": {{
+                                                  ""{gamedata}/Mod3.dll"": {{}}
+                                              }}
+                                          }}
+                                      }}
+                                  }}");
+                // Act
+                using (var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                             new Repository[] { repo.repo }))
+                {
+                    // Assert
+                    var globalPaths = regMgr.registry.InstalledFileInfo().Select(tuple => tuple.relPath).ToArray();
+                    CollectionAssert.IsNotEmpty(globalPaths);
+                    foreach (var path in globalPaths)
+                    {
+                        Assert.IsFalse(Path.IsPathRooted(path),
+                                       $"Global installed path {path} should be relative inside {inst.KSP.GameDir()}");
+                    }
+                    CollectionAssert.IsNotEmpty(regMgr.registry.InstalledModules);
+                    foreach (var path in regMgr.registry.InstalledModules.SelectMany(im => im.Files))
+                    {
+                        Assert.IsFalse(Path.IsPathRooted(path),
+                                       $"Module installed path {path} should be relative inside {inst.KSP.GameDir()}");
+                    }
+                }
+            }
+        }
+
+        [Test]
+        public void Registry_WithVersionOne_001ControlLockConvertedToControlLock()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var inst     = new DisposableKSP(TestData.TestRegistryVersion1()))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                Assert.IsNull(regMgr.registry.InstalledModule("001ControlLock"));
+                var instMod = regMgr.registry.InstalledModule("ControlLock");
+                Assert.IsNotNull(instMod);
+                Assert.AreEqual("ControlLock", instMod?.identifier);
+                Assert.AreEqual("ControlLock", instMod?.Module.identifier);
+            }
+        }
+
+        [Test]
+        public void Registry_WithNewerVersion_Throws()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                Assert.Throws<RegistryVersionNotSupportedKraken>(() =>
+                {
+                    using (var inst   = new DisposableKSP(TestData.TestRegistryVersion999()))
+                    using (var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                                 new Repository[] { repo.repo }))
+                    {
+                    }
+                });
             }
         }
 

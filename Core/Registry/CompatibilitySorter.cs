@@ -86,7 +86,7 @@ namespace CKAN
         /// </summary>
         public readonly StabilityToleranceConfig StabilityTolerance;
 
-        public ICollection<CkanModule> LatestCompatible
+        public IReadOnlyCollection<CkanModule> LatestCompatible
         {
             get
             {
@@ -102,7 +102,7 @@ namespace CKAN
         /// </summary>
         public readonly ConcurrentDictionary<string, AvailableModule> Incompatible;
 
-        public ICollection<CkanModule> LatestIncompatible
+        public IReadOnlyCollection<CkanModule> LatestIncompatible
         {
             get
             {

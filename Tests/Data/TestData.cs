@@ -730,6 +730,15 @@ namespace Tests.Data
         public static string TestRegistry()
             => DataDir("registry.json");
 
+        public static string TestRegistryZeroBytes()
+            => DataDir("zero-byte-registry.json");
+
+        public static string TestRegistryVersion1()
+            => DataDir("registry-version-1.json");
+
+        public static string TestRegistryVersion999()
+            => DataDir("registry-version-999.json");
+
         // Where's my mkdtemp? Instead we'll make a random file, delete it, and
         // fill its place with a directory.
         // Taken from https://stackoverflow.com/a/20445952
@@ -955,7 +964,7 @@ namespace Tests.Data
             Generator = generator;
         }
 
-        public CkanModule GeneratorRandomModule(
+        public CkanModule GenerateRandomModule(
             GameVersion?                  ksp_version = null,
             List<RelationshipDescriptor>? conflicts   = null,
             List<RelationshipDescriptor>? depends     = null,

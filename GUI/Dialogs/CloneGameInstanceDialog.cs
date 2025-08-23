@@ -165,7 +165,7 @@ namespace CKAN.GUI
                     }
                     else
                     {
-                        throw new NotKSPDirKraken(instanceToClone.GameDir());
+                        throw new NotGameDirKraken(instanceToClone.GameDir());
                     }
                 });
 
@@ -189,7 +189,7 @@ namespace CKAN.GUI
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
                 reactivateDialog();
             }
-            catch (NotKSPDirKraken kraken)
+            catch (NotGameDirKraken kraken)
             {
                 user.RaiseError(Properties.Resources.CloneFakeKspDialogInstanceNotValid,
                                 Platform.FormatPath(kraken.path));

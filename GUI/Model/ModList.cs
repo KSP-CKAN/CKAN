@@ -17,22 +17,6 @@ using CKAN.Games;
 
 namespace CKAN.GUI
 {
-    public enum GUIModFilter
-    {
-        Compatible               = 0,
-        Installed                = 1,
-        InstalledUpdateAvailable = 2,
-        NewInRepository          = 3,
-        NotInstalled             = 4,
-        Incompatible             = 5,
-        All                      = 6,
-        Cached                   = 7,
-        Replaceable              = 8,
-        Uncached                 = 9,
-        CustomLabel              = 10,
-        Tag                      = 11,
-    }
-
     /// <summary>
     /// The holder of the list of mods to be shown.
     /// Should be a pure data model and avoid UI stuff, but it's not there yet.
@@ -77,27 +61,26 @@ namespace CKAN.GUI
         private static string FilterName(GUIModFilter filter,
                                          ModuleTag?   tag   = null,
                                          ModuleLabel? label = null)
-        {
-            switch (filter)
-            {
-                case GUIModFilter.Compatible:               return Properties.Resources.MainFilterCompatible;
-                case GUIModFilter.Incompatible:             return Properties.Resources.MainFilterIncompatible;
-                case GUIModFilter.Installed:                return Properties.Resources.MainFilterInstalled;
-                case GUIModFilter.NotInstalled:             return Properties.Resources.MainFilterNotInstalled;
-                case GUIModFilter.InstalledUpdateAvailable: return Properties.Resources.MainFilterUpgradeable;
-                case GUIModFilter.Replaceable:              return Properties.Resources.MainFilterReplaceable;
-                case GUIModFilter.Cached:                   return Properties.Resources.MainFilterCached;
-                case GUIModFilter.Uncached:                 return Properties.Resources.MainFilterUncached;
-                case GUIModFilter.NewInRepository:          return Properties.Resources.MainFilterNew;
-                case GUIModFilter.All:                      return Properties.Resources.MainFilterAll;
-                case GUIModFilter.CustomLabel:              return string.Format(Properties.Resources.MainFilterLabel, label?.Name ?? "CUSTOM");
-                case GUIModFilter.Tag:
-                    return tag == null
-                        ? Properties.Resources.MainFilterUntagged
-                        : string.Format(Properties.Resources.MainFilterTag, tag.Name);
-            }
-            return "";
-        }
+            => filter switch
+               {
+                   GUIModFilter.Compatible               => Properties.Resources.MainFilterCompatible,
+                   GUIModFilter.Incompatible             => Properties.Resources.MainFilterIncompatible,
+                   GUIModFilter.Installed                => Properties.Resources.MainFilterInstalled,
+                   GUIModFilter.NotInstalled             => Properties.Resources.MainFilterNotInstalled,
+                   GUIModFilter.InstalledUpdateAvailable => Properties.Resources.MainFilterUpgradeable,
+                   GUIModFilter.Replaceable              => Properties.Resources.MainFilterReplaceable,
+                   GUIModFilter.Cached                   => Properties.Resources.MainFilterCached,
+                   GUIModFilter.Uncached                 => Properties.Resources.MainFilterUncached,
+                   GUIModFilter.NewInRepository          => Properties.Resources.MainFilterNew,
+                   GUIModFilter.All                      => Properties.Resources.MainFilterAll,
+                   GUIModFilter.CustomLabel              => string.Format(Properties.Resources.MainFilterLabel,
+                                                                          label?.Name ?? "CUSTOM"),
+                   GUIModFilter.Tag                      => tag == null
+                                                                ? Properties.Resources.MainFilterUntagged
+                                                                : string.Format(Properties.Resources.MainFilterTag,
+                                                                                tag.Name),
+                   _                                     => "",
+               };
 
         public static SavedSearch FilterToSavedSearch(GameInstance instance,
                                                       GUIModFilter filter,
@@ -106,7 +89,7 @@ namespace CKAN.GUI
             => new SavedSearch()
             {
                 Name   = FilterName(filter, tag, label),
-                Values = new List<string>() { new ModSearch(instance, filter, tag, label).Combined ?? "" },
+                Values = new List<string>() { new ModSearch(ModuleLabelList.ModuleLabels, instance, filter, tag, label).Combined ?? "" },
             };
 
         private static RelationshipResolverOptions conflictOptions(StabilityToleranceConfig stabilityTolerance)
@@ -121,8 +104,10 @@ namespace CKAN.GUI
         /// <summary>
         /// Returns a changeset and conflicts based on the selections of the user.
         /// </summary>
-        /// <param name="registry"></param>
-        /// <param name="changeSet"></param>
+        /// <param name="registry">The registry for getting available mods</param>
+        /// <param name="changeSet">User's choices of installation and removal</param>
+        /// <param name="game">Game of the game instance</param>
+        /// <param name="stabilityTolerance">Prerelease configuration</param>
         /// <param name="version">The version of the current game instance</param>
         public Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier         registry,
@@ -235,10 +220,9 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="registry">Registry with currently installed modules</param>
         /// <param name="changeSet">Changes to be made to the installed modules</param>
-        /// <param name="crit">Compatible versions of current instance</param>
-        /// <returns>Sequence of InstalledModules after the changes are applied, not including dependencies</returns>
         private static IEnumerable<InstalledModule> InstalledAfterChanges(
-            IRegistryQuerier registry, ICollection<ModChange> changeSet)
+            IRegistryQuerier               registry,
+            IReadOnlyCollection<ModChange> changeSet)
         {
             var removingIdents = changeSet
                 .Where(ch => ch.ChangeType != GUIModChangeType.Install)
@@ -281,13 +265,15 @@ namespace CKAN.GUI
             => Modules.Count(mod => searches?.Any(s => s?.Matches(mod) ?? true) ?? true);
 
         public int CountModsByFilter(GameInstance inst, GUIModFilter filter)
-            => CountModsBySearches(new List<ModSearch>() { new ModSearch(inst, filter, null, null) });
+            => CountModsBySearches(new List<ModSearch>() { new ModSearch(ModuleLabelList.ModuleLabels, inst, filter, null, null) });
 
         /// <summary>
         /// Constructs the mod list suitable for display to the user.
         /// Manipulates <c>full_list_of_mod_rows</c>.
         /// </summary>
         /// <param name="modules">A list of modules that may require updating</param>
+        /// <param name="instanceName">Name of the game instance for getting labels</param>
+        /// <param name="game">Game of the game instance</param>
         /// <param name="mc">Changes the user has made</param>
         /// <returns>The mod list</returns>
         public IEnumerable<DataGridViewRow> ConstructModList(IReadOnlyCollection<GUIMod> modules,
@@ -379,13 +365,13 @@ namespace CKAN.GUI
                 Value = mod.LatestVersion
             };
 
-            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"       };
-            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility           };
-            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize                };
-            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize                 };
-            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date     };
-            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate                 };
-            var desc          = new DataGridViewTextBoxCell { Value = ToGridText(mod.Abstract)        };
+            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"   };
+            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility       };
+            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize            };
+            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize             };
+            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date };
+            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate             };
+            var desc          = new DataGridViewTextBoxCell { Value = ToGridText(mod.Abstract)    };
 
             item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, downloadSize, installSize, releaseDate, installDate, downloadCount, desc);
 
@@ -418,6 +404,10 @@ namespace CKAN.GUI
         /// after it has been added to or removed from a label group
         /// </summary>
         /// <param name="mod">The mod that needs an update</param>
+        /// <param name="conflicted">True if mod should have a red background</param>
+        /// <param name="instanceName">Name of the game instance for finding labels</param>
+        /// <param name="game">Game of game instance for finding labels</param>
+        /// <param name="registry">Registry for finding mods</param>
         public DataGridViewRow? ReapplyLabels(GUIMod mod, bool conflicted,
                                              string instanceName, IGame game, Registry registry)
         {

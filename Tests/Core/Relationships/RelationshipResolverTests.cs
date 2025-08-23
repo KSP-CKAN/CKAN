@@ -52,15 +52,15 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_WithConflictingModules()
         {
-            var mod_a = generator!.GeneratorRandomModule();
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule();
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor { name = mod_a.identifier }
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -82,8 +82,8 @@ namespace Tests.Core.Relationships
         [Category("Version")]
         public void Constructor_WithConflictingModulesVersion_Throws()
         {
-            var mod_a = generator!.GeneratorRandomModule();
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule();
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -93,8 +93,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -111,8 +111,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "1.0")]
         public void Constructor_WithConflictingModulesVersionMin_Throws(string ver, string conf_min)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -122,8 +122,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -140,8 +140,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "1.0")]
         public void Constructor_WithConflictingModulesVersionMax_Throws(string ver, string conf_max)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -151,8 +151,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -170,8 +170,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "0.5", "1.0")]
         public void Constructor_WithConflictingModulesVersionMinMax_Throws(string ver, string conf_min, string conf_max)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -182,8 +182,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -200,8 +200,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "2.0")]
         public void Constructor_WithNonConflictingModulesVersion_DoesNotThrow(string ver, string conf)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -211,8 +211,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -228,8 +228,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "2.0")]
         public void Constructor_WithConflictingModulesVersionMin_DoesNotThrow(string ver, string conf_min)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -239,8 +239,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -256,8 +256,8 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "1.0")]
         public void Constructor_WithConflictingModulesVersionMax_DoesNotThrow(string ver, string conf_max)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -267,8 +267,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -285,8 +285,8 @@ namespace Tests.Core.Relationships
         [TestCase("4.0", "2.0", "3.0")]
         public void Constructor_WithConflictingModulesVersionMinMax_DoesNotThrow(string ver, string conf_min, string conf_max)
         {
-            var mod_a = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var mod_b = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var mod_a = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var mod_b = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -297,8 +297,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a),
-                                                      CkanModule.ToJson(mod_b)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson(),
+                                                      mod_b.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -314,24 +314,24 @@ namespace Tests.Core.Relationships
         {
             options!.without_toomanyprovides_kraken = false;
 
-            var mod_a = generator!.GeneratorRandomModule();
-            var mod_b = generator.GeneratorRandomModule(provides: new List<string>
+            var mod_a = generator!.GenerateRandomModule();
+            var mod_b = generator.GenerateRandomModule(provides: new List<string>
             {
                 mod_a.identifier
             });
-            var mod_c = generator.GeneratorRandomModule(provides: new List<string>
+            var mod_c = generator.GenerateRandomModule(provides: new List<string>
             {
                 mod_a.identifier
             });
-            var mod_d = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var mod_d = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = mod_a.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_b),
-                                                      CkanModule.ToJson(mod_c),
-                                                      CkanModule.ToJson(mod_d)))
+            using (var repo = new TemporaryRepository(mod_b.ToJson(),
+                                                      mod_c.ToJson(),
+                                                      mod_d.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -346,9 +346,9 @@ namespace Tests.Core.Relationships
         public void ModList_WithInstalledModules_ContainsThemWithReasonInstalled()
         {
             var user = new NullUser();
-            var mod_a = generator!.GeneratorRandomModule();
+            var mod_a = generator!.GenerateRandomModule();
             using (var ksp = new DisposableKSP())
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_a)))
+            using (var repo = new TemporaryRepository(mod_a.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -372,15 +372,15 @@ namespace Tests.Core.Relationships
         public void ModList_WithInstalledModulesSuggested_DoesNotContainThem()
         {
             options!.with_all_suggests = true;
-            var suggested = generator!.GeneratorRandomModule();
-            var suggester = generator.GeneratorRandomModule(suggests: new List<RelationshipDescriptor>
+            var suggested = generator!.GenerateRandomModule();
+            var suggester = generator.GenerateRandomModule(suggests: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(suggested),
-                                                      CkanModule.ToJson(suggester)))
+            using (var repo = new TemporaryRepository(suggested.ToJson(),
+                                                      suggester.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -396,20 +396,20 @@ namespace Tests.Core.Relationships
         public void ModList_WithSuggestedModulesThatWouldConflict_DoesNotContainThem()
         {
             options!.with_all_suggests = true;
-            var suggested = generator!.GeneratorRandomModule();
-            var mod = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var suggested = generator!.GenerateRandomModule();
+            var mod = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
-            var suggester = generator.GeneratorRandomModule(suggests: new List<RelationshipDescriptor>
+            var suggester = generator.GenerateRandomModule(suggests: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(suggested),
-                                                      CkanModule.ToJson(suggester),
-                                                      CkanModule.ToJson(mod)))
+            using (var repo = new TemporaryRepository(suggested.ToJson(),
+                                                      suggester.ToJson(),
+                                                      mod.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -423,20 +423,20 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_WithConflictingModulesInDependencies_ThrowUnderDefaultSettings()
         {
-            var dependent = generator!.GeneratorRandomModule();
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var dependent = generator!.GenerateRandomModule();
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = dependent.identifier}
             });
-            var conflicts_with_dependent = generator.GeneratorRandomModule(conflicts: new List<RelationshipDescriptor>
+            var conflicts_with_dependent = generator.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = dependent.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent),
-                                                      CkanModule.ToJson(conflicts_with_dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson(),
+                                                      conflicts_with_dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -451,15 +451,15 @@ namespace Tests.Core.Relationships
         public void Constructor_WithSuggests_HasSuggestedInModlist()
         {
             options!.with_all_suggests = true;
-            var suggested = generator!.GeneratorRandomModule();
-            var suggester = generator.GeneratorRandomModule(suggests: new List<RelationshipDescriptor>
+            var suggested = generator!.GenerateRandomModule();
+            var suggester = generator.GenerateRandomModule(suggests: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = suggested.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(suggester),
-                                                      CkanModule.ToJson(suggested)))
+            using (var repo = new TemporaryRepository(suggester.ToJson(),
+                                                      suggested.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -473,14 +473,14 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_WithAllSuggests_ContainsSuggestedOfSuggested()
         {
-            var suggested2 = generator!.GeneratorRandomModule();
-            var suggested = generator.GeneratorRandomModule(
+            var suggested2 = generator!.GenerateRandomModule();
+            var suggested = generator.GenerateRandomModule(
                 suggests: new List<RelationshipDescriptor>
                 {
                     new ModuleRelationshipDescriptor { name = suggested2.identifier }
                 }
             );
-            var suggester = generator.GeneratorRandomModule(
+            var suggester = generator.GenerateRandomModule(
                 suggests: new List<RelationshipDescriptor>
                 {
                     new ModuleRelationshipDescriptor { name = suggested.identifier }
@@ -488,9 +488,9 @@ namespace Tests.Core.Relationships
             );
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(suggester),
-                                                      CkanModule.ToJson(suggested),
-                                                      CkanModule.ToJson(suggested2)))
+            using (var repo = new TemporaryRepository(suggester.ToJson(),
+                                                      suggested.ToJson(),
+                                                      suggested2.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -510,19 +510,19 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_ProvidesSatisfyDependencies()
         {
-            var mod_a = generator!.GeneratorRandomModule();
-            var mod_b = generator.GeneratorRandomModule(provides: new List<string>
+            var mod_a = generator!.GenerateRandomModule();
+            var mod_b = generator.GenerateRandomModule(provides: new List<string>
             {
                 mod_a.identifier
             });
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = mod_a.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod_b),
-                                                      CkanModule.ToJson(depender)))
+            using (var repo = new TemporaryRepository(mod_b.ToJson(),
+                                                      depender.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -540,14 +540,14 @@ namespace Tests.Core.Relationships
         [Test]
         public void Constructor_WithMissingDependents_Throws()
         {
-            var dependent = generator!.GeneratorRandomModule();
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var dependent = generator!.GenerateRandomModule();
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor {name = dependent.identifier}
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender)))
+            using (var repo = new TemporaryRepository(depender.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -566,8 +566,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "0")]
         public void Constructor_WithMissingDependentsVersion_Throws(string ver, string dep)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -577,8 +577,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -595,8 +595,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "2.0")]
         public void Constructor_WithMissingDependentsVersionMin_Throws(string ver, string dep_min)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -606,8 +606,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -626,8 +626,8 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "0.5")]
         public void Constructor_WithMissingDependentsVersionMax_Throws(string ver, string dep_max)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -637,8 +637,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -655,8 +655,8 @@ namespace Tests.Core.Relationships
         [TestCase("4.0", "2.0", "3.0")]
         public void Constructor_WithMissingDependentsVersionMinMax_Throws(string ver, string dep_min, string dep_max)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -667,8 +667,8 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -685,10 +685,10 @@ namespace Tests.Core.Relationships
         [TestCase("1.0", "1.0", "0.5")]//what to do if a mod is present twice with the same version ?
         public void Constructor_WithDependentVersion_ChooseCorrectly(string ver, string dep, string other)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GenerateRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -698,9 +698,9 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent),
-                                                      CkanModule.ToJson(other_dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson(),
+                                                      other_dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -722,10 +722,10 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "2.0", "0.5")]
         public void Constructor_WithDependentVersionMin_ChooseCorrectly(string ver, string dep_min, string other)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GenerateRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -735,9 +735,9 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent),
-                                                      CkanModule.ToJson(other_dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson(),
+                                                      other_dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -759,10 +759,10 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "3.0", "4.0")]
         public void Constructor_WithDependentVersionMax_ChooseCorrectly(string ver, string dep_max, string other)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GenerateRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -772,9 +772,9 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent),
-                                                      CkanModule.ToJson(other_dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson(),
+                                                      other_dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -796,10 +796,10 @@ namespace Tests.Core.Relationships
         [TestCase("2.0", "1.0", "3.0", "3.5")]
         public void Constructor_WithDependentVersionMinMax_ChooseCorrectly(string ver, string dep_min, string dep_max, string other)
         {
-            var dependent = generator!.GeneratorRandomModule(version: new ModuleVersion(ver));
-            var other_dependent = generator.GeneratorRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
+            var dependent = generator!.GenerateRandomModule(version: new ModuleVersion(ver));
+            var other_dependent = generator.GenerateRandomModule(identifier: dependent.identifier, version: new ModuleVersion(other));
 
-            var depender = generator.GeneratorRandomModule(depends: new List<RelationshipDescriptor>
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
             {
                 new ModuleRelationshipDescriptor
                 {
@@ -810,9 +810,9 @@ namespace Tests.Core.Relationships
             });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(dependent),
-                                                      CkanModule.ToJson(other_dependent)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson(),
+                                                      other_dependent.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -865,9 +865,9 @@ namespace Tests.Core.Relationships
             }");
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(olderDependency),
-                                                      CkanModule.ToJson(newerDependency)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      olderDependency.ToJson(),
+                                                      newerDependency.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -916,9 +916,9 @@ namespace Tests.Core.Relationships
             }");
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(depender),
-                                                      CkanModule.ToJson(olderDependency),
-                                                      CkanModule.ToJson(newerDependency)))
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      olderDependency.ToJson(),
+                                                      newerDependency.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -937,17 +937,17 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithModsNotInList_Empty()
         {
-            var mod = generator!.GeneratorRandomModule();
+            var mod = generator!.GenerateRandomModule();
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod)))
+            using (var repo = new TemporaryRepository(mod.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
                 var list = new List<CkanModule> { mod };
                 var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
 
-                var mod_not_in_resolver_list = generator.GeneratorRandomModule();
+                var mod_not_in_resolver_list = generator.GenerateRandomModule();
                 CollectionAssert.DoesNotContain(relationship_resolver.ModList(), mod_not_in_resolver_list);
                 Assert.IsEmpty(relationship_resolver.ReasonsFor(mod_not_in_resolver_list));
             }
@@ -956,10 +956,10 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithUserAddedMods_GivesReasonUserAdded()
         {
-            var mod = generator!.GeneratorRandomModule();
+            var mod = generator!.GenerateRandomModule();
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod)))
+            using (var repo = new TemporaryRepository(mod.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -974,8 +974,8 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithSuggestedMods_GivesCorrectParent()
         {
-            var suggested = generator!.GeneratorRandomModule();
-            var mod = generator.GeneratorRandomModule(suggests:
+            var suggested = generator!.GenerateRandomModule();
+            var mod = generator.GenerateRandomModule(suggests:
                 new List<RelationshipDescriptor>
                 {
                     new ModuleRelationshipDescriptor
@@ -985,8 +985,8 @@ namespace Tests.Core.Relationships
                 });
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod),
-                                                      CkanModule.ToJson(suggested)))
+            using (var repo = new TemporaryRepository(mod.ToJson(),
+                                                      suggested.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -1004,10 +1004,10 @@ namespace Tests.Core.Relationships
         [Test]
         public void ReasonFor_WithTreeOfMods_GivesCorrectParents()
         {
-            var suggested = generator!.GeneratorRandomModule();
-            var recommendedA = generator.GeneratorRandomModule();
-            var recommendedB = generator.GeneratorRandomModule();
-            var mod = generator.GeneratorRandomModule(
+            var suggested = generator!.GenerateRandomModule();
+            var recommendedA = generator.GenerateRandomModule();
+            var recommendedB = generator.GenerateRandomModule();
+            var mod = generator.GenerateRandomModule(
                 suggests: new List<RelationshipDescriptor>
                 {
                     new ModuleRelationshipDescriptor { name = suggested.identifier }
@@ -1020,10 +1020,10 @@ namespace Tests.Core.Relationships
             };
 
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(mod),
-                                                      CkanModule.ToJson(suggested),
-                                                      CkanModule.ToJson(recommendedA),
-                                                      CkanModule.ToJson(recommendedB)))
+            using (var repo = new TemporaryRepository(mod.ToJson(),
+                                                      suggested.ToJson(),
+                                                      recommendedA.ToJson(),
+                                                      recommendedB.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -1066,7 +1066,7 @@ namespace Tests.Core.Relationships
                     new ModuleRelationshipDescriptor { name = "ModuleManager" }
                 };
 
-                CkanModule mod = generator!.GeneratorRandomModule(depends: depends);
+                CkanModule mod = generator!.GenerateRandomModule(depends: depends);
 
                 new RelationshipResolver(
                     new CkanModule[] { mod }, null, RelationshipResolverOptions.DefaultOpts(stabilityTolerance),
@@ -1128,18 +1128,18 @@ namespace Tests.Core.Relationships
         public void UninstallingConflictingModule_InstallingRecursiveDependencies_ResolvesSuccessfully()
         {
             // Arrange: create dummy modules that resemble the relationship entanglement, and make them available
-            var eve = generator!.GeneratorRandomModule(
+            var eve = generator!.GenerateRandomModule(
                 identifier: "EnvironmentalVisualEnhancements",
                 depends: new List<RelationshipDescriptor>
                     {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
             );
-            var eveDefaultConfig = generator.GeneratorRandomModule(
+            var eveDefaultConfig = generator.GenerateRandomModule(
                 identifier: "EnvironmentalVisualEnhancements-Config-stock",
                 provides: new List<string> {"EnvironmentalVisualEnhancements-Config"},
                 conflicts: new List<RelationshipDescriptor>
                     {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
             );
-            var avp = generator.GeneratorRandomModule(
+            var avp = generator.GenerateRandomModule(
                 identifier: "AstronomersVisualPack",
                 provides: new List<string> {"EnvironmentalVisualEnhancements-Config"},
                 depends: new List<RelationshipDescriptor>
@@ -1150,7 +1150,7 @@ namespace Tests.Core.Relationships
                 conflicts: new List<RelationshipDescriptor>
                         {new ModuleRelationshipDescriptor {name = "EnvironmentalVisualEnhancements-Config"}}
             );
-            var avp2kTextures = generator.GeneratorRandomModule(
+            var avp2kTextures = generator.GenerateRandomModule(
                 identifier: "AVP-2kTextures",
                 provides: new List<string> {"AVP-Textures"},
                 depends: new List<RelationshipDescriptor>
@@ -1160,10 +1160,10 @@ namespace Tests.Core.Relationships
             );
             var user = new NullUser();
             using (var ksp = new DisposableKSP())
-            using (var repo = new TemporaryRepository(CkanModule.ToJson(eve),
-                                                      CkanModule.ToJson(eveDefaultConfig),
-                                                      CkanModule.ToJson(avp),
-                                                      CkanModule.ToJson(avp2kTextures)))
+            using (var repo = new TemporaryRepository(eve.ToJson(),
+                                                      eveDefaultConfig.ToJson(),
+                                                      avp.ToJson(),
+                                                      avp2kTextures.ToJson()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);

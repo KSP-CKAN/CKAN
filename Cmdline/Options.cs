@@ -356,12 +356,12 @@ namespace CKAN.CmdLine
                         manager.SetCurrentInstanceByPath(Gamedir);
                     }
                 }
-                catch (NotKSPDirKraken k)
+                catch (NotGameDirKraken k)
                 {
                     user.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
                     return Exit.BADOPT;
                 }
-                catch (InvalidKSPInstanceKraken k)
+                catch (InvalidGameInstanceKraken k)
                 {
                     user.RaiseMessage(Properties.Resources.OptionsInvalidInstance, k.instance);
                     return Exit.BADOPT;
