@@ -44,7 +44,7 @@ namespace CKAN.GUI
                     Wait.StartWaiting(
                         (sender, e) =>
                         {
-                            if (e != null && Manager?.Cache != null)
+                            if (e != null && Manager?.Cache != null && ManageMods.mainModList != null)
                             {
                                 e.Result = ModuleImporter.ImportFiles(
                                     GetFiles(dlg.FileNames),

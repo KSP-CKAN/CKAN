@@ -311,8 +311,7 @@ namespace CKAN.GUI
 
         private void UpgradeNotification()
         {
-            int numUpgradeable = ManageMods.mainModList.Modules.Count(mod => mod.HasUpdate);
-            if (numUpgradeable > 0)
+            if (ManageMods.mainModList?.Modules.Count(mod => mod.HasUpdate) is > 0 and int numUpgradeable)
             {
                 Util.Invoke(this, () =>
                 {

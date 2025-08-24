@@ -24,7 +24,7 @@ namespace CKAN.GUI
 
         private void InstallationHistory_Install(CkanModule[] modules)
         {
-            if (CurrentInstance != null)
+            if (CurrentInstance != null && ManageMods.mainModList != null)
             {
                 InstallationHistory_Done();
                 var tuple = ManageMods.mainModList.ComputeFullChangeSetFromUserChangeSet(

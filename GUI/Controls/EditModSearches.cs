@@ -23,9 +23,9 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(AddSearchButton, Properties.Resources.EditModSearchesTooltipAddSearchButton);
         }
 
-        public event Action?                    SurrenderFocus;
-        public event Action<List<ModSearch?>?>? ApplySearches;
-        public event Action<string>?            ShowError;
+        public event Action?                  SurrenderFocus;
+        public event Action<List<ModSearch>>? ApplySearches;
+        public event Action<string>?          ShowError;
 
         public void Clear()
         {
@@ -181,8 +181,9 @@ namespace CKAN.GUI
         private void Apply()
         {
             var searches = editors.Select(ems => ems.Search)
+                                  .OfType<ModSearch>()
                                   .ToList();
-            ApplySearches?.Invoke(searches.Count == 0 ? null : searches);
+            ApplySearches?.Invoke(searches);
             AddSearchButton.Enabled = editors.Count == searches.OfType<ModSearch>().Count();
         }
 

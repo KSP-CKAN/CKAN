@@ -30,11 +30,13 @@ namespace Tests.GUI
         [Test]
         public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
-            var item = new ModList();
             var user = new NullUser();
             using (var repoData = new TemporaryRepositoryData(user))
             using (var tidy = new DisposableKSP())
+            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             {
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
                 Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
             }
         }
@@ -52,14 +54,13 @@ namespace Tests.GUI
                 var ckan_mod = registry.GetModuleByVersion("Firespitter", "6.3.5");
                 Assert.IsNotNull(ckan_mod);
 
-                var item = new ModList();
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
                 Assert.That(item.IsVisible(
                     new GUIMod(ckan_mod!, repoData.Manager, registry,
                                tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                null, false, false),
-                    tidy.KSP.Name,
-                    tidy.KSP.game,
-                    registry));
+                    tidy.KSP, registry));
             }
         }
 
@@ -70,15 +71,17 @@ namespace Tests.GUI
         public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
             using (var tidy = new DisposableKSP())
+            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             {
-                var item = new ModList();
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
                 Assert.That(item.CountModsByFilter(tidy.KSP, filter), Is.EqualTo(0));
             }
         }
 
         [Test]
         [NUnit.Framework.Category("Display")]
-        public void ConstructModList_NumberOfRows_IsEqualToNumberOfMods()
+        public void Constructor_NumberOfRows_IsEqualToNumberOfMods()
         {
             var user = new NullUser();
             using (var repo = new TemporaryRepository(TestData.FireSpitterModule().ToJson(),
@@ -88,8 +91,7 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
-                var main_mod_list = new ModList();
-                var mod_list = main_mod_list.ConstructModList(
+                var main_mod_list = new ModList(
                     new List<GUIMod>
                     {
                         new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry,
@@ -99,10 +101,10 @@ namespace Tests.GUI
                                    tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false)
                     },
-                    tidy.KSP.Name,
-                    tidy.KSP.game
+                    tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                    config, new GUIConfiguration()
                 );
-                Assert.That(mod_list, Has.Count.EqualTo(2));
+                Assert.That(main_mod_list.full_list_of_mod_rows.Values, Has.Count.EqualTo(2));
             }
         }
 
@@ -149,8 +151,8 @@ namespace Tests.GUI
                                                       TestData.kOS_014()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var instance = new DisposableKSP())
-            using (var config = new FakeConfiguration(instance.KSP, instance.KSP.Name))
-            using (var manager = new GameInstanceManager(user, config))
+            using (var config   = new FakeConfiguration(instance.KSP, instance.KSP.Name))
+            using (var manager  = new GameInstanceManager(user, config))
             {
                 manager.SetCurrentInstance(instance.KSP);
                 var registryManager = RegistryManager.Instance(instance.KSP, repoData.Manager);
@@ -160,7 +162,6 @@ namespace Tests.GUI
                 // A module with a ksp_version of "any" to repro our issue
                 var anyVersionModule = registry.GetModuleByVersion("DogeCoinFlag", "1.01")!;
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");
-                var modList = new ModList();
                 var listGui = new DataGridView();
                 var installer = new ModuleInstaller(instance.KSP, manager.Cache!, config, manager.User);
                 var downloader = new NetAsyncModulesDownloader(user, manager.Cache!);
@@ -194,7 +195,6 @@ namespace Tests.GUI
 
                 Assert.IsNotNull(instance.KSP);
                 Assert.IsNotNull(manager);
-                Assert.IsNotNull(modList);
 
                 var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
                     .Select(mod => new GUIMod(mod.Latest(instance.KSP.StabilityToleranceConfig)!, repoData.Manager, registry,
@@ -202,7 +202,11 @@ namespace Tests.GUI
                                               null, false, false))
                     .ToList();
 
-                listGui.Rows.AddRange(modList.ConstructModList(modules, null, instance.KSP.game).ToArray());
+                var modList = new ModList(modules, instance.KSP, ModuleLabelList.GetDefaultLabels(),
+                                          config, new GUIConfiguration());
+                Assert.IsFalse(modList.HasVisibleInstalled());
+
+                listGui.Rows.AddRange(modList.full_list_of_mod_rows.Values.ToArray());
                 // The header row adds one to the count
                 Assert.AreEqual(modules.Count + 1, listGui.Rows.Count);
 
