@@ -8,6 +8,7 @@ using System.Runtime.Versioning;
 #endif
 
 using NUnit.Framework;
+using CategoryAttribute = NUnit.Framework.CategoryAttribute;
 
 using Tests.Core.Configuration;
 using Tests.Data;
@@ -26,20 +27,6 @@ namespace Tests.GUI
     public class ModListTests
     {
         private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
-
-        [Test]
-        public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
-        {
-            var user = new NullUser();
-            using (var repoData = new TemporaryRepositoryData(user))
-            using (var tidy = new DisposableKSP())
-            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
-            {
-                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
-                                       config, new GUIConfiguration());
-                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
-            }
-        }
 
         [Test]
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
@@ -80,7 +67,7 @@ namespace Tests.GUI
         }
 
         [Test]
-        [NUnit.Framework.Category("Display")]
+        [Category("Display")]
         public void Constructor_NumberOfRows_IsEqualToNumberOfMods()
         {
             var user = new NullUser();
@@ -108,6 +95,20 @@ namespace Tests.GUI
             }
         }
 
+        [Test]
+        public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
+        {
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
+            using (var tidy = new DisposableKSP())
+            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
+            {
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
+                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
+            }
+        }
+
         /// <summary>
         /// Sort the GUI table by Max KSP Version
         /// and then perform a repo operation.
@@ -118,7 +119,7 @@ namespace Tests.GUI
         /// https://github.com/KSP-CKAN/CKAN/pull/1882
         /// </summary>
         [Test]
-        [NUnit.Framework.Category("Display")]
+        [Category("Display")]
         public void InstallAndSortByCompat_WithAnyCompat_NoCrash()
         {
             /*
@@ -153,10 +154,10 @@ namespace Tests.GUI
             using (var instance = new DisposableKSP())
             using (var config   = new FakeConfiguration(instance.KSP, instance.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
+            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager))
             {
                 manager.SetCurrentInstance(instance.KSP);
-                var registryManager = RegistryManager.Instance(instance.KSP, repoData.Manager);
-                var registry = registryManager.registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
                 // A module with a ksp_version of "any" to repro our issue
@@ -176,7 +177,7 @@ namespace Tests.GUI
                 installer.InstallList(
                     new List<CkanModule> { anyVersionModule },
                     new RelationshipResolverOptions(instance.KSP.StabilityToleranceConfig),
-                    registryManager,
+                    regMgr,
                     ref possibleConfigOnlyDirs,
                     null, null,
                     downloader);
@@ -230,7 +231,7 @@ namespace Tests.GUI
                                    .Select(change => change.Mod)
                                    .ToList(),
                             new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),
-                            registryManager,
+                            regMgr,
                             ref possibleConfigOnlyDirs,
                             null, null,
                             downloader);
