@@ -112,6 +112,9 @@ namespace CKAN.GUI
                 // Lots of dialog results we don't care about
                 DialogResult.Abort or DialogResult.Retry or DialogResult.Ignore
                 or DialogResult.No or DialogResult.None
+                #if NET6_0_OR_GREATER
+                or DialogResult.TryAgain or DialogResult.Continue
+                #endif
                     => throw new NotImplementedException(),
 
                 // If pressed Default button

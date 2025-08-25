@@ -43,9 +43,9 @@ namespace Tests.GUI
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
         {
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(TestData.FireSpitterModule().ToJson()))
-            using (var tidy = new DisposableKSP())
-            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
+            using (var repo     = new TemporaryRepository(TestData.FireSpitterModule().ToJson()))
+            using (var tidy     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
@@ -54,7 +54,8 @@ namespace Tests.GUI
 
                 var item = new ModList();
                 Assert.That(item.IsVisible(
-                    new GUIMod(ckan_mod!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                    new GUIMod(ckan_mod!, repoData.Manager, registry,
+                               tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                null, false, false),
                     tidy.KSP.Name,
                     tidy.KSP.game,
@@ -91,9 +92,11 @@ namespace Tests.GUI
                 var mod_list = main_mod_list.ConstructModList(
                     new List<GUIMod>
                     {
-                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry,
+                                   tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false),
-                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry,
+                                   tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false)
                     },
                     tidy.KSP.Name,
@@ -194,7 +197,8 @@ namespace Tests.GUI
                 Assert.IsNotNull(modList);
 
                 var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
-                    .Select(mod => new GUIMod(mod.Latest(instance.KSP.StabilityToleranceConfig)!, repoData.Manager, registry, instance.KSP.StabilityToleranceConfig, instance.KSP.VersionCriteria(),
+                    .Select(mod => new GUIMod(mod.Latest(instance.KSP.StabilityToleranceConfig)!, repoData.Manager, registry,
+                                              instance.KSP.StabilityToleranceConfig, instance.KSP.VersionCriteria(),
                                               null, false, false))
                     .ToList();
 
@@ -218,7 +222,9 @@ namespace Tests.GUI
                     {
                         // Install the "other" module
                         installer.InstallList(
-                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, inst2.KSP, null, null).Select(change => change.Mod).ToList(),
+                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, inst2.KSP, null, null)
+                                   .Select(change => change.Mod)
+                                   .ToList(),
                             new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),
                             registryManager,
                             ref possibleConfigOnlyDirs,

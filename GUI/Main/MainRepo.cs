@@ -5,7 +5,6 @@ using System.Timers;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
-using System.Transactions;
 using Timer = System.Timers.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;

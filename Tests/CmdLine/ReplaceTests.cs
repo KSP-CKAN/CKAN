@@ -8,7 +8,6 @@ using CKAN.CmdLine;
 
 using Tests.Data;
 using Tests.Core.Configuration;
-using System;
 
 namespace Tests.CmdLine
 {
