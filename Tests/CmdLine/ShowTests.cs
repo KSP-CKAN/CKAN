@@ -16,7 +16,7 @@ namespace Tests.CmdLine
         [Test]
         public void RunCommand_AGExt_Works()
         {
-            // Ensure
+            // Ensure the default locale is used
             CultureInfo.DefaultThreadCurrentUICulture =
                 Thread.CurrentThread.CurrentUICulture =
                     new CultureInfo("en-GB");
