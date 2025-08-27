@@ -191,6 +191,9 @@ Installez le paquet `mono-complete` ou un équivalent pour votre système d'expl
   <data name="NetRepoUpdating" xml:space="preserve">
     <value>Mise à jour de {0}</value>
   </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Chargement des modules depuis le dépôt téléchargé {0}...</value>
+  </data>
   <data name="NetRepoNotATarGz" xml:space="preserve">
     <value>Le fichier doit être un tar.gz ou un zip, impossible de traiter : {0}</value>
   </data>
@@ -264,6 +267,9 @@ Mettez à jour CKAN pour charger cette instance de jeu.</value>
   </data>
   <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve">
     <value>Aucun fichier correspondant à {0} n'a été trouvé pour installer !</value>
+  </data>
+  <data name="ModuleInstallDescriptorNotMatchingLeadingPath" xml:space="preserve">
+    <value>Le nom du fichier de sortie ({0}) ne correspond pas au premier chemin de la séquence ({1})</value>
   </data>
   <data name="ModuleInstallDescriptorAsNoPathSeparators" xml:space="preserve">
     <value>`as` ne doit pas inclure les séparateurs de chemin</value>
@@ -556,7 +562,6 @@ Si le jeu est toujours en cours d'exécution, fermez-le et réessayez. Sinon, v�
   <data name="KrakenFileExistsWithOwner" xml:space="preserve">
     <value>Oh non ! Nous avons essayé de remplacer un fichier appartenant à un autre mod !
 
-Si ce problème se produit de nouveau, il pourrait s'agir d'un bogue d'emballage.
 Veuillez le signaler à :
 
 https://github.com/KSP-CKAN/NetKAN/issues/new/choose
@@ -564,33 +569,24 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 Veuillez inclure les informations suivantes dans votre rapport :
 
 Fichier : {0}
-Mod à installer : {1}
+Mod en cours d'installation : {1}
 Mod propriétaire : {2}</value>
   </data>
   <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
-    <value>Oh non !
+    <value>Oh non ! Nous avons essayé de remplacer un fichier !
 
-On dirait que vous essayez d'installer un mod qui est déjà installé,
-ou qui est en conflit avec un autre mod déjà installé.
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier qu'il n'a pas installé lui-même.
 
-Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
-qu'il n'a pas installé lui-même.
-
-Si vous souhaitez installer {1} via CKAN,
-alors veuillez désinstaller manuellement le mod qui possède :
+Si vous souhaitez installer {1} via CKAN, alors veuillez désinstaller manuellement le mod qui possède :
 
 {0}
 
 et essayez de nouveau.</value>
   </data>
   <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
-    <value>Oh non !
+    <value>Oh non ! Nous avons essayé de remplacer un fichier !
 
-On dirait que vous essayez d'installer un mod qui est déjà installé,
-ou qui est en conflit avec un autre mod déjà installé.
-
-Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier
-qu'il n'a pas installé lui-même.
+Par précaution, CKAN ne va *jamais* remplacer ou modifier un fichier qu'il n'a pas installé lui-même.
 
 Veuillez désinstaller manuellement le mod qui possède :
 
@@ -614,13 +610,16 @@ et essayez de nouveau.</value>
     <value>Le module {0} n'est pas installé !</value>
   </data>
   <data name="KrakenMissingCertificateUnix" xml:space="preserve">
-    <value>Le téléchargement a échoué avec une erreur de certificat !
+    <value>Le téléchargement a échoué avec une erreur de certificat : {1}
 
 Consultez cette page pour obtenir de l'aide :
 {0}</value>
   </data>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
-    <value>Le téléchargement a échoué avec une erreur de certificat !</value>
+    <value>Le téléchargement a échoué avec une erreur de certificat : {0}</value>
+  </data>
+  <data name="KrakenRequestTimedOut" xml:space="preserve">
+    <value>L'adresse a mis trop de temps à répondre : {0}</value>
   </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>Requête à {0} restreinte</value>
@@ -628,15 +627,15 @@ Consultez cette page pour obtenir de l'aide :
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
   <data name="KrakenIsDLC" xml:space="preserve">
-    <value>CKAN ne peut pas installer l'extension '{0}' pour vous.</value>
+    <value>CKAN ne peut pas installer, mettre à jour ou retirer l'extension '{0}' pour vous.</value>
   </data>
   <data name="KrakenIsDLCStorePage" xml:space="preserve">
-    <value>Pour installer cette extension, achetez-la depuis l'une de ces boutiques :
+    <value>Pour installer, mettre à jour ou supprimer cette extension, achetez-la depuis une boutique et suivez les instructions :
 {0}</value>
   </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">

@@ -385,7 +385,7 @@ Voulez-vous vraiment les installer ? L'annulation annulera toute l'installation.
     <value>Suppression de {0}</value>
   </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
-    <value>Votre dossier GameData a été remis dans son état initial.</value>
+    <value>Votre dossier de jeu a été remis dans son état initial.</value>
   </data>
   <data name="MainInstallOpenSettingsPrompt" xml:space="preserve">
     <value>{0}
@@ -480,6 +480,12 @@ Si vous suspectez un problème client : https://github.com/KSP-CKAN/CKAN/issues/
   </data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve">
     <value>Magasin Steam :</value>
+  </data>
+  <data name="ModInfoGogStoreLabel" xml:space="preserve">
+    <value>Magasin GOG :</value>
+  </data>
+  <data name="ModInfoEpicStoreLabel" xml:space="preserve">
+    <value>Boutique Epic Games :</value>
   </data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve">
     <value>Ctrl-clic ou Shift-clic pour rendre persistant</value>
@@ -714,6 +720,12 @@ Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus
   </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Copier l'adresse du lien</value>
+  </data>
+  <data name="UtilShowHideLink" xml:space="preserve">
+    <value>&amp;Afficher/Masquer les modules avec l'étiquette {0}</value>
+  </data>
+  <data name="UtilAddRemoveModuleLink" xml:space="preserve">
+    <value>Activer/désactiver l'&amp;inclusion du module actuel dans {0}</value>
   </data>
   <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve">
     <value>Instance de jeu : {0} ({1} {2}, {3}h de jeu)</value>
@@ -973,6 +985,12 @@ Sinon, seuls ces derniers seront installés.</value>
   </data>
   <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve">
     <value>Étiquettes et labels cachés :</value>
+  </data>
+  <data name="ManageModsLabelAddMultiple" xml:space="preserve">
+    <value>{0} (ajouter {1} modules)</value>
+  </data>
+  <data name="ManageModsLabelRemoveMultiple" xml:space="preserve">
+    <value>{0} (retirer {1} modules)</value>
   </data>
   <data name="ManageModsRefreshStaleToolTip" xml:space="preserve">
     <value>Votre liste de mods a été synchronisée il y a {0} jours.
