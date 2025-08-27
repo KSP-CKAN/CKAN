@@ -59,11 +59,11 @@ namespace Tests.Core.Configuration
         /// </summary>
         public string?                     DownloadCacheDir
         {
-            get => downloadCacheDirs.Last()?.Path.FullName;
+            get => downloadCacheDirs.Last()?.Directory.FullName;
             set
             {
                 // The GameInstanceManager sometimes re-assigns the current value
-                if (value != downloadCacheDirs.Last()?.Path.FullName)
+                if (value != downloadCacheDirs.Last()?.Directory.FullName)
                 {
                     downloadCacheDirs.Add(value == null ? null
                                                         : new TemporaryDirectory(value));

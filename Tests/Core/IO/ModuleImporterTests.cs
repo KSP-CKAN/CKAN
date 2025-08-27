@@ -23,7 +23,7 @@ namespace Tests.Core.IO
             using (var cacheDir = new TemporaryDirectory())
             {
                 var registry = CKAN.Registry.Empty(repoData.Manager);
-                var cache = new NetModuleCache(cacheDir.Path.FullName);
+                var cache = new NetModuleCache(cacheDir.Directory.FullName);
                 var files = new HashSet<FileInfo>
                 {
                     new FileInfo(TestData.DogeCoinFlagImportableZip())
@@ -36,7 +36,7 @@ namespace Tests.Core.IO
 
                 // Assert
                 Assert.IsTrue(result);
-                Assert.AreEqual(1, cacheDir.Path.EnumerateFiles("*").Count());
+                Assert.AreEqual(1, cacheDir.Directory.EnumerateFiles("*").Count());
                 Assert.AreEqual(1, toInstall.Count);
             }
         }

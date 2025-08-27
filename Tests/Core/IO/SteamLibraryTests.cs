@@ -24,21 +24,21 @@ namespace Tests.Core.IO
             using (var dir = new TemporaryDirectory())
             {
                 // Library folder
-                var confDir = dir.Path.CreateSubdirectory("config");
+                var confDir = dir.Directory.CreateSubdirectory("config");
                 File.WriteAllLines(Path.Combine(confDir.FullName, "libraryfolders.vdf"),
                                    libraryContents(Enumerable.Repeat((index: 0,
-                                                                      dir:   dir.Path),
+                                                                      dir:   dir.Directory),
                                                                      1)));
 
                 // Steam games
-                var appsDir = dir.Path.CreateSubdirectory("SteamApps");
+                var appsDir = dir.Directory.CreateSubdirectory("SteamApps");
                 File.WriteAllLines(Path.Combine(appsDir.FullName, "appmanifest_220200.acf"),
                                    acfContents(220200, "Kerbal Space Program"));
                 File.WriteAllLines(Path.Combine(appsDir.FullName, "appmanifest_954850.acf"),
                                    acfContents(954850, "Kerbal Space Program 2"));
 
                 // Non-Steam games
-                var userConfDir = dir.Path.CreateSubdirectory(
+                var userConfDir = dir.Directory.CreateSubdirectory(
                                       Path.Combine("userdata", "1", "config"));
                 File.WriteAllBytes(Path.Combine(userConfDir.FullName,
                                                 "shortcuts.vdf"),
@@ -47,7 +47,7 @@ namespace Tests.Core.IO
                                                       absPath: Path.GetFullPath(TestData.good_ksp_dir()))));
 
                 // Act
-                var lib = new SteamLibrary(dir.Path.FullName);
+                var lib = new SteamLibrary(dir.Directory.FullName);
 
                 // Assert
                 CollectionAssert.AreEquivalent(new string[]
@@ -68,14 +68,14 @@ namespace Tests.Core.IO
             using (var dir = new TemporaryDirectory())
             {
                 // Library folder - Non-consecutive indexes
-                var confDir = dir.Path.CreateSubdirectory("config");
+                var confDir = dir.Directory.CreateSubdirectory("config");
                 File.WriteAllLines(Path.Combine(confDir.FullName, "libraryfolders.vdf"),
                                    libraryContents(Enumerable.Repeat((index: 99,
-                                                                      dir:   dir.Path),
+                                                                      dir:   dir.Directory),
                                                                      1)));
 
                 // Steam games
-                var appsDir = dir.Path.CreateSubdirectory("SteamApps");
+                var appsDir = dir.Directory.CreateSubdirectory("SteamApps");
                 File.WriteAllLines(Path.Combine(appsDir.FullName, "appmanifest_220200.acf"),
                                    acfContents(220200, "Kerbal Space Program"));
                 File.WriteAllLines(Path.Combine(appsDir.FullName, "appmanifest_954850.acf"),
@@ -88,7 +88,7 @@ namespace Tests.Core.IO
                                    Enumerable.Repeat((byte)0, 128).ToArray());
 
                 // Non-Steam games
-                var userConfDir = dir.Path.CreateSubdirectory(
+                var userConfDir = dir.Directory.CreateSubdirectory(
                                       Path.Combine("userdata", "1", "config"));
                 File.WriteAllBytes(Path.Combine(userConfDir.FullName,
                                                 "shortcuts.vdf"),
@@ -101,7 +101,7 @@ namespace Tests.Core.IO
                                                       absPath: "")));
 
                 // Act
-                var lib = new SteamLibrary(dir.Path.FullName);
+                var lib = new SteamLibrary(dir.Directory.FullName);
 
                 // Assert
                 CollectionAssert.AreEquivalent(new string[]

@@ -19,7 +19,7 @@ namespace Tests.NetKAN.Sources.Spacedock
         public void GetMod_PlaneMode_Works()
         {
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetFileCache(dir.Path.FullName))
+            using (var cache = new NetFileCache(dir.Directory.FullName))
             {
                 // Arrange
                 var sut = new SpacedockApi(new CachingHttpService(cache));
@@ -51,7 +51,7 @@ namespace Tests.NetKAN.Sources.Spacedock
         {
             // Arrange
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetFileCache(dir.Path.FullName))
+            using (var cache = new NetFileCache(dir.Directory.FullName))
             {
                 var sut = new SpacedockApi(new CachingHttpService(cache));
 

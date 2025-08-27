@@ -17,7 +17,7 @@ namespace Tests.Core
         public void Store_Invalid_Throws()
         {
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetModuleCache(dir.Path.FullName))
+            using (var cache = new NetModuleCache(dir.Directory.FullName))
             {
                 // Try to store a nonexistent zip into a NetModuleCache
                 // and expect an FileNotFoundKraken
