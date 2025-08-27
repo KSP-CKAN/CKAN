@@ -6,6 +6,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Games.KerbalSpaceProgram.DLC;
@@ -295,24 +296,118 @@ namespace Tests.Core
         [Test] //37a33
         public void Ctor_InvalidAutoStart_DoesNotThrow()
         {
-            using (var config = new FakeConfiguration(tidy?.KSP!, "invalid"))
+            using (var config = new FakeConfiguration(tidy!.KSP, "invalid"))
             {
-                Assert.DoesNotThrow(() => new GameInstanceManager(new NullUser(), config));
+                Assert.DoesNotThrow(() =>
+                {
+                    using (var mgr = new GameInstanceManager(new NullUser(), config))
+                    {
+                    }
+                });
             }
         }
 
+        [Test]
+        public void SetCurrentInstanceByPath_WithInstance_Works()
+        {
+            // Act
+            manager!.SetCurrentInstanceByPath(tidy!.KSP.GameDir());
 
-        //TODO Test FindAndRegisterDefaultInstance
+            // Assert
+            Assert.AreEqual(tidy!.KSP, manager.CurrentInstance);
+        }
+
+        [Test]
+        public void InstanceAt_WithInstance_Found()
+        {
+            // Arrange
+            var instFromMgr = manager!.InstanceAt(tidy!.KSP.GameDir());
+
+            // Assert
+            Assert.IsNotNull(instFromMgr);
+        }
+
+        [Test]
+        public void IsGameInstanceDir_WithInstance_True()
+        {
+            // Arrange
+            var di = new DirectoryInfo(tidy!.KSP.GameDir());
+
+            // Act / Assert
+            Assert.IsTrue(GameInstanceManager.IsGameInstanceDir(di));
+        }
+
+
+        [Test]
+        public void FindAndRegisterDefaultInstances_WithMockedSteam_FindsInstances()
+        {
+            // Arrange
+            using (var config = new FakeConfiguration(new List<Tuple<string, string, string>>(), null, null))
+            using (var dir = new TemporarySteamDirectory(
+                                 new (string acfFileName, int appId, string appName)[]
+                                 {
+                                     (acfFileName: "appmanifest_220200.acf",
+                                      appId:       220200,
+                                      appName:     "Kerbal Space Program"),
+                                     (acfFileName: "appmanifest_954850.acf",
+                                      appId:       954850,
+                                      appName:     "Kerbal Space Program 2"),
+                                 },
+                                 new (string name, string absPath)[]
+                                 {
+                                     (name:    "Test Instance",
+                                      absPath: Path.GetFullPath(TestData.good_ksp_dir())),
+                                 }))
+            {
+                var steamLib = new SteamLibrary(dir.Directory.FullName);
+                using (var mgr = new GameInstanceManager(new NullUser(), config, steamLib))
+                {
+                    foreach (var g in steamLib.Games.OfType<SteamGame>())
+                    {
+                        Utilities.CopyDirectory(TestData.good_ksp_dir(),
+                                                g.GameDir!.FullName,
+                                                Array.Empty<string>(),
+                                                Array.Empty<string>());
+                    }
+
+                    // Act
+                    mgr.FindAndRegisterDefaultInstances();
+
+                    // Assert
+                    CollectionAssert.AreEquivalent(new string[]
+                                                   {
+                                                       "Kerbal Space Program",
+                                                       "Kerbal Space Program 2",
+                                                       "Test Instance",
+                                                   },
+                                                   mgr.Instances.Keys);
+                }
+            }
+        }
+
+        [Test]
+        public void Constructor_WithCachePathDefined_Creates()
+        {
+            using (var dir = new TemporaryDirectory())
+            {
+                var cachePath = Path.Combine(dir.Directory.FullName, "cachetest");
+                Assert.IsFalse(Directory.Exists(cachePath));
+                using (var config = new FakeConfiguration(new List<Tuple<string, string, string>>(),
+                                                          null, cachePath))
+                {
+                    Assert.IsTrue(Directory.Exists(cachePath));
+                }
+            }
+        }
 
         private FakeConfiguration GetTestCfg(string name)
-        {
-            return new FakeConfiguration(
-                new List<Tuple<string, string, string>>
-                {
-                    new Tuple<string, string, string>(name, tidy?.KSP?.GameDir()!, "KSP")
-                },
-                null,
-                null);
-        }
+            => new FakeConfiguration(
+                   new List<Tuple<string, string, string>>
+                   {
+                       new Tuple<string, string, string>(name,
+                                                         tidy!.KSP.GameDir(),
+                                                         tidy!.KSP.game.ShortName)
+                   },
+                   null, null);
     }
 }

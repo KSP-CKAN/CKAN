@@ -48,6 +48,7 @@ namespace CKAN.GUI
             {
                 var ident = first.name;
                 if (!string.IsNullOrEmpty(ident)
+                    && ManageMods.mainModList != null
                     && ManageMods.mainModList.full_list_of_mod_rows.TryGetValue(ident, out DataGridViewRow? row))
                 {
                     ActiveModInfo = row.Tag as GUIMod;

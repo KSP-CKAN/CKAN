@@ -23,14 +23,13 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Propagate exceptions from downloader task (#4367 by: HebaruSan)
 - [Multiple] Fix upgrading with conflicts between old and new dependencies (#4369, #4371, #4374, #4378 by: HebaruSan)
 - [ConsoleUI] Recommendations of full changeset in ConsoleUI (#4416 by: HebaruSan)
-- [Multiple] More tests and fixes (#4420 by: HebaruSan)
 
 ### Internal
 
 - [Netkan] Exclude internal .ckan files from `install_size` (#4348 by: HebaruSan)
 - [Core] Generate and tidy up XML docs for Core (#4351 by: HebaruSan)
 - [Core] Use setter instead of reflection to set max transaction timeout (#4365 by: doinkythederp; reviewed: HebaruSan)
-- [Build] Coverage and more tests (#4383, #4396, #4408 by: HebaruSan)
+- [Build] Coverage and more tests (#4383, #4396, #4408, #4420, #4422 by: HebaruSan)
 - [Multiple] Switch Inflator from Mono to dotnet (#4387 by: HebaruSan)
 - [Multiple] Migrate metadata tester from Mono to dotnet (#4390 by: HebaruSan)
 - [Multiple] Writethrough when saving files, add Netkan tests (#4392 by: HebaruSan)

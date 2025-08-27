@@ -254,6 +254,10 @@ namespace CKAN.Extensions
         public static IEnumerable<string> ExceptContainsAny(this   IEnumerable<string> source,
                                                             params string[]            strings)
             => source.Where(elt => !strings.Any(s => elt.Contains(s)));
+
+        public static bool IsEmptyOrAny<T>(this IReadOnlyCollection<T> source,
+                                           Func<T, bool>               func)
+            => source.Count == 0 || source.Any(func);
     }
 
     /// <summary>

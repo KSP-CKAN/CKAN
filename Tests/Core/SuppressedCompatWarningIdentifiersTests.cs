@@ -30,7 +30,7 @@ namespace Tests.Core
                     GameVersionWhenWritten = gameVer,
                     Identifiers            = identifiers,
                 };
-                var filename = Path.Combine(dir.Path.FullName, "suppressed.json");
+                var filename = Path.Combine(dir.Directory.FullName, "suppressed.json");
 
                 // Act
                 suppressed.SaveTo(filename);

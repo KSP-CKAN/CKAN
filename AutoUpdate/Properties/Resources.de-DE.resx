@@ -112,39 +112,28 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="IdentifierLabel.Text" xml:space="preserve">
-    <value>Identificatore:</value>
+  <data name="Usage" xml:space="preserve">
+    <value>Verwendung</value>
   </data>
-  <data name="ReplacementLabel.Text" xml:space="preserve">
-    <value>Sostituito da:</value>
+  <data name="DownloadNotFound" xml:space="preserve">
+    <value>Heruntergeladene ckan.exe nicht gefunden unter: {0}</value>
   </data>
-  <data name="GameCompatibilityLabel.Text" xml:space="preserve">
-    <value>Versione max del gioco:</value>
+  <data name="FailedToWait" xml:space="preserve">
+    <value>Konnte nicht auf das Schließen von CKAN warten: {0}</value>
   </data>
-  <data name="ReleaseLabel.Text" xml:space="preserve">
-    <value>Stato della versione:</value>
+  <data name="FailedToDelete" xml:space="preserve">
+    <value>Fehler beim Löschen {0}: {1}</value>
   </data>
-  <data name="AuthorLabel.Text" xml:space="preserve">
-    <value>Autore:</value>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>Unbehandelte Ausnahme:
+{0}</value>
   </data>
-  <data name="DownloadCountLabel.Text" xml:space="preserve">
-    <value>Download:</value>
-  </data>
-  <data name="LicenseLabel.Text" xml:space="preserve">
-    <value>Licenza:</value>
-  </data>
-  <data name="MetadataModuleLicenseTextBox.Text" xml:space="preserve">
-    <value>Nessuna</value>
-  </data>
-  <data name="MetadataModuleAuthorTextBox.Text" xml:space="preserve">
-    <value>N/D</value>
-  </data>
-  <data name="VersionLabel.Text" xml:space="preserve">
-    <value>Versione:</value>
+  <data name="FatalErrorTitle" xml:space="preserve">
+    <value>Fataler AutoUpdater Error</value>
   </data>
 </root>

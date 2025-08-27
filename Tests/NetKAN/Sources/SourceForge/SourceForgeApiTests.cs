@@ -20,7 +20,7 @@ namespace Tests.NetKAN.Sources.SourceForge
         {
             // Arrange
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetFileCache(dir.Path.FullName))
+            using (var cache = new NetFileCache(dir.Directory.FullName))
             {
                 var sut            = new SourceForgeApi(new CachingHttpService(cache));
                 var sourceForgeRef = new SourceForgeRef(new RemoteRef("#/ckan/sourceforge/ksp1.ksre.p"));

@@ -5,7 +5,6 @@ using System.Timers;
 using System.Threading;
 using System.Linq;
 using System.Windows.Forms;
-using System.Transactions;
 using Timer = System.Timers.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -312,8 +311,7 @@ namespace CKAN.GUI
 
         private void UpgradeNotification()
         {
-            int numUpgradeable = ManageMods.mainModList.Modules.Count(mod => mod.HasUpdate);
-            if (numUpgradeable > 0)
+            if (ManageMods.mainModList?.Modules.Count(mod => mod.HasUpdate) is > 0 and int numUpgradeable)
             {
                 Util.Invoke(this, () =>
                 {

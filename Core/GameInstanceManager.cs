@@ -67,10 +67,13 @@ namespace CKAN
 
         public SortedList<string, GameInstance> Instances => new SortedList<string, GameInstance>(instances);
 
-        public GameInstanceManager(IUser user, IConfiguration configuration)
+        public GameInstanceManager(IUser          user,
+                                   IConfiguration configuration,
+                                   SteamLibrary?  steamLib = null)
         {
             User = user;
             Configuration = configuration;
+            this.steamLib = steamLib;
             LoadInstances();
             LoadCacheSettings();
         }

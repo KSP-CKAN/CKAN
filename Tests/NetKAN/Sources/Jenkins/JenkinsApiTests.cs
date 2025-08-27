@@ -18,7 +18,7 @@ namespace Tests.NetKAN.Sources.Jenkins
         {
             // Arrange
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetFileCache(dir.Path.FullName))
+            using (var cache = new NetFileCache(dir.Directory.FullName))
             {
                 var sut        = new JenkinsApi(new CachingHttpService(cache));
                 var jenkinsRef = new JenkinsRef("#/ckan/jenkins/https://ksp.sarbian.com/jenkins/job/ModuleManager/");

@@ -18,7 +18,7 @@ namespace Tests.Core
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var tempDir = dir.Path.FullName;
+                var tempDir = dir.Directory.FullName;
 
                 // Act
                 Utilities.CopyDirectory(goodKspDir, tempDir,
@@ -46,7 +46,7 @@ namespace Tests.Core
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var tempDir = dir.Path.FullName;
+                var tempDir = dir.Directory.FullName;
 
                 // Act
                 Utilities.CopyDirectory(Path.Combine(TestData.DataDir(), "KSP"), tempDir,
@@ -73,7 +73,7 @@ namespace Tests.Core
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var tempDir   = dir.Path.FullName;
+                var tempDir   = dir.Directory.FullName;
                 var sourceDir = "/gibberish/DOESNTEXIST/hopefully";
 
                 // Act / Assert
@@ -89,7 +89,7 @@ namespace Tests.Core
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var tempDir = dir.Path.FullName;
+                var tempDir = dir.Directory.FullName;
 
                 // Act
                 File.WriteAllText(Path.Combine(tempDir!, "thatsafile"), "not empty");

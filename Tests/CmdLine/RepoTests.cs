@@ -36,7 +36,7 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Path.FullName, gv);
+                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert
@@ -72,7 +72,7 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Path.FullName, gv);
+                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert
@@ -106,7 +106,7 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Path.FullName, gv);
+                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
                 manager.SetCurrentInstance("test");
                 using (var regMgr = RegistryManager.Instance(manager.CurrentInstance!,
                                                              repoData.Manager))
@@ -143,7 +143,7 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Path.FullName, gv);
+                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
                 manager.SetCurrentInstance("test");
                 using (var regMgr = RegistryManager.Instance(manager.CurrentInstance!,
                                                              repoData.Manager))
@@ -176,7 +176,7 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Path.FullName, gv);
+                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert
@@ -207,7 +207,7 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Path.FullName, gv);
+                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert

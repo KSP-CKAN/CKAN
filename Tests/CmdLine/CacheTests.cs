@@ -48,7 +48,7 @@ namespace Tests.CmdLine
             using (var altDir  = new TemporaryDirectory())
             {
                 ISubCommand sut     = new Cache(manager, user);
-                var         args    = new string[] { "cache", "set", altDir.Path.FullName };
+                var         args    = new string[] { "cache", "set", altDir.Directory.FullName };
                 var         subOpts = new SubCommandOptions(args);
 
                 // Act
@@ -56,7 +56,7 @@ namespace Tests.CmdLine
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert
-                Assert.AreEqual(altDir.Path.FullName,
+                Assert.AreEqual(altDir.Directory.FullName,
                                 config.DownloadCacheDir);
             }
         }

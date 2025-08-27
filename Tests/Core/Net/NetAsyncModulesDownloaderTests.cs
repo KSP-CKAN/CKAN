@@ -273,7 +273,7 @@ namespace Tests.Core.Net
         {
             // Arrange
             using (var cacheDir = new TemporaryDirectory())
-            using (var cache    = new NetModuleCache(cacheDir.Path.FullName))
+            using (var cache    = new NetModuleCache(cacheDir.Directory.FullName))
             {
                 var downloader = new NetAsyncModulesDownloader(new NullUser(), cache);
                 var modules    = pathsWithinTestData.Select(TestData.DataDir)

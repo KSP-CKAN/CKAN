@@ -654,7 +654,7 @@ namespace CKAN.GUI
                     ManageMods.Filter(
                         ModList.FilterToSavedSearch(
                             CurrentInstance,
-                            (GUIModFilter)configuration.ActiveFilter,
+                            (GUIModFilter)configuration.ActiveFilter, ModuleLabelList.ModuleLabels,
                             configuration.TagFilter == null
                                 ? null
                                 : registry.Tags.GetValueOrDefault(configuration.TagFilter),

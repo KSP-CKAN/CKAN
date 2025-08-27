@@ -7,8 +7,8 @@ namespace Tests.Data
     {
         public TemporaryDirectory(DirectoryInfo path)
         {
-            Path = path;
-            Path.Create();
+            Directory = path;
+            Directory.Create();
         }
 
         public TemporaryDirectory(string path)
@@ -25,7 +25,7 @@ namespace Tests.Data
         {
             try
             {
-                Path.Delete(true);
+                Directory.Delete(true);
             }
             catch
             {
@@ -33,6 +33,6 @@ namespace Tests.Data
             GC.SuppressFinalize(this);
         }
 
-        public readonly DirectoryInfo Path;
+        public readonly DirectoryInfo Directory;
     }
 }

@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Globalization;
+using System.Threading;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
 
 using NUnit.Framework;
+using CategoryAttribute = NUnit.Framework.CategoryAttribute;
 
 using Tests.Core.Configuration;
 using Tests.Data;
@@ -28,37 +31,25 @@ namespace Tests.GUI
         private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
 
         [Test]
-        public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
-        {
-            var item = new ModList();
-            var user = new NullUser();
-            using (var repoData = new TemporaryRepositoryData(user))
-            using (var tidy = new DisposableKSP())
-            {
-                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
-            }
-        }
-
-        [Test]
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
         {
             var user = new NullUser();
-            using (var repo = new TemporaryRepository(TestData.FireSpitterModule().ToJson()))
-            using (var tidy = new DisposableKSP())
-            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
+            using (var repo     = new TemporaryRepository(TestData.FireSpitterModule().ToJson()))
+            using (var tidy     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("Firespitter", "6.3.5");
                 Assert.IsNotNull(ckan_mod);
 
-                var item = new ModList();
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
                 Assert.That(item.IsVisible(
-                    new GUIMod(ckan_mod!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                    new GUIMod(ckan_mod!, repoData.Manager, registry,
+                               tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                null, false, false),
-                    tidy.KSP.Name,
-                    tidy.KSP.game,
-                    registry));
+                    tidy.KSP, registry));
             }
         }
 
@@ -69,15 +60,17 @@ namespace Tests.GUI
         public void CountModsByFilter_EmptyModList_ReturnsZero(GUIModFilter filter)
         {
             using (var tidy = new DisposableKSP())
+            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             {
-                var item = new ModList();
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
                 Assert.That(item.CountModsByFilter(tidy.KSP, filter), Is.EqualTo(0));
             }
         }
 
         [Test]
-        [NUnit.Framework.Category("Display")]
-        public void ConstructModList_NumberOfRows_IsEqualToNumberOfMods()
+        [Category("Display")]
+        public void Constructor_NumberOfRows_IsEqualToNumberOfMods()
         {
             var user = new NullUser();
             using (var repo = new TemporaryRepository(TestData.FireSpitterModule().ToJson(),
@@ -87,19 +80,436 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             {
                 var registry = new Registry(repoData.Manager, repo.repo);
-                var main_mod_list = new ModList();
-                var mod_list = main_mod_list.ConstructModList(
+                var main_mod_list = new ModList(
                     new List<GUIMod>
                     {
-                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                        new GUIMod(TestData.FireSpitterModule(), repoData.Manager, registry,
+                                   tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false),
-                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                        new GUIMod(TestData.kOS_014_module(), repoData.Manager, registry,
+                                   tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
                                    null, false, false)
                     },
-                    tidy.KSP.Name,
-                    tidy.KSP.game
+                    tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                    config, new GUIConfiguration()
                 );
-                Assert.That(mod_list, Has.Count.EqualTo(2));
+                Assert.That(main_mod_list.full_list_of_mod_rows.Values, Has.Count.EqualTo(2));
+            }
+        }
+
+        [Test]
+        public void SetSearches_WithSearches_ModFiltersUpdatedInvoked()
+        {
+            // Arrange
+            using (var inst   = new DisposableKSP())
+            using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            {
+                var guiConfig = new GUIConfiguration();
+                var modlist   = new ModList(Array.Empty<GUIMod>(), inst.KSP, ModuleLabelList.GetDefaultLabels(),
+                                            config, guiConfig);
+                bool called   = false;
+                modlist.ModFiltersUpdated += () => { called = true; };
+                var nonEmptySearches = new List<ModSearch>
+                                       {
+                                           ModSearch.Parse(ModuleLabelList.GetDefaultLabels(), inst.KSP,
+                                                           "apollo")!
+                                       };
+
+                // Act
+                modlist.SetSearches(new List<ModSearch>());
+
+                // Assert
+                Assert.IsFalse(called);
+                Assert.IsNull(guiConfig.DefaultSearches);
+
+                // Act
+                modlist.SetSearches(nonEmptySearches);
+
+                // Assert
+                Assert.IsTrue(called);
+                CollectionAssert.AreEquivalent(new string[] { "apollo" }, guiConfig.DefaultSearches);
+            }
+        }
+
+        [TestCase(GUIModFilter.All,                      "Filter (All)"),
+         TestCase(GUIModFilter.Cached,                   "Filter (Cached)"),
+         TestCase(GUIModFilter.Compatible,               "Filter (Compatible)"),
+         TestCase(GUIModFilter.CustomLabel,              "Label (TestLabel)"),
+         TestCase(GUIModFilter.Incompatible,             "Filter (Incompatible)"),
+         TestCase(GUIModFilter.Installed,                "Filter (Installed)"),
+         TestCase(GUIModFilter.InstalledUpdateAvailable, "Filter (Upgradeable)"),
+         TestCase(GUIModFilter.NewInRepository,          "Filter (New)"),
+         TestCase(GUIModFilter.NotInstalled,             "Filter (Not installed)"),
+         TestCase(GUIModFilter.Replaceable,              "Filter (Replaceable)"),
+         TestCase(GUIModFilter.Tag,                      "Tag (Untagged)"),
+         TestCase(GUIModFilter.Uncached,                 "Filter (Uncached)"),
+        ]
+        public void FilterToSavedSearch_WithEachFilter_NameCorrect(GUIModFilter filter, string name)
+        {
+            // Arrange
+            using (var inst = new DisposableKSP())
+            {
+                // Act
+                var search = ModList.FilterToSavedSearch(inst.KSP, filter, ModuleLabelList.GetDefaultLabels(), null,
+                                                         new ModuleLabel("TestLabel"));
+
+                // Assert
+                Assert.AreEqual(name, string.Format(search.Name, "TestLabel"));
+            }
+        }
+
+        [Test]
+        public void ReapplyLabels_AddModToFavorites_Works()
+        {
+            // Ensure the default locale is used
+            CultureInfo.DefaultThreadCurrentUICulture =
+                Thread.CurrentThread.CurrentUICulture =
+                    new CultureInfo("en-GB");
+
+            // Arrange
+            var user = new NullUser();
+            var repo = new Repository("test", "https://github.com/");
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var repoData = new TemporaryRepositoryData(
+                                      user,
+                                      new Dictionary<Repository, RepositoryData>
+                                      {
+                                          {
+                                              repo,
+                                              RepositoryData.FromJson(TestData.TestRepository(), null)!
+                                          },
+                                      }))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo }))
+            {
+                var registry = regMgr.registry;
+                var labels   = ModuleLabelList.GetDefaultLabels();
+                var favLbl   = labels.Labels.First(l => l.Name == "Favourites");
+                var mods     = ModList.GetGUIMods(registry, repoData.Manager,
+                                                  inst.KSP, labels, new GUIConfiguration())
+                                      .ToArray();
+                var modlist  = new ModList(mods, inst.KSP, labels, config, new GUIConfiguration());
+                var mod      = mods.First();
+
+                // Act
+                favLbl.Add(inst.KSP.game, mod.Identifier);
+                var row = modlist.ReapplyLabels(mod, false, inst.KSP, registry);
+
+                // Assert
+                Assert.AreEqual(favLbl.Color, row?.DefaultCellStyle.BackColor);
+            }
+        }
+
+        [Test]
+        public void ResetHasUpdate_NoUpgrades_False()
+        {
+            // Arrange
+            var user = new NullUser();
+            var repo = new Repository("test", "https://github.com/");
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var repoData = new TemporaryRepositoryData(
+                                      user,
+                                      new Dictionary<Repository, RepositoryData>
+                                      {
+                                          {
+                                              repo,
+                                              RepositoryData.FromJson(TestData.TestRepository(), null)!
+                                          },
+                                      }))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo }))
+            {
+                var registry = regMgr.registry;
+                var labels   = ModuleLabelList.GetDefaultLabels();
+                var mods     = ModList.GetGUIMods(registry, repoData.Manager,
+                                                  inst.KSP, labels, new GUIConfiguration())
+                                      .ToArray();
+                var modlist = new ModList(mods, inst.KSP, labels,
+                                          config, new GUIConfiguration());
+                var grid = new DataGridView();
+                grid.Columns.AddRange(StandardColumns);
+                grid.Rows.AddRange(modlist.full_list_of_mod_rows.Values.ToArray());
+
+                // Act
+                var result = modlist.ResetHasUpdate(inst.KSP, registry, null, grid.Rows);
+
+                // Assert
+                Assert.IsFalse(result);
+            }
+        }
+
+        [Test]
+        public void GetGUIMods_WithLiveRegistry_Works()
+        {
+            // Arrange
+            var user = new NullUser();
+            var repo = new Repository("test", "https://github.com/");
+            using (var repoData = new TemporaryRepositoryData(
+                                      user,
+                                      new Dictionary<Repository, RepositoryData>
+                                      {
+                                          {
+                                              repo,
+                                              RepositoryData.FromJson(TestData.TestRepository(), null)!
+                                          },
+                                      }))
+            using (var instance = new DisposableKSP())
+            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager,
+                                                           new Repository[] { repo }))
+            {
+                var registry = regMgr.registry;
+
+                // Act
+                var mods = ModList.GetGUIMods(registry, repoData.Manager,
+                                              instance.KSP, ModuleLabelList.GetDefaultLabels(), new GUIConfiguration());
+
+                // Assert
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "AdjustableLandingGear",
+                                                   "AdvancedFlyByWire",
+                                                   "AdvancedFlyByWire-Linux",
+                                                   "AerojetKerbodyne",
+                                                   "AGExt",
+                                                   "AJE",
+                                                   "AlternateResourcePanel",
+                                                   "AMEG",
+                                                   "AntennaRange",
+                                                   "AutoAsparagus",
+                                                   "B9",
+                                                   "BackgroundProcessing",
+                                                   "BahamutoDynamicsPartsPack",
+                                                   "BargainRocketParts",
+                                                   "BDAnimationModules",
+                                                   "BDArmory",
+                                                   "BiggerLaunchpads",
+                                                   "CameraTools",
+                                                   "Chatterer",
+                                                   "CIT-Util",
+                                                   "CoherentContracts",
+                                                   "CommunityResourcePack",
+                                                   "CommunityTechTree",
+                                                   "ConnectedLivingSpace",
+                                                   "CrewFiles",
+                                                   "CrossFeedEnabler",
+                                                   "CustomAsteroids",
+                                                   "CustomAsteroids-Pops-Stock-Inner",
+                                                   "CustomAsteroids-Pops-Stock-Outer",
+                                                   "CustomBiomes",
+                                                   "CustomBiomes-Data-RSS",
+                                                   "CustomBiomes-Data-Stock",
+                                                   "DDSLoader",
+                                                   "DeadlyReentry",
+                                                   "DevHelper",
+                                                   "DistantObject",
+                                                   "DistantObject-default",
+                                                   "DMagicOrbitalScience",
+                                                   "DockingPortAlignmentIndicator",
+                                                   "DogeCoinFlag",
+                                                   "EditorExtensions",
+                                                   "EngineIgnitor-Unofficial-Repack",
+                                                   "ExtraPlanetaryLaunchpads",
+                                                   "ExtraPlanetaryLaunchpads-KarboniteAdaptation",
+                                                   "ExtraPlanetaryLaunchpads-KarboniteAdaptationAltWorkshop",
+                                                   "FASA",
+                                                   "FerramAerospaceResearch",
+                                                   "FinalFrontier",
+                                                   "FinePrint",
+                                                   "FinePrint-Config-Stock",
+                                                   "Firespitter",
+                                                   "FirespitterCore",
+                                                   "FMRS",
+                                                   "FShangarExtender",
+                                                   "HangarExtender",
+                                                   "HaystackContinued",
+                                                   "HooliganLabsAirships",
+                                                   "HotRockets",
+                                                   "HyperEdit",
+                                                   "ImpossibleInnovations",
+                                                   "InfernalRobotics",
+                                                   "Karbonite",
+                                                   "KarbonitePlus",
+                                                   "KAS",
+                                                   "KDEX",
+                                                   "KerbalAlarmClock",
+                                                   "KerbalConstructionTime",
+                                                   "KerbalFlightData",
+                                                   "KerbalFlightIndicators",
+                                                   "KerbalJointReinforcement",
+                                                   "KerbalKonstructs",
+                                                   "KerbalStats",
+                                                   "KerbinSide",
+                                                   "Kethane",
+                                                   "KineTechAnimation",
+                                                   "KlockheedMartian-Gimbal",
+                                                   "kOS",
+                                                   "KronalVesselViewer",
+                                                   "KWRocketry",
+                                                   "LandingHeight",
+                                                   "LargeStructuralComponents",
+                                                   "LazTekSpaceXExploration",
+                                                   "LazTekSpaceXExploration-HD",
+                                                   "LazTekSpaceXExploration-LD",
+                                                   "LazTekSpaceXHistoric",
+                                                   "LazTekSpaceXHistoric-HD",
+                                                   "LazTekSpaceXHistoric-LD",
+                                                   "LazTekSpaceXLaunch",
+                                                   "LazTekSpaceXLaunch-HD",
+                                                   "LazTekSpaceXLaunch-LD",
+                                                   "MechJeb2",
+                                                   "ModernChineseFlagPack",
+                                                   "ModuleFixer",
+                                                   "ModuleManager",
+                                                   "ModuleRCSFX",
+                                                   "NavballDockingIndicator",
+                                                   "NavBallTextureExport",
+                                                   "NavHud",
+                                                   "NBody",
+                                                   "NEAR",
+                                                   "NearFutureConstruction",
+                                                   "NearFutureElectrical",
+                                                   "NearFutureExampleCraft",
+                                                   "NearFutureProps",
+                                                   "NearFuturePropulsion",
+                                                   "NearFutureSolar",
+                                                   "NearFutureSpacecraft",
+                                                   "NebulaEVAHandrails",
+                                                   "notes",
+                                                   "NovaPunch",
+                                                   "ORSX",
+                                                   "PartCatalog",
+                                                   "PlanetShine",
+                                                   "PorkjetHabitats",
+                                                   "PreciseNode",
+                                                   "ProceduralDynamics",
+                                                   "ProceduralFairings",
+                                                   "ProceduralParts",
+                                                   "QuickRevert",
+                                                   "RandSCapsuledyne",
+                                                   "RasterPropMonitor",
+                                                   "RasterPropMonitor-Core",
+                                                   "RCSLandAid",
+                                                   "RealChute",
+                                                   "RealFuels",
+                                                   "RealismOverhaul",
+                                                   "RealRoster",
+                                                   "RealSolarSystem",
+                                                   "RemoteTech",
+                                                   "RemoteTech-Config-RSS",
+                                                   "ResGen",
+                                                   "ResourceOverview",
+                                                   "RetroFuture",
+                                                   "RFStockalike",
+                                                   "RLA-Stockalike",
+                                                   "RocketdyneF-1",
+                                                   "RoversNOthers-Set1",
+                                                   "RoversNOthers-Set2",
+                                                   "RoversNOthers-Set3",
+                                                   "RSSTextures2048",
+                                                   "RSSTextures4096",
+                                                   "RSSTextures8192",
+                                                   "SCANsat",
+                                                   "SelectRoot",
+                                                   "Service-Compartments-6S",
+                                                   "ShipManifest",
+                                                   "SRL",
+                                                   "StageRecovery",
+                                                   "StationPartsExpansion",
+                                                   "SXT",
+                                                   "TacFuelBalancer",
+                                                   "TACLS",
+                                                   "TACLS-Config-RealismOverhaul",
+                                                   "TACLS-Config-Stock",
+                                                   "Tantares",
+                                                   "TechManager",
+                                                   "TextureReplacer",
+                                                   "TimeControl",
+                                                   "Toolbar",
+                                                   "Trajectories",
+                                                   "TweakableEverything",
+                                                   "TweakScale",
+                                                   "TWR1",
+                                                   "UKS",
+                                                   "UniversalStorage",
+                                                   "UniversalStorage-ECLSS",
+                                                   "UniversalStorage-IFI",
+                                                   "UniversalStorage-KAS",
+                                                   "UniversalStorage-SNACKS",
+                                                   "UniversalStorage-TAC",
+                                                   "USI-ART",
+                                                   "USI-EXP",
+                                                   "USI-FTT",
+                                                   "USI-SRV",
+                                                   "USITools",
+                                                   "VerticalPropulsionEmporium",
+                                                   "VesselView",
+                                                   "VesselView-UI-RasterPropMonitor",
+                                                   "VesselView-UI-Toolbar",
+                                                   "VirginKalactic-NodeToggle",
+                                               },
+                                               mods.Select(m => m.Identifier).Order());
+            }
+        }
+
+        [Test]
+        public void ComputeUserChangeSet_FiveModsSelected_Works()
+        {
+            // Arrange
+            var user = new NullUser();
+            var repo = new Repository("test", "https://github.com/");
+            using (var instance = new DisposableKSP())
+            using (var config   = new FakeConfiguration(instance.KSP, instance.KSP.Name))
+            using (var repoData = new TemporaryRepositoryData(
+                                      user,
+                                      new Dictionary<Repository, RepositoryData>
+                                      {
+                                          {
+                                              repo,
+                                              RepositoryData.FromJson(TestData.TestRepository(), null)!
+                                          },
+                                      }))
+            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager,
+                                                           new Repository[] { repo }))
+            {
+                var registry = regMgr.registry;
+                var mods     = ModList.GetGUIMods(registry, repoData.Manager,
+                                                  instance.KSP, ModuleLabelList.GetDefaultLabels(), new GUIConfiguration())
+                                      .ToArray();
+                var modlist  = new ModList(mods, instance.KSP, ModuleLabelList.GetDefaultLabels(), config, new GUIConfiguration());
+
+                // Act
+                foreach (var mod in mods.OrderBy(m => m.Identifier).Take(5))
+                {
+                    mod.SelectedMod = mod.LatestCompatibleMod;
+                }
+                var changeset = modlist.ComputeUserChangeSet(registry, instance.KSP.VersionCriteria(), instance.KSP, null, null);
+
+                // Assert
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "AdjustableLandingGear",
+                                                   "AdvancedFlyByWire",
+                                                   "AdvancedFlyByWire-Linux",
+                                                   "AerojetKerbodyne",
+                                                   "AGExt",
+                                               },
+                                               changeset.Select(ch => ch.Mod.identifier));
+            }
+        }
+
+        [Test]
+        public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
+        {
+            var user = new NullUser();
+            using (var repoData = new TemporaryRepositoryData(user))
+            using (var tidy = new DisposableKSP())
+            using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
+            {
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                                       config, new GUIConfiguration());
+                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
             }
         }
 
@@ -113,7 +523,7 @@ namespace Tests.GUI
         /// https://github.com/KSP-CKAN/CKAN/pull/1882
         /// </summary>
         [Test]
-        [NUnit.Framework.Category("Display")]
+        [Category("Display")]
         public void InstallAndSortByCompat_WithAnyCompat_NoCrash()
         {
             /*
@@ -146,18 +556,17 @@ namespace Tests.GUI
                                                       TestData.kOS_014()))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var instance = new DisposableKSP())
-            using (var config = new FakeConfiguration(instance.KSP, instance.KSP.Name))
-            using (var manager = new GameInstanceManager(user, config))
+            using (var config   = new FakeConfiguration(instance.KSP, instance.KSP.Name))
+            using (var manager  = new GameInstanceManager(user, config))
+            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager))
             {
                 manager.SetCurrentInstance(instance.KSP);
-                var registryManager = RegistryManager.Instance(instance.KSP, repoData.Manager);
-                var registry = registryManager.registry;
+                var registry = regMgr.registry;
                 registry.RepositoriesClear();
                 registry.RepositoriesAdd(repo.repo);
                 // A module with a ksp_version of "any" to repro our issue
                 var anyVersionModule = registry.GetModuleByVersion("DogeCoinFlag", "1.01")!;
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");
-                var modList = new ModList();
                 var listGui = new DataGridView();
                 var installer = new ModuleInstaller(instance.KSP, manager.Cache!, config, manager.User);
                 var downloader = new NetAsyncModulesDownloader(user, manager.Cache!);
@@ -172,33 +581,30 @@ namespace Tests.GUI
                 installer.InstallList(
                     new List<CkanModule> { anyVersionModule },
                     new RelationshipResolverOptions(instance.KSP.StabilityToleranceConfig),
-                    registryManager,
+                    regMgr,
                     ref possibleConfigOnlyDirs,
                     null, null,
                     downloader);
 
                 // TODO: Refactor the column header code to allow mocking of the GUI without creating columns
-                const int numCheckboxCols = 4;
-                const int numTextCols     = 11;
-                listGui.Columns.AddRange(
-                    Enumerable.Range(1, numCheckboxCols)
-                        .Select(i => (DataGridViewColumn)new DataGridViewCheckBoxColumn())
-                        .Concat(Enumerable.Range(1, numTextCols)
-                            .Select(i => new DataGridViewTextBoxColumn()))
-                        .ToArray());
+                listGui.Columns.AddRange(StandardColumns);
 
                 // Assert (and Act a bit more)
 
                 Assert.IsNotNull(instance.KSP);
                 Assert.IsNotNull(manager);
-                Assert.IsNotNull(modList);
 
                 var modules = repoData.Manager.GetAllAvailableModules(Enumerable.Repeat(repo.repo, 1))
-                    .Select(mod => new GUIMod(mod.Latest(instance.KSP.StabilityToleranceConfig)!, repoData.Manager, registry, instance.KSP.StabilityToleranceConfig, instance.KSP.VersionCriteria(),
+                    .Select(mod => new GUIMod(mod.Latest(instance.KSP.StabilityToleranceConfig)!, repoData.Manager, registry,
+                                              instance.KSP.StabilityToleranceConfig, instance.KSP.VersionCriteria(),
                                               null, false, false))
                     .ToList();
 
-                listGui.Rows.AddRange(modList.ConstructModList(modules, null, instance.KSP.game).ToArray());
+                var modList = new ModList(modules, instance.KSP, ModuleLabelList.GetDefaultLabels(),
+                                          config, new GUIConfiguration());
+                Assert.IsFalse(modList.HasVisibleInstalled());
+
+                listGui.Rows.AddRange(modList.full_list_of_mod_rows.Values.ToArray());
                 // The header row adds one to the count
                 Assert.AreEqual(modules.Count + 1, listGui.Rows.Count);
 
@@ -218,9 +624,11 @@ namespace Tests.GUI
                     {
                         // Install the "other" module
                         installer.InstallList(
-                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, inst2.KSP, null, null).Select(change => change.Mod).ToList(),
+                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, inst2.KSP, null, null)
+                                   .Select(change => change.Mod)
+                                   .ToList(),
                             new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),
-                            registryManager,
+                            regMgr,
                             ref possibleConfigOnlyDirs,
                             null, null,
                             downloader);
@@ -232,5 +640,17 @@ namespace Tests.GUI
                 }
             }
         }
+
+        private const int numCheckboxCols = 4;
+
+        private const int numTextCols     = 11;
+
+        private static DataGridViewColumn[] StandardColumns
+            => Enumerable.Range(1, numCheckboxCols)
+                         .Select(i => (DataGridViewColumn)new DataGridViewCheckBoxColumn())
+                         .Concat(Enumerable.Range(1, numTextCols)
+                         .Select(i => new DataGridViewTextBoxColumn()))
+                         .ToArray();
+
     }
 }

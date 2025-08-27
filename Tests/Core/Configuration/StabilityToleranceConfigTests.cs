@@ -17,7 +17,7 @@ namespace Tests.Core.Configuration
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var path = Path.Combine(dir.Path.FullName, "stc.json");
+                var path = Path.Combine(dir.Directory.FullName, "stc.json");
 
                 // Act
                 var orig = new StabilityToleranceConfig(path)

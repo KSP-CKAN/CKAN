@@ -650,6 +650,12 @@ Appuyez sur tabulation pour compléter les commandes et les modules.
   <data name="ShowSteamStore" xml:space="preserve">
     <value>  Magasin Steam :	{0}</value>
   </data>
+  <data name="ShowGogStore" xml:space="preserve">
+    <value>  Boutique GOG :	{0}</value>
+  </data>
+  <data name="ShowEpicStore" xml:space="preserve">
+    <value>  Boutique Epic Games :	{0}</value>
+  </data>
   <data name="ShowVersionFile" xml:space="preserve">
     <value>  Fichier Version :	{0}</value>
   </data>
@@ -712,6 +718,9 @@ Appuyez sur tabulation pour compléter les commandes et les modules.
   </data>
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Mise à niveau annulée : {0}</value>
+  </data>
+  <data name="UpgradeFailed" xml:space="preserve">
+    <value>Échec de la mise à jour : {0}"</value>
   </data>
   <data name="UpgradeAlreadyUpToDate" xml:space="preserve">
     <value>Le module {0} est déjà à jour</value>

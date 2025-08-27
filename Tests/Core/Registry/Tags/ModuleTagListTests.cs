@@ -16,7 +16,7 @@ namespace Tests.Core
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var path = Path.Combine(dir.Path.FullName, "mtl.json");
+                var path = Path.Combine(dir.Directory.FullName, "mtl.json");
                 var orig = new ModuleTagList();
 
                 // Act

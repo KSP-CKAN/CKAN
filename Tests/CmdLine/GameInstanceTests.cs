@@ -82,7 +82,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "clone", "disposable",
-                                          "myClone", targDir.Path.FullName,
+                                          "myClone", targDir.Directory.FullName,
                                       };
                 var         subOpts = new SubCommandOptions(args);
 
@@ -182,7 +182,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "fake",
-                                          "fakeInstance", fakeDir.Path.FullName, "1.12.5",
+                                          "fakeInstance", fakeDir.Directory.FullName, "1.12.5",
                                           "--MakingHistory", "1.0.0",
                                           "--BreakingGround", "1.0.0",
                                       };
