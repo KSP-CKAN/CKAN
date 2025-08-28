@@ -1475,7 +1475,7 @@ namespace Tests.Core.IO
         }
 
         [TestCase]
-        public void Install_WithMatchedUnmanagedDll_Throws()
+        public void InstallList_WithMatchedUnmanagedDll_Throws()
         {
             const string unmanaged = "GameData/DogeCoinPlugin.1.0.0.dll";
             var kraken = Assert.Throws<DllLocationMismatchKraken>(() =>
@@ -1486,7 +1486,7 @@ namespace Tests.Core.IO
         }
 
         [TestCase]
-        public void Install_WithUnmatchedUnmanagedDll_DoesNotThrow()
+        public void InstallList_WithUnmatchedUnmanagedDll_DoesNotThrow()
         {
             Assert.DoesNotThrow(() => installTestPlugin("GameData/DogeCoinPlugin-1-0-0.dll",
                                                         TestData.DogeCoinPlugin(),
@@ -1522,7 +1522,7 @@ namespace Tests.Core.IO
                 HashSet<string>? possibleConfigOnlyDirs = null;
                 new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                 new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                  regMgr,
                                  ref possibleConfigOnlyDirs);
             }
