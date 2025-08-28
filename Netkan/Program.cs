@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using log4net;
@@ -20,6 +21,7 @@ using CKAN.Extensions;
 
 namespace CKAN.NetKAN
 {
+    [ExcludeFromCodeCoverage]
     public static class Program
     {
         public static int Main(string[] args)

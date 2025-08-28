@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using log4net.Config;
@@ -45,6 +46,7 @@ namespace CKAN
 
 #if DEBUG
 
+        [ExcludeFromCodeCoverage]
         public static void WithTimeElapsed(Action<TimeSpan> elapsedCallback,
                                            Action           toMeasure)
         {
@@ -57,6 +59,7 @@ namespace CKAN
             elapsedCallback(sw.Elapsed);
         }
 
+        [ExcludeFromCodeCoverage]
         public static T WithTimeElapsed<T>(Action<TimeSpan> elapsedCallback,
                                            Func<T>          toMeasure)
         {

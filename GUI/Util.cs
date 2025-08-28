@@ -4,6 +4,7 @@ using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 using Timer = System.Windows.Forms.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -24,6 +25,7 @@ namespace CKAN.GUI
         /// Invokes an action on the UI thread, or directly if we're
         /// on the UI thread.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public static void Invoke<T>(T obj, Action action) where T : Control
         {
             if (obj.InvokeRequired) // if we're not in the UI thread
@@ -41,6 +43,7 @@ namespace CKAN.GUI
         // utility helper to deal with multi-threading and UI
         // async version, doesn't wait for UI thread
         // use with caution, when not sure use blocking Invoke()
+        [ExcludeFromCodeCoverage]
         public static void AsyncInvoke<T>(T obj, Action action) where T : Control
         {
             if (obj.InvokeRequired) // if we're not in the UI thread
@@ -130,6 +133,7 @@ namespace CKAN.GUI
         /// Open a URL, unless it's "N/A"
         /// </summary>
         /// <param name="url">The URL</param>
+        [ExcludeFromCodeCoverage]
         public static void OpenLinkFromLinkLabel(string url)
         {
             if (url == Properties.Resources.ModInfoNSlashA)
@@ -144,6 +148,7 @@ namespace CKAN.GUI
         /// Tries to open an url using the default application.
         /// If it fails, it tries again by prepending each prefix before the url before it gives up.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public static bool TryOpenWebPage(string url, IEnumerable<string>? prefixes = null)
         {
             // Default prefixes to try if not provided
@@ -167,6 +172,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="url">The link's URL</param>
         /// <param name="e">The click event</param>
+        [ExcludeFromCodeCoverage]
         public static void HandleLinkClicked(string url, LinkLabelLinkClickedEventArgs? e)
         {
             switch (e?.Button)
@@ -191,6 +197,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="url">The URL of the link</param>
         /// <param name="c">The menu will be shown below the bottom of this control</param>
+        [ExcludeFromCodeCoverage]
         public static void LinkContextMenu(string url, Control c)
             => LinkContextMenu(url, c.PointToScreen(new Point(0, c.Height)));
 
@@ -199,6 +206,7 @@ namespace CKAN.GUI
         /// </summary>
         /// <param name="url">The URL of the link</param>
         /// <param name="where">Screen coordinates for the menu</param>
+        [ExcludeFromCodeCoverage]
         public static void LinkContextMenu(string url, Point? where = null)
         {
             var copyLink = new ToolStripMenuItem(Properties.Resources.UtilCopyLink);
@@ -225,6 +233,7 @@ namespace CKAN.GUI
         /// <returns>
         /// The first screen that overlaps the box if any, otherwise null
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static Screen? FindScreen(Point location, Size size)
         {
             var rect = new Rectangle(location, size);
@@ -426,6 +435,7 @@ namespace CKAN.GUI
         [DllImport("kernel32.dll", SetLastError=true)]
         private static extern int FreeConsole();
 
+        [ExcludeFromCodeCoverage]
         public static void HideConsoleWindow()
         {
             if (Platform.IsWindows)

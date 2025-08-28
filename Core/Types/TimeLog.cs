@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
+
 using CKAN.Extensions;
 
 namespace CKAN
@@ -28,6 +30,7 @@ namespace CKAN
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public void Save(string path)
         {
             JsonConvert.SerializeObject(this, Formatting.Indented)
@@ -39,11 +42,13 @@ namespace CKAN
 
         private readonly Stopwatch playTime = new Stopwatch();
 
+        [ExcludeFromCodeCoverage]
         public void Start()
         {
             playTime.Restart();
         }
 
+        [ExcludeFromCodeCoverage]
         public void Stop(string dir)
         {
             if (playTime.IsRunning)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN
 {
@@ -9,6 +10,7 @@ namespace CKAN
     /// CKAN client auto-updating routines. This works in conjunction with the
     /// auto-update helper to allow users to upgrade.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class AutoUpdate
     {
         public AutoUpdate()

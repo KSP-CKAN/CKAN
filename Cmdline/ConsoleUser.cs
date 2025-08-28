@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
+
 using log4net;
 
 namespace CKAN.CmdLine
@@ -7,6 +9,7 @@ namespace CKAN.CmdLine
     /// <summary>
     /// The commandline implementation of the IUser interface.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ConsoleUser : IUser
     {
         /// <summary>

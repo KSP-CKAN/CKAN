@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -16,6 +17,7 @@ namespace CKAN.Configuration
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
+    [ExcludeFromCodeCoverage]
     internal class Win32RegistryConfiguration
     {
         public static bool DoesRegistryConfigurationExist()

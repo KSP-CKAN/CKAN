@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Diagnostics.CodeAnalysis;
 
 using LazyCache;
 using log4net;
@@ -11,6 +12,7 @@ using CKAN.NetKAN.Model;
 
 namespace CKAN.NetKAN.Services
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class CachingHttpService : IHttpService
     {
         public CachingHttpService(NetFileCache cache,

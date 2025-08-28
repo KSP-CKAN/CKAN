@@ -7,6 +7,7 @@ using System;
 using System.Net;
 using System.Diagnostics;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 #if WINDOWS && NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -33,6 +34,7 @@ namespace CKAN.CmdLine
          * operating system components.  Good examples of this are the Clipboard and the File Dialogs.
          */
         [STAThread]
+        [ExcludeFromCodeCoverage]
         public static int Main(string[] args)
         {
             // Launch debugger if the "--debugger" flag is present in the command line arguments.
@@ -86,6 +88,7 @@ namespace CKAN.CmdLine
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public static int Execute(GameInstanceManager manager,
                                   CommonOptions?      opts,
                                   string[]            args,
@@ -199,6 +202,7 @@ namespace CKAN.CmdLine
         /// Run whatever action the user has provided
         /// </summary>
         /// <returns>The exit status that should be returned to the system.</returns>
+        [ExcludeFromCodeCoverage]
         private static int RunSimpleAction(Options cmdline, CommonOptions options, string[] args, IUser user, GameInstanceManager manager)
         {
             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
@@ -302,6 +306,7 @@ namespace CKAN.CmdLine
         #if NET5_0_OR_GREATER
         [SupportedOSPlatform("windows")]
         #endif
+        [ExcludeFromCodeCoverage]
         private static int Gui(GameInstanceManager manager, GuiOptions options, string[] args)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
@@ -316,6 +321,7 @@ namespace CKAN.CmdLine
         }
         #endif
 
+        [ExcludeFromCodeCoverage]
         private static int ConsoleUi(GameInstanceManager manager, ConsoleUIOptions opts)
         {
             // Debug/verbose output just messes up the screen

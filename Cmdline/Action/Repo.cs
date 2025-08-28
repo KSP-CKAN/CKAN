@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -9,6 +10,7 @@ using log4net;
 
 namespace CKAN.CmdLine
 {
+    [ExcludeFromCodeCoverage]
     public class RepoSubOptions : VerbCommandOptions
     {
         [VerbOption("available", HelpText = "List (canonical) available repositories")]

@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
+
 using log4net;
 
 namespace CKAN.NetKAN
@@ -9,6 +11,7 @@ namespace CKAN.NetKAN
     /// It is exactly the same as the one of the CKAN-cmdline.
     /// At least at the time of this commit (git blame is your friend).
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ConsoleUser : IUser
     {
         /// <summary>

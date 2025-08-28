@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -258,6 +259,7 @@ namespace CKAN.CmdLine
         private readonly IUser               user;
     }
 
+    [ExcludeFromCodeCoverage]
     internal class FilterSubOptions : VerbCommandOptions
     {
         [VerbOption("list", HelpText = "List install filters")]

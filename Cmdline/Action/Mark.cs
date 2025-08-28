@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -154,6 +155,7 @@ namespace CKAN.CmdLine
         private readonly IUser                 user;
     }
 
+    [ExcludeFromCodeCoverage]
     internal class MarkSubOptions : VerbCommandOptions
     {
         [VerbOption("auto", HelpText = "Mark modules as auto installed")]

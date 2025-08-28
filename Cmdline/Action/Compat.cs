@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -9,6 +10,7 @@ using CKAN.Versioning;
 
 namespace CKAN.CmdLine
 {
+    [ExcludeFromCodeCoverage]
     public class CompatSubOptions : VerbCommandOptions
     {
         [VerbOption("list", HelpText = "List compatible game versions")]

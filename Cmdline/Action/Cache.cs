@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -8,6 +9,7 @@ using CKAN.Configuration;
 
 namespace CKAN.CmdLine
 {
+    [ExcludeFromCodeCoverage]
     public class CacheSubOptions : VerbCommandOptions
     {
         [VerbOption("list", HelpText = "List the download cache path")]

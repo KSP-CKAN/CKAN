@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using CommandLine;
@@ -139,6 +140,7 @@ namespace CKAN.CmdLine
         private readonly IUser                 user;
     }
 
+    [ExcludeFromCodeCoverage]
     public class StabilitySubOptions: VerbCommandOptions
     {
         [VerbOption("list", HelpText = "Print stability preferences")]

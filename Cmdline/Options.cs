@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using log4net.Core;
@@ -44,6 +45,7 @@ namespace CKAN.CmdLine
 
     // Actions supported by our client go here.
 
+    [ExcludeFromCodeCoverage]
     internal class Actions : VerbCommandOptions
     {
         #if NETFRAMEWORK || WINDOWS
@@ -218,6 +220,7 @@ namespace CKAN.CmdLine
 
     // Options common to all classes.
 
+    [ExcludeFromCodeCoverage]
     public class CommonOptions
     {
         [Option('v', "verbose", DefaultValue = false, HelpText = "Show more of what's going on when running.")]
@@ -323,6 +326,7 @@ namespace CKAN.CmdLine
         protected static readonly ILog log = LogManager.GetLogger(typeof(CommonOptions));
     }
 
+    [ExcludeFromCodeCoverage]
     public class InstanceSpecificOptions : CommonOptions
     {
         [Option("instance", HelpText = "Game instance to use")]

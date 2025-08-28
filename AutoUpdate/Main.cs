@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -22,6 +23,7 @@ using System.Runtime.Versioning;
 
 namespace CKAN.AutoUpdateHelper
 {
+    [ExcludeFromCodeCoverage]
     public class Program
     {
         public static int Main(string[] args)

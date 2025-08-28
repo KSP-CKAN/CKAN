@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -128,6 +129,7 @@ namespace CKAN.CmdLine
         private readonly IUser               user;
     }
 
+    [ExcludeFromCodeCoverage]
     internal class AuthTokenSubOptions : VerbCommandOptions
     {
         [VerbOption("list",   HelpText = "List auth tokens")]
