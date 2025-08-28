@@ -48,6 +48,7 @@ namespace Tests.Data
         public void Dispose()
         {
             Directory.Delete(repoDataDir, true);
+            GC.SuppressFinalize(this);
         }
 
         public readonly RepositoryDataManager Manager;
