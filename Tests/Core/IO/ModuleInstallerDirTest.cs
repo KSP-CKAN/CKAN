@@ -48,10 +48,9 @@ namespace Tests.Core.IO
 
             _config    = new FakeConfiguration(_instance.KSP, _instance.KSP.Name);
             _manager   = new GameInstanceManager(_nullUser, _config);
-            _registryManager = RegistryManager.Instance(_instance.KSP, repoData.Manager);
+            _registryManager = RegistryManager.Instance(_instance.KSP, repoData.Manager,
+                                                        new Repository[] { repo.repo });
             _registry  = _registryManager.registry;
-            _registry.RepositoriesClear();
-            _registry.RepositoriesAdd(repo.repo);
             _testModule = _registry.GetModuleByVersion("DogeCoinFlag", "1.01");
             Assert.IsNotNull(_testModule, "DogeCoinFlag 1.01 should exist");
 

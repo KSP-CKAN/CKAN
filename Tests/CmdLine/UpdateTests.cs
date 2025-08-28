@@ -19,10 +19,9 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { new Repository("test", TestData.TestKANTarGz()) }))
             {
-                regMgr.registry.RepositoriesClear();
-                regMgr.registry.RepositoriesAdd(new Repository("test", TestData.TestKANTarGz()));
                 // Not an ICommand because it can update CKAN itself
                 var sut  = new Update(repoData.Manager, user, manager);
                 var opts = new UpdateOptions();

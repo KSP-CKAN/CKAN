@@ -608,12 +608,11 @@ namespace Tests.GUI
             using (var instance = new DisposableKSP())
             using (var config   = new FakeConfiguration(instance.KSP, instance.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager))
+            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(instance.KSP);
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
                 // A module with a ksp_version of "any" to repro our issue
                 var anyVersionModule = registry.GetModuleByVersion("DogeCoinFlag", "1.01")!;
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");

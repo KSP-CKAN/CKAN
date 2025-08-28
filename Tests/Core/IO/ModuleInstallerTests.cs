@@ -439,8 +439,6 @@ namespace Tests.Core.IO
                 Assert.IsTrue(File.Exists(cache_path));
 
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
 
                 Assert.AreEqual(1, registry.CompatibleModules(ksp.KSP.StabilityToleranceConfig, ksp.KSP.VersionCriteria()).Count());
 
@@ -478,8 +476,6 @@ namespace Tests.Core.IO
 
                 // Install the test mod.
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
                 manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
                                      TestData.DogeCoinFlagZip(),
                                      new Progress<long>(bytes => {}));
@@ -524,8 +520,6 @@ namespace Tests.Core.IO
 
                 // Install the base test mod.
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
                 manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
                                      TestData.DogeCoinFlagZip(),
                                      new Progress<long>(bytes => {}));
@@ -726,8 +720,6 @@ namespace Tests.Core.IO
                 {
                     manager.SetCurrentInstance(ksp.KSP);
                     var registry = regMgr.registry;
-                    registry.RepositoriesClear();
-                    registry.RepositoriesAdd(repo.repo);
 
                     // Copy the zip file to the cache directory.
                     manager.Cache?.Store(TestData.DogeCoinFlag_101_module(),
@@ -952,8 +944,6 @@ namespace Tests.Core.IO
             {
                 manager.SetCurrentInstance(ksp.KSP);
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
 
                 // Copy the zip file to the cache directory.
                 manager.Cache?.Store(TestData.DogeCoinFlag_101ZipSlip_module(),
@@ -992,8 +982,6 @@ namespace Tests.Core.IO
             {
                 manager.SetCurrentInstance(ksp.KSP);
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
 
                 // Copy the zip file to the cache directory.
                 manager.Cache?.Store(TestData.DogeCoinFlag_101ZipBomb_module(),
@@ -1351,10 +1339,6 @@ namespace Tests.Core.IO
                 var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
                 var registry   = regMgr.registry;
-                registry.RepositoriesSet(new SortedDictionary<string, Repository>()
-                {
-                    { "testRepo", repo.repo }
-                });
                 IRegistryQuerier querier = registry;
                 var possibleConfigOnlyDirs = new HashSet<string>();
                 foreach (var m in regularMods)
@@ -1459,10 +1443,6 @@ namespace Tests.Core.IO
                 var installer  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 var downloader = new NetAsyncModulesDownloader(nullUser, manager.Cache!);
                 var registry   = regMgr.registry;
-                registry.RepositoriesSet(new SortedDictionary<string, Repository>()
-                {
-                    { "testRepo", repo.repo }
-                });
                 var possibleConfigOnlyDirs = new HashSet<string>();
                 foreach (var m in regularInstalled)
                 {

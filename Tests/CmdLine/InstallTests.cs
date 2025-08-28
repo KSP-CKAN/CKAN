@@ -69,11 +69,10 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                regMgr.registry.RepositoriesClear();
-                regMgr.registry.RepositoriesAdd(repo.repo);
                 var module = regMgr.registry.GetModuleByVersion(identifier, version)!;
                 manager.Cache?.Store(module, TestData.DogeCoinFlagZip(), null);
                 var opts = new InstallOptions()
