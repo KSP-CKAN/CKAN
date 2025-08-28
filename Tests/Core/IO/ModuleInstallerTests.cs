@@ -1474,6 +1474,91 @@ namespace Tests.Core.IO
             }
         }
 
+        [Test]
+        public void InstallList_DLC_Throws()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var repo     = new TemporaryRepository(
+                                      @"{
+                                          ""spec_version"": 1,
+                                          ""identifier"":   ""Fake-DLC"",
+                                          ""version"":      ""1.0"",
+                                          ""kind"":         ""dlc""
+                                      }"))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager  = new GameInstanceManager(nullUser, config))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var registry  = regMgr.registry;
+                var module    = registry.LatestAvailable("Fake-DLC",
+                                                         inst.KSP.StabilityToleranceConfig,
+                                                         inst.KSP.VersionCriteria())!;
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, user);
+
+                // Act / Assert
+                Assert.Throws<ModuleIsDLCKraken>(() =>
+                {
+                    HashSet<string>? possibleConfigOnlyDirs = null;
+                    installer.InstallList(new List<CkanModule> { module },
+                                          new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
+                                          regMgr,
+                                          ref possibleConfigOnlyDirs);
+                });
+            }
+        }
+
+        [Test]
+        // Resumption of downloads is only possible for HTTP(S)
+        [Category("Online")]
+        public void InstallList_IncompleteInCache_Completes()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var inst     = new DisposableKSP())
+            using (var cacheDir = new TemporaryDirectory())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
+                                                        cacheDir.Directory.FullName))
+            using (var manager  = new GameInstanceManager(nullUser, config))
+            using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var registry  = regMgr.registry;
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, user);
+
+                // Redirect the mod's download
+                var module      = registry.LatestAvailable("DogeCoinFlag",
+                                                           inst.KSP.StabilityToleranceConfig,
+                                                           inst.KSP.VersionCriteria())!;
+                module.download = new List<Uri>
+                {
+                    new Uri("https://github.com/KSP-CKAN/CKAN"
+                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
+                };
+
+                // Dump about half the ZIP to the in-progress dir
+                var filename = manager.Cache!.GetInProgressFileName(module)!.FullName;
+                File.WriteAllBytes(filename, File.ReadAllBytes(TestData.DogeCoinFlagZip())
+                                                 .Take(20000)
+                                                 .ToArray());
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    HashSet<string>? possibleConfigOnlyDirs = null;
+                    installer.InstallList(new CkanModule[] { module },
+                                          new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
+                                          regMgr,
+                                          ref possibleConfigOnlyDirs);
+                });
+            }
+        }
+
         [TestCase]
         public void InstallList_WithMatchedUnmanagedDll_Throws()
         {
