@@ -145,7 +145,6 @@ namespace CKAN.GUI
         }
 
         public HashSet<ModChange> ComputeUserChangeSet(IRegistryQuerier     registry,
-                                                       GameVersionCriteria  crit,
                                                        GameInstance         instance,
                                                        DataGridViewColumn?  upgradeCol,
                                                        DataGridViewColumn?  replaceCol)
@@ -194,7 +193,8 @@ namespace CKAN.GUI
             return modChanges.Union(
                     registry.FindRemovableAutoInstalled(InstalledAfterChanges(registry, modChanges).ToArray(),
                                                         Array.Empty<CkanModule>(),
-                                                        instance.game, instance.StabilityToleranceConfig, crit)
+                                                        instance.game, instance.StabilityToleranceConfig,
+                                                        instance.VersionCriteria())
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
                             new SelectionReason.NoLongerUsed(),
