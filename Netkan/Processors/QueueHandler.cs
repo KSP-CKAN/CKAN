@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 
 using Amazon.SQS;
 using Amazon.SQS.Model;
@@ -22,6 +23,7 @@ using CKAN.Games;
 
 namespace CKAN.NetKAN.Processors
 {
+    [ExcludeFromCodeCoverage]
     public class QueueHandler
     {
         public QueueHandler(string  inputQueueName,

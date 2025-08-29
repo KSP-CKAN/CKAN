@@ -479,7 +479,6 @@ namespace Tests.CmdLine
                                                            new Repository[] { repo }))
             using (var output   = new MemoryStream())
             {
-                regMgr.registry.RepositoriesAdd(repo);
                 ICommand sut    = new List(repoData.Manager, user, output);
                 var      opts   = new ListOptions() { export = "text" };
 
@@ -578,7 +577,6 @@ namespace Tests.CmdLine
                                                            new Repository[] { repo }))
             using (var output   = new MemoryStream())
             {
-                regMgr.registry.RepositoriesAdd(repo);
                 ICommand sut    = new List(repoData.Manager, user, output);
                 var      opts   = new ListOptions() { export = "markdown" };
 
@@ -677,7 +675,6 @@ namespace Tests.CmdLine
                                                            new Repository[] { repo }))
             using (var output   = new MemoryStream())
             {
-                regMgr.registry.RepositoriesAdd(repo);
                 ICommand sut    = new List(repoData.Manager, user, output);
                 var      opts   = new ListOptions() { export = "bbcode" };
 
@@ -778,7 +775,6 @@ namespace Tests.CmdLine
                                                            new Repository[] { repo }))
             using (var output   = new MemoryStream())
             {
-                regMgr.registry.RepositoriesAdd(repo);
                 ICommand sut    = new List(repoData.Manager, user, output);
                 var      opts   = new ListOptions() { export = "csv" };
 
@@ -878,7 +874,6 @@ namespace Tests.CmdLine
                                                            new Repository[] { repo }))
             using (var output   = new MemoryStream())
             {
-                regMgr.registry.RepositoriesAdd(repo);
                 ICommand sut    = new List(repoData.Manager, user, output);
                 var      opts   = new ListOptions() { export = "tsv" };
 

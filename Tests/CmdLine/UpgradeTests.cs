@@ -70,11 +70,10 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                regMgr.registry.RepositoriesClear();
-                regMgr.registry.RepositoriesAdd(repo.repo);
                 var fromModule = regMgr.registry.GetModuleByVersion(identifier, fromVersion)!;
                 var toModule   = regMgr.registry.GetModuleByVersion(identifier, toVersion)!;
                 regMgr.registry.RegisterModule(fromModule, new List<string>(), inst.KSP, false);
@@ -610,11 +609,10 @@ namespace Tests.CmdLine
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                regMgr.registry.RepositoriesClear();
-                regMgr.registry.RepositoriesAdd(repo.repo);
 
                 // Register installed mods
                 var instMods = instModules.Select(CkanModule.FromJson)

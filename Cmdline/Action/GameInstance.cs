@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 using CommandLine.Text;
@@ -13,6 +14,7 @@ using CKAN.Games.KerbalSpaceProgram.DLC;
 
 namespace CKAN.CmdLine
 {
+    [ExcludeFromCodeCoverage]
     internal class InstanceSubOptions : VerbCommandOptions
     {
         [VerbOption("list",    HelpText = "List game instances")]

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Microsoft.Win32;
+using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -19,6 +20,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
+    [ExcludeFromCodeCoverage]
     public static class URLHandlers
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));

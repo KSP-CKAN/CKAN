@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -12,6 +13,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
+    [ExcludeFromCodeCoverage]
     public class TabController
     {
 

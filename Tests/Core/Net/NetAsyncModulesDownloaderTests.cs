@@ -44,11 +44,10 @@ namespace Tests.Core.Net
             // Give us a registry to play with.
             ksp = new DisposableKSP();
             manager = new GameInstanceManager(user, new FakeConfiguration(ksp.KSP, ksp.KSP.Name));
-            registry_manager = RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            registry_manager = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                                        repos.Values);
             registry = registry_manager.registry;
             registry.Installed().Clear();
-            // Make sure we have a registry we can use.
-            registry.RepositoriesSet(repos);
 
             // General shortcuts
             cache = manager.Cache;

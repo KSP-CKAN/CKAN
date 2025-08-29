@@ -325,23 +325,21 @@ namespace CKAN
     public class FileExistsKraken : Kraken
     {
         public FileExistsKraken(string     filename,
-                                string?    reason         = null,
                                 Exception? innerException = null)
-            : base(reason, innerException)
+            : base(null, innerException)
         {
             this.filename = filename;
         }
 
         public override string Message =>
-            base.Message
-            ?? (installingModule == null
-                    ? string.Format(Properties.Resources.KrakenFileExistsWithoutInstalling,
-                                    filename)
-                    : owningModule == null
-                        ? string.Format(Properties.Resources.KrakenFileExistsWithoutOwner,
-                                        filename, installingModule)
-                        : string.Format(Properties.Resources.KrakenFileExistsWithOwner,
-                                        filename, installingModule, owningModule.Module));
+            installingModule == null
+                ? string.Format(Properties.Resources.KrakenFileExistsWithoutInstalling,
+                                filename)
+                : owningModule == null
+                    ? string.Format(Properties.Resources.KrakenFileExistsWithoutOwner,
+                                    filename, installingModule)
+                    : string.Format(Properties.Resources.KrakenFileExistsWithOwner,
+                                    filename, installingModule, owningModule.Module);
 
         public string filename;
 

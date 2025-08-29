@@ -17,7 +17,6 @@ using Tests.Data;
 
 using CKAN;
 using CKAN.IO;
-using CKAN.Versioning;
 using CKAN.GUI;
 
 namespace Tests.GUI
@@ -28,8 +27,6 @@ namespace Tests.GUI
     [TestFixture]
     public class ModListTests
     {
-        private static readonly GameVersionCriteria crit = new GameVersionCriteria(null);
-
         [Test]
         public void IsVisible_WithAllAndNoNameFilter_ReturnsTrueForCompatible()
         {
@@ -484,7 +481,7 @@ namespace Tests.GUI
                 {
                     mod.SelectedMod = mod.LatestCompatibleMod;
                 }
-                var changeset = modlist.ComputeUserChangeSet(registry, instance.KSP.VersionCriteria(), instance.KSP, null, null);
+                var changeset = modlist.ComputeUserChangeSet(registry, instance.KSP, null, null);
 
                 // Assert
                 CollectionAssert.AreEquivalent(new string[]
@@ -500,7 +497,7 @@ namespace Tests.GUI
         }
 
         [Test]
-        public void ComputeFullChangeSetFromUserChangeSet_WithEmptyList_HasEmptyChangeSet()
+        public void ComputeUserChangeSet_WithEmptyList_HasEmptyChangeSet()
         {
             var user = new NullUser();
             using (var repoData = new TemporaryRepositoryData(user))
@@ -509,7 +506,60 @@ namespace Tests.GUI
             {
                 var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
                                        config, new GUIConfiguration());
-                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, tidy.KSP, null, null), Is.Empty);
+                Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), tidy.KSP, null, null), Is.Empty);
+            }
+        }
+
+        [Test]
+        public void ComputeFullChangeSetFromUserChangeSet_B9_GetsAllDependencies()
+        {
+            // Arrange
+            var user      = new NullUser();
+            var repo      = new Repository("test", "https://github.com/");
+            var guiConfig = new GUIConfiguration();
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var repoData = new TemporaryRepositoryData(
+                                      user,
+                                      new Dictionary<Repository, RepositoryData>
+                                      {
+                                          {
+                                              repo,
+                                              RepositoryData.FromJson(TestData.TestRepository(), null)!
+                                          },
+                                      }))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo }))
+            {
+                var registry  = regMgr.registry;
+                var labels    = ModuleLabelList.GetDefaultLabels();
+                var mods      = ModList.GetGUIMods(registry, repoData.Manager, inst.KSP, labels, guiConfig)
+                                       .ToArray();
+                var modlist   = new ModList(mods, inst.KSP, labels, config, guiConfig);
+
+                // Act
+                var b9         = mods.First(m => m.Identifier == "B9");
+                b9.SelectedMod = b9.LatestCompatibleMod;
+                var changes    = modlist.ComputeUserChangeSet(registry, inst.KSP, null, null);
+                var full       = modlist.ComputeFullChangeSetFromUserChangeSet(registry, changes,
+                                                                               inst.KSP.game,
+                                                                               inst.KSP.StabilityToleranceConfig,
+                                                                               inst.KSP.VersionCriteria());
+
+                // Assert
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "B9",
+                                                   "CrossFeedEnabler",
+                                                   "FirespitterCore",
+                                                   "KineTechAnimation",
+                                                   "KlockheedMartian-Gimbal",
+                                                   "ModuleManager",
+                                                   "RasterPropMonitor-Core",
+                                                   "ResGen",
+                                                   "VirginKalactic-NodeToggle",
+                                               },
+                                               full.Item1.Select(ch => ch.Mod.identifier).Order());
             }
         }
 
@@ -558,12 +608,11 @@ namespace Tests.GUI
             using (var instance = new DisposableKSP())
             using (var config   = new FakeConfiguration(instance.KSP, instance.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager))
+            using (var regMgr   = RegistryManager.Instance(instance.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(instance.KSP);
                 var registry = regMgr.registry;
-                registry.RepositoriesClear();
-                registry.RepositoriesAdd(repo.repo);
                 // A module with a ksp_version of "any" to repro our issue
                 var anyVersionModule = registry.GetModuleByVersion("DogeCoinFlag", "1.01")!;
                 Assert.IsNotNull(anyVersionModule, "DogeCoinFlag 1.01 should exist");
@@ -624,7 +673,7 @@ namespace Tests.GUI
                     {
                         // Install the "other" module
                         installer.InstallList(
-                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), crit, inst2.KSP, null, null)
+                            modList.ComputeUserChangeSet(Registry.Empty(repoData.Manager), inst2.KSP, null, null)
                                    .Select(change => change.Mod)
                                    .ToList(),
                             new RelationshipResolverOptions(inst2.KSP.StabilityToleranceConfig),

@@ -2150,9 +2150,7 @@ namespace CKAN.GUI
                 ? new HashSet<ModChange>()
                 : mainModList?.ComputeUserChangeSet(
                       RegistryManager.Instance(currentInstance, repoData).registry,
-                      currentInstance.VersionCriteria(),
-                      currentInstance,
-                      UpdateCol, ReplaceCol)
+                      currentInstance, UpdateCol, ReplaceCol)
                   ?? new HashSet<ModChange>();
 
         [ForbidGUICalls]
@@ -2172,8 +2170,7 @@ namespace CKAN.GUI
             List<ModChange>? full_change_set = null;
             Dictionary<GUIMod, string>? new_conflicts = null;
 
-            var gameVersion = inst.VersionCriteria();
-            var user_change_set = mainModList.ComputeUserChangeSet(registry, gameVersion, inst, UpdateCol, ReplaceCol);
+            var user_change_set = mainModList.ComputeUserChangeSet(registry, inst, UpdateCol, ReplaceCol);
             try
             {
                 // Set the target versions of upgrading mods based on what's actually allowed
@@ -2186,6 +2183,7 @@ namespace CKAN.GUI
                        gmod.SelectedMod = ch.targetMod;
                     }
                 }
+                var gameVersion = inst.VersionCriteria();
                 var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.game,
                                                                               inst.StabilityToleranceConfig, gameVersion);
                 full_change_set = tuple.Item1.ToList();

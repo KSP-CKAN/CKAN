@@ -409,6 +409,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                 "-p GUI/Dialogs",
                                 "-p GUI/Controls",
                                 "-p GUI/Main",
+                                "-a ExcludeFromCodeCoverage",
                                 $"-i {testDir}",
                                 $"-o {instrumentedDir}",
                                 "--save");

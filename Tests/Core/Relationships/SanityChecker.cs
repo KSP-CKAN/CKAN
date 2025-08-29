@@ -41,11 +41,10 @@ namespace Tests.Core.Relationships
             var user = new NullUser();
             repoData = new TemporaryRepositoryData(user, repos.Values);
 
-            manager = RegistryManager.Instance(ksp.KSP, repoData.Manager);
+            manager = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                                               repos.Values);
             registry = manager.registry;
             registry.Installed().Clear();
-
-            registry.RepositoriesSet(repos);
         }
 
         [OneTimeTearDown]

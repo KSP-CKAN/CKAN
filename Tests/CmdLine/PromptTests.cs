@@ -142,7 +142,8 @@ namespace Tests.CmdLine
             {
                 { repo, RepositoryData.FromJson(TestData.TestRepository(), null)! },
             }))
-            using (var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager))
+            using (var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                         new Repository[] { repo }))
             {
                 // Arrange
                 regMgr.registry.RepositoriesAdd(repo);
