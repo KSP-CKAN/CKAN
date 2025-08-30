@@ -3,7 +3,7 @@ using NUnit.Framework;
 using CKAN;
 using CKAN.Extensions;
 
-namespace Tests.NetKAN.Extensions
+namespace Tests.Core.Extensions
 {
     [TestFixture]
     public sealed class EnumExtensionsTests

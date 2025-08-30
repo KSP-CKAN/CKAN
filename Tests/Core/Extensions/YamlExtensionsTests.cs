@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 using CKAN.Extensions;
 
-namespace Tests.NetKAN.Extensions
+namespace Tests.Core.Extensions
 {
     [TestFixture]
     public sealed class YamlExtensionsTests
