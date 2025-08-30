@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -9,14 +11,12 @@ namespace CKAN
     /// </summary>
     public class JsonOldResourceUrlConverter : JsonConverter
     {
-        public override bool CanConvert(Type object_type)
-        {
-            // We *only* want to be triggered for types that have explicitly
-            // set an attribute in their class saying they can be converted.
-            // By returning false here, we declare we're not interested in participating
-            // in any other conversions.
-            return false;
-        }
+        // We *only* want to be triggered for types that have explicitly
+        // set an attribute in their class saying they can be converted.
+        // By returning false here, we declare we're not interested in participating
+        // in any other conversions.
+        [ExcludeFromCodeCoverage]
+        public override bool CanConvert(Type object_type) => false;
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
@@ -32,8 +32,10 @@ namespace CKAN
             return token.ToObject<Uri>();
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

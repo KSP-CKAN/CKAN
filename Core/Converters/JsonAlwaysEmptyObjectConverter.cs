@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -25,6 +26,7 @@ namespace CKAN
         }
 
         // Only convert when we're an explicit attribute
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type object_type) => false;
     }
 }

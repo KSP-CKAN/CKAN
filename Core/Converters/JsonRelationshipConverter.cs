@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,11 +9,9 @@ namespace CKAN
 {
     public class JsonRelationshipConverter : JsonConverter
     {
-        public override bool CanConvert(Type object_type)
-        {
-            // Only convert when we're an explicit attribute
-            return false;
-        }
+        // Only convert when we're an explicit attribute
+        [ExcludeFromCodeCoverage]
+        public override bool CanConvert(Type object_type) => false;
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
@@ -54,8 +53,10 @@ namespace CKAN
             return null;
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

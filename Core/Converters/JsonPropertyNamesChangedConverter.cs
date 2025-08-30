@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -18,6 +19,7 @@ namespace CKAN
         /// <summary>
         /// We don't want to make any changes during serialization
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace CKAN
         /// <param name="writer">The object writing JSON to disk</param>
         /// <param name="value">A value to be written for this class</param>
         /// <param name="serializer">Generates output objects from tokens</param>
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
@@ -36,6 +39,7 @@ namespace CKAN
         /// </summary>
         /// <param name="objectType">Type where this class been used as a JsonConverter</param>
         /// <returns>true if it's a class, false otherwise</returns>
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type objectType) => objectType.GetTypeInfo().IsClass;
 
         /// <summary>

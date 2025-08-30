@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
@@ -40,8 +41,10 @@ namespace CKAN
         /// <summary>
         /// Use default serializer for writing
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
@@ -56,10 +59,8 @@ namespace CKAN
         /// <returns>
         /// false
         /// </returns>
-        public override bool CanConvert(Type objectType)
-        {
-            return false;
-        }
+        [ExcludeFromCodeCoverage]
+        public override bool CanConvert(Type objectType) => false;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(JsonLeakySortedDictionaryConverter<K, V>));
     }

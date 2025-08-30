@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,8 +45,11 @@ namespace CKAN.NetKAN.Model
                    _           => throw new Kraken("Unrecognized `x_netkan_version_edit` value"),
                };
 
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type objectType) => false;
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

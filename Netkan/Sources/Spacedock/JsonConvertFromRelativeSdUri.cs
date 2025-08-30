@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
@@ -16,11 +17,13 @@ namespace CKAN.NetKAN.Sources.Spacedock
                 ? ExpandPath(s)
                 : null;
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type objectType)
         {
             throw new NotImplementedException();
