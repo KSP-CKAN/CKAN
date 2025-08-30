@@ -14,23 +14,28 @@ namespace CKAN.GUI
 {
     public enum GUIModChangeType
     {
-        [Display(Description  = "ChangeTypeNone",
+        [Display(Name         = "ChangeTypeNone",
+                 Description  = "ChangeTypeNone",
                  ResourceType = typeof(Properties.Resources))]
         None    = 0,
 
-        [Display(Description  = "ChangeTypeInstall",
+        [Display(Name         = "ChangeTypeInstall",
+                 Description  = "ChangeTypeInstall",
                  ResourceType = typeof(Properties.Resources))]
         Install = 1,
 
-        [Display(Description  = "ChangeTypeRemove",
+        [Display(Name         = "ChangeTypeRemove",
+                 Description  = "ChangeTypeRemove",
                  ResourceType = typeof(Properties.Resources))]
         Remove  = 2,
 
-        [Display(Description  = "ChangeTypeUpdate",
+        [Display(Name         = "ChangeTypeUpdate",
+                 Description  = "ChangeTypeUpdate",
                  ResourceType = typeof(Properties.Resources))]
         Update  = 3,
 
-        [Display(Description  = "ChangeTypeReplace",
+        [Display(Name         = "ChangeTypeReplace",
+                 Description  = "ChangeTypeReplace",
                  ResourceType = typeof(Properties.Resources))]
         Replace = 4,
     }
