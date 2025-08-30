@@ -10,7 +10,6 @@ namespace Tests.NetKAN.Validators
     {
         [Test,
             TestCase(null),
-            TestCase("#/ckan/curse/12345"),
             TestCase("#/ckan/github/AGoodModder/AGoodMod"),
             TestCase("#/ckan/http/https://mysite.org/AGoodMod.zip"),
             TestCase("#/ckan/ksp-avc/https://mysite.org/AGoodMod.version"),

@@ -17,7 +17,6 @@ namespace Tests.NetKAN.Transformers
         [TestCase("#/ckan/github/foo/bar")]
         [TestCase("#/ckan/netkan/http://awesomemod.example/awesomemod.netkan")]
         [TestCase("#/ckan/spacedock/1")]
-        [TestCase("#/ckan/curse/1")]
         [TestCase("#/ckan/foo")]
         public void Transform_NonMatching_NoChanges(string kref)
         {
