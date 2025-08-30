@@ -793,6 +793,8 @@ namespace Tests.Data
                 ""host2"": ""token2"",
                 ""host3"": ""token3""
               },
+              ""Language"": ""en-US"",
+              ""DevBuilds"": ""true"",
               ""AutoStartInstance"": ""asi"",
               ""DownloadCacheDir"": ""dci"",
               ""CacheSizeLimit"": 2,

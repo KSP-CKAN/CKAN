@@ -74,6 +74,8 @@ namespace Tests.Core.Configuration
             Assert.AreEqual("dci", reg.DownloadCacheDir);
             Assert.AreEqual(2, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
+            Assert.AreEqual("en-US", reg.Language);
+            Assert.AreEqual(true, reg.DevBuilds);
 
             File.Delete(tmpFile);
         }
