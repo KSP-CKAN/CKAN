@@ -4,7 +4,8 @@ using CKAN.IO;
 
 namespace CKAN.CmdLine
 {
-    public class Deduplicate : ICommand
+    // Not an ICommand because it doesn't need a game instance
+    public class Deduplicate
     {
         public Deduplicate(GameInstanceManager mgr, RepositoryDataManager repoData, IUser user)
         {
@@ -13,7 +14,7 @@ namespace CKAN.CmdLine
             this.user     = user;
         }
 
-        public int RunCommand(CKAN.GameInstance instance, object rawOptions)
+        public int RunCommand()
         {
             log.Debug("Deduplicating...");
             user.RaiseMessage(Properties.Resources.ScanningForDuplicates);

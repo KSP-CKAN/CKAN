@@ -277,7 +277,7 @@ namespace CKAN.CmdLine
                         return Clean(manager.Cache);
 
                     case "dedup":
-                        return new Deduplicate(manager, repoData, user).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return new Deduplicate(manager, repoData, user).RunCommand();
 
                     case "compare":
                         return (new Compare(user)).RunCommand(cmdline.options);
