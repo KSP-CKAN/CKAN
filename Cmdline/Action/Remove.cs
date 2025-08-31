@@ -67,11 +67,11 @@ namespace CKAN.CmdLine
             {
                 log.Debug("Removing all mods");
                 // Add the list of installed modules to the list that should be uninstalled
-                options.modules?.AddRange(
-                    regMgr.registry.InstalledModules
-                        .Where(mod => !mod.Module.IsDLC)
-                        .Select(mod => mod.identifier)
-                );
+                options.modules = regMgr.registry
+                                        .InstalledModules
+                                        .Where(mod => !mod.Module.IsDLC)
+                                        .Select(mod => mod.identifier)
+                                        .ToList();
             }
 
             if (options.modules != null
