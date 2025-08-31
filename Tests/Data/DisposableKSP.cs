@@ -4,6 +4,7 @@ using System.IO;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.Data
@@ -25,10 +26,15 @@ namespace Tests.Data
         /// Use .KSP to access the KSP object itself.
         /// </summary>
         public DisposableKSP()
+            : this("disposable", new KerbalSpaceProgram())
+        {
+        }
+
+        public DisposableKSP(string name, IGame game)
         {
             _disposableDir = TestData.NewTempDir();
             Utilities.CopyDirectory(_goodKsp, _disposableDir, Array.Empty<string>(), Array.Empty<string>());
-            KSP = new GameInstance(new KerbalSpaceProgram(), _disposableDir, "disposable", new NullUser());
+            KSP = new GameInstance(game, _disposableDir, name, new NullUser());
             Logging.Initialize();
         }
 
