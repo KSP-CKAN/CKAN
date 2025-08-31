@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 
@@ -31,9 +32,7 @@ namespace CKAN
         /// <returns>
         /// false
         /// </returns>
-        public override bool CanConvert(Type objectType)
-        {
-            return false;
-        }
+        [ExcludeFromCodeCoverage]
+        public override bool CanConvert(Type objectType) => false;
     }
 }

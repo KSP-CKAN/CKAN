@@ -6,7 +6,6 @@ using CKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
-using CKAN.NetKAN.Sources.Curse;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Sources.Gitlab;
 using CKAN.NetKAN.Sources.Jenkins;
@@ -39,7 +38,6 @@ namespace CKAN.NetKAN.Transformers
                 new StagingTransformer(game),
                 new MetaNetkanTransformer(http, ghApi),
                 new SpacedockTransformer(new SpacedockApi(http), ghApi),
-                new CurseTransformer(new CurseApi(http, userAgent), userAgent),
                 new GithubTransformer(ghApi, prerelease),
                 new GitlabTransformer(glApi),
                 new SourceForgeTransformer(sfApi),

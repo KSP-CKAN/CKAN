@@ -46,10 +46,6 @@
                     "description": "Indicates that data should be fetched from SpaceDock"
                 },
                 {
-                    "pattern": "^#/ckan/curse/[A-Za-z0-9_-]+$",
-                    "description": "Deprecated format, no longer supported"
-                },
-                {
                     "pattern": "^#/ckan/github/[A-Za-z0-9_-]+/[A-Za-z0-9_-]+(/asset_match/.+|/version_from_asset/.+)?$",
                     "description": "Indicates that data should be fetched from the GitHub user and repo provided"
                 },

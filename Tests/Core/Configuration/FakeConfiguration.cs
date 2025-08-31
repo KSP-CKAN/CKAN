@@ -32,7 +32,7 @@ namespace Tests.Core.Configuration
         /// <summary>
         /// Initialize the fake registry
         /// </summary>
-        /// <param name="instances">List of name/path pairs for the instances</param>
+        /// <param name="instances">List of name/path/game tuples for the instances</param>
         /// <param name="auto_start_instance">The auto start instance to use</param>
         public FakeConfiguration(List<Tuple<string, string, string>> instances,
                                  string?                             auto_start_instance,

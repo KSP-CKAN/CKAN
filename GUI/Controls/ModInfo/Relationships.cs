@@ -20,27 +20,33 @@ namespace CKAN.GUI
 {
     public enum RelationshipType
     {
-        [Display(Description  = "RelationshipTypeProvides",
+        [Display(Name         = "RelationshipTypeProvides",
+                 Description  = "RelationshipTypeProvides",
                  ResourceType = typeof(Properties.Resources))]
         Provides   = 0,
 
-        [Display(Description  = "RelationshipTypeDepends",
+        [Display(Name         = "RelationshipTypeDepends",
+                 Description  = "RelationshipTypeDepends",
                  ResourceType = typeof(Properties.Resources))]
         Depends    = 1,
 
-        [Display(Description  = "RelationshipTypeRecommends",
+        [Display(Name         = "RelationshipTypeRecommends",
+                 Description  = "RelationshipTypeRecommends",
                  ResourceType = typeof(Properties.Resources))]
         Recommends = 2,
 
-        [Display(Description  = "RelationshipTypeSuggests",
+        [Display(Name         = "RelationshipTypeSuggests",
+                 Description  = "RelationshipTypeSuggests",
                  ResourceType = typeof(Properties.Resources))]
         Suggests   = 3,
 
-        [Display(Description  = "RelationshipTypeSupports",
+        [Display(Name         = "RelationshipTypeSupports",
+                 Description  = "RelationshipTypeSupports",
                  ResourceType = typeof(Properties.Resources))]
         Supports   = 4,
 
-        [Display(Description  = "RelationshipTypeConflicts",
+        [Display(Name         = "RelationshipTypeConflicts",
+                 Description  = "RelationshipTypeConflicts",
                  ResourceType = typeof(Properties.Resources))]
         Conflicts  = 5,
     }

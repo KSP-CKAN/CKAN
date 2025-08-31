@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
@@ -16,11 +17,9 @@ namespace CKAN.Avc
         private static readonly ILog Log = LogManager.GetLogger(typeof (JsonAvcToGameVersion));
         private const int AvcWildcard = -1;
 
-        public override bool CanConvert(Type objectType)
-        {
-            // We trust you only to call this on things we can convert, okay?
-            return true;
-        }
+        // We trust you only to call this on things we can convert, okay?
+        [ExcludeFromCodeCoverage]
+        public override bool CanConvert(Type objectType) => true;
 
         public override object? ReadJson(JsonReader      reader,
                                          Type?           objectType,
@@ -90,8 +89,10 @@ namespace CKAN.Avc
             return result;
         }
 
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

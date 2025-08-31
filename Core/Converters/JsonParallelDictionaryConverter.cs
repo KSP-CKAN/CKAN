@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,13 +38,16 @@ namespace CKAN
                                         serializer.Context.Context as IProgress<int>)
                           .ToDictionary();
 
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();
         }
 
         // Only convert when we're an explicit attribute
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type object_type) => false;
     }
 }

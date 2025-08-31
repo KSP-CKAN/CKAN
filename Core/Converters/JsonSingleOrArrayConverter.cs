@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -45,6 +46,7 @@ namespace CKAN
         /// <returns>
         /// false
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type object_type) => false;
     }
 }

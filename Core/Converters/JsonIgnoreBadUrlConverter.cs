@@ -1,6 +1,7 @@
 using System;
-using Newtonsoft.Json;
+using System.Diagnostics.CodeAnalysis;
 
+using Newtonsoft.Json;
 using log4net;
 
 namespace CKAN
@@ -37,17 +38,17 @@ namespace CKAN
         /// <summary>
         /// Opt out of converting any types, except those we've been specifically applied to.
         /// </summary>
-        public override bool CanConvert(Type object_type)
-        {
-            return false;
-        }
+        [ExcludeFromCodeCoverage]
+        public override bool CanConvert(Type object_type) => false;
 
         /// <summary>
         /// Opt out of writing anything, otherwise things go horribly wrong when we try
         /// to write to the registry.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         public override bool CanWrite => false;
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

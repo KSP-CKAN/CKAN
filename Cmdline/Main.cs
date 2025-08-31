@@ -177,6 +177,7 @@ namespace CKAN.CmdLine
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public static int AfterHelp(IUser user)
         {
             // Our help screen will already be shown. Let's add some extra data.
@@ -276,7 +277,7 @@ namespace CKAN.CmdLine
                         return Clean(manager.Cache);
 
                     case "dedup":
-                        return new Deduplicate(manager, repoData, user).RunCommand(GetGameInstance(manager), cmdline.options);
+                        return new Deduplicate(manager, repoData, user).RunCommand();
 
                     case "compare":
                         return (new Compare(user)).RunCommand(cmdline.options);
@@ -296,6 +297,7 @@ namespace CKAN.CmdLine
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private static int printMissingInstanceError(IUser user)
         {
             user.RaiseMessage(Properties.Resources.MainMissingInstance);
@@ -379,6 +381,7 @@ namespace CKAN.CmdLine
         }
     }
 
+    [ExcludeFromCodeCoverage]
     public class NoGameInstanceKraken : Kraken
     {
         public NoGameInstanceKraken() { }

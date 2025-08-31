@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Newtonsoft.Json;
 
@@ -38,11 +39,13 @@ namespace CKAN.SpaceWarp
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
             => (reader.Value as string)?.Replace("*", "any");
 
+        [ExcludeFromCodeCoverage]
         public override bool CanConvert(Type objectType)
         {
             throw new NotImplementedException();
         }
 
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
             throw new NotImplementedException();

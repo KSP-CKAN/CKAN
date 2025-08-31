@@ -14,7 +14,6 @@ namespace CKAN.NetKAN.Validators
             switch (metadata.Kref?.Source)
             {
                 case null:
-                case "curse":
                 case "github":
                 case "gitlab":
                 case "http":
