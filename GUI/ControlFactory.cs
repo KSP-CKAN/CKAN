@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.GUI
 {
@@ -7,6 +8,7 @@ namespace CKAN.GUI
     /// This class ensures that all controls are created from the same thread.
     /// This is a mono limitation described here - http://www.mono-project.com/docs/faq/winforms/
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ControlFactory
     {
         private readonly int m_MainThreadID;

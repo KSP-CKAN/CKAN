@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CKAN.GUI
 {
@@ -10,6 +11,7 @@ namespace CKAN.GUI
         public IntPtr res_class;
     }
 
+    [ExcludeFromCodeCoverage]
     public static class X11
     {
         /// <summary>

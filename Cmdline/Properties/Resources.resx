@@ -337,10 +337,6 @@ Press tab to auto-complete commands and modules.
   <data name="UpgradeFailed" xml:space="preserve"><value>Upgrade failed: {0}"</value></data>
   <data name="UpgradeAlreadyUpToDate" xml:space="preserve"><value>Module {0} is already up to date</value></data>
   <data name="UpgradeAllUpToDate" xml:space="preserve"><value>All modules are up to date</value></data>
-  <data name="ScanNotSaved" xml:space="preserve"><value>The repo has not been saved</value></data>
-  <data name="ScanPreliminaryInconsistent" xml:space="preserve"><value>Preliminary scanning shows that the install is in a inconsistent state.
-Use ckan.exe scan for more details
-Proceeding with {0} in case it fixes it.</value></data>
   <data name="FilterListGlobalHeader" xml:space="preserve"><value>Global filters for {0}:</value></data>
   <data name="FilterListInstanceHeader" xml:space="preserve"><value>Instance filters for {0}:</value></data>
   <data name="FilterAddGlobalDuplicateError" xml:space="preserve"><value>Global filters already set: {0}</value></data>

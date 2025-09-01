@@ -11,23 +11,11 @@ namespace CKAN
     /// </summary>
     public static class ServiceLocator
     {
-        private static IContainer? _container;
         public static IContainer Container
-        {
             // NB: Totally not thread-safe.
-            get
-            {
-                _container ??= Init();
-                return _container;
-            }
+            => _container ??= Init();
 
-            #pragma warning disable IDE0027
-            set
-            {
-                _container = value;
-            }
-            #pragma warning restore IDE0027
-        }
+        private static IContainer? _container;
 
         private static IContainer Init()
         {

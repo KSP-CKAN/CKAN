@@ -647,14 +647,6 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Aktualizacja przerwana: {0}</value>
   </data>
-  <data name="ScanNotSaved" xml:space="preserve">
-    <value>Repozytorium nie zostało zapisane</value>
-  </data>
-  <data name="ScanPreliminaryInconsistent" xml:space="preserve">
-    <value>Wstępne skanowanie pokazuje, że instalacja jest w niespójnym stanie.
-Użyj skanu ckan.exe w celu uzyskania więcej szczegółów
-Kontynuuj z {0} na wypadek gdyby problem się naprawił.</value>
-  </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
     <value>Filtry globalne:</value>
   </data>

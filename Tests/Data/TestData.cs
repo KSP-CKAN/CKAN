@@ -28,44 +28,44 @@ namespace Tests.Data
         /// Returns the full path to DogeCoinFlag-1.01.zip
         /// </summary>
         public static string DogeCoinFlagZip()
-            => Path.Combine(DataDir(), "DogeCoinFlag-1.01.zip");
+            => DataDir("DogeCoinFlag-1.01.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-avc.zip
         /// </summary>
         public static string DogeCoinFlagAvcZip()
-            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-avc.zip");
+            => DataDir("DogeCoinFlag-1.01-avc.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-avc.zip
         /// </summary>
         public static string DogeCoinFlagImportableZip()
-            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-importable.zip");
+            => DataDir("DogeCoinFlag-1.01-importable.zip");
 
         /// <summary>
         /// Returns DogeCoinFlag.zip, with extra files inside.
         /// Great for testing filters.
         /// </summary>
         public static string DogeCoinFlagZipWithExtras()
-            => Path.Combine(DataDir(), "DogeCoinFlag-extra-files.zip");
+            => DataDir("DogeCoinFlag-extra-files.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-corrupt.zip
         /// </summary>
         public static string DogeCoinFlagZipCorrupt()
-            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-corrupt.zip");
+            => DataDir("DogeCoinFlag-1.01-corrupt.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-zip-bomb.zip
         /// </summary>
         public static string DogeCoinFlagZipBombZip()
-            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-zip-bomb.zip");
+            => DataDir("DogeCoinFlag-1.01-zip-bomb.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-zip-slip.zip
         /// </summary>
         public static string DogeCoinFlagZipSlipZip()
-            => Path.Combine(DataDir(), "DogeCoinFlag-1.01-zip-slip.zip");
+            => DataDir("DogeCoinFlag-1.01-zip-slip.zip");
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This doesn't contain any bugs.
@@ -446,7 +446,7 @@ namespace Tests.Data
         /// </summary>
         /// <returns>The coin plugin.</returns>
         public static string DogeCoinPluginZip()
-            => Path.Combine(DataDir(), "DogeCoinPlugin.zip");
+            => DataDir("DogeCoinPlugin.zip");
 
         public static string DogeCoinPluginAddonFerram()
             => @"
@@ -485,7 +485,7 @@ namespace Tests.Data
         /// </summary>
         /// <returns>The coin plugin.</returns>
         public static string DogeCoinPluginAddonFerramZip()
-            => Path.Combine(DataDir(), "DogeCoinPluginAddonFerram.zip");
+            => DataDir("DogeCoinPluginAddonFerram.zip");
 
         /// <summary>
         /// Taurus HCV pod, which seems to cause weird KS errors when the unescaped
@@ -543,14 +543,14 @@ namespace Tests.Data
             => new Uri(DataDir("CKAN-meta-badkan.zip"));
 
         public static string good_ksp_dir()
-            => Path.Combine(DataDir(), "KSP/KSP-0.25");
+            => DataDir("KSP/KSP-0.25");
 
         public static IEnumerable<string> bad_ksp_dirs()
         {
             var dirs = new List<string>
             {
-                Path.Combine(DataDir(), "KSP/bad-KSP"),
-                Path.Combine(DataDir(), "KSP/missing-gamedata")
+                DataDir("KSP/bad-KSP"),
+                DataDir("KSP/missing-gamedata")
             };
 
             return dirs;
@@ -694,17 +694,17 @@ namespace Tests.Data
             => CkanModule.FromJson(kOS_014_epoch());
 
         public static string KS_CustomAsteroids_string()
-            => File.ReadAllText(Path.Combine(DataDir(), "KS/CustomAsteroids.json"));
+            => File.ReadAllText(DataDir("KS/CustomAsteroids.json"));
 
         public static CkanModule FireSpitterModule()
-            => CkanModule.FromFile(Path.Combine(DataDir(), "Firespitter-6.3.5.ckan"));
+            => CkanModule.FromFile(DataDir("Firespitter-6.3.5.ckan"));
 
         public static string KspAvcJson()
-            => File.ReadAllText(Path.Combine(DataDir(), "ksp-avc.version"));
+            => File.ReadAllText(DataDir("ksp-avc.version"));
 
 
         public static string KspAvcJsonOneLineVersion()
-            => File.ReadAllText(Path.Combine(DataDir(), "ksp-avc-one-line.version"));
+            => File.ReadAllText(DataDir("ksp-avc-one-line.version"));
 
         public static CkanModule ModuleManagerModule()
             => CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
@@ -717,6 +717,15 @@ namespace Tests.Data
 
         public static string MissionZip()
             => DataDir("MissionTest-1.0.zip");
+
+        public static string BurnController()
+            => File.ReadAllText(DataDir("BurnController-0.8.1.ckan"));
+
+        public static CkanModule BurnControllerModule()
+            => CkanModule.FromFile(DataDir("BurnController-0.8.1.ckan"));
+
+        public static string BurnControllerZip()
+            => DataDir("BurnController-0.8.1.zip");
 
         public static string TestRepository()
             => DataDir("repository.json");

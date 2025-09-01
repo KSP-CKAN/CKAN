@@ -728,14 +728,6 @@ Appuyez sur tabulation pour compléter les commandes et les modules.
   <data name="UpgradeAllUpToDate" xml:space="preserve">
     <value>Tous les modules sont à jour</value>
   </data>
-  <data name="ScanNotSaved" xml:space="preserve">
-    <value>Le répertoire n'a pas été sauvegardé</value>
-  </data>
-  <data name="ScanPreliminaryInconsistent" xml:space="preserve">
-    <value>L'analyse préliminaire montre que l'installation est dans un état incohérent.
-Utilisez ckan.exe scan pour plus de détails
-Exécution de {0} au cas où cela réglerait le problème.</value>
-  </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
     <value>Filtres globaux pour {0} :</value>
   </data>

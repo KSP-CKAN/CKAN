@@ -244,11 +244,11 @@ namespace CKAN.CmdLine
                         return (new Available(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "install":
-                        Scan(GetGameInstance(manager), user, repoData, cmdline.action);
+                        Scan(GetGameInstance(manager), repoData);
                         return (new Install(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "scan":
-                        return Scan(GetGameInstance(manager), user, repoData);
+                        return Scan(GetGameInstance(manager), repoData);
 
                     case "list":
                         return (new List(repoData, user, Console.OpenStandardOutput())).RunCommand(GetGameInstance(manager), cmdline.options);
@@ -257,11 +257,11 @@ namespace CKAN.CmdLine
                         return (new Show(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "replace":
-                        Scan(GetGameInstance(manager), user, repoData, cmdline.action);
+                        Scan(GetGameInstance(manager), repoData);
                         return (new Replace(manager, repoData, user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
 
                     case "upgrade":
-                        Scan(GetGameInstance(manager), user, repoData, cmdline.action);
+                        Scan(GetGameInstance(manager), repoData);
                         return (new Upgrade(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
 
                     case "search":
@@ -348,30 +348,10 @@ namespace CKAN.CmdLine
         /// <param name="next_command">Changes the output message if set.</param>
         /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
         private static int Scan(CKAN.GameInstance     inst,
-                                IUser                 user,
-                                RepositoryDataManager repoData,
-                                string?               next_command = null)
+                                RepositoryDataManager repoData)
         {
-            try
-            {
-                RegistryManager.Instance(inst, repoData).ScanUnmanagedFiles();
-                return Exit.OK;
-            }
-            catch (InconsistentKraken kraken)
-            {
-
-                if (next_command == null)
-                {
-                    user.RaiseError("{0}", kraken.Message);
-                    user.RaiseError(Properties.Resources.ScanNotSaved);
-                }
-                else
-                {
-                    user.RaiseMessage(Properties.Resources.ScanPreliminaryInconsistent, next_command);
-                }
-
-                return Exit.ERROR;
-            }
+            RegistryManager.Instance(inst, repoData).ScanUnmanagedFiles();
+            return Exit.OK;
         }
 
         private static int Clean(NetModuleCache? cache)

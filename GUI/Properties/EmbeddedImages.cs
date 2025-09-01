@@ -63,7 +63,7 @@ namespace CKAN.GUI
 
         private static Bitmap load(string what)
             => Assembly.GetExecutingAssembly()
-                        .GetManifestResourceStream($"CKAN.GUI.Resources.{what}.png")
+                       .GetManifestResourceStream($"CKAN.GUI.Resources.{what}.png")
                    is Stream s
                        ? new Bitmap(s)
                        : EmptyBitmap;

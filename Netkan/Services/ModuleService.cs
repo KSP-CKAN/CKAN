@@ -249,9 +249,9 @@ namespace CKAN.NetKAN.Services
             => json == null ? null : JsonConvert.DeserializeObject<SpaceWarpInfo>(json, ignoreJsonErrors);
 
         public SpaceWarpInfo? GetInternalSpaceWarpInfo(CkanModule   module,
-                                               ZipFile      zip,
-                                               GameInstance inst,
-                                               string?      internalFilePath = null)
+                                                       ZipFile      zip,
+                                                       GameInstance inst,
+                                                       string?      internalFilePath = null)
             => GetInternalSpaceWarpInfos(module, zip, inst, internalFilePath).FirstOrDefault();
 
         private IEnumerable<SpaceWarpInfo> GetInternalSpaceWarpInfos(CkanModule   module,

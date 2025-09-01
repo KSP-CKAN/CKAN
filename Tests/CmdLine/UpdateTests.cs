@@ -24,7 +24,7 @@ namespace Tests.CmdLine
             {
                 // Not an ICommand because it can update CKAN itself
                 var sut  = new Update(repoData.Manager, user, manager);
-                var opts = new UpdateOptions();
+                var opts = new UpdateOptions() { list_changes = true };
 
                 // Act
                 sut.RunCommand(opts);
@@ -38,7 +38,48 @@ namespace Tests.CmdLine
                                           {
                                               "Refreshing game version data",
                                               $"Downloading {TestData.TestKANTarGz()} ...",
-                                              "Updated information on 37 modules."
+                                              "Updated information on 37 modules.",
+                                              "Found 37 new modules, 0 removed modules, and 0 updated modules.",
+                                              "New modules [Name (CKAN identifier)]:",
+
+                                              "Advanced Fly-By-Wire (ksp-advanced-flybywire)",
+                                              "Advanced Jet Engine (AJE) (AJE)",
+                                              "AMEG (AMEG)",
+                                              "Community Resource Pack (CommunityResourcePack)",
+                                              "CrewFiles (CrewFiles)",
+                                              "Cross Feed Enabler (CrossFeedEnabler)",
+                                              "Custom Asteroids (CustomAsteroids)",
+                                              "Custom Biomes (CustomBiomes)",
+                                              "Custom Biomes (Kerbal data) (CustomBiomesKerbal)",
+                                              "Custom Biomes (Real Solar System data) (CustomBiomesRSS)",
+                                              "DangIt! (DangIt)",
+                                              "Deadly Reentry Continued (DeadlyReentry)",
+                                              "Dogecoin Core Plugin (DogeCoinPlugin)",
+                                              "Dogecoin Flag (DogeCoinFlag)",
+                                              "Ferram Aerospace Research (FerramAerospaceResearch)",
+                                              "Firespitter (Firespitter)",
+                                              "Firespitter Core (FirespitterCore)",
+                                              "HotRockets! Particle FX Replacement (HotRockets)",
+                                              "kOS: Scriptable Autopilot System (kOS)",
+                                              "Magic Smoke Industries Infernal Robotics (InfernalRobotics)",
+                                              "Module Manager (ModuleManager)",
+                                              "ModuleRCSFX (ModuleRCSFX)",
+                                              "Open Resource Standard Fork (ORSX)",
+                                              "Professor Phineas Kerbenstein's wonderous vertical propulsion emporium. (Kerb-fu)",
+                                              "QuickRevert (QuickRevert)",
+                                              "Real Solar System (RealSolarSystem)",
+                                              "Real Solar System Textures - 2048 x 1024 (RSSTextures2048)",
+                                              "Real Solar System Textures - 4096 x 2048 (RSSTextures4096)",
+                                              "Real Solar System Textures - 8192 x 4096 (RSSTextures8192)",
+                                              "RealChute Parachute Systems (RealChute)",
+                                              "RemoteTech (RemoteTech)",
+                                              "Retro-Future Planes (RetroFuture)",
+                                              "Simulate, Revert & Launch (SRL)",
+                                              "TechManager (TechManager)",
+                                              "Toolbar (Toolbar)",
+                                              "TweakScale (TweakScale)",
+                                              "Umbra Space Industries Tools (USITools)",
+                                              "",
                                           },
                                           user.RaisedMessages);
             }
