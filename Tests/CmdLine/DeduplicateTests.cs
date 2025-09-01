@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -11,6 +10,7 @@ using Tests.Data;
 using Tests.Core.Configuration;
 using CKAN.IO;
 using CKAN.Games.KerbalSpaceProgram;
+using Tests.Core.IO;
 
 namespace Tests.CmdLine
 {
@@ -18,7 +18,7 @@ namespace Tests.CmdLine
     public class DeduplicateTests
     {
         [Test]
-        public void RunCommand__()
+        public void RunCommand_InstalledMissionInTwoInstances_Deduplicates()
         {
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
@@ -39,9 +39,7 @@ namespace Tests.CmdLine
                                       },
                                       null, cacheDir.Directory.FullName))
             using (var manager  = new GameInstanceManager(user, config))
-            using (var repo     = new TemporaryRepository(
-                                      TestData.DogeCoinFlag_101(),
-                                      TestData.DogeCoinPlugin()))
+            using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(new NullUser(), repo.repo))
             using (var regMgr1  = RegistryManager.Instance(inst1.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
@@ -61,30 +59,19 @@ namespace Tests.CmdLine
                 // Act
                 installer1.InstallList(modules, opts, regMgr1, ref possibleConfigOnlyDirs1);
                 installer2.InstallList(modules, opts, regMgr2, ref possibleConfigOnlyDirs2);
-                var allPaths = AbsoluteInstalledPaths(inst1.KSP, regMgr1.registry)
-                                   .Concat(AbsoluteInstalledPaths(inst2.KSP, regMgr2.registry))
+                var allPaths = ModuleInstallerTests.AbsoluteInstalledPaths(inst1.KSP, regMgr1.registry)
+                                   .Concat(ModuleInstallerTests.AbsoluteInstalledPaths(inst2.KSP, regMgr2.registry))
                                    .Order()
                                    .ToArray();
-                Assert.AreEqual(0, MultiLinkedFileCount(allPaths));
+                Assert.AreEqual(0, ModuleInstallerTests.MultiLinkedFileCount(allPaths));
                 sut.RunCommand();
 
                 // Assert
                 CollectionAssert.IsEmpty(user.RaisedErrors);
                 // There are 3 files >128 KiB in this mod, each installed twice
-                Assert.AreEqual(6, MultiLinkedFileCount(allPaths));
+                Assert.AreEqual(6, ModuleInstallerTests.MultiLinkedFileCount(allPaths));
             }
         }
 
-        private static IEnumerable<string> AbsoluteInstalledPaths(CKAN.GameInstance inst,
-                                                                  Registry          registry)
-            => registry.InstalledFileInfo()
-                       .Select(ifi => ifi.relPath)
-                       .Select(inst.ToAbsoluteGameDir)
-                       // Exclude directories (they have lots of links on Unix)
-                       .Where(File.Exists);
-
-        private static int MultiLinkedFileCount(IEnumerable<string> absPaths)
-            => HardLink.GetLinkCounts(absPaths)
-                       .Count(links => links > 1);
     }
 }

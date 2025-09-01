@@ -1583,6 +1583,74 @@ namespace Tests.Core.IO
                                 "Managed file being installed must match identifier");
         }
 
+        [Test]
+        public void InstallList_MissionInTwoInstances_Deduplicates()
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst1    = new DisposableKSP("inst1", new KerbalSpaceProgram()))
+            using (var inst2    = new DisposableKSP("inst2", new KerbalSpaceProgram()))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var config   = new FakeConfiguration(
+                                      new List<Tuple<string, string, string>>
+                                      {
+                                          new Tuple<string, string, string>(
+                                              inst1.KSP.Name,
+                                              inst1.KSP.GameDir(),
+                                              inst1.KSP.game.ShortName),
+                                          new Tuple<string, string, string>(
+                                              inst2.KSP.Name,
+                                              inst2.KSP.GameDir(),
+                                              inst2.KSP.game.ShortName),
+                                      },
+                                      null, cacheDir.Directory.FullName))
+            using (var manager  = new GameInstanceManager(user, config))
+            using (var repo     = new TemporaryRepository())
+            using (var repoData = new TemporaryRepositoryData(new NullUser(), repo.repo))
+            using (var regMgr1  = RegistryManager.Instance(inst1.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            using (var regMgr2  = RegistryManager.Instance(inst2.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var installer1 = new ModuleInstaller(inst1.KSP, manager.Cache!, config, new NullUser());
+                var sut = new ModuleInstaller(inst2.KSP, manager.Cache!, config, new NullUser());
+                HashSet<string>? possibleConfigOnlyDirs1 = null;
+                HashSet<string>? possibleConfigOnlyDirs2 = null;
+                var opts = RelationshipResolverOptions.DependsOnlyOpts(inst1.KSP.StabilityToleranceConfig);
+                var modules = new List<CkanModule> { TestData.MissionModule() };
+                manager.Cache!.Store(TestData.MissionModule(),
+                                     TestData.MissionZip(), null);
+                installer1.InstallList(modules, opts, regMgr1, ref possibleConfigOnlyDirs1);
+
+                // Act
+                var deduper = new InstalledFilesDeduplicator(new GameInstance[] { inst1.KSP, inst2.KSP },
+                                                             repoData.Manager);
+                sut.InstallList(modules, opts, regMgr2, ref possibleConfigOnlyDirs2,
+                                deduper);
+                var allPaths = AbsoluteInstalledPaths(inst1.KSP, regMgr1.registry)
+                                   .Concat(AbsoluteInstalledPaths(inst2.KSP, regMgr2.registry))
+                                   .Order()
+                                   .ToArray();
+
+                // Assert
+                CollectionAssert.IsEmpty(user.RaisedErrors);
+                // There are 3 files >128 KiB in this mod, each installed twice
+                Assert.AreEqual(6, MultiLinkedFileCount(allPaths));
+            }
+        }
+
+        public static IEnumerable<string> AbsoluteInstalledPaths(GameInstance  inst,
+                                                                  CKAN.Registry registry)
+            => registry.InstalledFileInfo()
+                       .Select(ifi => ifi.relPath)
+                       .Select(inst.ToAbsoluteGameDir)
+                       // Exclude directories (they have lots of links on Unix)
+                       .Where(File.Exists);
+
+        public static int MultiLinkedFileCount(IEnumerable<string> absPaths)
+            => HardLink.GetLinkCounts(absPaths)
+                       .Count(links => links > 1);
+
         private void installTestPlugin(string unmanaged, string moduleJson, string zipPath)
         {
             // Arrange
