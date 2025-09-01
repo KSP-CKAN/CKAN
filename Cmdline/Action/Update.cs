@@ -164,7 +164,7 @@ namespace CKAN.CmdLine
 
             user.RaiseMessage("{0}", message);
 
-            foreach (CkanModule module in modules)
+            foreach (CkanModule module in modules.OrderBy(m => m.name))
             {
                 user.RaiseMessage("{0} ({1})", module.name, module.identifier);
             }
