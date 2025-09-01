@@ -677,14 +677,6 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Aggiornamento interrotto: {0}</value>
   </data>
-  <data name="ScanNotSaved" xml:space="preserve">
-    <value>La repo non è stata salvata</value>
-  </data>
-  <data name="ScanPreliminaryInconsistent" xml:space="preserve">
-    <value>La scansione preliminare mostra che l'installazione è in uno stato incoerente.
-Usa la scansione ckan.exe per maggiori dettagli.
-Procedere con {0} nel caso in cui si risolva il problema.</value>
-  </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
     <value>Filtri Globali:</value>
   </data>

@@ -302,8 +302,4 @@
   <data name="UpgradePleaseWait" xml:space="preserve"><value>Обновление CKAN, пожалуйста, подождите...</value></data>
   <data name="UpgradeAlreadyHaveLatest" xml:space="preserve"><value>Ваша версия уже является последней</value></data>
   <data name="UpgradeAborted" xml:space="preserve"><value>Обновление отменено: {0}</value></data>
-  <data name="ScanNotSaved" xml:space="preserve"><value>Репозиторий не сохранён</value></data>
-  <data name="ScanPreliminaryInconsistent" xml:space="preserve"><value>Предварительное сканирование показывает, что сборка находится в несогласованном состоянии.
-Используйте ckan.exe для сканирования.
-Продолжение использования {0}.</value></data>
 </root>
