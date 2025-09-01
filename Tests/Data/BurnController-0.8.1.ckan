@@ -1,0 +1,46 @@
+{
+    "spec_version": "v1.34",
+    "identifier": "BurnController",
+    "name": "Burn Controller",
+    "abstract": "Lets you set up engine burns.",
+    "author": "JohnsterSpaceProgram",
+    "version": "0.8.1",
+    "ksp_version": "0.1.1",
+    "license": "MIT",
+    "resources": {
+        "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/215587-burn-controller-081/",
+        "spacedock": "https://spacedock.info/mod/3330/Burn%20Controller",
+        "repository": "https://github.com/JohnsterSpaceProgramOfficial/BurnController",
+        "bugtracker": "https://github.com/JohnsterSpaceProgramOfficial/BurnController/issues",
+        "remote-swinfo": "https://github.com/JohnsterSpaceProgramOfficial/BurnController/raw/main/Burn%20Controller/swinfo.json",
+        "x_screenshot": "https://spacedock.info/content/JohnsterSpaceProgram_25967/Burn_Controller/Burn_Controller-1679592494.png"
+    },
+    "tags": [
+        "plugin",
+        "control"
+    ],
+    "depends": [
+        {
+            "name": "SpaceWarp"
+        }
+    ],
+    "install": [
+        {
+            "find": "BurnController",
+            "install_to": "BepInEx/plugins"
+        }
+    ],
+    "download": [
+        "https://github.com/JohnsterSpaceProgramOfficial/BurnController/releases/download/v0.8.1/BurnController-0.8.1.zip",
+        "https://spacedock.info/mod/3330/Burn%20Controller/download/0.8.1"
+    ],
+    "download_size": 10697,
+    "download_hash": {
+        "sha1": "0391C5909E0C6BE0BD9913D435443615C4061DD2",
+        "sha256": "6CB5393686227CE891D5B03CD7291124EF9AAB853155AB7E2F9C46E2CB7265AF"
+    },
+    "download_content_type": "application/zip",
+    "install_size": 21444,
+    "release_date": "2023-03-23T17:30:56.733327+00:00",
+    "x_generated_by": "netkan"
+}

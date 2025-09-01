@@ -718,6 +718,15 @@ namespace Tests.Data
         public static string MissionZip()
             => DataDir("MissionTest-1.0.zip");
 
+        public static string BurnController()
+            => File.ReadAllText(DataDir("BurnController-0.8.1.ckan"));
+
+        public static CkanModule BurnControllerModule()
+            => CkanModule.FromFile(DataDir("BurnController-0.8.1.ckan"));
+
+        public static string BurnControllerZip()
+            => DataDir("BurnController-0.8.1.zip");
+
         public static string TestRepository()
             => DataDir("repository.json");
 
