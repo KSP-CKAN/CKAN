@@ -1594,6 +1594,9 @@ namespace Tests.Core.Relationships
             return incoming.ToString();
         }
 
+        public static IEnumerable<string> MergeWithDefaults(params string[] jsons)
+            => jsons.Select(MergeWithDefaults);
+
         // Unimportant required fields that we don't want to duplicate
         private static readonly JObject moduleDefaults = JObject.Parse(
             @"{
