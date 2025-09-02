@@ -360,8 +360,8 @@ namespace CKAN.IO
 
                 try
                 {
-                    var dll = registry.DllPath(module.identifier);
-                    if (dll is not null && !string.IsNullOrEmpty(dll))
+                    if (registry.DllPath(module.identifier)
+                        is string { Length: > 0 } dll)
                     {
                         // Find where we're installing identifier.optionalversion.dll
                         // (file name might not be an exact match with manually installed)
@@ -1067,15 +1067,15 @@ namespace CKAN.IO
             }
         }
 
-        internal static void GroupFilesByRemovable(string       relRoot,
-                                                   Registry     registry,
-                                                   string[]     alreadyRemoving,
-                                                   IGame        game,
-                                                   string[]     relPaths,
-                                                   out string[] removable,
-                                                   out string[] notRemovable)
+        internal static void GroupFilesByRemovable(string                      relRoot,
+                                                   Registry                    registry,
+                                                   IReadOnlyCollection<string> alreadyRemoving,
+                                                   IGame                       game,
+                                                   IReadOnlyCollection<string> relPaths,
+                                                   out string[]                removable,
+                                                   out string[]                notRemovable)
         {
-            if (relPaths.Length < 1)
+            if (relPaths.Count < 1)
             {
                 removable    = Array.Empty<string>();
                 notRemovable = Array.Empty<string>();
@@ -1096,8 +1096,8 @@ namespace CKAN.IO
                 .ToDictionary(grp => grp.Key,
                               grp => grp.OrderByDescending(f => f.Length)
                                         .ToArray());
-            removable    = contents.TryGetValue(true,  out string[]? val1) ? val1 : Array.Empty<string>();
-            notRemovable = contents.TryGetValue(false, out string[]? val2) ? val2 : Array.Empty<string>();
+            removable    = contents.GetValueOrDefault(true)  ?? Array.Empty<string>();
+            notRemovable = contents.GetValueOrDefault(false) ?? Array.Empty<string>();
             log.DebugFormat("Got removable: {0}",    string.Join(", ", removable));
             log.DebugFormat("Got notRemovable: {0}", string.Join(", ", notRemovable));
         }
