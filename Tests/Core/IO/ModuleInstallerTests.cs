@@ -511,7 +511,7 @@ namespace Tests.Core.IO
             // Create a new disposable KSP instance to run the test on.
             using (var ksp      = new DisposableKSP())
             using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
-            using (var manager  = new GameInstanceManager(new NullUser(), config))
+            using (var manager  = new GameInstanceManager(nullUser, config))
             using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
@@ -847,11 +847,10 @@ namespace Tests.Core.IO
                 string[] dlcIdents)
         {
             // Arrange
-            var user = new NullUser();
             var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
             using (var repo     = new TemporaryRepository(availableModules.Select(Relationships.RelationshipResolverTests.MergeWithDefaults)
                                                                           .ToArray()))
-            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var inst     = new DisposableKSP())
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -897,11 +896,10 @@ namespace Tests.Core.IO
                 string[] dlcIdents)
         {
             // Arrange
-            var user = new NullUser();
             var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
             using (var repo     = new TemporaryRepository(availableModules.Select(Relationships.RelationshipResolverTests.MergeWithDefaults)
                                                                           .ToArray()))
-            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var inst     = new DisposableKSP())
             {
                 var registry = new CKAN.Registry(repoData.Manager, repo.repo);
@@ -1478,7 +1476,6 @@ namespace Tests.Core.IO
         public void InstallList_DLC_Throws()
         {
             // Arrange
-            var user = new NullUser();
             using (var repo     = new TemporaryRepository(
                                       @"{
                                           ""spec_version"": 1,
@@ -1497,7 +1494,7 @@ namespace Tests.Core.IO
                 var module    = registry.LatestAvailable("Fake-DLC",
                                                          inst.KSP.StabilityToleranceConfig,
                                                          inst.KSP.VersionCriteria())!;
-                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, user);
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
 
                 // Act / Assert
                 Assert.Throws<ModuleIsDLCKraken>(() =>
@@ -1517,7 +1514,6 @@ namespace Tests.Core.IO
         public void InstallList_IncompleteInCache_Completes()
         {
             // Arrange
-            var user = new NullUser();
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
@@ -1529,7 +1525,7 @@ namespace Tests.Core.IO
                                                            new Repository[] { repo.repo }))
             {
                 var registry  = regMgr.registry;
-                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, user);
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
 
                 // Redirect the mod's download
                 var module      = registry.LatestAvailable("DogeCoinFlag",
@@ -1606,14 +1602,14 @@ namespace Tests.Core.IO
                                       null, cacheDir.Directory.FullName))
             using (var manager  = new GameInstanceManager(user, config))
             using (var repo     = new TemporaryRepository())
-            using (var repoData = new TemporaryRepositoryData(new NullUser(), repo.repo))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var regMgr1  = RegistryManager.Instance(inst1.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             using (var regMgr2  = RegistryManager.Instance(inst2.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                var installer1 = new ModuleInstaller(inst1.KSP, manager.Cache!, config, new NullUser());
-                var sut = new ModuleInstaller(inst2.KSP, manager.Cache!, config, new NullUser());
+                var installer1 = new ModuleInstaller(inst1.KSP, manager.Cache!, config, user);
+                var sut = new ModuleInstaller(inst2.KSP, manager.Cache!, config, user);
                 HashSet<string>? possibleConfigOnlyDirs1 = null;
                 HashSet<string>? possibleConfigOnlyDirs2 = null;
                 var opts = RelationshipResolverOptions.DependsOnlyOpts(inst1.KSP.StabilityToleranceConfig);
@@ -1640,7 +1636,7 @@ namespace Tests.Core.IO
         }
 
         public static IEnumerable<string> AbsoluteInstalledPaths(GameInstance  inst,
-                                                                  CKAN.Registry registry)
+                                                                 CKAN.Registry registry)
             => registry.InstalledFileInfo()
                        .Select(ifi => ifi.relPath)
                        .Select(inst.ToAbsoluteGameDir)
