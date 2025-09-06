@@ -165,7 +165,7 @@ namespace Tests.Data
         public static string DogeCoinFlag_101()
             => @"
                 {
-                    ""spec_version"": 1,
+                    ""spec_version"": ""v1.10"",
                     ""identifier"": ""DogeCoinFlag"",
                     ""install"": [
                         {
@@ -409,7 +409,7 @@ namespace Tests.Data
         public static string DogeCoinPlugin()
             => @"
                 {
-                    ""spec_version"": ""v1.2"",
+                    ""spec_version"": ""v1.10"",
                     ""identifier"": ""DogeCoinPlugin"",
                     ""install"": [
                         {
@@ -747,6 +747,12 @@ namespace Tests.Data
 
         public static string TestRegistryVersion999()
             => DataDir("registry-version-999.json");
+
+        public static string TestNetkanPath()
+            => DataDir("DogeCoinFlag.netkan");
+
+        public static string TestNetkanContents()
+            => File.ReadAllText(TestNetkanPath());
 
         // Where's my mkdtemp? Instead we'll make a random file, delete it, and
         // fill its place with a directory.
