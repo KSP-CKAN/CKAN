@@ -958,9 +958,8 @@ namespace CKAN.GUI
                 if (incomp.Count != 0 && CurrentInstance.Version() is GameVersion gv)
                 {
                     // Warn that it might not be safe to run game with incompatible modules installed
-                    string incompatDescrip = incomp
-                        .Select(m => $"{m.Module} ({m.Module.CompatibleGameVersions(CurrentInstance.game)})")
-                        .Aggregate((a, b) => $"{a}{Environment.NewLine}{b}");
+                    string incompatDescrip = string.Join(Environment.NewLine,
+                                                         incomp.Select(m => $"{m.Module} ({m.Module.CompatibleGameVersions(CurrentInstance.game)})"));
                     var result = SuppressableYesNoDialog(
                         string.Format(Properties.Resources.MainLaunchWithIncompatible,
                                       incompatDescrip),

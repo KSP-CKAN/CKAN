@@ -2109,9 +2109,7 @@ namespace CKAN.GUI
             if (Conflicts != null && Conflicts.Count != 0)
             {
                 // Ask if they want to resolve conflicts
-                string confDescrip = Conflicts
-                    .Select(kvp => kvp.Value)
-                    .Aggregate((a, b) => $"{a}, {b}");
+                string confDescrip = string.Join(", ", Conflicts.Select(kvp => kvp.Value));
                 if (!Main.Instance?.YesNoDialog(string.Format(Properties.Resources.MainQuitWithConflicts, confDescrip),
                     Properties.Resources.MainQuit,
                     Properties.Resources.MainGoBack) ?? false)
@@ -2122,11 +2120,9 @@ namespace CKAN.GUI
             else if (ChangeSet?.Any() ?? false)
             {
                 // Ask if they want to discard the change set
-                string changeDescrip = ChangeSet
-                    .GroupBy(ch => ch.ChangeType, ch => ch.Mod.name)
-                    .Select(grp => $"{grp.Key}: "
-                        + grp.Aggregate((a, b) => $"{a}, {b}"))
-                    .Aggregate((a, b) => $"{a}\r\n{b}");
+                string changeDescrip = string.Join(Environment.NewLine,
+                                                   ChangeSet.GroupBy(ch => ch.ChangeType, ch => ch.Mod.name)
+                                                            .Select(grp => $"{grp.Key}: " + string.Join(", ", grp)));
                 if (!Main.Instance?.YesNoDialog(string.Format(Properties.Resources.MainQuitWithUnappliedChanges, changeDescrip),
                     Properties.Resources.MainQuit,
                     Properties.Resources.MainGoBack) ?? false)

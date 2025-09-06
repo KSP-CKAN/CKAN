@@ -10,9 +10,7 @@ namespace CKAN.Extensions
     public static class YamlExtensions
     {
         public static YamlMappingNode[] Parse(string input)
-        {
-            return Parse(new StringReader(input));
-        }
+            => Parse(new StringReader(input));
 
         public static YamlMappingNode[] Parse(TextReader input)
         {

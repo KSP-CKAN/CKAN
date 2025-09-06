@@ -360,8 +360,8 @@ namespace CKAN.IO
 
                 try
                 {
-                    var dll = registry.DllPath(module.identifier);
-                    if (dll is not null && !string.IsNullOrEmpty(dll))
+                    if (registry.DllPath(module.identifier)
+                        is string { Length: > 0 } dll)
                     {
                         // Find where we're installing identifier.optionalversion.dll
                         // (file name might not be an exact match with manually installed)
@@ -393,22 +393,21 @@ namespace CKAN.IO
                     // Look for overwritable files if session is interactive
                     if (!User.Headless)
                     {
-                        var conflicting = FindConflictingFiles(zipfile, files, registry).Memoize();
-                        if (conflicting.Any())
+                        if (FindConflictingFiles(zipfile, files, registry).ToArray()
+                            is (InstallableFile file, bool same)[] { Length: > 0 } conflicting)
                         {
-                            var fileMsg = conflicting
-                                .OrderBy(c => c.Value)
-                                .Aggregate("", (a, b) =>
-                                    $"{a}\r\n- {instance.ToRelativeGameDir(b.Key.destination)}  ({(b.Value ? Properties.Resources.ModuleInstallerFileSame : Properties.Resources.ModuleInstallerFileDifferent)})");
-                            if (User.RaiseYesNoDialog(string.Format(
-                                Properties.Resources.ModuleInstallerOverwrite, module.name, fileMsg)))
+                            var fileMsg = string.Join(Environment.NewLine,
+                                                      conflicting.OrderBy(tuple => tuple.same)
+                                                                 .Select(tuple => $"- {instance.ToRelativeGameDir(tuple.file.destination)}  ({(tuple.same ? Properties.Resources.ModuleInstallerFileSame : Properties.Resources.ModuleInstallerFileDifferent)})"));
+                            if (User.RaiseYesNoDialog(string.Format(Properties.Resources.ModuleInstallerOverwrite,
+                                                                    module.name, fileMsg)))
                             {
-                                DeleteConflictingFiles(conflicting.Select(f => f.Key));
+                                DeleteConflictingFiles(conflicting.Select(tuple => tuple.file));
                             }
                             else
                             {
-                                throw new CancelledActionKraken(string.Format(
-                                    Properties.Resources.ModuleInstallerOverwriteCancelled, module.name));
+                                throw new CancelledActionKraken(string.Format(Properties.Resources.ModuleInstallerOverwriteCancelled,
+                                                                              module.name));
                             }
                         }
                     }
@@ -467,27 +466,25 @@ namespace CKAN.IO
         /// <returns>
         /// List of pairs: Key = file, Value = true if identical, false if different
         /// </returns>
-        private IEnumerable<KeyValuePair<InstallableFile, bool>> FindConflictingFiles(ZipFile zip, IEnumerable<InstallableFile> files, Registry registry)
-        {
-            foreach (InstallableFile file in files)
-            {
-                if (!file.source.IsDirectory
-                    && File.Exists(file.destination)
-                    && registry.FileOwner(instance.ToRelativeGameDir(file.destination)) == null)
-                {
-                    log.DebugFormat("Comparing {0}", file.destination);
-                    using (Stream zipStream = zip.GetInputStream(file.source))
-                    using (FileStream curFile = new FileStream(file.destination, FileMode.Open, FileAccess.Read))
+        private IEnumerable<(InstallableFile file, bool same)> FindConflictingFiles(ZipFile                      zip,
+                                                                                    IEnumerable<InstallableFile> files,
+                                                                                    Registry                     registry)
+            => files.Where(file => !file.source.IsDirectory
+                                   && File.Exists(file.destination)
+                                   && registry.FileOwner(instance.ToRelativeGameDir(file.destination)) == null)
+                    .Select(file =>
                     {
-                        yield return new KeyValuePair<InstallableFile, bool>(
-                            file,
-                            file.source.Size == curFile.Length
-                                && StreamsEqual(zipStream, curFile)
-                        );
-                    }
-                }
-            }
-        }
+                        log.DebugFormat("Comparing {0}", file.destination);
+                        using (Stream     zipStream = zip.GetInputStream(file.source))
+                        using (FileStream curFile   = new FileStream(file.destination,
+                                                                     FileMode.Open,
+                                                                     FileAccess.Read))
+                        {
+                            return (file,
+                                    same: file.source.Size == curFile.Length
+                                          && StreamsEqual(zipStream, curFile));
+                        }
+                    });
 
         /// <summary>
         /// Compare the contents of two streams
@@ -745,10 +742,7 @@ namespace CKAN.IO
                         progress?.Report(0);
                         StreamUtils.Copy(zipStream, writer, buffer,
                                          // This doesn't fire at all if the interval never elapses
-                                         (sender, e) =>
-                                         {
-                                             progress?.Report(e.Processed);
-                                         },
+                                         (sender, e) => progress?.Report(e.Processed),
                                          UnzipProgressInterval,
                                          entry, "InstallFile");
                     }
@@ -1073,15 +1067,15 @@ namespace CKAN.IO
             }
         }
 
-        internal static void GroupFilesByRemovable(string       relRoot,
-                                                   Registry     registry,
-                                                   string[]     alreadyRemoving,
-                                                   IGame        game,
-                                                   string[]     relPaths,
-                                                   out string[] removable,
-                                                   out string[] notRemovable)
+        internal static void GroupFilesByRemovable(string                      relRoot,
+                                                   Registry                    registry,
+                                                   IReadOnlyCollection<string> alreadyRemoving,
+                                                   IGame                       game,
+                                                   IReadOnlyCollection<string> relPaths,
+                                                   out string[]                removable,
+                                                   out string[]                notRemovable)
         {
-            if (relPaths.Length < 1)
+            if (relPaths.Count < 1)
             {
                 removable    = Array.Empty<string>();
                 notRemovable = Array.Empty<string>();
@@ -1102,8 +1096,8 @@ namespace CKAN.IO
                 .ToDictionary(grp => grp.Key,
                               grp => grp.OrderByDescending(f => f.Length)
                                         .ToArray());
-            removable    = contents.TryGetValue(true,  out string[]? val1) ? val1 : Array.Empty<string>();
-            notRemovable = contents.TryGetValue(false, out string[]? val2) ? val2 : Array.Empty<string>();
+            removable    = contents.GetValueOrDefault(true)  ?? Array.Empty<string>();
+            notRemovable = contents.GetValueOrDefault(false) ?? Array.Empty<string>();
             log.DebugFormat("Got removable: {0}",    string.Join(", ", removable));
             log.DebugFormat("Got notRemovable: {0}", string.Join(", ", notRemovable));
         }

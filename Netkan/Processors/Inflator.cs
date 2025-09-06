@@ -25,17 +25,46 @@ namespace CKAN.NetKAN.Processors
                         string? userAgent,
                         bool?   prerelease,
                         IGame   game)
+            : this(overwriteCache, githubToken, gitlabToken,
+                   userAgent, prerelease, game,
+                   FindCache(ServiceLocator.Container.Resolve<IConfiguration>(),
+                              cacheDir))
+        {
+        }
+
+        internal Inflator(bool         overwriteCache,
+                          string?      githubToken,
+                          string?      gitlabToken,
+                          string?      userAgent,
+                          bool?        prerelease,
+                          IGame        game,
+                          NetFileCache cache)
+            : this(githubToken, gitlabToken,
+                   userAgent, prerelease, game,
+                   cache,
+                   new CachingHttpService(cache, overwriteCache, userAgent),
+                   new ModuleService(game),
+                   new FileService(cache))
+        {
+        }
+
+        internal Inflator(string?        githubToken,
+                          string?        gitlabToken,
+                          string?        userAgent,
+                          bool?          prerelease,
+                          IGame          game,
+                          NetFileCache   cache,
+                          IHttpService   http,
+                          IModuleService moduleService,
+                          IFileService   fileService)
         {
             log.Debug("Initializing inflator");
-            cache = FindCache(ServiceLocator.Container.Resolve<IConfiguration>(),
-                              cacheDir);
-
-            IModuleService moduleService = new ModuleService(game);
-            IFileService   fileService   = new FileService(cache);
-            http          = new CachingHttpService(cache, overwriteCache, userAgent);
+            this.cache    = cache;
+            this.http     = http;
             ckanValidator = new CkanValidator(http, moduleService, game, githubToken);
             transformer   = new NetkanTransformer(http, fileService, moduleService,
-                                                  githubToken, gitlabToken, userAgent, prerelease, game, netkanValidator);
+                                                  githubToken, gitlabToken, userAgent,
+                                                  prerelease, game, netkanValidator);
         }
 
         internal IEnumerable<Metadata> Inflate(string           filename,
