@@ -68,42 +68,49 @@ namespace CKAN.GUI
 
         public void PopulateSearch(ModSearch? search)
         {
-            FilterByNameTextBox.Text        = search?.Name
-                                              ?? "";
-            FilterByAuthorTextBox.Text      = search?.Authors.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByDescriptionTextBox.Text = search?.Description
-                                              ?? "";
-            FilterByLicenseTextBox.Text     = search?.Licenses.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByLanguageTextBox.Text    = search?.Localizations.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByDependsTextBox.Text     = search?.DependsOn.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByRecommendsTextBox.Text  = search?.Recommends.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterBySuggestsTextBox.Text    = search?.Suggests.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByConflictsTextBox.Text   = search?.ConflictsWith.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterBySupportsTextBox.Text    = search?.Supports.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByTagsTextBox.Text        = search?.TagNames.Aggregate("", CombinePieces)
-                                              ?? "";
-            FilterByLabelsTextBox.Text      = search?.LabelNames.Aggregate("", CombinePieces)
-                                              ?? "";
-
-            CompatibleToggle.Value      = search?.Compatible;
-            InstalledToggle.Value       = search?.Installed;
-            CachedToggle.Value          = search?.Cached;
-            NewlyCompatibleToggle.Value = search?.NewlyCompatible;
-            UpgradeableToggle.Value     = search?.Upgradeable;
-            ReplaceableToggle.Value     = search?.Replaceable;
+            if (search == null)
+            {
+                FilterByNameTextBox.Text        = "";
+                FilterByAuthorTextBox.Text      = "";
+                FilterByDescriptionTextBox.Text = "";
+                FilterByLicenseTextBox.Text     = "";
+                FilterByLanguageTextBox.Text    = "";
+                FilterByDependsTextBox.Text     = "";
+                FilterByRecommendsTextBox.Text  = "";
+                FilterBySuggestsTextBox.Text    = "";
+                FilterByConflictsTextBox.Text   = "";
+                FilterBySupportsTextBox.Text    = "";
+                FilterByTagsTextBox.Text        = "";
+                FilterByLabelsTextBox.Text      = "";
+                CompatibleToggle.Value          = null;
+                InstalledToggle.Value           = null;
+                CachedToggle.Value              = null;
+                NewlyCompatibleToggle.Value     = null;
+                UpgradeableToggle.Value         = null;
+                ReplaceableToggle.Value         = null;
+            }
+            else
+            {
+                FilterByNameTextBox.Text        = search.Name;
+                FilterByAuthorTextBox.Text      = string.Join(" ", search.Authors);
+                FilterByDescriptionTextBox.Text = string.Join(" ", search.Description);
+                FilterByLicenseTextBox.Text     = string.Join(" ", search.Licenses);
+                FilterByLanguageTextBox.Text    = string.Join(" ", search.Localizations);
+                FilterByDependsTextBox.Text     = string.Join(" ", search.DependsOn);
+                FilterByRecommendsTextBox.Text  = string.Join(" ", search.Recommends);
+                FilterBySuggestsTextBox.Text    = string.Join(" ", search.Suggests);
+                FilterByConflictsTextBox.Text   = string.Join(" ", search.ConflictsWith);
+                FilterBySupportsTextBox.Text    = string.Join(" ", search.Supports);
+                FilterByTagsTextBox.Text        = string.Join(" ", search.TagNames);
+                FilterByLabelsTextBox.Text      = string.Join(" ", search.LabelNames);
+                CompatibleToggle.Value          = search.Compatible;
+                InstalledToggle.Value           = search.Installed;
+                CachedToggle.Value              = search.Cached;
+                NewlyCompatibleToggle.Value     = search.NewlyCompatible;
+                UpgradeableToggle.Value         = search.Upgradeable;
+                ReplaceableToggle.Value         = search.Replaceable;
+            }
         }
-
-        private static string CombinePieces(string joined, string piece)
-            => string.IsNullOrEmpty(joined) ? piece
-                                            : $"{joined} {piece}";
 
         /// <summary>
         /// Override special settings to make this control behave like a dropdown.
