@@ -6,11 +6,9 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
-
+using CKAN.IO;
 using Tests.Core.Configuration;
 using Tests.Data;
-
-using CKAN.IO;
 
 namespace Tests.Core.IO
 {
