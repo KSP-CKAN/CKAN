@@ -1425,10 +1425,13 @@ namespace CKAN.GUI
                    is { Length: > 0 } and var modules)
             {
                 UseWaitCursor = true;
+                var reg = RegistryManager.Instance(currentInstance, repoData).registry;
                 manager.Cache.Purge(
-                    modules.SelectMany(m => RegistryManager.Instance(currentInstance, repoData)
-                                                           .registry
-                                                           .AvailableByIdentifier(m.Identifier))
+                    modules.SelectMany(m => Enumerable.Repeat(m.ToModule(), 1)
+                                                      .Concat(Utilities.DefaultIfThrows(
+                                                                  () => reg.AvailableByIdentifier(m.Identifier))
+                                                              ?? Enumerable.Empty<CkanModule>())
+                                                      .Distinct())
                            .ToArray());
                 UseWaitCursor = false;
             }
