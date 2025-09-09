@@ -367,6 +367,8 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                  .Replace("category!=", "TestCategory!=",
                                           StringComparison.CurrentCultureIgnoreCase)
                                  .Replace("namespace=", "FullyQualifiedName~",
+                                          StringComparison.CurrentCultureIgnoreCase)
+                                 .Replace("name=", "Name~",
                                           StringComparison.CurrentCultureIgnoreCase);
         var testFile = instrumentedDir.CombineWithFilePath("CKAN.Tests.dll");
 
