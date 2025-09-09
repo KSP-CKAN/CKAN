@@ -997,9 +997,8 @@ namespace CKAN.ConsoleUI {
         public static void toggleContains(HashSet<string> list, string identifier)
         {
             if (list != null && !string.IsNullOrEmpty(identifier)) {
-                if (list.Contains(identifier)) {
-                    list.Remove(identifier);
-                } else {
+                if (!list.Remove(identifier))
+                {
                     list.Add(identifier);
                 }
             }
@@ -1013,9 +1012,8 @@ namespace CKAN.ConsoleUI {
         public static void toggleContains(HashSet<CkanModule> list, CkanModule mod)
         {
             if (list != null && mod != null) {
-                if (list.Contains(mod)) {
-                    list.Remove(mod);
-                } else {
+                if (!list.Remove(mod))
+                {
                     list.Add(mod);
                 }
             }

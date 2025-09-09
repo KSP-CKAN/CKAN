@@ -150,11 +150,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             } else {
                 if (fileList.Selection is FileInfo fi)
                 {
-                    if (chosenFiles.Contains(fi))
-                    {
-                        chosenFiles.Remove(fi);
-                    }
-                    else
+                    if (!chosenFiles.Remove(fi))
                     {
                         chosenFiles.Add(fi);
                     }

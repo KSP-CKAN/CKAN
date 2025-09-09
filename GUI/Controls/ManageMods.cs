@@ -1971,11 +1971,7 @@ namespace CKAN.GUI
 
         public void TagsLabelsLinkList_ShowHideTag(ModuleTag t)
         {
-            if (ModuleTagList.ModuleTags.HiddenTags.Contains(t.Name))
-            {
-                ModuleTagList.ModuleTags.HiddenTags.Remove(t.Name);
-            }
-            else
+            if (!ModuleTagList.ModuleTags.HiddenTags.Remove(t.Name))
             {
                 ModuleTagList.ModuleTags.HiddenTags.Add(t.Name);
             }
