@@ -416,15 +416,15 @@ namespace Tests.Core.IO
             // Create a new disposable KSP instance to run the test on.
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-            using (var ksp      = new DisposableKSP())
-            using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(nullUser, config))
-            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                manager.SetCurrentInstance(ksp.KSP);
+                manager.SetCurrentInstance(inst.KSP);
                 // Make sure the mod is not installed.
-                string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
+                string mod_file_path = Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP), mod_file_name);
 
                 Assert.IsFalse(File.Exists(mod_file_path));
 
@@ -440,15 +440,15 @@ namespace Tests.Core.IO
 
                 var registry = regMgr.registry;
 
-                Assert.AreEqual(1, registry.CompatibleModules(ksp.KSP.StabilityToleranceConfig, ksp.KSP.VersionCriteria()).Count());
+                Assert.AreEqual(1, registry.CompatibleModules(inst.KSP.StabilityToleranceConfig, inst.KSP.VersionCriteria()).Count());
 
                 // Attempt to install it.
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                 new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                  regMgr,
                                  ref possibleConfigOnlyDirs);
 
@@ -465,14 +465,14 @@ namespace Tests.Core.IO
             // Create a new disposable KSP instance to run the test on.
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-            using (var ksp      = new DisposableKSP())
-            using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(nullUser, config))
-            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                manager.SetCurrentInstance(ksp.KSP);
-                string mod_file_path = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), mod_file_name);
+                manager.SetCurrentInstance(inst.KSP);
+                string mod_file_path = Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP), mod_file_name);
 
                 // Install the test mod.
                 var registry = regMgr.registry;
@@ -483,15 +483,15 @@ namespace Tests.Core.IO
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
-                    .InstallList(modules, new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
+                    .InstallList(modules, new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
                 Assert.IsTrue(File.Exists(mod_file_path));
 
                 // Attempt to uninstall it.
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs, regMgr);
 
@@ -509,14 +509,14 @@ namespace Tests.Core.IO
                                                       TestData.DogeCoinPlugin()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             // Create a new disposable KSP instance to run the test on.
-            using (var ksp      = new DisposableKSP())
-            using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(nullUser, config))
-            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                manager.SetCurrentInstance(ksp.KSP);
-                string directoryPath = Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP), emptyFolderName);
+                manager.SetCurrentInstance(inst.KSP);
+                string directoryPath = Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP), emptyFolderName);
 
                 // Install the base test mod.
                 var registry = regMgr.registry;
@@ -527,9 +527,9 @@ namespace Tests.Core.IO
                 var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                 new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
 
                 modules.Clear();
@@ -541,9 +541,9 @@ namespace Tests.Core.IO
 
                 modules.Add(TestData.DogeCoinPlugin_module());
 
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                 new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
 
                 modules.Clear();
@@ -556,7 +556,7 @@ namespace Tests.Core.IO
                 modules.Add(TestData.DogeCoinFlag_101_module());
                 modules.Add(TestData.DogeCoinPlugin_module());
 
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .UninstallList(modules.Select(m => m.identifier),
                                    ref possibleConfigOnlyDirs, regMgr);
 
@@ -712,13 +712,13 @@ namespace Tests.Core.IO
                 // Create a new disposable KSP instance to run the test on.
                 using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
                 using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-                using (var ksp      = new DisposableKSP())
-                using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+                using (var inst     = new DisposableKSP())
+                using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
                 using (var manager  = new GameInstanceManager(nullUser, config))
-                using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+                using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                                new Repository[] { repo.repo }))
                 {
-                    manager.SetCurrentInstance(ksp.KSP);
+                    manager.SetCurrentInstance(inst.KSP);
                     var registry = regMgr.registry;
 
                     // Copy the zip file to the cache directory.
@@ -730,13 +730,13 @@ namespace Tests.Core.IO
                     var modules = new List<CkanModule> { TestData.DogeCoinFlag_101_module() };
 
                     HashSet<string>? possibleConfigOnlyDirs = null;
-                    new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                    new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                         .InstallList(modules,
-                                     new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                     new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                      regMgr, ref possibleConfigOnlyDirs);
 
                     // Check that the module is installed.
-                    Assert.IsTrue(File.Exists(Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP),
+                    Assert.IsTrue(File.Exists(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
                                                            mod_file_name)));
                 }
             }
@@ -776,9 +776,9 @@ namespace Tests.Core.IO
 
             // Act
             List<InstallableFile> results;
-            using (var ksp = new DisposableKSP())
+            using (var inst = new DisposableKSP())
             {
-                results = mod.install!.First().FindInstallableFiles(zip, ksp.KSP);
+                results = mod.install!.First().FindInstallableFiles(zip, inst.KSP);
             }
 
             // Assert
@@ -816,13 +816,13 @@ namespace Tests.Core.IO
                     ]
                 }");
 
-            using (var ksp = new DisposableKSP())
+            using (var inst = new DisposableKSP())
             {
-                var results = mod.install!.First().FindInstallableFiles(zip, ksp.KSP);
+                var results = mod.install!.First().FindInstallableFiles(zip, inst.KSP);
 
                 Assert.AreEqual(
                     CKANPathUtils.NormalizePath(
-                        Path.Combine(ksp.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs")),
+                        Path.Combine(inst.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs")),
                     results.First().destination);
             }
         }
@@ -857,7 +857,7 @@ namespace Tests.Core.IO
 
                 // Act
                 var result = ModuleInstaller.FindRecommendations(inst.KSP,
-                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit))
+                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
                                                                  Array.Empty<CkanModule>(),
@@ -870,7 +870,7 @@ namespace Tests.Core.IO
                 // Assert
                 Assert.IsTrue(result, "Should return something");
                 CollectionAssert.IsNotEmpty(recommendations, "Should return recommendations");
-                CollectionAssert.AreEquivalent(dlcIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit)),
+                CollectionAssert.AreEquivalent(dlcIdents.Select(ident => registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, crit)),
                                                recommendations.Keys,
                                                "The DLC should be recommended");
             }
@@ -908,7 +908,7 @@ namespace Tests.Core.IO
 
                 // Act
                 var result = ModuleInstaller.FindRecommendations(inst.KSP,
-                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit))
+                                                                 installIdents.Select(ident => registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
                                                                  Array.Empty<CkanModule>(),
@@ -920,7 +920,7 @@ namespace Tests.Core.IO
 
                 // Assert
                 Assert.IsFalse(result, "Should return nothing");
-                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, crit)))
+                foreach (var mod in dlcIdents.Select(ident => registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, crit)))
                 {
                     CollectionAssert.DoesNotContain(recommendations, mod,
                                                     "DLC should not be recommended");
@@ -1042,13 +1042,13 @@ namespace Tests.Core.IO
             // Arrange
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101ZipSlip()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-            using (var ksp      = new DisposableKSP())
-            using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(nullUser, config))
-            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                manager.SetCurrentInstance(ksp.KSP);
+                manager.SetCurrentInstance(inst.KSP);
                 var registry = regMgr.registry;
 
                 // Copy the zip file to the cache directory.
@@ -1064,9 +1064,9 @@ namespace Tests.Core.IO
                     delegate
                     {
                         HashSet<string>? possibleConfigOnlyDirs = null;
-                        new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                        new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                             .InstallList(modules,
-                                         new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                         new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                          regMgr, ref possibleConfigOnlyDirs);
                     },
                     "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
@@ -1080,13 +1080,13 @@ namespace Tests.Core.IO
             // Arrange
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101ZipBomb()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
-            using (var ksp      = new DisposableKSP())
-            using (var config   = new FakeConfiguration(ksp.KSP, ksp.KSP.Name))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(nullUser, config))
-            using (var regMgr   = RegistryManager.Instance(ksp.KSP, repoData.Manager,
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                manager.SetCurrentInstance(ksp.KSP);
+                manager.SetCurrentInstance(inst.KSP);
                 var registry = regMgr.registry;
 
                 // Copy the zip file to the cache directory.
@@ -1099,9 +1099,9 @@ namespace Tests.Core.IO
 
                 // Act / Assert
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                new ModuleInstaller(ksp.KSP, manager.Cache!, config, nullUser)
+                new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
                     .InstallList(modules,
-                                 new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                 new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                  regMgr, ref possibleConfigOnlyDirs);
             }
         }
@@ -1235,10 +1235,10 @@ namespace Tests.Core.IO
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
                 manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), null);
-                var replacement = querier.GetReplacement(replaced.identifier, ksp.KSP.StabilityToleranceConfig,
+                var replacement = querier.GetReplacement(replaced.identifier, inst.KSP.StabilityToleranceConfig,
                                                          new GameVersionCriteria(new GameVersion(1, 12)))!;
                 installer.Replace(Enumerable.Repeat(replacement, 1),
-                                  new RelationshipResolverOptions(ksp.KSP.StabilityToleranceConfig),
+                                  new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                   downloader, ref possibleConfigOnlyDirs, regMgr, null,
                                   false);
 
@@ -1301,7 +1301,7 @@ namespace Tests.Core.IO
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
                 manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), null);
-                var replacement = querier.GetReplacement(replaced.identifier, ksp.KSP.StabilityToleranceConfig,
+                var replacement = querier.GetReplacement(replaced.identifier, inst.KSP.StabilityToleranceConfig,
                                                          new GameVersionCriteria(new GameVersion(1, 11)));
 
                 // Assert
@@ -1529,7 +1529,7 @@ namespace Tests.Core.IO
 
                 // Act
                 installer.Upgrade(upgradeIdentifiers.Select(ident =>
-                                      registry.LatestAvailable(ident, ksp.KSP.StabilityToleranceConfig, inst.KSP.VersionCriteria()))
+                                      registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, inst.KSP.VersionCriteria()))
                                                     .OfType<CkanModule>()
                                                     .ToArray(),
                                   downloader, ref possibleConfigOnlyDirs, regMgr, null, false);

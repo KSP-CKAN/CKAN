@@ -186,40 +186,23 @@ namespace CKAN.GUI
             }
         }
 
-        private List<CkanModule> getVersions(GUIMod gmod)
+        private static IEnumerable<CkanModule> getVersions(GUIMod           gmod,
+                                                           IRegistryQuerier registry)
+            => (Utilities.DefaultIfThrows(() => registry.AvailableByIdentifier(gmod.Identifier))
+                // Identifier unknown to registry, maybe installed from local .ckan
+                ?? Enumerable.Empty<CkanModule>())
+                   // Take the module associated with GUIMod, if any, and append it to the list...
+                   .Append(gmod.InstalledMod?.Module)
+                   .OfType<CkanModule>()
+                   // ... if it's not already there
+                   .Distinct();
+
+        private ListViewItem[] getItems(GUIMod                          gmod,
+                                        IReadOnlyCollection<CkanModule> versions,
+                                        IRegistryQuerier                registry)
         {
             if (currentInstance != null)
             {
-                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-
-                // Can't be functional because AvailableByIdentifier throws exceptions
-                var versions = new List<CkanModule>();
-                try
-                {
-                    versions = registry.AvailableByIdentifier(gmod.Identifier).ToList();
-                }
-                catch (ModuleNotFoundKraken)
-                {
-                    // Identifier unknown to registry, maybe installed from local .ckan
-                }
-
-                // Take the module associated with GUIMod, if any, and append it to the list if it's not already there.
-                var installedModule = gmod.InstalledMod?.Module;
-                if (installedModule != null && !versions.Contains(installedModule))
-                {
-                    versions.Add(installedModule);
-                }
-
-                return versions;
-            }
-            return new List<CkanModule>();
-        }
-
-        private ListViewItem[] getItems(GUIMod gmod, List<CkanModule> versions)
-        {
-            if (currentInstance != null)
-            {
-                var registry         = RegistryManager.Instance(currentInstance, repoData).registry;
                 var installedVersion = registry.InstalledVersion(gmod.Identifier);
                 var stabilityTolerance = currentInstance.StabilityToleranceConfig.ModStabilityTolerance(gmod.Identifier)
                                          ?? currentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
@@ -329,8 +312,9 @@ namespace CKAN.GUI
                 // checkInstallable needs this to stop background threads on switch to another mod
                 cancelTokenSrc     = new CancellationTokenSource();
                 var startingModule = gmod;
-                var versions       = getVersions(gmod);
-                var items          = getItems(gmod, versions);
+                var registry       = RegistryManager.Instance(currentInstance, repoData).registry;
+                var versions       = getVersions(gmod, registry).ToArray();
+                var items          = getItems(gmod, versions, registry);
                 var stabilityTolerance = currentInstance.StabilityToleranceConfig.ModStabilityTolerance(gmod.Identifier)
                                          ?? currentInstance.StabilityToleranceConfig.OverallStabilityTolerance;
                 Util.AsyncInvoke(this, () =>
