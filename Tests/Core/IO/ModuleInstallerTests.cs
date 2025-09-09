@@ -1409,6 +1409,8 @@ namespace Tests.Core.IO
                 var opts = RelationshipResolverOptions.DependsOnlyOpts(inst.KSP.StabilityToleranceConfig);
                 var sut  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 HashSet<string>? possibleConfigOnlyDirs = null;
+                var unmanagedAutoDelete = new FileInfo(inst.KSP.ToAbsoluteGameDir("GameData/DogeCoinFlag/@thumbs/mythumb.png"));
+                var unmanagedAsk        = new FileInfo(inst.KSP.ToAbsoluteGameDir("GameData/DogeCoinPlugin/config.cfg"));
 
                 // Act
                 manager.Cache!.Store(TestData.DogeCoinFlag_101_module(),
@@ -1421,12 +1423,20 @@ namespace Tests.Core.IO
                                        .Select(inst.KSP.ToAbsoluteGameDir)
                                        .Distinct()
                                        .ToArray();
+                unmanagedAutoDelete.Directory!.Create();
+                File.WriteAllText(unmanagedAutoDelete.FullName, "");
+                unmanagedAsk.Directory!.Create();
+                File.WriteAllText(unmanagedAsk.FullName, "");
+
+                // Assert
                 CollectionAssert.IsNotEmpty(absPaths);
                 foreach (var f in absPaths)
                 {
                     Assert.IsTrue(Directory.Exists(f) || File.Exists(f),
                                   $"{f} should exist");
                 }
+
+                // Act
                 sut.UninstallList(modules.Select(m => m.identifier), ref possibleConfigOnlyDirs, regMgr, false);
 
                 // Assert
@@ -1436,13 +1446,15 @@ namespace Tests.Core.IO
                     Assert.IsFalse(Directory.Exists(f) || File.Exists(f),
                                    $"{f} should not exist");
                 }
+                Assert.IsFalse(unmanagedAutoDelete.Exists);
+                Assert.IsFalse(unmanagedAutoDelete.Directory!.Exists);
+                Assert.IsTrue(unmanagedAsk.Exists);
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   inst.KSP.ToAbsoluteGameDir("GameData/DogeCoinPlugin")
+                                               },
+                                               possibleConfigOnlyDirs);
             }
-        }
-
-        [Test]
-        public void UninstallList_WithUnmanagedFiles_()
-        {
-            // TODO: Generate unmanaged @thumbs and uninstall parent dir
         }
 
         [Test,
