@@ -1182,8 +1182,9 @@ namespace Tests.Core.IO
             }
         }
 
-        [Test]
-        public void Replace_WithCompatibleModule_Succeeds()
+        [TestCase(false),
+         TestCase(true)]
+        public void Replace_WithCompatibleModule_Succeeds(bool installReplacer)
         {
             // Arrange
             using (var inst = new DisposableKSP())
@@ -1226,7 +1227,7 @@ namespace Tests.Core.IO
                 IRegistryQuerier querier = registry;
                 var replaced = registry.GetModuleByVersion("replaced", "1.0")!;
                 Assert.IsNotNull(replaced, "Replaced module should exist");
-                var replacer = registry.GetModuleByVersion("replacer", "1.0");
+                var replacer = registry.GetModuleByVersion("replacer", "1.0")!;
                 Assert.IsNotNull(replacer, "Replacer module should exist");
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 HashSet<string>? possibleConfigOnlyDirs = null;
@@ -1234,6 +1235,10 @@ namespace Tests.Core.IO
 
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
+                if (installReplacer)
+                {
+                    registry.RegisterModule(replacer, new List<string>(), inst.KSP, false);
+                }
                 manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), null);
                 var replacement = querier.GetReplacement(replaced.identifier, inst.KSP.StabilityToleranceConfig,
                                                          new GameVersionCriteria(new GameVersion(1, 12)))!;
