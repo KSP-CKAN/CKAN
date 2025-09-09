@@ -1766,10 +1766,14 @@ namespace Tests.Core.IO
                                      TestData.DogeCoinFlagZip(), null);
                 cfg.Directory!.Create();
                 var zip = new ZipFile(TestData.DogeCoinFlagZip());
-                File.WriteAllText(cfg.FullName, new StreamReader(zip.GetInputStream(zip.GetEntry(flag_path)))
-                                                    .ReadToEnd());
+                var entry = zip.GetEntry(flag_path);
+                using (var outStream = File.Create(cfg.FullName))
+                {
+                    zip.GetInputStream(entry).CopyTo(outStream);
+                }
 
                 // Act / Assert
+                Assert.AreEqual(entry.Size, cfg.Length);
                 if (headless)
                 {
                     // Headless mode skips the check for overwriteable files and complains about them
