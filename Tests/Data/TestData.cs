@@ -706,8 +706,11 @@ namespace Tests.Data
         public static string KspAvcJsonOneLineVersion()
             => File.ReadAllText(DataDir("ksp-avc-one-line.version"));
 
+        public static string ModuleManagerModuleCkan()
+            => DataDir("ModuleManager-2.5.1.ckan");
+
         public static CkanModule ModuleManagerModule()
-            => CkanModule.FromFile(DataDir("ModuleManager-2.5.1.ckan"));
+            => CkanModule.FromFile(ModuleManagerModuleCkan());
 
         public static string ModuleManagerZip()
             => DataDir("ModuleManager-2.5.1.zip");
