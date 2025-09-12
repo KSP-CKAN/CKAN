@@ -64,6 +64,27 @@ namespace Tests.GUI
             Assert.AreEqual(3,  doneCount);
         }
 
+        [TestCase(  0,   0,  10, 10,   0,  0, 100, 100,   0,  0)]
+        [TestCase(  0,   0,  10, 10,  10, 10, 100, 100,  10, 10)]
+        [TestCase(100, 100,  10, 10,   0,  0, 100, 100,  90, 90)]
+        public void ClampTo_WithCoords_Works(int initX,   int initY,
+                                             int width,   int height,
+                                             int screenX, int screenY,
+                                             int screenW, int screenH,
+                                             int finalX,  int finalY)
+        {
+            // Arrange
+            var loc  = new Point(initX, initY);
+            var size = new Size(width, height);
+            var rect = new Rectangle(screenX, screenY, screenW, screenH);
+
+            // Act
+            Util.ClampTo(ref loc, size, rect);
+
+            // Assert
+            Assert.AreEqual(new Point(finalX, finalY), loc);
+        }
+
         [TestCase("https://github.com/KSP-CKAN/CKAN",        ExpectedResult = true),
          TestCase("http://status.ksp-ckan.space/",           ExpectedResult = true),
          TestCase("https://google.com/",                     ExpectedResult = true),
