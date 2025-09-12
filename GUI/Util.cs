@@ -331,16 +331,16 @@ namespace CKAN.GUI
                          c2.MultiplyBy(1f - alpha));
 
         private static Color MultiplyBy(this Color c, float f)
-            => Color.FromArgb((int)(f * c.A),
-                              (int)(f * c.R),
-                              (int)(f * c.G),
-                              (int)(f * c.B));
+            => Color.FromArgb((int)Math.Round(f * c.A),
+                              (int)Math.Round(f * c.R),
+                              (int)Math.Round(f * c.G),
+                              (int)Math.Round(f * c.B));
 
         private static Color AddColors(Color a, Color b)
-            => Color.FromArgb(a.A + b.A,
-                              a.R + b.R,
-                              a.G + b.G,
-                              a.B + b.B);
+            => Color.FromArgb(Math.Min(255, a.A + b.A),
+                              Math.Min(255, a.R + b.R),
+                              Math.Min(255, a.G + b.G),
+                              Math.Min(255, a.B + b.B));
 
         public static Color? ForeColorForBackColor(this Color backColor)
             => backColor == Color.Transparent || backColor == Color.Empty ? null

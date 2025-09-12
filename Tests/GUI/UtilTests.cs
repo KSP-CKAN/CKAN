@@ -85,6 +85,25 @@ namespace Tests.GUI
             Assert.AreEqual(new Point(finalX, finalY), loc);
         }
 
+        [TestCase(0f,    250, 240, 47),
+         TestCase(0.25f, 252, 182, 37),
+         TestCase(0.5f,  253, 124, 28),
+         TestCase(0.75f, 253,  65, 17),
+         TestCase(1f,    255,   7,  7)]
+        public void LerpBitmaps_RefreshButtons_Blends(float amount, int r, int g, int b)
+        {
+            // Arrange
+            var bitmap1 = EmbeddedImages.refreshStale;
+            var bitmap2 = EmbeddedImages.refreshVeryStale;
+
+            // Act
+            var lerped = Util.LerpBitmaps(bitmap1, bitmap2, amount);
+
+            // Assert
+            Assert.AreEqual(Color.FromArgb(r, g, b),
+                            lerped.GetPixel(24, 8));
+        }
+
         [TestCase("https://github.com/KSP-CKAN/CKAN",        ExpectedResult = true),
          TestCase("http://status.ksp-ckan.space/",           ExpectedResult = true),
          TestCase("https://google.com/",                     ExpectedResult = true),
