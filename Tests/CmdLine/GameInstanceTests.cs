@@ -140,7 +140,13 @@ namespace Tests.CmdLine
         public void RunSubCommand_Default_Works()
         {
             // Arrange
-            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            var asked = false;
+            var user = new CapturingUser(false, q => true,
+                                         (msg, objs) =>
+                                         {
+                                             asked = true;
+                                             return 0;
+                                         });
             using (var inst1   = new DisposableKSP())
             using (var inst2   = new DisposableKSP())
             using (var fakeDir = new TemporaryDirectory())
@@ -161,9 +167,12 @@ namespace Tests.CmdLine
 
                 // Act / Assert
                 Assert.IsNull(manager.AutoStartInstance);
+                sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default" }));
+                Assert.IsTrue(asked);
+                Assert.AreEqual("inst1", manager.AutoStartInstance);
                 sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default", "inst2" }));
                 Assert.AreEqual("inst2", manager.AutoStartInstance);
-                sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default", "inst1" }));
+                sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "use", "inst1" }));
                 Assert.AreEqual("inst1", manager.AutoStartInstance);
             }
         }

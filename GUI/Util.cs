@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
-using Timer = System.Windows.Forms.Timer;
+using Timer = System.Timers.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -88,7 +88,7 @@ namespace CKAN.GUI
 
             // Set up the timer that will track the delay
             Timer timer = new Timer() { Interval = timeoutMs };
-            timer.Tick += (sender, evt) =>
+            timer.Elapsed += (sender, evt) =>
             {
                 timer.Stop();
                 doneFunc(receivedFrom, received);
@@ -234,11 +234,13 @@ namespace CKAN.GUI
         /// The first screen that overlaps the box if any, otherwise null
         /// </returns>
         [ExcludeFromCodeCoverage]
-        public static Screen? FindScreen(Point location, Size size)
-        {
-            var rect = new Rectangle(location, size);
-            return Screen.AllScreens.FirstOrDefault(sc => sc.WorkingArea.IntersectsWith(rect));
-        }
+        public static Screen? FindScreen(Point location,
+                                         Size  size)
+            => FindScreen(new Rectangle(location, size));
+
+        [ExcludeFromCodeCoverage]
+        private static Screen? FindScreen(Rectangle rect)
+            => Screen.AllScreens.FirstOrDefault(sc => sc.WorkingArea.IntersectsWith(rect));
 
         /// <summary>
         /// Adjust position of a box so it fits entirely on one screen
@@ -250,40 +252,45 @@ namespace CKAN.GUI
         /// Original location if already fully on-screen, otherwise
         /// a position representing sliding it onto the screen
         /// </returns>
-        public static Point ClampedLocation(Point location, Size size, Screen? screen = null)
+        [ExcludeFromCodeCoverage]
+        public static Point ClampedLocation(Point   location,
+                                            Size    size,
+                                            Screen? screen = null)
         {
-            if (screen == null)
-            {
-                log.DebugFormat("Looking for screen of {0}, {1}", location, size);
-                screen = FindScreen(location, size);
-            }
+            screen ??= FindScreen(location, size);
             if (screen != null)
             {
                 log.DebugFormat("Found screen: {0}", screen.WorkingArea);
-                // Slide the whole rectangle fully onto the screen
-                if (location.X < screen.WorkingArea.Left)
-                {
-                    location.X = screen.WorkingArea.Left;
-                }
-
-                if (location.Y < screen.WorkingArea.Top)
-                {
-                    location.Y = screen.WorkingArea.Top;
-                }
-
-                if (location.X + size.Width > screen.WorkingArea.Right)
-                {
-                    location.X = screen.WorkingArea.Right - size.Width;
-                }
-
-                if (location.Y + size.Height > screen.WorkingArea.Bottom)
-                {
-                    location.Y = screen.WorkingArea.Bottom - size.Height;
-                }
-
+                ClampTo(ref location, size, screen.WorkingArea);
                 log.DebugFormat("Clamped location: {0}", location);
             }
             return location;
+        }
+
+        public static void ClampTo(ref Point location,
+                                   Size      size,
+                                   Rectangle workingArea)
+        {
+            // Slide the whole rectangle fully onto the screen
+            if (location.X < workingArea.Left)
+            {
+                location.X = workingArea.Left;
+            }
+
+            if (location.Y < workingArea.Top)
+            {
+                location.Y = workingArea.Top;
+            }
+
+            if (location.X + size.Width > workingArea.Right)
+            {
+                location.X = workingArea.Right - size.Width;
+            }
+
+            if (location.Y + size.Height > workingArea.Bottom)
+            {
+                location.Y = workingArea.Bottom - size.Height;
+            }
         }
 
         /// <summary>
@@ -324,16 +331,16 @@ namespace CKAN.GUI
                          c2.MultiplyBy(1f - alpha));
 
         private static Color MultiplyBy(this Color c, float f)
-            => Color.FromArgb((int)(f * c.A),
-                              (int)(f * c.R),
-                              (int)(f * c.G),
-                              (int)(f * c.B));
+            => Color.FromArgb((int)Math.Round(f * c.A),
+                              (int)Math.Round(f * c.R),
+                              (int)Math.Round(f * c.G),
+                              (int)Math.Round(f * c.B));
 
         private static Color AddColors(Color a, Color b)
-            => Color.FromArgb(a.A + b.A,
-                              a.R + b.R,
-                              a.G + b.G,
-                              a.B + b.B);
+            => Color.FromArgb(Math.Min(255, a.A + b.A),
+                              Math.Min(255, a.R + b.R),
+                              Math.Min(255, a.G + b.G),
+                              Math.Min(255, a.B + b.B));
 
         public static Color? ForeColorForBackColor(this Color backColor)
             => backColor == Color.Transparent || backColor == Color.Empty ? null

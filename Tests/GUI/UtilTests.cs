@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Drawing;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -18,6 +19,91 @@ namespace Tests.GUI
     [TestFixture]
     public class UtilTests
     {
+        [Test]
+        public void Debounce_Called_CallsBack()
+        {
+            // Arrange
+            int startCount     = 0;
+            int immediateCount = 0;
+            int abortCount     = 0;
+            int doneCount      = 0;
+            var sut = Util.Debounce<string>((sender, e) =>
+                                            {
+                                                ++startCount;
+                                            },
+                                            (sender, e) =>
+                                            {
+                                                ++immediateCount;
+                                                return false;
+                                            },
+                                            (sender, e) =>
+                                            {
+                                                ++abortCount;
+                                                return false;
+                                            },
+                                            (sender, e) =>
+                                            {
+                                                ++doneCount;
+                                            },
+                                            50);
+
+            // Act
+            for (int pass = 0; pass < 3; ++pass)
+            {
+                for (int i = 0; i < 10; ++i)
+                {
+                    sut.Invoke(null, "");
+                }
+                Thread.Sleep(100);
+            }
+
+            // Assert
+            Assert.AreEqual(30, startCount);
+            Assert.AreEqual(30, immediateCount);
+            Assert.AreEqual(30, abortCount);
+            Assert.AreEqual(3,  doneCount);
+        }
+
+        [TestCase(  0,   0,  10, 10,   0,  0, 100, 100,   0,  0)]
+        [TestCase(  0,   0,  10, 10,  10, 10, 100, 100,  10, 10)]
+        [TestCase(100, 100,  10, 10,   0,  0, 100, 100,  90, 90)]
+        public void ClampTo_WithCoords_Works(int initX,   int initY,
+                                             int width,   int height,
+                                             int screenX, int screenY,
+                                             int screenW, int screenH,
+                                             int finalX,  int finalY)
+        {
+            // Arrange
+            var loc  = new Point(initX, initY);
+            var size = new Size(width, height);
+            var rect = new Rectangle(screenX, screenY, screenW, screenH);
+
+            // Act
+            Util.ClampTo(ref loc, size, rect);
+
+            // Assert
+            Assert.AreEqual(new Point(finalX, finalY), loc);
+        }
+
+        [TestCase(0f,    250, 240, 47),
+         TestCase(0.25f, 252, 182, 37),
+         TestCase(0.5f,  253, 124, 28),
+         TestCase(0.75f, 253,  65, 17),
+         TestCase(1f,    255,   7,  7)]
+        public void LerpBitmaps_RefreshButtons_Blends(float amount, int r, int g, int b)
+        {
+            // Arrange
+            var bitmap1 = EmbeddedImages.refreshStale;
+            var bitmap2 = EmbeddedImages.refreshVeryStale;
+
+            // Act
+            var lerped = Util.LerpBitmaps(bitmap1, bitmap2, amount);
+
+            // Assert
+            Assert.AreEqual(Color.FromArgb(r, g, b),
+                            lerped.GetPixel(24, 8));
+        }
+
         [TestCase("https://github.com/KSP-CKAN/CKAN",        ExpectedResult = true),
          TestCase("http://status.ksp-ckan.space/",           ExpectedResult = true),
          TestCase("https://google.com/",                     ExpectedResult = true),

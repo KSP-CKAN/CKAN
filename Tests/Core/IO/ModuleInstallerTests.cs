@@ -1182,8 +1182,9 @@ namespace Tests.Core.IO
             }
         }
 
-        [Test]
-        public void Replace_WithCompatibleModule_Succeeds()
+        [TestCase(false),
+         TestCase(true)]
+        public void Replace_WithCompatibleModule_Succeeds(bool installReplacer)
         {
             // Arrange
             using (var inst = new DisposableKSP())
@@ -1226,7 +1227,7 @@ namespace Tests.Core.IO
                 IRegistryQuerier querier = registry;
                 var replaced = registry.GetModuleByVersion("replaced", "1.0")!;
                 Assert.IsNotNull(replaced, "Replaced module should exist");
-                var replacer = registry.GetModuleByVersion("replacer", "1.0");
+                var replacer = registry.GetModuleByVersion("replacer", "1.0")!;
                 Assert.IsNotNull(replacer, "Replacer module should exist");
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 HashSet<string>? possibleConfigOnlyDirs = null;
@@ -1234,6 +1235,10 @@ namespace Tests.Core.IO
 
                 // Act
                 registry.RegisterModule(replaced, new List<string>(), inst.KSP, false);
+                if (installReplacer)
+                {
+                    registry.RegisterModule(replacer, new List<string>(), inst.KSP, false);
+                }
                 manager.Cache?.Store(replaced, TestData.DogeCoinFlagZip(), null);
                 var replacement = querier.GetReplacement(replaced.identifier, inst.KSP.StabilityToleranceConfig,
                                                          new GameVersionCriteria(new GameVersion(1, 12)))!;
@@ -1409,6 +1414,8 @@ namespace Tests.Core.IO
                 var opts = RelationshipResolverOptions.DependsOnlyOpts(inst.KSP.StabilityToleranceConfig);
                 var sut  = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
                 HashSet<string>? possibleConfigOnlyDirs = null;
+                var unmanagedAutoDelete = new FileInfo(inst.KSP.ToAbsoluteGameDir("GameData/DogeCoinFlag/@thumbs/mythumb.png"));
+                var unmanagedAsk        = new FileInfo(inst.KSP.ToAbsoluteGameDir("GameData/DogeCoinPlugin/config.cfg"));
 
                 // Act
                 manager.Cache!.Store(TestData.DogeCoinFlag_101_module(),
@@ -1421,12 +1428,20 @@ namespace Tests.Core.IO
                                        .Select(inst.KSP.ToAbsoluteGameDir)
                                        .Distinct()
                                        .ToArray();
+                unmanagedAutoDelete.Directory!.Create();
+                File.WriteAllText(unmanagedAutoDelete.FullName, "");
+                unmanagedAsk.Directory!.Create();
+                File.WriteAllText(unmanagedAsk.FullName, "");
+
+                // Assert
                 CollectionAssert.IsNotEmpty(absPaths);
                 foreach (var f in absPaths)
                 {
                     Assert.IsTrue(Directory.Exists(f) || File.Exists(f),
                                   $"{f} should exist");
                 }
+
+                // Act
                 sut.UninstallList(modules.Select(m => m.identifier), ref possibleConfigOnlyDirs, regMgr, false);
 
                 // Assert
@@ -1436,13 +1451,15 @@ namespace Tests.Core.IO
                     Assert.IsFalse(Directory.Exists(f) || File.Exists(f),
                                    $"{f} should not exist");
                 }
+                Assert.IsFalse(unmanagedAutoDelete.Exists);
+                Assert.IsFalse(unmanagedAutoDelete.Directory!.Exists);
+                Assert.IsTrue(unmanagedAsk.Exists);
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   inst.KSP.ToAbsoluteGameDir("GameData/DogeCoinPlugin")
+                                               },
+                                               possibleConfigOnlyDirs);
             }
-        }
-
-        [Test]
-        public void UninstallList_WithUnmanagedFiles_()
-        {
-            // TODO: Generate unmanaged @thumbs and uninstall parent dir
         }
 
         [Test,
@@ -1749,10 +1766,14 @@ namespace Tests.Core.IO
                                      TestData.DogeCoinFlagZip(), null);
                 cfg.Directory!.Create();
                 var zip = new ZipFile(TestData.DogeCoinFlagZip());
-                File.WriteAllText(cfg.FullName, new StreamReader(zip.GetInputStream(zip.GetEntry(flag_path)))
-                                                    .ReadToEnd());
+                var entry = zip.GetEntry(flag_path);
+                using (var outStream = File.Create(cfg.FullName))
+                {
+                    zip.GetInputStream(entry).CopyTo(outStream);
+                }
 
                 // Act / Assert
+                Assert.AreEqual(entry.Size, cfg.Length);
                 if (headless)
                 {
                     // Headless mode skips the check for overwriteable files and complains about them

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 using log4net;
@@ -10,30 +9,16 @@ namespace CKAN.GUI
 {
     public class PluginController
     {
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(PluginController));
-
-        private readonly string m_PluginsPath = "";
-
-        public PluginController(string path, bool doActivate = true)
+        public PluginController(string path, bool activate = true)
         {
             m_PluginsPath = path;
-
             foreach (string dll in Directory.GetFiles(path, "*.dll"))
             {
-                LoadAssembly(dll);
-            }
-
-            if (doActivate)
-            {
-                foreach (var plugin in m_DormantPlugins.ToArray()) // use .ToArray() to avoid modifying the collection during the for-each
-                {
-                    ActivatePlugin(plugin);
-                }
+                LoadAssembly(dll, activate);
             }
         }
 
-        private void LoadAssembly(string dll)
+        private void LoadAssembly(string dll, bool activate)
         {
             try
             {
@@ -81,6 +66,10 @@ namespace CKAN.GUI
                             }
 
                             m_DormantPlugins.Add(pluginInstance);
+                            if (activate)
+                            {
+                                ActivatePlugin(pluginInstance);
+                            }
                             log.WarnFormat("Successfully instantiated type \"{0}\" from {1}.dll",
                                            assembly.FullName, assembly.FullName);
                         }
@@ -122,7 +111,7 @@ namespace CKAN.GUI
             }
 
             File.Copy(path, targetPath);
-            LoadAssembly(targetPath);
+            LoadAssembly(targetPath, false);
         }
 
         public void ActivatePlugin(IGUIPlugin plugin)
@@ -174,22 +163,16 @@ namespace CKAN.GUI
                 log.Debug("Deactivate " + plugin.GetName());
                 DeactivatePlugin(plugin);
             }
-
-            if (m_DormantPlugins.Contains(plugin))
-            {
-                m_DormantPlugins.Remove(plugin);
-            }
+            m_DormantPlugins.Remove(plugin);
         }
 
-        public List<IGUIPlugin> ActivePlugins
-            => m_ActivePlugins.ToList();
+        public IReadOnlyCollection<IGUIPlugin> ActivePlugins  => m_ActivePlugins;
+        public IReadOnlyCollection<IGUIPlugin> DormantPlugins => m_DormantPlugins;
 
-        public List<IGUIPlugin> DormantPlugins
-            => m_DormantPlugins.ToList();
-
+        private readonly string              m_PluginsPath    = "";
         private readonly HashSet<IGUIPlugin> m_ActivePlugins  = new HashSet<IGUIPlugin>();
         private readonly HashSet<IGUIPlugin> m_DormantPlugins = new HashSet<IGUIPlugin>();
 
+        private static readonly ILog log = LogManager.GetLogger(typeof(PluginController));
     }
-
 }
