@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Drawing;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -18,6 +19,51 @@ namespace Tests.GUI
     [TestFixture]
     public class UtilTests
     {
+        [Test]
+        public void Debounce_Called_CallsBack()
+        {
+            // Arrange
+            int startCount     = 0;
+            int immediateCount = 0;
+            int abortCount     = 0;
+            int doneCount      = 0;
+            var sut = Util.Debounce<string>((sender, e) =>
+                                            {
+                                                ++startCount;
+                                            },
+                                            (sender, e) =>
+                                            {
+                                                ++immediateCount;
+                                                return false;
+                                            },
+                                            (sender, e) =>
+                                            {
+                                                ++abortCount;
+                                                return false;
+                                            },
+                                            (sender, e) =>
+                                            {
+                                                ++doneCount;
+                                            },
+                                            50);
+
+            // Act
+            for (int pass = 0; pass < 3; ++pass)
+            {
+                for (int i = 0; i < 10; ++i)
+                {
+                    sut.Invoke(null, "");
+                }
+                Thread.Sleep(100);
+            }
+
+            // Assert
+            Assert.AreEqual(30, startCount);
+            Assert.AreEqual(30, immediateCount);
+            Assert.AreEqual(30, abortCount);
+            Assert.AreEqual(3,  doneCount);
+        }
+
         [TestCase("https://github.com/KSP-CKAN/CKAN",        ExpectedResult = true),
          TestCase("http://status.ksp-ckan.space/",           ExpectedResult = true),
          TestCase("https://google.com/",                     ExpectedResult = true),

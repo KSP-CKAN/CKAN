@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.Diagnostics.CodeAnalysis;
-using Timer = System.Windows.Forms.Timer;
+using Timer = System.Timers.Timer;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -88,7 +88,7 @@ namespace CKAN.GUI
 
             // Set up the timer that will track the delay
             Timer timer = new Timer() { Interval = timeoutMs };
-            timer.Tick += (sender, evt) =>
+            timer.Elapsed += (sender, evt) =>
             {
                 timer.Stop();
                 doneFunc(receivedFrom, received);
