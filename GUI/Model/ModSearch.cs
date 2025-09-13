@@ -580,7 +580,7 @@ namespace CKAN.GUI
 
         private bool MatchesLicenses(GUIMod mod)
         {
-            var ckm = mod.ToModule();
+            var ckm = mod.Module;
             return Licenses.Count < 1
                 || (
                     ckm.license != null
@@ -593,7 +593,7 @@ namespace CKAN.GUI
 
         private bool MatchesLocalizations(GUIMod mod)
         {
-            var ckm = mod.ToModule();
+            var ckm = mod.Module;
             return Localizations.Count < 1
                 || (
                     ckm.localizations != null
@@ -605,15 +605,15 @@ namespace CKAN.GUI
         }
 
         private bool MatchesDepends(GUIMod mod)
-            => RelationshipMatch(mod.ToModule().depends, DependsOn);
+            => RelationshipMatch(mod.Module.depends, DependsOn);
         private bool MatchesRecommends(GUIMod mod)
-            => RelationshipMatch(mod.ToModule().recommends, Recommends);
+            => RelationshipMatch(mod.Module.recommends, Recommends);
         private bool MatchesSuggests(GUIMod mod)
-            => RelationshipMatch(mod.ToModule().suggests, Suggests);
+            => RelationshipMatch(mod.Module.suggests, Suggests);
         private bool MatchesConflicts(GUIMod mod)
-            => RelationshipMatch(mod.ToModule().conflicts, ConflictsWith);
+            => RelationshipMatch(mod.Module.conflicts, ConflictsWith);
         private bool MatchesSupports(GUIMod mod)
-            => RelationshipMatch(mod.ToModule().supports, Supports);
+            => RelationshipMatch(mod.Module.supports, Supports);
         private static bool RelationshipMatch(List<RelationshipDescriptor>? rels, List<string> toFind)
             => toFind.Count < 1
                 || (rels != null && toFind.All(searchRel =>
@@ -625,8 +625,8 @@ namespace CKAN.GUI
                 || TagNames.All(tn =>
                         ShouldNegateTerm(tn, out string subTag) ^ (
                             string.IsNullOrEmpty(subTag)
-                                ? mod.ToModule().Tags == null
-                                : mod.ToModule().Tags?.Contains(subTag) ?? false));
+                                ? mod.Module.Tags == null
+                                : mod.Module.Tags?.Contains(subTag) ?? false));
 
         private bool MatchesLabels(GUIMod mod)
             => LabelsByNegation.All(kvp =>

@@ -126,7 +126,7 @@ namespace CKAN.GUI
 
         private void UpdateHeaderInfo(GUIMod gmod, GameVersionCriteria crit)
         {
-            var module = gmod.ToModule();
+            var module = gmod.Module;
             Util.Invoke(this, () =>
             {
                 ModInfoTabControl.SuspendLayout();

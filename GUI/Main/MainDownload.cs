@@ -26,7 +26,7 @@ namespace CKAN.GUI
                 Task.Run(() =>
                 {
                     // Just pass to the existing worker
-                    downloader.DownloadModules(modules.Select(m => m.ToModule()));
+                    downloader.DownloadModules(modules.Select(m => m.Module));
                 });
             }
             else
@@ -59,7 +59,7 @@ namespace CKAN.GUI
                 {
                     try
                     {
-                        downloader.DownloadModules(modules.Select(m => m.ToModule()));
+                        downloader.DownloadModules(modules.Select(m => m.Module));
                         done = true;
                     }
                     catch (ModuleDownloadErrorsKraken k)
@@ -72,7 +72,7 @@ namespace CKAN.GUI
                                 Properties.Resources.ModDownloadsFailedColHdr,
                                 Properties.Resources.ModDownloadsFailedAbortBtn,
                                 k.Exceptions.Select(kvp => new KeyValuePair<object[], Exception>(
-                                    modules.Select(m => m.ToModule()).ToArray(), kvp.Value)),
+                                    modules.Select(m => m.Module).ToArray(), kvp.Value)),
                                 (m1, m2) => (m1 as CkanModule)?.download == (m2 as CkanModule)?.download);
                              dfd.ShowDialog(this);
                         });
@@ -132,7 +132,7 @@ namespace CKAN.GUI
             // Find all mods that share one or more download URLs with the given module, and so on
             var affectedMods =
                 module?.GetDownloadsGroup(allGuiMods.Values
-                                                    .Select(guiMod => guiMod.ToModule())
+                                                    .Select(guiMod => guiMod.Module)
                                                     .OfType<CkanModule>())
                        .Select(other => allGuiMods.GetValueOrDefault(other.identifier))
                        .OfType<GUIMod>()
