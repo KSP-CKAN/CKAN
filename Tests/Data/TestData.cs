@@ -702,7 +702,6 @@ namespace Tests.Data
         public static string KspAvcJson()
             => File.ReadAllText(DataDir("ksp-avc.version"));
 
-
         public static string KspAvcJsonOneLineVersion()
             => File.ReadAllText(DataDir("ksp-avc-one-line.version"));
 
