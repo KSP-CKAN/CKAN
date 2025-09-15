@@ -127,6 +127,7 @@ namespace CKAN.CmdLine
             return Exit.OK;
         }
 
+        [ExcludeFromCodeCoverage]
         private static void PrintUsage(IUser user, string verb)
         {
             foreach (var h in StabilitySubOptions.GetHelp(verb))
@@ -160,6 +161,7 @@ namespace CKAN.CmdLine
             return ht;
         }
 
+        [ExcludeFromCodeCoverage]
         public static IEnumerable<string> GetHelp(string verb)
         {
             // Add a usage prefix line

@@ -42,6 +42,7 @@ namespace CKAN.CmdLine
             return ht;
         }
 
+        [ExcludeFromCodeCoverage]
         public static IEnumerable<string> GetHelp(string verb)
         {
             // Add a usage prefix line
@@ -449,6 +450,7 @@ namespace CKAN.CmdLine
             return Exit.ERROR;
         }
 
+        [ExcludeFromCodeCoverage]
         private void PrintUsage(string verb)
         {
             foreach (var h in RepoSubOptions.GetHelp(verb))

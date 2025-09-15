@@ -142,6 +142,7 @@ namespace CKAN.CmdLine
             return ht;
         }
 
+        [ExcludeFromCodeCoverage]
         public static IEnumerable<string> GetHelp(string verb)
         {
             // Add a usage prefix line
