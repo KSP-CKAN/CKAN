@@ -99,24 +99,11 @@ namespace CKAN.GUI
         }
 
         public override bool Equals(object? obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return (obj as ModChange)?.Mod.Equals(Mod) ?? false;
-        }
+            => obj is not null
+               && (ReferenceEquals(this, obj)
+                   || (obj is ModChange ch
+                       && ch.Mod.Equals(Mod)
+                       && ch.ChangeType.Equals(ChangeType)));
 
         private static readonly int maxEnumVal = Enum.GetValues(typeof(GUIModChangeType)).Cast<int>().Max();
 
@@ -129,8 +116,8 @@ namespace CKAN.GUI
         public override string ToString()
             => $"{ChangeType.LocalizeDescription()} {Mod} ({Description})";
 
-        public virtual string? NameAndStatus
-            => Main.Instance?.Manager?.Cache?.DescribeAvailability(config, Mod);
+        public virtual string NameAndStatus(NetModuleCache cache)
+            => cache.DescribeAvailability(config, Mod);
 
         private static string DescribeGroup(IEnumerable<SelectionReason> reasons)
             => reasons.First().DescribeWith(reasons.Skip(1));
@@ -164,8 +151,8 @@ namespace CKAN.GUI
             this.metadataChanged = metadataChanged;
         }
 
-        public override string? NameAndStatus
-            => Main.Instance?.Manager?.Cache?.DescribeAvailability(config, targetMod);
+        public override string NameAndStatus(NetModuleCache cache)
+            => cache.DescribeAvailability(config, targetMod);
 
         public override string Description
             => IsReinstall
