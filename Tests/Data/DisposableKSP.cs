@@ -35,7 +35,6 @@ namespace Tests.Data
             _disposableDir = TestData.NewTempDir();
             Utilities.CopyDirectory(_goodKsp, _disposableDir, Array.Empty<string>(), Array.Empty<string>());
             KSP = new GameInstance(game, _disposableDir, name, new NullUser());
-            Logging.Initialize();
         }
 
         public DisposableKSP(string registryFile)
