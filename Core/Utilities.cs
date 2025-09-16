@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using ChinhDo.Transactions.FileManager;
 using log4net;
@@ -179,6 +180,7 @@ namespace CKAN
         /// <returns>
         /// true if launched, false otherwise
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static bool ProcessStartURL(string url)
         {
             try
@@ -211,6 +213,7 @@ namespace CKAN
             return false;
         }
 
+        [ExcludeFromCodeCoverage]
         public static void OpenFileBrowser(string location)
         {
             // We need the folder of the file
