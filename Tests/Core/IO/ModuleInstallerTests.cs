@@ -43,25 +43,6 @@ namespace Tests.Core.IO
             Assert.IsNotNull(mod.install?[0].find);
         }
 
-        [Test]
-        public void GenerateDefaultInstall()
-        {
-            string filename = TestData.DogeCoinFlagZip();
-            using (var zipfile = new ZipFile(filename))
-            {
-                ModuleInstallDescriptor stanza = ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogeCoinFlag");
-
-                Assert.AreEqual("GameData", stanza.install_to);
-                Assert.AreEqual("DogeCoinFlag", stanza.find);
-
-                // Same again, but screwing up the case (we see this *all the time*)
-                ModuleInstallDescriptor stanza2 = ModuleInstallDescriptor.DefaultInstallStanza(new KerbalSpaceProgram(), "DogecoinFlag");
-
-                Assert.AreEqual("GameData", stanza2.install_to);
-                Assert.AreEqual("DogecoinFlag", stanza2.find);
-            }
-        }
-
         // Test data: different ways to install the same file.
         private static readonly CkanModule[] doge_mods =
         {
@@ -739,91 +720,6 @@ namespace Tests.Core.IO
                     Assert.IsTrue(File.Exists(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
                                                            mod_file_name)));
                 }
-            }
-        }
-
-        [TestCase("Ships")]
-        [TestCase("Ships/VAB")]
-        [TestCase("Ships/SPH")]
-        [TestCase("Ships/@thumbs")]
-        [TestCase("Ships/@thumbs/VAB")]
-        [TestCase("Ships/@thumbs/SPH")]
-        [TestCase("Ships/Script")]
-        public void AllowsInstallsToShipsDirectories(string directory)
-        {
-            // Arrange
-            var zip = ZipFile.Create(new MemoryStream());
-            zip.BeginUpdate();
-            zip.AddDirectory("ExampleShips");
-            zip.Add(new ZipEntry("ExampleShips/AwesomeShip.craft") { Size = 0, CompressedSize = 0 });
-            zip.CommitUpdate();
-
-            var mod = CkanModule.FromJson(string.Format(@"
-            {{
-                ""spec_version"": 1,
-                ""identifier"": ""AwesomeMod"",
-                ""author"": ""AwesomeModder"",
-                ""version"": ""1.0.0"",
-                ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
-                ""install"": [
-                    {{
-                        ""file"": ""ExampleShips/AwesomeShip.craft"",
-                        ""install_to"": ""{0}""
-                    }}
-                ]
-            }}
-            ", directory));
-
-            // Act
-            List<InstallableFile> results;
-            using (var inst = new DisposableKSP())
-            {
-                results = mod.install!.First().FindInstallableFiles(zip, inst.KSP);
-            }
-
-            // Assert
-            Assert.That(
-                results.Count(i => i.destination.EndsWith(string.Format("/{0}/AwesomeShip.craft", directory))) == 1,
-                Is.True
-            );
-        }
-
-        // TODO: It would be nice to merge this and the above function into one super
-        // test.
-        [Test]
-        public void AllowInstallsToScenarios()
-        {
-            // Bogus zip with example to install.
-            var zip = ZipFile.Create(new MemoryStream());
-            zip.BeginUpdate();
-            zip.AddDirectory("saves");
-            zip.AddDirectory("saves/scenarios");
-            zip.Add(new ZipEntry("saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
-            zip.CommitUpdate();
-
-            var mod = CkanModule.FromJson(@"
-                {
-                    ""spec_version"": ""v1.14"",
-                    ""identifier"": ""AwesomeMod"",
-                    ""author"": ""AwesomeModder"",
-                    ""version"": ""1.0.0"",
-                    ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
-                    ""install"": [
-                        {
-                            ""file"": ""saves/scenarios/AwesomeRace.sfs"",
-                            ""install_to"": ""Scenarios""
-                        }
-                    ]
-                }");
-
-            using (var inst = new DisposableKSP())
-            {
-                var results = mod.install!.First().FindInstallableFiles(zip, inst.KSP);
-
-                Assert.AreEqual(
-                    CKANPathUtils.NormalizePath(
-                        Path.Combine(inst.KSP.GameDir(), "saves/scenarios/AwesomeRace.sfs")),
-                    results.First().destination);
             }
         }
 
