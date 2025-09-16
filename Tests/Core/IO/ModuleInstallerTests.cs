@@ -1358,6 +1358,77 @@ namespace Tests.Core.IO
             }
         }
 
+        [Test]
+        public void UninstallList_CraftFiles_ShipsFolderNotDeleted()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var cacheDir = new TemporaryDirectory())
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager()))
+            {
+                var cache     = new NetModuleCache(cacheDir.Directory.FullName);
+                var installer = new ModuleInstaller(inst.KSP, cache, config, user);
+                var opts      = RelationshipResolverOptions.DependsOnlyOpts(inst.KSP.StabilityToleranceConfig);
+                var modules   = new CkanModule[]
+                                {
+                                    CkanModule.FromJson(
+                                        $@"{{
+                                            ""spec_version"": 1,
+                                            ""identifier"":   ""CraftsMod"",
+                                            ""name"":         ""Crafts Mod"",
+                                            ""abstract"":     ""A mod that installs craft files"",
+                                            ""version"":      ""1.0"",
+                                            ""download"":     ""https://github.com/"",
+                                            ""install"": [
+                                                {{
+                                                    ""file"": ""{flag_path}"",
+                                                    ""install_to"": ""Ships/VAB"",
+                                                    ""as"": ""mycraft.craft""
+                                                }},
+                                                {{
+                                                    ""file"": ""{flag_path}"",
+                                                    ""install_to"": ""Ships/SPH"",
+                                                    ""as"": ""mycraft.craft""
+                                                }}
+                                            ]
+                                        }}"),
+                                };
+                foreach (var mod in modules)
+                {
+                    cache.Store(mod, TestData.DogeCoinFlagZip(), null);
+                }
+                HashSet<string>? possibleConfigOnlyDirs = null;
+                var shipDirs = new string[]
+                {
+                    "Ships/VAB",
+                    "Ships/SPH",
+                };
+                foreach (var dir in shipDirs.Select(inst.KSP.ToAbsoluteGameDir))
+                {
+                    Directory.CreateDirectory(dir);
+                }
+
+                // Act
+                installer.InstallList(modules, opts, regMgr, ref possibleConfigOnlyDirs,
+                                      ConfirmPrompt: false);
+                foreach (var dir in shipDirs)
+                {
+                    Assert.IsTrue(File.Exists(inst.KSP.ToAbsoluteGameDir($"{dir}/mycraft.craft")));
+                }
+                installer.UninstallList(modules.Select(m => m.identifier),
+                                        ref possibleConfigOnlyDirs, regMgr, false);
+
+                // Assert
+                Assert.IsNull(possibleConfigOnlyDirs);
+                foreach (var absPath in shipDirs.Select(inst.KSP.ToAbsoluteGameDir))
+                {
+                    Assert.IsTrue(Directory.Exists(absPath));
+                }
+            }
+        }
+
         [Test,
             // No mods, nothing installed
             TestCase(new string[] { },
