@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -34,12 +36,13 @@ namespace CKAN.NetKAN.Sources.Jenkins
                 ? UnixEpoch.AddMilliseconds(d)
                 : null;
 
+        [ExcludeFromCodeCoverage]
+        public override bool CanWrite => false;
+
+        [ExcludeFromCodeCoverage]
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            if (value is DateTime dateTime)
-            {
-                writer.WriteValue((long)(dateTime.ToUniversalTime() - UnixEpoch).TotalMilliseconds);
-            }
+            throw new NotImplementedException();
         }
 
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
