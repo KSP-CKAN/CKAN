@@ -24,7 +24,7 @@ namespace CKAN.GUI
 
         public void UpdateModInfo(GUIMod gui_module)
         {
-            CkanModule module = gui_module.ToModule();
+            CkanModule module = gui_module.Module;
 
             Util.Invoke(this, () =>
             {
@@ -61,7 +61,7 @@ namespace CKAN.GUI
 
                 var compatMod = gui_module.LatestCompatibleMod
                                 ?? gui_module.LatestAvailableMod
-                                ?? gui_module.ToModule();
+                                ?? gui_module.Module;
                 GameCompatibilityTextBox.Text = string.Format(
                     Properties.Resources.GUIModGameCompatibilityLong,
                     gui_module.GameCompatibility,

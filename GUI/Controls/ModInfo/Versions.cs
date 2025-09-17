@@ -330,7 +330,7 @@ namespace CKAN.GUI
                     if (startingModule.Equals(visibleGuiModule))
                     {
                         // Only show checkboxes for non-DLC modules
-                        VersionsListView.CheckBoxes = interactive && !gmod.ToModule().IsDLC;
+                        VersionsListView.CheckBoxes = interactive && !gmod.Module.IsDLC;
                         ignoreItemCheck = true;
                         VersionsListView.Items.AddRange(items);
                         VersionsListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);

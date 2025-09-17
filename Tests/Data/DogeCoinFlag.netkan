@@ -1,2 +1,4 @@
 identifier: DogeCoinFlag
 $kref: '#/ckan/github/testuser/testrepo'
+tags:
+  - flags

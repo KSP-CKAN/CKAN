@@ -77,7 +77,7 @@ namespace CKAN.GUI
                         ReverseRelationshipsCheckbox.CheckState = CheckState.Unchecked;
                     }
                     selectedModule = value;
-                    UpdateModDependencyGraph(selectedModule?.ToModule());
+                    UpdateModDependencyGraph(selectedModule?.Module);
                 }
             }
             get => selectedModule;
@@ -125,7 +125,7 @@ namespace CKAN.GUI
 
         private void ReverseRelationshipsCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
-            UpdateModDependencyGraph(SelectedModule?.ToModule());
+            UpdateModDependencyGraph(SelectedModule?.Module);
         }
 
         private void _UpdateModDependencyGraph(CkanModule module)

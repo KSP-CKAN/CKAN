@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using CKAN.Versioning;
 
 namespace CKAN.GUI
 {
+    [ExcludeFromCodeCoverage]
     public abstract class IGUIPlugin
     {
 

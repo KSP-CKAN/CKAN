@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+
 using CKAN;
 using CKAN.Versioning;
 
@@ -434,7 +435,8 @@ namespace Tests.Data
                         ""sha1"": ""9EC130C7D212DB664A97C28AFCA46CD186B73B3C"",
                         ""sha256"": ""C7D787A875C92A0DCA5B7F0B8900F92F5FAE9DC23F2FDB95509B31420F209015"",
                     },
-                    ""ksp_version"": ""0.25""
+                    ""ksp_version"": ""0.25"",
+                    ""tags"": [ ""plugin"" ]
                 }
             ";
 
@@ -701,7 +703,6 @@ namespace Tests.Data
 
         public static string KspAvcJson()
             => File.ReadAllText(DataDir("ksp-avc.version"));
-
 
         public static string KspAvcJsonOneLineVersion()
             => File.ReadAllText(DataDir("ksp-avc-one-line.version"));

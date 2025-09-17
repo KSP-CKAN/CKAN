@@ -1,11 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 using NUnit.Framework;
-using log4net;
-using log4net.Core;
 
 using CKAN.IO;
 using Tests.Data;
@@ -53,7 +50,6 @@ namespace Tests.Core.IO
         public void Constructor_WithCorruptedLibrary_Works()
         {
             // Arrange
-            LogManager.GetRepository(Assembly.GetExecutingAssembly()).Threshold = Level.Off;
             using (var dir = new TemporarySteamDirectory(
                                  new (string acfFileName, int appId, string appName)[]
                                  {
@@ -79,18 +75,21 @@ namespace Tests.Core.IO
                 File.WriteAllBytes(Path.Combine(dir.AppsDirectory.FullName, "appmanifest_253250.acf"),
                                    Enumerable.Repeat((byte)0, 128).ToArray());
 
-                // Act
-                var lib = new SteamLibrary(dir.Directory.FullName);
+                using (var noLog = new TemporaryLogSuppressor())
+                {
+                    // Act
+                    var lib = new SteamLibrary(dir.Directory.FullName);
 
-                // Assert
-                CollectionAssert.AreEquivalent(new string[]
-                                               {
-                                                   "Kerbal Space Program",
-                                                   "Kerbal Space Program 2",
-                                                   "Test Instance",
-                                                   "Empty StartDir",
-                                               },
-                                               lib.Games.Select(g => g.Name));
+                    // Assert
+                    CollectionAssert.AreEquivalent(new string[]
+                                                   {
+                                                       "Kerbal Space Program",
+                                                       "Kerbal Space Program 2",
+                                                       "Test Instance",
+                                                       "Empty StartDir",
+                                                   },
+                                                   lib.Games.Select(g => g.Name));
+                }
             }
         }
 

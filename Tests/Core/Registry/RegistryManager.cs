@@ -1,11 +1,8 @@
 using System;
 using System.Linq;
 using System.IO;
-using System.Reflection;
 
 using NUnit.Framework;
-using log4net;
-using log4net.Core;
 
 using CKAN;
 using CKAN.Versioning;
@@ -114,12 +111,11 @@ namespace Tests.Core.Registry
         public void Registry_ZeroByteRegistryJson_EmptyRegistryWithoutCrash()
         {
             // Arrange
-            LogManager.GetRepository(Assembly.GetExecutingAssembly()).Threshold = Level.Off;
-
-            // Act
             var user = new NullUser();
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var noLog    = new TemporaryLogSuppressor())
+            // Act
             using (var inst     = new DisposableKSP(TestData.TestRegistryZeroBytes()))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
@@ -150,6 +146,7 @@ namespace Tests.Core.Registry
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var inst     = new DisposableKSP())
+            using (var noLog    = new TemporaryLogSuppressor())
             {
                 var gamedata = inst.KSP.game.PrimaryModDirectory(inst.KSP);
                 Assert.IsTrue(Path.IsPathRooted(gamedata));
@@ -205,6 +202,7 @@ namespace Tests.Core.Registry
             var user = new NullUser();
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var noLog    = new TemporaryLogSuppressor())
             using (var inst     = new DisposableKSP(TestData.TestRegistryVersion1()))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))

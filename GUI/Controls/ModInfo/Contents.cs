@@ -43,12 +43,12 @@ namespace CKAN.GUI
                     if (selectedModule != null)
                     {
                         ContentsDownloadButton.Text = string.Format(Properties.Resources.ModInfoDownload,
-                                                                    CkanModule.FmtSize(selectedModule.ToModule().download_size));
+                                                                    CkanModule.FmtSize(selectedModule.Module.download_size));
                         selectedModule.PropertyChanged += SelectedMod_PropertyChanged;
                     }
                     Util.Invoke(ContentsPreviewTree,
                                 () => _UpdateModContentsTree(selectedModule?.InstalledMod,
-                                                             selectedModule?.ToModule()));
+                                                             selectedModule?.Module));
                 }
             }
             get => selectedModule;
@@ -118,7 +118,7 @@ namespace CKAN.GUI
         private void ContentsOpenButton_Click(object? sender, EventArgs? e)
         {
             if (SelectedModule != null
-                && manager?.Cache?.GetCachedFilename(SelectedModule.ToModule()) is string s)
+                && manager?.Cache?.GetCachedFilename(SelectedModule.Module) is string s)
             {
                 Utilities.ProcessStartURL(s);
             }

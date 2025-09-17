@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 
 namespace CKAN.GUI
 {
+    [ExcludeFromCodeCoverage]
     public class PluginController
     {
         public PluginController(string path, bool activate = true)
@@ -125,7 +127,10 @@ namespace CKAN.GUI
                 }
                 catch (Exception ex)
                 {
-                    log.ErrorFormat("Failed to activate plugin \"{0} - {1}\" - {2}", plugin.GetName(), plugin.GetVersion(), ex.Message);
+                    log.ErrorFormat("Failed to activate plugin \"{0} - {1}\" - {2}",
+                                    plugin.GetName(),
+                                    plugin.GetVersion(),
+                                    ex.ToString());
                     return;
                 }
 

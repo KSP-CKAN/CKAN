@@ -99,7 +99,6 @@ namespace CKAN.GUI
         public string Description { get; private set; }
         public string Identifier { get; private set; }
         public bool IsNew { get; set; }
-        public bool IsCKAN => Mod != null;
         public string Abbrevation { get; private set; }
 
         public string SearchableName { get; private set; }
@@ -296,26 +295,9 @@ namespace CKAN.GUI
 
         /// <summary>
         /// Get the CkanModule associated with this GUIMod.
-        /// See <see cref="ToModule"/> for a method that doesn't throw.
-        /// </summary>
-        /// <returns>The CkanModule associated with this GUIMod</returns>
-        /// <exception cref="InvalidCastException">Thrown if no CkanModule is associated</exception>
-        public CkanModule ToCkanModule()
-        {
-            if (!IsCKAN)
-            {
-                throw new InvalidCastException(Properties.Resources.GUIModMethodNotCKAN);
-            }
-
-            var mod = Mod;
-            return mod;
-        }
-
-        /// <summary>
-        /// Get the CkanModule associated with this GUIMod.
         /// </summary>
         /// <returns>The CkanModule associated with this GUIMod or null if there is none</returns>
-        public CkanModule ToModule() => Mod;
+        public CkanModule Module => Mod;
 
         public IEnumerable<ModChange> GetModChanges(bool upgradeChecked,
                                                     bool replaceChecked,

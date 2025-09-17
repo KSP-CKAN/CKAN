@@ -247,6 +247,7 @@ namespace CKAN.CmdLine
             return instance.game;
         }
 
+        [ExcludeFromCodeCoverage]
         private void PrintUsage(string verb)
         {
             foreach (var h in FilterSubOptions.GetHelp(verb))
@@ -282,6 +283,7 @@ namespace CKAN.CmdLine
             return ht;
         }
 
+        [ExcludeFromCodeCoverage]
         public static IEnumerable<string> GetHelp(string verb)
         {
             // Add a usage prefix line

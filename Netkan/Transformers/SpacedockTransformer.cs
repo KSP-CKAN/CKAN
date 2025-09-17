@@ -96,14 +96,14 @@ namespace CKAN.NetKAN.Transformers
             // "GPLv3" - Becomes "GPL-3.0"
             // "LGPL"  - Specific version is indeterminate
             json.SafeAdd("license",
-                         sdMod.license?.Trim().Replace(' ', '-') switch
+                         sdMod.license switch
                          {
                              "GPLv2"                        => "GPL-2.0",
                              "GPLv3"                        => "GPL-3.0",
                              "Other"                        => "unknown",
                              "ARR" or "All Rights Reserved"
                                    or "All rights reserved" => "restricted",
-                             var sdLicense                  => sdLicense,
+                             var sdLicense                  => sdLicense?.Trim().Replace(' ', '-'),
                          });
 
             // Make sure resources exist.

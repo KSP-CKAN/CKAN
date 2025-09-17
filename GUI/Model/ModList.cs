@@ -550,7 +550,7 @@ namespace CKAN.GUI
             var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility       };
             var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize            };
             var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize             };
-            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.ToModule().release_date };
+            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.Module.release_date     };
             var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate             };
             var desc          = new DataGridViewTextBoxCell { Value = ToGridText(mod.Abstract)    };
 

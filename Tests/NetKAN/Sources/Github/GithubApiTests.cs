@@ -27,20 +27,21 @@ namespace Tests.NetKAN.Sources.Github
                 var githubRef = new GithubRef("KSP-CKAN", "Test");
 
                 // Act
-                var repo    = sut.GetRepo(githubRef);
-                var release = sut.GetLatestRelease(githubRef, false);
-                var members = sut.getOrgMembers(repo!.Owner!);
+                var repo    = sut.GetRepo(githubRef)!;
+                var release = sut.GetLatestRelease(githubRef, false)!;
+                var members = sut.getOrgMembers(repo.Owner!);
 
                 // Assert
-                Assert.IsNotNull(repo?.Name);
-                Assert.IsNotNull(repo?.FullName);
-                Assert.IsNotNull(repo?.Description);
-                Assert.IsNotNull(repo?.Owner);
+                Assert.IsNotNull(repo.Name);
+                Assert.IsNotNull(repo.FullName);
+                Assert.IsNotNull(repo.Description);
+                Assert.IsNotNull(repo.Owner);
 
-                Assert.IsNotNull(release?.Author);
-                Assert.IsNotNull(release?.Tag);
-                Assert.IsNotNull(release?.Assets?.FirstOrDefault());
-                Assert.IsNotNull(release?.Assets?.FirstOrDefault()?.Download);
+                Assert.IsNotNull(release.Author);
+                Assert.IsNotNull(release.Tag);
+                Assert.IsNotNull(release.Assets?.FirstOrDefault());
+                Assert.IsNotNull(release.Assets?.FirstOrDefault()?.Download);
+                Assert.IsNotNull(release.SourceArchiveAsset);
 
                 Assert.That(members.Count, Is.GreaterThanOrEqualTo(3));
                 Assert.Contains("HebaruSan", members.Select(u => u.Login).ToArray());

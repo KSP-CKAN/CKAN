@@ -834,7 +834,7 @@ namespace CKAN.GUI
         private GUIMod? ActiveModInfo
         {
             set {
-                if (value?.ToModule() == null)
+                if (value?.Module == null)
                 {
                     splitContainer1.Panel2Collapsed = true;
                 }
@@ -878,7 +878,7 @@ namespace CKAN.GUI
                 tabController.ShowTab(ChangesetTabPage.Name, 1, false);
                 UpdateChangesDialog(
                     changeset,
-                    conflicts.ToDictionary(item => item.Key.ToCkanModule(),
+                    conflicts.ToDictionary(item => item.Key.Module,
                                            item => item.Value));
                 AuditRecommendationsToolStripMenuItem.Enabled = false;
             }
@@ -993,7 +993,7 @@ namespace CKAN.GUI
         private void ManageMods_StartChangeSet(List<ModChange> changeset, Dictionary<GUIMod, string> conflicts)
         {
             UpdateChangesDialog(changeset,
-                                conflicts?.ToDictionary(item => item.Key.ToCkanModule(),
+                                conflicts?.ToDictionary(item => item.Key.Module,
                                                         item => item.Value));
             tabController.ShowTab(ChangesetTabPage.Name, 1);
         }

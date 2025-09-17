@@ -1366,7 +1366,7 @@ namespace CKAN.GUI
         {
             if (SelectedModules.ToArray() is { Length: > 0 } and var modules)
             {
-                var downloadable = modules.Where(m => !m.ToModule().IsMetapackage)
+                var downloadable = modules.Where(m => !m.Module.IsMetapackage)
                                           .ToArray();
                 // Set the menu options
                 downloadContentsToolStripMenuItem.Enabled = downloadable.Any(m => !m.IsCached);
@@ -1386,7 +1386,7 @@ namespace CKAN.GUI
         private void reinstallToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
             if (SelectedModules.Where(m => m.IsInstalled && !m.IsAutodetected)
-                               .Select(m => m.ToModule())
+                               .Select(m => m.Module)
                                .ToArray()
                 is { Length: > 0 } and var modules
                 && currentInstance != null)
@@ -1419,7 +1419,7 @@ namespace CKAN.GUI
             // Purge other versions as well since the user is likely to want that
             // and has no other way to achieve it
             if (currentInstance != null && manager?.Cache != null
-                && SelectedModules.Where(m => !m.ToModule().IsMetapackage
+                && SelectedModules.Where(m => !m.Module.IsMetapackage
                                               && m.IsCached)
                                   .ToArray()
                    is { Length: > 0 } and var modules)
@@ -1427,7 +1427,7 @@ namespace CKAN.GUI
                 UseWaitCursor = true;
                 var reg = RegistryManager.Instance(currentInstance, repoData).registry;
                 manager.Cache.Purge(
-                    modules.SelectMany(m => Enumerable.Repeat(m.ToModule(), 1)
+                    modules.SelectMany(m => Enumerable.Repeat(m.Module, 1)
                                                       .Concat(Utilities.DefaultIfThrows(
                                                                   () => reg.AvailableByIdentifier(m.Identifier))
                                                               ?? Enumerable.Empty<CkanModule>())
@@ -1439,7 +1439,7 @@ namespace CKAN.GUI
 
         private void downloadContentsToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            if (SelectedModules.Where(m => !m.ToModule().IsMetapackage
+            if (SelectedModules.Where(m => !m.Module.IsMetapackage
                                            && !m.IsCached)
                                .ToArray()
                 is { Length: > 0 } and var modules)
@@ -1786,8 +1786,8 @@ namespace CKAN.GUI
         {
             var gmodA = a.Tag as GUIMod;
             var gmodB = b.Tag as GUIMod;
-            var modA = gmodA?.ToModule();
-            var modB = gmodB?.ToModule();
+            var modA = gmodA?.Module;
+            var modB = gmodB?.Module;
             var cellA = a.Cells[col.Index];
             var cellB = b.Cells[col.Index];
             if (col is DataGridViewCheckBoxColumn)

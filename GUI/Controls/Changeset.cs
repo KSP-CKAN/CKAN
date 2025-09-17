@@ -160,7 +160,9 @@ namespace CKAN.GUI
         public readonly ModuleLabel? WarningLabel = null;
         public readonly string?      Conflict     = null;
 
-        public string Mod         => Change.NameAndStatus ?? "";
+        public string Mod         => Main.Instance?.Manager?.Cache is NetModuleCache cache
+                                         ? Change.NameAndStatus(cache)
+                                         : "";
         public string ChangeType  => Change.ChangeType.LocalizeDescription();
         public string Reasons     { get; private set; }
         public Bitmap DeleteImage => Change.IsRemovable ? EmbeddedImages.textClear ?? EmptyBitmap

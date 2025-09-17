@@ -14,7 +14,7 @@ namespace Tests.CmdLine
     public class ShowTests
     {
         [Test]
-        public void RunCommand_AGExt_Works()
+        public void RunCommand_WithTestMods_Works()
         {
             // Ensure the default locale is used
             CultureInfo.DefaultThreadCurrentUICulture =
@@ -23,59 +23,159 @@ namespace Tests.CmdLine
 
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
-            var repo = new Repository("test", "https://github.com/");
             using (var inst     = new DisposableKSP())
-            using (var repoData = new TemporaryRepositoryData(user, new Dictionary<Repository, RepositoryData>
-            {
-                { repo, RepositoryData.FromJson(TestData.TestRepository(), null)! },
-            }))
-            using (var regMgr = RegistryManager.Instance(inst.KSP, repoData.Manager,
-                                                         new Repository[] { repo }))
+            using (var repo     = new TemporaryRepository(
+                                      @"{
+                                          ""spec_version"": 1,
+                                          ""identifier"": ""TestMod"",
+                                          ""name"": ""Test Mod"",
+                                          ""abstract"": ""A mod with lots of metadata to be shown"",
+                                          ""description"": ""We have to fill in a lot of fields to cover the show command"",
+                                          ""author"": [ ""User1"", ""User2"" ],
+                                          ""version"": ""1.0"",
+                                          ""license"": ""MIT"",
+                                          ""release_status"": ""stable"",
+                                          ""tags"": [ ""plugin"" ],
+                                          ""localizations"": [ ""en-US"" ],
+                                          ""resources"": {
+                                              ""homepage"": ""https://testmod.com""
+                                          },
+                                          ""provides"":   [ ""provided"" ],
+                                          ""depends"":    [ { ""name"": ""Dependency""  } ],
+                                          ""recommends"": [ { ""name"": ""Recommended"" } ],
+                                          ""suggests"":   [ { ""name"": ""Suggested""   } ],
+                                          ""supports"":   [ { ""name"": ""Supported""   } ],
+                                          ""download"": ""https://github.com/""
+                                      }",
+                                      @"{
+                                          ""spec_version"": 1,
+                                          ""identifier"": ""InstalledMod"",
+                                          ""name"": ""Installed Mod"",
+                                          ""abstract"": ""A mod with lots of metadata to be shown"",
+                                          ""description"": ""We have to fill in a lot of fields to cover the show command"",
+                                          ""author"": [ ""User1"", ""User2"" ],
+                                          ""version"": ""1.0"",
+                                          ""license"": ""MIT"",
+                                          ""release_status"": ""stable"",
+                                          ""tags"": [ ""plugin"" ],
+                                          ""localizations"": [ ""en-US"" ],
+                                          ""resources"": {
+                                              ""homepage"": ""https://testmod.com""
+                                          },
+                                          ""provides"":   [ ""provided"" ],
+                                          ""depends"":    [ { ""name"": ""Dependency""  } ],
+                                          ""recommends"": [ { ""name"": ""Recommended"" } ],
+                                          ""suggests"":   [ { ""name"": ""Suggested""   } ],
+                                          ""supports"":   [ { ""name"": ""Supported""   } ],
+                                          ""download"": ""https://github.com/""
+                                      }",
+                                      @"{
+                                          ""spec_version"": 1,
+                                          ""identifier"": ""Dependency"",
+                                          ""name"": ""Dependency Mod"",
+                                          ""abstract"": ""A mod that we need for TestMod to be compatible"",
+                                          ""version"": ""1.0"",
+                                          ""download"": ""https://github.com/""
+                                      }"))
+            using (var repoData = new TemporaryRepositoryData(new NullUser(), repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
             {
                 ICommand sut  = new Show(repoData.Manager, user);
                 var      opts = new ShowOptions()
                                 {
                                     with_versions = true,
-                                    modules       = new List<string> { "AGExt" },
+                                    modules       = new List<string> { "InstalledMod", "TestMod" },
                                 };
 
                 // Act
+                regMgr.registry.RegisterModule(regMgr.registry.LatestAvailable("InstalledMod",
+                                                                               inst.KSP.StabilityToleranceConfig,
+                                                                               inst.KSP.VersionCriteria())!,
+                                               new string[] { inst.KSP.ToAbsoluteGameDir("GameData/InstalledMod.dll") },
+                                               inst.KSP,
+                                               false);
                 sut.RunCommand(inst.KSP, opts);
 
                 // Assert
                 CollectionAssert.AreEqual(
                     new string[]
                     {
-                        "Action Groups Extended: Increases the number of action groups to 250 and allows in-flight editing.",
+                        "Installed Mod: A mod with lots of metadata to be shown",
+                        "",
+                        "We have to fill in a lot of fields to cover the show command",
                         "",
                         "Module info:",
-                        "  Version:	1.24a",
-                        "  Authors:	Diazo",
+                        "  Version:	1.0",
+                        "  Authors:	User1, User2",
                         "  Status:	stable",
-                        "  Licence:	GPL-3.0",
+                        "  Licence:	MIT",
+                        "  Tags: 	plugin",
+                        "  Languages:	en-US",
+                        "",
+                        "Depends:",
+                        "  - Dependency",
                         "",
                         "Recommends:",
-                        "  - Toolbar",
+                        "  - Recommended",
+                        "",
+                        "Suggests:",
+                        "  - Suggested",
+                        "",
+                        "Supports:",
+                        "  - Supported",
+                        "",
+                        "Provides:",
+                        "  - provided",
                         "",
                         "Resources:",
-                        "  Home page:	http://forum.kerbalspaceprogram.com/threads/74195",
-                        "  Repository:	https://github.com/SirDiazo/AGExt",
+                        "  Home page:	https://testmod.com/",
                         "",
-                        "Filename: F3862938-AGExt-1.24a.zip",
+                        "Filename: D7B3438D-InstalledMod-1.0.zip",
                         "",
-                        "Version  Game Versions",
-                        "-------  -------------",
-                        "1.24a    KSP 0.25     ",
-                        "1.24     KSP 0.25     ",
-                        "1.23c    KSP 0.25     ",
-                        "1.23a    KSP 0.25     ",
-                        "1.23     KSP 0.25     ",
-                        "1.22b    KSP 0.25     ",
-                        "1.22a    KSP 0.25     ",
-                        "1.22     KSP 0.25     ",
-                        "1.21a    KSP 0.25     ",
-                        "1.20     KSP 0.25     ",
-                        ""
+                        "Showing 1 installed files:",
+                        "  - GameData/InstalledMod.dll",
+                        "",
+                        "Version  Game Versions   ",
+                        "-------  ----------------",
+                        "1.0      KSP All versions",
+                        "",
+                        "Test Mod: A mod with lots of metadata to be shown",
+                        "",
+                        "We have to fill in a lot of fields to cover the show command",
+                        "",
+                        "Module info:",
+                        "  Version:	1.0",
+                        "  Authors:	User1, User2",
+                        "  Status:	stable",
+                        "  Licence:	MIT",
+                        "  Tags: 	plugin",
+                        "  Languages:	en-US",
+                        "",
+                        "Depends:",
+                        "  - Dependency",
+                        "",
+                        "Recommends:",
+                        "  - Recommended",
+                        "",
+                        "Suggests:",
+                        "  - Suggested",
+                        "",
+                        "Supports:",
+                        "  - Supported",
+                        "",
+                        "Provides:",
+                        "  - provided",
+                        "",
+                        "Resources:",
+                        "  Home page:	https://testmod.com/",
+                        "",
+                        "Filename: D7B3438D-TestMod-1.0.zip",
+                        "",
+                        "Version  Game Versions   ",
+                        "-------  ----------------",
+                        "1.0      KSP All versions",
+                        "",
                     },
                     user.RaisedMessages);
             }
