@@ -25,6 +25,7 @@ namespace Tests.NetKAN.Validators
             ValidCkan["author"] = "Phenomenal Author";
             ValidCkan["license"] = "GPL-3.0";
             ValidCkan["version"] = "1.0.0";
+            ValidCkan["tags"] = new JArray(new string[] { "plugin" });
             ValidCkan["download"] = "https://www.awesome-mod.example/AwesomeMod.zip";
             ValidCkan["tags"] = new JArray(new string[] { "testing" });
         }

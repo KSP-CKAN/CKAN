@@ -327,7 +327,7 @@ namespace CKAN
                     segments.Count < 6
                     || segments[3] is not ("blob/" or "tree/"))
                 {
-                    log.WarnFormat("Remote non-raw GitHub URL is in an unknown format, using as is.");
+                    log.InfoFormat("Remote non-raw GitHub URL is in an unknown format, using as is.");
                     return remoteUri;
                 }
 
