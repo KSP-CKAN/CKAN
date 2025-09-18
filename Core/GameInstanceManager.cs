@@ -15,6 +15,7 @@ using CKAN.Configuration;
 using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
+using CKAN.DLC;
 
 namespace CKAN
 {
@@ -324,7 +325,7 @@ namespace CKAN
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
         /// <exception cref="NotGameDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if a write operation didn't complete for whatever reason.</exception>
         public void FakeInstance(IGame game, string newName, string newPath, GameVersion version,
-                                 Dictionary<DLC.IDlcDetector, GameVersion>? dlcs = null)
+                                 Dictionary<IDlcDetector, GameVersion>? dlcs = null)
         {
             TxFileManager fileMgr = new TxFileManager();
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
@@ -375,11 +376,8 @@ namespace CKAN
                 // Create the needed folder structure and the readme.txt for DLCs that should be simulated.
                 if (dlcs != null)
                 {
-                    foreach (KeyValuePair<DLC.IDlcDetector, GameVersion> dlc in dlcs)
+                    foreach ((IDlcDetector dlcDetector, GameVersion dlcVersion) in dlcs)
                     {
-                        DLC.IDlcDetector dlcDetector = dlc.Key;
-                        GameVersion dlcVersion = dlc.Value;
-
                         if (!dlcDetector.AllowedOnBaseVersion(version))
                         {
                             throw new WrongGameVersionKraken(

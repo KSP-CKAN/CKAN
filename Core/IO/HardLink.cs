@@ -175,7 +175,7 @@ namespace CKAN.IO
             foreach (var pathsString in LimitedStringJoins(paths.Select(p => $"\"{p}\""),
                                                            " ", STAT_ARG_MAX))
             {
-                if (Process.Start(new ProcessStartInfo("stat", $"-c '{fmt}' {pathsString}")
+                if (Process.Start(new ProcessStartInfo("stat", $"-c \"{fmt}\" {pathsString}")
                                   {
                                       UseShellExecute        = false,
                                       RedirectStandardOutput = true,

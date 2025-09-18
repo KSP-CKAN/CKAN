@@ -72,7 +72,6 @@ namespace CKAN.Games.KerbalSpaceProgram
             "saves",
             "Screenshots",
             "thumbs",
-            "Missions",
             "Logs",
             "CKAN/history",
             "CKAN/downloads",
