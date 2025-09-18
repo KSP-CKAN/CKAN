@@ -117,16 +117,10 @@ namespace CKAN
             // Get the files in the directory and copy them to the new location
             foreach (var file in sourceDir.GetFiles())
             {
-                if (file.Name == "registry.locked")
+                if (file.Name is "registry.locked" or "playtime.json")
                 {
                     continue;
                 }
-
-                else if (file.Name == "playtime.json")
-                {
-                    continue;
-                }
-
                 InstalledFilesDeduplicator.CreateOrCopy(file,
                                                         Path.Combine(destDirPath, file.Name),
                                                         file_transaction);
