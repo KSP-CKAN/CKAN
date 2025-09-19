@@ -184,7 +184,9 @@ namespace Tests.GUI
                                           ""download"":     ""https://github.com/download""
                                       }"))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var cacheDir = new TemporaryDirectory())
             {
+                var cache = new NetModuleCache(cacheDir.Directory.FullName);
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var search1  = ModSearch.Parse(labels, inst.KSP, "is:replaceable")!;
                 var search2  = ModSearch.Parse(labels, inst.KSP, "not:replaceable")!;
@@ -200,7 +202,7 @@ namespace Tests.GUI
                                           }"),
                                       repoData.Manager, registry,
                                       inst.KSP.StabilityToleranceConfig,
-                                      inst.KSP.VersionCriteria(),
+                                      inst.KSP, cache,
                                       null, false, false);
                 var mod2 = new GUIMod(CkanModule.FromJson(
                                           @"{
@@ -212,7 +214,7 @@ namespace Tests.GUI
                                           }"),
                                       repoData.Manager, registry,
                                       inst.KSP.StabilityToleranceConfig,
-                                      inst.KSP.VersionCriteria(),
+                                      inst.KSP, cache,
                                       null, false, false);
 
                 // Act / Assert

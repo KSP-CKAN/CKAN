@@ -50,14 +50,15 @@ namespace CKAN.GUI
 
         private void InstallationHistory_OnSelectedModuleChanged(CkanModule m)
         {
-            if (CurrentInstance != null)
+            if (CurrentInstance != null && Manager.Cache != null)
             {
                 ActiveModInfo = m == null
                     ? null
                     : new GUIMod(m, repoData,
                                  RegistryManager.Instance(CurrentInstance, repoData).registry,
                                  CurrentInstance.StabilityToleranceConfig,
-                                 CurrentInstance.VersionCriteria(),
+                                 CurrentInstance,
+                                 Manager.Cache,
                                  null,
                                  configuration?.HideEpochs ?? false,
                                  configuration?.HideV      ?? false);

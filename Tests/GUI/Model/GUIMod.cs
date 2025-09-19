@@ -8,6 +8,7 @@ using System.Runtime.Versioning;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Configuration;
 using CKAN.GUI;
 using CKAN.Versioning;
 
@@ -31,12 +32,14 @@ namespace Tests.GUI
             using (var repo = new TemporaryRepository(TestData.kOS_014()))
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var cacheDir = new TemporaryDirectory())
             {
+                var cache = new NetModuleCache(cacheDir.Directory.FullName);
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("kOS", "0.14");
 
                 var mod = new GUIMod(ckan_mod!, repoData.Manager, registry,
-                                     tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                                     tidy.KSP.StabilityToleranceConfig, tidy.KSP, cache,
                                      null, false, false);
                 Assert.True(mod.SelectedMod == mod.InstalledMod?.Module);
             }
@@ -58,14 +61,17 @@ namespace Tests.GUI
                 using (var repo = new TemporaryRepository(old_version.ToJson(),
                                                           new_version.ToJson()))
                 using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-                {
+            using (var cacheDir = new TemporaryDirectory())
+            {
+                var cache = new NetModuleCache(cacheDir.Directory.FullName);
                     var registry = new Registry(repoData.Manager, repo.repo);
 
                     registry.RegisterModule(old_version, new List<string>(), tidy.KSP, false);
                     var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP,
                                                                       new HashSet<string>());
 
-                    var mod = new GUIMod(old_version, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                    var mod = new GUIMod(old_version, repoData.Manager, registry,
+                                         tidy.KSP.StabilityToleranceConfig, tidy.KSP, cache,
                                          null, false, false)
                     {
                         HasUpdate = upgradeableGroups[true].Any(m => m.identifier == old_version.identifier),
@@ -99,14 +105,17 @@ namespace Tests.GUI
                     ""download"":    ""http://www.ksp-ckan.space""
                 }"))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var cacheDir = new TemporaryDirectory())
             {
+                var cache = new NetModuleCache(cacheDir.Directory.FullName);
                 var registry = new Registry(repoData.Manager, repo.repo);
 
                 var mainVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.2.0");
                 var prevVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.1.0");
 
                 // Act
-                GUIMod m = new GUIMod(mainVersion!, repoData.Manager, registry, tidy.KSP.StabilityToleranceConfig, tidy.KSP.VersionCriteria(),
+                GUIMod m = new GUIMod(mainVersion!, repoData.Manager, registry,
+                                      tidy.KSP.StabilityToleranceConfig, tidy.KSP, cache,
                                       null, false, false);
 
                 // Assert
@@ -114,5 +123,40 @@ namespace Tests.GUI
             }
         }
 
+        [Test]
+        public void UpdateIsCached_AfterStore_CallbackCalled()
+        {
+            // Arrange
+            using (var cacheDir = new TemporaryDirectory())
+            using (var inst = new DisposableKSP())
+            {
+                var cache    = new NetModuleCache(cacheDir.Directory.FullName);
+                var repoData = new RepositoryDataManager();
+                var sut      = new GUIMod(TestData.ModuleManagerModule(),
+                                          repoData,
+                                          new Registry(repoData),
+                                          new StabilityToleranceConfig(""),
+                                          inst.KSP, cache,
+                                          false, true, true);
+                bool notified = false;
+                sut.PropertyChanged += (sender, e) =>
+                {
+                    if (e.PropertyName == "IsCached")
+                    {
+                        notified = true;
+                    }
+                };
+
+                // Act
+                Assert.IsFalse(sut.IsCached);
+                cache.Store(TestData.ModuleManagerModule(),
+                            TestData.ModuleManagerZip(), null);
+                sut.UpdateIsCached(cache);
+
+                // Assert
+                Assert.IsTrue(sut.IsCached);
+                Assert.IsTrue(notified);
+            }
+        }
     }
 }
