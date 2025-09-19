@@ -828,6 +828,50 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
+        public void Constructor_WithDependsAnyOf_ChooseCorrectly()
+        {
+            var dependent = generator!.GenerateRandomModule();
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new AnyOfRelationshipDescriptor
+                {
+                    any_of = new List<RelationshipDescriptor>
+                    {
+                        new ModuleRelationshipDescriptor
+                        {
+                            name = "Nonexistent"
+                        },
+                        new ModuleRelationshipDescriptor
+                        {
+                            name = dependent.identifier
+                        },
+                        new ModuleRelationshipDescriptor
+                        {
+                            name = "Absent"
+                        }
+                    }
+                }
+            });
+
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var list = new List<CkanModule> { depender };
+
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
+                CollectionAssert.AreEquivalent(relationship_resolver.ModList(),
+                                               new List<CkanModule>
+                                               {
+                                                   dependent,
+                                                   depender,
+                                               });
+            }
+        }
+
+        [Test]
         public void Constructor_ReverseDependencyDoesntMatchLatest_ChoosesOlderVersion()
         {
             // Arrange
