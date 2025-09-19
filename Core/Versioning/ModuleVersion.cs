@@ -107,12 +107,6 @@ namespace CKAN.Versioning
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
-        public string StripEpoch()
-            => StripEpoch(_string);
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
         /// <param name="version">A version string that might contain an epoch</param>
         private static string StripEpoch(string version)
             // If our version number starts with a string of digits, followed by

@@ -62,7 +62,7 @@ namespace CKAN.ConsoleUI {
                         null, null),
                     new ConsoleListBoxColumn<CkanModule>(
                         Properties.Resources.ModListVersionHeader,
-                        m => m.version?.StripEpoch() ?? "",
+                        m => m.version?.ToString(true, false) ?? "",
                         (a, b) => a.version.CompareTo(b.version),
                         10),
                     new ConsoleListBoxColumn<CkanModule>(

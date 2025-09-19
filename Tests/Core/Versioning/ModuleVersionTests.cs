@@ -121,5 +121,26 @@ namespace Tests.Core.Versioning
 
             Assert.That(!v1.Equals(v2));
         }
+
+        [TestCase("1.0",    true,  true,  ExpectedResult = "1.0"),
+         TestCase("1:1.0",  true,  false, ExpectedResult = "1.0"),
+         TestCase("1:1.0",  false, true,  ExpectedResult = "1:1.0"),
+         TestCase("v1.0",   false, true,  ExpectedResult = "1.0"),
+         TestCase("1:v1.0", true,  false, ExpectedResult = "v1.0"),
+         TestCase("1:v1.0", false, true,  ExpectedResult = "1:1.0"),
+         TestCase("1:v1.0", true,  true,  ExpectedResult = "1.0"),
+        ]
+        public string ToString_WithVersions_StripsCorrectly(string ver,
+                                                            bool   stripEpoch,
+                                                            bool   stripV)
+            => new ModuleVersion(ver).ToString(stripEpoch, stripV);
+
+        [TestCase("1.0",    ExpectedResult = "1.0"),
+         TestCase("1:1.0",  ExpectedResult = "1.0 (1:1.0)"),
+         TestCase("1:v1.0", ExpectedResult = "v1.0 (1:v1.0)"),
+        ]
+        public string WithAndWithoutEpoch_WithVerions_WOrks(string ver)
+            => new ModuleVersion(ver).WithAndWithoutEpoch();
+
     }
 }
