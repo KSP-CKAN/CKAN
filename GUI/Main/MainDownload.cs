@@ -128,18 +128,21 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private void UpdateCachedByDownloads(CkanModule? module)
         {
-            var allGuiMods = ManageMods.AllGUIMods();
-            // Find all mods that share one or more download URLs with the given module, and so on
-            var affectedMods =
-                module?.GetDownloadsGroup(allGuiMods.Values
-                                                    .Select(guiMod => guiMod.Module)
-                                                    .OfType<CkanModule>())
-                       .Select(other => allGuiMods.GetValueOrDefault(other.identifier))
-                       .OfType<GUIMod>()
-                      ?? allGuiMods.Values;
-            foreach (var otherMod in affectedMods)
+            if (Manager.Cache is NetModuleCache cache)
             {
-                otherMod.UpdateIsCached();
+                var allGuiMods = ManageMods.AllGUIMods();
+                // Find all mods that share one or more download URLs with the given module, and so on
+                var affectedMods =
+                    module?.GetDownloadsGroup(allGuiMods.Values
+                                                        .Select(guiMod => guiMod.Module)
+                                                        .OfType<CkanModule>())
+                           .Select(other => allGuiMods.GetValueOrDefault(other.identifier))
+                           .OfType<GUIMod>()
+                          ?? allGuiMods.Values;
+                foreach (var otherMod in affectedMods)
+                {
+                    otherMod.UpdateIsCached(cache);
+                }
             }
         }
 

@@ -39,18 +39,31 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(checkBoxShareStock, Properties.Resources.CloneGameInstanceToolTipShareStock);
 
             // Populate the instances combobox with names of known instances
-            comboBoxKnownInstance.DataSource = new string[] { "" }
-                .Concat(manager.Instances.Values
-                    .Where(i => i.Valid)
-                    .OrderBy(i => i.game.ShortName)
-                    .OrderByDescending(i => i.Version())
-                    .ThenBy(i => i.Name)
-                    .Select(i => i.Name))
-                .ToList();
+            comboBoxKnownInstance.DataSource =
+                Enumerable.Repeat("", 1)
+                          .Concat(manager.Instances.Values
+                                                   .Where(i => i.Valid)
+                                                   .OrderByDescending(i => i.game.FirstReleaseDate)
+                                                   .ThenByDescending(i => i.Version())
+                                                   .ThenBy(i => i.Name)
+                                                   .Select(i => i.Name))
+                          .ToList();
             comboBoxKnownInstance.Text = selectedInstanceName
-                ?? manager.CurrentInstance?.Name
-                ?? manager.AutoStartInstance
-                ?? "";
+                                             ?? manager.CurrentInstance?.Name
+                                             ?? manager.AutoStartInstance
+                                             ?? "";
+
+            if (Platform.IsWindows)
+            {
+                checkBoxShareStock.Checked = true;
+            }
+            else
+            {
+                // Symbolic links break cloned instances on Linux
+                // (Games use paths like <GameRoot>/KSP_Data/../saves/,
+                //  which follow the symlinks to the original instance)
+                checkBoxShareStock.Visible = false;
+            }
         }
 
         #region clone
@@ -239,7 +252,6 @@ namespace CKAN.GUI
             {
                 textBoxNewPath.Text = folderBrowserDialogNewPath.SelectedPath;
             }
-
         }
 
         /// <summary>

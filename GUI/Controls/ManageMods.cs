@@ -1524,7 +1524,7 @@ namespace CKAN.GUI
         [ForbidGUICalls]
         private bool _UpdateModsList(Dictionary<string, bool>? old_modules = null)
         {
-            if (currentInstance == null || guiConfig == null)
+            if (currentInstance == null || guiConfig == null || manager?.Cache == null)
             {
                 return false;
             }
@@ -1550,7 +1550,8 @@ namespace CKAN.GUI
 
             RaiseMessage?.Invoke(Properties.Resources.MainModListLoadingInstalled);
 
-            var guiMods = ModList.GetGUIMods(registry, repoData, currentInstance, ModuleLabelList.ModuleLabels, guiConfig)
+            var guiMods = ModList.GetGUIMods(registry, repoData, currentInstance,
+                                             ModuleLabelList.ModuleLabels, manager.Cache, guiConfig)
                                  .ToHashSet();
 
             foreach (var gmod in mainModList?.full_list_of_mod_rows
@@ -2157,7 +2158,7 @@ namespace CKAN.GUI
                 return;
             }
 
-            if (mainModList == null)
+            if (mainModList == null || manager?.Cache == null)
             {
                 return;
             }
@@ -2183,7 +2184,8 @@ namespace CKAN.GUI
                                                                               inst.StabilityToleranceConfig, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
-                    item => new GUIMod(item.Key, repoData, registry, inst.StabilityToleranceConfig, gameVersion, null,
+                    item => new GUIMod(item.Key, repoData, registry, inst.StabilityToleranceConfig,
+                                       inst, manager.Cache, null,
                                        guiConfig?.HideEpochs ?? false,
                                        guiConfig?.HideV      ?? false),
                     item => item.Value);

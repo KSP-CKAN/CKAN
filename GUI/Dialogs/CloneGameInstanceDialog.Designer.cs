@@ -193,7 +193,7 @@ namespace CKAN.GUI
             // checkBoxShareStock
             //
             this.checkBoxShareStock.AutoSize = true;
-            this.checkBoxShareStock.Checked = true;
+            this.checkBoxShareStock.Checked = false;
             this.checkBoxShareStock.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBoxShareStock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkBoxShareStock.Location = new System.Drawing.Point(181, 204);

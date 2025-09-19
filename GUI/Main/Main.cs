@@ -851,14 +851,15 @@ namespace CKAN.GUI
 
         private void ShowSelectionModInfo(CkanModule? module)
         {
-            if (CurrentInstance != null && configuration != null)
+            if (CurrentInstance != null && configuration != null && Manager.Cache != null)
             {
                 ActiveModInfo = module == null ? null : new GUIMod(
                     module,
                     repoData,
                     RegistryManager.Instance(CurrentInstance, repoData).registry,
                     CurrentInstance.StabilityToleranceConfig,
-                    CurrentInstance.VersionCriteria(),
+                    CurrentInstance,
+                    Manager.Cache,
                     null,
                     configuration.HideEpochs,
                     configuration.HideV);

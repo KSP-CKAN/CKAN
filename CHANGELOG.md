@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Exclude internal .ckan files from `install_size` (#4348 by: HebaruSan)
 - [Core] Generate and tidy up XML docs for Core (#4351 by: HebaruSan)
 - [Core] Use setter instead of reflection to set max transaction timeout (#4365 by: doinkythederp; reviewed: HebaruSan)
-- [Build] Coverage and more tests (#4383, #4396, #4408, #4420, #4422, #4423, #4425, #4426, #4429, #4435, #4439, #4440 by: HebaruSan)
+- [Build] Coverage and more tests (#4383, #4396, #4408, #4420, #4422, #4423, #4425, #4426, #4429, #4435, #4439, #4440, #4441 by: HebaruSan)
 - [Multiple] Switch Inflator from Mono to dotnet (#4387 by: HebaruSan)
 - [Multiple] Migrate metadata tester from Mono to dotnet (#4390 by: HebaruSan)
 - [Multiple] Writethrough when saving files, add Netkan tests (#4392 by: HebaruSan)

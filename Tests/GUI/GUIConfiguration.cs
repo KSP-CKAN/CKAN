@@ -55,5 +55,31 @@ namespace Tests.GUI
                 Assert.IsTrue(File.Exists(jsonPath));
             }
         }
+
+        [Test]
+        public void SetColumnVisibility_HideAndShow_Works()
+        {
+            // Arrange
+            var cfg = new GUIConfiguration();
+
+            // Act
+            cfg.SetColumnVisibility("A", false);
+            cfg.SetColumnVisibility("B", false);
+            cfg.SetColumnVisibility("C", false);
+            cfg.SetColumnVisibility("D", false);
+            cfg.SetColumnVisibility("E", false);
+
+            // Assert
+            CollectionAssert.AreEquivalent(new string[] { "A", "B", "C", "D", "E" },
+                                           cfg.HiddenColumnNames);
+
+            // Act
+            cfg.SetColumnVisibility("B", true);
+            cfg.SetColumnVisibility("D", true);
+
+            // Assert
+            CollectionAssert.AreEquivalent(new string[] { "A", "C", "E" },
+                                           cfg.HiddenColumnNames);
+        }
     }
 }

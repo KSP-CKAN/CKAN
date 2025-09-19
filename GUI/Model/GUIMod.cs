@@ -25,9 +25,6 @@ namespace CKAN.GUI
         public  CkanModule?      LatestAvailableMod  { get; private set; }
         public  InstalledModule? InstalledMod        { get; private set; }
 
-        private static GameInstance?        currentInstance => Main.Instance?.CurrentInstance;
-        private static GameInstanceManager? manager         => Main.Instance?.Manager;
-
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,
         /// null otherwise.
@@ -130,7 +127,8 @@ namespace CKAN.GUI
         /// <param name="repoDataMgr">Repo data to get info about available modules</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="stabilityTolerance">User's prerelease config</param>
-        /// <param name="current_game_version">Current game version</param>
+        /// <param name="instance">Current game instance</param>
+        /// <param name="cache">Cache for determining whether cached</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
         /// <param name="hideEpochs">If true, remove the epoch from the versions</param>
         /// <param name="hideV">If true, remove 'v' prefix from the versions</param>
@@ -138,11 +136,14 @@ namespace CKAN.GUI
                       RepositoryDataManager    repoDataMgr,
                       IRegistryQuerier         registry,
                       StabilityToleranceConfig stabilityTolerance,
-                      GameVersionCriteria      current_game_version,
+                      GameInstance             instance,
+                      NetModuleCache           cache,
                       bool? incompatible,
                       bool  hideEpochs,
                       bool  hideV)
-            : this(instMod.Module, repoDataMgr, registry, stabilityTolerance, current_game_version, incompatible, hideEpochs, hideV)
+            : this(instMod.Module, repoDataMgr, registry,
+                   stabilityTolerance, instance, cache,
+                   incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
             InstalledMod     = instMod;
@@ -156,7 +157,8 @@ namespace CKAN.GUI
                 LatestVersion = InstalledVersion;
             }
             // For mods not known to the registry LatestCompatibleMod is null, however the installed module might be compatible
-            IsIncompatible   = incompatible ?? (LatestCompatibleMod == null && !instMod.Module.IsCompatible(current_game_version));
+            IsIncompatible   = incompatible ?? (LatestCompatibleMod == null
+                                                && !instMod.Module.IsCompatible(instance.VersionCriteria()));
         }
 
         /// <summary>
@@ -166,7 +168,8 @@ namespace CKAN.GUI
         /// <param name="repoDataMgr">Repo data to get info about available modules</param>
         /// <param name="registry">CKAN registry object for current game instance</param>
         /// <param name="stabilityTolerance">User's prerelease config</param>
-        /// <param name="current_game_version">Current game version</param>
+        /// <param name="instance">Current game instance</param>
+        /// <param name="cache">Cache for determining whether cached</param>
         /// <param name="incompatible">If true, mark this module as incompatible</param>
         /// <param name="hideEpochs">If true, remove the epoch from the versions</param>
         /// <param name="hideV">If true, remove 'v' prefix from the versions</param>
@@ -174,7 +177,8 @@ namespace CKAN.GUI
                       RepositoryDataManager    repoDataMgr,
                       IRegistryQuerier         registry,
                       StabilityToleranceConfig stabilityTolerance,
-                      GameVersionCriteria      current_game_version,
+                      GameInstance             instance,
+                      NetModuleCache           cache,
                       bool? incompatible,
                       bool  hideEpochs,
                       bool  hideV)
@@ -192,7 +196,9 @@ namespace CKAN.GUI
             {
                 try
                 {
-                    LatestCompatibleMod = registry.LatestAvailable(Identifier, stabilityTolerance, current_game_version);
+                    LatestCompatibleMod = registry.LatestAvailable(Identifier,
+                                                                   stabilityTolerance,
+                                                                   instance.VersionCriteria());
                     latest_version = LatestCompatibleMod?.version;
                 }
                 catch (ModuleNotFoundKraken)
@@ -221,7 +227,7 @@ namespace CKAN.GUI
             if (LatestAvailableMod != null)
             {
                 GameCompatibilityVersion = registry.LatestCompatibleGameVersion(
-                    currentInstance?.game.KnownVersions ?? new List<GameVersion>() {},
+                    instance.game.KnownVersions,
                     Identifier);
             }
 
@@ -254,7 +260,7 @@ namespace CKAN.GUI
                                            .OfType<char>()
                                            .ToArray());
 
-            HasReplacement = registry.GetReplacement(mod, stabilityTolerance, current_game_version) != null;
+            HasReplacement = registry.GetReplacement(mod, stabilityTolerance, instance.VersionCriteria()) != null;
             DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
             InstallSize    = mod.install_size  == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
 
@@ -272,25 +278,19 @@ namespace CKAN.GUI
                 if (GameCompatibilityVersion.IsAny)
                 {
                     GameCompatibilityVersion = mod.LatestCompatibleRealGameVersion(
-                        currentInstance?.game.KnownVersions
-                        ?? new List<GameVersion>() {});
+                        instance.game.KnownVersions);
                 }
             }
-
-            UpdateIsCached();
+            UpdateIsCached(cache);
         }
 
         /// <summary>
         /// Refresh the IsCached property based on current contents of the cache
         /// </summary>
-        public void UpdateIsCached()
+        public void UpdateIsCached(NetModuleCache cache)
         {
-            if (manager?.Cache == null || Mod?.download == null)
-            {
-                return;
-            }
-
-            IsCached = manager.Cache.IsMaybeCachedZip(Mod);
+            IsCached = Mod.download is { Count: > 0 }
+                       && cache.IsMaybeCachedZip(Mod);
         }
 
         /// <summary>
@@ -369,24 +369,9 @@ namespace CKAN.GUI
         private bool Equals(GUIMod? other) => Equals(Identifier, other?.Identifier);
 
         public override bool Equals(object? obj)
-        {
-            if (obj is null)
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj.GetType() != GetType())
-            {
-                return false;
-            }
-
-            return Equals((GUIMod) obj);
-        }
+            => obj is not null
+               && (ReferenceEquals(this, obj)
+                   || (obj is GUIMod gmod && Equals(gmod)));
 
         public override int GetHashCode() => Identifier?.GetHashCode() ?? 0;
 

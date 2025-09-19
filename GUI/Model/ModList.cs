@@ -357,25 +357,28 @@ namespace CKAN.GUI
         /// <param name="repoData">Repo data of the instance</param>
         /// <param name="inst">Game instance</param>
         /// <param name="allLabels">All label definitions</param>
+        /// <param name="cache">Cache for checking if mods are cached</param>
         /// <param name="config">GUI config to use</param>
         /// <returns>Sequence of GUIMods</returns>
         public static IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
                                                      RepositoryDataManager repoData,
                                                      GameInstance          inst,
                                                      ModuleLabelList       allLabels,
+                                                     NetModuleCache        cache,
                                                      GUIConfiguration?     config)
-            => GetGUIMods(registry, repoData, inst, inst.VersionCriteria(),
+            => GetGUIMods(registry, repoData, inst,
                           registry.InstalledModules.Select(im => im.identifier)
                                                    .ToHashSet(),
                           allLabels,
+                          cache,
                           config?.HideEpochs ?? false, config?.HideV ?? false);
 
         private static IEnumerable<GUIMod> GetGUIMods(IRegistryQuerier      registry,
                                                       RepositoryDataManager repoData,
                                                       GameInstance          inst,
-                                                      GameVersionCriteria   versionCriteria,
                                                       HashSet<string>       installedIdents,
                                                       ModuleLabelList       allLabels,
+                                                      NetModuleCache        cache,
                                                       bool                  hideEpochs,
                                                       bool                  hideV)
             => registry.CheckUpgradeable(inst,
@@ -387,7 +390,7 @@ namespace CKAN.GUI
                                              .Select(mod => registry.IsAutodetected(mod.identifier)
                                                             ? new GUIMod(mod, repoData, registry,
                                                                          inst.StabilityToleranceConfig,
-                                                                         versionCriteria, null,
+                                                                         inst, cache, null,
                                                                          hideEpochs, hideV)
                                                               {
                                                                   HasUpdate = kvp.Key,
@@ -397,28 +400,28 @@ namespace CKAN.GUI
                                                                 ? new GUIMod(found,
                                                                          repoData, registry,
                                                                          inst.StabilityToleranceConfig,
-                                                                         versionCriteria, null,
+                                                                         inst, cache, null,
                                                                          hideEpochs, hideV)
                                                               {
                                                                   HasUpdate = kvp.Key,
                                                               }
                                                               : null))
                        .OfType<GUIMod>()
-                       .Concat(registry.CompatibleModules(inst.StabilityToleranceConfig, versionCriteria)
+                       .Concat(registry.CompatibleModules(inst.StabilityToleranceConfig, inst.VersionCriteria())
                                        .Where(m => !installedIdents.Contains(m.identifier))
                                        .AsParallel()
                                        .Where(m => !m.IsDLC)
                                        .Select(m => new GUIMod(m, repoData, registry,
                                                                inst.StabilityToleranceConfig,
-                                                               versionCriteria, null,
+                                                               inst, cache, null,
                                                                hideEpochs, hideV)))
-                       .Concat(registry.IncompatibleModules(inst.StabilityToleranceConfig, versionCriteria)
+                       .Concat(registry.IncompatibleModules(inst.StabilityToleranceConfig, inst.VersionCriteria())
                                        .Where(m => !installedIdents.Contains(m.identifier))
                                        .AsParallel()
                                        .Where(m => !m.IsDLC)
                                        .Select(m => new GUIMod(m, repoData, registry,
                                                                inst.StabilityToleranceConfig,
-                                                               versionCriteria, true,
+                                                               inst, cache, true,
                                                                hideEpochs, hideV)));
 
         private void CheckRowUpgradeable(GameInstance              inst,
