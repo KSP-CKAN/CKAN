@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using NUnit.Framework;
 
 using CKAN;
@@ -52,11 +54,31 @@ namespace Tests.CmdLine
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                ICommand sut  = new Available(repoData.Manager, user);
-                var      opts = new AvailableOptions() { detail = true };
+                ICommand sut   = new Available(repoData.Manager, user);
+                var      opts1 = new AvailableOptions()
+                                 {
+                                     detail = false,
+                                     globs  = new List<string> { "Mod*" },
+                                 };
+                var      opts2 = new AvailableOptions() { detail = true  };
 
                 // Act
-                sut.RunCommand(inst.KSP, opts);
+                sut.RunCommand(inst.KSP, opts1);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "Modules compatible with KSP 0.25.0.642",
+                                              "",
+                                              "* Mod1 (1.0) - Mod One",
+                                              "* Mod2 (2.0) - Mod Two",
+                                              "* Mod3 (3.0) - Mod Three",
+                                              "* Mod4 (4.0) - Mod Four",
+                                          },
+                                          user.RaisedMessages);
+                // Act
+                user.RaisedMessages.Clear();
+                sut.RunCommand(inst.KSP, opts2);
 
                 // Assert
                 CollectionAssert.AreEqual(new string[]
