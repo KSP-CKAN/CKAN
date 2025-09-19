@@ -17,7 +17,8 @@ namespace CKAN.NetKAN.Sources.SourceForge
         public SourceForgeRef(RemoteRef reference)
             : base(reference)
         {
-            if (Pattern.TryMatch(reference.Id, out Match? match))
+            if (reference.Id != null
+                && Pattern.TryMatch(reference.Id, out Match? match))
             {
                 Name = match.Groups["name"].Value;
             }

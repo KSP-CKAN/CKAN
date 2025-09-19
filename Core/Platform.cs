@@ -105,14 +105,13 @@ namespace CKAN
             new Regex("^\\s*(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\s*\\(",
                       RegexOptions.Compiled);
 
-        public static readonly Version? MonoVersion
-            = versionMatcher.TryMatch((string)Type.GetType("Mono.Runtime")
-                                                  ?.GetMethod("GetDisplayName",
-                                                              BindingFlags.NonPublic
-                                                              | BindingFlags.Static)
-                                                  ?.Invoke(null, null)!,
-                                      out Match? match)
-              && match is not null
+        public static readonly Version? MonoVersion =
+            Type.GetType("Mono.Runtime")
+                ?.GetMethod("GetDisplayName",
+                            BindingFlags.NonPublic | BindingFlags.Static)
+                ?.Invoke(null, null)
+            is string s
+            && versionMatcher.TryMatch(s, out Match? match)
                 ? new Version(int.Parse(match.Groups["major"].Value),
                               int.Parse(match.Groups["minor"].Value),
                               int.Parse(match.Groups["patch"].Value))
