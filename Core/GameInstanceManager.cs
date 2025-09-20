@@ -319,8 +319,8 @@ namespace CKAN
         /// <param name="dlcs">The IDlcDetector implementations for the DLCs that should be faked and the requested dlc version as a dictionary.</param>
         /// <exception cref="InstanceNameTakenKraken">Thrown if the instance name is already in use.</exception>
         /// <exception cref="NotGameDirKraken">Thrown by AddInstance() if created instance is not valid, e.g. if a write operation didn't complete for whatever reason.</exception>
-        public void FakeInstance(IGame game, string newName, string newPath, GameVersion version,
-                                 Dictionary<IDlcDetector, GameVersion>? dlcs = null)
+        public GameInstance FakeInstance(IGame game, string newName, string newPath, GameVersion version,
+                                         Dictionary<IDlcDetector, GameVersion>? dlcs = null)
         {
             TxFileManager fileMgr = new TxFileManager();
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
@@ -330,7 +330,7 @@ namespace CKAN
                     throw new InstanceNameTakenKraken(newName);
                 }
 
-                if (!version.InBuildMap(game))
+                if (!version.WithoutBuild.InBuildMap(game))
                 {
                     throw new BadGameVersionKraken(string.Format(
                         Properties.Resources.GameInstanceFakeBadVersion, game.ShortName, version));
@@ -395,6 +395,7 @@ namespace CKAN
                 GameInstance new_instance = new GameInstance(game, newPath, newName, User);
                 AddInstance(new_instance);
                 transaction.Complete();
+                return new_instance;
             }
         }
 

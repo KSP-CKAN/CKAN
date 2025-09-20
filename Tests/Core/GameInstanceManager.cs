@@ -6,6 +6,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.DLC;
 using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
@@ -176,86 +177,98 @@ namespace Tests.Core
         [Test]
         public void FakeInstance_InvalidVersion_ThrowsBadGameVersionKraken()
         {
-            string name = "testname";
-            string tempdir = TestData.NewTempDir();
-            GameVersion version = GameVersion.Parse("1.1.99");
+            // Arrange
+            var name = "testname";
+            var version = GameVersion.Parse("1.1.99");
 
-            Assert.Throws<BadGameVersionKraken>(() =>
-                manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
-            Assert.IsFalse(manager?.HasInstance(name));
-
-            // Tidy up.
-            Directory.Delete(tempdir, true);
+            using (var tempdir = new TemporaryDirectory())
+            {
+                // Act / Assert
+                Assert.Throws<BadGameVersionKraken>(() =>
+                    manager?.FakeInstance(new KerbalSpaceProgram(), name,
+                                          tempdir.Directory.FullName, version));
+                Assert.IsFalse(manager?.HasInstance(name));
+            }
         }
 
-        [Test,
-            TestCase("1.4.0"),
-            TestCase("1.6.1")]
+        [TestCase("1.4.0"),
+         TestCase("1.6.1")]
         public void FakeInstance_DlcsWithWrongBaseVersion_ThrowsWrongGameVersionKraken(string baseVersion)
         {
-            string name = "testname";
-            GameVersion mhVersion = GameVersion.Parse("1.1.0");
-            GameVersion bgVersion = GameVersion.Parse("1.0.0");
-            string tempdir = TestData.NewTempDir();
-            GameVersion version = GameVersion.Parse(baseVersion);
-
-            Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
-                    { new MakingHistoryDlcDetector(), mhVersion },
-                    { new BreakingGroundDlcDetector(), bgVersion }
-                };
-
-            Assert.Throws<WrongGameVersionKraken>(() =>
-                manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs));
-            Assert.IsFalse(manager?.HasInstance(name));
-
-            // Tidy up.
-            Directory.Delete(tempdir, true);
+            // Arrange
+            var name = "testname";
+            var mhVersion = GameVersion.Parse("1.1.0");
+            var bgVersion = GameVersion.Parse("1.0.0");
+            var version = GameVersion.Parse(baseVersion);
+            var dlcs = new Dictionary<IDlcDetector, GameVersion>()
+            {
+                { new MakingHistoryDlcDetector(),  mhVersion },
+                { new BreakingGroundDlcDetector(), bgVersion },
+            };
+            using (var tempdir = new TemporaryDirectory())
+            {
+                // Act / Assert
+                Assert.Throws<WrongGameVersionKraken>(() =>
+                    manager?.FakeInstance(new KerbalSpaceProgram(), name,
+                                          tempdir.Directory.FullName, version, dlcs));
+                Assert.IsFalse(manager?.HasInstance(name));
+            }
         }
 
         [Test]
         public void FakeInstance_InNotEmptyFolder_ThrowsBadInstallLocationKraken()
         {
-            string name = "testname";
-            string tempdir = TestData.NewTempDir();
-            GameVersion version = GameVersion.Parse("1.5.1");
-            File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
+            // Arrange
+            var name = "testname";
+            var version = GameVersion.Parse("1.5.1");
 
-            Assert.Throws<BadInstallLocationKraken>(() =>
-                manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version));
-            Assert.IsFalse(manager?.HasInstance(name));
+            using (var tempdir = new TemporaryDirectory())
+            {
+                File.Create(Path.Combine(tempdir.Directory.FullName,
+                                         "shouldntbehere.txt"))
+                    .Close();
 
-            // Tidy up.
-            Directory.Delete(tempdir, true);
+                // Act / Assert
+                Assert.Throws<BadInstallLocationKraken>(() =>
+                    manager?.FakeInstance(new KerbalSpaceProgram(), name,
+                                          tempdir.Directory.FullName, version));
+                Assert.IsFalse(manager?.HasInstance(name));
+            }
         }
 
         [Test]
         public void FakeInstance_ValidArgumentsWithDLCs_ManagerHasValidInstance()
         {
+            // Arrange
             string name = "testname";
-            GameVersion mhVersion = GameVersion.Parse("1.1.0");
-            GameVersion bgVersion = GameVersion.Parse("1.0.0");
-            string tempdir = TestData.NewTempDir();
-            GameVersion version = GameVersion.Parse("1.7.1");
+            var mhVersion = GameVersion.Parse("1.1.0");
+            var unmanagedMhVersion = new UnmanagedModuleVersion(mhVersion.ToString());
+            var bgVersion = GameVersion.Parse("1.0.0");
+            var unmanagedBgVersion = new UnmanagedModuleVersion(bgVersion.ToString());
+            var version = GameVersion.Parse("1.7.1.2539");
+            var mhDetector = new MakingHistoryDlcDetector();
+            var bgDetector = new BreakingGroundDlcDetector();
 
-            Dictionary<CKAN.DLC.IDlcDetector, GameVersion> dlcs = new Dictionary<CKAN.DLC.IDlcDetector, GameVersion>() {
-                    { new MakingHistoryDlcDetector(), mhVersion },
-                    { new BreakingGroundDlcDetector(), bgVersion }
-                };
+            var dlcs = new Dictionary<IDlcDetector, GameVersion>()
+            {
+                { mhDetector, mhVersion },
+                { bgDetector, bgVersion },
+            };
 
-            manager?.FakeInstance(new KerbalSpaceProgram(), name, tempdir, version, dlcs);
-            GameInstance newKSP = new GameInstance(new KerbalSpaceProgram(), tempdir, name, new NullUser());
-            MakingHistoryDlcDetector mhDetector = new MakingHistoryDlcDetector();
-            BreakingGroundDlcDetector bgDetector = new BreakingGroundDlcDetector();
+            using (var tempdir = new TemporaryDirectory())
+            {
+                // Act
+                var newKSP = manager!.FakeInstance(new KerbalSpaceProgram(), name,
+                                                   tempdir.Directory.FullName, version, dlcs);
 
-            Assert.IsTrue(manager?.HasInstance(name));
-            Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedMhVersion));
-            Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedBgVersion));
-            Assert.IsTrue(detectedMhVersion == new UnmanagedModuleVersion(mhVersion.ToString()));
-            Assert.IsTrue(detectedBgVersion == new UnmanagedModuleVersion(bgVersion.ToString()));
-
-            // Tidy up.
-            RegistryManager.DisposeInstance(newKSP);
-            Directory.Delete(tempdir, true);
+                Assert.IsTrue(manager?.HasInstance(name));
+                Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedMhVersion));
+                Assert.AreEqual(unmanagedMhVersion, detectedMhVersion);
+                Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedBgVersion));
+                Assert.AreEqual(unmanagedBgVersion, detectedBgVersion);
+                Assert.IsTrue(File.Exists(Path.Combine(tempdir.Directory.FullName, "buildID.txt")));
+                Assert.IsTrue(File.Exists(Path.Combine(tempdir.Directory.FullName, "buildID64.txt")));
+            }
         }
 
         // GetPreferredInstance
@@ -399,6 +412,8 @@ namespace Tests.Core
                 }
             }
         }
+
+
 
         private FakeConfiguration GetTestCfg(string name)
             => new FakeConfiguration(
