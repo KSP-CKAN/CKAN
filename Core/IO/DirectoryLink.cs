@@ -81,10 +81,14 @@ namespace CKAN.IO
                 }
                 else
                 {
-                    var bytes = new byte[1024];
+                    var bytes  = new byte[1024];
                     var result = readlink(link, bytes, bytes.Length);
                     if (result > 0)
                     {
+                        if (Array.IndexOf(bytes, (byte)0) is > -1 and var i)
+                        {
+                            bytes = bytes.Take(i).ToArray();
+                        }
                         target = Encoding.UTF8.GetString(bytes);
                     }
                 }
