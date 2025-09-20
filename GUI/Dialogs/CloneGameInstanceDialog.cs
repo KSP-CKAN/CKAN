@@ -99,7 +99,7 @@ namespace CKAN.GUI
                 CheckFileExists  = false,
                 CheckPathExists  = false,
                 InitialDirectory = Environment.CurrentDirectory,
-                Filter           = ManageGameInstancesDialog.GameFolderFilter(manager),
+                Filter           = ManageGameInstancesDialog.GameFolderFilter(),
                 Multiselect      = false
             };
 

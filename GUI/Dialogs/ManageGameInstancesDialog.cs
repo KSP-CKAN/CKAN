@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
+using CKAN.Games;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -33,7 +35,7 @@ namespace CKAN.GUI
             InitializeComponent();
             DialogResult = DialogResult.Cancel;
 
-            instanceDialog.Filter = GameFolderFilter(manager);
+            instanceDialog.Filter = GameFolderFilter();
             instanceDialog.FileOk += InstanceFileOK;
 
             if (centerScreen)
@@ -86,13 +88,12 @@ namespace CKAN.GUI
         /// <summary>
         /// Generate filter string for OpenFileDialog
         /// </summary>
-        /// <param name="mgr">Game instance manager that can tell us about the build ID files</param>
         /// <returns>
         /// "Build metadata files (buildID.txt;buildID64.txt)|buildID.txt;buildID64.txt"
         /// </returns>
-        public static string GameFolderFilter(GameInstanceManager mgr)
-        => Properties.Resources.GameProgramFileDescription
-            + "|" + string.Join(";", mgr.AllInstanceAnchorFiles);
+        public static string GameFolderFilter()
+            => Properties.Resources.GameProgramFileDescription
+                + "|" + string.Join(";", KnownGames.AllInstanceAnchorFiles);
 
         public bool HasSelections => GameInstancesListView.SelectedItems.Count > 0;
 
@@ -402,7 +403,7 @@ namespace CKAN.GUI
                 // OpenFileDialog always shows shortcuts (!!!!!),
                 // so we have to re-enforce the filter ourselves
                 var chosen  = Path.GetFileName(dlg.FileName);
-                var allowed = manager.AllInstanceAnchorFiles;
+                var allowed = KnownGames.AllInstanceAnchorFiles;
                 if (!allowed.Contains(chosen, Platform.PathComparer))
                 {
                     e.Cancel = true;

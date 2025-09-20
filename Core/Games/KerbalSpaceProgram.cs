@@ -214,12 +214,12 @@ namespace CKAN.Games.KerbalSpaceProgram
                         // There's a lot of duplicate real versions with different build IDs,
                         // skip all those extra checks when we use these
                         versions ??= ServiceLocator.Container
-                                                 .Resolve<IKspBuildMap>()
-                                                 .KnownVersions
-                                                 .Select(v => v.WithoutBuild)
-                                                 .Distinct()
-                                                 .Order()
-                                                 .ToList();
+                                                   .Resolve<IKspBuildMap>()
+                                                   .KnownVersions
+                                                   .Select(v => v.WithoutBuild)
+                                                   .Distinct()
+                                                   .Order()
+                                                   .ToList();
                     }
                 }
                 return versions;

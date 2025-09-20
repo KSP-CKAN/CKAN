@@ -44,11 +44,6 @@ namespace CKAN
 
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 
-        public string[] AllInstanceAnchorFiles => KnownGames.knownGames
-                                                            .SelectMany(g => g.InstanceAnchorFiles)
-                                                            .Distinct()
-                                                            .ToArray();
-
         public string? AutoStartInstance
         {
             get => Configuration.AutoStartInstance != null
