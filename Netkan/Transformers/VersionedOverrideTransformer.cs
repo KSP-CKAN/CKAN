@@ -150,7 +150,7 @@ namespace CKAN.NetKAN.Transformers
                                              ModuleVersion desiredVersion)
             => op switch
                {
-                   "" or "=" => version.IsEqualTo(desiredVersion),
+                   "" or "=" => version.Equals(desiredVersion),
                    "<"       => version.IsLessThan(desiredVersion),
                    ">"       => version.IsGreaterThan(desiredVersion),
                    "<="      => version.CompareTo(desiredVersion) <= 0,

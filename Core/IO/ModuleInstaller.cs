@@ -1374,7 +1374,7 @@ namespace CKAN.IO
                     toRemove.Add(installed_mod);
 
                     CkanModule installed = installed_mod.Module;
-                    if (installed.version.IsEqualTo(module.version))
+                    if (installed.version.Equals(module.version))
                     {
                         User.RaiseMessage(Properties.Resources.ModuleInstallerUpgradeReinstalling,
                                           module.name, module.version);
@@ -1508,7 +1508,7 @@ namespace CKAN.IO
                         modsToRemove.Add(installed_replacement);
 
                         CkanModule installed = installed_replacement.Module;
-                        if (installed.version.IsEqualTo(repl.ReplaceWith.version))
+                        if (installed.version.Equals(repl.ReplaceWith.version))
                         {
                             log.InfoFormat("{0} is already at the latest version, reinstalling to replace {1}", repl.ReplaceWith.identifier, repl.ToReplace.identifier);
                         }

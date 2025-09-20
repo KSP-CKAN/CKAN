@@ -26,16 +26,16 @@ namespace Tests.Core.Versioning
 
             Assert.That(v1.IsLessThan(v2));
             Assert.That(v2.IsGreaterThan(v1));
-            Assert.That(v1.IsEqualTo(v0));
+            Assert.That(v1.Equals(v0));
         }
 
         [Test]
-        public void Issue1076()
+        public void Equals_ZeroPadded_EqualsUnpadded()
         {
             var v0 = new ModuleVersion("1.01");
             var v1 = new ModuleVersion("1.1");
 
-            Assert.That(v1.IsEqualTo(v0));
+            Assert.That(v1.Equals(v0));
         }
 
         [Test]
@@ -78,7 +78,7 @@ namespace Tests.Core.Versioning
             var v2 = new ModuleVersion("v6a5");
             Assert.That(v2.IsLessThan(v1));
             Assert.That(v1.IsGreaterThan(v2));
-            Assert.That(! v1.IsEqualTo(v2));
+            Assert.That(! v1.Equals(v2));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Tests.Core.Versioning
             var v1 = new ModuleVersion("1:1");
             var v2 = new ModuleVersion("2:1");
 
-            Assert.That(!v1.IsEqualTo(v2));
+            Assert.That(!v1.Equals(v2));
         }
     }
 }

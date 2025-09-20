@@ -225,7 +225,7 @@ namespace CKAN.GUI
                     {
                         Tag = module,
                     };
-                    if (installedVersion != null && installedVersion.IsEqualTo(module.version))
+                    if (installedVersion != null && installedVersion.Equals(module.version))
                     {
                         toRet.Font = new Font(toRet.Font,
                                               module.release_status <= stabilityTolerance
