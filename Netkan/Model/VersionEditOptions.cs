@@ -39,10 +39,8 @@ namespace CKAN.NetKAN.Model
                {
                    JValue  val => new VersionEditOptions(val.ToString()),
                    JObject obj => obj.ToObject<VersionEditOptions>(),
-                   JToken  tok => throw new Kraken(string.Format(
-                                           "Unrecognized `x_netkan_version_edit` value: {0}",
-                                           tok)),
-                   _           => throw new Kraken("Unrecognized `x_netkan_version_edit` value"),
+                   var     tok => throw new Kraken(
+                                      $"Unrecognized `x_netkan_version_edit` value: {tok}"),
                };
 
         [ExcludeFromCodeCoverage]
