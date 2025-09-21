@@ -147,6 +147,12 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>キャッシュのダウンロード</value>
   </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>取り消し</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N ファイル, M MB</value>
   </data>

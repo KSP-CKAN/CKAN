@@ -319,6 +319,10 @@
   <data name="MainDeleteLockfileNo" xml:space="preserve">
     <value>取消</value>
   </data>
+  <data name="AllModVersionsPrereleasePrompt" xml:space="preserve">
+    <value>{0}的发布状态为{1}，低于您设定的偏好值{2}。
+确定要安装吗？</value>
+  </data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} 不支持您的当前游戏版本 ({1}) 并很可能不能正常运行. 如果您遇到任何问题，请不要向其维护者求助.
 
@@ -372,6 +376,12 @@
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>状态日志</value>
   </data>
+  <data name="MainInstallInstallingMod" xml:space="preserve">
+    <value>正在安装{0}</value>
+  </data>
+  <data name="MainInstallRemovingMod" xml:space="preserve">
+    <value>正在删除 {0}</value>
+  </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>您的GameData已恢复原样.</value>
   </data>
@@ -414,6 +424,9 @@
   </data>
   <data name="ModInfoCached" xml:space="preserve">
     <value>Mod已缓存，预览可用</value>
+  </data>
+  <data name="ModInfoDownload" xml:space="preserve">
+    <value>正在下载 ({0})</value>
   </data>
   <data name="ModInfoNoDownload" xml:space="preserve">
     <value>模组未下载</value>
@@ -471,6 +484,9 @@
   </data>
   <data name="DownloadFailed" xml:space="preserve">
     <value>下载失败!</value>
+  </data>
+  <data name="Downloading" xml:space="preserve">
+    <value>正在下载 {0}</value>
   </data>
   <data name="ValidatingDownload" xml:space="preserve">
     <value>正在验证 {0}</value>
@@ -610,8 +626,26 @@
   <data name="PluginsDialogFilter" xml:space="preserve">
     <value>CKAN Plugins (*.dll)|*.dll</value>
   </data>
+  <data name="SettingsToolTipRefreshTextBox" xml:space="preserve">
+    <value>设置为 0 将不会刷新mod列表</value>
+  </data>
+  <data name="SettingsToolTipChangeCacheButton" xml:space="preserve">
+    <value>选择新下载缓存文件夹</value>
+  </data>
+  <data name="SettingsToolTipResetCacheButton" xml:space="preserve">
+    <value>使用默认下载缓存文件夹 </value>
+  </data>
+  <data name="SettingsToolTipOpenCacheButton" xml:space="preserve">
+    <value>浏览缓存文件夹</value>
+  </data>
+  <data name="SettingsToolTipClearCacheButton" xml:space="preserve">
+    <value>从缓存中删除文件</value>
+  </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
     <value>{0} 文件, {1}, {2} 空余</value>
+  </data>
+  <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve">
+    <value>{0} 个文件, {1}, 空闲空间未知</value>
   </data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve">
     <value>无效路径: {0}</value>
@@ -910,6 +944,9 @@
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve">
     <value>将新搜索与当前搜索合并为一个新搜索</value>
   </data>
+  <data name="ManageModsPlaying" xml:space="preserve">
+    <value>正在玩……</value>
+  </data>
   <data name="ManageModsSteamPlayTimeYesTooltip" xml:space="preserve">
     <value>(将计入Steam游戏时间)</value>
   </data>
@@ -1029,5 +1066,10 @@ Ctrl-单击或Shift-单击以合并当前搜索</value>
   <data name="PreferredHostsTooltipMoveDown" xml:space="preserve">
     <value>降低所选服务器的优先级</value>
   </data>
-  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>过滤 {0}</value></data>
+  <data name="SelectionDialogDefault" xml:space="preserve">
+    <value>{0} (默认)</value>
+  </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve">
+    <value>过滤 {0}</value>
+  </data>
 </root>

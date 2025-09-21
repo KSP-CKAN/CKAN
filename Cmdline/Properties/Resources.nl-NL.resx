@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Usage" xml:space="preserve">
+    <value>Gebruik</value>
+  </data>
+  <data name="Command" xml:space="preserve">
+    <value>opdracht</value>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Onbekende opdracht</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>opties</value>
+  </data>
+  <data name="ArgumentMissing" xml:space="preserve">
+    <value>argument ontbreekt, misschien bent u dat vergeten?</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>locatie</value>
+  </data>
+  <data name="MainVersion" xml:space="preserve">
+    <value>Je gebruikt CKAN versie {0}</value>
+  </data>
+  <data name="MainUnknownCommand" xml:space="preserve">
+    <value>Onbekende opdracht, probeer --help</value>
+  </data>
+  <data name="MainMissingInstance" xml:space="preserve">
+    <value>Ik weet niet waar een spel-instantie is geïnstalleerd.
+Gebruik 'ckan instance help' om dit in te stellen.</value>
+  </data>
+  <data name="OptionsInstanceAndGameDir" xml:space="preserve">
+    <value>--instance en --gamedir kan niet op hetzelfde moment worden opgegeven</value>
+  </data>
+  <data name="OptionsInvalidInstance" xml:space="preserve">
+    <value>Ongeldige game-instantie gespecificeerd "{0}", gebruik '--gamedir' om per pad te specificeren, of 'instance lijst' om bekende game-instanties te zien</value>
+  </data>
+  <data name="InstanceNotInstance" xml:space="preserve">
+    <value>Sorry, {0} lijkt geen game-instantie te zijn</value>
+  </data>
+  <data name="InstanceDuplicate" xml:space="preserve">
+    <value>Deze instantienaam is al in gebruik: {0}</value>
+  </data>
+  <data name="UserYesNoPromptSuffix" xml:space="preserve">
+    <value>[J/n]</value>
+  </data>
+  <data name="UserYesNoY" xml:space="preserve">
+    <value>j</value>
+  </data>
+  <data name="UserYesNoYes" xml:space="preserve">
+    <value>ja</value>
+  </data>
+  <data name="UserYesNoN" xml:space="preserve">
+    <value>n</value>
+  </data>
+  <data name="UserYesNoNo" xml:space="preserve">
+    <value>nee</value>
+  </data>
+  <data name="UserYesNoInvalid" xml:space="preserve">
+    <value>Ongeldige invoer. Voer Ja of nee in</value>
+  </data>
+  <data name="UserSelectionPromptWithDefault" xml:space="preserve">
+    <value>Voer een nummer in tussen {0} en {1} (Om te annuleren druk op "c" of "n". "Enter" selecteert {2}.): </value>
+  </data>
+  <data name="UserSelectionPromptWithoutDefault" xml:space="preserve">
+    <value>Voer een nummer in tussen {0} en {1} (Om te annuleren druk op "c" of "n"): </value>
+  </data>
+  <data name="UserSelectionC" xml:space="preserve">
+    <value>c</value>
+  </data>
+  <data name="UserSelectionN" xml:space="preserve">
+    <value>n</value>
+  </data>
+  <data name="UserSelectionCancelled" xml:space="preserve">
+    <value>Selectie geannuleerd</value>
+  </data>
+  <data name="UserSelectionNotNumber" xml:space="preserve">
+    <value>De invoer is geen getal</value>
+  </data>
+  <data name="UserSelectionTooLarge" xml:space="preserve">
+    <value>Het getal in de invoer is te groot</value>
+  </data>
+  <data name="UserSelectionTooSmall" xml:space="preserve">
+    <value>Het getal in de invoer is te klein</value>
+  </data>
+  <data name="AuthTokenHostHeader" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="AuthTokenTokenHeader" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AuthTokenHelpSummary" xml:space="preserve">
+    <value>Authenticatie-instellingen beheren</value>
+  </data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve">
+    <value>Ongeldige hostnaam: {0}</value>
+  </data>
+  <data name="AvailableHeader" xml:space="preserve">
+    <value>Modules compatibel met {0} {1}</value>
+  </data>
+  <data name="CacheHelpSummary" xml:space="preserve">
+    <value>Beheer het downloadcachepad van CKAN</value>
+  </data>
+  <data name="CacheSet" xml:space="preserve">
+    <value>Download cache ingesteld op {0}</value>
+  </data>
+  <data name="CacheInvalidPath" xml:space="preserve">
+    <value>Ongeldig pad: {0}</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Download cache gewist</value>
+  </data>
+  <data name="CacheReset" xml:space="preserve">
+    <value>Download cache gereset naar {0}</value>
+  </data>
+  <data name="CacheResetFailed" xml:space="preserve">
+    <value>Kan het cachepad niet resetten: {0}</value>
+  </data>
+  <data name="CacheUnlimited" xml:space="preserve">
+    <value>Onbeperkt</value>
+  </data>
+  <data name="CacheInfo" xml:space="preserve">
+    <value>{0} bestanden, {1}, {2} vrij</value>
+  </data>
+  <data name="CompareSame" xml:space="preserve">
+    <value>"{0}" en "{1}" zijn dezelfde versies.</value>
+  </data>
+  <data name="CompareLower" xml:space="preserve">
+    <value>"{0}" is lager dan "{1}".</value>
+  </data>
+  <data name="CompareHigher" xml:space="preserve">
+    <value>"{0}" is hoger dan "{1}".</value>
+  </data>
+  <data name="CompatHelpSummary" xml:space="preserve">
+    <value>Beheer de spel versie compatibiliteit</value>
+  </data>
+  <data name="CompatVersionHeader" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="CompatActualHeader" xml:space="preserve">
+    <value>Huidig</value>
+  </data>
+  <data name="InstanceHelpSummary" xml:space="preserve">
+    <value>Beheer game instanties</value>
+  </data>
+  <data name="InstanceListNoVersion" xml:space="preserve">
+    <value>&lt;NONE&gt;</value>
+  </data>
+  <data name="InstanceListYes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="InstanceListNo" xml:space="preserve">
+    <value>Nee</value>
+  </data>
+  <data name="InstanceListNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Spel</value>
+  </data>
+  <data name="InstanceListVersionHeader" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="InstanceListPathHeader" xml:space="preserve">
+    <value>Locatie</value>
+  </data>
+  <data name="MarkUserSelected" xml:space="preserve">
+    <value>geselecteerd</value>
+  </data>
+  <data name="PromptWelcome" xml:space="preserve">
+    <value>Welkom bij CKAN!
+
+Om hulp te krijgen, type help en druk op enter. Om te sluiten, typ je {0} en druk op enter.
+Druk op tab om opdrachten en modules automatisch aan te vullen.
+</value>
+  </data>
+  <data name="PromptWithInstance" xml:space="preserve">
+    <value>CKAN {0}: {1} {2} ({3})&gt; </value>
+  </data>
+  <data name="PromptWithoutInstance" xml:space="preserve">
+    <value>CKAN {0}&gt; </value>
+  </data>
+  <data name="RemoveCancelled" xml:space="preserve">
+    <value>Verwijderen afgebroken: {0}</value>
+  </data>
+  <data name="RepairHelpSummary" xml:space="preserve">
+    <value>Poging tot verschillende automatische reparaties</value>
+  </data>
+  <data name="RepairUnknownCommand" xml:space="preserve">
+    <value>Onbekend commando: repair {0}</value>
+  </data>
+  <data name="RepoListNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="RepoListURLHeader" xml:space="preserve">
+    <value>Webadres (URL)</value>
+  </data>
+  <data name="ShowRecommendsHeader" xml:space="preserve">
+    <value>Aanbevolen:</value>
+  </data>
+  <data name="ShowSuggestsHeader" xml:space="preserve">
+    <value>Suggesties:</value>
+  </data>
+  <data name="ShowVersionHeader" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="StabilityListModHeader" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+</root>

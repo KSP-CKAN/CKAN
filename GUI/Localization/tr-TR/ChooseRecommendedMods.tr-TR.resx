@@ -123,9 +123,6 @@
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>Devam</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>Hepsinin seçimini kaldır</value>
-  </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>Seçilen modüller aşağıdaki modülleri önerir, tavsiye eder veya bu modüller tarafından desteklenir:</value>
   </data>

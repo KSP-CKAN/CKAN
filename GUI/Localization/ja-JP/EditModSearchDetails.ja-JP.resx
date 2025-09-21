@@ -126,6 +126,9 @@
   <data name="FilterByDescriptionLabel.Text" xml:space="preserve">
     <value>詳細:</value>
   </data>
+  <data name="FilterByLicenseLabel.Text" xml:space="preserve">
+    <value>ライセンス:</value>
+  </data>
   <data name="FilterByLanguageLabel.Text" xml:space="preserve">
     <value>言語:</value>
   </data>

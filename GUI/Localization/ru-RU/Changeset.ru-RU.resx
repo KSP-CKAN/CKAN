@@ -126,6 +126,9 @@
   <data name="ReasonsColumn.HeaderText" xml:space="preserve">
     <value>Причина действия</value>
   </data>
+  <data name="DeleteColumn.HeaderText" xml:space="preserve">
+    <value>Пропустить?</value>
+  </data>
   <data name="BackButton.Text" xml:space="preserve">
     <value>Назад</value>
   </data>

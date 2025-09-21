@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,16 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Nova instalação de mod selecionada pelo usuário</value></data>
-  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
-  <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (Em cache)</value></data>
-  <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoritos</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Oculto</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Mantido</value></data>
-  <data name="KrakenBadMetadata" xml:space="preserve"><value>Metadados corrompidos detectados para o módulo {0}: {1}</value></data>
-  <data name="KrakenIsDLC" xml:space="preserve"><value>O CKAN não pode instalar a expansão '{0}' para você.</value></data>
-  <data name="KrakenFileExistsWithOwner" xml:space="preserve"><value>Ah não! Tentamos sobrescrever um arquivo controlado por outro mod!
+  <data name="AutoUpdateNotFetched" xml:space="preserve">
+    <value>Ainda não obtivemos as informações da versão. Não é possível atualizar.</value>
+  </data>
+  <data name="NetDownloading" xml:space="preserve">
+    <value>Baixando {0}</value>
+  </data>
+  <data name="NetInvalidLocation" xml:space="preserve">
+    <value>URL inválida no cabeçalho da localização: {0}</value>
+  </data>
+  <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
+    <value>Download cancelado pelo usuário</value>
+  </data>
+  <data name="NetAsyncDownloaderValidating" xml:space="preserve">
+    <value>Download {0} concluído, validando e armazenando em cache...</value>
+  </data>
+  <data name="GameInstancePlayGameFailed" xml:space="preserve">
+    <value>Não é possivel inicializar o jogo.
+
+{0}</value>
+  </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>Ah não! Tentamos sobrescrever um arquivo controlado por outro mod!
 Por favor, atualize e tente novamente.
 
 Se o problema persistir, então talvez seja um problema de pacote.
@@ -138,8 +150,10 @@ Por favor inclua as seguintes informações no seu relatório:
 
 Arquivo: {0}
 Mod sendo instalado: {1}
-Mod controlador: {2}</value></data>
-  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve"><value>Ah não!
+Mod controlador: {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>Ah não!
 
 Parece que você está tentando instalar um mod que já está instalado,
 ou que conflita com outro mod que já esteja instalado.
@@ -152,8 +166,10 @@ então por favor desinstale manualmente o mod que possuí:
 
 {0}
 
-e tente novamente.</value></data>
-  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve"><value>Ah não!
+e tente novamente.</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>Ah não!
 
 Parece que você está tentando instalar um mod que já está instalado,
 ou que conflita com outro mod que já esteja instalado.
@@ -165,5 +181,33 @@ Por favor desinstale manualmente o mod que possuí:
 
 {0}
 
-e tente novamente.</value></data>
+e tente novamente.</value>
+  </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Metadados corrompidos detectados para o módulo {0}: {1}</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>O CKAN não pode instalar a expansão '{0}' para você.</value>
+  </data>
+  <data name="RelationshipResolverUserReason" xml:space="preserve">
+    <value>Nova instalação de mod selecionada pelo usuário</value>
+  </data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve">
+    <value>{0} {1} (metapackage)</value>
+  </data>
+  <data name="NetModuleCacheModuleCached" xml:space="preserve">
+    <value>{0} {1} (Em cache)</value>
+  </data>
+  <data name="NetModuleCacheModuleHostSize" xml:space="preserve">
+    <value>{0} {1} ({2}, {3})</value>
+  </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>Favoritos</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>Oculto</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>Mantido</value>
+  </data>
 </root>

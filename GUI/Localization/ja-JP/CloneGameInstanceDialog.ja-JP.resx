@@ -141,9 +141,6 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>新しいインスタンスに切替</value>
   </data>
-  <data name="buttonOK.Text" xml:space="preserve">
-    <value>作成</value>
-  </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>取り消し</value>
   </data>

@@ -141,9 +141,6 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>Trocar para a nova instância</value>
   </data>
-  <data name="buttonOK.Text" xml:space="preserve">
-    <value>Criar</value>
-  </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>Cancelar</value>
   </data>

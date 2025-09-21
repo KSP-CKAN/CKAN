@@ -147,6 +147,15 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>Папка загрузок</value>
   </data>
+  <data name="CachePathEditButton.Text" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N файлов, M МиБ</value>
   </data>

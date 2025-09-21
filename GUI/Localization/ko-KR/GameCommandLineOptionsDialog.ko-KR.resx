@@ -117,16 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>인수:</value>
+  <data name="AddButton.Text" xml:space="preserve">
+    <value>추가</value>
   </data>
   <data name="AcceptChangesButton.Text" xml:space="preserve">
-    <value>확인</value>
+    <value>&amp;수락</value>
   </data>
   <data name="CancelChangesButton.Text" xml:space="preserve">
-    <value>취소하기</value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>커맨드 라인 인수</value>
+    <value>&amp;취소</value>
   </data>
 </root>

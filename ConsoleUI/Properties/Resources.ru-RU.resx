@@ -438,13 +438,25 @@
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Название</value>
   </data>
-  <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Удаление папок</value></data>
-  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Следующие папки остались после удаления модификаций. Они содержат файлы, не установленные CKAN (сгенерированные модификациями или установленные вручную). CKAN не удаляет сторонние файлы автоматически, однако вы можете удалить их вручную, если это безопасно.
-Обратите внимание, что если папки не будут удалены, ModuleManager может неверно посчитать, что модификации установлены.</value></data>
-  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Папки</value></data>
-  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve"><value>Содержимое папок</value></data>
-  <data name="DeleteDirectoriesCancelTip" xml:space="preserve"><value>Оставить всё</value></data>
-  <data name="DeleteDirectoriesApplyTip" xml:space="preserve"><value>Удалить отмеченное</value></data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>Удаление папок</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>Следующие папки остались после удаления модификаций. Они содержат файлы, не установленные CKAN (сгенерированные модификациями или установленные вручную). CKAN не удаляет сторонние файлы автоматически, однако вы можете удалить их вручную, если это безопасно.
+Обратите внимание, что если папки не будут удалены, ModuleManager может неверно посчитать, что модификации установлены.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>Папки</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>Содержимое папок</value>
+  </data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve">
+    <value>Оставить всё</value>
+  </data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve">
+    <value>Удалить отмеченное</value>
+  </data>
   <data name="ModInfoTitle" xml:space="preserve">
     <value>О модификации</value>
   </data>
@@ -716,6 +728,9 @@
   </data>
   <data name="ModListExportMenuTip" xml:space="preserve">
     <value>Сохранение списка установленных модификаций на диск</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>Установить</value>
   </data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve">
     <value>Настройки сборки игры...</value>

@@ -149,6 +149,9 @@ Użyj 'ckan instance help' aby uzyskać pomoc.</value>
     <value>Próbujesz uruchomić CKAN jako root.
 To zły pomysł i lepiej tego nie rób. Proszę uruchomić program z konta użytkownika. (albo użyj --asroot, jeśli jesteś odważny).</value>
   </data>
+  <data name="OptionsPressAnyKey" xml:space="preserve">
+    <value>Naciśnij dowolny klawisz, aby wyjść...</value>
+  </data>
   <data name="OptionsRootWarning" xml:space="preserve">
     <value>Ostrzeżenie: CKAN uruchomiony jako root!</value>
   </data>
@@ -219,6 +222,9 @@ Zalecana aktualizacja!</value>
   <data name="AuthTokenHelpSummary" xml:space="preserve">
     <value>Zarządzaj tokenami uwierzytelniania</value>
   </data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve">
+    <value>Nieprawidłowa nazwa hosta: {0}</value>
+  </data>
   <data name="AvailableHeader" xml:space="preserve">
     <value>Moduły kompatybilne z {0} {1}</value>
   </data>
@@ -246,6 +252,9 @@ Zalecana aktualizacja!</value>
   <data name="CacheInfo" xml:space="preserve">
     <value>{0} plików, {1}, {2} wolne</value>
   </data>
+  <data name="CacheInfoFreeSpaceUnknown" xml:space="preserve">
+    <value>{0} plików, {1}, wolna przestrzeń nieznana</value>
+  </data>
   <data name="CompareSame" xml:space="preserve">
     <value>"{0}" i "{1}" to te same wersje.</value>
   </data>
@@ -263,6 +272,9 @@ Zalecana aktualizacja!</value>
   </data>
   <data name="CompatActualHeader" xml:space="preserve">
     <value>Bieżące</value>
+  </data>
+  <data name="CompatMissing" xml:space="preserve">
+    <value>Nie określono wersji gry!</value>
   </data>
   <data name="CompatInvalid" xml:space="preserve">
     <value>BŁĄD: Niewłaściwa wersja gry</value>
@@ -284,6 +296,9 @@ Zalecana aktualizacja!</value>
   </data>
   <data name="InstanceListNameHeader" xml:space="preserve">
     <value>Nazwa</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Gra</value>
   </data>
   <data name="InstanceListVersionHeader" xml:space="preserve">
     <value>Wersja</value>
@@ -339,6 +354,9 @@ Spróbuj dodać nową instancję ręcznie za pomocą "ckan instance add".
   </data>
   <data name="InstanceFakeVersion" xml:space="preserve">
     <value>Proszę sprawdzić argument wersji - Sformatuj go tak Maj.Min.Patch[.Build] - np. 1.6.0 lub 1.2.2.1622</value>
+  </data>
+  <data name="InstanceFakeBadGame" xml:space="preserve">
+    <value>Brak takiej gry {0}!</value>
   </data>
   <data name="InstanceFakeBadGameVersion" xml:space="preserve">
     <value>Wpisałeś nieprawidłową wersję gry.
@@ -476,14 +494,32 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   <data name="RepoAvailableFailed" xml:space="preserve">
     <value>Nie można pobrać głównej listy repozytoriów CKAN z {0}</value>
   </data>
+  <data name="RepoListPriorityHeader" xml:space="preserve">
+    <value>Priorytet</value>
+  </data>
+  <data name="RepoListNameHeader" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+  <data name="RepoListURLHeader" xml:space="preserve">
+    <value>URL</value>
+  </data>
   <data name="RepoAddNotFound" xml:space="preserve">
     <value>Nazwa {0} nie została znaleziona na liście głównej, proszę podać nazwę i adres Url</value>
   </data>
   <data name="RepoAddDuplicate" xml:space="preserve">
     <value>Repozytorium o nazwie "{0}" już istnieje, przerwano</value>
   </data>
+  <data name="RepoAddDuplicateURL" xml:space="preserve">
+    <value>Repozytorium z adresem URL "{0}" już istnieje, przerywam</value>
+  </data>
   <data name="RepoAdded" xml:space="preserve">
     <value>Dodano repozytorium '{0}' - '{1}'</value>
+  </data>
+  <data name="RepoPriorityNotFound" xml:space="preserve">
+    <value>Nie można znaleźć repozytorium o nazwie "{0}", przerwano</value>
+  </data>
+  <data name="RepoPriorityInvalid" xml:space="preserve">
+    <value>Nieprawidłowy priorytet: {0}, dozwolone wartości są od 0 do {1}</value>
   </data>
   <data name="RepoForgetNotFound" xml:space="preserve">
     <value>Nie można znaleźć repozytorium o nazwie "{0}", przerwano</value>
@@ -572,6 +608,9 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   <data name="ShowSuggestsHeader" xml:space="preserve">
     <value>Sugestie:</value>
   </data>
+  <data name="ShowSupportsHeader" xml:space="preserve">
+    <value>Wspiera:</value>
+  </data>
   <data name="ShowProvidesHeader" xml:space="preserve">
     <value>Dostarcza:</value>
   </data>
@@ -593,6 +632,9 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   <data name="ShowBugTracker" xml:space="preserve">
     <value>  Bug tracker:	{0}</value>
   </data>
+  <data name="ShowDiscussions" xml:space="preserve">
+    <value>Dyskusje:	{0}</value>
+  </data>
   <data name="ShowCurse" xml:space="preserve">
     <value>  Curse:	{0}</value>
   </data>
@@ -605,6 +647,9 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   <data name="ShowVersionFile" xml:space="preserve">
     <value>  Plik wersji:	{0}</value>
   </data>
+  <data name="ShowSpaceWarpInfo" xml:space="preserve">
+    <value>Plik SWInfo:	{0}</value>
+  </data>
   <data name="ShowFileName" xml:space="preserve">
     <value>Nazwa pliku: {0}</value>
   </data>
@@ -613,6 +658,12 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   </data>
   <data name="ShowGameVersionsHeader" xml:space="preserve">
     <value>Wersje gry</value>
+  </data>
+  <data name="UpdateBadGame" xml:space="preserve">
+    <value>Gra {0} nie została znaleziona! Prawidłowe opcje to: {1}</value>
+  </data>
+  <data name="UpdateURLRepoName" xml:space="preserve">
+    <value>Adres URL #{0}</value>
   </data>
   <data name="UpdateChangesSummary" xml:space="preserve">
     <value>Znaleziono {0} nowych modułów, {1} usuniętych modułów i {2} zaktualizowanych modułów</value>
@@ -628,6 +679,15 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   </data>
   <data name="UpdateSummary" xml:space="preserve">
     <value>Zaktualizowano informacje o kompatybilnych modułach {0}</value>
+  </data>
+  <data name="UpgradeCannotCombineFlags" xml:space="preserve">
+    <value>Flagi `--dev-build` i `--stable-release` nie mogą być połączone!</value>
+  </data>
+  <data name="UpgradeSwitchingToDevBuilds" xml:space="preserve">
+    <value>Przełączanie do wersji deweloperskich</value>
+  </data>
+  <data name="UpgradeSwitchingToStableReleases" xml:space="preserve">
+    <value>Przełączanie do stabilnych wersji</value>
   </data>
   <data name="UpgradeQueryingCKAN" xml:space="preserve">
     <value>Sprawdzanie najnowszej wersji CKAN</value>
@@ -646,6 +706,12 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   </data>
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Aktualizacja przerwana: {0}</value>
+  </data>
+  <data name="UpgradeAlreadyUpToDate" xml:space="preserve">
+    <value>Moduł {0} jest już zaktualizowany</value>
+  </data>
+  <data name="UpgradeAllUpToDate" xml:space="preserve">
+    <value>Wszystkie moduły są już zaktualizowane</value>
   </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
     <value>Filtry globalne:</value>
@@ -667,6 +733,21 @@ Naciśnij tab, aby automatycznie uzupełniać polecenia i moduły.
   </data>
   <data name="FilterHelpSummary" xml:space="preserve">
     <value>Zobacz lub edytuj filtry instalacji</value>
+  </data>
+  <data name="StabilityUnknownCommand" xml:space="preserve">
+    <value>Nieznana komenda: stability {0}</value>
+  </data>
+  <data name="StabilityHelpSummary" xml:space="preserve">
+    <value>Wyświetl lub edytuj ustawienia stabilności</value>
+  </data>
+  <data name="StabilityOverallLabel" xml:space="preserve">
+    <value>Ogólna tolerancja stabilności: {0}</value>
+  </data>
+  <data name="StabilityListModHeader" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="StabilityListStabilityHeader" xml:space="preserve">
+    <value>Nadpisz</value>
   </data>
   <data name="CompletionNotAvailable" xml:space="preserve">
     <value>

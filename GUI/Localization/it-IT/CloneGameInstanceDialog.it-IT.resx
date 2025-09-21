@@ -141,8 +141,11 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>Passa alla nuova istanza</value>
   </data>
+  <data name="checkBoxShareStock.Text" xml:space="preserve">
+    <value>Condividi file stock</value>
+  </data>
   <data name="buttonOK.Text" xml:space="preserve">
-    <value>Crea</value>
+    <value>Clona</value>
   </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>Annulla</value>

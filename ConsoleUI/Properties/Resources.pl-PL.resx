@@ -366,6 +366,9 @@
   <data name="InstanceEditTitle" xml:space="preserve">
     <value>Edytuj instalacje gry</value>
   </data>
+  <data name="InstanceEditStabilityToleranceHeader" xml:space="preserve">
+    <value>Tolerancja stabilności:</value>
+  </data>
   <data name="InstanceEditRepoFrameTitle" xml:space="preserve">
     <value>Źródła Listy Modów</value>
   </data>
@@ -438,13 +441,31 @@ Edytować tokeny uwierzytelniania?</value>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nazwa</value>
   </data>
-  <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Usuń foldery</value></data>
-  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Poniższe foldery są pozostałościami po usuniętych modach. Zawierają pliki które nie były pobierane przez CKAN (prawdopodobnie wygenerowane przez moda bądź zainstalowane ręcznie). CKAN nie usuwa plików których nie instalował ale możesz sam je usunąć jeśli uważasz że to bezpieczne (zalecane)
-Uważaj bo jeśli nie usuniesz folderu, ModuleManager może myśleć że mod jest nadal zainstalowany.</value></data>
-  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Foldery</value></data>
-  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve"><value>Zawartość folderu</value></data>
-  <data name="DeleteDirectoriesCancelTip" xml:space="preserve"><value>Zachowaj wszystko</value></data>
-  <data name="DeleteDirectoriesApplyTip" xml:space="preserve"><value>Usuń zaznaczone</value></data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>Usuń foldery</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>Poniższe foldery są pozostałościami po usuniętych modach. Zawierają pliki które nie były pobierane przez CKAN (prawdopodobnie wygenerowane przez moda bądź zainstalowane ręcznie). CKAN nie usuwa plików których nie instalował ale możesz sam je usunąć jeśli uważasz że to bezpieczne (zalecane)
+Uważaj bo jeśli nie usuniesz folderu, ModuleManager może myśleć że mod jest nadal zainstalowany.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>Foldery</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>Zawartość folderu</value>
+  </data>
+  <data name="DeleteDirectoriesDeleteDirTip" xml:space="preserve">
+    <value>Usuń folder</value>
+  </data>
+  <data name="DeleteDirectoriesKeepDirTip" xml:space="preserve">
+    <value>Zachowaj folder</value>
+  </data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve">
+    <value>Zachowaj wszystko</value>
+  </data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve">
+    <value>Usuń zaznaczone</value>
+  </data>
   <data name="ModInfoTitle" xml:space="preserve">
     <value>Szczegóły modyfikacji</value>
   </data>
@@ -459,6 +480,15 @@ Uważaj bo jeśli nie usuniesz folderu, ModuleManager może myśleć że mod jes
   </data>
   <data name="ModInfoDownload" xml:space="preserve">
     <value>Pobieranie:</value>
+  </data>
+  <data name="ModInfoInstall" xml:space="preserve">
+    <value>Zainstaluj:</value>
+  </data>
+  <data name="ModInfoStabilityToleranceHeader" xml:space="preserve">
+    <value>Nadpisanie tolerancji stabilności moda:</value>
+  </data>
+  <data name="ModInfoStabilityToleranceNull" xml:space="preserve">
+    <value>Nie nadpisuj</value>
   </data>
   <data name="ModInfoDescriptionFrame" xml:space="preserve">
     <value>Opis</value>
@@ -488,6 +518,12 @@ Jeśli go odinstalujesz, CKAN nie będzie mógł go ponownie zainstalować.</val
   </data>
   <data name="ModInfoBugtrackerTip" xml:space="preserve">
     <value>Otwórz adres URL Bug Trackera w przeglądarce</value>
+  </data>
+  <data name="ModInfoDiscussions" xml:space="preserve">
+    <value>Dyskusje</value>
+  </data>
+  <data name="ModInfoDiscussionsTip" xml:space="preserve">
+    <value>Otwórz adres URL dyskusji w przeglądarce</value>
   </data>
   <data name="ModInfoSpaceDock" xml:space="preserve">
     <value>SpaceDock</value>
@@ -681,6 +717,12 @@ Jeśli go odinstalujesz, CKAN nie będzie mógł go ponownie zainstalować.</val
   <data name="ModListUpdatedDaysAgo" xml:space="preserve">
     <value>Zaktualizowano co najmniej {0} dni temu</value>
   </data>
+  <data name="ModListPlayMenu" xml:space="preserve">
+    <value>Zagraj</value>
+  </data>
+  <data name="ModListPlayMenuTip" xml:space="preserve">
+    <value>Uruchom grę</value>
+  </data>
   <data name="ModListSortMenu" xml:space="preserve">
     <value>Sortuj...</value>
   </data>
@@ -716,6 +758,18 @@ Jeśli go odinstalujesz, CKAN nie będzie mógł go ponownie zainstalować.</val
   </data>
   <data name="ModListExportMenuTip" xml:space="preserve">
     <value>Zapisz listę modyfikacji</value>
+  </data>
+  <data name="ModListInstallFromCkanMenu" xml:space="preserve">
+    <value>Zainstaluj z pliku .ckan...</value>
+  </data>
+  <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
+    <value>Zainstaluj paczki modów lub własne moduły</value>
+  </data>
+  <data name="CkanFileSelectTitle" xml:space="preserve">
+    <value>Wybierz pliki .ckan do instalacji</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>Rozmiar instalacji</value>
   </data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve">
     <value>Ustawienia instalacji gry...</value>
@@ -877,19 +931,19 @@ Jeśli go odinstalujesz, CKAN nie będzie mógł go ponownie zainstalować.</val
     <value>{0}, Comprehensive Kerbal Archive Network</value>
   </data>
   <data name="ExitBody" xml:space="preserve">
-    <value>UŻYWASZ {1}
+    <value>UŻYWASZ {1}.
 
-Dziękuje za pobranie {0}. Mamy nadzieje, że będziesz
-miał tyle samo przyjemności z korzystania z tego ile my z tworzenia.
+Dziękujemy za pobranie {0}. Mamy nadzieję, że będziesz miał
+tyle samo przyjemności z korzystania z tego, ile my mamy z tworzenia.
 
 Jeśli zapłaciłeś pieniądze za {0}, spróbuj je odzyskać,
 ponieważ możesz ściągnąć {0} w pełni za darmo z
 {2}
 
-Jeśli masz problemy z {0}, skontaktuj się znami tutaj
+Jeśli masz jakiekolwiek problemy z używaniem {0}, skontaktuj się z nami tutaj:
 {3}
 
-{0} ZOSTAŁO STWORZONE PRZEZ:
+{0} ZOSTAŁO STWORZONE PRZEZ {0} AUTORA(ÓW):
 {4}
 </value>
   </data>

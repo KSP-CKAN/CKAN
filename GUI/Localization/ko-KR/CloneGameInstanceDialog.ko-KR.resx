@@ -141,9 +141,6 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>새로운 인스턴스로 바꾸기</value>
   </data>
-  <data name="buttonOK.Text" xml:space="preserve">
-    <value>만들기</value>
-  </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>취소하기</value>
   </data>

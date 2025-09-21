@@ -138,7 +138,4 @@
   <data name="UnloadPluginButton.Text" xml:space="preserve">
     <value>除去</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>CKANプラグイン</value>
-  </data>
 </root>

@@ -123,9 +123,6 @@
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>Verder</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>Alles (de-)selecteren</value>
-  </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>De gekozen modules raden aan, suggereren of worden ondersteund door de volgende modules:</value>
   </data>

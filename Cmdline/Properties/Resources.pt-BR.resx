@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Usage" xml:space="preserve">
+    <value>Uso</value>
+  </data>
+  <data name="Command" xml:space="preserve">
+    <value>comando</value>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Comando desconhecido</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>opções</value>
+  </data>
+  <data name="ArgumentMissing" xml:space="preserve">
+    <value>argumento faltando, talvez você o tenha esquecido?</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>caminho</value>
+  </data>
+  <data name="MainVersion" xml:space="preserve">
+    <value>Você está usando a versão {0} do CKAN</value>
+  </data>
+  <data name="MainUnknownCommand" xml:space="preserve">
+    <value>Comando desconhecido, tente --help</value>
+  </data>
+  <data name="MainMissingInstance" xml:space="preserve">
+    <value>Eu não sei onde uma instância do KSP esta instalada.
+Use 'ckan instance help' para ter uma assistência em configurar isso.</value>
+  </data>
+  <data name="OptionsRootWarning" xml:space="preserve">
+    <value>Atenção: CKAN esta rodando no modo administrador!</value>
+  </data>
+  <data name="OptionsMonoWarning" xml:space="preserve">
+    <value>Atenção: Mono {0} Detectado, versão recomendada é {1} ou mais recente!</value>
+  </data>
+  <data name="OptionsInstanceAndGameDir" xml:space="preserve">
+    <value>--instância e --gamedir não podem ser especificados ao mesmo tempo</value>
+  </data>
+  <data name="OptionsInvalidInstance" xml:space="preserve">
+    <value>Instância de jogo especificada "{0}" é invalida, use '--gamedir' para especificar por caminho ou 'lista de instância' para ver instâncias do jogo conhecidas</value>
+  </data>
+  <data name="InstanceNotInstance" xml:space="preserve">
+    <value>Desculpe, {0} não parece ser uma instância do jogo</value>
+  </data>
+  <data name="InstanceDuplicate" xml:space="preserve">
+    <value>Este nome de instância já foi usado: {0}</value>
+  </data>
+  <data name="UserYesNoInvalid" xml:space="preserve">
+    <value>Entrada inválida. Por favor, insira "yes" ou "no"</value>
+  </data>
+  <data name="UserSelectionPromptWithDefault" xml:space="preserve">
+    <value>Insira um número entre {0} e {1} (Para cancelar pressione "c" ou "n". "Enter" selecionará {2}.): </value>
+  </data>
+  <data name="UserSelectionPromptWithoutDefault" xml:space="preserve">
+    <value>Insira um número entre {0} e {1} (para cancelar pressione "c" ou "n".): </value>
+  </data>
+  <data name="UserSelectionCancelled" xml:space="preserve">
+    <value>Seleção cancelada</value>
+  </data>
+  <data name="UserSelectionNotNumber" xml:space="preserve">
+    <value>O valor de entrada não é um número</value>
+  </data>
+  <data name="UserSelectionTooLarge" xml:space="preserve">
+    <value>O número na entrada é muito grande</value>
+  </data>
+  <data name="UserSelectionTooSmall" xml:space="preserve">
+    <value>O número na entrada é muito pequeno</value>
+  </data>
+  <data name="AuthTokenHostHeader" xml:space="preserve">
+    <value>Hospedeiro</value>
+  </data>
+  <data name="AuthTokenTokenHeader" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AuthTokenHelpSummary" xml:space="preserve">
+    <value>Gerenciar tokens de autenticação</value>
+  </data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve">
+    <value>Nome de host inválido: {0}</value>
+  </data>
+  <data name="AvailableHeader" xml:space="preserve">
+    <value>Módulos compatíveis com {0} {1}</value>
+  </data>
+  <data name="CacheHelpSummary" xml:space="preserve">
+    <value>Gerenciar o caminho de cache de download do CKAN</value>
+  </data>
+  <data name="CacheSet" xml:space="preserve">
+    <value>Download de cache definido para {0}</value>
+  </data>
+  <data name="CacheInvalidPath" xml:space="preserve">
+    <value>Caminho inválido: {0}</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Cache de download limpo</value>
+  </data>
+  <data name="CacheReset" xml:space="preserve">
+    <value>Download de cache redefinido para {0}</value>
+  </data>
+  <data name="CacheResetFailed" xml:space="preserve">
+    <value>Não é possível redefinir o caminho do cache: {0}</value>
+  </data>
+  <data name="CacheUnlimited" xml:space="preserve">
+    <value>Ilimitado</value>
+  </data>
+  <data name="CacheInfo" xml:space="preserve">
+    <value>Arquivos {0} , {1}, {2} livres</value>
+  </data>
+  <data name="CompareSame" xml:space="preserve">
+    <value>"{0}" e "{1}" são as mesmas versões.</value>
+  </data>
+  <data name="CompareLower" xml:space="preserve">
+    <value>"{0}" é menor que "{1}".</value>
+  </data>
+  <data name="CompareHigher" xml:space="preserve">
+    <value>"{0}" é maior que "{1}".</value>
+  </data>
+  <data name="CompatHelpSummary" xml:space="preserve">
+    <value>Gerenciar compatibilidade com versão do jogo</value>
+  </data>
+  <data name="CompatVersionHeader" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="CompatActualHeader" xml:space="preserve">
+    <value>Atual</value>
+  </data>
+  <data name="InstanceHelpSummary" xml:space="preserve">
+    <value>Gerenciar instâncias do jogo</value>
+  </data>
+  <data name="InstanceListYes" xml:space="preserve">
+    <value>Sim</value>
+  </data>
+  <data name="InstanceListNo" xml:space="preserve">
+    <value>Não</value>
+  </data>
+  <data name="InstanceListNameHeader" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Jogo</value>
+  </data>
+  <data name="InstanceListVersionHeader" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve">
+    <value>Padrão</value>
+  </data>
+  <data name="InstanceListPathHeader" xml:space="preserve">
+    <value>Caminho</value>
+  </data>
+  <data name="InstanceAddDuplicate" xml:space="preserve">
+    <value>Instalação com o nome "{0}" já existe, abortando</value>
+  </data>
+  <data name="InstanceAdded" xml:space="preserve">
+    <value>Adicionado "{0}" com raiz "{1}" para instalações conhecidas</value>
+  </data>
+  <data name="InstanceCloneNotFound" xml:space="preserve">
+    <value>Nenhuma instância com este nome ou neste caminho: {0}
+Veja abaixo uma lista de instâncias conhecidas:
+</value>
+  </data>
+  <data name="InstanceCloneFailed" xml:space="preserve">
+    <value>Algo deu errado. Por favor, verifique se o novo diretório foi criado.
+Tente adicionar a nova instância manualmente com "ckan instance add".
+</value>
+  </data>
+  <data name="InstanceNotFound" xml:space="preserve">
+    <value>Não foi possível encontrar instalação com o nome "{0}", abortando</value>
+  </data>
+  <data name="InstanceRenamed" xml:space="preserve">
+    <value>Renomeado com sucesso "{0}" para "{1}"</value>
+  </data>
+  <data name="InstanceForgot" xml:space="preserve">
+    <value>“{0} removido com sucesso ”</value>
+  </data>
+  <data name="InstanceDefaultArgumentMissing" xml:space="preserve">
+    <value>argumento faltando, por favor, selecione na lista abaixo</value>
+  </data>
+  <data name="InstanceDefaultSet" xml:space="preserve">
+    <value>"{0}" definido com sucesso como a instância padrão do jogo</value>
+  </data>
+  <data name="InstanceFakeFailed" xml:space="preserve">
+    <value>Algo deu errado. Tente adicionar a instância com "ckan instance add". Também verifique se a nova pasta foi criada.</value>
+  </data>
+  <data name="InstanceFakeBadArguments" xml:space="preserve">
+    <value>--Erro: argumento(s) ruim(s)--</value>
+  </data>
+  <data name="RepoListNameHeader" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="RepoListURLHeader" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="ShowRecommendsHeader" xml:space="preserve">
+    <value>Recomenda:</value>
+  </data>
+  <data name="ShowSuggestsHeader" xml:space="preserve">
+    <value>Sugere:</value>
+  </data>
+  <data name="ShowSupportsHeader" xml:space="preserve">
+    <value>Suporta:</value>
+  </data>
+  <data name="ShowVersionHeader" xml:space="preserve">
+    <value>Versão</value>
+  </data>
+  <data name="StabilityListModHeader" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+</root>

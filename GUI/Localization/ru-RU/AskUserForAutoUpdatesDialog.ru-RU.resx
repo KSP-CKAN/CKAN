@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>Хотите ли вы, чтобы CKAN при запуске автоматически проверял обновления (можно изменить позже)?</value>
-  </data>
   <data name="YesButton.Text" xml:space="preserve">
     <value>Да, проверять обновления</value>
   </data>

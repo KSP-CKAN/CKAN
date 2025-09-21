@@ -123,9 +123,6 @@
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>계속하기</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>모두 선택</value>
-  </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>선택한 모듈이 다음 모듈들을 추천, 제안, 지원 받아요:</value>
   </data>
