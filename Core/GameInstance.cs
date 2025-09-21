@@ -329,6 +329,7 @@ namespace CKAN
                    && Directory.EnumerateFileSystemEntries(absPath, "*", SearchOption.AllDirectories)
                                .Any(f => registry.FileOwner(ToRelativeGameDir(f)) != null));
 
+        [ExcludeFromCodeCoverage]
         public void PlayGame(string command, Action? onExit = null)
         {
             if (Game.AdjustCommandLine(command.Split(' '), Version())

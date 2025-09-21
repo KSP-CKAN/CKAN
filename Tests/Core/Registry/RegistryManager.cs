@@ -89,6 +89,7 @@ namespace Tests.Core.Registry
                 // Assert
                 Assert.IsTrue(File.Exists(jsonPath));
                 Assert.IsFalse(File.Exists(lockPath));
+                CollectionAssert.IsNotEmpty(gameInst.KSP.InstallHistoryFiles());
             }
         }
 

@@ -1330,6 +1330,18 @@ namespace Tests.Core.IO
                 File.WriteAllText(unmanagedAsk.FullName, "");
 
                 // Assert
+                Assert.IsTrue(inst.KSP.HasManagedFiles(registry, inst.KSP.ToAbsoluteGameDir("GameData")));
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "buildID.txt",
+                                                   "KSP.exe",
+                                                   "KSP.x86_64",
+                                                   "readme.txt",
+                                                   "GameData/README.md",
+                                                   "GameData/DogeCoinPlugin/config.cfg",
+                                                   "GameData/DogeCoinFlag/@thumbs/mythumb.png",
+                                               },
+                                               inst.KSP.UnmanagedFiles(registry));
                 CollectionAssert.IsNotEmpty(absPaths);
                 foreach (var f in absPaths)
                 {

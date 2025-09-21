@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -160,5 +161,28 @@ namespace Tests.Core
             Directory.Delete(gamedir, true);
         }
 
+        [Test]
+        public void AddSuppressedCompatWarningIdentifiers_WithIdentifiers_Works()
+        {
+            // Arrange
+            using (var inst = new DisposableKSP())
+            {
+                var path = inst.KSP.ToAbsoluteGameDir("CKAN/suppressed_compat_warning_identifiers.json");
+
+                // Act
+                Assert.IsFalse(File.Exists(path));
+                inst.KSP.AddSuppressedCompatWarningIdentifiers(new HashSet<string>
+                                                               {
+                                                                   "Mod1", "Mod2", "Mod3"
+                                                               });
+
+                // Assert
+                Assert.IsTrue(File.Exists(path));
+                Assert.AreEqual(@"{""GameVersionWhenWritten"":""0.25.0.642"",""Identifiers"":[""Mod1"",""Mod2"",""Mod3""]}",
+                                File.ReadAllText(path));
+                CollectionAssert.AreEquivalent(new string[] { "Mod1", "Mod2", "Mod3" },
+                                               inst.KSP.GetSuppressedCompatWarningIdentifiers);
+            }
+        }
     }
 }
