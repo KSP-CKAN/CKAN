@@ -292,7 +292,7 @@ namespace CKAN.IO
             {
                 // Install all the things!
                 var files = InstallModule(module, filename, registry, candidateDuplicates,
-                                          ref possibleConfigOnlyDirs, progress);
+                                          ref possibleConfigOnlyDirs, out int filteredCount, progress);
 
                 // Register our module and its files.
                 registry.RegisterModule(module, files, instance, autoInstalled);
@@ -302,10 +302,18 @@ namespace CKAN.IO
                 // This is fine from a transaction standpoint, as we may not have an enclosing
                 // transaction, and if we do, they can always roll us back.
                 transaction.Complete();
-            }
 
-            User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
-                              $"{module.name} {module.version}");
+                if (filteredCount > 0)
+                {
+                    User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledModFiltered,
+                                      $"{module.name} {module.version}", filteredCount);
+                }
+                else
+                {
+                    User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
+                                      $"{module.name} {module.version}");
+                }
+            }
 
             // Fire our callback that we've installed a module, if we have one.
             OneComplete?.Invoke(module);
@@ -336,6 +344,7 @@ namespace CKAN.IO
                                            Registry                      registry,
                                            Dictionary<string, string[]>? candidateDuplicates,
                                            ref HashSet<string>?          possibleConfigOnlyDirs,
+                                           out int                       filteredCount,
                                            IProgress<long>?              moduleProgress)
         {
             var createdPaths = new List<string>();
@@ -343,6 +352,7 @@ namespace CKAN.IO
             {
                 // It's OK to include metapackages in changesets,
                 // but there's no work to do for them
+                filteredCount = 0;
                 return createdPaths;
             }
             using (ZipFile zipfile = new ZipFile(zip_filename))
@@ -350,14 +360,16 @@ namespace CKAN.IO
                 var filters = config.GetGlobalInstallFilters(instance.Game)
                                     .Concat(instance.InstallFilters)
                                     .ToHashSet();
-                var files = FindInstallableFiles(module, zipfile, instance)
-                    .Where(instF => !filters.Any(filt =>
-                                        instF.destination != null
-                                        && instF.destination.Contains(filt))
-                                    // Skip the file if it's a ckan file, these should never be copied to GameData
-                                    && !IsInternalCkan(instF.source))
-                    .ToArray();
-
+                var groups = FindInstallableFiles(module, zipfile, instance)
+                    // Skip the file if it's a ckan file, these should never be copied to GameData
+                    .Where(instF => !IsInternalCkan(instF.source))
+                    // Check whether each file matches any installation filter
+                    .GroupBy(instF => filters.Any(filt => instF.destination != null
+                                                          && instF.destination.Contains(filt)))
+                    .ToDictionary(grp => grp.Key,
+                                  grp => grp.ToArray());
+                var files = groups.GetValueOrDefault(false) ?? Array.Empty<InstallableFile>();
+                filteredCount = groups.GetValueOrDefault(true)?.Length ?? 0;
                 try
                 {
                     if (registry.DllPath(module.identifier)
@@ -423,7 +435,7 @@ namespace CKAN.IO
                         var path = InstallFile(zipfile, file.source, file.destination, file.makedir,
                                                (candidateDuplicates != null
                                                 && candidateDuplicates.TryGetValue(instance.ToRelativeGameDir(file.destination),
-                                                                                 out string[]? duplicates))
+                                                                                   out string[]? duplicates))
                                                    ? duplicates
                                                    : Array.Empty<string>(),
                                                fileProgress);
@@ -447,8 +459,8 @@ namespace CKAN.IO
                     kraken.owningModule = registry.FileOwner(kraken.filename);
                     throw;
                 }
+                return createdPaths;
             }
-            return createdPaths;
         }
 
         public static bool IsInternalCkan(ZipEntry ze)
