@@ -1056,7 +1056,7 @@ namespace Tests.Core.Relationships
                 {
                     {
                         "ModuleManager",
-                        ksp.KSP.ToRelativeGameDir(Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP),
+                        ksp.KSP.ToRelativeGameDir(Path.Combine(ksp.KSP.Game.PrimaryModDirectory(ksp.KSP),
                                                                "ModuleManager.dll"))
                     }
                 });
@@ -1107,7 +1107,7 @@ namespace Tests.Core.Relationships
                 {
                     {
                         "RasterPropMonitor",
-                        inst.KSP.ToRelativeGameDir(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
+                        inst.KSP.ToRelativeGameDir(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
                                                                "RasterPropMonitor.dll"))
                     }
                 });
@@ -1118,7 +1118,7 @@ namespace Tests.Core.Relationships
                                      .OfType<CkanModule>(),
                         null,
                         RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
-                        registry, inst.KSP.game, crit);
+                        registry, inst.KSP.Game, crit);
                 });
             }
         }

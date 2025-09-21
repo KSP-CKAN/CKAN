@@ -60,7 +60,7 @@ namespace CKAN.ConsoleUI {
                     return p;
                 }
             }
-            return gameInst.GameDir();
+            return gameInst.GameDir;
         }
 
     }

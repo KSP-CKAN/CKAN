@@ -24,7 +24,7 @@ namespace Tests.CmdLine
                                               "/MiniAVC.dll",
                                               "/MiniAVC.xml",
                                           };
-                config.SetGlobalInstallFilters(inst.KSP.game,
+                config.SetGlobalInstallFilters(inst.KSP.Game,
                                                new string[]
                                                {
                                                    "/MiniAVC-V2.dll",
@@ -75,7 +75,7 @@ namespace Tests.CmdLine
                 CollectionAssert.AreEquivalent(new string[] { "/MiniAVC-V2.dll" },
                                                inst.KSP.InstallFilters);
                 CollectionAssert.AreEquivalent(new string[] { "/MiniAVC.dll" },
-                                               config.GetGlobalInstallFilters(inst.KSP.game));
+                                               config.GetGlobalInstallFilters(inst.KSP.Game));
             }
         }
 
@@ -93,7 +93,7 @@ namespace Tests.CmdLine
                                               "/MiniAVC.dll",
                                               "/MiniAVC.xml",
                                           };
-                config.SetGlobalInstallFilters(inst.KSP.game,
+                config.SetGlobalInstallFilters(inst.KSP.Game,
                                                new string[]
                                                {
                                                    "/MiniAVC-V2.dll",
@@ -113,7 +113,7 @@ namespace Tests.CmdLine
                 CollectionAssert.AreEquivalent(new string[] { "/MiniAVC.dll" },
                                                inst.KSP.InstallFilters);
                 CollectionAssert.AreEquivalent(new string[] { "/MiniAVC-V2.dll" },
-                                               config.GetGlobalInstallFilters(inst.KSP.game));
+                                               config.GetGlobalInstallFilters(inst.KSP.Game));
             }
         }
     }

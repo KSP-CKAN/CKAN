@@ -62,14 +62,14 @@ namespace CKAN.GUI
             GameInstancesListView.Items.Clear();
             UpdateButtonState();
 
-            var allSameGame = manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
+            var allSameGame = manager.Instances.Select(i => i.Value.Game).Distinct().Count() <= 1;
             var hasPlayTime = manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
 
             AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame, GameInstallVersion.Index);
             AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime, GameInstallPath.Index);
 
             GameInstancesListView.Items.AddRange(
-                manager.Instances.OrderByDescending(instance => instance.Value.game.FirstReleaseDate)
+                manager.Instances.OrderByDescending(instance => instance.Value.Game.FirstReleaseDate)
                                   .ThenByDescending(instance => instance.Value.Version())
                                   .ThenBy(instance => instance.Key)
                                   .Select(instance => new ListViewItem(
@@ -121,7 +121,7 @@ namespace CKAN.GUI
 
             if (includeGame)
             {
-                list.Add(instance.game.ShortName);
+                list.Add(instance.Game.ShortName);
             }
 
             list.Add(FormatVersion(instance.Version()));
@@ -131,7 +131,7 @@ namespace CKAN.GUI
                 list.Add(instance.playTime?.ToString() ?? "");
             }
 
-            list.Add(Platform.FormatPath(instance.GameDir()));
+            list.Add(Platform.FormatPath(instance.GameDir));
             return list.ToArray();
         }
 
@@ -189,10 +189,10 @@ namespace CKAN.GUI
         private void ImportFromSteamMenuItem_Click(object? sender, EventArgs? e)
         {
             var currentDirs = manager.Instances.Values
-                                               .Select(inst => inst.GameDir())
+                                               .Select(inst => inst.GameDir)
                                                .ToHashSet(Platform.PathComparer);
             var toAdd = manager.FindDefaultInstances()
-                               .Where(inst => !currentDirs.Contains(inst.GameDir()));
+                               .Where(inst => !currentDirs.Contains(inst.GameDir));
             foreach (var inst in toAdd)
             {
                 manager.AddInstance(inst);
@@ -244,7 +244,7 @@ namespace CKAN.GUI
                 else
                 {
                     user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
-                                    inst.GameDir());
+                                    inst.GameDir);
                 }
             }
         }
@@ -324,7 +324,7 @@ namespace CKAN.GUI
                 GameInstancesListView.SelectedItems.Count > 0
                 && GameInstancesListView.SelectedItems[0] is {Tag: GameInstance inst})
             {
-                string path = inst.GameDir();
+                string path = inst.GameDir;
 
                 if (!Directory.Exists(path))
                 {

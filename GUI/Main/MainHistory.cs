@@ -32,7 +32,7 @@ namespace CKAN.GUI
                     modules.Select(mod => new ModChange(mod, GUIModChangeType.Install,
                                                         ServiceLocator.Container.Resolve<IConfiguration>()))
                            .ToHashSet(),
-                    CurrentInstance.game,
+                    CurrentInstance.Game,
                     CurrentInstance.StabilityToleranceConfig,
                     CurrentInstance.VersionCriteria());
                 UpdateChangesDialog(tuple.Item1.ToList(), tuple.Item2);

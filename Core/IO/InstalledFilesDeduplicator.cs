@@ -33,8 +33,8 @@ namespace CKAN.IO
         {
             log.DebugFormat("Checking for duplicate installed files from {0}...",
                             string.Join(", ", instances.Select(inst => inst.Name)));
-            InstalledWhere = instances.Where(inst => Directory.Exists(inst.GameDir()))
-                                      .ZipBy(goodInsts => HardLink.GetDeviceIdentifiers(goodInsts.Select(inst => inst.GameDir())))
+            InstalledWhere = instances.Where(inst => Directory.Exists(inst.GameDir))
+                                      .ZipBy(goodInsts => HardLink.GetDeviceIdentifiers(goodInsts.Select(inst => inst.GameDir)))
                                       .GroupBy(tuple => tuple.Second ?? 0UL,
                                                tuple => tuple.First)
                                       .ToDictionary(grp => grp.Key,
@@ -74,13 +74,13 @@ namespace CKAN.IO
                                           IEnumerable<GameInstance> instances,
                                           RepositoryDataManager     repoData)
             : this(HardLink.GetDeviceIdentifiers(instances.Prepend(destinationInstance)
-                                                          .Select(inst => inst.GameDir())).ToArray()
+                                                          .Select(inst => inst.GameDir)).ToArray()
                    is ulong?[] devIds
                        ? instances.Zip(devIds.Skip(1))
                                   .Where(tuple => tuple.First != destinationInstance
                                                   && tuple.Second == devIds[0])
                                   .Select(tuple => tuple.First)
-                                  .Where(inst => inst.game == destinationInstance.game)
+                                  .Where(inst => inst.Game == destinationInstance.Game)
                        : Enumerable.Empty<GameInstance>(),
                    repoData)
         {

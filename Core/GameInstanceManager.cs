@@ -117,10 +117,10 @@ namespace CKAN
                 case { Length: > 1 } insts:
                     if (User.RaiseSelectionDialog(
                             string.Format(Properties.Resources.GameInstanceManagerSelectGamePrompt,
-                                          string.Join(", ", insts.Select(i => i.GameDir())
+                                          string.Join(", ", insts.Select(i => i.GameDir)
                                                                  .Distinct()
                                                                  .Select(Platform.FormatPath))),
-                            insts.Select(i => i.game.ShortName)
+                            insts.Select(i => i.Game.ShortName)
                                  .ToArray())
                         is int selection and >= 0)
                     {
@@ -169,7 +169,7 @@ namespace CKAN
             foreach (var inst in found)
             {
                 log.DebugFormat("Registering {0} at {1}...",
-                                inst.Name, inst.GameDir());
+                                inst.Name, inst.GameDir);
                 AddInstance(inst);
             }
             return found.FirstOrDefault();
@@ -234,7 +234,7 @@ namespace CKAN
             }
             else
             {
-                throw new NotGameDirKraken(instance.GameDir());
+                throw new NotGameDirKraken(instance.GameDir);
             }
             return instance;
         }
@@ -271,7 +271,7 @@ namespace CKAN
                                   bool         shareStockFolders = false)
         {
             CloneInstance(existingInstance, newName, newPath,
-                          existingInstance.game.LeaveEmptyInClones,
+                          existingInstance.Game.LeaveEmptyInClones,
                           shareStockFolders);
         }
 
@@ -300,18 +300,18 @@ namespace CKAN
             }
             if (!existingInstance.Valid)
             {
-                throw new NotGameDirKraken(existingInstance.GameDir(), string.Format(
-                    Properties.Resources.GameInstanceCloneInvalid, existingInstance.game.ShortName));
+                throw new NotGameDirKraken(existingInstance.GameDir, string.Format(
+                    Properties.Resources.GameInstanceCloneInvalid, existingInstance.Game.ShortName));
             }
 
             log.Debug("Copying directory.");
-            Utilities.CopyDirectory(existingInstance.GameDir(), newPath,
-                                    shareStockFolders ? existingInstance.game.StockFolders
+            Utilities.CopyDirectory(existingInstance.GameDir, newPath,
+                                    shareStockFolders ? existingInstance.Game.StockFolders
                                                       : Array.Empty<string>(),
                                     leaveEmpty);
 
             // Add the new instance to the config
-            AddInstance(new GameInstance(existingInstance.game, newPath, newName, User));
+            AddInstance(new GameInstance(existingInstance.Game, newPath, newName, User));
         }
 
         /// <summary>
@@ -490,7 +490,7 @@ namespace CKAN
             }
             else if (!inst.Valid)
             {
-                throw new NotGameDirKraken(inst.GameDir());
+                throw new NotGameDirKraken(inst.GameDir);
             }
             else
             {
@@ -534,7 +534,7 @@ namespace CKAN
                 }
                 else
                 {
-                    throw new NotGameDirKraken(inst.GameDir());
+                    throw new NotGameDirKraken(inst.GameDir);
                 }
             }
             return null;
@@ -551,7 +551,7 @@ namespace CKAN
             }
             else if (!instances[name].Valid)
             {
-                throw new NotGameDirKraken(instances[name].GameDir());
+                throw new NotGameDirKraken(instances[name].GameDir);
             }
             AutoStartInstance = name;
         }

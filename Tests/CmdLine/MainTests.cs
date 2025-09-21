@@ -46,9 +46,9 @@ namespace Tests.CmdLine
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                var dll = new FileInfo(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
+                var dll = new FileInfo(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
                                                     "ModuleManager.1.2.3.dll"));
-                var dlc = new FileInfo(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
+                var dlc = new FileInfo(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
                                                     "SquadExpansion", "MakingHistory",
                                                     "readme.txt"));
                 var opts = new CommonOptions();

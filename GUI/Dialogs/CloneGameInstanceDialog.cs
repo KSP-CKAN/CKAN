@@ -43,7 +43,7 @@ namespace CKAN.GUI
                 Enumerable.Repeat("", 1)
                           .Concat(manager.Instances.Values
                                                    .Where(i => i.Valid)
-                                                   .OrderByDescending(i => i.game.FirstReleaseDate)
+                                                   .OrderByDescending(i => i.Game.FirstReleaseDate)
                                                    .ThenByDescending(i => i.Version())
                                                    .ThenBy(i => i.Name)
                                                    .Select(i => i.Name))
@@ -74,10 +74,10 @@ namespace CKAN.GUI
                 && !string.IsNullOrEmpty(sel))
             {
                 var inst = manager.Instances[sel];
-                textBoxClonePath.Text = Platform.FormatPath(inst.GameDir());
+                textBoxClonePath.Text = Platform.FormatPath(inst.GameDir);
                 OptionalPathsListView.Items.Clear();
                 OptionalPathsListView.Items.AddRange(
-                    inst.game.LeaveEmptyInClones
+                    inst.Game.LeaveEmptyInClones
                              .OrderBy(path => path,
                                       StringComparer.OrdinalIgnoreCase)
                              .Select(path => new ListViewItem(path) { Tag = path })
@@ -151,7 +151,7 @@ namespace CKAN.GUI
             {
                 var instanceToClone = comboBoxKnownInstance.SelectedItem is string s
                                       && manager.Instances.TryGetValue(s, out GameInstance? instFromBox)
-                                      && existingPath == Platform.FormatPath(instFromBox.GameDir())
+                                      && existingPath == Platform.FormatPath(instFromBox.GameDir)
                                           ? instFromBox
                                           : manager.DetermineGame(new DirectoryInfo(existingPath), user) is IGame sourceGame
                                               ? new GameInstance(sourceGame, existingPath,
@@ -178,7 +178,7 @@ namespace CKAN.GUI
                     }
                     else
                     {
-                        throw new NotGameDirKraken(instanceToClone.GameDir());
+                        throw new NotGameDirKraken(instanceToClone.GameDir);
                     }
                 });
 

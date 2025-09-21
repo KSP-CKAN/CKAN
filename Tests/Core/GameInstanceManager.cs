@@ -271,7 +271,7 @@ namespace Tests.Core
         {
             using (var tidy2 = new DisposableKSP())
             {
-                cfg!.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir(), "KSP"));
+                cfg!.Instances.Add(new Tuple<string, string, string>("tidy2", tidy2.KSP.GameDir, "KSP"));
                 // Make a new manager with the updated config
                 var multiMgr = new GameInstanceManager(new NullUser(), cfg);
                 multiMgr.ClearAutoStart();
@@ -311,7 +311,7 @@ namespace Tests.Core
         public void SetCurrentInstanceByPath_WithInstance_Works()
         {
             // Act
-            manager!.SetCurrentInstanceByPath(tidy!.KSP.GameDir());
+            manager!.SetCurrentInstanceByPath(tidy!.KSP.GameDir);
 
             // Assert
             Assert.AreEqual(tidy!.KSP, manager.CurrentInstance);
@@ -321,7 +321,7 @@ namespace Tests.Core
         public void InstanceAt_WithInstance_Found()
         {
             // Arrange
-            var instFromMgr = manager!.InstanceAt(tidy!.KSP.GameDir());
+            var instFromMgr = manager!.InstanceAt(tidy!.KSP.GameDir);
 
             // Assert
             Assert.IsNotNull(instFromMgr);
@@ -331,7 +331,7 @@ namespace Tests.Core
         public void IsGameInstanceDir_WithInstance_True()
         {
             // Arrange
-            var di = new DirectoryInfo(tidy!.KSP.GameDir());
+            var di = new DirectoryInfo(tidy!.KSP.GameDir);
 
             // Act / Assert
             Assert.IsTrue(GameInstanceManager.IsGameInstanceDir(di));
@@ -405,8 +405,8 @@ namespace Tests.Core
                    new List<Tuple<string, string, string>>
                    {
                        new Tuple<string, string, string>(name,
-                                                         tidy!.KSP.GameDir(),
-                                                         tidy!.KSP.game.ShortName)
+                                                         tidy!.KSP.GameDir,
+                                                         tidy!.KSP.Game.ShortName)
                    },
                    null, null);
     }

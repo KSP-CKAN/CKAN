@@ -380,26 +380,26 @@ namespace CKAN
             {
                 installDir = null;
             }
-            else if (install_to == ksp.game.PrimaryModDirectoryRelative
-                || install_to.StartsWith($"{ksp.game.PrimaryModDirectoryRelative}/"))
+            else if (install_to == ksp.Game.PrimaryModDirectoryRelative
+                || install_to.StartsWith($"{ksp.Game.PrimaryModDirectoryRelative}/"))
             {
                 // The installation path can be either "GameData" or a sub-directory of "GameData"
-                string subDir = install_to[ksp.game.PrimaryModDirectoryRelative.Length..];    // remove "GameData"
+                string subDir = install_to[ksp.Game.PrimaryModDirectoryRelative.Length..];    // remove "GameData"
                 subDir = subDir.StartsWith("/") ? subDir[1..] : subDir;    // remove a "/" at the beginning, if present
 
                 // Add the extracted subdirectory to the path of KSP's GameData
-                installDir = CKANPathUtils.NormalizePath(ksp.game.PrimaryModDirectory(ksp) + "/" + subDir);
+                installDir = CKANPathUtils.NormalizePath(ksp.Game.PrimaryModDirectory(ksp) + "/" + subDir);
             }
             else
             {
                 switch (install_to)
                 {
                     case "GameRoot":
-                        installDir = ksp.GameDir();
+                        installDir = ksp.GameDir;
                         break;
 
                     default:
-                        if (ksp.game.AllowInstallationIn(install_to, out string? path))
+                        if (ksp.Game.AllowInstallationIn(install_to, out string? path))
                         {
                             installDir = ksp.ToAbsoluteGameDir(path);
                         }
@@ -450,8 +450,8 @@ namespace CKAN
                 {
                     // Get the full name of the file.
                     // Update our file info with the install location
-                    file_info.destination = TransformOutputName(ksp.game, entryName, installDir, @as);
-                    file_info.makedir     = AllowDirectoryCreation(ksp.game,
+                    file_info.destination = TransformOutputName(ksp.Game, entryName, installDir, @as);
+                    file_info.makedir     = AllowDirectoryCreation(ksp.Game,
                                                                    ksp.ToRelativeGameDir(file_info.destination));
                 }
 

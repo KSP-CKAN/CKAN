@@ -250,17 +250,17 @@ namespace CKAN.CmdLine
         {
             var output = Manager?.Instances.Values
                 .OrderByDescending(i => i.Name == Manager.AutoStartInstance)
-                .ThenByDescending(i => i.game.FirstReleaseDate)
+                .ThenByDescending(i => i.Game.FirstReleaseDate)
                 .ThenByDescending(i => i.Version() ?? GameVersion.Any)
                 .ThenBy(i => i.Name)
                 .Select(i => new Tuple<string, string, string, string, string>(
                                 i.Name,
-                                i.game.ShortName,
+                                i.Game.ShortName,
                                 i.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
                                 i.Name == Manager.AutoStartInstance
                                     ? Properties.Resources.InstanceListYes
                                     : Properties.Resources.InstanceListNo,
-                                Platform.FormatPath(i.GameDir())))
+                                Platform.FormatPath(i.GameDir)))
                 .ToList();
 
             if (output != null && user != null)
@@ -491,7 +491,7 @@ namespace CKAN.CmdLine
                                          ? Enumerable.Empty<object>()
                                          : Enumerable.Repeat((object)Manager.Instances.IndexOfKey(defaultInstance), 1))
                                          .Concat(Manager.Instances.Select(kvp => string.Format("\"{0}\" - {1}",
-                                                                                               kvp.Key, kvp.Value.GameDir())))
+                                                                                               kvp.Key, kvp.Value.GameDir)))
                                          .ToArray());
                     if (result < 0)
                     {

@@ -111,7 +111,7 @@ namespace CKAN.GUI
             => conflicted
                    ? conflictColor
                    : Util.BlendColors(allLabels.LabelsFor(instance.Name)
-                                               .Where(l => l.ContainsModule(instance.game,
+                                               .Where(l => l.ContainsModule(instance.Game,
                                                                             mod.Identifier))
                                                .Select(l => l.Color)
                                                .OfType<Color>()
@@ -193,7 +193,7 @@ namespace CKAN.GUI
             return modChanges.Union(
                     registry.FindRemovableAutoInstalled(InstalledAfterChanges(registry, modChanges).ToArray(),
                                                         Array.Empty<CkanModule>(),
-                                                        instance.game, instance.StabilityToleranceConfig,
+                                                        instance.Game, instance.StabilityToleranceConfig,
                                                         instance.VersionCriteria())
                         .Select(im => new ModChange(
                             im.Module, GUIModChangeType.Remove,
@@ -579,7 +579,7 @@ namespace CKAN.GUI
             // "Hide" labels apply to all non-custom filters
             => (allLabels?.LabelsFor(instance.Name)
                                              .Where(l => !LabelInSearches(l) && l.Hide)
-                                             .Any(l => l.ContainsModule(instance.game, m.Identifier))
+                                             .Any(l => l.ContainsModule(instance.Game, m.Identifier))
                                             ?? false)
                || (registry.Tags?.Values
                                  .Where(t => !TagInSearches(t) && ModuleTagList.ModuleTags.HiddenTags.Contains(t.Name))

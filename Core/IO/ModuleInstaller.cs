@@ -37,7 +37,7 @@ namespace CKAN.IO
             this.config = config;
             instance    = inst;
             this.cancelToken = cancelToken;
-            log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir());
+            log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir);
         }
 
         public IUser User { get; set; }
@@ -72,7 +72,7 @@ namespace CKAN.IO
             }
             var resolver = new RelationshipResolver(modules, null, options,
                                                     registry_manager.registry,
-                                                    instance.game, instance.VersionCriteria());
+                                                    instance.Game, instance.VersionCriteria());
             var modsToInstall = resolver.ModList().ToArray();
             // Alert about attempts to install DLC before downloading or installing anything
             var dlc = modsToInstall.Where(m => m.IsDLC).ToArray();
@@ -83,7 +83,7 @@ namespace CKAN.IO
 
             // Make sure we have enough space to install this stuff
             var installBytes = modsToInstall.Sum(m => m.install_size);
-            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir),
                                          installBytes,
                                          Properties.Resources.NotEnoughSpaceToInstall);
 
@@ -133,7 +133,7 @@ namespace CKAN.IO
             // We're about to install all our mods; so begin our transaction.
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
-                var gameDir = new DirectoryInfo(instance.GameDir());
+                var gameDir = new DirectoryInfo(instance.GameDir);
                 long modInstallCompletedBytes = 0;
                 foreach (var mod in ModsInDependencyOrder(resolver, cached, downloads, downloader))
                 {
@@ -347,7 +347,7 @@ namespace CKAN.IO
             }
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
-                var filters = config.GetGlobalInstallFilters(instance.game)
+                var filters = config.GetGlobalInstallFilters(instance.Game)
                                     .Concat(instance.InstallFilters)
                                     .ToHashSet();
                 var files = FindInstallableFiles(module, zipfile, instance)
@@ -566,7 +566,7 @@ namespace CKAN.IO
                     ? module.install
                             .SelectMany(stanza => stanza.FindInstallableFiles(zipfile, ksp))
                             .ToList()
-                    : ModuleInstallDescriptor.DefaultInstallStanza(ksp.game,
+                    : ModuleInstallDescriptor.DefaultInstallStanza(ksp.Game,
                                                                    module.identifier)
                                              .FindInstallableFiles(zipfile, ksp);
             }
@@ -804,7 +804,7 @@ namespace CKAN.IO
                             .Where(im => !revdep.Contains(im.identifier))
                             .ToArray(),
                         installing ?? Array.Empty<CkanModule>(),
-                        instance.game, instance.StabilityToleranceConfig,
+                        instance.Game, instance.StabilityToleranceConfig,
                         instance.VersionCriteria())
                     .Select(im => im.identifier))
                 .Order()
@@ -989,7 +989,7 @@ namespace CKAN.IO
                     // It is bad if any of this directories gets removed
                     // So we protect them
                     // A few string comparisons will be cheaper than hitting the disk, so do this first
-                    if (instance.game.IsReservedDirectory(instance, directory))
+                    if (instance.Game.IsReservedDirectory(instance, directory))
                     {
                         log.DebugFormat("Directory {0} is reserved, skipping", directory);
                         continue;
@@ -997,7 +997,7 @@ namespace CKAN.IO
 
                     // See what's left in this folder and what we can do about it
                     GroupFilesByRemovable(instance.ToRelativeGameDir(directory),
-                                          registry, modFiles, instance.game,
+                                          registry, modFiles, instance.Game,
                                           (Directory.Exists(directory)
                                               ? Directory.EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
                                               : Enumerable.Empty<string>())
@@ -1108,7 +1108,7 @@ namespace CKAN.IO
         /// <param name="directories">The collection of directory path strings to examine</param>
         public HashSet<string> AddParentDirectories(HashSet<string> directories)
         {
-            var gameDir = CKANPathUtils.NormalizePath(instance.GameDir());
+            var gameDir = CKANPathUtils.NormalizePath(instance.GameDir);
             return directories
                 .Where(dir => !string.IsNullOrWhiteSpace(dir))
                 // Normalize all paths before deduplicate
@@ -1151,7 +1151,7 @@ namespace CKAN.IO
 
                     return results;
                 })
-                .Where(dir => !instance.game.IsReservedDirectory(instance, dir))
+                .Where(dir => !instance.Game.IsReservedDirectory(instance, dir))
                 .ToHashSet();
         }
 
@@ -1235,7 +1235,7 @@ namespace CKAN.IO
                      modRemoveCompletedBytes += instMod.Module.install_size;
                 }
 
-                var gameDir = new DirectoryInfo(instance.GameDir());
+                var gameDir = new DirectoryInfo(instance.GameDir);
                 long modInstallCompletedBytes = 0;
                 foreach (var mod in toInstall)
                 {
@@ -1296,7 +1296,7 @@ namespace CKAN.IO
                             .Where(im => !removingIdents.Contains(im.identifier))
                             .ToArray(),
                     modules,
-                    instance.game, instance.StabilityToleranceConfig, instance.VersionCriteria())
+                    instance.Game, instance.StabilityToleranceConfig, instance.VersionCriteria())
                 .ToHashSet();
 
             var resolver = new RelationshipResolver(
@@ -1306,7 +1306,7 @@ namespace CKAN.IO
                        .Concat(autoRemoving.Select(im => im.Module)),
                 RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
                 registry,
-                instance.game, instance.VersionCriteria());
+                instance.Game, instance.VersionCriteria());
             var fullChangeset = resolver.ModList()
                                         .ToDictionary(m => m.identifier,
                                                       m => m);
@@ -1528,7 +1528,7 @@ namespace CKAN.IO
                 }
             }
             var resolver = new RelationshipResolver(modsToInstall, null, options, registry_manager.registry,
-                                                    instance.game, instance.VersionCriteria());
+                                                    instance.Game, instance.VersionCriteria());
             var resolvedModsToInstall = resolver.ModList().ToArray();
 
             CheckAddRemoveFreeSpace(resolvedModsToInstall, modsToRemove);
@@ -1583,7 +1583,7 @@ namespace CKAN.IO
             var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
                                                     null,
                                                     RelationshipResolverOptions.KitchenSinkOpts(instance.StabilityToleranceConfig),
-                                                    registry, instance.game, crit);
+                                                    registry, instance.Game, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
             log.DebugFormat("Recommenders: {0}", string.Join(", ", recommenders));
 
@@ -1594,7 +1594,7 @@ namespace CKAN.IO
                                       .ToHashSet();
             var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), null,
                                                        RelationshipResolverOptions.ConflictsOpts(instance.StabilityToleranceConfig),
-                                                       registry, instance.game, crit)
+                                                       registry, instance.Game, crit)
                                   .ConflictList.Keys;
             // Don't check recommendations that conflict with installed or installing mods
             checkedRecs.ExceptWith(conflicting);
@@ -1629,7 +1629,7 @@ namespace CKAN.IO
                                                          .Concat(suggestions.Keys))
                                  .Where(kvp => !exclude.Contains(kvp.Key)
                                                && CanInstall(toInstall.Append(kvp.Key).ToList(),
-                                                          opts, registry, instance.game, crit))
+                                                          opts, registry, instance.Game, crit))
                                  .ToDictionary();
 
             return recommendations.Count > 0
@@ -1720,7 +1720,7 @@ namespace CKAN.IO
             if (toInstall.Sum(m => m.install_size) - toRemove.Sum(im => im.ActualInstallSize(instance))
                 is > 0 and var spaceDelta)
             {
-                CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir()),
+                CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir),
                                              spaceDelta,
                                              Properties.Resources.NotEnoughSpaceToInstall);
             }

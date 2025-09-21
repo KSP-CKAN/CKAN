@@ -207,7 +207,7 @@ namespace CKAN.GUI
                         Task.Run(() =>
                         {
                             var filters = ServiceLocator.Container.Resolve<IConfiguration>()
-                                                                  .GetGlobalInstallFilters(inst.game)
+                                                                  .GetGlobalInstallFilters(inst.Game)
                                                                   .Concat(inst.InstallFilters)
                                                                   .ToHashSet();
                             var tuples = (instMod != null

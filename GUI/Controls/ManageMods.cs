@@ -326,7 +326,7 @@ namespace CKAN.GUI
                     ModuleLabelList.ModuleLabels
                                    .LabelsFor(currentInstance.Name)
                                    .Select(mlbl => new ToolStripMenuItem(
-                                                       $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.game)})",
+                                                       $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.Game)})",
                                                        null, customFilterButton_Click)
                                                    {
                                                        Tag         = mlbl,
@@ -351,7 +351,7 @@ namespace CKAN.GUI
                 LabelsContextMenuStrip.Items.Clear();
                 foreach (var mlbl in ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name))
                 {
-                    var idents = mlbl.IdentifiersFor(currentInstance.game)
+                    var idents = mlbl.IdentifiersFor(currentInstance.Game)
                                      .ToHashSet();
                     var groups = modules.GroupBy(m => idents.Contains(m.Identifier))
                                         .OrderBy(grp => grp.Key)
@@ -1493,7 +1493,7 @@ namespace CKAN.GUI
             var registry = RegistryManager.Instance(currentInstance, repoData).registry;
             ModGrid.Rows.Clear();
             var instName = currentInstance.Name;
-            var instGame = currentInstance.game;
+            var instGame = currentInstance.Game;
             rows.AsParallel().ForAll(row =>
                 row.Visible = row.Tag is GUIMod gmod
                 && mainModList.IsVisible(gmod, currentInstance, registry));
@@ -1937,7 +1937,7 @@ namespace CKAN.GUI
                                                    .Select(tagName => registry.Tags[tagName])
                                                    .ToList();
                 var labels = ModuleLabelList.ModuleLabels.LabelsFor(currentInstance.Name)
-                                                         .Where(l => l.Hide && l.ModuleCount(currentInstance.game) > 0)
+                                                         .Where(l => l.Hide && l.ModuleCount(currentInstance.Game) > 0)
                                                          .ToList();
                 hiddenTagsLabelsLinkList.UpdateTagsAndLabels(tags, labels);
                 Util.Invoke(hiddenTagsLabelsLinkList, () =>
@@ -1995,13 +1995,13 @@ namespace CKAN.GUI
             var registry = RegistryManager.Instance(instance, repoData).registry;
             foreach (var module in modules)
             {
-                if (label.ContainsModule(instance.game, module.Identifier))
+                if (label.ContainsModule(instance.Game, module.Identifier))
                 {
-                    label.Remove(instance.game, module.Identifier);
+                    label.Remove(instance.Game, module.Identifier);
                 }
                 else
                 {
-                    label.Add(instance.game, module.Identifier);
+                    label.Add(instance.Game, module.Identifier);
                 }
                 mainModList?.ReapplyLabels(module, Conflicts?.ContainsKey(module) ?? false,
                                            instance, registry);
@@ -2180,7 +2180,7 @@ namespace CKAN.GUI
                     }
                 }
                 var gameVersion = inst.VersionCriteria();
-                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.game,
+                var tuple = mainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.Game,
                                                                               inst.StabilityToleranceConfig, gameVersion);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(

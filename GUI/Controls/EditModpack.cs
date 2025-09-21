@@ -54,7 +54,7 @@ namespace CKAN.GUI
                 AuthorTextBox.Text     = string.Join(", ", module.author);
                 VersionTextBox.Text    = module.version.ToString();
                 var options = new string[] { "" }.Concat(
-                    Main.Instance?.CurrentInstance?.game.KnownVersions
+                    Main.Instance?.CurrentInstance?.Game.KnownVersions
                     .SelectMany(v => new GameVersion[] {
                             new GameVersion(v.Major, v.Minor, v.Patch),
                             new GameVersion(v.Major, v.Minor)

@@ -62,7 +62,7 @@ namespace CKAN.GUI
                     ChooseRecommendedMods.LoadRecommendations(
                         registry, Array.Empty<CkanModule>(), Array.Empty<CkanModule>(),
                         versionCriteria, Manager.Cache,
-                        CurrentInstance.game,
+                        CurrentInstance.Game,
                         ModuleLabelList.ModuleLabels
                                        .LabelsFor(CurrentInstance.Name)
                                        .ToList(),

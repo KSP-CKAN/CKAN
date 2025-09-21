@@ -75,7 +75,7 @@ namespace Tests.CmdLine
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert
-                CollectionAssert.IsEmpty(inst.KSP.GetCompatibleVersions());
+                CollectionAssert.IsEmpty(inst.KSP.CompatibleVersions);
             }
         }
 
@@ -103,7 +103,7 @@ namespace Tests.CmdLine
                                                {
                                                    new GameVersion(1, 0),
                                                },
-                                               inst.KSP.GetCompatibleVersions());
+                                               inst.KSP.CompatibleVersions);
             }
         }
 
@@ -136,7 +136,7 @@ namespace Tests.CmdLine
                                                    new GameVersion(1, 0),
                                                    new GameVersion(1, 2),
                                                },
-                                               inst.KSP.GetCompatibleVersions());
+                                               inst.KSP.CompatibleVersions);
             }
         }
 
@@ -170,7 +170,7 @@ namespace Tests.CmdLine
                                                    new GameVersion(1, 4),
                                                    new GameVersion(1, 5),
                                                },
-                                               inst.KSP.GetCompatibleVersions());
+                                               inst.KSP.CompatibleVersions);
             }
         }
     }

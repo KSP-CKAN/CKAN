@@ -93,7 +93,7 @@ namespace CKAN.GUI
         {
             Name     = name;
             PlayTime = instance.playTime ?? new TimeLog();
-            path     = TimeLog.GetPath(instance.CkanDir());
+            path     = TimeLog.GetPath(instance.CkanDir);
         }
 
         /// <summary>

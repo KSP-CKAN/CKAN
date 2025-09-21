@@ -227,7 +227,7 @@ namespace CKAN.GUI
             if (LatestAvailableMod != null)
             {
                 GameCompatibilityVersion = registry.LatestCompatibleGameVersion(
-                    instance.game.KnownVersions,
+                    instance.Game.KnownVersions,
                     Identifier);
             }
 
@@ -278,7 +278,7 @@ namespace CKAN.GUI
                 if (GameCompatibilityVersion.IsAny)
                 {
                     GameCompatibilityVersion = mod.LatestCompatibleRealGameVersion(
-                        instance.game.KnownVersions);
+                        instance.Game.KnownVersions);
                 }
             }
             UpdateIsCached(cache);

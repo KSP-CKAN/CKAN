@@ -56,7 +56,7 @@ namespace Tests.Core
             Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp_dir!)));
 
             // And the one from our KSP instance.
-            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp?.GameDir()!)));
+            Assert.IsTrue(game.GameInFolder(new DirectoryInfo(ksp?.GameDir!)));
 
             // All these ones should be bad.
             foreach (string dir in TestData.bad_ksp_dirs())

@@ -270,8 +270,8 @@ namespace CKAN
                 && context.Context is GameInstance gameInst)
             {
                 log.InfoFormat("Updating default metadata URL from {0} to {1}",
-                               oldDefaultRepo, gameInst.game.DefaultRepositoryURL);
-                repositories[Repository.default_ckan_repo_name].uri = gameInst.game.DefaultRepositoryURL;
+                               oldDefaultRepo, gameInst.Game.DefaultRepositoryURL);
+                repositories[Repository.default_ckan_repo_name].uri = gameInst.Game.DefaultRepositoryURL;
             }
 
             if (repositories != null)

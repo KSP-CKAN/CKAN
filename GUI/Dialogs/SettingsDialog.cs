@@ -444,7 +444,7 @@ namespace CKAN.GUI
         private void NewRepoButton_Click(object? sender, EventArgs? e)
         {
             if (manager?.CurrentInstance != null
-                && RepositoryList.DefaultRepositories(manager.CurrentInstance.game, userAgent)?.repositories
+                && RepositoryList.DefaultRepositories(manager.CurrentInstance.Game, userAgent)?.repositories
                    is Repository[] repos)
             {
                 var dialog = new NewRepoDialog(repos);

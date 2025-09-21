@@ -62,7 +62,7 @@ namespace CKAN.GUI
                 GameFolderTree.Nodes.Clear();
                 var rootNode = GameFolderTree.Nodes.Add(
                     "",
-                    Platform.FormatPath(inst.GameDir()),
+                    Platform.FormatPath(inst.GameDir),
                     "folder", "folder");
 
                 UseWaitCursor = true;
@@ -79,7 +79,7 @@ namespace CKAN.GUI
                         }
                         rootNode.Expand();
                         rootNode.EnsureVisible();
-                        ExpandDefaultModDir(inst.game);
+                        ExpandDefaultModDir(inst.Game);
                         // The nodes don't have children at first, so the sort needs to be re-applied after they're added
                         GameFolderTree.Sort();
                         GameFolderTree.EndUpdate();
@@ -166,7 +166,7 @@ namespace CKAN.GUI
                 GameFolderTree.BeginUpdate();
                 GameFolderTree.CollapseAll();
                 top.Expand();
-                ExpandDefaultModDir(inst.game);
+                ExpandDefaultModDir(inst.Game);
                 top.EnsureVisible();
                 GameFolderTree.EndUpdate();
                 GameFolderTree.Focus();

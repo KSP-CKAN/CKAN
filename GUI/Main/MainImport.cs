@@ -101,7 +101,7 @@ namespace CKAN.GUI
         private static string FindDownloadsPath(GameInstance gameInst)
             => downloadPaths.FirstOrDefault(p => !string.IsNullOrEmpty(p)
                                                  && Directory.Exists(p))
-                            ?? gameInst.GameDir();
+                            ?? gameInst.GameDir;
 
     }
 }

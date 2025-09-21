@@ -158,8 +158,8 @@ namespace CKAN.GUI
         public static GUIConfiguration LoadOrCreateConfiguration(GameInstance instance,
                                                                  SteamLibrary steamLib)
             => LoadOrCreateConfiguration(instance,
-                                         instance.game
-                                                 .DefaultCommandLines(steamLib, new DirectoryInfo(instance.GameDir()))
+                                         instance.Game
+                                                 .DefaultCommandLines(steamLib, new DirectoryInfo(instance.GameDir))
                                                  .ToList());
 
         public static GUIConfiguration LoadOrCreateConfiguration(GameInstance instance,
@@ -172,10 +172,10 @@ namespace CKAN.GUI
         private const string legacyFilename = "GUIConfig.xml";
 
         private static string ConfigPath(GameInstance inst)
-            => Path.Combine(inst.CkanDir(), filename);
+            => Path.Combine(inst.CkanDir, filename);
 
         private static string LegacyConfigPath(GameInstance inst)
-            => Path.Combine(inst.CkanDir(), legacyFilename);
+            => Path.Combine(inst.CkanDir, legacyFilename);
 
         private static GUIConfiguration? LoadJSON(string path)
             => Utilities.DefaultIfThrows(() =>

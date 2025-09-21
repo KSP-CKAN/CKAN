@@ -181,7 +181,7 @@ namespace CKAN.CmdLine
         {
             var registry = RegistryManager.Instance(instance, repoData).registry;
             var result = repoData.Update(registry.Repositories.Values.ToArray(),
-                                         instance.game, force,
+                                         instance.Game, force,
                                          new NetAsyncDownloader(user, () => null, userAgent), user, userAgent);
             if (result == RepositoryDataManager.UpdateResult.Updated)
             {

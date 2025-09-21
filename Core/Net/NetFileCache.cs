@@ -286,7 +286,7 @@ namespace CKAN
         private IEnumerable<DirectoryInfo> legacyDirs()
             => manager?.Instances.Values
                        .Where(ksp => ksp.Valid)
-                       .Select(ksp => new DirectoryInfo(ksp.DownloadCacheDir()))
+                       .Select(ksp => new DirectoryInfo(ksp.DownloadCacheDir))
                        .Where(dir => dir.Exists)
                       ?? Enumerable.Empty<DirectoryInfo>();
 

@@ -122,7 +122,7 @@ namespace CKAN.GUI
             => currentInstance != null
                 && module.release_status <= stabilityTolerance
                 && installable(module, registry,
-                               currentInstance.game,
+                               currentInstance.Game,
                                currentInstance.VersionCriteria());
 
         [ForbidGUICalls]
@@ -156,7 +156,7 @@ namespace CKAN.GUI
                         : string.Format(Properties.Resources.AllModVersionsInstallPrompt,
                                         module,
                                         currentInstance.VersionCriteria()
-                                                       .ToSummaryString(currentInstance.game)),
+                                                       .ToSummaryString(currentInstance.Game)),
                     Properties.Resources.AllModVersionsInstallYes,
                     Properties.Resources.AllModVersionsInstallNo) ?? false);
         }
@@ -217,7 +217,7 @@ namespace CKAN.GUI
                     ListViewItem toRet = new ListViewItem(new string[]
                     {
                         module.version.ToString(),
-                        GameVersionRange.VersionSpan(currentInstance.game,
+                        GameVersionRange.VersionSpan(currentInstance.Game,
                                                      minKsp ?? GameVersion.Any,
                                                      maxKsp ?? GameVersion.Any),
                         module.release_date?.ToString("g") ?? ""

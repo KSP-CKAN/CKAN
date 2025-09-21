@@ -149,7 +149,7 @@ namespace CKAN.GUI
                 if (manager?.CurrentInstance is GameInstance inst)
                 {
                     var filters = ServiceLocator.Container.Resolve<IConfiguration>()
-                                                          .GetGlobalInstallFilters(inst.game)
+                                                          .GetGlobalInstallFilters(inst.Game)
                                                           .Concat(inst.InstallFilters)
                                                           .ToHashSet();
                     ContentTabPage.ImageKey = ModuleLabels.IgnoreMissingIdentifiers(inst)
@@ -178,7 +178,7 @@ namespace CKAN.GUI
                              .OrderBy(t => t.Key)
                              .Select(t => t.Value),
                     ModuleLabels?.LabelsFor(inst.Name)
-                                 .Where(l => l.ContainsModule(inst.game, mod.identifier))
+                                 .Where(l => l.ContainsModule(inst.Game, mod.identifier))
                                  .OrderBy(l => l.Name));
                 Util.Invoke(tagsLabelsLinkList, () =>
                 {
