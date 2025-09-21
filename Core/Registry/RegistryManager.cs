@@ -414,43 +414,46 @@ namespace CKAN
 
             file_transaction.WriteAllText(path, Serialize());
 
-            ExportInstalled(
-                Path.Combine(directoryPath, LatestInstalledExportFilename()),
-                false, true
-            );
             if (!Directory.Exists(gameInstance.InstallHistoryDir))
             {
                 Directory.CreateDirectory(gameInstance.InstallHistoryDir);
             }
-            ExportInstalled(
-                Path.Combine(gameInstance.InstallHistoryDir, HistoricInstalledExportFilename()),
-                false, true
-            );
+            ExportInstalled(new string[]
+                            {
+                                Path.Combine(directoryPath,
+                                             LatestInstalledExportFilename()),
+                                Path.Combine(gameInstance.InstallHistoryDir,
+                                             HistoricInstalledExportFilename()),
+                            },
+                            false, true);
         }
 
-        public string LatestInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}.ckan";
-        public string HistoricInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
+        public string LatestInstalledExportFilename()
+            => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}.ckan";
+        private string HistoricInstalledExportFilename()
+            => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
 
         /// <summary>
         /// Save a custom .ckan file that contains all the currently
         /// installed mods as dependencies.
         /// </summary>
-        /// <param name="path">Desired location of file</param>
+        /// <param name="paths">Desired locations of files to save</param>
         /// <param name="recommends">True to save the mods as recommended, false for depends</param>
-        /// <param name="with_versions">True to include the mod versions in the file, false to omit them</param>
-        public void ExportInstalled(string path, bool recommends, bool with_versions)
+        /// <param name="withVersions">True to include the mod versions in the file, false to omit them</param>
+        private void ExportInstalled(IEnumerable<string> paths,
+                                     bool                recommends,
+                                     bool                withVersions)
         {
-            TxFileManager file_transaction = new TxFileManager();
-
-            string serialized = SerializeCurrentInstall(recommends, with_versions);
-            file_transaction.WriteAllText(path, serialized);
+            var tx         = new TxFileManager();
+            var serialized = SerializeCurrentInstall(recommends, withVersions);
+            foreach (var path in paths)
+            {
+                tx.WriteAllText(path, serialized);
+            }
         }
 
         private string SerializeCurrentInstall(bool recommends = false, bool with_versions = true)
-        {
-            var pack = GenerateModpack(recommends, with_versions);
-            return pack.ToJson();
-        }
+            => GenerateModpack(recommends, with_versions).ToJson();
 
         /// <summary>
         /// Create a CkanModule object that represents the currently installed
