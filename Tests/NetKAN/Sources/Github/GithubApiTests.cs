@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 using Moq;
@@ -182,6 +183,31 @@ namespace Tests.NetKAN.Sources.Github
                 Assert.That(members.Count, Is.GreaterThanOrEqualTo(3));
                 Assert.Contains("HebaruSan", members.Select(u => u.Login).ToArray());
             }
+        }
+
+        [TestCase("https://github.com/awesomemod/example/blob/master/AwesomeMod.netkan"),
+         TestCase("https://github.com/awesomemod/example/tree/master/AwesomeMod.netkan"),
+         TestCase("https://github.com/awesomemod/example/raw/master/AwesomeMod.netkan"),
+         TestCase("https://raw.githubusercontent.com/awesomemod/example/master/AwesomeMod.netkan"),
+        ]
+        public void DownloadText_WithGithubUrl_UsesApiUrl(string url)
+        {
+            // Arrange
+            var urls  = new HashSet<Uri>();
+            var mHttp = new Mock<IHttpService>();
+            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(),
+                                            It.IsAny<string?>(), It.IsAny<string?>()))
+                 .Callback((Uri u, string _, string _) => urls.Add(u))
+                 .Returns("Dummy API output");
+            var sut = new GithubApi(mHttp.Object);
+
+            // Act
+            var result = sut.DownloadText(new Uri(url));
+
+            // Assert
+            Assert.AreEqual("Dummy API output", result);
+            Assert.AreEqual("https://api.github.com/repos/awesomemod/example/contents/AwesomeMod.netkan?ref=master",
+                            urls.Single().OriginalString);
         }
     }
 }
