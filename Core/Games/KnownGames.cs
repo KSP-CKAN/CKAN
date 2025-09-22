@@ -27,5 +27,10 @@ namespace CKAN.Games
         public static IEnumerable<string> AllGameShortNames()
             => knownGames.Select(g => g.ShortName);
 
+        public static string[] AllInstanceAnchorFiles
+            => knownGames.SelectMany(g => g.InstanceAnchorFiles)
+                         .Distinct()
+                         .ToArray();
+
     }
 }

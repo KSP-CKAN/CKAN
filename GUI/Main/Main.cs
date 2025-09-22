@@ -372,7 +372,7 @@ namespace CKAN.GUI
                         ? Properties.Resources.StatusInstanceLabelTextWithPlayTime
                         : Properties.Resources.StatusInstanceLabelText,
                     CurrentInstance.Name,
-                    CurrentInstance.game.ShortName,
+                    CurrentInstance.Game.ShortName,
                     CurrentInstance.Version()?.ToString(),
                     CurrentInstance.playTime?.ToString() ?? "");
             }
@@ -413,7 +413,7 @@ namespace CKAN.GUI
 
             Util.Invoke(this, () =>
             {
-                Text = $"{Meta.ProductName} {Meta.GetVersion()} - {CurrentInstance.game.ShortName} {CurrentInstance.Version()}    --    {Platform.FormatPath(CurrentInstance.GameDir())}";
+                Text = $"{Meta.ProductName} {Meta.GetVersion()} - {CurrentInstance.Game.ShortName} {CurrentInstance.Version()}    --    {Platform.FormatPath(CurrentInstance.GameDir)}";
                 minimizeNotifyIcon.Text = $"{Meta.ProductName} - {CurrentInstance.Name}";
                 UpdateStatusBar();
             });
@@ -436,14 +436,14 @@ namespace CKAN.GUI
                 regMgr.previousCorruptedPath = null;
             }
 
-            var pluginsPath = Path.Combine(CurrentInstance.CkanDir(), "Plugins");
+            var pluginsPath = Path.Combine(CurrentInstance.CkanDir, "Plugins");
             if (!Directory.Exists(pluginsPath))
             {
                 Directory.CreateDirectory(pluginsPath);
             }
             pluginController = new PluginController(pluginsPath, true);
 
-            CurrentInstance.game.RebuildSubdirectories(CurrentInstance.GameDir());
+            CurrentInstance.Game.RebuildSubdirectories(CurrentInstance.GameDir);
 
             ManageMods.InstanceUpdated();
 
@@ -488,7 +488,7 @@ namespace CKAN.GUI
             {
                 if (inst.Valid)
                 {
-                    inst.playTime?.Stop(inst.CkanDir());
+                    inst.playTime?.Stop(inst.CkanDir);
                 }
             }
             Application.RemoveMessageFilter(this);
@@ -679,8 +679,8 @@ namespace CKAN.GUI
             if (CurrentInstance != null && configuration != null)
             {
                 var dialog = new GameCommandLineOptionsDialog();
-                var defaults = CurrentInstance.game.DefaultCommandLines(Manager.SteamLibrary,
-                                                                        new DirectoryInfo(CurrentInstance.GameDir()));
+                var defaults = CurrentInstance.Game.DefaultCommandLines(Manager.SteamLibrary,
+                                                                        new DirectoryInfo(CurrentInstance.GameDir));
                 if (dialog.ShowGameCommandLineOptionsDialog(this, configuration.CommandLines, defaults) == DialogResult.OK)
                 {
                     configuration.CommandLines = dialog.Results;
@@ -755,7 +755,7 @@ namespace CKAN.GUI
                                                       maxGame ?? GameVersion.Any);
                 var instRanges = crit.Versions.Select(gv => gv.ToVersionRange())
                                               .ToList();
-                var missing = CurrentInstance.game
+                var missing = CurrentInstance.Game
                                              .KnownVersions
                                              .Where(gv => filesRange.Contains(gv)
                                                           && !instRanges.Any(ir => ir.Contains(gv)))
@@ -765,8 +765,8 @@ namespace CKAN.GUI
                                              .ToList();
                 if (missing.Count != 0
                     && YesNoDialog(string.Format(Properties.Resources.MetapackageAddCompatibilityPrompt,
-                                                 filesRange.ToSummaryString(CurrentInstance.game),
-                                                 crit.ToSummaryString(CurrentInstance.game)),
+                                                 filesRange.ToSummaryString(CurrentInstance.Game),
+                                                 crit.ToSummaryString(CurrentInstance.Game)),
                                    Properties.Resources.MetapackageAddCompatibilityYes,
                                    Properties.Resources.MetapackageAddCompatibilityNo))
                 {
@@ -787,7 +787,7 @@ namespace CKAN.GUI
                 // Confirm installation of incompatible like the Versions tab does
                 || YesNoDialog(string.Format(Properties.Resources.ModpackInstallIncompatiblePrompt,
                                              string.Join(Environment.NewLine, myIncompat),
-                                             crit.ToSummaryString(CurrentInstance.game)),
+                                             crit.ToSummaryString(CurrentInstance.Game)),
                                Properties.Resources.AllModVersionsInstallYes,
                                Properties.Resources.AllModVersionsInstallNo))
             {
@@ -960,12 +960,12 @@ namespace CKAN.GUI
                 {
                     // Warn that it might not be safe to run game with incompatible modules installed
                     string incompatDescrip = string.Join(Environment.NewLine,
-                                                         incomp.Select(m => $"{m.Module} ({m.Module.CompatibleGameVersions(CurrentInstance.game)})"));
+                                                         incomp.Select(m => $"{m.Module} ({m.Module.CompatibleGameVersions(CurrentInstance.Game)})"));
                     var result = SuppressableYesNoDialog(
                         string.Format(Properties.Resources.MainLaunchWithIncompatible,
                                       incompatDescrip),
                         string.Format(Properties.Resources.MainLaunchDontShow,
-                                      CurrentInstance.game.ShortName,
+                                      CurrentInstance.Game.ShortName,
                                       gv.WithoutBuild),
                         Properties.Resources.MainLaunch,
                         Properties.Resources.MainGoBack);

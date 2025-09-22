@@ -25,7 +25,7 @@ namespace Tests.CmdLine
             using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager = new GameInstanceManager(user, config))
             {
-                var         dirLen  = inst.KSP.GameDir().Length;
+                var         dirLen  = inst.KSP.GameDir.Length;
                 ISubCommand sut     = new GameInstance(manager, user);
                 var         args    = new string[] { "instance", "list" };
                 var         subOpts = new SubCommandOptions(args);
@@ -39,7 +39,7 @@ namespace Tests.CmdLine
                     {
                         $"Name        Game  Version     Default  {"Path".PadRight(dirLen)}",
                         $"----------  ----  ----------  -------  {new string('-', dirLen)}",
-                        $"disposable  KSP   0.25.0.642  Yes      {Platform.FormatPath(inst.KSP.GameDir())}",
+                        $"disposable  KSP   0.25.0.642  Yes      {Platform.FormatPath(inst.KSP.GameDir)}",
                     },
                     user.RaisedMessages);
             }
@@ -57,7 +57,7 @@ namespace Tests.CmdLine
             {
                 ISubCommand sut     = new GameInstance(manager, user);
                 var         args    = new string[] { "instance", "add",
-                                                     "test", inst2.KSP.GameDir() };
+                                                     "test", inst2.KSP.GameDir };
                 var         subOpts = new SubCommandOptions(args);
 
                 // Act
@@ -153,11 +153,11 @@ namespace Tests.CmdLine
             using (var config  = new FakeConfiguration(new List<Tuple<string, string, string>>()
                                                        {
                                                            new Tuple<string, string, string>("inst1",
-                                                                                             inst1.KSP.GameDir(),
-                                                                                             inst1.KSP.game.ShortName),
+                                                                                             inst1.KSP.GameDir,
+                                                                                             inst1.KSP.Game.ShortName),
                                                            new Tuple<string, string, string>("inst2",
-                                                                                             inst2.KSP.GameDir(),
-                                                                                             inst2.KSP.game.ShortName),
+                                                                                             inst2.KSP.GameDir,
+                                                                                             inst2.KSP.Game.ShortName),
                                                        },
                                                        null,
                                                        null))

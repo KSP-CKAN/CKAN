@@ -123,9 +123,6 @@
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>Продолжить</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>Выбрать все</value>
-  </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>Устанавливаемые модули предлагают добавление следующих модулей:</value>
   </data>

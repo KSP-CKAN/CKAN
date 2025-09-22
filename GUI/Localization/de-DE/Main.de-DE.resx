@@ -129,8 +129,14 @@
   <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>Spieleverzeichnis öffnen</value>
   </data>
+  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>Installations-Chronik...</value>
+  </data>
   <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>Von .ckan installieren</value>
+  </data>
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Heruntergeladene Mods &amp;importieren</value>
   </data>
   <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>Liste installierter Mods speichern...</value>
@@ -138,11 +144,14 @@
   <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
     <value>Modpack exportieren ...</value>
   </data>
-  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Heruntergeladene Mods &amp;importieren</value>
-  </data>
   <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>Empfehlungen installierter Mods</value>
+  </data>
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
+    <value>Spielzeit</value>
+  </data>
+  <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
+    <value>Nicht verwaltete Dateien...</value>
   </data>
   <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Beenden</value>
@@ -153,8 +162,11 @@
   <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve">
     <value>CKAN Einstellungen</value>
   </data>
-  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
-    <value>CKAN Plugins</value>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
+    <value>Spielstart-Befehlszeile</value>
+  </data>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Kompatible Spielversionen</value>
   </data>
   <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
     <value>Bevorzugte Hosts</value>
@@ -162,11 +174,8 @@
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
     <value>Installationsfilter</value>
   </data>
-  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
-    <value>Spielstart-Befehlszeile</value>
-  </data>
-  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
-    <value>Kompatible Spielversionen</value>
+  <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
+    <value>CKAN Plugins</value>
   </data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve">
     <value>Hilfe</value>
@@ -188,6 +197,30 @@
   </data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve">
     <value>Über</value>
+  </data>
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
+    <value>CKAN</value>
+  </data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="pauseToolStripMenuItem.Text" xml:space="preserve">
+    <value>Anhalten</value>
+  </data>
+  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve">
+    <value>CKAN öffnen</value>
+  </data>
+  <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
+    <value>Spiel starten</value>
+  </data>
+  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Spielverzeichnis öffnen</value>
+  </data>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
+    <value>CKAN Einstellungen</value>
+  </data>
+  <data name="quitToolStripMenuItem.Text" xml:space="preserve">
+    <value>Beenden</value>
   </data>
   <data name="ManageModsTabPage.Text" xml:space="preserve">
     <value>Mods verwalten</value>
@@ -219,37 +252,7 @@
   <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
     <value>Installations-Chronik</value>
   </data>
-  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
-    <value>CKAN</value>
-  </data>
-  <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
-    <value>Aktualisieren</value>
-  </data>
-  <data name="pauseToolStripMenuItem.Text" xml:space="preserve">
-    <value>Anhalten</value>
-  </data>
-  <data name="openCKANToolStripMenuItem.Text" xml:space="preserve">
-    <value>CKAN öffnen</value>
-  </data>
-  <data name="openGameToolStripMenuItem.Text" xml:space="preserve">
-    <value>Spiel starten</value>
-  </data>
-  <data name="OpenGameDirectoryToolStripMenuItem1.Text" xml:space="preserve">
-    <value>Spielverzeichnis öffnen</value>
-  </data>
-  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
-    <value>CKAN Einstellungen</value>
-  </data>
-  <data name="quitToolStripMenuItem.Text" xml:space="preserve">
-    <value>Beenden</value>
-  </data>
-  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
-    <value>Spielzeit</value>
-  </data>
-  <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
-    <value>Nicht verwaltete Dateien...</value>
-  </data>
-  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
-    <value>Installations-Chronik...</value>
+  <data name="DownloadStatisticsOKButton.Text" xml:space="preserve">
+    <value>OK</value>
   </data>
 </root>

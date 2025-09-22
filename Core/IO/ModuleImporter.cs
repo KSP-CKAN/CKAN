@@ -117,7 +117,7 @@ namespace CKAN.IO
                 && user.RaiseYesNoDialog(string.Format(Properties.Resources.ModuleInstallerImportInstallPrompt,
                                                        installable.Count,
                                                        instance.Name,
-                                                       instance.GameDir())))
+                                                       instance.GameDir)))
             {
                 // Install the imported mods
                 foreach (var mod in installable)

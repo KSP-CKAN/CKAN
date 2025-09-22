@@ -141,9 +141,6 @@
   <data name="checkBoxSwitchInstance.Text" xml:space="preserve">
     <value>Переключиться на новую сборку</value>
   </data>
-  <data name="buttonOK.Text" xml:space="preserve">
-    <value>Создать</value>
-  </data>
   <data name="buttonCancel.Text" xml:space="preserve">
     <value>Отмена</value>
   </data>

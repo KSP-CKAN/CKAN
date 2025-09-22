@@ -174,7 +174,7 @@ namespace CKAN.CmdLine
                                                    Actual:  true),
                                            1)
                               : Enumerable.Empty<(GameVersion Version, bool Actual)>())
-                .Concat(instance.GetCompatibleVersions()
+                .Concat(instance.CompatibleVersions
                                 .OrderDescending()
                                 .Select(v => (Version: v,
                                               Actual:  false)))
@@ -233,7 +233,7 @@ namespace CKAN.CmdLine
                                 string.Join(", ", badVers));
                 return false;
             }
-            instance.SetCompatibleVersions(instance.GetCompatibleVersions()
+            instance.SetCompatibleVersions(instance.CompatibleVersions
                                                    .Concat(goodVers)
                                                    .Distinct()
                                                    .ToList());
@@ -269,7 +269,7 @@ namespace CKAN.CmdLine
                                 string.Join(", ", rmActualVers));
                 return false;
             }
-            instance.SetCompatibleVersions(instance.GetCompatibleVersions()
+            instance.SetCompatibleVersions(instance.CompatibleVersions
                                                    .Except(goodVers)
                                                    .ToList());
             List(instance);

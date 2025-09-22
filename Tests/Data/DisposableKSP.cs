@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 
-using NUnit.Framework;
-
 using CKAN;
 using CKAN.Games;
 using CKAN.Games.KerbalSpaceProgram;
@@ -15,12 +13,6 @@ namespace Tests.Data
     /// </summary>
     public class DisposableKSP : IDisposable
     {
-        private const string _failureMessage = "Unexpected exception trying to delete disposable test container.";
-        private readonly string _goodKsp = TestData.good_ksp_dir();
-        private readonly string _disposableDir;
-
-        public GameInstance KSP { get; private set; }
-
         /// <summary>
         /// Creates a copy of the provided argument, or a known-good KSP install if passed null.
         /// Use .KSP to access the KSP object itself.
@@ -32,15 +24,18 @@ namespace Tests.Data
 
         public DisposableKSP(string name, IGame game)
         {
-            _disposableDir = TestData.NewTempDir();
-            Utilities.CopyDirectory(_goodKsp, _disposableDir, Array.Empty<string>(), Array.Empty<string>());
-            KSP = new GameInstance(game, _disposableDir, name, new NullUser());
+            Utilities.CopyDirectory(TestData.good_ksp_dir(),
+                                    _disposableDir.Directory.FullName,
+                                    Array.Empty<string>(),
+                                    Array.Empty<string>());
+            KSP = new GameInstance(game, _disposableDir.Directory.FullName,
+                                   name, new NullUser());
         }
 
         public DisposableKSP(string registryFile)
             : this()
         {
-            var registryDir = Path.Combine(_disposableDir, "CKAN");
+            var registryDir = Path.Combine(_disposableDir.Directory.FullName, "CKAN");
             Directory.CreateDirectory(registryDir);
             File.Copy(registryFile, Path.Combine(registryDir, "registry.json"), true);
         }
@@ -48,24 +43,13 @@ namespace Tests.Data
         public void Dispose()
         {
             RegistryManager.DisposeInstance(KSP);
+            _disposableDir.Dispose();
 
-            var i = 6;
-            while (--i > 0)
-            {
-                try
-                {
-                    // Now that the lockfile is closed, we can remove the directory
-                    Directory.Delete(_disposableDir, true);
-                }
-                catch (IOException)
-                {
-                    // We silently catch this exception because we expect failures
-                }
-                catch (Exception ex)
-                {
-                    throw new AssertionException(_failureMessage, ex);
-                }
-            }
+            GC.SuppressFinalize(this);
         }
+
+        public GameInstance KSP { get; private set; }
+
+        private readonly TemporaryDirectory _disposableDir = new TemporaryDirectory();
     }
 }

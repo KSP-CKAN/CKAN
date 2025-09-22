@@ -289,7 +289,7 @@ namespace Tests.Core.Registry
                 {
                     {
                         mod!.identifier,
-                        gameInst.ToRelativeGameDir(Path.Combine(gameInst.GameDir(),
+                        gameInst.ToRelativeGameDir(Path.Combine(gameInst.GameDir,
                                                                 "GameData", $"{mod!.identifier}.dll"))
                     }
                 });
@@ -465,7 +465,7 @@ namespace Tests.Core.Registry
                 // Act
                 var removable = registry.FindRemovableAutoInstalled(
                                     installed, installing,
-                                    gameInstWrapper.KSP.game,
+                                    gameInstWrapper.KSP.Game,
                                     stabilityTolerance,
                                     gameInstWrapper.KSP.VersionCriteria());
 
@@ -499,7 +499,7 @@ namespace Tests.Core.Registry
                 // Act
                 var removable = registry.FindRemovableAutoInstalled(
                                     installed, installing,
-                                    gameInstWrapper.KSP.game,
+                                    gameInstWrapper.KSP.Game,
                                     stabilityTolerance,
                                     gameInstWrapper.KSP.VersionCriteria());
 
@@ -535,7 +535,7 @@ namespace Tests.Core.Registry
                 // Act
                 var removable = registry.FindRemovableAutoInstalled(
                                     installed, installing,
-                                    gameInstWrapper.KSP.game,
+                                    gameInstWrapper.KSP.Game,
                                     stabilityTolerance,
                                     gameInstWrapper.KSP.VersionCriteria());
 

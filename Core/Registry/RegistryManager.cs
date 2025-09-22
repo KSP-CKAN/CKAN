@@ -127,7 +127,7 @@ namespace CKAN
             // free managed (.NET core) objects when called with a true value here.
 
             ReleaseLock();
-            var directory = gameInstance.CkanDir();
+            var directory = gameInstance.CkanDir;
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Registry not in cache at {0}", directory);
@@ -156,7 +156,7 @@ namespace CKAN
         private void CheckStaleLock()
         {
             log.DebugFormat("Checking for stale lock file at {0}", lockfilePath);
-            if (IsInstanceMaybeLocked(gameInstance.CkanDir()))
+            if (IsInstanceMaybeLocked(gameInstance.CkanDir))
             {
                 log.DebugFormat("Lock file found at {0}", lockfilePath);
                 string contents;
@@ -265,7 +265,7 @@ namespace CKAN
                                                RepositoryDataManager            repoData,
                                                IReadOnlyCollection<Repository>? repositories = null)
         {
-            string directory = inst.CkanDir();
+            string directory = inst.CkanDir;
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", directory);
@@ -278,7 +278,7 @@ namespace CKAN
 
         public static void DisposeInstance(GameInstance inst)
         {
-            if (registryCache.TryGetValue(inst.CkanDir(), out RegistryManager? regMgr))
+            if (registryCache.TryGetValue(inst.CkanDir, out RegistryManager? regMgr))
             {
                 regMgr.Dispose();
             }
@@ -336,7 +336,7 @@ namespace CKAN
 
         public static Registry? ReadOnlyRegistry(GameInstance          inst,
                                                  RepositoryDataManager repoData)
-            => Utilities.DefaultIfThrows(() => registryCache.TryGetValue(inst.CkanDir(),
+            => Utilities.DefaultIfThrows(() => registryCache.TryGetValue(inst.CkanDir,
                                                                          out RegistryManager? regMgr)
                                                    ? regMgr.registry
                                                    : LoadRegistry(inst, repoData));
@@ -344,7 +344,7 @@ namespace CKAN
         private static Registry LoadRegistry(GameInstance          inst,
                                              RepositoryDataManager repoData)
             => Registry.FromJson(inst, repoData,
-                                 File.ReadAllText(Path.Combine(inst.CkanDir(), "registry.json")));
+                                 File.ReadAllText(Path.Combine(inst.CkanDir, "registry.json")));
 
         [MemberNotNull(nameof(registry))]
         private void Create(RepositoryDataManager   repoData,
@@ -360,8 +360,8 @@ namespace CKAN
         {
             if (registry.Repositories.Count == 0)
             {
-                log.InfoFormat("Fabricating repository: {0}", gameInstance.game.DefaultRepositoryURL);
-                var repo = Repository.DefaultGameRepo(gameInstance.game);
+                log.InfoFormat("Fabricating repository: {0}", gameInstance.Game.DefaultRepositoryURL);
+                var repo = Repository.DefaultGameRepo(gameInstance.Game);
                 registry.RepositoriesSet(new SortedDictionary<string, Repository>
                 {
                     { repo.name, repo }
@@ -414,43 +414,46 @@ namespace CKAN
 
             file_transaction.WriteAllText(path, Serialize());
 
-            ExportInstalled(
-                Path.Combine(directoryPath, LatestInstalledExportFilename()),
-                false, true
-            );
-            if (!Directory.Exists(gameInstance.InstallHistoryDir()))
+            if (!Directory.Exists(gameInstance.InstallHistoryDir))
             {
-                Directory.CreateDirectory(gameInstance.InstallHistoryDir());
+                Directory.CreateDirectory(gameInstance.InstallHistoryDir);
             }
-            ExportInstalled(
-                Path.Combine(gameInstance.InstallHistoryDir(), HistoricInstalledExportFilename()),
-                false, true
-            );
+            ExportInstalled(new string[]
+                            {
+                                Path.Combine(directoryPath,
+                                             LatestInstalledExportFilename()),
+                                Path.Combine(gameInstance.InstallHistoryDir,
+                                             HistoricInstalledExportFilename()),
+                            },
+                            false, true);
         }
 
-        public string LatestInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}.ckan";
-        public string HistoricInstalledExportFilename() => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
+        public string LatestInstalledExportFilename()
+            => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}.ckan";
+        private string HistoricInstalledExportFilename()
+            => $"{Properties.Resources.RegistryManagerExportFilenamePrefix}-{gameInstance.SanitizedName}-{DateTime.Now:yyyy-MM-dd_HH-mm-ss}.ckan";
 
         /// <summary>
         /// Save a custom .ckan file that contains all the currently
         /// installed mods as dependencies.
         /// </summary>
-        /// <param name="path">Desired location of file</param>
+        /// <param name="paths">Desired locations of files to save</param>
         /// <param name="recommends">True to save the mods as recommended, false for depends</param>
-        /// <param name="with_versions">True to include the mod versions in the file, false to omit them</param>
-        public void ExportInstalled(string path, bool recommends, bool with_versions)
+        /// <param name="withVersions">True to include the mod versions in the file, false to omit them</param>
+        private void ExportInstalled(IEnumerable<string> paths,
+                                     bool                recommends,
+                                     bool                withVersions)
         {
-            TxFileManager file_transaction = new TxFileManager();
-
-            string serialized = SerializeCurrentInstall(recommends, with_versions);
-            file_transaction.WriteAllText(path, serialized);
+            var tx         = new TxFileManager();
+            var serialized = SerializeCurrentInstall(recommends, withVersions);
+            foreach (var path in paths)
+            {
+                tx.WriteAllText(path, serialized);
+            }
         }
 
         private string SerializeCurrentInstall(bool recommends = false, bool with_versions = true)
-        {
-            var pack = GenerateModpack(recommends, with_versions);
-            return pack.ToJson();
-        }
+            => GenerateModpack(recommends, with_versions).ToJson();
 
         /// <summary>
         /// Create a CkanModule object that represents the currently installed
@@ -496,7 +499,7 @@ namespace CKAN
             // Sort dependencies before dependers
             var resolver = new RelationshipResolver(mods, null,
                                                     RelationshipResolverOptions.ConflictsOpts(gameInstance.StabilityToleranceConfig),
-                                                    registry, gameInstance.game, gameInstance.VersionCriteria());
+                                                    registry, gameInstance.Game, gameInstance.VersionCriteria());
             var rels = resolver.ModList()
                                .Intersect(mods)
                                .Select(with_versions ? (Func<CkanModule, RelationshipDescriptor>)
@@ -556,11 +559,11 @@ namespace CKAN
             log.Info(Properties.Resources.GameInstanceScanning);
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
-                var modFolders = Enumerable.Repeat(gameInstance.game.PrimaryModDirectoryRelative, 1)
-                                           .Concat(gameInstance.game.AlternateModDirectoriesRelative)
+                var modFolders = Enumerable.Repeat(gameInstance.Game.PrimaryModDirectoryRelative, 1)
+                                           .Concat(gameInstance.Game.AlternateModDirectoriesRelative)
                                            .Select(mf => $"{mf}/")
                                            .ToArray();
-                var stockFolders = gameInstance.game.StockFolders
+                var stockFolders = gameInstance.Game.StockFolders
                                                     // Folders outside GameData won't be scanned
                                                     .Where(sf => modFolders.Any(mf => sf.StartsWith(mf)))
                                                     // Precalculate the full prefix once for all files
@@ -602,7 +605,7 @@ namespace CKAN
         /// True if not the same list as last scan, false otherwise
         /// </returns>
         public bool ScanDlc()
-            => registry.SetDlcs(TestDlcScan(Path.Combine(gameInstance.CkanDir(), "dlc"))
+            => registry.SetDlcs(TestDlcScan(Path.Combine(gameInstance.CkanDir, "dlc"))
                                 .Concat(WellKnownDlcScan())
                                 .ToDictionary());
 
@@ -616,7 +619,7 @@ namespace CKAN
                        new UnmanagedModuleVersion(File.ReadAllText(f).Trim())));
 
         private IEnumerable<KeyValuePair<string, UnmanagedModuleVersion>> WellKnownDlcScan()
-            => gameInstance.game.DlcDetectors
+            => gameInstance.Game.DlcDetectors
                 .Select(d => d.IsInstalled(gameInstance, out string? identifier, out UnmanagedModuleVersion? version)
                                  && identifier is not null && version is not null
                              ? new KeyValuePair<string, UnmanagedModuleVersion>(identifier, version)

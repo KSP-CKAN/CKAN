@@ -2,14 +2,16 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
+using CKAN.Versioning;
+
 namespace CKAN.Configuration
 {
     [JsonConverter(typeof(CompatibleGameVersionsConverter))]
     public class CompatibleGameVersions
     {
-        public string? GameVersionWhenWritten { get; set; }
+        public GameVersion? GameVersionWhenWritten { get; set; }
 
-        public List<string> Versions { get; set; } = new List<string>();
+        public List<GameVersion> Versions { get; set; } = new List<GameVersion>();
     }
 
     public class CompatibleGameVersionsConverter : JsonPropertyNamesChangedConverter

@@ -34,21 +34,21 @@ namespace CKAN.GUI
                 StartPosition = FormStartPosition.CenterScreen;
             }
 
-            var compatibleVersions = inst.GetCompatibleVersions();
+            var compatibleVersions = inst.CompatibleVersions;
 
             ActualGameVersionLabel.Text  = inst.Version()
                                                ?.ToString()
                                                ?? Properties.Resources.CompatibleGameVersionsDialogNone;
-            ActualInstancePathLabel.Text = Platform.FormatPath(inst.GameDir());
-            var knownVersions = inst.game.KnownVersions;
-            var majorVersionsList = CreateMajorVersionsList(knownVersions);
+            ActualInstancePathLabel.Text = Platform.FormatPath(inst.GameDir);
+            var knownVersions = inst.Game.KnownVersions;
+            var majorVersions = MajorVersions(knownVersions).ToArray();
             var compatibleVersionsLeftOthers = compatibleVersions.Except(knownVersions)
-                                                                 .Except(majorVersionsList)
-                                                                 .ToList();
+                                                                 .Except(majorVersions)
+                                                                 .ToArray();
 
             SortAndAddVersionsToList(compatibleVersionsLeftOthers, compatibleVersions);
-            SortAndAddVersionsToList(majorVersionsList, compatibleVersions);
-            SortAndAddVersionsToList(knownVersions, compatibleVersions);
+            SortAndAddVersionsToList(majorVersions,                compatibleVersions);
+            SortAndAddVersionsToList(knownVersions,                compatibleVersions);
         }
 
         /// <summary>
@@ -115,13 +115,13 @@ namespace CKAN.GUI
             }
         }
 
-        private static List<GameVersion> CreateMajorVersionsList(List<GameVersion> knownVersions)
+        private static IEnumerable<GameVersion> MajorVersions(IReadOnlyCollection<GameVersion> knownVersions)
             => knownVersions.Select(v => v.ToVersionRange().Lower.Value)
                             .Select(v => new GameVersion(v.Major, v.Minor))
-                            .Distinct()
-                            .ToList();
+                            .Distinct();
 
-        private void SortAndAddVersionsToList(List<GameVersion> versions, List<GameVersion> compatibleVersions)
+        private void SortAndAddVersionsToList(IReadOnlyCollection<GameVersion> versions,
+                                              IReadOnlyCollection<GameVersion> compatibleVersions)
         {
             foreach (var version in versions.Where(v => v != _inst.Version())
                                             .Reverse())

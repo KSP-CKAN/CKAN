@@ -179,7 +179,7 @@ namespace CKAN.GUI
                         ChooseRecommendedMods.LoadRecommendations(
                             registry, toInstall, toUninstall,
                             CurrentInstance.VersionCriteria(), Manager.Cache,
-                            CurrentInstance.game, labels, coreConfig, configuration,
+                            CurrentInstance.Game, labels, coreConfig, configuration,
                             recommendations, suggestions, supporters);
                         tabController.SetTabLock(true);
                         shown.UnionWith(recommendations.Keys);
@@ -275,7 +275,7 @@ namespace CKAN.GUI
                             // Get full changeset (toInstall only includes user's selections, not dependencies)
                             var crit = CurrentInstance.VersionCriteria();
                             var fullChangeset = new RelationshipResolver(
-                                toInstall.Concat(toUpgrade), toUninstall, options, registry, CurrentInstance.game, crit
+                                toInstall.Concat(toUpgrade), toUninstall, options, registry, CurrentInstance.Game, crit
                             ).ModList().ToList();
                             DownloadsFailedDialog? dfd = null;
                             Util.Invoke(this, () =>

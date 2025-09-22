@@ -40,5 +40,23 @@ namespace Tests.Core
                 CollectionAssert.AreEquivalent(identifiers, deserialized.Identifiers);
             }
         }
+
+        [Test]
+        public void LoadFrom_ZeroByteFile_Works()
+        {
+            // Arrange
+            using (var dir = new TemporaryDirectory())
+            {
+                var gameVer  = new GameVersion(1, 12, 5);
+                var filename = Path.Combine(dir.Directory.FullName, "suppressed.json");
+
+                // Act
+                File.WriteAllText(filename, "");
+                var deserialized = SuppressedCompatWarningIdentifiers.LoadFrom(gameVer, filename);
+
+                // Assert
+                CollectionAssert.IsEmpty(deserialized.Identifiers);
+            }
+        }
     }
 }

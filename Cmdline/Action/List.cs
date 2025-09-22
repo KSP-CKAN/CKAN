@@ -44,13 +44,13 @@ namespace CKAN.CmdLine
             {
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameFound,
-                                  instance.game.ShortName,
-                                  Platform.FormatPath(instance.GameDir()));
+                                  instance.Game.ShortName,
+                                  Platform.FormatPath(instance.GameDir));
                 if (instance.Version() is GameVersion gv)
                 {
                     user.RaiseMessage("");
                     user.RaiseMessage(Properties.Resources.ListGameVersion,
-                                      instance.game.ShortName, gv);
+                                      instance.Game.ShortName, gv);
                 }
                 user.RaiseMessage("");
                 user.RaiseMessage(Properties.Resources.ListGameModulesHeader);

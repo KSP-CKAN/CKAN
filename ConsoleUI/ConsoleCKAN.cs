@@ -53,7 +53,7 @@ namespace CKAN.ConsoleUI {
                         new ModListScreen(theme, manager, repoData,
                                           RegistryManager.Instance(manager.CurrentInstance, repoData),
                                           userAgent,
-                                          manager.CurrentInstance.game,
+                                          manager.CurrentInstance.Game,
                                           debug).Run();
                     }
 

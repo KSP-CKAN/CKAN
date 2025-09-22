@@ -366,6 +366,9 @@
   <data name="InstanceEditTitle" xml:space="preserve">
     <value>编辑游戏实例</value>
   </data>
+  <data name="InstanceEditStabilityToleranceHeader" xml:space="preserve">
+    <value>稳定性偏好：</value>
+  </data>
   <data name="InstanceEditRepoFrameTitle" xml:space="preserve">
     <value>Mod 列表源</value>
   </data>
@@ -476,6 +479,15 @@
   </data>
   <data name="ModInfoDownload" xml:space="preserve">
     <value>下载:</value>
+  </data>
+  <data name="ModInfoInstall" xml:space="preserve">
+    <value>安装：</value>
+  </data>
+  <data name="ModInfoStabilityToleranceHeader" xml:space="preserve">
+    <value>强制修改MOD稳定性：</value>
+  </data>
+  <data name="ModInfoStabilityToleranceNull" xml:space="preserve">
+    <value>不要覆盖</value>
   </data>
   <data name="ModInfoDescriptionFrame" xml:space="preserve">
     <value>描述</value>
@@ -777,7 +789,7 @@
     <value>编辑发送到下载服务器的身份验证tokens</value>
   </data>
   <data name="ModListFilterMenu" xml:space="preserve">
-    <value>安装筛选...</value>
+    <value>安装路径过滤...</value>
   </data>
   <data name="ModListFilterMenuTip" xml:space="preserve">
     <value>编辑要排除在安装范围之外的文件和文件夹列表</value>
@@ -891,7 +903,7 @@
     <value>新模组</value>
   </data>
   <data name="FiltersTitle" xml:space="preserve">
-    <value>安装筛选</value>
+    <value>安装路径过滤</value>
   </data>
   <data name="FiltersAddMiniAVCMenu" xml:space="preserve">
     <value>添加 MiniAVC</value>

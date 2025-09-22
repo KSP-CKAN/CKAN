@@ -371,8 +371,8 @@ namespace Tests.Core.Configuration
 
                 CollectionAssert.AreEquivalent(new List<Tuple<string, string, string>>()
                 {
-                    new Tuple<string, string, string>("instance_1", k1.KSP.GameDir(), "KSP"),
-                    new Tuple<string, string, string>("instance_2", k2.KSP.GameDir(), "KSP")
+                    new Tuple<string, string, string>("instance_1", k1.KSP.GameDir, "KSP"),
+                    new Tuple<string, string, string>("instance_2", k2.KSP.GameDir, "KSP")
                 }, reg.GetInstances());
 
                 File.Delete(tmpFile1);

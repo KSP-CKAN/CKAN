@@ -107,12 +107,6 @@ namespace CKAN.Versioning
         /// <summary>
         /// Returns a version string shorn of any leading epoch as delimited by a single colon
         /// </summary>
-        public string StripEpoch()
-            => StripEpoch(_string);
-
-        /// <summary>
-        /// Returns a version string shorn of any leading epoch as delimited by a single colon
-        /// </summary>
         /// <param name="version">A version string that might contain an epoch</param>
         private static string StripEpoch(string version)
             // If our version number starts with a string of digits, followed by
@@ -422,37 +416,6 @@ namespace CKAN.Versioning
 
         /// <summary>
         /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
-        /// and returns if it is equal to the other object.
-        /// </summary>
-        /// <param name="other">
-        /// A <see cref="ModuleVersion"/> object to compare to the current <see cref="ModuleVersion"/> object, or
-        /// <c>null</c>.
-        /// </param>
-        /// <returns>
-        /// <list type="bullet">
-        /// <item>
-        /// <term><c>true</c></term>
-        /// <description>
-        /// When the current <see cref="ModuleVersion"/> object is equal to the specified <see cref="ModuleVersion"/>
-        /// object.
-        /// </description>
-        /// </item>
-        /// <item>
-        /// <term><c>false</c></term>
-        /// <description>
-        /// When the current <see cref="ModuleVersion"/> object is not equal to the specified
-        /// <see cref="ModuleVersion"/> object.
-        /// </description>
-        /// </item>
-        /// </list>
-        /// </returns>
-        public bool IsEqualTo(ModuleVersion other)
-        {
-            return CompareTo(other) == 0;
-        }
-
-        /// <summary>
-        /// Compares the current <see cref="ModuleVersion"/> object to a specified <see cref="ModuleVersion"/> object
         /// and returns if it is less than the other object.
         /// </summary>
         /// <param name="other">
@@ -531,9 +494,7 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public static bool operator <(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            return ver1.CompareTo(ver2) < 0;
-        }
+            => ver1.CompareTo(ver2) < 0;
 
         /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than or equal to the
@@ -558,9 +519,7 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public static bool operator <=(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            return ver1.CompareTo(ver2) <= 0;
-        }
+            => ver1.CompareTo(ver2) <= 0;
 
         /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is greater than the second.
@@ -584,9 +543,7 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public static bool operator >(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            return ver1.CompareTo(ver2) > 0;
-        }
+            => ver1.CompareTo(ver2) > 0;
 
         /// <summary>
         /// Compares two <see cref="ModuleVersion"/> objects to determine if the first is less than or equal to the
@@ -611,57 +568,11 @@ namespace CKAN.Versioning
         /// </list>
         /// </returns>
         public static bool operator >=(ModuleVersion ver1, ModuleVersion ver2)
-        {
-            return ver1.CompareTo(ver2) >= 0;
-        }
-    }
+            => ver1.CompareTo(ver2) >= 0;
 
-    public partial class ModuleVersion
-    {
-        /// <summary>
-        /// Returns the larger of two <see cref="ModuleVersion"/> objects.
-        /// </summary>
-        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is larger.</returns>
-        /// <remarks>
-        /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
-        /// particular instance will be returned.
-        /// </remarks>
-        public static ModuleVersion Max(ModuleVersion ver1, ModuleVersion ver2)
-            => ver1.IsGreaterThan(ver2) ? ver1 : ver2;
-
-        /// <summary>
-        /// Returns the smaller of two <see cref="ModuleVersion"/> objects.
-        /// </summary>
-        /// <param name="ver1">The first of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <param name="ver2">The second of two <see cref="ModuleVersion"/> objects to compare.</param>
-        /// <returns>Parameter <paramref name="ver1"/> or <paramref name="ver2"/>, whichever is smaller.</returns>
-        /// <remarks>
-        /// If parameters <paramref name="ver1"/> and <paramref name="ver2"/> are equal, it is undefined which
-        /// particular instance will be returned.
-        /// </remarks>
-        public static ModuleVersion Min(ModuleVersion ver1, ModuleVersion ver2)
-            => ver1.IsLessThan(ver2) ? ver1 : ver2;
-
-        /// <summary>
-        /// Converts the specified string to a new instance of the <see cref="ModuleVersion"/> class.
-        /// </summary>
-        /// <param name="version">A <see cref="string"/> in the appropriate format.</param>
-        /// <returns>
-        /// A new <see cref="ModuleVersion"/> instance representing the specified <see cref="string"/>.
-        /// </returns>
-        public static explicit operator ModuleVersion(string version)
-        {
-            return new ModuleVersion(version);
-        }
-    }
-
-    public partial class ModuleVersion
-    {
         private struct Comparison
         {
-            public int CompareTo;
+            public int    CompareTo;
             public string FirstRemainder;
             public string SecondRemainder;
         }

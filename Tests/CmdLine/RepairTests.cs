@@ -28,9 +28,9 @@ namespace Tests.CmdLine
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(new NullUser(), config))
             {
-                var gamedata = inst.KSP.game.PrimaryModDirectory(inst.KSP);
+                var gamedata = inst.KSP.Game.PrimaryModDirectory(inst.KSP);
                 Assert.IsTrue(Path.IsPathRooted(gamedata));
-                File.WriteAllText(Path.Combine(inst.KSP.CkanDir(), "registry.json"),
+                File.WriteAllText(Path.Combine(inst.KSP.CkanDir, "registry.json"),
                                   $@"{{
                                       ""registry_version"": 3,
                                       ""installed_files"": {{ }},

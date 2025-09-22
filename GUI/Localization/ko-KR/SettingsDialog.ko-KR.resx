@@ -147,6 +147,12 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>다운로드 캐시</value>
   </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>저장</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>취소하기</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N개 파일, M MB</value>
   </data>

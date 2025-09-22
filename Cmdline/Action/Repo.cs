@@ -200,7 +200,7 @@ namespace CKAN.CmdLine
             try
             {
                 if (RepositoryList.DefaultRepositories(
-                        MainClass.GetGameInstance(Manager).game, userAgent)
+                        MainClass.GetGameInstance(Manager).Game, userAgent)
                         is RepositoryList repoList)
                 {
                     var maxNameLen = repoList.repositories
@@ -217,7 +217,7 @@ namespace CKAN.CmdLine
             catch
             {
                 user.RaiseError(Properties.Resources.RepoAvailableFailed,
-                                MainClass.GetGameInstance(Manager).game.RepositoryListURL.ToString());
+                                MainClass.GetGameInstance(Manager).Game.RepositoryListURL.ToString());
             }
             return Exit.ERROR;
         }
@@ -273,7 +273,7 @@ namespace CKAN.CmdLine
             if (options.uri == null)
             {
                 if (RepositoryList.DefaultRepositories(
-                        MainClass.GetGameInstance(Manager).game, options.NetUserAgent)
+                        MainClass.GetGameInstance(Manager).Game, options.NetUserAgent)
                     is RepositoryList repoList)
                 {
                     foreach (var candidate in repoList.repositories)
@@ -426,7 +426,7 @@ namespace CKAN.CmdLine
         private int DefaultRepository(RepoDefaultOptions options)
         {
             var inst = MainClass.GetGameInstance(Manager);
-            var uri = options.uri ?? inst.game.DefaultRepositoryURL.ToString();
+            var uri = options.uri ?? inst.Game.DefaultRepositoryURL.ToString();
 
             log.DebugFormat("About to add repository '{0}' - '{1}'", Repository.default_ckan_repo_name, uri);
             RegistryManager manager = RegistryManager.Instance(inst, repoData);

@@ -527,7 +527,7 @@ namespace CKAN.ConsoleUI {
                     l + 4, t + 3, r - 2,
                     () => manager.CurrentInstance == null
                         ? ""
-                        : GameVersionRange.VersionSpan(manager.CurrentInstance.game,
+                        : GameVersionRange.VersionSpan(manager.CurrentInstance.Game,
                                                        minKsp ?? GameVersion.Any,
                                                        maxKsp ?? GameVersion.Any),
                     null,

@@ -38,7 +38,7 @@ namespace CKAN.CmdLine
                     Console.Write(
                         manager.CurrentInstance != null
                             ? string.Format(Properties.Resources.PromptWithInstance,
-                                Meta.GetVersion(), manager.CurrentInstance.game.ShortName, manager.CurrentInstance.Version(), manager.CurrentInstance.Name)
+                                Meta.GetVersion(), manager.CurrentInstance.Game.ShortName, manager.CurrentInstance.Version(), manager.CurrentInstance.Name)
                             : string.Format(Properties.Resources.PromptWithoutInstance, Meta.GetVersion())
                     );
                 }

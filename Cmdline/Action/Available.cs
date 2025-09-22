@@ -35,7 +35,7 @@ namespace CKAN.CmdLine
             }
 
             user.RaiseMessage(Properties.Resources.AvailableHeader,
-                              instance.game.ShortName,
+                              instance.Game.ShortName,
                               instance.Version()?.ToString() ?? "");
             user.RaiseMessage("");
 

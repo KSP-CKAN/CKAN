@@ -126,6 +126,9 @@
   <data name="ReasonsColumn.HeaderText" xml:space="preserve">
     <value>Redenen voor actie</value>
   </data>
+  <data name="DeleteColumn.HeaderText" xml:space="preserve">
+    <value>Overslaan?</value>
+  </data>
   <data name="BackButton.Text" xml:space="preserve">
     <value>Terug</value>
   </data>

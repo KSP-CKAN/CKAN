@@ -1,6 +1,9 @@
+using System;
 using System.Linq;
+
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+
 using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Transformers;
@@ -13,7 +16,7 @@ namespace Tests.NetKAN.Transformers
         private readonly TransformOptions opts = new TransformOptions(1, null, null, null, false, null);
 
         [Test]
-        public void DoesNothingWhenNoMatch()
+        public void Transform_NoMatch_DoesNothing()
         {
             // Arrange
             var sut = new VersionEditTransformer();
@@ -33,7 +36,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void EditsCorrectlyWithString()
+        public void Transform_WithString_EditsCorrectly()
         {
             // Arrange
             var sut = new VersionEditTransformer();
@@ -52,7 +55,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void EditsCorrectlyWithOnlyFind()
+        public void Transform_WithOnlyFind_EditsCorrectly()
         {
             // Arrange
             var sut = new VersionEditTransformer();
@@ -74,7 +77,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void EditsCorrectlyWithFindAndReplace()
+        public void Transform_WithFindAndReplace_EditsCorrectly()
         {
             // Arrange
             var sut = new VersionEditTransformer();
@@ -97,7 +100,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void ThrowsWhenNoMatchInStrictMode()
+        public void Transform_NoMatchInStrictMode_Throws()
         {
             // Arrange
             var sut = new VersionEditTransformer();
@@ -118,7 +121,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void DoesNotThrowWhenNoMatchInNonStrictMode()
+        public void Transform_NoMatchInNonStrictMode_DoesNotThrow()
         {
             // Arrange
             var sut = new VersionEditTransformer();
@@ -137,6 +140,36 @@ namespace Tests.NetKAN.Transformers
 
             // Assert
             Assert.That(act, Throws.Nothing);
+        }
+
+        [Test]
+        public void Transform_NeitherObjectNorValue_Throws()
+        {
+            // Arrange
+            var sut  = new VersionEditTransformer();
+            var json = new JObject()
+            {
+                { "spec_version",          "1" },
+                { "version",               "1.0" },
+                { "x_netkan_version_edit", new JArray() { "Junk value" } },
+            };
+
+            // Act / Assert
+            var exc = Assert.Throws<Kraken>(() =>
+            {
+                var result = sut.Transform(new Metadata(json), opts).First();
+            })!;
+
+            // Assert
+            CollectionAssert.AreEqual(
+                new string[]
+                {
+                    @"Unrecognized `x_netkan_version_edit` value: [",
+                    @"  ""Junk value""",
+                    @"]",
+                },
+                exc.Message.Split(new string[] { Environment.NewLine },
+                                  StringSplitOptions.None));
         }
     }
 }

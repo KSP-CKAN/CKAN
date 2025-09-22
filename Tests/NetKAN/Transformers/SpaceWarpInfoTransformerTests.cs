@@ -10,7 +10,6 @@ using CKAN.SpaceWarp;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
-using CKAN.Games.KerbalSpaceProgram2;
 using CKAN.NetKAN.Sources.Github;
 using Tests.Data;
 
@@ -30,7 +29,6 @@ namespace Tests.NetKAN.Transformers
             var modSvc   = new Mock<IModuleService>();
             modSvc.Setup(ms => ms.GetInternalSpaceWarpInfo(It.IsAny<CkanModule>(),
                                                            It.IsAny<ZipFile>(),
-                                                           It.IsAny<GameInstance>(),
                                                            It.IsAny<string?>()))
                   .Returns(new SpaceWarpInfo()
                            {
@@ -41,8 +39,7 @@ namespace Tests.NetKAN.Transformers
                            });
             var sut      = new SpaceWarpInfoTransformer(http.Object,
                                                         ghApi.Object,
-                                                        modSvc.Object,
-                                                        new KerbalSpaceProgram2());
+                                                        modSvc.Object);
             var opts     = new TransformOptions(1, null, null, null, false, null);
             var metadata = new Metadata(new JObject()
             {

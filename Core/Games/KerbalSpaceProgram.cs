@@ -53,7 +53,7 @@ namespace CKAN.Games.KerbalSpaceProgram
 
         public string PrimaryModDirectory(GameInstance inst)
             => CKANPathUtils.NormalizePath(
-                Path.Combine(inst.GameDir(), PrimaryModDirectoryRelative));
+                Path.Combine(inst.GameDir, PrimaryModDirectoryRelative));
 
         public string[] StockFolders => new string[]
         {
@@ -99,7 +99,7 @@ namespace CKAN.Games.KerbalSpaceProgram
         /// <param name="path">Path to check</param>
         /// <returns>True if reserved, false otherwise</returns>
         public bool IsReservedDirectory(GameInstance inst, string path)
-            => path == inst.GameDir() || path == inst.CkanDir()
+            => path == inst.GameDir || path == inst.CkanDir
             || path == PrimaryModDirectory(inst)
             || path == Missions(inst)
             || path == Scenarios(inst) || path == Tutorial(inst)
@@ -214,12 +214,12 @@ namespace CKAN.Games.KerbalSpaceProgram
                         // There's a lot of duplicate real versions with different build IDs,
                         // skip all those extra checks when we use these
                         versions ??= ServiceLocator.Container
-                                                 .Resolve<IKspBuildMap>()
-                                                 .KnownVersions
-                                                 .Select(v => v.WithoutBuild)
-                                                 .Distinct()
-                                                 .Order()
-                                                 .ToList();
+                                                   .Resolve<IKspBuildMap>()
+                                                   .KnownVersions
+                                                   .Select(v => v.WithoutBuild)
+                                                   .Distinct()
+                                                   .Order()
+                                                   .ToList();
                     }
                 }
                 return versions;
@@ -297,10 +297,10 @@ namespace CKAN.Games.KerbalSpaceProgram
         public Uri ModSupportURL => new Uri("https://forum.kerbalspaceprogram.com/forum/70-ksp1-technical-support-pc-modded-installs/");
 
         private static string Missions(GameInstance inst)
-            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Missions"));
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir, "Missions"));
 
         private static string Ships(GameInstance inst)
-            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "Ships"));
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir, "Ships"));
 
         private static string ShipsVab(GameInstance inst)
             => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "VAB"));
@@ -321,10 +321,10 @@ namespace CKAN.Games.KerbalSpaceProgram
             => CKANPathUtils.NormalizePath(Path.Combine(Ships(inst), "Script"));
 
         private static string Tutorial(GameInstance inst)
-            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "saves", "training"));
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir, "saves", "training"));
 
         private static string Scenarios(GameInstance inst)
-            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir(), "saves", "scenarios"));
+            => CKANPathUtils.NormalizePath(Path.Combine(inst.GameDir, "saves", "scenarios"));
 
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {

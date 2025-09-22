@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,13 +117,85 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="RelationshipResolverUserReason" xml:space="preserve"><value>Neue Mod-Installation ausgewählt vom Nutzer</value></data>
-  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (Metapacket)</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favoriten</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>Versteckt</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>Zurückgehalten</value></data>
-  <data name="KrakenBadMetadata" xml:space="preserve"><value>Fehlerhafte Metadaten für das Modul {0} erkannt: {1}</value></data>
-  <data name="KrakenIsDLC" xml:space="preserve"><value>CKAN kann die Erweiterung '{0}' nicht für dich installieren.</value></data>
+  <data name="AutoUpdateNotFetched" xml:space="preserve">
+    <value>Wir haben noch nicht die Release-Informationen abgerufen. Update nicht möglich.</value>
+  </data>
+  <data name="NetDownloading" xml:space="preserve">
+    <value>Lädt herunter: {0}</value>
+  </data>
+  <data name="NetInvalidLocation" xml:space="preserve">
+    <value>Ungültige URL im Ziel-Header: {0}</value>
+  </data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve">
+    <value>{0}/s - {1} ({2}) verbleibend - {3}%</value>
+  </data>
+  <data name="ByteRateCounterSummary" xml:space="preserve">
+    <value>{0} verbleibend - {1}%</value>
+  </data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve">
+    <value>{0} h, {1} min, {2} s</value>
+  </data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve">
+    <value>{0} min, {1} s</value>
+  </data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve">
+    <value>{0} s</value>
+  </data>
+  <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
+    <value>Lädt herunter: {0} ...</value>
+  </data>
+  <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
+    <value>Herunterladen von Nutzer abgebrochen</value>
+  </data>
+  <data name="NetAsyncDownloaderValidating" xml:space="preserve">
+    <value>Herunterladen von {0} abgeschlossen. Verifizieren und in Cache speichern...</value>
+  </data>
+  <data name="NetFileCacheCannotFind" xml:space="preserve">
+    <value>Cache-Verzeichnis konnte nicht gefunden werden: {0}</value>
+  </data>
+  <data name="NetFileCacheZipError" xml:space="preserve">
+    <value>Fehler in Schritt {0} für {1}: {2}</value>
+  </data>
+  <data name="NetFileCacheZipTestArchiveFalse" xml:space="preserve">
+    <value>ZipFile.TestArchive(true) hat "falsch" zurückgegeben</value>
+  </data>
+  <data name="NetFileCacheNullFileName" xml:space="preserve">
+    <value>Dateiname ist Null</value>
+  </data>
+  <data name="NetFileCacheMonoNotSupported" xml:space="preserve">
+    <value>{0}
+
+Installiere das 'mono-complete' Paket oder gleichwertiges für dein Betriebssystem.</value>
+  </data>
+  <data name="NetModuleCacheBadLength" xml:space="preserve">
+    <value>{0}: {1} hat Länge {2}, {3} erwartet</value>
+  </data>
+  <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
+    <value>{0}: {1} ist keine gültige ZIP-Datei: {2}</value>
+  </data>
+  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
+    <value>{0}: {1} hat SHA256 {2}. {3} erwartet</value>
+  </data>
+  <data name="NetRepoUpdatingBuildMap" xml:space="preserve">
+    <value>Aktualisiere Spiel-Versionsdaten</value>
+  </data>
+  <data name="NetRepoCheckingForUpdates" xml:space="preserve">
+    <value>Suche nach Aktualisierungen</value>
+  </data>
+  <data name="NetRepoAlreadyUpToDate" xml:space="preserve">
+    <value>Bereits aktuell</value>
+  </data>
+  <data name="NetRepoNoChanges" xml:space="preserve">
+    <value>Keine Änderungen seit letzter Aktualisierung</value>
+  </data>
+  <data name="NetRepoUpdating" xml:space="preserve">
+    <value>Aktualisiere {0}</value>
+  </data>
+  <data name="GameInstancePlayGameFailed" xml:space="preserve">
+    <value>Das Spiel konnte nicht gestartet werden.
+
+{0}</value>
+  </data>
   <data name="KrakenFileExistsWithOwner" xml:space="preserve">
     <value>Oh nein! Wir haben versucht, eine Datei zu überschreiben, die einer anderen Mod gehört!
 
@@ -166,5 +238,26 @@ Deinstalliere bitte manuell die Mod, die folgende Dateien besitzt:
 {0}
 
 und versuche es erneut.</value>
+  </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Fehlerhafte Metadaten für das Modul {0} erkannt: {1}</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN kann die Erweiterung '{0}' nicht für dich installieren.</value>
+  </data>
+  <data name="RelationshipResolverUserReason" xml:space="preserve">
+    <value>Neue Mod-Installation ausgewählt vom Nutzer</value>
+  </data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve">
+    <value>{0} {1} (Metapacket)</value>
+  </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>Favoriten</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>Versteckt</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>Zurückgehalten</value>
   </data>
 </root>

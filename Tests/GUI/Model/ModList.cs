@@ -196,7 +196,7 @@ namespace Tests.GUI
                 var mod      = mods.First();
 
                 // Act
-                favLbl.Add(inst.KSP.game, mod.Identifier);
+                favLbl.Add(inst.KSP.Game, mod.Identifier);
                 var row = modlist.ReapplyLabels(mod, false, inst.KSP, registry);
 
                 // Assert
@@ -558,7 +558,7 @@ namespace Tests.GUI
                 b9.SelectedMod = b9.LatestCompatibleMod;
                 var changes    = modlist.ComputeUserChangeSet(registry, inst.KSP, null, null);
                 var full       = modlist.ComputeFullChangeSetFromUserChangeSet(registry, changes,
-                                                                               inst.KSP.game,
+                                                                               inst.KSP.Game,
                                                                                inst.KSP.StabilityToleranceConfig,
                                                                                inst.KSP.VersionCriteria());
 

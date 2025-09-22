@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -117,15 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (メタパッケージ)</value></data>
-  <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (キャッシュ済)</value></data>
-  <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>
-  <data name="ModuleLabelListFavourites" xml:space="preserve"><value>お気に入り</value></data>
-  <data name="ModuleLabelListHidden" xml:space="preserve"><value>非表示</value></data>
-  <data name="ModuleLabelListHeld" xml:space="preserve"><value>保持</value></data>
-  <data name="KrakenBadMetadata" xml:space="preserve"><value>不正なメタデータが検出されました。Mod {0}: {1}</value></data>
-  <data name="KrakenIsDLC" xml:space="preserve"><value>CKAN は拡張 '{0}' をインストールできません。</value></data>
-  <data name="KrakenFileExistsWithOwner" xml:space="preserve"><value>他のModが所有しているファイルに上書きしようとしました！
+  <data name="RegistryManagerExportFilenamePrefix" xml:space="preserve">
+    <value>インストール済</value>
+  </data>
+  <data name="GameInstancePlayGameFailed" xml:space="preserve">
+    <value>起動に失敗しました。
+
+{0}</value>
+  </data>
+  <data name="KrakenFileExistsWithOwner" xml:space="preserve">
+    <value>他のModが所有しているファイルに上書きしようとしました！
 CKANをアップデート後にもう一度お試しください。
 
 もしこの問題が再び発生するのであれば、パッケージ中のバグの可能性があります。
@@ -137,8 +138,10 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 
 ファイル      : {0}
 インストールしようとしているMod : {1}
-所持しているMod: {2}</value></data>
-  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve"><value>Oh no!
+所持しているMod: {2}</value>
+  </data>
+  <data name="KrakenFileExistsWithoutOwner" xml:space="preserve">
+    <value>Oh no!
 
 既にいんすとーるされたのModをインストールしようとしているか、
 いんすとーるされたの他のModと衝突している可能性があります。
@@ -150,8 +153,10 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 
 {0}
 
-もう一度お試しください。</value></data>
-  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve"><value>Oh no!
+もう一度お試しください。</value>
+  </data>
+  <data name="KrakenFileExistsWithoutInstalling" xml:space="preserve">
+    <value>Oh no!
 
 既にいんすとーるされたのModをインストールしようとしているか、
 いんすとーるされたの他のModと衝突している可能性があります。
@@ -162,5 +167,30 @@ https://github.com/KSP-CKAN/NetKAN/issues/new/choose
 
 {0}
 
-もう一度お試しください。</value></data>
+もう一度お試しください。</value>
+  </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>不正なメタデータが検出されました。Mod {0}: {1}</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN は拡張 '{0}' をインストールできません。</value>
+  </data>
+  <data name="NetModuleCacheMetapackage" xml:space="preserve">
+    <value>{0} {1} (メタパッケージ)</value>
+  </data>
+  <data name="NetModuleCacheModuleCached" xml:space="preserve">
+    <value>{0} {1} (キャッシュ済)</value>
+  </data>
+  <data name="NetModuleCacheModuleHostSize" xml:space="preserve">
+    <value>{0} {1} ({2}, {3})</value>
+  </data>
+  <data name="ModuleLabelListFavourites" xml:space="preserve">
+    <value>お気に入り</value>
+  </data>
+  <data name="ModuleLabelListHidden" xml:space="preserve">
+    <value>非表示</value>
+  </data>
+  <data name="ModuleLabelListHeld" xml:space="preserve">
+    <value>保持</value>
+  </data>
 </root>

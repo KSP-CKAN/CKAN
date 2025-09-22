@@ -31,6 +31,9 @@ namespace Tests.NetKAN.Transformers
                                           ""spdx_id"": ""GPL-3.0""
                                       },
                                       ""html_url"": ""https://github.com/ExampleAccount/ExampleProject"",
+                                      ""homepage"": ""https://exampleproject.com/"",
+                                      ""has_issues"": true,
+                                      ""has_discussions"": true,
                                   }");
             httpSvcMockUp.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.StartsWith("/repos/")
                                                                     && u.AbsolutePath.EndsWith("/releases")),
@@ -109,7 +112,7 @@ namespace Tests.NetKAN.Transformers
         }
 
         [Test]
-        public void Transform_ExampleProject_SetsRepositoryResource()
+        public void Transform_ExampleProject_SetsResources()
         {
             // Arrange
             var sut      = new GithubTransformer(new GithubApi(httpSvcMockUp.Object), false);
@@ -128,6 +131,12 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual("https://github.com/ExampleAccount/ExampleProject",
                             (string?)transformedJson["resources"]?["repository"]);
+            Assert.AreEqual("https://exampleproject.com/",
+                            (string?)transformedJson["resources"]?["homepage"]);
+            Assert.AreEqual("https://github.com/ExampleAccount/ExampleProject/issues",
+                            (string?)transformedJson["resources"]?["bugtracker"]);
+            Assert.AreEqual("https://github.com/ExampleAccount/ExampleProject/discussions",
+                            (string?)transformedJson["resources"]?["discussions"]);
         }
 
         [Test]

@@ -404,7 +404,7 @@ namespace CKAN.GUI
             bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, stabilityTolerance, crit);
             string suffix = compatible || Manager?.CurrentInstance == null
                 ? ""
-                : $" ({registry.CompatibleGameVersions(Manager.CurrentInstance.game, module.identifier)})";
+                : $" ({registry.CompatibleGameVersions(Manager.CurrentInstance.Game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
             {
                 Name        = module.identifier,

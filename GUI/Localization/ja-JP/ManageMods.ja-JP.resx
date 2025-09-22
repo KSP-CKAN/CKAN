@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LaunchGameToolStripMenuItem.Text" xml:space="preserve">
-    <value>ゲームを起動</value>
+    <value>起動する</value>
   </data>
   <data name="RefreshToolButton.Text" xml:space="preserve">
     <value>更新</value>

@@ -1,0 +1,24 @@
+{
+  "labels": [
+    {
+      "name": "Held",
+      "color": "Silver",
+      "hold_version": true,
+      "module_identifiers_by_game": {
+        "KSP": [
+          "Mod1"
+        ]
+      }
+    },
+    {
+      "name": "SelfDeleters",
+      "color": "255, 128, 192",
+      "ignore_missing_files": true,
+      "module_identifiers_by_game": {
+        "KSP": [
+          "Mod2"
+        ]
+      }
+    }
+  ]
+}

@@ -28,7 +28,7 @@ namespace Tests.NetKAN.Transformers
 
             var modSvc = new ModuleService(new KerbalSpaceProgram());
 
-            ITransformer sut = new InstallSizeTransformer(mHttp.Object, modSvc, new KerbalSpaceProgram());
+            ITransformer sut = new InstallSizeTransformer(mHttp.Object, modSvc);
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();

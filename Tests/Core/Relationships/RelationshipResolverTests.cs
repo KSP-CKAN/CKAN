@@ -828,6 +828,50 @@ namespace Tests.Core.Relationships
         }
 
         [Test]
+        public void Constructor_WithDependsAnyOf_ChooseCorrectly()
+        {
+            var dependent = generator!.GenerateRandomModule();
+            var depender = generator.GenerateRandomModule(depends: new List<RelationshipDescriptor>
+            {
+                new AnyOfRelationshipDescriptor
+                {
+                    any_of = new List<RelationshipDescriptor>
+                    {
+                        new ModuleRelationshipDescriptor
+                        {
+                            name = "Nonexistent"
+                        },
+                        new ModuleRelationshipDescriptor
+                        {
+                            name = dependent.identifier
+                        },
+                        new ModuleRelationshipDescriptor
+                        {
+                            name = "Absent"
+                        }
+                    }
+                }
+            });
+
+            var user = new NullUser();
+            using (var repo = new TemporaryRepository(depender.ToJson(),
+                                                      dependent.ToJson()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+                var list = new List<CkanModule> { depender };
+
+                var relationship_resolver = new RelationshipResolver(list, null, options!, registry, game, crit);
+                CollectionAssert.AreEquivalent(relationship_resolver.ModList(),
+                                               new List<CkanModule>
+                                               {
+                                                   dependent,
+                                                   depender,
+                                               });
+            }
+        }
+
+        [Test]
         public void Constructor_ReverseDependencyDoesntMatchLatest_ChoosesOlderVersion()
         {
             // Arrange
@@ -1056,7 +1100,7 @@ namespace Tests.Core.Relationships
                 {
                     {
                         "ModuleManager",
-                        ksp.KSP.ToRelativeGameDir(Path.Combine(ksp.KSP.game.PrimaryModDirectory(ksp.KSP),
+                        ksp.KSP.ToRelativeGameDir(Path.Combine(ksp.KSP.Game.PrimaryModDirectory(ksp.KSP),
                                                                "ModuleManager.dll"))
                     }
                 });
@@ -1107,7 +1151,7 @@ namespace Tests.Core.Relationships
                 {
                     {
                         "RasterPropMonitor",
-                        inst.KSP.ToRelativeGameDir(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
+                        inst.KSP.ToRelativeGameDir(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
                                                                "RasterPropMonitor.dll"))
                     }
                 });
@@ -1118,7 +1162,7 @@ namespace Tests.Core.Relationships
                                      .OfType<CkanModule>(),
                         null,
                         RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
-                        registry, inst.KSP.game, crit);
+                        registry, inst.KSP.Game, crit);
                 });
             }
         }

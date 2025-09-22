@@ -252,6 +252,9 @@ Aggiornamento consigliato!</value>
   <data name="CacheInfo" xml:space="preserve">
     <value>{0} file, {1}, {2} liberi</value>
   </data>
+  <data name="CacheInfoFreeSpaceUnknown" xml:space="preserve">
+    <value>File {0}, {1}, spazio libero sconosciuto</value>
+  </data>
   <data name="CompareSame" xml:space="preserve">
     <value>"{0}" e "{1}" sono le stesse versioni.</value>
   </data>
@@ -269,6 +272,9 @@ Aggiornamento consigliato!</value>
   </data>
   <data name="CompatActualHeader" xml:space="preserve">
     <value>Attuale</value>
+  </data>
+  <data name="CompatMissing" xml:space="preserve">
+    <value>Nessuna versione di gioco specificata!</value>
   </data>
   <data name="CompatInvalid" xml:space="preserve">
     <value>ERRORE: versione del gioco non valida</value>
@@ -290,6 +296,9 @@ Aggiornamento consigliato!</value>
   </data>
   <data name="InstanceListNameHeader" xml:space="preserve">
     <value>Nome</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Gioco</value>
   </data>
   <data name="InstanceListVersionHeader" xml:space="preserve">
     <value>Versione</value>
@@ -599,6 +608,9 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   <data name="ShowSuggestsHeader" xml:space="preserve">
     <value>Suggeriti:</value>
   </data>
+  <data name="ShowSupportsHeader" xml:space="preserve">
+    <value>Supporto:</value>
+  </data>
   <data name="ShowProvidesHeader" xml:space="preserve">
     <value>Fornisce:</value>
   </data>
@@ -629,6 +641,12 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   <data name="ShowSteamStore" xml:space="preserve">
     <value>  Negozio di Steam:	{0}</value>
   </data>
+  <data name="ShowGogStore" xml:space="preserve">
+    <value>  GOG store:	{0}</value>
+  </data>
+  <data name="ShowEpicStore" xml:space="preserve">
+    <value>  Epic Games Store:	{0}</value>
+  </data>
   <data name="ShowVersionFile" xml:space="preserve">
     <value>  Versione del file: {0}</value>
   </data>
@@ -644,6 +662,9 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   <data name="ShowGameVersionsHeader" xml:space="preserve">
     <value>Versioni Del Gioco</value>
   </data>
+  <data name="UpdateURLRepoName" xml:space="preserve">
+    <value>URL #{0}</value>
+  </data>
   <data name="UpdateChangesSummary" xml:space="preserve">
     <value>Sono stati trovati {0} nuovi moduli, {1} moduli rimossi e {2} moduli aggiornati</value>
   </data>
@@ -658,6 +679,12 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   </data>
   <data name="UpdateSummary" xml:space="preserve">
     <value>Aggiornamento delle informazioni sui moduli compatibili con {0}</value>
+  </data>
+  <data name="UpgradeCannotCombineFlags" xml:space="preserve">
+    <value>I flag `--dev-build` e `--stable-release` non possono essere combinate!</value>
+  </data>
+  <data name="UpgradeSwitchingToStableReleases" xml:space="preserve">
+    <value>Passaggio a versioni stabili</value>
   </data>
   <data name="UpgradeQueryingCKAN" xml:space="preserve">
     <value>Verifica la versione più recente di CKAN</value>
@@ -676,6 +703,15 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   </data>
   <data name="UpgradeAborted" xml:space="preserve">
     <value>Aggiornamento interrotto: {0}</value>
+  </data>
+  <data name="UpgradeFailed" xml:space="preserve">
+    <value>Aggiornamento fallito: {0}"</value>
+  </data>
+  <data name="UpgradeAlreadyUpToDate" xml:space="preserve">
+    <value>Il Modulo {0} è già aggiornato</value>
+  </data>
+  <data name="UpgradeAllUpToDate" xml:space="preserve">
+    <value>Tutti i moduli sono aggiornati</value>
   </data>
   <data name="FilterListGlobalHeader" xml:space="preserve">
     <value>Filtri Globali:</value>
@@ -697,6 +733,12 @@ Premi tab per il completamento automatico dei comandi e dei moduli.
   </data>
   <data name="FilterHelpSummary" xml:space="preserve">
     <value>Mostra o modifica i filtri di installazione</value>
+  </data>
+  <data name="StabilityListModHeader" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="StabilityListStabilityHeader" xml:space="preserve">
+    <value>Sovrascrivi</value>
   </data>
   <data name="CompletionNotAvailable" xml:space="preserve">
     <value>

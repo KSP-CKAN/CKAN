@@ -142,7 +142,7 @@ namespace CKAN.GUI
                             Dictionary<CkanModule, string>? conflicts)
         {
             Change = change;
-            if (Main.Instance?.CurrentInstance?.game is IGame game)
+            if (Main.Instance?.CurrentInstance?.Game is IGame game)
             {
                 WarningLabel = alertLabels?.FirstOrDefault(l => l.ContainsModule(game, Change.Mod.identifier));
             }

@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
+using CKAN.Games;
+
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -33,7 +35,7 @@ namespace CKAN.GUI
             InitializeComponent();
             DialogResult = DialogResult.Cancel;
 
-            instanceDialog.Filter = GameFolderFilter(manager);
+            instanceDialog.Filter = GameFolderFilter();
             instanceDialog.FileOk += InstanceFileOK;
 
             if (centerScreen)
@@ -62,14 +64,14 @@ namespace CKAN.GUI
             GameInstancesListView.Items.Clear();
             UpdateButtonState();
 
-            var allSameGame = manager.Instances.Select(i => i.Value.game).Distinct().Count() <= 1;
+            var allSameGame = manager.Instances.Select(i => i.Value.Game).Distinct().Count() <= 1;
             var hasPlayTime = manager.Instances.Any(instance => (instance.Value.playTime?.Time ?? TimeSpan.Zero) > TimeSpan.Zero);
 
             AddOrRemoveColumn(GameInstancesListView, Game, !allSameGame, GameInstallVersion.Index);
             AddOrRemoveColumn(GameInstancesListView, GamePlayTime, hasPlayTime, GameInstallPath.Index);
 
             GameInstancesListView.Items.AddRange(
-                manager.Instances.OrderByDescending(instance => instance.Value.game.FirstReleaseDate)
+                manager.Instances.OrderByDescending(instance => instance.Value.Game.FirstReleaseDate)
                                   .ThenByDescending(instance => instance.Value.Version())
                                   .ThenBy(instance => instance.Key)
                                   .Select(instance => new ListViewItem(
@@ -86,13 +88,12 @@ namespace CKAN.GUI
         /// <summary>
         /// Generate filter string for OpenFileDialog
         /// </summary>
-        /// <param name="mgr">Game instance manager that can tell us about the build ID files</param>
         /// <returns>
         /// "Build metadata files (buildID.txt;buildID64.txt)|buildID.txt;buildID64.txt"
         /// </returns>
-        public static string GameFolderFilter(GameInstanceManager mgr)
-        => Properties.Resources.GameProgramFileDescription
-            + "|" + string.Join(";", mgr.AllInstanceAnchorFiles);
+        public static string GameFolderFilter()
+            => Properties.Resources.GameProgramFileDescription
+                + "|" + string.Join(";", KnownGames.AllInstanceAnchorFiles);
 
         public bool HasSelections => GameInstancesListView.SelectedItems.Count > 0;
 
@@ -121,7 +122,7 @@ namespace CKAN.GUI
 
             if (includeGame)
             {
-                list.Add(instance.game.ShortName);
+                list.Add(instance.Game.ShortName);
             }
 
             list.Add(FormatVersion(instance.Version()));
@@ -131,7 +132,7 @@ namespace CKAN.GUI
                 list.Add(instance.playTime?.ToString() ?? "");
             }
 
-            list.Add(Platform.FormatPath(instance.GameDir()));
+            list.Add(Platform.FormatPath(instance.GameDir));
             return list.ToArray();
         }
 
@@ -189,10 +190,10 @@ namespace CKAN.GUI
         private void ImportFromSteamMenuItem_Click(object? sender, EventArgs? e)
         {
             var currentDirs = manager.Instances.Values
-                                               .Select(inst => inst.GameDir())
+                                               .Select(inst => inst.GameDir)
                                                .ToHashSet(Platform.PathComparer);
             var toAdd = manager.FindDefaultInstances()
-                               .Where(inst => !currentDirs.Contains(inst.GameDir()));
+                               .Where(inst => !currentDirs.Contains(inst.GameDir));
             foreach (var inst in toAdd)
             {
                 manager.AddInstance(inst);
@@ -244,7 +245,7 @@ namespace CKAN.GUI
                 else
                 {
                     user.RaiseError(Properties.Resources.ManageGameInstancesNotValid,
-                                    inst.GameDir());
+                                    inst.GameDir);
                 }
             }
         }
@@ -324,7 +325,7 @@ namespace CKAN.GUI
                 GameInstancesListView.SelectedItems.Count > 0
                 && GameInstancesListView.SelectedItems[0] is {Tag: GameInstance inst})
             {
-                string path = inst.GameDir();
+                string path = inst.GameDir;
 
                 if (!Directory.Exists(path))
                 {
@@ -402,7 +403,7 @@ namespace CKAN.GUI
                 // OpenFileDialog always shows shortcuts (!!!!!),
                 // so we have to re-enforce the filter ourselves
                 var chosen  = Path.GetFileName(dlg.FileName);
-                var allowed = manager.AllInstanceAnchorFiles;
+                var allowed = KnownGames.AllInstanceAnchorFiles;
                 if (!allowed.Contains(chosen, Platform.PathComparer))
                 {
                     e.Cancel = true;

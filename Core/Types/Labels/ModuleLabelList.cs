@@ -85,12 +85,12 @@ namespace CKAN
 
         public IEnumerable<string> HeldIdentifiers(GameInstance inst)
             => LabelsFor(inst.Name).Where(l => l.HoldVersion)
-                                   .SelectMany(l => l.IdentifiersFor(inst.game))
+                                   .SelectMany(l => l.IdentifiersFor(inst.Game))
                                    .Distinct();
 
         public IEnumerable<string> IgnoreMissingIdentifiers(GameInstance inst)
             => LabelsFor(inst.Name).Where(l => l.IgnoreMissingFiles)
-                                   .SelectMany(l => l.IdentifiersFor(inst.game))
+                                   .SelectMany(l => l.IdentifiersFor(inst.Game))
                                    .Distinct();
     }
 }

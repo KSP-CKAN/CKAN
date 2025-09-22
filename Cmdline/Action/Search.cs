@@ -95,7 +95,7 @@ namespace CKAN.CmdLine
                     foreach (CkanModule mod in matching_incompatible)
                     {
                         CkanModule.GetMinMaxVersions(new List<CkanModule> { mod } , out _, out _, out var mininstance, out var maxinstance);
-                        var gv = GameVersionRange.VersionSpan(instance.game,
+                        var gv = GameVersionRange.VersionSpan(instance.Game,
                                                               mininstance ?? GameVersion.Any,
                                                               maxinstance ?? GameVersion.Any)
                                                  .ToString();

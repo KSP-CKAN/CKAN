@@ -30,12 +30,12 @@ namespace Tests.CmdLine
                                       {
                                           new Tuple<string, string, string>(
                                               inst1.KSP.Name,
-                                              inst1.KSP.GameDir(),
-                                              inst1.KSP.game.ShortName),
+                                              inst1.KSP.GameDir,
+                                              inst1.KSP.Game.ShortName),
                                           new Tuple<string, string, string>(
                                               inst2.KSP.Name,
-                                              inst2.KSP.GameDir(),
-                                              inst2.KSP.game.ShortName),
+                                              inst2.KSP.GameDir,
+                                              inst2.KSP.Game.ShortName),
                                       },
                                       null, cacheDir.Directory.FullName))
             using (var manager  = new GameInstanceManager(user, config))

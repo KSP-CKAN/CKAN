@@ -632,10 +632,10 @@ namespace CKAN.GUI
             => LabelsByNegation.All(kvp =>
                    kvp.Key.negate ^ (
                        kvp.Key.exclude
-                           ? kvp.Value.All(lbl => !lbl.ContainsModule(Instance.game,
+                           ? kvp.Value.All(lbl => !lbl.ContainsModule(Instance.Game,
                                                                       mod.Identifier))
                            : kvp.Value.Length > 0
-                                 && kvp.Value.All(lbl => lbl.ContainsModule(Instance.game,
+                                 && kvp.Value.All(lbl => lbl.ContainsModule(Instance.Game,
                                                                             mod.Identifier))));
 
         private bool MatchesCompatible(GUIMod mod)

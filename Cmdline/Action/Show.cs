@@ -61,7 +61,7 @@ namespace CKAN.CmdLine
                     // No exact match found. Try to look for a close match for this KSP version.
                     user.RaiseMessage(Properties.Resources.ShowNotInstalledOrCompatible,
                         modName,
-                        instance.game.ShortName,
+                        instance.Game.ShortName,
                         string.Join(", ", instance.VersionCriteria().Versions.Select(v => v.ToString())));
                     user.RaiseMessage(Properties.Resources.ShowLookingForClose);
 
@@ -336,7 +336,7 @@ namespace CKAN.CmdLine
             {
                 CkanModule.GetMinMaxVersions(new List<CkanModule>() { m }, out _, out _,
                                              out GameVersion? minKsp, out GameVersion? maxKsp);
-                return GameVersionRange.VersionSpan(inst.game,
+                return GameVersionRange.VersionSpan(inst.Game,
                                                     minKsp ?? GameVersion.Any,
                                                     maxKsp ?? GameVersion.Any);
             }).ToList();

@@ -255,7 +255,7 @@ namespace CKAN
                                                                           HashSet<string>?      ignoreMissingIdents = null)
         {
             var filters = ServiceLocator.Container.Resolve<IConfiguration>()
-                                                  .GetGlobalInstallFilters(instance.game)
+                                                  .GetGlobalInstallFilters(instance.Game)
                                                   .Concat(instance.InstallFilters)
                                                   .ToHashSet();
             // Get the absolute latest versions ignoring restrictions,
@@ -296,7 +296,7 @@ namespace CKAN
                                                                           HashSet<string>?      ignoreMissingIdents = null)
         {
             filters ??= ServiceLocator.Container.Resolve<IConfiguration>()
-                                                .GetGlobalInstallFilters(instance.game)
+                                                .GetGlobalInstallFilters(instance.Game)
                                                 .Concat(instance.InstallFilters)
                                                 .ToHashSet();
             // Use those as the installed modules
@@ -576,7 +576,7 @@ namespace CKAN
             GameInstance          instance)
             => querier.FindRemovableAutoInstalled(querier.InstalledModules,
                                                   Array.Empty<CkanModule>(),
-                                                  instance.game,
+                                                  instance.Game,
                                                   instance.StabilityToleranceConfig,
                                                   instance.VersionCriteria());
 

@@ -71,7 +71,7 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null)
             {
-                Utilities.ProcessStartURL(CurrentInstance.GameDir());
+                Utilities.ProcessStartURL(CurrentInstance.GameDir);
             }
         }
 
@@ -197,7 +197,7 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null)
             {
-                Utilities.ProcessStartURL(CurrentInstance.game.ModSupportURL.ToString());
+                Utilities.ProcessStartURL(CurrentInstance.Game.ModSupportURL.ToString());
             }
         }
 
@@ -210,7 +210,7 @@ namespace CKAN.GUI
         {
             if (CurrentInstance != null)
             {
-                Utilities.ProcessStartURL(CurrentInstance.game.MetadataBugtrackerURL.ToString());
+                Utilities.ProcessStartURL(CurrentInstance.Game.MetadataBugtrackerURL.ToString());
             }
         }
 

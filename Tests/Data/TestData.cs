@@ -758,6 +758,9 @@ namespace Tests.Data
         public static string TestNetkanContents()
             => File.ReadAllText(TestNetkanPath());
 
+        public static string LabelListPath()
+            => DataDir("labels.json");
+
         // Where's my mkdtemp? Instead we'll make a random file, delete it, and
         // fill its place with a directory.
         // Taken from https://stackoverflow.com/a/20445952

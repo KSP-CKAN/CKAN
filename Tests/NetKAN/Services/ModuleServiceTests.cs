@@ -62,10 +62,9 @@ namespace Tests.NetKAN.Services
             // Arrange
             var sut = new ModuleService(new KerbalSpaceProgram());
             CkanModule mod = CkanModule.FromJson(TestData.DogeCoinFlag_101());
-            GameInstance inst = new GameInstance(new KerbalSpaceProgram(), "/", "dummy", new NullUser());
 
             // Act
-            var result = sut.GetInternalCkan(mod, TestData.DogeCoinFlagZip(), inst);
+            var result = sut.GetInternalCkan(mod, TestData.DogeCoinFlagZip());
 
             // Assert
             Assert.That(result, Is.Not.Null,
@@ -117,9 +116,6 @@ namespace Tests.NetKAN.Services
             using (var gameDir = new TemporaryDirectory())
             {
                 var            game  = new KerbalSpaceProgram2();
-                var            inst  = new GameInstance(game,
-                                                        gameDir.Directory.FullName,
-                                                        "ksp2-test", null);
                 var            http  = new Mock<IHttpService>();
                 var            ghApi = new Mock<IGithubApi>();
                 IModuleService sut   = new ModuleService(game);
@@ -127,7 +123,7 @@ namespace Tests.NetKAN.Services
                 // Act
                 var result = sut.GetSpaceWarpInfo(TestData.BurnControllerModule(),
                                                   new ZipFile(TestData.BurnControllerZip()),
-                                                  inst, ghApi.Object, http.Object);
+                                                  ghApi.Object, http.Object);
 
                 // Assert
                 Assert.IsNotNull(result);

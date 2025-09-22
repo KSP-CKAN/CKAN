@@ -244,7 +244,7 @@ namespace CKAN.CmdLine
                                                gameId,
                                                string.Join(" ", KnownGames.AllGameShortNames())));
             }
-            return instance.game;
+            return instance.Game;
         }
 
         [ExcludeFromCodeCoverage]

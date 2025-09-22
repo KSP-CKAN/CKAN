@@ -1,0 +1,438 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Accept" xml:space="preserve">
+    <value>Accepteren</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuleer</value>
+  </data>
+  <data name="DefaultGhostText" xml:space="preserve">
+    <value>&lt;Enter a value&gt;</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>Oplopend</value>
+  </data>
+  <data name="AscendingSortTip" xml:space="preserve">
+    <value>Lijst in oplopende volgorde sorteren</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>Aflopend</value>
+  </data>
+  <data name="DescendingSortTip" xml:space="preserve">
+    <value>Lijst in aflopende volgorde sorteren</value>
+  </data>
+  <data name="ColumnNumber" xml:space="preserve">
+    <value>Kolom #{0}</value>
+  </data>
+  <data name="ColumnNumberSortTip" xml:space="preserve">
+    <value>Lijst sorteren op kolom #{0}</value>
+  </data>
+  <data name="ColumnNameSortTip" xml:space="preserve">
+    <value>Sorteer de lijst op de {0} kolom</value>
+  </data>
+  <data name="CursorKeys" xml:space="preserve">
+    <value>Cursor Toetsen</value>
+  </data>
+  <data name="Scroll" xml:space="preserve">
+    <value>Scroll</value>
+  </data>
+  <data name="ScrollMessages" xml:space="preserve">
+    <value>Scroll berichten</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nee</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Oké</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>Forceer</value>
+  </data>
+  <data name="Tab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="Esc" xml:space="preserve">
+    <value>Esc</value>
+  </data>
+  <data name="Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Terug</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Afsluiten</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Voeg toe</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Verwijder</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Wijzig</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Sorteer</value>
+  </data>
+  <data name="Toggle" xml:space="preserve">
+    <value>Wissel</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Selecteer</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Selecteer alles</value>
+  </data>
+  <data name="DeselectAll" xml:space="preserve">
+    <value>Alles deselecteren</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>Omhoog</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>Omlaag</value>
+  </data>
+  <data name="FileSelectCountFooter" xml:space="preserve">
+    <value>{0} geselecteerd, {1}</value>
+  </data>
+  <data name="FileSelectNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="FileSelectSizeHeader" xml:space="preserve">
+    <value>Grootte</value>
+  </data>
+  <data name="FileSelectTimestampHeader" xml:space="preserve">
+    <value>Geopend</value>
+  </data>
+  <data name="FileSelectChangeDirectory" xml:space="preserve">
+    <value>Map wijzigen</value>
+  </data>
+  <data name="FileSelectSelect" xml:space="preserve">
+    <value>Selecteer</value>
+  </data>
+  <data name="FileSelectDirSize" xml:space="preserve">
+    <value>&lt;DIR&gt;</value>
+  </data>
+  <data name="AuthTokenListTitle" xml:space="preserve">
+    <value>Authenticatie Tokens</value>
+  </data>
+  <data name="AuthTokenListGitHubLink" xml:space="preserve">
+    <value>Maak een GitHub API token</value>
+  </data>
+  <data name="AuthTokenListGitHubLinkTip" xml:space="preserve">
+    <value>Open de webpagina voor het maken van GitHub API authenticatie tokens</value>
+  </data>
+  <data name="AuthTokenListLabel" xml:space="preserve">
+    <value>Authenticatie tokens voor downloads:</value>
+  </data>
+  <data name="AuthTokenListHostHeader" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="AuthTokenListTokenHeader" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AuthTokenListWarning" xml:space="preserve">
+    <value>Let op: Deze waarden zijn privé! Deel geen schermafbeeldingen van dit scherm!</value>
+  </data>
+  <data name="AuthTokenListMissingToken" xml:space="preserve">
+    <value>&lt;FOUT&gt;</value>
+  </data>
+  <data name="AuthTokenAddTitle" xml:space="preserve">
+    <value>Maak authenticatiesleutel</value>
+  </data>
+  <data name="AuthTokenAddHost" xml:space="preserve">
+    <value>Host:</value>
+  </data>
+  <data name="AuthTokenAddHostGhostText" xml:space="preserve">
+    <value>&lt;Vul een host naam in&gt;</value>
+  </data>
+  <data name="AuthTokenAddToken" xml:space="preserve">
+    <value>Token:</value>
+  </data>
+  <data name="AuthTokenAddTokenGhostText" xml:space="preserve">
+    <value>&lt;Vul authenticatie token in&gt;</value>
+  </data>
+  <data name="RecommendationsInstallHeader" xml:space="preserve">
+    <value>Installeren</value>
+  </data>
+  <data name="RecommendationsNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="ImportSelectHeader" xml:space="preserve">
+    <value>Importeer</value>
+  </data>
+  <data name="InstanceNameLabel" xml:space="preserve">
+    <value>Naam:</value>
+  </data>
+  <data name="InstanceEditRepoNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="InstanceEditRepoURLHeader" xml:space="preserve">
+    <value>Webadres (URL)</value>
+  </data>
+  <data name="InstanceEditCompatVersionHeader" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="InstanceListNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Spel</value>
+  </data>
+  <data name="InstanceListVersionHeader" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="InstanceListPathHeader" xml:space="preserve">
+    <value>Locatie</value>
+  </data>
+  <data name="InstanceListDefaultToggle" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
+  <data name="InstanceListNoVersion" xml:space="preserve">
+    <value>&lt;NONE&gt;</value>
+  </data>
+  <data name="InstallTooManyModsNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>Verwijder Mappen</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>De onderstaande mappen blijven over na het verwijderen van sommige mods. Ze bevatten bestanden die niet zijn geïnstalleerd door CKAN (waarschijnlijk gegenereerd door een mod of handmatig geïnstalleerd). CKAN verwijdert niet automatisch bestanden die het niet heeft geïnstalleerd, maar je kunt ervoor kiezen ze te verwijderen als het er veilig uitziet (aanbevolen).
+Merk op dat als je besluit om een map niet te verwijderen, ModuleManager misschien ten onrechte denkt dat de mod nog steeds is geïnstalleerd.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>Mappen</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>Map inhoud</value>
+  </data>
+  <data name="ModInfoTitle" xml:space="preserve">
+    <value>Mod Info</value>
+  </data>
+  <data name="ModInfoMenuTip" xml:space="preserve">
+    <value>Koppelingen</value>
+  </data>
+  <data name="ModInfoAuthors" xml:space="preserve">
+    <value>Door {0}</value>
+  </data>
+  <data name="ModInfoLicence" xml:space="preserve">
+    <value>Licentie:</value>
+  </data>
+  <data name="ModInfoDownload" xml:space="preserve">
+    <value>Download:</value>
+  </data>
+  <data name="ModInfoDescriptionFrame" xml:space="preserve">
+    <value>Beschrijving</value>
+  </data>
+  <data name="ModInfoUnavailableWarning" xml:space="preserve">
+    <value>
+LET OP: Deze mod is geïnstalleerd, maar niet meer beschikbaar.
+Als je de mod verwijdert, zal CKAN niet in staat zijn hem opnieuw te installeren.</value>
+  </data>
+  <data name="ModInfoDownloadToCache" xml:space="preserve">
+    <value>Downloaden naar cache (wordt niet geïnstalleerd)</value>
+  </data>
+  <data name="ModInfoHomePage" xml:space="preserve">
+    <value>Startpagina</value>
+  </data>
+  <data name="ModInfoHomePageTip" xml:space="preserve">
+    <value>Open de URL van de startpagina in een browser</value>
+  </data>
+  <data name="ModInfoRepository" xml:space="preserve">
+    <value>Opslagplaats</value>
+  </data>
+  <data name="ModInfoRepositoryTip" xml:space="preserve">
+    <value>Open de repository URL in een browser</value>
+  </data>
+  <data name="ModInfoBugtracker" xml:space="preserve">
+    <value>Bugtracker</value>
+  </data>
+  <data name="RepoNameLabel" xml:space="preserve">
+    <value>Naam:</value>
+  </data>
+  <data name="RepoURLLabel" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="ModListNameHeader" xml:space="preserve">
+    <value>Naam</value>
+  </data>
+  <data name="ModListVersionHeader" xml:space="preserve">
+    <value>Versie</value>
+  </data>
+  <data name="ModListMaxGameVersionHeader" xml:space="preserve">
+    <value>Maximale spel versie</value>
+  </data>
+  <data name="ModListDownloadsHeader" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="ModListInstallTip" xml:space="preserve">
+    <value>Installeren</value>
+  </data>
+  <data name="ModListReplaceTip" xml:space="preserve">
+    <value>Vervangen</value>
+  </data>
+  <data name="ModListRemoveTip" xml:space="preserve">
+    <value>Verwijder</value>
+  </data>
+  <data name="ModListApplyChangesTip" xml:space="preserve">
+    <value>Wijzigingen toepassen</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>Installeren</value>
+  </data>
+  <data name="ModListQuitMenu" xml:space="preserve">
+    <value>Afsluiten</value>
+  </data>
+  <data name="ModListHelpInstalled" xml:space="preserve">
+    <value>Geïnstalleerd</value>
+  </data>
+  <data name="ModListHelpAutoInstalled" xml:space="preserve">
+    <value>Automatisch geïnstalleerd</value>
+  </data>
+  <data name="ModListHelpReplaceable" xml:space="preserve">
+    <value>Vervangbaar</value>
+  </data>
+  <data name="FiltersAddMiniAVCMenu" xml:space="preserve">
+    <value>Voeg MiniAVC toe</value>
+  </data>
+  <data name="FiltersInstanceHeader" xml:space="preserve">
+    <value>Instantiemap</value>
+  </data>
+</root>

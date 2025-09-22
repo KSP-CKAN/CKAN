@@ -52,7 +52,7 @@ namespace CKAN.ConsoleUI {
                         20),
                     new ConsoleListBoxColumn<GameInstance>(
                         Properties.Resources.InstanceListGameHeader,
-                        k => k.game.ShortName,
+                        k => k.Game.ShortName,
                         null,
                         5),
                     new ConsoleListBoxColumn<GameInstance>(
@@ -62,7 +62,7 @@ namespace CKAN.ConsoleUI {
                         12),
                     new ConsoleListBoxColumn<GameInstance>(
                         Properties.Resources.InstanceListPathHeader,
-                        k => k.GameDir(),
+                        k => k.GameDir,
                         null,
                         null)
                 },
@@ -240,7 +240,7 @@ namespace CKAN.ConsoleUI {
 
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         theme,
-                        string.Format(Properties.Resources.InstanceListLoadingError, inst.GameDir(), k.Message),
+                        string.Format(Properties.Resources.InstanceListLoadingError, inst.GameDir, k.Message),
                         new List<string>() { Properties.Resources.OK }
                     );
                     errd.Run();
@@ -251,7 +251,7 @@ namespace CKAN.ConsoleUI {
                     ConsoleMessageDialog errd = new ConsoleMessageDialog(
                         theme,
                         string.Format(Properties.Resources.InstanceListLoadingError,
-                                      Platform.FormatPath(Path.Combine(inst.CkanDir(), "registry.json")),
+                                      Platform.FormatPath(Path.Combine(inst.CkanDir, "registry.json")),
                                       e.ToString()),
                         new List<string>() { Properties.Resources.OK }
                     );

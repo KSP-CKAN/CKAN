@@ -29,15 +29,14 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     var zip  = new ZipFile(package);
-                    var inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
-                    if (_moduleService.GetPlugins(mod, zip, inst)
-                                      .Select(f => inst.ToRelativeGameDir(f.destination))
+                    if (_moduleService.GetPlugins(mod, zip)
+                                      .Select(f => f.destination)
                                       .Order()
                                       .ToArray()
                         is { Length: > 0 } plugins)
                     {
-                        if (plugins.Select(inst.DllPathToIdentifier)
+                        if (plugins.Select(pl => GameInstance.DllPathToIdentifier(_game, pl))
                                    .OfType<string>()
                                    .Where(ident => ident is { Length: > 0 }
                                                    && !identifiersToIgnore.Contains(ident))
@@ -56,8 +55,8 @@ namespace CKAN.NetKAN.Validators
                             Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");
                         }
                     }
-                    else if (_moduleService.GetSourceCode(mod, zip, inst)
-                                           .Select(f => inst.ToRelativeGameDir(f.destination))
+                    else if (_moduleService.GetSourceCode(mod, zip)
+                                           .Select(f => f.destination)
                                            .Order()
                                            .ToArray()
                              is { Length: > 0 } sourceCode)

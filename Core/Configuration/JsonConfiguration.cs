@@ -176,8 +176,8 @@ namespace CKAN.Configuration
         public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
             config.GameInstances = instances.Select(inst => new GameInstanceEntry(inst.Key,
-                                                                                  inst.Value.GameDir(),
-                                                                                  inst.Value.game.ShortName))
+                                                                                  inst.Value.GameDir,
+                                                                                  inst.Value.Game.ShortName))
                                             .ToList();
             SaveConfig();
         }

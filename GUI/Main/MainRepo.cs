@@ -105,7 +105,7 @@ namespace CKAN.GUI
 
                             currentUser.RaiseMessage(Properties.Resources.MainRepoUpdating);
 
-                            var updateResult = repoData.Update(repos, CurrentInstance.game,
+                            var updateResult = repoData.Update(repos, CurrentInstance.Game,
                                                                forceFullRefresh, downloader, currentUser, userAgent);
 
                             if (cancelTokenSrc.Token.IsCancellationRequested)

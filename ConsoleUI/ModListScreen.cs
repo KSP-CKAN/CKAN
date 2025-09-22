@@ -62,7 +62,7 @@ namespace CKAN.ConsoleUI {
                         null, null),
                     new ConsoleListBoxColumn<CkanModule>(
                         Properties.Resources.ModListVersionHeader,
-                        m => m.version?.StripEpoch() ?? "",
+                        m => m.version?.ToString(true, false) ?? "",
                         (a, b) => a.version.CompareTo(b.version),
                         10),
                     new ConsoleListBoxColumn<CkanModule>(
@@ -323,9 +323,9 @@ namespace CKAN.ConsoleUI {
                                       true, null, null, null, true,
                                       () => new ConsolePopupMenu(
                                                 (manager.CurrentInstance
-                                                       ?.game
+                                                       ?.Game
                                                         .DefaultCommandLines(manager.SteamLibrary,
-                                                                             new DirectoryInfo(manager.CurrentInstance.GameDir()))
+                                                                             new DirectoryInfo(manager.CurrentInstance.GameDir))
                                                        ?? Enumerable.Empty<string>())
                                                         .Select((cmd, i) => new ConsoleMenuOption(
                                                                                 cmd,
@@ -402,7 +402,7 @@ namespace CKAN.ConsoleUI {
         /// Put description in top center
         /// </summary>
         protected override string CenterHeader()
-            => $"{manager.CurrentInstance?.game.ShortName} {manager.CurrentInstance?.Version()} ({manager.CurrentInstance?.Name})";
+            => $"{manager.CurrentInstance?.Game.ShortName} {manager.CurrentInstance?.Version()} ({manager.CurrentInstance?.Name})";
 
         // Alt+H doesn't work on Mac, but F1 does, and we need
         // an option other than F1 for terminals that open their own help.
@@ -491,9 +491,9 @@ namespace CKAN.ConsoleUI {
         private bool PlayGame()
             => manager.CurrentInstance != null
                && PlayGame(manager.CurrentInstance
-                                  .game
+                                  .Game
                                   .DefaultCommandLines(manager.SteamLibrary,
-                                                       new DirectoryInfo(manager.CurrentInstance.GameDir()))
+                                                       new DirectoryInfo(manager.CurrentInstance.GameDir))
                                   .First());
 
         private bool PlayGame(string commandLine)
@@ -518,7 +518,7 @@ namespace CKAN.ConsoleUI {
                     recent.Clear();
                     try {
                         repoData.Update(registry.Repositories.Values.ToArray(),
-                                        manager.CurrentInstance.game,
+                                        manager.CurrentInstance.Game,
                                         false,
                                         new NetAsyncDownloader(ps, () => null, userAgent),
                                         ps,
@@ -701,7 +701,7 @@ namespace CKAN.ConsoleUI {
                     // Because that's supposed to work.
                     regMgr.Save(true);
                     string path = Path.Combine(
-                        Platform.FormatPath(manager.CurrentInstance.CkanDir()),
+                        Platform.FormatPath(manager.CurrentInstance.CkanDir),
                         $"{Properties.Resources.ModListExportPrefix}-{manager.CurrentInstance.Name}.ckan");
                     RaiseError(Properties.Resources.ModListExported, path);
                 }

@@ -23,7 +23,7 @@ namespace CKAN.GUI
                     var toNotif = mods
                         .Where(m =>
                             notifLabs.Any(l =>
-                                l.ContainsModule(CurrentInstance.game, m.Identifier)))
+                                l.ContainsModule(CurrentInstance.Game, m.Identifier)))
                         .Select(m => m.Name)
                         .Memoize();
                     if (toNotif.Any())
@@ -42,9 +42,9 @@ namespace CKAN.GUI
                     {
                         foreach (ModuleLabel l in ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
                             .Where(l => l.RemoveOnChange
-                                && l.ContainsModule(CurrentInstance.game, mod.Identifier)))
+                                && l.ContainsModule(CurrentInstance.Game, mod.Identifier)))
                         {
-                            l.Remove(CurrentInstance.game, mod.Identifier);
+                            l.Remove(CurrentInstance.Game, mod.Identifier);
                         }
                     }
                 });
@@ -56,9 +56,9 @@ namespace CKAN.GUI
             if (CurrentInstance != null)
             {
                 foreach (var l in ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                    .Where(l => l.RemoveOnInstall && l.ContainsModule(CurrentInstance.game, mod.identifier)))
+                    .Where(l => l.RemoveOnInstall && l.ContainsModule(CurrentInstance.Game, mod.identifier)))
                 {
-                    l.Remove(CurrentInstance.game, mod.identifier);
+                    l.Remove(CurrentInstance.Game, mod.identifier);
                 }
             }
         }
@@ -66,12 +66,12 @@ namespace CKAN.GUI
         public bool LabelsHeld(string identifier)
             => CurrentInstance != null
                 && ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                                               .Any(l => l.HoldVersion && l.ContainsModule(CurrentInstance.game, identifier));
+                                               .Any(l => l.HoldVersion && l.ContainsModule(CurrentInstance.Game, identifier));
 
         public bool LabelsIgnoreMissing(string identifier)
             => CurrentInstance != null
                 && ModuleLabelList.ModuleLabels.LabelsFor(CurrentInstance.Name)
-                                               .Any(l => l.IgnoreMissingFiles && l.ContainsModule(CurrentInstance.game, identifier));
+                                               .Any(l => l.IgnoreMissingFiles && l.ContainsModule(CurrentInstance.Game, identifier));
 
         #endregion
     }

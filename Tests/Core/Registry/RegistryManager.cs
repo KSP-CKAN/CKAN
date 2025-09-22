@@ -75,8 +75,8 @@ namespace Tests.Core.Registry
             using (var repoData = new TemporaryRepositoryData(user))
             using (var gameInst = new DisposableKSP())
             {
-                var jsonPath = Path.Combine(gameInst.KSP.CkanDir(), "registry.json");
-                var lockPath = Path.Combine(gameInst.KSP.CkanDir(), "registry.locked");
+                var jsonPath = Path.Combine(gameInst.KSP.CkanDir, "registry.json");
+                var lockPath = Path.Combine(gameInst.KSP.CkanDir, "registry.locked");
 
                 // Act / Assert
                 var mgr = RegistryManager.Instance(gameInst.KSP, repoData.Manager);
@@ -89,6 +89,7 @@ namespace Tests.Core.Registry
                 // Assert
                 Assert.IsTrue(File.Exists(jsonPath));
                 Assert.IsFalse(File.Exists(lockPath));
+                CollectionAssert.IsNotEmpty(gameInst.KSP.InstallHistoryFiles());
             }
         }
 
@@ -102,8 +103,8 @@ namespace Tests.Core.Registry
                 RegistryManager.DisposeInstance(gameInst.KSP);
 
                 // Assert
-                Assert.IsFalse(File.Exists(Path.Combine(gameInst.KSP.CkanDir(), "registry.json")));
-                Assert.IsFalse(File.Exists(Path.Combine(gameInst.KSP.CkanDir(), "registry.locked")));
+                Assert.IsFalse(File.Exists(Path.Combine(gameInst.KSP.CkanDir, "registry.json")));
+                Assert.IsFalse(File.Exists(Path.Combine(gameInst.KSP.CkanDir, "registry.locked")));
             }
         }
 
@@ -148,9 +149,9 @@ namespace Tests.Core.Registry
             using (var inst     = new DisposableKSP())
             using (var noLog    = new TemporaryLogSuppressor())
             {
-                var gamedata = inst.KSP.game.PrimaryModDirectory(inst.KSP);
+                var gamedata = inst.KSP.Game.PrimaryModDirectory(inst.KSP);
                 Assert.IsTrue(Path.IsPathRooted(gamedata));
-                File.WriteAllText(Path.Combine(inst.KSP.CkanDir(), "registry.json"),
+                File.WriteAllText(Path.Combine(inst.KSP.CkanDir, "registry.json"),
                                   $@"{{
                                       ""installed_modules"": {{
                                           ""Mod1"": {{
@@ -183,13 +184,13 @@ namespace Tests.Core.Registry
                     foreach (var path in globalPaths)
                     {
                         Assert.IsFalse(Path.IsPathRooted(path),
-                                       $"Global installed path {path} should be relative inside {inst.KSP.GameDir()}");
+                                       $"Global installed path {path} should be relative inside {inst.KSP.GameDir}");
                     }
                     CollectionAssert.IsNotEmpty(regMgr.registry.InstalledModules);
                     foreach (var path in regMgr.registry.InstalledModules.SelectMany(im => im.Files))
                     {
                         Assert.IsFalse(Path.IsPathRooted(path),
-                                       $"Module installed path {path} should be relative inside {inst.KSP.GameDir()}");
+                                       $"Module installed path {path} should be relative inside {inst.KSP.GameDir}");
                     }
                 }
             }
@@ -242,7 +243,7 @@ namespace Tests.Core.Registry
             using (var dispInst = new DisposableKSP())
             using (var regMgr = RegistryManager.Instance(dispInst.KSP, repoData.Manager))
             {
-                var path = Path.Combine(dispInst.KSP.game.PrimaryModDirectory(dispInst.KSP), "Example.dll");
+                var path = Path.Combine(dispInst.KSP.Game.PrimaryModDirectory(dispInst.KSP), "Example.dll");
                 var registry = regMgr.registry;
 
                 Assert.IsFalse(registry.IsInstalled("Example"), "Example should start uninstalled");
@@ -258,7 +259,7 @@ namespace Tests.Core.Registry
 
                 // Now let's do the same with different case.
 
-                var path2 = Path.Combine(dispInst.KSP.game.PrimaryModDirectory(dispInst.KSP), "NewMod.DLL");
+                var path2 = Path.Combine(dispInst.KSP.Game.PrimaryModDirectory(dispInst.KSP), "NewMod.DLL");
 
                 Assert.IsFalse(registry.IsInstalled("NewMod"));
                 File.WriteAllText(path2, "This text is irrelevant. You will be assimilated");

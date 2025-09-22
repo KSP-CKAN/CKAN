@@ -154,5 +154,50 @@ namespace Tests.NetKAN.Model
                           "Expected {0}, got {1}",
                           correctJson, mergedJson);
         }
+
+        [TestCase(@"{ ""license"": ""restricted"" }", ExpectedResult = false),
+         TestCase(@"{ ""license"": ""GPL-3.0"" }",    ExpectedResult = true),
+         TestCase(@"{ ""license"": ""MIT"" }",        ExpectedResult = true),
+         TestCase(@"{ ""license"": ""CC-BY"" }",      ExpectedResult = true),
+         TestCase(@"{ ""license"": ""CC0"" }",        ExpectedResult = true),
+        ]
+        public bool Redistributable_WithLicense_Correct(string json)
+            => new Metadata(JObject.Parse(json)).Redistributable;
+
+        [TestCase(@"{""download"": ""https://github.com/""}", new string[] { "github.com" }),
+         TestCase(@"{""download"": [ ""https://github.com/"", ""https://spacedock.info"" ] }",
+                  new string[] { "github.com", "spacedock.info" }),
+        ]
+        public void Hosts_WithURLs_Works(string json, string[] expectedHosts)
+        {
+            CollectionAssert.AreEqual(expectedHosts,
+                                      new Metadata(JObject.Parse(json)).Hosts);
+        }
+
+        [TestCase(@"{
+                      ""identifier"":    ""TestMod"",
+                      ""version"":       ""1.0"",
+                      ""license"":       ""public-domain"",
+                      ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF"" }
+                  }",
+                  ExpectedResult = "https://archive.org/download/TestMod-1.0/DEADBEEF-TestMod-1.0.zip"),
+         TestCase(@"{
+                      ""identifier"":    ""TestMod"",
+                      ""version"":       ""1.0"",
+                      ""license"":       ""Unlicense"",
+                      ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF"" }
+                  }",
+                  ExpectedResult = "https://archive.org/download/TestMod-1.0/DEADBEEF-TestMod-1.0.zip"),
+         TestCase(@"{
+                      ""identifier"":    ""TestMod"",
+                      ""version"":       ""1.0"",
+                      ""license"":       ""restricted"",
+                      ""download_hash"": { ""sha1"": ""DEADBEEFDEADBEEF"" }
+                  }",
+                  ExpectedResult = null),
+        ]
+        public string? FallbackDownload_WithURLs_Works(string json)
+            => new Metadata(JObject.Parse(json)).FallbackDownload?.OriginalString;
+
     }
 }

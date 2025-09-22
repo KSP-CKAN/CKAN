@@ -18,8 +18,8 @@ namespace Tests.GUI
             // Arrange
             using (var inst = new DisposableKSP())
             {
-                var xmlPath = Path.Combine(inst.KSP.CkanDir(), "GUIConfig.xml");
-                using (var stream = new StreamWriter(Path.Combine(inst.KSP.CkanDir(),
+                var xmlPath = Path.Combine(inst.KSP.CkanDir, "GUIConfig.xml");
+                using (var stream = new StreamWriter(Path.Combine(inst.KSP.CkanDir,
                                                                   "GUIConfig.xml")))
                 {
                     stream.Write("This is not a valid XML file.");
@@ -38,8 +38,8 @@ namespace Tests.GUI
             // Arrange
             using (var inst = new DisposableKSP())
             {
-                var xmlPath  = Path.Combine(inst.KSP.CkanDir(), "GUIConfig.xml");
-                var jsonPath = Path.Combine(inst.KSP.CkanDir(), "GUIConfig.json");
+                var xmlPath  = Path.Combine(inst.KSP.CkanDir, "GUIConfig.xml");
+                var jsonPath = Path.Combine(inst.KSP.CkanDir, "GUIConfig.json");
                 using (var stream = new StreamWriter(xmlPath))
                 {
                     stream.Write(TestData.ConfigurationFile());

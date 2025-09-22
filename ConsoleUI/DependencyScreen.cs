@@ -162,7 +162,7 @@ namespace CKAN.ConsoleUI {
                 with_recommends                = false,
             };
             var resolver = new RelationshipResolver(userInstalling, null, opts,
-                                                    registry, instance.game, instance.VersionCriteria());
+                                                    registry, instance.Game, instance.VersionCriteria());
             var inst = resolver.ModList().ToArray();
             // Don't show dependencies that we must install as recommendations
             rejected.UnionWith(inst);
@@ -226,7 +226,7 @@ namespace CKAN.ConsoleUI {
                     plan.Remove.Select(ident => registry.InstalledModule(ident)?.Module)
                                .OfType<CkanModule>(),
                     RelationshipResolverOptions.ConflictsOpts(instance.StabilityToleranceConfig),
-                    registry, instance.game, instance.VersionCriteria());
+                    registry, instance.Game, instance.VersionCriteria());
                 descriptions = resolver.ConflictDescriptions.ToList();
                 return descriptions.Count > 0;
             }

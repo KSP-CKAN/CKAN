@@ -22,11 +22,11 @@ namespace CKAN.GUI
             InitializeComponent();
             this.globalConfig = globalConfig;
             this.instance     = instance;
-            presets           = instance.game.InstallFilterPresets;
+            presets           = instance.Game.InstallFilterPresets;
             const int hPadding = 6;
             int top = 17;
             GlobalFiltersGroupBox.Text = string.Format(Properties.Resources.InstallFiltersGlobalFiltersForGame,
-                                                       instance.game.ShortName);
+                                                       instance.Game.ShortName);
             foreach ((string name, string[] filters) in presets)
             {
                 var btn = new Button()
@@ -68,7 +68,7 @@ namespace CKAN.GUI
 
         private void InstallFiltersDialog_Load(object? sender, EventArgs? e)
         {
-            GlobalFiltersTextBox.Text = string.Join(Environment.NewLine, globalConfig.GetGlobalInstallFilters(instance.game));
+            GlobalFiltersTextBox.Text = string.Join(Environment.NewLine, globalConfig.GetGlobalInstallFilters(instance.Game));
             InstanceFiltersTextBox.Text = string.Join(Environment.NewLine, instance.InstallFilters);
             GlobalFiltersTextBox.DeselectAll();
             InstanceFiltersTextBox.DeselectAll();
@@ -78,11 +78,11 @@ namespace CKAN.GUI
         {
             var newGlobal   = GlobalFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
             var newInstance = InstanceFiltersTextBox.Text.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-            Changed = !globalConfig.GetGlobalInstallFilters(instance.game).SequenceEqual(newGlobal)
+            Changed = !globalConfig.GetGlobalInstallFilters(instance.Game).SequenceEqual(newGlobal)
                       || !instance.InstallFilters.SequenceEqual(newInstance);
             if (Changed)
             {
-                globalConfig.SetGlobalInstallFilters(instance.game, newGlobal);
+                globalConfig.SetGlobalInstallFilters(instance.Game, newGlobal);
                 instance.InstallFilters           = newInstance;
             }
         }

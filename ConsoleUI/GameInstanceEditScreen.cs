@@ -25,7 +25,7 @@ namespace CKAN.ConsoleUI {
                                       RepositoryDataManager repoData,
                                       GameInstance          inst,
                                       string?               userAgent)
-            : base(theme, mgr, inst.Name, Platform.FormatPath(inst.GameDir()))
+            : base(theme, mgr, inst.Name, Platform.FormatPath(inst.GameDir))
         {
             instance = inst;
             try {
@@ -48,7 +48,7 @@ namespace CKAN.ConsoleUI {
                 }
 
                 // Also edit copy of the compatible versions
-                compatEditList = new List<GameVersion>(instance.GetCompatibleVersions());
+                compatEditList = new List<GameVersion>(instance.CompatibleVersions);
 
                 stabilityToleranceButtons = new ReleaseStatusComboButtons(
                     1, stabilityToleranceTop,
@@ -91,7 +91,7 @@ namespace CKAN.ConsoleUI {
                 repoList.AddTip("A", Properties.Resources.Add);
                 repoList.AddBinding(Keys.A, sender =>
                 {
-                    LaunchSubScreen(new RepoAddScreen(theme, instance.game, repoEditList, userAgent));
+                    LaunchSubScreen(new RepoAddScreen(theme, instance.Game, repoEditList, userAgent));
                     repoList.SetData(new List<Repository>(repoEditList.Values));
                     return true;
                 });
@@ -117,7 +117,7 @@ namespace CKAN.ConsoleUI {
                 {
                     if (repoList.Selection is Repository repo)
                     {
-                        LaunchSubScreen(new RepoEditScreen(theme, instance.game, repoEditList, repo, userAgent));
+                        LaunchSubScreen(new RepoEditScreen(theme, instance.Game, repoEditList, repo, userAgent));
                         repoList.SetData(new List<Repository>(repoEditList.Values));
                     }
                     return true;
@@ -172,7 +172,7 @@ namespace CKAN.ConsoleUI {
                 compatList.AddTip("A", Properties.Resources.Add);
                 compatList.AddBinding(Keys.A, sender =>
                 {
-                    CompatibleVersionDialog vd = new CompatibleVersionDialog(theme, instance.game);
+                    CompatibleVersionDialog vd = new CompatibleVersionDialog(theme, instance.Game);
                     var newVersion = vd.Run();
                     DrawBackground();
                     if (newVersion != null && !compatEditList.Contains(newVersion)) {
@@ -225,7 +225,7 @@ namespace CKAN.ConsoleUI {
         /// </summary>
         protected override bool Valid()
             => (name.Value == instance.Name || nameValid())
-                && (path.Value == instance.GameDir() || pathValid());
+                && (path.Value == instance.GameDir || pathValid());
 
         /// <summary>
         /// Save the changes.
@@ -249,7 +249,7 @@ namespace CKAN.ConsoleUI {
             }
 
             string oldName = instance.Name;
-            if (path.Value != instance.GameDir()) {
+            if (path.Value != instance.GameDir) {
                 // If the path is changed, then we have to remove the old instance
                 // and replace it with a new one, whether or not the name is changed.
                 manager.RemoveInstance(oldName);

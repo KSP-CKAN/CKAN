@@ -66,7 +66,7 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
                                         [NotNullWhen(returnValue: true)] out string?                 identifier,
                                         [NotNullWhen(returnValue: true)] out UnmanagedModuleVersion? version)
         {
-            var directoryPath = Path.Combine(ksp.GameDir(), InstallPath());
+            var directoryPath = Path.Combine(ksp.GameDir, InstallPath());
             var readmeFilePath = Path.Combine(directoryPath, "readme.txt");
             // Steam leaves empty folders behind when you "disable" a DLC,
             // so only return true if the readme exists

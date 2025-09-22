@@ -21,8 +21,8 @@ namespace Tests.Core.Configuration
             : this(new List<Tuple<string, string, string>>
                    {
                        new Tuple<string, string, string>(instance.Name,
-                                                         instance.GameDir(),
-                                                         instance.game.ShortName)
+                                                         instance.GameDir,
+                                                         instance.Game.ShortName)
                    },
                    autostart,
                    downloadCachePath)
@@ -123,8 +123,8 @@ namespace Tests.Core.Configuration
         public void SetRegistryToInstances(SortedList<string, GameInstance> instances)
         {
             Instances = instances.Select(kvpair => Tuple.Create(kvpair.Key,
-                                                                kvpair.Value.GameDir(),
-                                                                kvpair.Value.game.ShortName))
+                                                                kvpair.Value.GameDir,
+                                                                kvpair.Value.Game.ShortName))
                                  .ToList();
         }
 

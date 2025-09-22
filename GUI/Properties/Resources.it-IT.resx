@@ -129,7 +129,7 @@
     <value>Versione {0}</value>
   </data>
   <data name="GameProgramFileDescription" xml:space="preserve">
-    <value>Generazione file metadati</value>
+    <value>File programma gioco</value>
   </data>
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve">
     <value>Inserire un nome per la nuova istanza.</value>
@@ -158,9 +158,6 @@
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
     <value>&lt;NESSUNA&gt;</value>
   </data>
-  <data name="CompatibleGameVersionsDialogGameUpdated" xml:space="preserve">
-    <value>Il gioco è stato aggiornato da quando hai impostato le versioni compatibili. Controlla queste impostazioni.</value>
-  </data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve">
     <value>{0} (versione di gioco precedente: {1})</value>
   </data>
@@ -185,6 +182,19 @@ Prova a spostare {2} da {3} e a riavviare CKAN.</value>
   </data>
   <data name="GUIModGameCompatibilityLong" xml:space="preserve">
     <value>{0} (usando la versione mod {1})</value>
+  </data>
+  <data name="MainReleasesOrDevBuildsPrompt" xml:space="preserve">
+    <value>CKAN è configurato per verificare la presenza di aggiornamenti all'avvio. Oltre alle regolari versioni stabili, sono disponibili anche le versioni dev. L'uso delle versioni dev consente l'accesso anticipato a nuove funzionalità e correzioni di bug, ma con una maggiore probabilità di riscontrare problemi. Si consiglia di utilizzare le versioni dev per aiutarci a individuare e correggere i bug prima che vengano rilasciati.
+
+Quale versione si desideri utilizzare?
+
+(Questa impostazione può essere modificata in seguito nelle impostazioni di CKAN).</value>
+  </data>
+  <data name="MainReleasesOrDevBuildsYes" xml:space="preserve">
+    <value>Usa solo le versioni stabili</value>
+  </data>
+  <data name="MainReleasesOrDevBuildsNo" xml:space="preserve">
+    <value>Usa le build di sviluppo</value>
   </data>
   <data name="MainAutoUpdateFailed" xml:space="preserve">
     <value>Errore durante l'aggiornamento automatico:&#xD;&#xA;{0}</value>
@@ -283,17 +293,41 @@ Prova a spostare {2} da {3} e a riavviare CKAN.</value>
   <data name="MainCantInstallDLC" xml:space="preserve">
     <value>CKAN non può installare l'espansione {0}!</value>
   </data>
+  <data name="MainLoadingGameInstance" xml:space="preserve">
+    <value>Caricamento istanza partita</value>
+  </data>
   <data name="MainCorruptedRegistry" xml:space="preserve">
     <value>Registro corrotto archiviato in {0}: {1}
 
 Questo significa che CKAN si è dimenticato di tutte le tue mod installate, ma sono ancora presenti in GameData. Puoi reinstallarle importando il file {2}.</value>
   </data>
-  <data name="MainDeleteLockfileYes" xml:space="preserve"><value>Forza</value></data>
-  <data name="MainDeleteLockfileNo" xml:space="preserve"><value>Annulla</value></data>
+  <data name="MainDeleteLockfileYes" xml:space="preserve">
+    <value>Forza</value>
+  </data>
+  <data name="MainDeleteLockfileNo" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
   <data name="AllModVersionsInstallPrompt" xml:space="preserve">
     <value>{0} non è supportato dalle versioni del gioco attualmente compatibili ({1}) e potrebbe non funzionare affatto. Se hai qualche problema, NON devi chiedere aiuto ai suoi manutentori.
 
 Vuoi davvero installarlo?</value>
+  </data>
+  <data name="AllModVersionsInstallYes" xml:space="preserve">
+    <value>Installa</value>
+  </data>
+  <data name="AllModVersionsInstallNo" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="MetapackageAddCompatibilityPrompt" xml:space="preserve">
+    <value>I modpack selezionati sono compatibili con {0}, ma l'istanza di gioco è compatibile solo con {1}. È possibile che l'installazione di alcune dipendenze non vada a buon fine.
+
+Vuoi aggiungere le versioni aggiuntive all'elenco di compatibilità di questa istanza di gioco?</value>
+  </data>
+  <data name="MetapackageAddCompatibilityYes" xml:space="preserve">
+    <value>Aggiungi versioni compatibili</value>
+  </data>
+  <data name="MetapackageAddCompatibilityNo" xml:space="preserve">
+    <value>Mantieni la compatibilità corrente</value>
   </data>
   <data name="ModpackInstallIncompatiblePrompt" xml:space="preserve">
     <value>Alcune delle mod selezionate (o le loro dipendenze) non sono supportate dalle versioni del gioco attualmente compatibili ({1}) e potrebbero non funzionare affatto. Se hai problemi con queste mod, NON devi chiedere aiuto ai loro manutentori.
@@ -301,12 +335,6 @@ Vuoi davvero installarlo?</value>
 {0}
 
 Sei sicuro di volerli installare? L'annullamento interromperà l'intera installazione.</value>
-  </data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Installa</value>
-  </data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve">
-    <value>Annulla</value>
   </data>
   <data name="MainChangesetUpdateSelected" xml:space="preserve">
     <value>Aggiorna la versione selezionata dall'utente alla versione {0}.</value>
@@ -325,6 +353,12 @@ Sei sicuro di volerli installare? L'annullamento interromperà l'intera installa
   </data>
   <data name="MainInstallWaitTitle" xml:space="preserve">
     <value>Registro</value>
+  </data>
+  <data name="MainInstallInstallingMod" xml:space="preserve">
+    <value>Installazione di {0}</value>
+  </data>
+  <data name="MainInstallRemovingMod" xml:space="preserve">
+    <value>Rimozione di {0}</value>
   </data>
   <data name="MainInstallGameDataReverted" xml:space="preserve">
     <value>La cartella GameData è stata ripristinata allo stato originale.</value>
@@ -372,6 +406,12 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   <data name="ModInfoNoDownload" xml:space="preserve">
     <value>Il modulo non ha download</value>
   </data>
+  <data name="ModInfoFolderNotFound" xml:space="preserve">
+    <value>Cartella non trovata!</value>
+  </data>
+  <data name="ModInfoFileNotFound" xml:space="preserve">
+    <value>File non trovato!</value>
+  </data>
   <data name="ModInfoHomepageLabel" xml:space="preserve">
     <value>Pagina principale:</value>
   </data>
@@ -402,17 +442,29 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   <data name="ModInfoRemoteAvcLabel" xml:space="preserve">
     <value>File versione remota:</value>
   </data>
+  <data name="ModInfoRemoteSWInfoLabel" xml:space="preserve">
+    <value>File swinfo.json remoto:</value>
+  </data>
   <data name="ModInfoStoreLabel" xml:space="preserve">
     <value>Negozio:</value>
   </data>
   <data name="ModInfoSteamStoreLabel" xml:space="preserve">
     <value>Negozio di Steam:</value>
   </data>
+  <data name="ModInfoGogStoreLabel" xml:space="preserve">
+    <value>GOG store:</value>
+  </data>
+  <data name="ModInfoEpicStoreLabel" xml:space="preserve">
+    <value>Epic Games Store:</value>
+  </data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve">
     <value>Fai clic con il tasto Ctrl o Shift per renderlo persistente</value>
   </data>
   <data name="DownloadFailed" xml:space="preserve">
     <value>Download non riuscito!</value>
+  </data>
+  <data name="Downloading" xml:space="preserve">
+    <value>Download di {0}</value>
   </data>
   <data name="ValidatingDownload" xml:space="preserve">
     <value>Validazione di {0}</value>
@@ -465,11 +517,17 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   <data name="MainModListAutoDetected" xml:space="preserve">
     <value>AD</value>
   </data>
+  <data name="MainModListAutoInstalledToolTip" xml:space="preserve">
+    <value>Se selezionata, disinstalla automaticamente questa mod se tutto ciò che dipende da essa viene rimosso</value>
+  </data>
   <data name="MainRecommendationsNoneFound" xml:space="preserve">
     <value>Non sono state trovate mod raccomandate, suggerite o supportate.</value>
   </data>
   <data name="MainRepoWaitTitle" xml:space="preserve">
     <value>Aggiornare i repository</value>
+  </data>
+  <data name="LoadingCachedRepoData" xml:space="preserve">
+    <value>Caricamento dati del repository nella cache</value>
   </data>
   <data name="MainRepoScanning" xml:space="preserve">
     <value>Scansione dei DLC e dei moduli installati manualmente...</value>
@@ -488,6 +546,9 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   </data>
   <data name="MainRepoSuccess" xml:space="preserve">
     <value>Repository aggiornati con successo.</value>
+  </data>
+  <data name="MainRepoOutdatedClient" xml:space="preserve">
+    <value>Repository aggiornate, ma sono stati trovati moduli che richiedono una nuova versione di CKAN. Controllo degli aggiornamenti...</value>
   </data>
   <data name="MainRepoAutoRefreshPrompt" xml:space="preserve">
     <value>Vuoi che CKAN aggiorni la modlist ogni volta che viene caricata? (Puoi sempre aggiornarla manualmente utilizzando il pulsante in alto)</value>
@@ -531,8 +592,14 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   <data name="PluginsDialogFilter" xml:space="preserve">
     <value>Plugin CKAN (*.dll)|*.dll</value>
   </data>
+  <data name="SettingsDialogCacheProgress" xml:space="preserve">
+    <value>Spostamento... ({0}%)</value>
+  </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
     <value>{0} file, {1}, {2} liberi</value>
+  </data>
+  <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve">
+    <value>File {0}, {1}, spazio libero sconosciuto</value>
   </data>
   <data name="SettingsDialogSummaryInvalid" xml:space="preserve">
     <value>Percorso non valido: {0}</value>
@@ -542,6 +609,18 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
   </data>
   <data name="SettingsDialogDeleteConfirm" xml:space="preserve">
     <value>Vuoi davvero eliminare {0} file memorizzati nella cache, liberando {1}?</value>
+  </data>
+  <data name="SettingsDialogRepoDeleteConfirm" xml:space="preserve">
+    <value>Sei sicuro di voler eliminare il repository {0}? Questa azione è irreversibile!</value>
+  </data>
+  <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="SettingsDialogRepoAddDuplicateURL" xml:space="preserve">
+    <value>Repository con URL già in elenco: {0}</value>
   </data>
   <data name="AddAuthTokenTitle" xml:space="preserve">
     <value>Aggiungi Token Di Autenticazione</value>
@@ -619,6 +698,23 @@ Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messa
   </data>
   <data name="MainChangesetWarningInstallingModuleWithLabel" xml:space="preserve">
     <value>ATTENZIONE: INSTALLAZIONE DEL MODULO CON ETICHETTA {0} ({1})</value>
+  </data>
+  <data name="ChangesetConfirmRemoveAutoRemovalYes" xml:space="preserve">
+    <value>Mantieni</value>
+  </data>
+  <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="ChangesetConfirmRemoveUserRequested" xml:space="preserve">
+    <value>Hai scelto di {0} {1}.
+
+Sei sicuro di voler saltare questo cambiamento?</value>
+  </data>
+  <data name="ChangesetConfirmRemoveUserRequestedYes" xml:space="preserve">
+    <value>Salta</value>
+  </data>
+  <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve">
+    <value>Annulla</value>
   </data>
   <data name="EditLabelsToolTipName" xml:space="preserve">
     <value>L'etichetta apparirà nel menu Etichette con questo nome, che deve essere univoco per ogni installazione</value>
@@ -730,6 +826,9 @@ Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messa
   <data name="ModSearchDescriptionPrefix" xml:space="preserve">
     <value>desc:</value>
   </data>
+  <data name="ModSearchLicensePrefix" xml:space="preserve">
+    <value>lic:</value>
+  </data>
   <data name="ModSearchLanguagePrefix" xml:space="preserve">
     <value>lang:</value>
   </data>
@@ -744,6 +843,9 @@ Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messa
   </data>
   <data name="ModSearchConflictsPrefix" xml:space="preserve">
     <value>conf:</value>
+  </data>
+  <data name="ModSearchSupportsPrefix" xml:space="preserve">
+    <value>sup:</value>
   </data>
   <data name="ModSearchTagPrefix" xml:space="preserve">
     <value>tag:</value>
@@ -781,8 +883,23 @@ Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messa
   <data name="EditModSearchesTooltipAddSearchButton" xml:space="preserve">
     <value>Combina una nuova ricerca con le tue ricerche attuali</value>
   </data>
+  <data name="ManageModsSteamPlayTimeYesTooltip" xml:space="preserve">
+    <value>(conterà il tempo di gioco in Steam)</value>
+  </data>
+  <data name="ManageModsSteamPlayTimeNoTooltip" xml:space="preserve">
+    <value>(NON conterà il tempo di gioco in Steam)</value>
+  </data>
   <data name="ManageModsInstallAllCheckboxTooltip" xml:space="preserve">
     <value>Deseleziona per disinstallare tutte le mods, controlla per cancellare il set di modifiche</value>
+  </data>
+  <data name="ManageModsHiddenLabels" xml:space="preserve">
+    <value>Etichette nascoste:</value>
+  </data>
+  <data name="ManageModsHiddenTags" xml:space="preserve">
+    <value>Tag nascosti:</value>
+  </data>
+  <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve">
+    <value>Etichette e tag nascosti:</value>
   </data>
   <data name="TotalPlayTime" xml:space="preserve">
     <value>Tempo totale di gioco: {0} ore</value>
@@ -845,5 +962,43 @@ Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messa
     <value>Clicca per cercare
 Ctrl-clic o Shift-click per combinare con la ricerca corrente</value>
   </data>
-  <data name="InstallFiltersAddPreset" xml:space="preserve"><value>Aggiungi {0}</value></data>
+  <data name="FolderContainsManagedFiles">
+    <value>Non è possibile eliminare {0} perché contiene file installati da CKAN.
+Se si desidera rimuovere questa cartella, disinstallare normalmente queste mod.</value>
+  </data>
+  <data name="DeleteUnmanagedFileConfirmation">
+    <value>Sei sicuro di voler eliminare {0}?
+Questa azione non può essere annullata!</value>
+  </data>
+  <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="PreferredHostsPlaceholder" xml:space="preserve">
+    <value>&lt;TUTTI GLI ALTRI HOST&gt;</value>
+    <comment>This string should not be valid as a hostname</comment>
+  </data>
+  <data name="PreferredHostsTooltipMoveRight" xml:space="preserve">
+    <value>Aggiungere l'host selezionato all'elenco delle preferenze</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveLeft" xml:space="preserve">
+    <value>Rimuovere l'host selezionato dall'elenco delle preferenze</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveUp" xml:space="preserve">
+    <value>Aumentare la priorità dell'host selezionato</value>
+  </data>
+  <data name="PreferredHostsTooltipMoveDown" xml:space="preserve">
+    <value>Diminuire la priorità dell'host selezionato</value>
+  </data>
+  <data name="SelectionDialogDefault" xml:space="preserve">
+    <value>{0} (PREDEFINITO)</value>
+  </data>
+  <data name="InstallFiltersAddPreset" xml:space="preserve">
+    <value>Aggiungi {0}</value>
+  </data>
+  <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve">
+    <value>Fai una donazione</value>
+  </data>
 </root>

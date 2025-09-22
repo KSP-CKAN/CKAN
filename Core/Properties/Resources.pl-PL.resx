@@ -126,11 +126,21 @@
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Nieprawidłowy adres URL w nagłówku lokalizacji: {0}</value>
   </data>
-  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sek - {1} ({2}) pozostało - {3}%</value></data>
-  <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} pozostało - {1}%</value></data>
-  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} godz, {1} min, {2} sek</value></data>
-  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} min, {1} sek</value></data>
-  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} sek</value></data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve">
+    <value>{0}/sek - {1} ({2}) pozostało - {3}%</value>
+  </data>
+  <data name="ByteRateCounterSummary" xml:space="preserve">
+    <value>{0} pozostało - {1}%</value>
+  </data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve">
+    <value>{0} godz, {1} min, {2} sek</value>
+  </data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve">
+    <value>{0} min, {1} sek</value>
+  </data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve">
+    <value>{0} sek</value>
+  </data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
     <value>Pobieranie "{0}"</value>
   </data>
@@ -181,6 +191,15 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="NetRepoUpdating" xml:space="preserve">
     <value>Aktualizowanie {0}</value>
   </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Ładowanie modułów z pobranego repozytorium {0}...</value>
+  </data>
+  <data name="NetRepoNotATarGz" xml:space="preserve">
+    <value>Nie jest plikiem .tar.gz lub .zip, nie można przetworzyć: {0}</value>
+  </data>
+  <data name="NetRepoNotATarGzStream" xml:space="preserve">
+    <value>Strumień wejściowy nie jest plikiem .tar.gz lub .zip, nie można przetworzyć</value>
+  </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` nie powinno być połączone z `{0}`</value>
   </data>
@@ -189,6 +208,9 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   </data>
   <data name="RegistryFileNotRemoved" xml:space="preserve">
     <value>{0} jest zarejestrowany w {1} , ale nie został usunięty!</value>
+  </data>
+  <data name="RegistryDefaultDLCAbstract" xml:space="preserve">
+    <value>Oficjalna paczka ekspansji</value>
   </data>
   <data name="RegistryManagerDirectoryNotFound" xml:space="preserve">
     <value>Nie można znaleźć folderu w {0}</value>
@@ -328,6 +350,35 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="GameInstanceManagerAuto" xml:space="preserve">
     <value>Auto {0}</value>
   </data>
+  <data name="GameInstanceManagerSelectGamePrompt" xml:space="preserve">
+    <value>Wybierz grę, która jest zainstalowana w {0}</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationPrompt" xml:space="preserve">
+    <value>Stary folder pamięci podręcznej zawiera {0}. Nowy folder pamięci podręcznej ma wolną przestrzeń {1}.
+Co chcesz zrobić?</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationPromptFreeSpaceUnknown" xml:space="preserve">
+    <value>Stary folder pamięci podręcznej zawiera {0}. Nowy folder pamięci podręcznej ma nieznaną wolną przestrzeń.
+Co chcesz zrobić?</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationMove" xml:space="preserve">
+    <value>Przenieś stare pliki w pamięci podręcznej do nowego folderu pamięci podręcznej</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationDelete" xml:space="preserve">
+    <value>Usuń pliki tymczasowe</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationOpen" xml:space="preserve">
+    <value>Otwórz stare i nowe foldery pamięci podręcznej w eksploratorze plików</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNothing" xml:space="preserve">
+    <value>Nie rób nic</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationRevert" xml:space="preserve">
+    <value>Przywróć do momentu używania starego folderu pamięci podręcznej</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve">
+    <value>Za mało miejsca, aby przenieść pliki!</value>
+  </data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve">
     <value>Podana instalacja nie jest poprawną instalacją {0}</value>
   </data>
@@ -349,9 +400,11 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="GameInstancePathNotFound" xml:space="preserve">
     <value>{0} nie istnieje</value>
   </data>
-  <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>Nie można uruchomić gry.
+  <data name="GameInstancePlayGameFailed" xml:space="preserve">
+    <value>Nie można uruchomić gry.
 
-{0}</value></data>
+{0}</value>
+  </data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve">
     <value>Nic do zainstalowania</value>
   </data>
@@ -363,6 +416,9 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   </data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve">
     <value>Instalowanie moda "{0}"</value>
+  </data>
+  <data name="ModuleInstallerInstalledMod" xml:space="preserve">
+    <value>Zakończono instalację {0}</value>
   </data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve">
     <value>Aktualizowanie rejestru</value>
@@ -410,11 +466,17 @@ Nadpisać?</value>
   <data name="ModuleInstallerRemovingMod" xml:space="preserve">
     <value>Usuwanie {0}...</value>
   </data>
+  <data name="ModuleInstallerRemovedMod" xml:space="preserve">
+    <value>Zakończono usuwanie {0}</value>
+  </data>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve">
     <value>Zaktualizuje:</value>
   </data>
+  <data name="ModuleInstallerUpgradeInstallingResuming" xml:space="preserve">
+    <value> * Instalacja: {0} {1} ({2}, {3} pozostało)</value>
+  </data>
   <data name="ModuleInstallerUpgradeInstallingUncached" xml:space="preserve">
-    <value> * Instalacja: {0} {1} ({2}, {3})</value>
+    <value> * Instalacja: {0} {1} ({2}, {3} pozostało)</value>
   </data>
   <data name="ModuleInstallerUpgradeInstallingCached" xml:space="preserve">
     <value> * Instalacja: {0} {1} (zapisane na dysku)</value>
@@ -431,6 +493,9 @@ Nadpisać?</value>
   <data name="ModuleInstallerUpgradeUpgradingCached" xml:space="preserve">
     <value> * Aktualizowanie: {0} {1} do {2} (zapisane na dysku)</value>
   </data>
+  <data name="ModuleInstallerUpgradeAutoRemoving" xml:space="preserve">
+    <value> * Automatyczne usuwanie: {0} {1}</value>
+  </data>
   <data name="ModuleInstallerUpgradeUserDeclined" xml:space="preserve">
     <value>Użytkownik odrzucił listę aktualizacji</value>
   </data>
@@ -440,6 +505,9 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   </data>
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve">
     <value>Nie można zastąpić {0} ponieważ nie jest zainstalowany. Spróbuj zainstalować {1}.</value>
+  </data>
+  <data name="ModuleInstallerImportScanningFiles" xml:space="preserve">
+    <value>Skanowanie plików...</value>
   </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>Już w folderze cache: {0}</value>
@@ -453,16 +521,6 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve">
     <value>Importowanie zakończone. Usunąć {0} starych plików?</value>
   </data>
-  <data name="KrakenBadMetadata" xml:space="preserve">
-    <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
-  </data>
-  <data name="KrakenIsDLC" xml:space="preserve">
-    <value>CKAN nie może zainstalować dodatku '{0}' dla ciebie.</value>
-  </data>
-  <data name="KrakenIsDLCStorePage" xml:space="preserve">
-    <value>Aby zainstalować ten dodatek, kup go z jednej z tych stron:
-{0}</value>
-  </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve">
     <value>Zależność od {0} w wersji {1} nie jest spełniona</value>
   </data>
@@ -475,8 +533,18 @@ Proszę usunąć go ręcznie, zanim spróbujesz go zainstalować.</value>
   <data name="KrakenInconsistenciesHeader" xml:space="preserve">
     <value>Znaleziono następujące niespójności:</value>
   </data>
+  <data name="KrakenFailedToDeleteFiles" xml:space="preserve">
+    <value>Nie można nadpisać lub usunąć plików dla {0}:
+
+{1}
+
+Jeśli gra jest nadal uruchomiona, zamknij i spróbuj ponownie. W przeciwnym razie sprawdź uprawnienia.</value>
+  </data>
   <data name="KrakenMissingDependency" xml:space="preserve">
     <value>{0} brakuje zależności {1}</value>
+  </data>
+  <data name="KrakenMissingDependencyNeededFor" xml:space="preserve">
+    <value>wymagane dla {0}</value>
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} koliduje z {1}</value>
@@ -523,6 +591,9 @@ Proszę ręcznie odinstalować moda do którego należy:
 
 i spróbuj ponownie.</value>
   </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Wykryto nieprawidłowe metadane dla modułu {0}: {1}</value>
+  </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>O nie, następujące rzeczy poszły nie tak podczas pobierania...</value>
   </data>
@@ -555,6 +626,13 @@ Oznacza to, że inna instancja CKAN prawdopodobnie ma dostęp do tej instalacji 
 
 Czy chcesz usunąć ten plik blokady, aby wymusić dostęp?</value>
   </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN nie może zainstalować dodatku '{0}' dla ciebie.</value>
+  </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>Aby zainstalować ten dodatek, kup go z jednej z tych stron:
+{0}</value>
+  </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>Za mało miejsca w folderze cache, aby przechowywać moduły!</value>
   </data>
@@ -570,6 +648,9 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} koliduje z {1}</value>
   </data>
+  <data name="RelationshipResolverConflictingModDescription" xml:space="preserve">
+    <value>{0} (potrzebne dla: {1})</value>
+  </data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve">
     <value>{0} wymagane, ale niekompatybilna wersja jest w rozwiązaniu</value>
   </data>
@@ -584,6 +665,9 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   </data>
   <data name="RelationshipResolverUserReason" xml:space="preserve">
     <value>Żądany przez użytkownika</value>
+  </data>
+  <data name="RelationshipResolverDependencyRemoved" xml:space="preserve">
+    <value>Zależność usunięta</value>
   </data>
   <data name="RelationshipResolverNoLongerUsedReason" xml:space="preserve">
     <value>Auto-zainstalowano, wymagane moduły usunięte</value>
@@ -617,6 +701,30 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   </data>
   <data name="ModpackName" xml:space="preserve">
     <value>zainstalowano-{0}</value>
+  </data>
+  <data name="InstalledModuleToString" xml:space="preserve">
+    <value>{0} (zainstalowano {1})</value>
+  </data>
+  <data name="InstalledModuleToStringAutoInstalled" xml:space="preserve">
+    <value>{0} (zainstalowano {1}, zainstalowano automatycznie)</value>
+  </data>
+  <data name="ReleaseStatusStableName" xml:space="preserve">
+    <value>Stabilny</value>
+  </data>
+  <data name="ReleaseStatusStableDescription" xml:space="preserve">
+    <value>Zwykłe wydania</value>
+  </data>
+  <data name="ReleaseStatusTestingName" xml:space="preserve">
+    <value>Testowanie</value>
+  </data>
+  <data name="ReleaseStatusTestingDescription" xml:space="preserve">
+    <value>Wydania przedwczesne dla przygodowych użytkowników</value>
+  </data>
+  <data name="ReleaseStatusDevelopmentName" xml:space="preserve">
+    <value>Wersja deweloperska</value>
+  </data>
+  <data name="ReleaseStatusDevelopmentDescription" xml:space="preserve">
+    <value>Najnowsza niestabilna wersja deweloperska</value>
   </data>
   <data name="ModuleLabelListFavourites" xml:space="preserve">
     <value>Ulubione</value>

@@ -5,7 +5,6 @@ using log4net;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.Games;
 using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
@@ -19,15 +18,13 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
-        private readonly IGame _game;
 
         public string Name => "internal_ckan";
 
-        public InternalCkanTransformer(IHttpService http, IModuleService moduleService, IGame game)
+        public InternalCkanTransformer(IHttpService http, IModuleService moduleService)
         {
             _http = http;
             _moduleService = moduleService;
-            _game = game;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
@@ -41,8 +38,7 @@ namespace CKAN.NetKAN.Transformers
                 var moduleJson = metadata.Json();
                 moduleJson.SafeAdd("version", "1");
                 CkanModule   mod  = CkanModule.FromJson(moduleJson.ToString());
-                GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
-                var internalJson = _moduleService.GetInternalCkan(mod, contents, inst);
+                var internalJson = _moduleService.GetInternalCkan(mod, contents);
 
                 if (internalJson != null)
                 {

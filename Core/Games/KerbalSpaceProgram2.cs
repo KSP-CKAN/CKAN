@@ -53,7 +53,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string PrimaryModDirectory(GameInstance inst)
             => CKANPathUtils.NormalizePath(
-                Path.Combine(inst.GameDir(), PrimaryModDirectoryRelative));
+                Path.Combine(inst.GameDir, PrimaryModDirectoryRelative));
 
         public string[] StockFolders => new string[]
         {
@@ -87,10 +87,10 @@ namespace CKAN.Games.KerbalSpaceProgram2
         /// <param name="path">Path to check</param>
         /// <returns>True if reserved, false otherwise</returns>
         public bool IsReservedDirectory(GameInstance inst, string path)
-            => path == inst.GameDir()
-               || path == inst.CkanDir()
+            => path == inst.GameDir
+               || path == inst.CkanDir
                || path == PrimaryModDirectory(inst)
-               || PluginsPieces.Accumulate(inst.GameDir(), Path.Combine)
+               || PluginsPieces.Accumulate(inst.GameDir, Path.Combine)
                                .Select(CKANPathUtils.NormalizePath)
                                .Contains(path);
 

@@ -46,8 +46,8 @@ namespace CKAN.NetKAN.Services
         /// <param name="zipPath">Where the ZIP file is</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        public JObject? GetInternalCkan(CkanModule module, string zipPath, GameInstance inst)
-            => GetInternalCkan(module, new ZipFile(zipPath), inst);
+        public JObject? GetInternalCkan(CkanModule module, string zipPath)
+            => GetInternalCkan(module, new ZipFile(zipPath), game);
 
         /// <summary>
         /// Find and parse a .ckan file in the ZIP.
@@ -58,10 +58,10 @@ namespace CKAN.NetKAN.Services
         /// <param name="zip">The ZipFile to search</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        private static JObject? GetInternalCkan(CkanModule module, ZipFile zip, GameInstance inst)
+        private static JObject? GetInternalCkan(CkanModule module, ZipFile zip, IGame game)
             => (module.install != null
                     // Find embedded .ckan files that would be included in the install
-                    ? GetFilesBySuffix(module, zip, ".ckan", inst)
+                    ? GetFilesBySuffix(module, zip, ".ckan", game)
                         .Select(instF => instF.source)
                     // Find embedded .ckan files anywhere in the ZIP
                     : zip.OfType<ZipEntry>()
@@ -73,51 +73,46 @@ namespace CKAN.NetKAN.Services
         public bool HasInstallableFiles(CkanModule module, string filePath)
             // TODO: DBB: Let's not use exceptions for flow control
             => Utilities.DefaultIfThrows(() =>
-                   ModuleInstaller.FindInstallableFiles(module, filePath,
-                       new GameInstance(game, "/", "dummy", new NullUser())))
+                   ModuleInstaller.FindInstallableFiles(module, filePath, game))
                            != null;
 
-        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip, GameInstance inst)
-            => GetFilesBySuffix(module, zip, ".cfg", inst);
+        public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)
+            => GetFilesBySuffix(module, zip, ".cfg", game);
 
-        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip, GameInstance inst)
-            => GetFilesBySuffix(module, zip, ".dll", inst);
+        public IEnumerable<InstallableFile> GetPlugins(CkanModule module, ZipFile zip)
+            => GetFilesBySuffix(module, zip, ".dll", game);
 
-        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip, GameInstance inst)
-            => GetFilesBySuffix(module, zip, ".craft", inst);
+        public IEnumerable<InstallableFile> GetCrafts(CkanModule module, ZipFile zip)
+            => GetFilesBySuffix(module, zip, ".craft", game);
 
         private static IEnumerable<InstallableFile> GetFilesBySuffix(CkanModule   module,
                                                                      ZipFile      zip,
                                                                      string       suffix,
-                                                                     GameInstance inst)
-            => ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                                                                     IGame        game)
+            => ModuleInstaller.FindInstallableFiles(module, zip, game)
                               .Where(instF => instF.destination.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase));
 
-        public IEnumerable<InstallableFile> GetSourceCode(CkanModule module, ZipFile zip, GameInstance inst)
-            => GetFilesBySuffixes(module, zip, sourceCodeSuffixes, inst);
+        public IEnumerable<InstallableFile> GetSourceCode(CkanModule module, ZipFile zip)
+            => GetFilesBySuffixes(module, zip, sourceCodeSuffixes, game);
 
         private static readonly string[] sourceCodeSuffixes = new string[] { ".cs", ".csproj", ".sln" };
 
         private static IEnumerable<InstallableFile> GetFilesBySuffixes(CkanModule                  module,
                                                                        ZipFile                     zip,
                                                                        IReadOnlyCollection<string> suffixes,
-                                                                       GameInstance                inst)
-            => ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                                                                       IGame                       game)
+            => ModuleInstaller.FindInstallableFiles(module, zip, game)
                               .Where(instF => suffixes.Any(suffix => instF.destination.EndsWith(suffix, StringComparison.InvariantCultureIgnoreCase)));
 
-        public IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip, GameInstance inst)
-            => ModuleInstaller.FindInstallableFiles(module, zip, inst)
+        public IEnumerable<ZipEntry> FileSources(CkanModule module, ZipFile zip)
+            => ModuleInstaller.FindInstallableFiles(module, zip, game)
                               .Select(instF => instF.source)
                               .Where(ze => !ze.IsDirectory);
 
         public IEnumerable<string> FileDestinations(CkanModule module, string filePath)
-        {
-            var inst = new GameInstance(game, "/", "dummy", null);
-            return ModuleInstaller
-                .FindInstallableFiles(module, filePath, inst)
-                .Where(f => !f.source.IsDirectory)
-                .Select(f => inst.ToRelativeGameDir(f.destination));
-        }
+            => ModuleInstaller.FindInstallableFiles(module, filePath, game)
+                              .Where(f => !f.source.IsDirectory)
+                              .Select(f => f.destination);
 
         /// <summary>
         /// Return a parsed JObject from a stream.
@@ -155,8 +150,7 @@ namespace CKAN.NetKAN.Services
             const string versionExt = ".version";
 
             // Get all our version files
-            var ksp = new GameInstance(game, "/", "dummy", new NullUser());
-            var files = ModuleInstaller.FindInstallableFiles(module, zipfile, ksp)
+            var files = ModuleInstaller.FindInstallableFiles(module, zipfile, game)
                 .Select(x => x.source)
                 .Where(source => source.Name.EndsWith(versionExt,
                     StringComparison.InvariantCultureIgnoreCase))
@@ -250,17 +244,15 @@ namespace CKAN.NetKAN.Services
 
         public SpaceWarpInfo? GetInternalSpaceWarpInfo(CkanModule   module,
                                                        ZipFile      zip,
-                                                       GameInstance inst,
                                                        string?      internalFilePath = null)
-            => GetInternalSpaceWarpInfos(module, zip, inst, internalFilePath).FirstOrDefault();
+            => GetInternalSpaceWarpInfos(module, zip, internalFilePath).FirstOrDefault();
 
         private IEnumerable<SpaceWarpInfo> GetInternalSpaceWarpInfos(CkanModule   module,
                                                                      ZipFile      zip,
-                                                                     GameInstance inst,
                                                                      string?      internalFilePath = null)
             => (string.IsNullOrWhiteSpace(internalFilePath)
-                    ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, inst)
-                    : ModuleInstaller.FindInstallableFiles(module, zip, inst)
+                    ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, game)
+                    : ModuleInstaller.FindInstallableFiles(module, zip, game)
                                      .Where(instF => instF.source.Name == internalFilePath))
                 .Select(instF => instF.source)
                 .Select(entry => ParseSpaceWarpJson(new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
@@ -268,11 +260,10 @@ namespace CKAN.NetKAN.Services
 
         public SpaceWarpInfo? GetSpaceWarpInfo(CkanModule   module,
                                                ZipFile      zip,
-                                               GameInstance inst,
                                                IGithubApi   githubApi,
                                                IHttpService httpSvc,
                                                string?      internalFilePath = null)
-            => GetInternalSpaceWarpInfos(module, zip, inst, internalFilePath)
+            => GetInternalSpaceWarpInfos(module, zip, internalFilePath)
                .Select(swinfo => swinfo.version_check != null
                                  && Uri.IsWellFormedUriString(swinfo.version_check.OriginalString, UriKind.Absolute)
                                  && ParseSpaceWarpJson(githubApi?.DownloadText(swinfo.version_check)

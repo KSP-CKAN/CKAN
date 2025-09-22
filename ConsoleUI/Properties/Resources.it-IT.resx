@@ -226,7 +226,7 @@
     <value>Giù</value>
   </data>
   <data name="FileSelectDirectory" xml:space="preserve">
-    <value>Cartella</value>
+    <value>Directory:</value>
   </data>
   <data name="FileSelectCountFooter" xml:space="preserve">
     <value>{0} selezionati, {1}</value>
@@ -438,13 +438,31 @@ Modificaew i token di autenticazione adesso?</value>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Nome</value>
   </data>
-  <data name="DeleteDirectoriesHeader" xml:space="preserve"><value>Elimina Cartelle</value></data>
-  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve"><value>Le directory sottostanti sono dei residui rimasti a seguito della rimozione di alcune mod. Contengono file che non sono stati installati da CKAN (probabilmente generati da una mod o installati manualmente). CKAN non elimina automaticamente i file che non ha installato, ma puoi scegliere di rimuoverli se ti sembra sicuro farlo (scelta consigliata).
-Nota che se decidi di non rimuovere una cartella, ModuleManager potrebbe pensare erroneamente che il mod sia ancora installato.</value></data>
-  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve"><value>Cartelle</value></data>
-  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve"><value>Contenuto Cartella</value></data>
-  <data name="DeleteDirectoriesCancelTip" xml:space="preserve"><value>Mantieni Tutte</value></data>
-  <data name="DeleteDirectoriesApplyTip" xml:space="preserve"><value>Elimina Selezionata</value></data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>Elimina Cartelle</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>Le directory sottostanti sono dei residui rimasti a seguito della rimozione di alcune mod. Contengono file che non sono stati installati da CKAN (probabilmente generati da una mod o installati manualmente). CKAN non elimina automaticamente i file che non ha installato, ma puoi scegliere di rimuoverli se ti sembra sicuro farlo (scelta consigliata).
+Nota che se decidi di non rimuovere una cartella, ModuleManager potrebbe pensare erroneamente che il mod sia ancora installato.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>Cartelle</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>Contenuto Cartella</value>
+  </data>
+  <data name="DeleteDirectoriesDeleteDirTip" xml:space="preserve">
+    <value>Elimina cartella</value>
+  </data>
+  <data name="DeleteDirectoriesKeepDirTip" xml:space="preserve">
+    <value>Mantieni cartella</value>
+  </data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve">
+    <value>Mantieni Tutte</value>
+  </data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve">
+    <value>Elimina Selezionata</value>
+  </data>
   <data name="ModInfoTitle" xml:space="preserve">
     <value>Dettagli Mod</value>
   </data>
@@ -459,6 +477,9 @@ Nota che se decidi di non rimuovere una cartella, ModuleManager potrebbe pensare
   </data>
   <data name="ModInfoDownload" xml:space="preserve">
     <value>Download:</value>
+  </data>
+  <data name="ModInfoInstall" xml:space="preserve">
+    <value>Installa:</value>
   </data>
   <data name="ModInfoDescriptionFrame" xml:space="preserve">
     <value>Descrizione</value>
@@ -488,6 +509,9 @@ Se la disinstalli, CKAN non sarà in grado di reinstallarla.</value>
   </data>
   <data name="ModInfoBugtrackerTip" xml:space="preserve">
     <value>Aprire l'URL del bugtracker in un browser</value>
+  </data>
+  <data name="ModInfoDiscussions" xml:space="preserve">
+    <value>Discussioni</value>
   </data>
   <data name="ModInfoSpaceDock" xml:space="preserve">
     <value>SpaceDock</value>
@@ -681,6 +705,12 @@ Se la disinstalli, CKAN non sarà in grado di reinstallarla.</value>
   <data name="ModListUpdatedDaysAgo" xml:space="preserve">
     <value>Aggiornato almeno {0} giorni fa</value>
   </data>
+  <data name="ModListPlayMenu" xml:space="preserve">
+    <value>Gioca partita</value>
+  </data>
+  <data name="ModListPlayMenuTip" xml:space="preserve">
+    <value>Lancia il gioco</value>
+  </data>
   <data name="ModListSortMenu" xml:space="preserve">
     <value>Ordina...</value>
   </data>
@@ -716,6 +746,18 @@ Se la disinstalli, CKAN non sarà in grado di reinstallarla.</value>
   </data>
   <data name="ModListExportMenuTip" xml:space="preserve">
     <value>Salva l'elenco delle tue mod</value>
+  </data>
+  <data name="ModListInstallFromCkanMenu" xml:space="preserve">
+    <value>Installa dal file .ckan...</value>
+  </data>
+  <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
+    <value>Installare modpack o moduli personalizzati</value>
+  </data>
+  <data name="CkanFileSelectTitle" xml:space="preserve">
+    <value>Scegliere i file .ckan da installare</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>Installa</value>
   </data>
   <data name="ModListInstanceSettingsMenu" xml:space="preserve">
     <value>Impostazioni istanza di gioco...</value>

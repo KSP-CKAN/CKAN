@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="autoCheckLabel.Text" xml:space="preserve">
-    <value>CKAN을 실행했을 때 자동으로 업데이트를 체크할까요(설정에서 변경 가능)?</value>
-  </data>
   <data name="YesButton.Text" xml:space="preserve">
     <value>네, 체크해주세요.</value>
   </data>

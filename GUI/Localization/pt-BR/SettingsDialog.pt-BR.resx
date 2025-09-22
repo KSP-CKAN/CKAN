@@ -147,6 +147,12 @@
   <data name="CacheGroupBox.Text" xml:space="preserve">
     <value>Cache de Download</value>
   </data>
+  <data name="CachePathSaveButton.Text" xml:space="preserve">
+    <value>Salvar</value>
+  </data>
+  <data name="CachePathCancelButton.Text" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
   <data name="CacheSummary.Text" xml:space="preserve">
     <value>N arquivos, M MB</value>
   </data>

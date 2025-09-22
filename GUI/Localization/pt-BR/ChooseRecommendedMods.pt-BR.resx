@@ -123,9 +123,6 @@
   <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
     <value>Continuar</value>
   </data>
-  <data name="RecommendedModsToggleCheckbox.Text" xml:space="preserve">
-    <value>(De-)selecionar todos</value>
-  </data>
   <data name="RecommendedDialogLabel.Text" xml:space="preserve">
     <value>Os mods escolhidos recomendam, sugerem ou são suportados pelo mods a seguir:</value>
   </data>

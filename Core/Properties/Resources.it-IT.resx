@@ -126,11 +126,21 @@
   <data name="NetInvalidLocation" xml:space="preserve">
     <value>Indirizzo non valido nell'intestazione della posizione: {0}</value>
   </data>
-  <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sec - {1} ({2}) rimanenti - {3}%</value></data>
-  <data name="ByteRateCounterSummary" xml:space="preserve"><value>{0} rimanenti - {1}%</value></data>
-  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve"><value>{0} ore, {1} min, {2} sec</value></data>
-  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve"><value>{0} min, {1} sec</value></data>
-  <data name="ByteRateCounterSeconds" xml:space="preserve"><value>{0} sec</value></data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve">
+    <value>{0}/sec - {1} ({2}) rimanenti - {3}%</value>
+  </data>
+  <data name="ByteRateCounterSummary" xml:space="preserve">
+    <value>{0} rimanenti - {1}%</value>
+  </data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve">
+    <value>{0} ore, {1} min, {2} sec</value>
+  </data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve">
+    <value>{0} min, {1} sec</value>
+  </data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve">
+    <value>{0} sec</value>
+  </data>
   <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
     <value>Download di "{0}"</value>
   </data>
@@ -181,6 +191,12 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   <data name="NetRepoUpdating" xml:space="preserve">
     <value>Aggiornamento di {0}</value>
   </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Caricamento dei moduli dal repository scaricato {0}...</value>
+  </data>
+  <data name="NetRepoNotATarGz" xml:space="preserve">
+    <value>Non è un .tar.gz o .zip, non è possibile elaborare: {0}</value>
+  </data>
   <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
     <value>`any_of` non dovrebbe essere combinato con `{0}`</value>
   </data>
@@ -201,6 +217,10 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   </data>
   <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve">
     <value>Un elenco di moduli installati sull'istanza KSP {0}</value>
+  </data>
+  <data name="RegistryManagerRegistryVersionNotSupported" xml:space="preserve">
+    <value>Questa versione di CKAN è troppo vecchia per caricare: {0}
+Aggiorna CKAN per caricare questa istanza di gioco.</value>
   </data>
   <data name="CkanModuleDeserialisationError" xml:space="preserve">
     <value>Errore di deserializzazione di JSON: {0}</value>
@@ -331,6 +351,18 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   <data name="GameInstanceManagerAuto" xml:space="preserve">
     <value>Auto {0}</value>
   </data>
+  <data name="GameInstanceManagerCacheMigrationMove" xml:space="preserve">
+    <value>Sposta i vecchi file della cache nella nuova cartella cache</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationDelete" xml:space="preserve">
+    <value>Elimina i file nella cache</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNothing" xml:space="preserve">
+    <value>Non fare nulla</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve">
+    <value>Spazio non sufficiente per spostare i file!</value>
+  </data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve">
     <value>L'istanza specificata non è un'istanza {0} valida</value>
   </data>
@@ -352,9 +384,11 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   <data name="GameInstancePathNotFound" xml:space="preserve">
     <value>{0} non esiste</value>
   </data>
-  <data name="GameInstancePlayGameFailed" xml:space="preserve"><value>Impossibile avviare il gioco.
+  <data name="GameInstancePlayGameFailed" xml:space="preserve">
+    <value>Impossibile avviare il gioco.
 
-{0}</value></data>
+{0}</value>
+  </data>
   <data name="ModuleInstallerNothingToInstall" xml:space="preserve">
     <value>Nulla da installare</value>
   </data>
@@ -366,6 +400,9 @@ Installa il pacchetto `mono-complete` o un pacchetto equivalente per il tuo sist
   </data>
   <data name="ModuleInstallerInstallingMod" xml:space="preserve">
     <value>Installazione della mod "{0}"</value>
+  </data>
+  <data name="ModuleInstallerInstalledMod" xml:space="preserve">
+    <value>Installazione di {0} completata</value>
   </data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve">
     <value>Aggiornamento registro</value>
@@ -462,16 +499,6 @@ Rimuovilo manualmente prima di provare a installarlo.</value>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve">
     <value>Importazione completata. Eliminare {0} file vecchi?</value>
   </data>
-  <data name="KrakenBadMetadata" xml:space="preserve">
-    <value>Rilevati metadati errati per il modulo {0}: {1}</value>
-  </data>
-  <data name="KrakenIsDLC" xml:space="preserve">
-    <value>CKAN non può installare l'espansione '{0}' per te.</value>
-  </data>
-  <data name="KrakenIsDLCStorePage" xml:space="preserve">
-    <value>Per installare questa espansione, acquistala da una delle pagine del negozio:
-{0}</value>
-  </data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve">
     <value>Dipendenza su {0} versione {1} non soddisfatta</value>
   </data>
@@ -542,6 +569,9 @@ Disinstalla manualmente la mod che possiedi:
 
 e riprova.</value>
   </data>
+  <data name="KrakenBadMetadata" xml:space="preserve">
+    <value>Rilevati metadati errati per il modulo {0}: {1}</value>
+  </data>
   <data name="KrakenDownloadErrorsHeader" xml:space="preserve">
     <value>Uh oh, le seguenti cose sono andate storte durante il download...</value>
   </data>
@@ -573,6 +603,13 @@ Prendi in considerazione l'aggiunta di un token di autenticazione per aumentare 
 Ciò significa che probabilmente un'altra istanza di CKAN sta accedendo a questa istanza. Puoi eliminare il file per continuare, ma è molto probabile che i dati vengano danneggiati.
 
 Vuoi eliminare questo file di blocco per forzare l'accesso?</value>
+  </data>
+  <data name="KrakenIsDLC" xml:space="preserve">
+    <value>CKAN non può installare l'espansione '{0}' per te.</value>
+  </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>Per installare questa espansione, acquistala da una delle pagine del negozio:
+{0}</value>
   </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>Spazio insufficiente nella cartella cache per memorizzare i moduli!</value>

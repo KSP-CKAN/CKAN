@@ -53,11 +53,10 @@ namespace CKAN.NetKAN.Transformers
             {
                 var mod  = CkanModule.FromJson(metadata.AllJson.ToString());
                 var zip  = new ZipFile(_http.DownloadModule(metadata));
-                var inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
                 log.Debug("Extracting locales");
                 // Extract the locale names from the ZIP's cfg files
-                var locales = _moduleService.GetConfigFiles(mod, zip, inst)
+                var locales = _moduleService.GetConfigFiles(mod, zip)
                     .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
                     .SelectMany(contents => localizationRegex.Matches(contents).Cast<Match>()
                         .Select(m => m.Groups["contents"].Value))

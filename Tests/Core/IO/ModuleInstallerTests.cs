@@ -405,7 +405,7 @@ namespace Tests.Core.IO
             {
                 manager.SetCurrentInstance(inst.KSP);
                 // Make sure the mod is not installed.
-                string mod_file_path = Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP), mod_file_name);
+                string mod_file_path = Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP), mod_file_name);
 
                 Assert.IsFalse(File.Exists(mod_file_path));
 
@@ -453,7 +453,7 @@ namespace Tests.Core.IO
                                                            new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                string mod_file_path = Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP), mod_file_name);
+                string mod_file_path = Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP), mod_file_name);
 
                 // Install the test mod.
                 var registry = regMgr.registry;
@@ -497,7 +497,7 @@ namespace Tests.Core.IO
                                                            new Repository[] { repo.repo }))
             {
                 manager.SetCurrentInstance(inst.KSP);
-                string directoryPath = Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP), emptyFolderName);
+                string directoryPath = Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP), emptyFolderName);
 
                 // Install the base test mod.
                 var registry = regMgr.registry;
@@ -717,7 +717,7 @@ namespace Tests.Core.IO
                                      regMgr, ref possibleConfigOnlyDirs);
 
                     // Check that the module is installed.
-                    Assert.IsTrue(File.Exists(Path.Combine(inst.KSP.game.PrimaryModDirectory(inst.KSP),
+                    Assert.IsTrue(File.Exists(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
                                                            mod_file_name)));
                 }
             }
@@ -928,7 +928,7 @@ namespace Tests.Core.IO
                                                                                                   inst.KSP.VersionCriteria()))
                                                                              .OfType<CkanModule>()
                                                                              .ToArray(),
-                                                           opts, registry, inst.KSP.game, inst.KSP.VersionCriteria()));
+                                                           opts, registry, inst.KSP.Game, inst.KSP.VersionCriteria()));
             }
         }
 
@@ -1014,8 +1014,8 @@ namespace Tests.Core.IO
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                config.SetGlobalInstallFilters(inst.KSP.game,
-                                               inst.KSP.game.InstallFilterPresets
+                config.SetGlobalInstallFilters(inst.KSP.Game,
+                                               inst.KSP.Game.InstallFilterPresets
                                                             .SelectMany(kvp => kvp.Value)
                                                             .ToArray());
                 // The tests for different targets can run in parallel,
@@ -1330,6 +1330,18 @@ namespace Tests.Core.IO
                 File.WriteAllText(unmanagedAsk.FullName, "");
 
                 // Assert
+                Assert.IsTrue(inst.KSP.HasManagedFiles(registry, inst.KSP.ToAbsoluteGameDir("GameData")));
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "buildID.txt",
+                                                   "KSP.exe",
+                                                   "KSP.x86_64",
+                                                   "readme.txt",
+                                                   "GameData/README.md",
+                                                   "GameData/DogeCoinPlugin/config.cfg",
+                                                   "GameData/DogeCoinFlag/@thumbs/mythumb.png",
+                                               },
+                                               inst.KSP.UnmanagedFiles(registry));
                 CollectionAssert.IsNotEmpty(absPaths);
                 foreach (var f in absPaths)
                 {
@@ -1930,12 +1942,12 @@ namespace Tests.Core.IO
                                       {
                                           new Tuple<string, string, string>(
                                               inst1.KSP.Name,
-                                              inst1.KSP.GameDir(),
-                                              inst1.KSP.game.ShortName),
+                                              inst1.KSP.GameDir,
+                                              inst1.KSP.Game.ShortName),
                                           new Tuple<string, string, string>(
                                               inst2.KSP.Name,
-                                              inst2.KSP.GameDir(),
-                                              inst2.KSP.game.ShortName),
+                                              inst2.KSP.GameDir,
+                                              inst2.KSP.Game.ShortName),
                                       },
                                       null, cacheDir.Directory.FullName))
             using (var manager  = new GameInstanceManager(user, config))
