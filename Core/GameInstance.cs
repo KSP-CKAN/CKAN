@@ -295,9 +295,12 @@ namespace CKAN
         /// Identifier if found otherwise null
         /// </returns>
         public string? DllPathToIdentifier(string relPath)
+            => DllPathToIdentifier(Game, relPath);
+
+        public static string? DllPathToIdentifier(IGame game, string relPath)
             // DLLs only live in the primary or alternate mod directories
-            => Game.AlternateModDirectoriesRelative
-                   .Prepend(Game.PrimaryModDirectoryRelative)
+            => game.AlternateModDirectoriesRelative
+                   .Prepend(game.PrimaryModDirectoryRelative)
                    .Any(p => relPath.StartsWith($"{p}/", Platform.PathComparison))
                && dllPattern.Match(relPath) is { Success: true } match
                    ? Identifier.Sanitize(match.Groups["identifier"].Value)

@@ -30,7 +30,6 @@ namespace Tests.NetKAN.Validators
             var modSvc = new Mock<IModuleService>();
             modSvc.Setup(ms => ms.GetSpaceWarpInfo(It.IsAny<CkanModule>(),
                                                    It.IsAny<ZipFile>(),
-                                                   It.IsAny<GameInstance>(),
                                                    It.IsAny<IGithubApi>(),
                                                    It.IsAny<IHttpService>(),
                                                    It.IsAny<string?>()))
@@ -54,8 +53,7 @@ namespace Tests.NetKAN.Validators
             var game = new KerbalSpaceProgram();
             var sut  = new SpaceWarpInfoValidator(http.Object,
                                                   github.Object,
-                                                  modSvc.Object,
-                                                  game);
+                                                  modSvc.Object);
             var metadata = new Metadata(new JObject()
             {
                 { "identifier", "TestMod"                     },

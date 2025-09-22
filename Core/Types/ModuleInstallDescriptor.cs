@@ -378,7 +378,7 @@ namespace CKAN
 
             if (ksp == null)
             {
-                installDir = null;
+                installDir = install_to;
             }
             else if (install_to == ksp.Game.PrimaryModDirectoryRelative
                 || install_to.StartsWith($"{ksp.Game.PrimaryModDirectoryRelative}/"))
@@ -446,13 +446,16 @@ namespace CKAN
                 };
 
                 // If we have a place to install it, fill that in...
-                if (installDir != null && ksp != null)
+                if (installDir != null)
                 {
                     // Get the full name of the file.
                     // Update our file info with the install location
-                    file_info.destination = TransformOutputName(ksp.Game, entryName, installDir, @as);
-                    file_info.makedir     = AllowDirectoryCreation(ksp.Game,
+                    file_info.destination = TransformOutputName(ksp?.Game, entryName, installDir, @as);
+                    if (ksp != null)
+                    {
+                        file_info.makedir = AllowDirectoryCreation(ksp.Game,
                                                                    ksp.ToRelativeGameDir(file_info.destination));
+                    }
                 }
 
                 files.Add(file_info);
@@ -483,7 +486,10 @@ namespace CKAN
         /// <param name="installDir">The installation dir where the file should end up with</param>
         /// <param name="as">The name to use for the file</param>
         /// <returns>The output name</returns>
-        internal string TransformOutputName(IGame game, string outputName, string installDir, string? @as)
+        internal string TransformOutputName(IGame?  game,
+                                            string  outputName,
+                                            string  installDir,
+                                            string? @as)
         {
             var leadingPathToRemove = Path.GetDirectoryName(ShortestMatchingPrefix(outputName))
                                           ?.Replace('\\', '/');
@@ -515,17 +521,15 @@ namespace CKAN
                 // Replace first path component with @as
                 outputName = ReplaceFirstPiece(outputName, "/", @as);
             }
-            else
+            else if (game?.ReservedPaths
+                          .FirstOrDefault(prefix => outputName.StartsWith(prefix + "/",
+                                                                          StringComparison.InvariantCultureIgnoreCase))
+                     is string reservedPrefix)
             {
-                var reservedPrefix = game.ReservedPaths.FirstOrDefault(prefix =>
-                    outputName.StartsWith(prefix + "/", StringComparison.InvariantCultureIgnoreCase));
-                if (reservedPrefix != null)
-                {
-                    // If we try to install a folder with the same name as
-                    // one of the reserved directories, strip it off.
-                    // Delete reservedPrefix and one forward slash
-                    outputName = outputName[(reservedPrefix.Length + 1)..];
-                }
+                // If we try to install a folder with the same name as
+                // one of the reserved directories, strip it off.
+                // Delete reservedPrefix and one forward slash
+                outputName = outputName[(reservedPrefix.Length + 1)..];
             }
 
             if (outputName.Contains("/../") || outputName.EndsWith("/.."))

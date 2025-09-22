@@ -34,11 +34,10 @@ namespace Tests.NetKAN.Transformers
                 .Returns(filePath);
 
             mModuleService.Setup(i => i.GetInternalCkan(
-                    It.IsAny<CkanModule>(), It.IsAny<string>(),
-                    It.IsAny<GameInstance>()))
+                    It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(internalCkan);
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
+            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -74,11 +73,10 @@ namespace Tests.NetKAN.Transformers
                 .Returns(filePath);
 
             mModuleService.Setup(i => i.GetInternalCkan(
-                    It.IsAny<CkanModule>(), It.IsAny<string>(),
-                    It.IsAny<GameInstance>()))
+                    It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(internalCkan);
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram());
+            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
 
             var json = new JObject();
             json["spec_version"] = 1;

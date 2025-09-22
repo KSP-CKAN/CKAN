@@ -5,17 +5,15 @@ using log4net;
 
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
-using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
     internal sealed class CraftsInShipsValidator : IValidator
     {
-        public CraftsInShipsValidator(IHttpService http, IModuleService moduleService, IGame game)
+        public CraftsInShipsValidator(IHttpService http, IModuleService moduleService)
         {
             _http          = http;
             _moduleService = moduleService;
-            _game          = game;
         }
 
         public void Validate(Metadata metadata)
@@ -30,16 +28,15 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     var zip       = new ZipFile(package);
-                    var inst      = new GameInstance(_game, "/", "dummy", null);
-                    var badCrafts = _moduleService.GetCrafts(mod, zip, inst)
-                        .Where(f => !AllowedCraftPath(inst.ToRelativeGameDir(f.destination)))
+                    var badCrafts = _moduleService.GetCrafts(mod, zip)
+                        .Where(f => !AllowedCraftPath(f.destination))
                         .ToList();
 
                     if (badCrafts.Count != 0)
                     {
                         Log.WarnFormat(
                             "Craft files installed outside Ships folder: {0}",
-                            string.Join(", ", badCrafts.Select(f => inst.ToRelativeGameDir(f.destination)).Order()));
+                            string.Join(", ", badCrafts.Select(f => f.destination).Order()));
                     }
                 }
             }
@@ -52,7 +49,6 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
-        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(CraftsInShipsValidator));
     }

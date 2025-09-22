@@ -360,7 +360,7 @@ namespace CKAN.IO
                 var filters = config.GetGlobalInstallFilters(instance.Game)
                                     .Concat(instance.InstallFilters)
                                     .ToHashSet();
-                var groups = FindInstallableFiles(module, zipfile, instance)
+                var groups = FindInstallableFiles(module, zipfile, instance, instance.Game)
                     // Skip the file if it's a ckan file, these should never be copied to GameData
                     .Where(instF => !IsInternalCkan(instF.source))
                     // Check whether each file matches any installation filter
@@ -569,18 +569,32 @@ namespace CKAN.IO
         ///
         /// Throws a BadMetadataKraken if the stanza resulted in no files being returned.
         /// </summary>
-        public static List<InstallableFile> FindInstallableFiles(CkanModule module, ZipFile zipfile, GameInstance ksp)
+
+        public static List<InstallableFile> FindInstallableFiles(CkanModule    module,
+                                                                 ZipFile       zipfile,
+                                                                 GameInstance  inst)
+            => FindInstallableFiles(module, zipfile, inst, inst.Game);
+
+        public static List<InstallableFile> FindInstallableFiles(CkanModule module,
+                                                                 ZipFile    zipfile,
+                                                                 IGame      game)
+            => FindInstallableFiles(module, zipfile, null, game);
+
+        private static List<InstallableFile> FindInstallableFiles(CkanModule    module,
+                                                                  ZipFile       zipfile,
+                                                                  GameInstance? inst,
+                                                                  IGame         game)
         {
             try
             {
                 // Use the provided stanzas, or use the default install stanza if they're absent.
                 return module.install is { Length: > 0 }
                     ? module.install
-                            .SelectMany(stanza => stanza.FindInstallableFiles(zipfile, ksp))
+                            .SelectMany(stanza => stanza.FindInstallableFiles(zipfile, inst))
                             .ToList()
-                    : ModuleInstallDescriptor.DefaultInstallStanza(ksp.Game,
+                    : ModuleInstallDescriptor.DefaultInstallStanza(game,
                                                                    module.identifier)
-                                             .FindInstallableFiles(zipfile, ksp);
+                                             .FindInstallableFiles(zipfile, inst);
             }
             catch (BadMetadataKraken kraken)
             {
@@ -602,13 +616,27 @@ namespace CKAN.IO
         /// If a KSP instance is provided, it will be used to generate output paths, otherwise these will be null.
         /// </summary>
         // TODO: Document which exception!
-        public static List<InstallableFile> FindInstallableFiles(CkanModule module, string zip_filename, GameInstance ksp)
+        public static List<InstallableFile> FindInstallableFiles(CkanModule  module,
+                                                                 string      zip_filename,
+                                                                 IGame       game)
         {
             // `using` makes sure our zipfile gets closed when we exit this block.
             using (ZipFile zipfile = new ZipFile(zip_filename))
             {
                 log.DebugFormat("Searching {0} using {1} as module", zip_filename, module);
-                return FindInstallableFiles(module, zipfile, ksp);
+                return FindInstallableFiles(module, zipfile, null, game);
+            }
+        }
+
+        public static List<InstallableFile> FindInstallableFiles(CkanModule   module,
+                                                                 string       zip_filename,
+                                                                 GameInstance inst)
+        {
+            // `using` makes sure our zipfile gets closed when we exit this block.
+            using (ZipFile zipfile = new ZipFile(zip_filename))
+            {
+                log.DebugFormat("Searching {0} using {1} as module", zip_filename, module);
+                return FindInstallableFiles(module, zipfile, inst);
             }
         }
 

@@ -33,8 +33,7 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip = new ZipFile(package);
-                    GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
-                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip, inst)
+                    var mmConfigs = _moduleService.GetConfigFiles(mod, zip)
                         .Where(cfg => moduleManagerRegex.IsMatch(
                             new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd()))
                         .Memoize();

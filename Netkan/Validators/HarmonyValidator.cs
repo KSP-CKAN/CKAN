@@ -33,9 +33,8 @@ namespace CKAN.NetKAN.Validators
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip = new ZipFile(package);
-                    GameInstance inst = new GameInstance(_game, "/", "dummy", new NullUser());
 
-                    var harmonyDLLs = _moduleService.GetPlugins(mod, zip, inst)
+                    var harmonyDLLs = _moduleService.GetPlugins(mod, zip)
                         .Select(instF => instF.source.Name)
                         .Where(f => f.IndexOf("Harmony", Math.Max(0, f.LastIndexOf('/')),
                                               StringComparison.InvariantCultureIgnoreCase) != -1)

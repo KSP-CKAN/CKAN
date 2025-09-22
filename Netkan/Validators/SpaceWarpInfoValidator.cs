@@ -6,7 +6,6 @@ using log4net;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.Games;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.SpaceWarp;
 
@@ -16,23 +15,20 @@ namespace CKAN.NetKAN.Validators
     {
         public SpaceWarpInfoValidator(IHttpService   httpSvc,
                                       IGithubApi     githubApi,
-                                      IModuleService modSvc,
-                                      IGame          game)
+                                      IModuleService modSvc)
         {
             this.httpSvc   = httpSvc;
             this.githubApi = githubApi;
             this.modSvc    = modSvc;
-            this.game      = game;
         }
 
         public void Validate(Metadata metadata)
         {
             var moduleJson = metadata.AllJson;
-            CkanModule    mod  = CkanModule.FromJson(moduleJson.ToString());
-            GameInstance  inst = new GameInstance(game, "/", "dummy", new NullUser());
+            CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
             if (httpSvc.DownloadModule(metadata) is string file
                 && new ZipFile(file) is ZipFile zip
-                && modSvc.GetSpaceWarpInfo(mod, zip, inst, githubApi, httpSvc) is SpaceWarpInfo swinfo)
+                && modSvc.GetSpaceWarpInfo(mod, zip, githubApi, httpSvc) is SpaceWarpInfo swinfo)
             {
                 var moduleDeps = (mod.depends?.OfType<ModuleRelationshipDescriptor>()
                                               .Select(r => r.name)
@@ -60,7 +56,6 @@ namespace CKAN.NetKAN.Validators
         private readonly IHttpService   httpSvc;
         private readonly IGithubApi     githubApi;
         private readonly IModuleService modSvc;
-        private readonly IGame          game;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SpaceWarpInfoValidator));
     }

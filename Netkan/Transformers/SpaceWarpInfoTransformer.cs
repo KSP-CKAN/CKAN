@@ -10,18 +10,16 @@ using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.Versioning;
-using CKAN.Games;
 
 namespace CKAN.NetKAN.Transformers
 {
     internal sealed class SpaceWarpInfoTransformer : ITransformer
     {
-        public SpaceWarpInfoTransformer(IHttpService httpSvc, IGithubApi githubApi, IModuleService modSvc, IGame game)
+        public SpaceWarpInfoTransformer(IHttpService httpSvc, IGithubApi githubApi, IModuleService modSvc)
         {
             this.httpSvc   = httpSvc;
             this.githubApi = githubApi;
             this.modSvc    = modSvc;
-            this.game      = game;
         }
 
         public string Name => "space_warp_info";
@@ -33,9 +31,8 @@ namespace CKAN.NetKAN.Transformers
                 var moduleJson = metadata.Json();
                 moduleJson.SafeAdd("version", "1");
                 CkanModule    mod    = CkanModule.FromJson(moduleJson.ToString());
-                GameInstance  inst   = new GameInstance(game, "/", "dummy", new NullUser());
                 ZipFile       zip    = new ZipFile(httpSvc.DownloadModule(metadata));
-                var swinfo = modSvc.GetInternalSpaceWarpInfo(mod, zip, inst, metadata.Vref.Id);
+                var swinfo = modSvc.GetInternalSpaceWarpInfo(mod, zip, metadata.Vref.Id);
                 if (swinfo != null)
                 {
                     log.Info("Found swinfo.json file");
@@ -94,7 +91,6 @@ namespace CKAN.NetKAN.Transformers
         private readonly IHttpService   httpSvc;
         private readonly IGithubApi     githubApi;
         private readonly IModuleService modSvc;
-        private readonly IGame          game;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SpaceWarpInfoTransformer));
     }
