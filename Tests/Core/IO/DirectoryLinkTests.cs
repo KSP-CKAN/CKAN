@@ -50,7 +50,7 @@ namespace Tests.Core.IO
 
                 // Assert
                 FileAssert.DoesNotExist(dirlink.FullName);
-                Assert.IsFalse(Directory.Exists(dirlink.FullName));
+                DirectoryAssert.DoesNotExist(dirlink.FullName);
             }
         }
     }

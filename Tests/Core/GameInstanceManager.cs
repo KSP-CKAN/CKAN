@@ -6,6 +6,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Configuration;
 using CKAN.DLC;
 using CKAN.IO;
 using CKAN.Versioning;
@@ -401,19 +402,27 @@ namespace Tests.Core
         [Test]
         public void Constructor_WithCachePathDefined_Creates()
         {
+            // Arrange
             using (var dir = new TemporaryDirectory())
             {
                 var cachePath = Path.Combine(dir.Directory.FullName, "cachetest");
-                Assert.IsFalse(Directory.Exists(cachePath));
-                using (var config = new FakeConfiguration(new List<Tuple<string, string, string>>(),
-                                                          null, cachePath))
+                DirectoryAssert.DoesNotExist(cachePath);
+
+                var configPath = Path.Combine(dir.Directory.FullName, "config.json");
+                File.WriteAllText(configPath, "{}");
+                var config = new JsonConfiguration(configPath)
                 {
-                    Assert.IsTrue(Directory.Exists(cachePath));
+                    DownloadCacheDir = cachePath,
+                };
+
+                // Act
+                using (var mgr = new GameInstanceManager(new NullUser(), config))
+                {
+                    // Assert
+                    DirectoryAssert.Exists(cachePath, $"{cachePath} should exist");
                 }
             }
         }
-
-
 
         private FakeConfiguration GetTestCfg(string name)
             => new FakeConfiguration(

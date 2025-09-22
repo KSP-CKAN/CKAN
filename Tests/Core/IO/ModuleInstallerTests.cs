@@ -533,7 +533,7 @@ namespace Tests.Core.IO
                 modules.Clear();
 
                 // Check that the directory is installed.
-                Assert.IsTrue(Directory.Exists(directoryPath));
+                DirectoryAssert.Exists(directoryPath);
 
                 // Uninstall both mods.
 
@@ -545,7 +545,7 @@ namespace Tests.Core.IO
                                    ref possibleConfigOnlyDirs, regMgr);
 
                 // Check that the directory has been deleted.
-                Assert.IsFalse(Directory.Exists(directoryPath));
+                DirectoryAssert.DoesNotExist(directoryPath);
             }
         }
 
@@ -1440,7 +1440,7 @@ namespace Tests.Core.IO
                 Assert.IsNull(possibleConfigOnlyDirs);
                 foreach (var absPath in shipDirs.Select(inst.KSP.ToAbsoluteGameDir))
                 {
-                    Assert.IsTrue(Directory.Exists(absPath));
+                    DirectoryAssert.Exists(absPath);
                 }
             }
         }
