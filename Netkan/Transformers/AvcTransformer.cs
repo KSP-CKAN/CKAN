@@ -10,7 +10,6 @@ using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Validators;
 using CKAN.Avc;
-using CKAN.Games;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.Versioning;
 
@@ -33,13 +32,12 @@ namespace CKAN.NetKAN.Transformers
 
         public AvcTransformer(IHttpService   http,
                               IModuleService moduleService,
-                              IGithubApi?    github,
-                              IGame          game)
+                              IGithubApi?    github)
         {
             _http          = http;
             _moduleService = moduleService;
             _github        = github;
-            _vrefValidator = new VrefValidator(_http, _moduleService, game);
+            _vrefValidator = new VrefValidator(_http, _moduleService);
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)

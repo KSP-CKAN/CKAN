@@ -4,17 +4,15 @@ using ICSharpCode.SharpZipLib.Zip;
 
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
-using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
     internal sealed class VrefValidator : IValidator
     {
-        public VrefValidator(IHttpService http, IModuleService moduleService, IGame game)
+        public VrefValidator(IHttpService http, IModuleService moduleService)
         {
             _http          = http;
             _moduleService = moduleService;
-            _game          = game;
         }
 
         public void Validate(Metadata metadata)
@@ -100,7 +98,6 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
-        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(VrefValidator));
     }

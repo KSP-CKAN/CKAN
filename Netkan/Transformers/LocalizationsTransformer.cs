@@ -11,7 +11,6 @@ using CKAN.Extensions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.Games;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -23,11 +22,10 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="http">HTTP service</param>
         /// <param name="moduleService">Module service</param>
-        public LocalizationsTransformer(IHttpService http, IModuleService moduleService, IGame game)
+        public LocalizationsTransformer(IHttpService http, IModuleService moduleService)
         {
             _http          = http;
             _moduleService = moduleService;
-            _game          = game;
         }
 
         /// <summary>
@@ -88,7 +86,6 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
-        private readonly IGame          _game;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(LocalizationsTransformer));
 
