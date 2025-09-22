@@ -43,7 +43,7 @@ namespace Tests.Core
         }
 
         [Test]
-        public void StoreRetrieve()
+        public void Store_AFile_Works()
         {
             Uri url = new Uri("http://example.com/");
             string file = TestData.DogeCoinFlagZip();
@@ -56,17 +56,22 @@ namespace Tests.Core
 
             // Now it should be cached.
             Assert.IsTrue(cache?.IsCached(url));
+            string? filename = null;
+            Assert.IsTrue(cache?.IsCached(url, out filename));
+            Assert.AreEqual(Path.Combine(cache_dir!, "9C17E047-DogeCoinFlag-1.01.zip"), filename);
+            CollectionAssert.AreEquivalent(new [] { ("9C17E047", 53647) },
+                                           cache?.CachedHashesAndSizes());
 
             // Check contents match.
             var cached_file = cache?.GetCachedFilename(url);
             FileAssert.AreEqual(file, cached_file);
         }
 
-        [Test, TestCase("cheesy.zip","cheesy.zip"),
-               TestCase("Foo-1-2.3","Foo-1-2.3"),
-               TestCase("Foo-1-2-3","Foo-1-2-3"),
-               TestCase("Foo-..-etc-passwd","Foo-..-etc-passwd")]
-        public void NamingHints(string hint, string appendage)
+        [Test, TestCase("cheesy.zip",        "cheesy.zip"),
+               TestCase("Foo-1-2.3",         "Foo-1-2.3"),
+               TestCase("Foo-1-2-3",         "Foo-1-2-3"),
+               TestCase("Foo-..-etc-passwd", "Foo-..-etc-passwd")]
+        public void Store_WithNameHint_Obeyed(string hint, string appendage)
         {
             Uri url = new Uri("http://example.com/");
             string file = TestData.DogeCoinFlagZip();
@@ -78,7 +83,7 @@ namespace Tests.Core
         }
 
         [Test]
-        public void StoreRemove()
+        public void Remove_StoredFile_Works()
         {
             Uri url = new Uri("http://example.com/");
             string file = TestData.DogeCoinFlagZip();
@@ -93,7 +98,7 @@ namespace Tests.Core
         }
 
         [Test]
-        public void CacheKraken()
+        public void Constructor_InvalidPath_Throws()
         {
             string dir = "/this/path/better/not/exist";
 
@@ -108,7 +113,7 @@ namespace Tests.Core
         }
 
         [Test]
-        public void DoubleCache()
+        public void Store_SameURLMultipleFiles_Overrites()
         {
             // Store and flip files in our cache. We should always get
             // the most recent file we store for any given URL.
@@ -130,7 +135,7 @@ namespace Tests.Core
         }
 
         [Test]
-        public void ZipValidation()
+        public void Store_WithBadZip_Works()
         {
             // We could use any URL, but this one is awesome. <3
             Uri url = new Uri("http://kitte.nz/");
@@ -183,14 +188,16 @@ namespace Tests.Core
                 // Arrange
                 CKAN.Registry registry = CKAN.Registry.Empty(repoData.Manager);
                 long fileSize = new FileInfo(TestData.DogeCoinFlagZip()).Length;
+                Uri url1 = new Uri("http://kitte.nz/");
+                Uri url2 = new Uri("http://puppi.ez/");
 
                 // Act
-                Uri url = new Uri("http://kitte.nz/");
-                cache?.Store(url, TestData.DogeCoinFlagZip());
+                cache?.Store(url1, TestData.DogeCoinFlagZip());
+                cache?.Store(url2, TestData.DogeCoinFlagZip());
                 cache?.EnforceSizeLimit(fileSize - 100, registry);
 
                 // Assert
-                Assert.IsFalse(cache?.IsCached(url));
+                Assert.IsFalse(cache?.IsCached(url1));
             }
         }
 
