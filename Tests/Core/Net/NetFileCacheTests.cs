@@ -230,11 +230,9 @@ namespace Tests.Core
                             cache.GetFileHashSha256(pathInCache, null),
                             "SHA256 hash does not match!");
             var sha1File = $"{pathInCache}.sha1";
-            Assert.IsTrue(File.Exists(sha1File),
-                          $"{sha1File} does not exist!");
+            FileAssert.Exists(sha1File, $"{sha1File} does not exist!");
             var sha256File = $"{pathInCache}.sha256";
-            Assert.IsTrue(File.Exists(sha256File),
-                          $"{sha256File} does not exist!");
+            FileAssert.Exists(sha256File, $"{sha256File} does not exist!");
 
             // Act
             File.Delete(pathInCache);
@@ -280,11 +278,9 @@ namespace Tests.Core
                             cache.GetFileHashSha256(pathInCache, null),
                             "SHA256 hash does not match!");
             var sha1File = $"{pathInCache}.sha1";
-            Assert.IsTrue(File.Exists(sha1File),
-                          $"{sha1File} does not exist!");
+            FileAssert.Exists(sha1File, $"{sha1File} does not exist!");
             var sha256File = $"{pathInCache}.sha256";
-            Assert.IsTrue(File.Exists(sha256File),
-                          $"{sha256File} does not exist!");
+            FileAssert.Exists(sha256File, $"{sha256File} does not exist!");
 
             // Act
             var fileTimestamp  = File.GetLastWriteTimeUtc(pathInCache);

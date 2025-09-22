@@ -162,7 +162,7 @@ namespace Tests.NetKAN.Services
             // Arrange
             var sut = new FileService(_cache!);
             string random_bin = TestData.DataDir("FileIdentifier/random.bin");
-            Assert.IsTrue(File.Exists(random_bin));
+            FileAssert.Exists(random_bin);
 
             // Act
             var result = sut.GetMimetype(random_bin);

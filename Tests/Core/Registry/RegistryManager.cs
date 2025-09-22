@@ -80,15 +80,15 @@ namespace Tests.Core.Registry
 
                 // Act / Assert
                 var mgr = RegistryManager.Instance(gameInst.KSP, repoData.Manager);
-                Assert.IsFalse(File.Exists(jsonPath));
+                FileAssert.DoesNotExist(jsonPath);
                 mgr.Save();
-                Assert.IsTrue(File.Exists(jsonPath));
-                Assert.IsTrue(File.Exists(lockPath));
+                FileAssert.Exists(jsonPath);
+                FileAssert.Exists(lockPath);
                 RegistryManager.DisposeInstance(gameInst.KSP);
 
                 // Assert
-                Assert.IsTrue(File.Exists(jsonPath));
-                Assert.IsFalse(File.Exists(lockPath));
+                FileAssert.Exists(jsonPath);
+                FileAssert.DoesNotExist(lockPath);
                 CollectionAssert.IsNotEmpty(gameInst.KSP.InstallHistoryFiles());
             }
         }
@@ -103,8 +103,8 @@ namespace Tests.Core.Registry
                 RegistryManager.DisposeInstance(gameInst.KSP);
 
                 // Assert
-                Assert.IsFalse(File.Exists(Path.Combine(gameInst.KSP.CkanDir, "registry.json")));
-                Assert.IsFalse(File.Exists(Path.Combine(gameInst.KSP.CkanDir, "registry.locked")));
+                FileAssert.DoesNotExist(Path.Combine(gameInst.KSP.CkanDir, "registry.json"));
+                FileAssert.DoesNotExist(Path.Combine(gameInst.KSP.CkanDir, "registry.locked"));
             }
         }
 

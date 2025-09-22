@@ -38,7 +38,7 @@ namespace Tests.Core.Net
                 // Assert
                 Assert.Multiple(() =>
                 {
-                    Assert.IsTrue(File.Exists(target.filename));
+                    FileAssert.Exists(target.filename);
                     Assert.AreEqual(origSize, realSize,    "Size on disk should match original");
                     Assert.AreEqual(realSize, target.size, "Target size should match size on disk");
                     Assert.AreEqual(origSize, target.size, "Target size should match original");
@@ -87,7 +87,7 @@ namespace Tests.Core.Net
                 {
                     foreach (var t in targets)
                     {
-                        Assert.IsTrue(File.Exists(t.filename));
+                        FileAssert.Exists(t.filename);
                     }
                     CollectionAssert.AreEquivalent(origSizes, realSizes,   "Sizes on disk should match originals");
                     CollectionAssert.AreEquivalent(realSizes, targetSizes, "Target sizes should match sizes on disk");
@@ -212,7 +212,7 @@ namespace Tests.Core.Net
                 }
                 foreach (var t in validTargets)
                 {
-                    Assert.IsTrue(File.Exists(t.filename));
+                    FileAssert.Exists(t.filename);
                 }
             });
             foreach (var t in targets)

@@ -266,8 +266,8 @@ namespace Tests.Core
                 Assert.AreEqual(unmanagedMhVersion, detectedMhVersion);
                 Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedBgVersion));
                 Assert.AreEqual(unmanagedBgVersion, detectedBgVersion);
-                Assert.IsTrue(File.Exists(Path.Combine(tempdir.Directory.FullName, "buildID.txt")));
-                Assert.IsTrue(File.Exists(Path.Combine(tempdir.Directory.FullName, "buildID64.txt")));
+                FileAssert.Exists(Path.Combine(tempdir.Directory.FullName, "buildID.txt"));
+                FileAssert.Exists(Path.Combine(tempdir.Directory.FullName, "buildID64.txt"));
             }
         }
 

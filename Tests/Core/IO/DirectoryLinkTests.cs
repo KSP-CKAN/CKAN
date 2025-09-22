@@ -49,7 +49,7 @@ namespace Tests.Core.IO
                 DirectoryLink.Remove(dirlink.FullName);
 
                 // Assert
-                Assert.IsFalse(File.Exists(dirlink.FullName));
+                FileAssert.DoesNotExist(dirlink.FullName);
                 Assert.IsFalse(Directory.Exists(dirlink.FullName));
             }
         }

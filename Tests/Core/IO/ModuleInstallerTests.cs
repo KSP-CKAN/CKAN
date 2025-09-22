@@ -310,7 +310,7 @@ namespace Tests.Core.IO
             }
 
             // And now, our file should be gone!
-            Assert.IsFalse(File.Exists(file));
+            FileAssert.DoesNotExist(file);
         }
 
         [Test]
@@ -410,7 +410,7 @@ namespace Tests.Core.IO
                 // Make sure the mod is not installed.
                 string mod_file_path = Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP), mod_file_name);
 
-                Assert.IsFalse(File.Exists(mod_file_path));
+                FileAssert.DoesNotExist(mod_file_path);
 
                 // Copy the zip file to the cache directory.
                 Assert.IsFalse(manager.Cache?.IsCached(TestData.DogeCoinFlag_101_module()));
@@ -420,7 +420,7 @@ namespace Tests.Core.IO
                                                       null);
 
                 Assert.IsTrue(manager.Cache?.IsCached(TestData.DogeCoinFlag_101_module()));
-                Assert.IsTrue(File.Exists(cache_path));
+                FileAssert.Exists(cache_path);
 
                 var registry = regMgr.registry;
 
@@ -437,7 +437,7 @@ namespace Tests.Core.IO
                                  ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
-                Assert.IsTrue(File.Exists(mod_file_path));
+                FileAssert.Exists(mod_file_path);
             }
         }
 
@@ -472,7 +472,7 @@ namespace Tests.Core.IO
                                  regMgr, ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
-                Assert.IsTrue(File.Exists(mod_file_path));
+                FileAssert.Exists(mod_file_path);
 
                 // Attempt to uninstall it.
                 new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
@@ -480,7 +480,7 @@ namespace Tests.Core.IO
                                    ref possibleConfigOnlyDirs, regMgr);
 
                 // Check that the module is not installed.
-                Assert.IsFalse(File.Exists(mod_file_path));
+                FileAssert.DoesNotExist(mod_file_path);
             }
         }
 
@@ -721,8 +721,8 @@ namespace Tests.Core.IO
                                      regMgr, ref possibleConfigOnlyDirs);
 
                     // Check that the module is installed.
-                    Assert.IsTrue(File.Exists(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
-                                                           mod_file_name)));
+                    FileAssert.Exists(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
+                                                           mod_file_name));
                 }
             }
         }
@@ -1431,7 +1431,7 @@ namespace Tests.Core.IO
                                       ConfirmPrompt: false);
                 foreach (var dir in shipDirs)
                 {
-                    Assert.IsTrue(File.Exists(inst.KSP.ToAbsoluteGameDir($"{dir}/mycraft.craft")));
+                    FileAssert.Exists(inst.KSP.ToAbsoluteGameDir($"{dir}/mycraft.craft"));
                 }
                 installer.UninstallList(modules.Select(m => m.identifier),
                                         ref possibleConfigOnlyDirs, regMgr, false);
@@ -1709,7 +1709,7 @@ namespace Tests.Core.IO
                 });
                 CollectionAssert.IsNotEmpty(registry.InstalledModules);
                 CollectionAssert.IsNotEmpty(registry.InstalledFileInfo());
-                Assert.IsTrue(File.Exists(inst.KSP.ToAbsoluteGameDir(relPath)));
+                FileAssert.Exists(inst.KSP.ToAbsoluteGameDir(relPath));
             }
         }
 

@@ -22,7 +22,7 @@ namespace Tests.Core.Configuration
 
             _ = new JsonConfiguration(tmpFile);
 
-            Assert.IsTrue(File.Exists(tmpFile));
+            FileAssert.Exists(tmpFile);
 
             File.Delete(tmpFile);
         }
@@ -37,7 +37,7 @@ namespace Tests.Core.Configuration
 
             _ = new JsonConfiguration(tmpFile);
 
-            Assert.IsTrue(File.Exists(tmpFile));
+            FileAssert.Exists(tmpFile);
 
             Directory.Delete(tmpDir, true);
         }
