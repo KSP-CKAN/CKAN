@@ -1639,6 +1639,73 @@ namespace Tests.Core.IO
             }
         }
 
+        [TestCase(true,  true),
+         TestCase(true,  false),
+         TestCase(false, true),
+         TestCase(false, false)]
+        // Resumption of downloads is only possible for HTTP(S)
+        [Category("Online")]
+        public void Upgrade_IncompleteInCache_Completes(bool startInstalled,
+                                                        bool withIncomplete)
+        {
+            // Arrange
+            using (var inst     = new DisposableKSP())
+            using (var cacheDir = new TemporaryDirectory())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
+                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
+            using (var manager  = new GameInstanceManager(nullUser, config))
+            using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var registry  = regMgr.registry;
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
+
+                // Redirect the mod's download
+                var module      = registry.LatestAvailable("DogeCoinFlag",
+                                                           inst.KSP.StabilityToleranceConfig,
+                                                           inst.KSP.VersionCriteria())!;
+                module.download = new List<Uri>
+                {
+                    new Uri("https://github.com/KSP-CKAN/CKAN"
+                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
+                };
+
+                if (withIncomplete)
+                {
+                    // Dump about half the ZIP to the in-progress dir
+                    var filename = manager.Cache!.GetInProgressFileName(module)!.FullName;
+                    File.WriteAllBytes(filename, File.ReadAllBytes(TestData.DogeCoinFlagZip())
+                                                     .Take(20000)
+                                                     .ToArray());
+                }
+                if (startInstalled)
+                {
+                    registry.RegisterModule(new CkanModule(
+                                                @"{
+                                                    ""identifier"": ""DogeCoinFlag"",
+                                                    ""version"":    ""0.1"",
+                                                    ""download"":   ""https://github.com/""
+                                                }"),
+                                            Array.Empty<string>(),
+                                            inst.KSP, false);
+                }
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    HashSet<string>? possibleConfigOnlyDirs = null;
+                    installer.Upgrade(new CkanModule[] { module },
+                                      new NetAsyncModulesDownloader(nullUser,
+                                                                    manager.Cache!),
+                                      ref possibleConfigOnlyDirs,
+                                      regMgr,
+                                      ConfirmPrompt: false);
+                });
+            }
+        }
+
         [Test]
         public void InstallList_WithBadManuallyInstalledDLL_ThrowsDllLocationMismatchKraken()
         {
