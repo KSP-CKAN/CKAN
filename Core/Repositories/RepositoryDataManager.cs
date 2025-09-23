@@ -91,7 +91,8 @@ namespace CKAN
         /// </summary>
         /// <param name="repos">Repositories for which to load data</param>
         /// <param name="percentProgress">Progress object for reporting percentage complete</param>
-        public void Prepopulate(List<Repository> repos, IProgress<int>? percentProgress)
+        public void Prepopulate(IReadOnlyCollection<Repository> repos,
+                                IProgress<int>?                 percentProgress)
         {
             // Look up the sizes of repos that have uncached files
             var reposAndSizes = repos.Where(r => r.uri != null && !repositoriesData.ContainsKey(r))
@@ -143,12 +144,12 @@ namespace CKAN
         /// <param name="user">Object for reporting messages and progress to the UI</param>
         /// <param name="userAgent">User agent string to send with the request</param>
         /// <returns>Updated if we changed any of the available modules, NoChanges if already up to date</returns>
-        public UpdateResult Update(Repository[]       repos,
-                                   IGame              game,
-                                   bool               skipETags,
-                                   NetAsyncDownloader downloader,
-                                   IUser              user,
-                                   string?            userAgent = null)
+        public UpdateResult Update(IReadOnlyCollection<Repository> repos,
+                                   IGame                           game,
+                                   bool                            skipETags,
+                                   NetAsyncDownloader              downloader,
+                                   IUser                           user,
+                                   string?                         userAgent = null)
         {
             // Get latest copy of the game versions data (remote build map)
             user.RaiseMessage(Properties.Resources.NetRepoUpdatingBuildMap);
