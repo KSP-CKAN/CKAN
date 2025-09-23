@@ -15,6 +15,7 @@ using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Core.Configuration;
 using Tests.Data;
+using CKAN.Games.KerbalSpaceProgram2;
 
 namespace Tests.Core.IO
 {
@@ -2058,6 +2059,64 @@ namespace Tests.Core.IO
                                                    "GameData/META.ckan",
                                                },
                                                contents);
+            }
+        }
+
+        [Test]
+        public void InstallList_WithMetapackage_Works()
+        {
+            // Arrange
+            using (var inst     = new DisposableKSP("TestInstance", new KerbalSpaceProgram2()))
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var repo     = new TemporaryRepository(Relationships.RelationshipResolverTests.MergeWithDefaults(
+                                      @"{
+                                          ""identifier"": ""SpaceWarp"",
+                                          ""install"": [
+                                              {
+                                                  ""find"":       ""BurnController"",
+                                                  ""install_to"": ""BepInEx/plugins"",
+                                                  ""as"":         ""SpaceWarp""
+                                              }
+                                          ]
+                                      }",
+                                      @"{
+                                          ""identifier"": ""KSP2ModPack"",
+                                          ""kind"":       ""metapackage"",
+                                          ""depends"": [
+                                              { ""name"": ""BurnController"" }
+                                          ]
+                                      }")
+                                          .Append(TestData.BurnController())
+                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var cache  = new NetModuleCache(cacheDir.Directory.FullName);
+                var module = regMgr.registry.LatestAvailable("KSP2ModPack",
+                                                             inst.KSP.StabilityToleranceConfig,
+                                                             inst.KSP.VersionCriteria())!;
+                var sut    = new ModuleInstaller(inst.KSP, cache, config, nullUser);
+                var opts   = new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig);
+                var possibleConfigOnlyDirs = new HashSet<string>();
+                var depIdents = new string[] { "SpaceWarp", "BurnController" };
+                foreach (var depIdent in depIdents)
+                {
+                    cache.Store(regMgr.registry.LatestAvailable(depIdent,
+                                                                inst.KSP.StabilityToleranceConfig,
+                                                                inst.KSP.VersionCriteria())!,
+                                TestData.BurnControllerZip(), null);
+                }
+
+                // Act
+                sut.InstallList(new CkanModule[] { module },
+                                opts, regMgr, ref possibleConfigOnlyDirs,
+                                ConfirmPrompt: false);
+
+                // Assert
+                CollectionAssert.AreEquivalent(depIdents.Append("KSP2ModPack"),
+                                               regMgr.registry.InstalledModules.Select(im => im.identifier));
             }
         }
 
