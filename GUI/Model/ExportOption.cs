@@ -1,7 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 using CKAN.Types;
 
 namespace CKAN.GUI
 {
+    [ExcludeFromCodeCoverage]
     internal sealed class ExportOption
     {
         private readonly string _string;
