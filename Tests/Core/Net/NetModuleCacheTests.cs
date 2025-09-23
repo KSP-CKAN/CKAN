@@ -81,5 +81,48 @@ namespace Tests.Core
             Assert.IsTrue(valid, reason);
         }
 
+        [Test]
+        public void EnforceSizeLimit_HighAndLowLimits_DeletesWithSmallLimit()
+        {
+            // Arrange
+            using (var cacheDir = new TemporaryDirectory())
+            {
+                var registry = CKAN.Registry.Empty(new RepositoryDataManager());
+                var sut      = new NetModuleCache(cacheDir.Directory.FullName);
+
+                // Act
+                var stored   = sut.Store(TestData.DogeCoinFlag_101_module(),
+                                         TestData.DogeCoinFlagZip(), null);
+
+                // Assert
+                FileAssert.Exists(stored);
+
+                // Act
+                sut.EnforceSizeLimit(100000, registry);
+
+                // Assert
+                FileAssert.Exists(stored);
+
+                // Act
+                sut.EnforceSizeLimit(40000, registry);
+
+                // Assert
+                FileAssert.DoesNotExist(stored);
+            }
+        }
+
+        [Test]
+        public void CheckFreeSpace_WithSmallAndLargeSizes_ThrowsIfLarge()
+        {
+            // Arrange
+            using (var cacheDir = new TemporaryDirectory())
+            {
+                var sut = new NetModuleCache(cacheDir.Directory.FullName);
+
+                // Act / Assert
+                Assert.DoesNotThrow(() => sut.CheckFreeSpace(1024));
+                Assert.Throws<NotEnoughSpaceKraken>(() => sut.CheckFreeSpace(long.MaxValue));
+            }
+        }
     }
 }
