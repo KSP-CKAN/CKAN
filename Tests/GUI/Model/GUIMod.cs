@@ -14,6 +14,7 @@ using CKAN.Versioning;
 
 using Tests.Core.Configuration;
 using Tests.Data;
+using System.Windows.Forms;
 
 namespace Tests.GUI
 {
@@ -156,6 +157,70 @@ namespace Tests.GUI
                 // Assert
                 Assert.IsTrue(sut.IsCached);
                 Assert.IsTrue(notified);
+            }
+        }
+
+        [Test]
+        public void SetAutoInstallChecked_Toggle_Notifies()
+        {
+            // Arrange
+            var module   = TestData.ModuleManagerModule();
+            var cell     = new DataGridViewCheckBoxCell() { Value = false };
+            var row      = new DataGridViewRow() { Tag = module };
+            var col      = new DataGridViewColumn(cell);
+            var grid     = new DataGridView();
+            var instMod  = new InstalledModule(null, module, Array.Empty<string>(), false);
+            var repoData = new RepositoryDataManager();
+            using (var inst     = new DisposableKSP())
+            using (var cacheDir = new TemporaryDirectory())
+            {
+                var cache   = new NetModuleCache(cacheDir.Directory.FullName);
+                var sut     = new GUIMod(instMod, repoData, Registry.Empty(repoData),
+                                         inst.KSP.StabilityToleranceConfig, inst.KSP,
+                                         cache, false, true, true);
+                var callbackCount = 0;
+                sut.PropertyChanged += (sender, e) => ++callbackCount;
+
+                // Act / Assert
+                row.Cells.AddRange(cell);
+                grid.Columns.Add(col);
+                grid.Rows.Add(row);
+                sut.SetAutoInstallChecked(row, col, true);
+                Assert.AreEqual(1, callbackCount);
+                Assert.IsTrue(cell.Value as bool?);
+                sut.SetAutoInstallChecked(row, col, false);
+                Assert.AreEqual(2, callbackCount);
+                Assert.IsFalse(cell.Value as bool?);
+                sut.SetAutoInstallChecked(row, col, true);
+                Assert.AreEqual(3, callbackCount);
+                Assert.IsTrue(cell.Value as bool?);
+            }
+        }
+
+        [Test]
+        public void Equals_Object_Correct()
+        {
+            // Arrange
+            var repoData = new RepositoryDataManager();
+            var module   = TestData.ModuleManagerModule();
+            using (var inst     = new DisposableKSP())
+            using (var cacheDir = new TemporaryDirectory())
+            {
+                var    cache  = new NetModuleCache(cacheDir.Directory.FullName);
+                var    sut    = new GUIMod(module, repoData, Registry.Empty(repoData),
+                                           inst.KSP.StabilityToleranceConfig, inst.KSP,
+                                           cache, false, true, true);
+                object other1 = new GUIMod(module, repoData, Registry.Empty(repoData),
+                                           inst.KSP.StabilityToleranceConfig, inst.KSP,
+                                           cache, false, true, true);
+                object other2 = new GUIMod(TestData.MissionModule(),
+                                           repoData, Registry.Empty(repoData),
+                                           inst.KSP.StabilityToleranceConfig, inst.KSP,
+                                           cache, false, true, true);
+
+                // Act / Assert
+                Assert.IsTrue(sut.Equals(other1));
+                Assert.IsFalse(sut.Equals(other2));
             }
         }
     }
