@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 using CKAN.Configuration;
 using CKAN.Versioning;
@@ -34,9 +35,11 @@ namespace CKAN
         public virtual bool Unsatisfied(IReadOnlyCollection<CkanModule> installing)
             => false;
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
             => $"{source} {reason.GetType().Name} {relationship}";
 
+        [ExcludeFromCodeCoverage]
         public virtual IEnumerable<string> ToLines()
             => Enumerable.Repeat(ToString(), 1);
 
@@ -71,6 +74,7 @@ namespace CKAN
         public override bool Contains(CkanModule mod)
             => installed == mod;
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
             => $"{source} {relationship}: Installed {installed}";
 
@@ -94,6 +98,7 @@ namespace CKAN
         public override bool Contains(CkanModule mod)
             => installing == mod;
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
             => $"{base.ToString()}: Installing {installing}";
 
@@ -110,6 +115,7 @@ namespace CKAN
         {
         }
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
             => $"{base.ToString()}: DLL";
 
@@ -183,9 +189,11 @@ namespace CKAN
                                        && AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
                                        && kvp.Value.All(rr => !rr.Unsatisfied(installing)));
 
+        [ExcludeFromCodeCoverage]
         public override string ToString()
             => string.Join(Environment.NewLine, ToLines());
 
+        [ExcludeFromCodeCoverage]
         public override IEnumerable<string> ToLines()
             => Enumerable.Repeat(resolved.Count > 0 ? $"{base.ToString()}:"
                                                     : $"UNRESOLVED {base.ToString()}", 1)
