@@ -731,6 +731,9 @@ namespace Tests.Data
         public static string BurnControllerZip()
             => DataDir("BurnController-0.8.1.zip");
 
+        public static string BurnControllerNoSwinfoZip()
+            => DataDir("BurnControllerNoSwinfo-0.8.1.zip");
+
         public static string TestRepository()
             => DataDir("repository.json");
 
