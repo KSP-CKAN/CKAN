@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Transactions;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 
@@ -58,58 +59,7 @@ namespace CKAN.CmdLine
                 && options.modules[0] is "ckan"
                 && AutoUpdate.CanUpdate)
             {
-                if (options.dev_build && options.stable_release)
-                {
-                    user.RaiseMessage(Properties.Resources.UpgradeCannotCombineFlags);
-                    return Exit.BADOPT;
-                }
-                var config = manager.Configuration;
-                var devBuild = options.dev_build
-                               || (!options.stable_release && (config.DevBuilds ?? false));
-                if (devBuild != config.DevBuilds)
-                {
-                    config.DevBuilds = devBuild;
-                    user.RaiseMessage(
-                        config.DevBuilds ?? false
-                            ? Properties.Resources.UpgradeSwitchingToDevBuilds
-                            : Properties.Resources.UpgradeSwitchingToStableReleases);
-                }
-
-                user.RaiseMessage(Properties.Resources.UpgradeQueryingCKAN);
-                try
-                {
-                    var upd = new AutoUpdate();
-                    var update = upd.GetUpdate(config.DevBuilds ?? false,
-                                               options.NetUserAgent);
-                    if (update.Version is CkanModuleVersion latestVersion
-                        && !latestVersion.SameClientVersion(Meta.ReleaseVersion))
-                    {
-                        user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable,
-                                          latestVersion?.ToString() ?? "");
-                        if (update.ReleaseNotes != null)
-                        {
-                            user.RaiseMessage("{0}", update.ReleaseNotes);
-                        }
-                        user.RaiseMessage("");
-                        user.RaiseMessage("");
-
-                        if (user.RaiseYesNoDialog(Properties.Resources.UpgradeProceed))
-                        {
-                            user.RaiseMessage(Properties.Resources.UpgradePleaseWait);
-                            upd.StartUpdateProcess(false, options.NetUserAgent, config.DevBuilds ?? false, user);
-                        }
-                    }
-                    else
-                    {
-                        user.RaiseMessage(Properties.Resources.UpgradeAlreadyHaveLatest);
-                    }
-                    return Exit.OK;
-                }
-                catch (Exception exc)
-                {
-                    user.RaiseError(Properties.Resources.UpgradeFailed, exc.Message);
-                    return Exit.ERROR;
-                }
+                return UpgradeCkan(options);
             }
 
             try
@@ -160,6 +110,63 @@ namespace CKAN.CmdLine
             }
 
             return Exit.OK;
+        }
+
+        [ExcludeFromCodeCoverage]
+        private int UpgradeCkan(UpgradeOptions options)
+        {
+            if (options.dev_build && options.stable_release)
+            {
+                user.RaiseMessage(Properties.Resources.UpgradeCannotCombineFlags);
+                return Exit.BADOPT;
+            }
+            var config = manager.Configuration;
+            var devBuild = options.dev_build
+                           || (!options.stable_release && (config.DevBuilds ?? false));
+            if (devBuild != config.DevBuilds)
+            {
+                config.DevBuilds = devBuild;
+                user.RaiseMessage(
+                    config.DevBuilds ?? false
+                        ? Properties.Resources.UpgradeSwitchingToDevBuilds
+                        : Properties.Resources.UpgradeSwitchingToStableReleases);
+            }
+
+            user.RaiseMessage(Properties.Resources.UpgradeQueryingCKAN);
+            try
+            {
+                var upd = new AutoUpdate();
+                var update = upd.GetUpdate(config.DevBuilds ?? false,
+                                           options.NetUserAgent);
+                if (update.Version is CkanModuleVersion latestVersion
+                    && !latestVersion.SameClientVersion(Meta.ReleaseVersion))
+                {
+                    user.RaiseMessage(Properties.Resources.UpgradeNewCKANAvailable,
+                                      latestVersion?.ToString() ?? "");
+                    if (update.ReleaseNotes != null)
+                    {
+                        user.RaiseMessage("{0}", update.ReleaseNotes);
+                    }
+                    user.RaiseMessage("");
+                    user.RaiseMessage("");
+
+                    if (user.RaiseYesNoDialog(Properties.Resources.UpgradeProceed))
+                    {
+                        user.RaiseMessage(Properties.Resources.UpgradePleaseWait);
+                        upd.StartUpdateProcess(false, options.NetUserAgent, config.DevBuilds ?? false, user);
+                    }
+                }
+                else
+                {
+                    user.RaiseMessage(Properties.Resources.UpgradeAlreadyHaveLatest);
+                }
+                return Exit.OK;
+            }
+            catch (Exception exc)
+            {
+                user.RaiseError(Properties.Resources.UpgradeFailed, exc.Message);
+                return Exit.ERROR;
+            }
         }
 
         /// <summary>
