@@ -808,7 +808,7 @@ namespace CKAN
                                 .GroupBy(tuple => tuple.tag,
                                          tuple => tuple.ident)
                                 .ToDictionary(grp => grp.Key,
-                                              grp => new ModuleTag(grp.Key) { ModuleIdentifiers = grp.ToHashSet() });
+                                              grp => new ModuleTag(grp.Key, grp.ToHashSet()));
             untagged = tags.TryGetValue("", out ModuleTag? t) ? t.ModuleIdentifiers
                                                               : new HashSet<string>();
             tags.Remove("");
