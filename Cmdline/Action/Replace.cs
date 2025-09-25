@@ -26,7 +26,7 @@ namespace CKAN.CmdLine
                 options.modules?.Add(CkanModule.FromFile(options.ckan_file).identifier);
             }
 
-            if (options.modules?.Count == 0 && ! options.replace_all)
+            if (options.modules is not { Count: > 0 } && !options.replace_all)
             {
                 user.RaiseError(Properties.Resources.ArgumentMissing);
                 foreach (var h in Actions.GetHelp("replace"))

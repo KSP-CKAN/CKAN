@@ -78,13 +78,10 @@ namespace Tests.CmdLine
                 cmd.RunCommand(inst.KSP, opts);
 
                 // Assert
-                Assert.Multiple(() =>
-                {
-                    CollectionAssert.AreEqual(Enumerable.Empty<string>(),
-                                              user.RaisedErrors);
-                    CollectionAssert.AreEqual(new CkanModule[] { module2 },
-                                              regMgr.registry.InstalledModules.Select(m => m.Module));
-                });
+                CollectionAssert.AreEqual(Enumerable.Empty<string>(),
+                                          user.RaisedErrors);
+                CollectionAssert.AreEqual(new CkanModule[] { module2 },
+                                          regMgr.registry.InstalledModules.Select(m => m.Module));
             }
         }
 
@@ -122,10 +119,10 @@ namespace Tests.CmdLine
                   "1.0"),
         ]
         public void RunCommand_All_Works(string[] modules,
-                                                    string   ident1,
-                                                    string   version1,
-                                                    string   ident2,
-                                                    string   version2)
+                                         string   ident1,
+                                         string   version1,
+                                         string   ident2,
+                                         string   version2)
         {
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
@@ -152,13 +149,37 @@ namespace Tests.CmdLine
                 cmd.RunCommand(inst.KSP, opts);
 
                 // Assert
-                Assert.Multiple(() =>
-                {
-                    CollectionAssert.AreEqual(Enumerable.Empty<string>(),
-                                              user.RaisedErrors);
-                    CollectionAssert.AreEqual(new CkanModule[] { module2 },
-                                              regMgr.registry.InstalledModules.Select(m => m.Module));
-                });
+                CollectionAssert.AreEqual(Enumerable.Empty<string>(),
+                                          user.RaisedErrors);
+                CollectionAssert.AreEqual(new CkanModule[] { module2 },
+                                          regMgr.registry.InstalledModules.Select(m => m.Module));
+            }
+        }
+
+        [Test]
+        public void RunCommand_NoArguments_PrintsUsage()
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst     = new DisposableKSP())
+            using (var repoData = new TemporaryRepositoryData(user))
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager  = new GameInstanceManager(user, config))
+            {
+                ICommand cmd  = new Replace(manager, repoData.Manager, user);
+                var      opts = new ReplaceOptions() { modules = new List<string>() };
+
+                // Act
+                cmd.RunCommand(inst.KSP, opts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "argument missing, perhaps you forgot it?",
+                                              " ",
+                                              "Usage: ckan replace [options]"
+                                          },
+                                          user.RaisedErrors);
             }
         }
     }
