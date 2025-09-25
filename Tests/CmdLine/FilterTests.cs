@@ -1,3 +1,5 @@
+using System.Linq;
+
 using NUnit.Framework;
 
 using CKAN;
@@ -62,7 +64,7 @@ namespace Tests.CmdLine
             using (var manager = new GameInstanceManager(user, config))
             {
                 ISubCommand sut         = new Filter(manager, user);
-                var         globArgs    = new string[] { "filter", "add", "--global", "/MiniAVC.dll" };
+                var         globArgs    = new string[] { "filter", "add", "--global", "--game", "KSP", "/MiniAVC.dll" };
                 var         globsubOpts = new SubCommandOptions(globArgs);
                 var         instArgs    = new string[] { "filter", "add", "/MiniAVC-V2.dll" };
                 var         instsubOpts = new SubCommandOptions(instArgs);
@@ -114,6 +116,44 @@ namespace Tests.CmdLine
                                                inst.KSP.InstallFilters);
                 CollectionAssert.AreEquivalent(new string[] { "/MiniAVC-V2.dll" },
                                                config.GetGlobalInstallFilters(inst.KSP.Game));
+            }
+        }
+
+        [TestCase("add",
+                  new string[]
+                  {
+                      "filter add - Add install filters",
+                      "Usage: ckan filter add [options] filter1 [filter2 ...]",
+                  }),
+         TestCase("remove",
+                  new string[]
+                  {
+                      "filter remove - Remove install filters",
+                      "Usage: ckan filter remove [options] filter1 [filter2 ...]",
+                  }),
+        ]
+        public void RunSubCommand_MissingArguments_PrintsUsage(string verb, string[] help)
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(user, config))
+            {
+                ISubCommand sut         = new Filter(manager, user);
+                var         args        = new string[] { "filter", verb };
+                var         subOpts     = new SubCommandOptions(args);
+
+                // Act
+                sut.RunSubCommand(null, subOpts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "argument missing, perhaps you forgot it?",
+                                              " ",
+                                          }.Concat(help),
+                                          user.RaisedErrors);
             }
         }
     }
