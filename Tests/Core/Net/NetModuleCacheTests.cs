@@ -1,4 +1,6 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading;
 using System.Globalization;
 
@@ -13,6 +15,48 @@ namespace Tests.Core
     [Category("Cache")]
     public class NetModuleCacheTests
     {
+        [Test]
+        public void StorePurgeIsCached_WithModule_Works()
+        {
+            // Arrange
+            var module = TestData.DogeCoinFlag_101_module();
+            using (var dir   = new TemporaryDirectory())
+            using (var cache = new NetModuleCache(dir.Directory.FullName))
+            {
+                int storeCount = 0;
+                int purgeCount = 0;
+                cache.ModStored += m => ++storeCount;
+                cache.ModPurged += m => ++purgeCount;
+
+                // Act / Assert
+                Assert.IsFalse(cache.IsCached(module));
+
+                cache.Store(module, TestData.DogeCoinFlagZip(), null);
+                Assert.AreEqual(1, storeCount);
+                Assert.IsTrue(cache.IsCached(module));
+                CollectionAssert.AreEquivalent(
+                    new Dictionary<string, long>()
+                    {
+                        { "kerbalstuff.com", 53647 },
+                    },
+                    cache.CachedFileSizeByHost(
+                        module.download!.ToDictionary(NetFileCache.CreateURLHash,
+                                                      url => url)));
+
+                cache.Purge(module);
+                Assert.AreEqual(1, purgeCount);
+                Assert.IsFalse(cache.IsCached(module));
+
+                cache.Store(module, TestData.DogeCoinFlagZip(), null);
+                Assert.AreEqual(2, storeCount);
+                Assert.IsTrue(cache.IsCached(module));
+
+                cache.Purge(new CkanModule[] { module });
+                Assert.AreEqual(2, purgeCount);
+                Assert.IsFalse(cache.IsCached(module));
+            }
+        }
+
         [Test]
         public void Store_Invalid_Throws()
         {

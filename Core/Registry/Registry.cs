@@ -1307,7 +1307,7 @@ namespace CKAN
                             .SelectMany(am => am.module_version.Values)
                             .SelectMany(m => m.download ?? Enumerable.Empty<Uri>())
                             .Distinct()
-                            .ToDictionary(url => NetFileCache.CreateURLHash(url),
+                            .ToDictionary(NetFileCache.CreateURLHash,
                                           url => url);
 
         /// <summary>
