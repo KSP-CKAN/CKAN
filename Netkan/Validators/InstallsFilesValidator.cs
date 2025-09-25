@@ -50,20 +50,19 @@ namespace CKAN.NetKAN.Validators
                         .ToList();
                     if (gamedatas.Count != 0)
                     {
-                        var badPaths = string.Join("\r\n", gamedatas);
-                        throw new Kraken($"{dir} directory found within {dir}:\r\n{badPaths}");
+                        var badPaths = string.Join(Environment.NewLine, gamedatas);
+                        throw new Kraken($"{dir} directory found within {dir}:{Environment.NewLine}{badPaths}");
                     }
                 }
 
                 // Make sure we won't try to overwrite our own files
-                var duplicates = allFiles
-                    .GroupBy(f => f)
-                    .SelectMany(grp => grp.Skip(1).Order())
-                    .ToList();
+                var duplicates = allFiles.GroupBy(f => f)
+                                         .SelectMany(grp => grp.Skip(1).Order())
+                                         .ToList();
                 if (duplicates.Count != 0)
                 {
-                    var badPaths = string.Join("\r\n", duplicates);
-                    throw new Kraken($"Multiple files attempted to install to:\r\n{badPaths}");
+                    var badPaths = string.Join(Environment.NewLine, duplicates);
+                    throw new Kraken($"Multiple files attempted to install to:{Environment.NewLine}{badPaths}");
                 }
 
                 // Not a perfect check (subject to false negatives)
