@@ -290,7 +290,7 @@ namespace CKAN.CmdLine
 
             if (Manager.HasInstance(options.name))
             {
-                user.RaiseMessage(Properties.Resources.InstanceAddDuplicate, options.name);
+                user.RaiseError(Properties.Resources.InstanceAddDuplicate, options.name);
                 return Exit.BADOPT;
             }
 
@@ -306,7 +306,7 @@ namespace CKAN.CmdLine
             }
             catch (NotGameDirKraken ex)
             {
-                user.RaiseMessage(Properties.Resources.InstanceNotInstance, ex.path);
+                user.RaiseError(Properties.Resources.InstanceNotInstance, ex.path);
                 return Exit.BADOPT;
             }
         }
@@ -324,7 +324,6 @@ namespace CKAN.CmdLine
             string instanceNameOrPath = options.nameOrPath;
             string newName = options.new_name;
             string newPath = options.new_path;
-
 
             log.Info("Cloning the game instance: " + options.nameOrPath);
 
@@ -358,15 +357,7 @@ namespace CKAN.CmdLine
             }
             catch (NotGameDirKraken kraken)
             {
-                // Two possible reasons:
-                // First: The instance to clone is not a valid game instance.
-                // Only occurs if user manipulated directory and deleted files/folders
-                // which CKAN searches for in validity test.
-
-                // Second: Something went wrong adding the new instance to the registry,
-                // most likely because the newly created directory is not valid.
-
-                log.Error(kraken);
+                user.RaiseError(Properties.Resources.InstanceNotInstance, kraken.path);
                 return Exit.ERROR;
             }
             catch (PathErrorKraken kraken)
@@ -403,7 +394,7 @@ namespace CKAN.CmdLine
             }
             else
             {
-                user.RaiseMessage(Properties.Resources.InstanceCloneFailed);
+                user.RaiseError(Properties.Resources.InstanceCloneFailed);
                 return Exit.ERROR;
             }
         }
@@ -419,7 +410,13 @@ namespace CKAN.CmdLine
 
             if (!Manager.HasInstance(options.old_name))
             {
-                user.RaiseMessage(Properties.Resources.InstanceNotFound, options.old_name);
+                user.RaiseError(Properties.Resources.InstanceNotFound, options.old_name);
+                return Exit.BADOPT;
+            }
+
+            if (Manager.HasInstance(options.new_name))
+            {
+                user.RaiseError(Properties.Resources.InstanceAddDuplicate, options.old_name);
                 return Exit.BADOPT;
             }
 
@@ -440,7 +437,7 @@ namespace CKAN.CmdLine
 
             if (!Manager.HasInstance(options.name))
             {
-                user.RaiseMessage(Properties.Resources.InstanceNotFound, options.name);
+                user.RaiseError(Properties.Resources.InstanceNotFound, options.name);
                 return Exit.BADOPT;
             }
 
@@ -486,7 +483,7 @@ namespace CKAN.CmdLine
             {
                 if (!Manager.Instances.ContainsKey(name))
                 {
-                    user.RaiseMessage(Properties.Resources.InstanceNotFound, name);
+                    user.RaiseError(Properties.Resources.InstanceNotFound, name);
                     return Exit.BADOPT;
                 }
 
@@ -496,7 +493,7 @@ namespace CKAN.CmdLine
                 }
                 catch (NotGameDirKraken k)
                 {
-                    user.RaiseMessage(Properties.Resources.InstanceNotInstance, k.path);
+                    user.RaiseError(Properties.Resources.InstanceNotInstance, k.path);
                     return Exit.BADOPT;
                 }
 
@@ -521,7 +518,7 @@ namespace CKAN.CmdLine
             int badArgument()
             {
                 log.Debug("Instance faking failed: bad argument(s). See console output for details.");
-                user.RaiseMessage(Properties.Resources.InstanceFakeBadArguments);
+                user.RaiseError(Properties.Resources.InstanceFakeBadArguments);
                 return Exit.BADOPT;
             }
 
@@ -542,7 +539,7 @@ namespace CKAN.CmdLine
             var game = KnownGames.GameByShortName(options.gameId ?? "");
             if (game == null)
             {
-                user.RaiseMessage(Properties.Resources.InstanceFakeBadGame, options.gameId ?? "");
+                user.RaiseError(Properties.Resources.InstanceFakeBadGame, options.gameId ?? "");
                 return badArgument();
             }
 
@@ -607,7 +604,7 @@ namespace CKAN.CmdLine
             }
 
             user.RaiseMessage(Properties.Resources.InstanceFakeCreating,
-                               instanceName, path, version.ToString() ?? "");
+                              instanceName, path, version.ToString() ?? "");
             log.Debug("Faking instance...");
 
             try
@@ -639,10 +636,7 @@ namespace CKAN.CmdLine
             }
             catch (NotGameDirKraken kraken)
             {
-                // Something went wrong adding the new instance to the registry,
-                // most likely because the newly created directory is somehow not valid.
-                log.Error(kraken);
-                user.RaiseError("{0}", kraken.Message);
+                user.RaiseError(Properties.Resources.InstanceNotInstance, kraken.path);
                 return error();
             }
             catch (InvalidGameInstanceKraken)
@@ -668,8 +662,8 @@ namespace CKAN.CmdLine
         [ExcludeFromCodeCoverage]
         private int UnknownCommand(string option)
         {
-            user.RaiseMessage("{0}: instance {1}",
-                              Properties.Resources.UnknownCommand, option);
+            user.RaiseError("{0}: instance {1}",
+                            Properties.Resources.UnknownCommand, option);
             return Exit.BADOPT;
         }
 
