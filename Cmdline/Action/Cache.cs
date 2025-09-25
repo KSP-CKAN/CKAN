@@ -13,19 +13,19 @@ namespace CKAN.CmdLine
     public class CacheSubOptions : VerbCommandOptions
     {
         [VerbOption("list", HelpText = "List the download cache path")]
-        public CommonOptions? ListOptions { get; set; }
+        public CacheListOptions? ListOptions { get; set; }
 
         [VerbOption("set", HelpText = "Set the download cache path")]
         public SetOptions? SetOptions { get; set; }
 
         [VerbOption("clear", HelpText = "Clear the download cache directory")]
-        public CommonOptions? ClearOptions { get; set; }
+        public CacheClearOptions? ClearOptions { get; set; }
 
         [VerbOption("reset", HelpText = "Set the download cache path to the default")]
-        public CommonOptions? ResetOptions { get; set; }
+        public CacheResetOptions? ResetOptions { get; set; }
 
         [VerbOption("showlimit", HelpText = "Show the cache size limit")]
-        public CommonOptions? ShowLimitOptions { get; set; }
+        public CacheShowLimitOptions? ShowLimitOptions { get; set; }
 
         [VerbOption("setlimit", HelpText = "Set the cache size limit")]
         public SetLimitOptions? SetLimitOptions { get; set; }
@@ -77,6 +77,11 @@ namespace CKAN.CmdLine
         }
     }
 
+    public class CacheListOptions : CommonOptions { }
+    public class CacheClearOptions : CommonOptions { }
+    public class CacheResetOptions : CommonOptions { }
+    public class CacheShowLimitOptions : CommonOptions { }
+
     public class SetOptions : CommonOptions
     {
         [ValueOption(0)]
@@ -122,41 +127,18 @@ namespace CKAN.CmdLine
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
                     exitCode = options.Handle(manager, user);
-                    if (exitCode != Exit.OK)
+                    if (exitCode == Exit.OK)
                     {
-                        return;
-                    }
-
-                    switch (option)
-                    {
-                        case "list":
-                            exitCode = ListCacheDirectory();
-                            break;
-
-                        case "set":
-                            exitCode = SetCacheDirectory((SetOptions)suboptions);
-                            break;
-
-                        case "clear":
-                            exitCode = ClearCacheDirectory();
-                            break;
-
-                        case "reset":
-                            exitCode = ResetCacheDirectory();
-                            break;
-
-                        case "showlimit":
-                            exitCode = ShowCacheSizeLimit();
-                            break;
-
-                        case "setlimit":
-                            exitCode = SetCacheSizeLimit((SetLimitOptions)suboptions);
-                            break;
-
-                        default:
-                            user.RaiseMessage("{0}: cache {1}", Properties.Resources.UnknownCommand, option);
-                            exitCode = Exit.BADOPT;
-                            break;
+                        exitCode = suboptions switch
+                        {
+                            CacheListOptions      => ListCacheDirectory(),
+                            SetOptions      opts  => SetCacheDirectory(opts),
+                            CacheClearOptions     => ClearCacheDirectory(),
+                            CacheResetOptions     => ResetCacheDirectory(),
+                            CacheShowLimitOptions => ShowCacheSizeLimit(),
+                            SetLimitOptions opts  => SetCacheSizeLimit(opts),
+                            _                     => UnknownCommand(option),
+                        };
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(user); });
@@ -242,6 +224,13 @@ namespace CKAN.CmdLine
                     : (options.Mebibytes * 1024 * 1024);
             }
             return ShowCacheSizeLimit();
+        }
+
+        [ExcludeFromCodeCoverage]
+        private int UnknownCommand(string option)
+        {
+            user.RaiseMessage("{0}: cache {1}", Properties.Resources.UnknownCommand, option);
+            return Exit.BADOPT;
         }
 
         private void printCacheInfo()

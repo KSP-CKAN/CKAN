@@ -166,5 +166,34 @@ namespace Tests.CmdLine
                                 config.CacheSizeLimit);
             }
         }
+
+        [Test]
+        public void RunSubCommand_NoArguments_PrintsUsage()
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(user, config))
+            {
+                ISubCommand sut     = new Cache(manager, user);
+                var         args    = new string[] { "cache", "set" };
+                var         subOpts = new SubCommandOptions(args);
+
+                // Act
+                manager.SetCurrentInstance(inst.KSP);
+                sut.RunSubCommand(null, subOpts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "argument missing, perhaps you forgot it?",
+                                              " ",
+                                              "cache set - Set the download cache path",
+                                              "Usage: ckan cache set [options] path",
+                                          },
+                                          user.RaisedErrors);
+            }
+        }
     }
 }
