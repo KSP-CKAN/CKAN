@@ -31,5 +31,27 @@ namespace Tests.CmdLine
             sut.RunCommand(opts);
             return user.RaisedMessages.Single();
         }
+
+        [TestCase(null),
+         TestCase("x")]
+        public void RunCommand_WithoutVersions_PrintsUsage(string? arg1)
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => false, (msg, objs) => 0);
+            var sut  = new Compare(user);
+            var opts = new CompareOptions() { Left = arg1 };
+
+            // Act
+            sut.RunCommand(opts);
+
+            // Assert
+            CollectionAssert.AreEqual(new string[]
+                                      {
+                                          "argument missing, perhaps you forgot it?",
+                                          " ",
+                                          "Usage: ckan compare [options] version1 version2"
+                                      },
+                                      user.RaisedErrors);
+        }
     }
 }
