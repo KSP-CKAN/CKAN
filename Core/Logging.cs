@@ -10,6 +10,7 @@ using log4net.Core;
 
 namespace CKAN
 {
+    [ExcludeFromCodeCoverage]
     public static class Logging
     {
         public static void Initialize()
@@ -45,7 +46,6 @@ namespace CKAN
 
 #if DEBUG
 
-        [ExcludeFromCodeCoverage]
         public static void WithTimeElapsed(Action<TimeSpan> elapsedCallback,
                                            Action           toMeasure)
         {
@@ -58,7 +58,6 @@ namespace CKAN
             elapsedCallback(sw.Elapsed);
         }
 
-        [ExcludeFromCodeCoverage]
         public static T WithTimeElapsed<T>(Action<TimeSpan> elapsedCallback,
                                            Func<T>          toMeasure)
         {
