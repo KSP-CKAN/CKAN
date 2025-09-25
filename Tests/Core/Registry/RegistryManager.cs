@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.IO;
+using System.Diagnostics;
 
 using NUnit.Framework;
 
@@ -38,6 +39,52 @@ namespace Tests.Core.Registry
                 manager.Dispose();
 
                 Assert.IsFalse(TestLock(registryPath));
+            }
+        }
+
+        public void Instance_WithActiveRegistryLock_Throws()
+        {
+            // Arrange
+            using (var inst = new DisposableKSP())
+            {
+                // Simulate an active lock file
+                var lockfile = Path.Combine(inst.KSP.CkanDir,
+                                            "registry.locked");
+                File.WriteAllText(lockfile,
+                                  Process.GetCurrentProcess().Id.ToString());
+
+                // Assert
+                Assert.Throws<RegistryInUseKraken>(() =>
+                {
+                    // Act
+                    using (var regMgr = RegistryManager.Instance(inst.KSP,
+                                                                 new RepositoryDataManager()))
+                    {
+                    }
+                });
+                FileAssert.Exists(lockfile);
+            }
+        }
+
+        public void Instance_WithStaleRegistryLock_Overwrites()
+        {
+            // Arrange
+            using (var inst = new DisposableKSP())
+            {
+                var lockfile = Path.Combine(inst.KSP.CkanDir,
+                                            "registry.locked");
+                // Simulate a stale lock file
+                File.WriteAllText(lockfile, "69420");
+
+                // Act
+                using (var regMgr = RegistryManager.Instance(inst.KSP,
+                                                             new RepositoryDataManager()))
+                {
+                    // Assert
+                    FileAssert.Exists(lockfile);
+                    Assert.AreNotEqual("69420", File.ReadAllText(lockfile));
+                }
+                FileAssert.DoesNotExist(lockfile);
             }
         }
 
