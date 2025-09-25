@@ -68,5 +68,32 @@ namespace Tests.CmdLine
                 CollectionAssert.IsEmpty(registry.InstalledModules);
             }
         }
+
+        [Test]
+        public void RunCommand_NoArguments_PrintsUsage()
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst     = new DisposableKSP(TestData.TestRegistry()))
+            using (var repoData = new TemporaryRepositoryData(user))
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager  = new GameInstanceManager(user, config))
+            {
+                ICommand sut      = new Remove(manager, repoData.Manager, user);
+                var      opts     = new RemoveOptions();
+
+                // Act
+                sut.RunCommand(inst.KSP, opts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "argument missing, perhaps you forgot it?",
+                                              " ",
+                                              "Usage: ckan remove [options] module [module2 ...]"
+                                          },
+                                          user.RaisedErrors);
+            }
+        }
     }
 }
