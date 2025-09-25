@@ -116,56 +116,24 @@ namespace CKAN.CmdLine
                     CommonOptions comOpts = (CommonOptions)suboptions;
                     comOpts.Merge(opts);
                     exitCode = comOpts.Handle(manager, user);
-                    if (exitCode != Exit.OK)
+                    if (exitCode == Exit.OK)
                     {
-                        return;
-                    }
-
-                    switch (option)
-                    {
-                        case "list":
-                            exitCode = List(MainClass.GetGameInstance(manager))
-                                           ? Exit.OK
-                                           : Exit.ERROR;
-                            break;
-
-                        case "clear":
-                            exitCode = Clear(MainClass.GetGameInstance(manager))
-                                           ? Exit.OK
-                                           : Exit.ERROR;
-                            break;
-
-                        case "add":
-                            exitCode = Add((CompatAddOptions)suboptions,
-                                           MainClass.GetGameInstance(manager))
-                                           ? Exit.OK
-                                           : Exit.ERROR;
-                            break;
-
-                        case "forget":
-                            exitCode = Forget((CompatForgetOptions)suboptions,
-                                              MainClass.GetGameInstance(manager))
-                                           ? Exit.OK
-                                           : Exit.ERROR;
-                            break;
-
-                        case "set":
-                            exitCode = Set((CompatSetOptions)suboptions,
-                                           MainClass.GetGameInstance(manager))
-                                           ? Exit.OK
-                                           : Exit.ERROR;
-                            break;
-
-                        default:
-                            exitCode = Exit.BADOPT;
-                            break;
+                        exitCode = suboptions switch
+                        {
+                            CompatListOptions        => List(MainClass.GetGameInstance(manager)),
+                            CompatClearOptions       => Clear(MainClass.GetGameInstance(manager)),
+                            CompatAddOptions    opts => Add(opts, MainClass.GetGameInstance(manager)),
+                            CompatForgetOptions opts => Forget(opts, MainClass.GetGameInstance(manager)),
+                            CompatSetOptions    opts => Set(opts, MainClass.GetGameInstance(manager)),
+                            _                        => Exit.ERROR,
+                        };
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(user); });
             return exitCode;
         }
 
-        private bool List(CKAN.GameInstance instance)
+        private int List(CKAN.GameInstance instance)
         {
             var versionHeader = Properties.Resources.CompatVersionHeader;
             var actualHeader  = Properties.Resources.CompatActualHeader;
@@ -206,24 +174,24 @@ namespace CKAN.CmdLine
                                   line.Actual.ToString()
                                              .PadRight(actualWidth));
             }
-            return true;
+            return Exit.OK;
         }
 
-        private bool Clear(CKAN.GameInstance instance)
+        private int Clear(CKAN.GameInstance instance)
         {
             instance.SetCompatibleVersions(new List<GameVersion>());
             List(instance);
-            return true;
+            return Exit.OK;
         }
 
-        private bool Add(CompatAddOptions  addOptions,
-                         CKAN.GameInstance instance)
+        private int Add(CompatAddOptions  addOptions,
+                        CKAN.GameInstance instance)
         {
             if (addOptions.Versions?.Count < 1)
             {
                 user.RaiseError(Properties.Resources.CompatMissing);
                 PrintUsage("add");
-                return false;
+                return Exit.BADOPT;
             }
             if (!TryParseVersions(addOptions.Versions,
                                   out GameVersion[] goodVers,
@@ -231,24 +199,24 @@ namespace CKAN.CmdLine
             {
                 user.RaiseError(Properties.Resources.CompatInvalid,
                                 string.Join(", ", badVers));
-                return false;
+                return Exit.BADOPT;
             }
             instance.SetCompatibleVersions(instance.CompatibleVersions
                                                    .Concat(goodVers)
                                                    .Distinct()
                                                    .ToList());
             List(instance);
-            return true;
+            return Exit.OK;
         }
 
-        private bool Forget(CompatForgetOptions forgetOptions,
-                            CKAN.GameInstance   instance)
+        private int Forget(CompatForgetOptions forgetOptions,
+                           CKAN.GameInstance   instance)
         {
             if (forgetOptions.Versions?.Count < 1)
             {
                 user.RaiseError(Properties.Resources.CompatMissing);
                 PrintUsage("forget");
-                return false;
+                return Exit.BADOPT;
             }
             if (!TryParseVersions(forgetOptions.Versions,
                                   out GameVersion[] goodVers,
@@ -256,7 +224,7 @@ namespace CKAN.CmdLine
             {
                 user.RaiseError(Properties.Resources.CompatInvalid,
                                 string.Join(", ", badVers));
-                return false;
+                return Exit.BADOPT;
             }
             var rmActualVers = goodVers.Intersect(instance.Version() is GameVersion gv
                                                       ? new GameVersion[] { gv, gv.WithoutBuild }
@@ -267,23 +235,23 @@ namespace CKAN.CmdLine
             {
                 user.RaiseError(Properties.Resources.CompatCantForget,
                                 string.Join(", ", rmActualVers));
-                return false;
+                return Exit.ERROR;
             }
             instance.SetCompatibleVersions(instance.CompatibleVersions
                                                    .Except(goodVers)
                                                    .ToList());
             List(instance);
-            return true;
+            return Exit.OK;
         }
 
-        private bool Set(CompatSetOptions  setOptions,
-                         CKAN.GameInstance instance)
+        private int Set(CompatSetOptions  setOptions,
+                        CKAN.GameInstance instance)
         {
             if (setOptions.Versions?.Count < 1)
             {
                 user.RaiseError(Properties.Resources.CompatMissing);
                 PrintUsage("set");
-                return false;
+                return Exit.BADOPT;
             }
             if (!TryParseVersions(setOptions.Versions,
                                   out GameVersion[] goodVers,
@@ -291,11 +259,11 @@ namespace CKAN.CmdLine
             {
                 user.RaiseError(Properties.Resources.CompatInvalid,
                                 string.Join(", ", badVers));
-                return false;
+                return Exit.BADOPT;
             }
             instance.SetCompatibleVersions(goodVers.Distinct().ToList());
             List(instance);
-            return true;
+            return Exit.OK;
         }
 
         [ExcludeFromCodeCoverage]
