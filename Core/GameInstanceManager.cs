@@ -53,10 +53,6 @@ namespace CKAN
 
             private set
             {
-                if (value != null && !string.IsNullOrEmpty(value) && !HasInstance(value))
-                {
-                    throw new InvalidGameInstanceKraken(value);
-                }
                 Configuration.AutoStartInstance = value;
             }
         }
