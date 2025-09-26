@@ -23,13 +23,7 @@ namespace Tests.Data
 
         public void Dispose()
         {
-            try
-            {
-                Directory.Delete(true);
-            }
-            catch
-            {
-            }
+            Directory.Delete(true);
             GC.SuppressFinalize(this);
         }
 

@@ -8,7 +8,6 @@ namespace Tests.Core.Net
     using Net = CKAN.Net;
 
     [TestFixture]
-    [Category("Online")]
     public class NetTests
     {
         // TODO: Test certificate errors. How?
@@ -16,6 +15,7 @@ namespace Tests.Core.Net
         private static readonly Uri KnownURL = new Uri("http://example.com/");
 
         [TestCase("cheese sandwich")]
+        [Category("Online")]
         public void Download_InvalidURL_Throws(string url)
         {
             // Download should throw an exception on an invalid URL.
@@ -26,6 +26,7 @@ namespace Tests.Core.Net
         }
 
         [TestCase("example.txt")]
+        [Category("Online")]
         public void Download_WithFilename_ReturnsSavefileNameAndSavefileExists(string savefile)
         {
             // Three-argument test, should save to the file we supply
@@ -36,6 +37,7 @@ namespace Tests.Core.Net
         }
 
         [Test]
+        [Category("Online")]
         public void Download_NoFilename_SavesToTemporaryFile()
         {
             string downloaded = Net.Download(KnownURL, out _);
@@ -45,6 +47,7 @@ namespace Tests.Core.Net
 
         [TestCase("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1")]
         [Category("FlakyNetwork")]
+        [Category("Online")]
         public void Download_SpaceDock_Works(string url)
         {
             // Arrange
@@ -61,6 +64,7 @@ namespace Tests.Core.Net
         }
 
         [TestCase("https://www.kerbaltek.com/_IamCKAN_Gimme_hyperedit_")]
+        [Category("Online")]
         public void Download_Redirect_Works(string url)
         {
             // Arrange
@@ -77,6 +81,7 @@ namespace Tests.Core.Net
         }
 
         [TestCase("https://github.com/")]
+        [Category("Online")]
         public void CurrentETag_ValidHost_NonEmpty(string url)
         {
             // Arrange

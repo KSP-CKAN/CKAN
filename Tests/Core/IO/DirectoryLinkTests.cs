@@ -49,8 +49,8 @@ namespace Tests.Core.IO
                 DirectoryLink.Remove(dirlink.FullName);
 
                 // Assert
-                Assert.IsFalse(File.Exists(dirlink.FullName));
-                Assert.IsFalse(Directory.Exists(dirlink.FullName));
+                FileAssert.DoesNotExist(dirlink.FullName);
+                DirectoryAssert.DoesNotExist(dirlink.FullName);
             }
         }
     }

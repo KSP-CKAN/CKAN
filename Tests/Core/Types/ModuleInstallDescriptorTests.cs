@@ -82,41 +82,43 @@ namespace Tests.Core.Types
         public void AllowsInstallsToShipsDirectories(string directory)
         {
             // Arrange
-            var zip = ZipFile.Create(new MemoryStream());
-            zip.BeginUpdate();
-            zip.AddDirectory("ExampleShips");
-            zip.Add(new ZipEntry("ExampleShips/AwesomeShip.craft") { Size = 0, CompressedSize = 0 });
-            zip.CommitUpdate();
-
-            var mod = CkanModule.FromJson(string.Format(
-                @"{{
-                    ""spec_version"": 1,
-                    ""identifier"": ""AwesomeMod"",
-                    ""author"": ""AwesomeModder"",
-                    ""version"": ""1.0.0"",
-                    ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
-                    ""install"": [
-                        {{
-                            ""file"": ""ExampleShips/AwesomeShip.craft"",
-                            ""install_to"": ""{0}""
-                        }}
-                    ]
-                }}",
-                directory));
-
-            using (var inst = new DisposableKSP())
+            using (var zip = ZipFile.Create(new MemoryStream()))
             {
-                // Act
-                var results = mod.install!.SelectMany(i => i.FindInstallableFiles(zip, inst.KSP))
-                                          .ToArray();
+                zip.BeginUpdate();
+                zip.AddDirectory("ExampleShips");
+                zip.Add(new ZipEntry("ExampleShips/AwesomeShip.craft") { Size = 0, CompressedSize = 0 });
+                zip.CommitUpdate();
 
-                // Assert
-                CollectionAssert.AreEquivalent(
-                    new string[]
-                    {
-                        inst.KSP.ToAbsoluteGameDir($"{directory}/AwesomeShip.craft"),
-                    },
-                    results.Select(f => f.destination));
+                var mod = CkanModule.FromJson(string.Format(
+                    @"{{
+                        ""spec_version"": 1,
+                        ""identifier"": ""AwesomeMod"",
+                        ""author"": ""AwesomeModder"",
+                        ""version"": ""1.0.0"",
+                        ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
+                        ""install"": [
+                            {{
+                                ""file"": ""ExampleShips/AwesomeShip.craft"",
+                                ""install_to"": ""{0}""
+                            }}
+                        ]
+                    }}",
+                    directory));
+
+                using (var inst = new DisposableKSP())
+                {
+                    // Act
+                    var results = mod.install!.SelectMany(i => i.FindInstallableFiles(zip, inst.KSP))
+                                              .ToArray();
+
+                    // Assert
+                    CollectionAssert.AreEquivalent(
+                        new string[]
+                        {
+                            inst.KSP.ToAbsoluteGameDir($"{directory}/AwesomeShip.craft"),
+                        },
+                        results.Select(f => f.destination));
+                }
             }
         }
 
@@ -127,41 +129,43 @@ namespace Tests.Core.Types
         {
             // Arrange
             // Bogus zip with example to install.
-            var zip = ZipFile.Create(new MemoryStream());
-            zip.BeginUpdate();
-            zip.AddDirectory("saves");
-            zip.AddDirectory("saves/scenarios");
-            zip.Add(new ZipEntry("saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
-            zip.CommitUpdate();
-
-            var mod = CkanModule.FromJson(@"
-                {
-                    ""spec_version"": ""v1.14"",
-                    ""identifier"": ""AwesomeMod"",
-                    ""author"": ""AwesomeModder"",
-                    ""version"": ""1.0.0"",
-                    ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
-                    ""install"": [
-                        {
-                            ""file"": ""saves/scenarios/AwesomeRace.sfs"",
-                            ""install_to"": ""Scenarios""
-                        }
-                    ]
-                }");
-
-            using (var inst = new DisposableKSP())
+            using (var zip = ZipFile.Create(new MemoryStream()))
             {
-                // Act
-                var results = mod.install!.SelectMany(i => i.FindInstallableFiles(zip, inst.KSP))
-                                          .ToArray();
+                zip.BeginUpdate();
+                zip.AddDirectory("saves");
+                zip.AddDirectory("saves/scenarios");
+                zip.Add(new ZipEntry("saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
+                zip.CommitUpdate();
 
-                // Assert
-                CollectionAssert.AreEquivalent(
-                    new string[]
+                var mod = CkanModule.FromJson(@"
                     {
-                        inst.KSP.ToAbsoluteGameDir("saves/scenarios/AwesomeRace.sfs"),
-                    },
-                    results.Select(f => f.destination));
+                        ""spec_version"": ""v1.14"",
+                        ""identifier"": ""AwesomeMod"",
+                        ""author"": ""AwesomeModder"",
+                        ""version"": ""1.0.0"",
+                        ""download"": ""https://awesomemod.example/AwesomeMod.zip"",
+                        ""install"": [
+                            {
+                                ""file"": ""saves/scenarios/AwesomeRace.sfs"",
+                                ""install_to"": ""Scenarios""
+                            }
+                        ]
+                    }");
+
+                using (var inst = new DisposableKSP())
+                {
+                    // Act
+                    var results = mod.install!.SelectMany(i => i.FindInstallableFiles(zip, inst.KSP))
+                                              .ToArray();
+
+                    // Assert
+                    CollectionAssert.AreEquivalent(
+                        new string[]
+                        {
+                            inst.KSP.ToAbsoluteGameDir("saves/scenarios/AwesomeRace.sfs"),
+                        },
+                        results.Select(f => f.destination));
+                }
             }
         }
     }

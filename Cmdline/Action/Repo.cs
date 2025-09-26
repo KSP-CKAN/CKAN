@@ -151,42 +151,18 @@ namespace CKAN.CmdLine
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
                     exitCode = options.Handle(Manager, user);
-                    if (exitCode != Exit.OK)
+                    if (exitCode == Exit.OK)
                     {
-                        return;
-                    }
-
-                    switch (option)
-                    {
-                        case "available":
-                            exitCode = AvailableRepositories(options.NetUserAgent);
-                            break;
-
-                        case "list":
-                            exitCode = ListRepositories();
-                            break;
-
-                        case "add":
-                            exitCode = AddRepository((RepoAddOptions)suboptions);
-                            break;
-
-                        case "priority":
-                            exitCode = SetRepositoryPriority((RepoPriorityOptions)suboptions);
-                            break;
-
-                        case "remove":
-                        case "forget":
-                            exitCode = ForgetRepository((RepoForgetOptions)suboptions);
-                            break;
-
-                        case "default":
-                            exitCode = DefaultRepository((RepoDefaultOptions)suboptions);
-                            break;
-
-                        default:
-                            user.RaiseMessage(Properties.Resources.RepoUnknownCommand, option);
-                            exitCode = Exit.BADOPT;
-                            break;
+                        exitCode = suboptions switch
+                        {
+                            RepoAvailableOptions     => AvailableRepositories(options.NetUserAgent),
+                            RepoListOptions          => ListRepositories(),
+                            RepoAddOptions      opts => AddRepository(opts),
+                            RepoPriorityOptions opts => SetRepositoryPriority(opts),
+                            RepoForgetOptions   opts => ForgetRepository(opts),
+                            RepoDefaultOptions  opts => DefaultRepository(opts),
+                            _                        => UnknownCommand(option),
+                        };
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(user); });
@@ -261,8 +237,6 @@ namespace CKAN.CmdLine
 
         private int AddRepository(RepoAddOptions options)
         {
-            RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
-
             if (options.name == null)
             {
                 user.RaiseError(Properties.Resources.ArgumentMissing);
@@ -293,10 +267,11 @@ namespace CKAN.CmdLine
                         return Exit.BADOPT;
                     }
                 }
+            }
 
-                }
             if (options.uri != null)
             {
+                RegistryManager manager = RegistryManager.Instance(MainClass.GetGameInstance(Manager), repoData);
                 log.DebugFormat("About to add repository '{0}' - '{1}'", options.name, options.uri);
                 if (manager.registry.Repositories.ContainsKey(options.name))
                 {
@@ -448,6 +423,13 @@ namespace CKAN.CmdLine
                 return Exit.OK;
             }
             return Exit.ERROR;
+        }
+
+        [ExcludeFromCodeCoverage]
+        private int UnknownCommand(string option)
+        {
+            user.RaiseMessage(Properties.Resources.RepoUnknownCommand, option);
+            return Exit.BADOPT;
         }
 
         [ExcludeFromCodeCoverage]

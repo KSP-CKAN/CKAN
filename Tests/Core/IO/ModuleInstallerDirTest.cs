@@ -69,6 +69,7 @@ namespace Tests.Core.IO
         [OneTimeTearDown]
         public void TearDown()
         {
+            _registryManager?.Dispose();
             _manager?.Dispose();
             _config?.Dispose();
             _instance?.Dispose();

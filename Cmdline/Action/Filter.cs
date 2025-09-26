@@ -47,37 +47,23 @@ namespace CKAN.CmdLine
                     CommonOptions options = (CommonOptions)suboptions;
                     options.Merge(opts);
                     exitCode = options.Handle(manager, user);
-                    if (exitCode != Exit.OK)
+                    if (exitCode == Exit.OK)
                     {
-                        return;
-                    }
-
-                    try
-                    {
-                        switch (option)
+                        try
                         {
-                            case "list":
-                                exitCode = ListFilters((FilterListOptions)suboptions);
-                                break;
-
-                            case "add":
-                                exitCode = AddFilters((FilterAddOptions)suboptions, option);
-                                break;
-
-                            case "remove":
-                                exitCode = RemoveFilters((FilterRemoveOptions)suboptions, option);
-                                break;
-
-                            default:
-                                user.RaiseMessage("{0}: filter {1}", Properties.Resources.UnknownCommand, option);
-                                exitCode = Exit.BADOPT;
-                                break;
+                            exitCode = suboptions switch
+                            {
+                                FilterListOptions   opts => ListFilters(opts),
+                                FilterAddOptions    opts => AddFilters(opts, option),
+                                FilterRemoveOptions opts => RemoveFilters(opts, option),
+                                _                        => UnknownCommand(option),
+                            };
                         }
-                    }
-                    catch (Kraken k)
-                    {
-                        user.RaiseError("{0}", k.Message);
-                        exitCode = Exit.BADOPT;
+                        catch (Kraken k)
+                        {
+                            user.RaiseError("{0}", k.Message);
+                            exitCode = Exit.BADOPT;
+                        }
                     }
                 }
             }, () => { exitCode = MainClass.AfterHelp(user); });
@@ -230,6 +216,14 @@ namespace CKAN.CmdLine
                 }
             }
             return Exit.OK;
+        }
+
+        [ExcludeFromCodeCoverage]
+        private int UnknownCommand(string option)
+        {
+            user.RaiseMessage("{0}: filter {1}",
+                              Properties.Resources.UnknownCommand, option);
+            return Exit.BADOPT;
         }
 
         private static IGame GetGame(string? gameId, CKAN.GameInstance instance)

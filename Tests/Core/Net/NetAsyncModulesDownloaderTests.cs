@@ -5,9 +5,9 @@ using System.Linq;
 
 using NUnit.Framework;
 
-using Tests.Data;
 using CKAN;
 using CKAN.IO;
+using Tests.Data;
 using Tests.Core.Configuration;
 
 namespace Tests.Core.Net
@@ -25,6 +25,7 @@ namespace Tests.Core.Net
         private DisposableKSP?           ksp;
         private NetModuleCache?          cache;
         private TemporaryRepositoryData? repoData;
+        private FakeConfiguration?       config;
 
         [SetUp]
         public void Setup()
@@ -43,7 +44,8 @@ namespace Tests.Core.Net
 
             // Give us a registry to play with.
             ksp = new DisposableKSP();
-            manager = new GameInstanceManager(user, new FakeConfiguration(ksp.KSP, ksp.KSP.Name));
+            config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
+            manager = new GameInstanceManager(user, config);
             registry_manager = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                         repos.Values);
             registry = registry_manager.registry;
@@ -56,6 +58,8 @@ namespace Tests.Core.Net
         [TearDown]
         public void TearDown()
         {
+            registry_manager?.Dispose();
+            config?.Dispose();
             manager?.Dispose();
             ksp?.Dispose();
             repoData?.Dispose();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -145,10 +146,10 @@ namespace Tests.CmdLine
         {
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
-            using (var inst   = new DisposableKSP())
-            using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(user, config))
             {
-                var         manager = new GameInstanceManager(user, config);
                 ISubCommand sut     = new Compat(manager, user);
                 var         args    = new string[] { "compat", "set", "1.3", "1.4", "1.5" };
                 var         subOpts = new SubCommandOptions(args);
@@ -171,6 +172,50 @@ namespace Tests.CmdLine
                                                    new GameVersion(1, 5),
                                                },
                                                inst.KSP.CompatibleVersions);
+            }
+        }
+
+        [TestCase("add",
+                  new string[]
+                  {
+                      "compat add - Add versions to compatible game versions list",
+                      "Usage: ckan compat add [options] version [version2 ...]"
+                  }),
+         TestCase("forget",
+                  new string[]
+                  {
+                      "compat forget - Forget compatible game versions",
+                      "Usage: ckan compat forget [options] version [version2 ...]",
+                  }),
+         TestCase("set",
+                  new string[]
+                  {
+                      "compat set - Set the compatible game versions list",
+                      "Usage: ckan compat set [options] version [version2 ...]",
+                  }),
+        ]
+        public void RunSubCommand_MissingArguments_PrintsHelp(string verb, string[] help)
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(user, config))
+            {
+                ISubCommand sut     = new Compat(manager, user);
+                var         args    = new string[] { "compat", verb };
+                var         subOpts = new SubCommandOptions(args);
+
+                // Act
+                sut.RunSubCommand(null, subOpts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "No game versions specified!",
+                                              " ",
+                                          }.Concat(help),
+                                          user.RaisedErrors);
             }
         }
     }

@@ -29,7 +29,7 @@ namespace CKAN.IO
                 log.InfoFormat("Found Steam at {0}", libraryPath);
                 var txtParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
                 var appPaths      = (Utilities.DefaultIfThrows(
-                                                   () => txtParser.Deserialize<Dictionary<int, LibraryFolder>>(stream),
+                                                   () => DeserializeAll<Dictionary<int, LibraryFolder>>(txtParser, stream),
                                                    exc =>
                                                    {
                                                        log.Warn($"Failed to parse {libFoldersConfigPath}", exc);
@@ -86,8 +86,8 @@ namespace CKAN.IO
         private static IEnumerable<GameBase> LibraryPathGames(KVSerializer acfParser,
                                                               string       appPath)
             => Directory.EnumerateFiles(appPath, "*.acf")
-                        .SelectWithCatch(acfFile => acfParser.Deserialize<SteamGame>(File.OpenRead(acfFile))
-                                                             .NormalizeDir(Path.Combine(appPath, "common")),
+                        .SelectWithCatch(acfFile => DeserializeAll<SteamGame>(acfParser, File.OpenRead(acfFile))
+                                                        .NormalizeDir(Path.Combine(appPath, "common")),
                                          (acfFile, exc) =>
                                          {
                                              log.Warn($"Failed to parse {acfFile}:", exc);
@@ -97,7 +97,7 @@ namespace CKAN.IO
 
         private static IEnumerable<GameBase> ShortcutsFileGames(KVSerializer vdfParser,
                                                                 string       path)
-            => Utilities.DefaultIfThrows(() => vdfParser.Deserialize<Dictionary<int, NonSteamGame>>(File.OpenRead(path)),
+            => Utilities.DefaultIfThrows(() => DeserializeAll<Dictionary<int, NonSteamGame>>(vdfParser, File.OpenRead(path)),
                                          exc =>
                                          {
                                              log.Warn($"Failed to parse {path}", exc);
@@ -106,6 +106,14 @@ namespace CKAN.IO
                         ?.Values
                          .Select(nsg => nsg.NormalizeDir(path))
                         ?? Enumerable.Empty<NonSteamGame>();
+
+        private static T DeserializeAll<T>(KVSerializer serializer, Stream stream)
+        {
+            using (stream)
+            {
+                return serializer.Deserialize<T>(stream);
+            }
+        }
 
         /// <summary>
         /// Find the location where the current user's application data resides. Specific to macOS.

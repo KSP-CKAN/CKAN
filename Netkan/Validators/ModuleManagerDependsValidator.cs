@@ -8,17 +8,15 @@ using log4net;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using CKAN.Extensions;
-using CKAN.Games;
 
 namespace CKAN.NetKAN.Validators
 {
     internal sealed class ModuleManagerDependsValidator : IValidator
     {
-        public ModuleManagerDependsValidator(IHttpService http, IModuleService moduleService, IGame game)
+        public ModuleManagerDependsValidator(IHttpService http, IModuleService moduleService)
         {
             _http          = http;
             _moduleService = moduleService;
-            _game          = game;
         }
 
         public void Validate(Metadata metadata)
@@ -64,7 +62,6 @@ namespace CKAN.NetKAN.Validators
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
-        private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(ModuleManagerDependsValidator));
     }

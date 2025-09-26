@@ -15,6 +15,7 @@ using CKAN.Games.KerbalSpaceProgram;
 
 using Tests.Core.Configuration;
 using Tests.Data;
+using CKAN.Games.KerbalSpaceProgram2;
 
 namespace Tests.Core.IO
 {
@@ -245,31 +246,33 @@ namespace Tests.Core.IO
         {
             // Arrange
             // Create a ZIP file with an entry that tries to exploit Zip Slip
-            var zip = ZipFile.Create(new MemoryStream());
-            zip.BeginUpdate();
-            zip.AddDirectory("AwesomeMod");
-            zip.Add(new ZipEntry("AwesomeMod/../../../outside.txt") { Size = 0, CompressedSize = 0 });
-            zip.CommitUpdate();
-            // Create a mod that would install the top folder of that path
-            var mod = CkanModule.FromJson(@"
-                {
-                    ""spec_version"": 1,
-                    ""identifier"": ""AwesomeMod"",
-                    ""author"": ""AwesomeModder"",
-                    ""version"": ""1.0.0"",
-                    ""download"": ""https://awesomemod.example/AwesomeMod.zip""
-                }");
-
-            // Act / Assert
-            Assert.Throws<BadInstallLocationKraken>(
-                delegate
-                {
-                    using (var ksp = new DisposableKSP())
+            using (var zip = ZipFile.Create(new MemoryStream()))
+            {
+                zip.BeginUpdate();
+                zip.AddDirectory("AwesomeMod");
+                zip.Add(new ZipEntry("AwesomeMod/../../../outside.txt") { Size = 0, CompressedSize = 0 });
+                zip.CommitUpdate();
+                // Create a mod that would install the top folder of that path
+                var mod = CkanModule.FromJson(@"
                     {
-                        var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP);
-                    }
-                },
-                "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
+                        ""spec_version"": 1,
+                        ""identifier"": ""AwesomeMod"",
+                        ""author"": ""AwesomeModder"",
+                        ""version"": ""1.0.0"",
+                        ""download"": ""https://awesomemod.example/AwesomeMod.zip""
+                    }");
+
+                // Act / Assert
+                Assert.Throws<BadInstallLocationKraken>(
+                    delegate
+                    {
+                        using (var ksp = new DisposableKSP())
+                        {
+                            var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP);
+                        }
+                    },
+                    "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
+            }
         }
 
         [Test]
@@ -308,7 +311,7 @@ namespace Tests.Core.IO
             }
 
             // And now, our file should be gone!
-            Assert.IsFalse(File.Exists(file));
+            FileAssert.DoesNotExist(file);
         }
 
         [Test]
@@ -353,16 +356,17 @@ namespace Tests.Core.IO
 
         private static string CopyDogeFromZip()
         {
-            ZipFile zipfile = new ZipFile(TestData.DogeCoinFlagZip());
+            using (ZipFile zipfile = new ZipFile(TestData.DogeCoinFlagZip()))
+            {
+                ZipEntry entry = zipfile.GetEntry(flag_path);
+                string tmpfile = Path.GetTempFileName();
 
-            ZipEntry entry = zipfile.GetEntry(flag_path);
-            string tmpfile = Path.GetTempFileName();
+                // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
+                File.Delete(tmpfile);
+                ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
 
-            // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
-            File.Delete(tmpfile);
-            ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
-
-            return tmpfile;
+                return tmpfile;
+            }
         }
 
         [Test]
@@ -407,7 +411,7 @@ namespace Tests.Core.IO
                 // Make sure the mod is not installed.
                 string mod_file_path = Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP), mod_file_name);
 
-                Assert.IsFalse(File.Exists(mod_file_path));
+                FileAssert.DoesNotExist(mod_file_path);
 
                 // Copy the zip file to the cache directory.
                 Assert.IsFalse(manager.Cache?.IsCached(TestData.DogeCoinFlag_101_module()));
@@ -417,7 +421,7 @@ namespace Tests.Core.IO
                                                       null);
 
                 Assert.IsTrue(manager.Cache?.IsCached(TestData.DogeCoinFlag_101_module()));
-                Assert.IsTrue(File.Exists(cache_path));
+                FileAssert.Exists(cache_path);
 
                 var registry = regMgr.registry;
 
@@ -434,7 +438,7 @@ namespace Tests.Core.IO
                                  ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
-                Assert.IsTrue(File.Exists(mod_file_path));
+                FileAssert.Exists(mod_file_path);
             }
         }
 
@@ -469,7 +473,7 @@ namespace Tests.Core.IO
                                  regMgr, ref possibleConfigOnlyDirs);
 
                 // Check that the module is installed.
-                Assert.IsTrue(File.Exists(mod_file_path));
+                FileAssert.Exists(mod_file_path);
 
                 // Attempt to uninstall it.
                 new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser)
@@ -477,7 +481,7 @@ namespace Tests.Core.IO
                                    ref possibleConfigOnlyDirs, regMgr);
 
                 // Check that the module is not installed.
-                Assert.IsFalse(File.Exists(mod_file_path));
+                FileAssert.DoesNotExist(mod_file_path);
             }
         }
 
@@ -530,7 +534,7 @@ namespace Tests.Core.IO
                 modules.Clear();
 
                 // Check that the directory is installed.
-                Assert.IsTrue(Directory.Exists(directoryPath));
+                DirectoryAssert.Exists(directoryPath);
 
                 // Uninstall both mods.
 
@@ -542,7 +546,7 @@ namespace Tests.Core.IO
                                    ref possibleConfigOnlyDirs, regMgr);
 
                 // Check that the directory has been deleted.
-                Assert.IsFalse(Directory.Exists(directoryPath));
+                DirectoryAssert.DoesNotExist(directoryPath);
             }
         }
 
@@ -647,9 +651,10 @@ namespace Tests.Core.IO
             // Arrange
             using (var inst     = new DisposableKSP())
             using (var repoData = new TemporaryRepositoryData(nullUser))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
             {
                 var game     = new KerbalSpaceProgram();
-                var registry = RegistryManager.Instance(inst.KSP, repoData.Manager).registry;
+                var registry = regMgr.registry;
                 // Make files to be registered to another mod
                 var absFiles = registeredFiles.Select(inst.KSP.ToAbsoluteGameDir)
                                               .ToList();
@@ -717,8 +722,8 @@ namespace Tests.Core.IO
                                      regMgr, ref possibleConfigOnlyDirs);
 
                     // Check that the module is installed.
-                    Assert.IsTrue(File.Exists(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
-                                                           mod_file_name)));
+                    FileAssert.Exists(Path.Combine(inst.KSP.Game.PrimaryModDirectory(inst.KSP),
+                                                           mod_file_name));
                 }
             }
         }
@@ -1427,7 +1432,7 @@ namespace Tests.Core.IO
                                       ConfirmPrompt: false);
                 foreach (var dir in shipDirs)
                 {
-                    Assert.IsTrue(File.Exists(inst.KSP.ToAbsoluteGameDir($"{dir}/mycraft.craft")));
+                    FileAssert.Exists(inst.KSP.ToAbsoluteGameDir($"{dir}/mycraft.craft"));
                 }
                 installer.UninstallList(modules.Select(m => m.identifier),
                                         ref possibleConfigOnlyDirs, regMgr, false);
@@ -1436,7 +1441,7 @@ namespace Tests.Core.IO
                 Assert.IsNull(possibleConfigOnlyDirs);
                 foreach (var absPath in shipDirs.Select(inst.KSP.ToAbsoluteGameDir))
                 {
-                    Assert.IsTrue(Directory.Exists(absPath));
+                    DirectoryAssert.Exists(absPath);
                 }
             }
         }
@@ -1634,6 +1639,73 @@ namespace Tests.Core.IO
             }
         }
 
+        [TestCase(true,  true),
+         TestCase(true,  false),
+         TestCase(false, true),
+         TestCase(false, false)]
+        // Resumption of downloads is only possible for HTTP(S)
+        [Category("Online")]
+        public void Upgrade_IncompleteInCache_Completes(bool startInstalled,
+                                                        bool withIncomplete)
+        {
+            // Arrange
+            using (var inst     = new DisposableKSP())
+            using (var cacheDir = new TemporaryDirectory())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
+                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
+            using (var manager  = new GameInstanceManager(nullUser, config))
+            using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var registry  = regMgr.registry;
+                var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
+
+                // Redirect the mod's download
+                var module      = registry.LatestAvailable("DogeCoinFlag",
+                                                           inst.KSP.StabilityToleranceConfig,
+                                                           inst.KSP.VersionCriteria())!;
+                module.download = new List<Uri>
+                {
+                    new Uri("https://github.com/KSP-CKAN/CKAN"
+                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
+                };
+
+                if (withIncomplete)
+                {
+                    // Dump about half the ZIP to the in-progress dir
+                    var filename = manager.Cache!.GetInProgressFileName(module)!.FullName;
+                    File.WriteAllBytes(filename, File.ReadAllBytes(TestData.DogeCoinFlagZip())
+                                                     .Take(20000)
+                                                     .ToArray());
+                }
+                if (startInstalled)
+                {
+                    registry.RegisterModule(new CkanModule(
+                                                @"{
+                                                    ""identifier"": ""DogeCoinFlag"",
+                                                    ""version"":    ""0.1"",
+                                                    ""download"":   ""https://github.com/""
+                                                }"),
+                                            Array.Empty<string>(),
+                                            inst.KSP, false);
+                }
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    HashSet<string>? possibleConfigOnlyDirs = null;
+                    installer.Upgrade(new CkanModule[] { module },
+                                      new NetAsyncModulesDownloader(nullUser,
+                                                                    manager.Cache!),
+                                      ref possibleConfigOnlyDirs,
+                                      regMgr,
+                                      ConfirmPrompt: false);
+                });
+            }
+        }
+
         [Test]
         public void InstallList_WithBadManuallyInstalledDLL_ThrowsDllLocationMismatchKraken()
         {
@@ -1705,7 +1777,7 @@ namespace Tests.Core.IO
                 });
                 CollectionAssert.IsNotEmpty(registry.InstalledModules);
                 CollectionAssert.IsNotEmpty(registry.InstalledFileInfo());
-                Assert.IsTrue(File.Exists(inst.KSP.ToAbsoluteGameDir(relPath)));
+                FileAssert.Exists(inst.KSP.ToAbsoluteGameDir(relPath));
             }
         }
 
@@ -1744,15 +1816,18 @@ namespace Tests.Core.IO
                 manager.Cache!.Store(TestData.DogeCoinFlag_101_module(),
                                      TestData.DogeCoinFlagZip(), null);
                 cfg.Directory!.Create();
-                var zip = new ZipFile(TestData.DogeCoinFlagZip());
-                var entry = zip.GetEntry(flag_path);
-                using (var outStream = File.Create(cfg.FullName))
+                using (var zip = new ZipFile(TestData.DogeCoinFlagZip()))
                 {
-                    zip.GetInputStream(entry).CopyTo(outStream);
+                    var entry = zip.GetEntry(flag_path);
+                    using (var outStream = File.Create(cfg.FullName))
+                    {
+                        zip.GetInputStream(entry).CopyTo(outStream);
+                    }
+
+                    // Act / Assert
+                    Assert.AreEqual(entry.Size, cfg.Length);
                 }
 
-                // Act / Assert
-                Assert.AreEqual(entry.Size, cfg.Length);
                 if (headless)
                 {
                     // Headless mode skips the check for overwriteable files and complains about them
@@ -1867,7 +1942,7 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
-                                                        cacheDir.Directory.FullName))
+                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
             using (var manager  = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
@@ -1936,7 +2011,6 @@ namespace Tests.Core.IO
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
             using (var inst1    = new DisposableKSP("inst1", new KerbalSpaceProgram()))
             using (var inst2    = new DisposableKSP("inst2", new KerbalSpaceProgram()))
-            using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(
                                       new List<Tuple<string, string, string>>
                                       {
@@ -1949,7 +2023,7 @@ namespace Tests.Core.IO
                                               inst2.KSP.GameDir,
                                               inst2.KSP.Game.ShortName),
                                       },
-                                      null, cacheDir.Directory.FullName))
+                                      null, null))
             using (var manager  = new GameInstanceManager(user, config))
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
@@ -2052,6 +2126,64 @@ namespace Tests.Core.IO
                                                    "GameData/META.ckan",
                                                },
                                                contents);
+            }
+        }
+
+        [Test]
+        public void InstallList_WithMetapackage_Works()
+        {
+            // Arrange
+            using (var inst     = new DisposableKSP("TestInstance", new KerbalSpaceProgram2()))
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var repo     = new TemporaryRepository(Relationships.RelationshipResolverTests.MergeWithDefaults(
+                                      @"{
+                                          ""identifier"": ""SpaceWarp"",
+                                          ""install"": [
+                                              {
+                                                  ""find"":       ""BurnController"",
+                                                  ""install_to"": ""BepInEx/plugins"",
+                                                  ""as"":         ""SpaceWarp""
+                                              }
+                                          ]
+                                      }",
+                                      @"{
+                                          ""identifier"": ""KSP2ModPack"",
+                                          ""kind"":       ""metapackage"",
+                                          ""depends"": [
+                                              { ""name"": ""BurnController"" }
+                                          ]
+                                      }")
+                                          .Append(TestData.BurnController())
+                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var cache  = new NetModuleCache(cacheDir.Directory.FullName);
+                var module = regMgr.registry.LatestAvailable("KSP2ModPack",
+                                                             inst.KSP.StabilityToleranceConfig,
+                                                             inst.KSP.VersionCriteria())!;
+                var sut    = new ModuleInstaller(inst.KSP, cache, config, nullUser);
+                var opts   = new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig);
+                var possibleConfigOnlyDirs = new HashSet<string>();
+                var depIdents = new string[] { "SpaceWarp", "BurnController" };
+                foreach (var depIdent in depIdents)
+                {
+                    cache.Store(regMgr.registry.LatestAvailable(depIdent,
+                                                                inst.KSP.StabilityToleranceConfig,
+                                                                inst.KSP.VersionCriteria())!,
+                                TestData.BurnControllerZip(), null);
+                }
+
+                // Act
+                sut.InstallList(new CkanModule[] { module },
+                                opts, regMgr, ref possibleConfigOnlyDirs,
+                                ConfirmPrompt: false);
+
+                // Assert
+                CollectionAssert.AreEquivalent(depIdents.Append("KSP2ModPack"),
+                                               regMgr.registry.InstalledModules.Select(im => im.identifier));
             }
         }
 

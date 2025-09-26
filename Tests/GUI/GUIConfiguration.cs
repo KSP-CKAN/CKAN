@@ -28,7 +28,7 @@ namespace Tests.GUI
 
                 // Act / Assert
                 Assert.Throws<Kraken>(() => GUIConfiguration.LoadOrCreateConfiguration(inst.KSP, steamLib));
-                Assert.IsTrue(File.Exists(xmlPath));
+                FileAssert.Exists(xmlPath);
             }
         }
 
@@ -51,8 +51,8 @@ namespace Tests.GUI
                 Assert.IsNotNull(result);
                 Assert.AreEqual(512, result.WindowLoc.X);
                 Assert.AreEqual(136, result.WindowLoc.Y);
-                Assert.IsFalse(File.Exists(xmlPath));
-                Assert.IsTrue(File.Exists(jsonPath));
+                FileAssert.DoesNotExist(xmlPath);
+                FileAssert.Exists(jsonPath);
             }
         }
 

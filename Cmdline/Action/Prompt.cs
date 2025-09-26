@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 
 using CommandLine;
 
@@ -19,6 +20,7 @@ namespace CKAN.CmdLine
             this.user     = user;
         }
 
+        [ExcludeFromCodeCoverage]
         public int RunCommand(object raw_options)
         {
             var opts = raw_options as CommonOptions;
@@ -93,6 +95,7 @@ namespace CKAN.CmdLine
         private static readonly Regex quotePattern = new Regex(
             @"(?<="")[^""]*(?="")|[^ ""]+|(?<= )$", RegexOptions.Compiled);
 
+        [ExcludeFromCodeCoverage]
         private static string? ReadLineWithCompletion(bool headless)
         {
             try

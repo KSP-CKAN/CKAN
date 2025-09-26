@@ -6,6 +6,7 @@ using Tests.Data;
 
 using CKAN;
 using CKAN.Versioning;
+using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.Core.Repositories
 {
@@ -80,6 +81,27 @@ namespace Tests.Core.Repositories
                 {
                 }
             });
+        }
+
+        [Test]
+        public void Prepopulate_PreviouslyLoadedDir_LoadsMetadata()
+        {
+            // Arrange
+            var user  = new NullUser();
+            var repos = new Repository[] { new Repository("TestRepo", TestData.TestKANTarGz()) };
+            using (var reposDir = new TemporaryDirectory())
+            {
+                var prev  = new RepositoryDataManager(reposDir.Directory.FullName);
+                prev.Update(repos, new KerbalSpaceProgram(), true,
+                            new NetAsyncDownloader(user, () => null ), user);
+                var sut = new RepositoryDataManager(reposDir.Directory.FullName);
+
+                // Act
+                sut.Prepopulate(repos, null);
+
+                // Assert
+                CollectionAssert.IsNotEmpty(sut.GetAllAvailableModules(repos));
+            }
         }
     }
 }

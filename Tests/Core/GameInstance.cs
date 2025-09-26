@@ -170,14 +170,14 @@ namespace Tests.Core
                 var path = inst.KSP.ToAbsoluteGameDir("CKAN/suppressed_compat_warning_identifiers.json");
 
                 // Act
-                Assert.IsFalse(File.Exists(path));
+                FileAssert.DoesNotExist(path);
                 inst.KSP.AddSuppressedCompatWarningIdentifiers(new HashSet<string>
                                                                {
                                                                    "Mod1", "Mod2", "Mod3"
                                                                });
 
                 // Assert
-                Assert.IsTrue(File.Exists(path));
+                FileAssert.Exists(path);
                 Assert.AreEqual(@"{""GameVersionWhenWritten"":""0.25.0.642"",""Identifiers"":[""Mod1"",""Mod2"",""Mod3""]}",
                                 File.ReadAllText(path));
                 CollectionAssert.AreEquivalent(new string[] { "Mod1", "Mod2", "Mod3" },

@@ -7,6 +7,7 @@ using NUnit.Framework;
 
 using CKAN;
 using CKAN.Configuration;
+using CKAN.Games.KerbalSpaceProgram;
 using Tests.Data;
 
 namespace Tests.Core.Configuration
@@ -22,7 +23,7 @@ namespace Tests.Core.Configuration
 
             _ = new JsonConfiguration(tmpFile);
 
-            Assert.IsTrue(File.Exists(tmpFile));
+            FileAssert.Exists(tmpFile);
 
             File.Delete(tmpFile);
         }
@@ -37,7 +38,7 @@ namespace Tests.Core.Configuration
 
             _ = new JsonConfiguration(tmpFile);
 
-            Assert.IsTrue(File.Exists(tmpFile));
+            FileAssert.Exists(tmpFile);
 
             Directory.Delete(tmpDir, true);
         }
@@ -378,6 +379,89 @@ namespace Tests.Core.Configuration
                 File.Delete(tmpFile1);
                 File.Delete(tmpFile2);
             }
+        }
+
+        [Test]
+        public void LanguagePersists()
+        {
+            // Arrange
+            string tmpFile1 = Path.GetTempFileName();
+            var reg = new JsonConfiguration(tmpFile1);
+
+            // Act
+            reg.Language = "de-DE";
+            string tmpFile2 = Path.GetTempFileName();
+            File.Copy(tmpFile1, tmpFile2, true);
+            reg = new JsonConfiguration(tmpFile2);
+
+            // Assert
+            Assert.AreEqual("de-DE", reg.Language);
+
+            File.Delete(tmpFile1);
+            File.Delete(tmpFile2);
+        }
+
+        [Test]
+        public void GlobalInstallFiltersPersist()
+        {
+            // Arrange
+            var game = new KerbalSpaceProgram();
+            var filters = new string[] { "abc", "xyz" };
+            string tmpFile1 = Path.GetTempFileName();
+            var reg = new JsonConfiguration(tmpFile1);
+
+            // Act
+            reg.SetGlobalInstallFilters(game, filters);
+            string tmpFile2 = Path.GetTempFileName();
+            File.Copy(tmpFile1, tmpFile2, true);
+            reg = new JsonConfiguration(tmpFile2);
+
+            // Assert
+            CollectionAssert.AreEqual(filters, reg.GetGlobalInstallFilters(game));
+
+            File.Delete(tmpFile1);
+            File.Delete(tmpFile2);
+        }
+
+        [Test]
+        public void PreferredHostsPersist()
+        {
+            // Arrange
+            var hosts = new string[] { "a", "b", "c" };
+            string tmpFile1 = Path.GetTempFileName();
+            var reg = new JsonConfiguration(tmpFile1);
+
+            // Act
+            reg.PreferredHosts = hosts;
+            string tmpFile2 = Path.GetTempFileName();
+            File.Copy(tmpFile1, tmpFile2, true);
+            reg = new JsonConfiguration(tmpFile2);
+
+            // Assert
+            CollectionAssert.AreEqual(hosts, reg.PreferredHosts);
+
+            File.Delete(tmpFile1);
+            File.Delete(tmpFile2);
+        }
+
+        [Test]
+        public void DevBuildsPersist()
+        {
+            // Arrange
+            string tmpFile1 = Path.GetTempFileName();
+            var reg = new JsonConfiguration(tmpFile1);
+
+            // Act
+            reg.DevBuilds = true;
+            string tmpFile2 = Path.GetTempFileName();
+            File.Copy(tmpFile1, tmpFile2, true);
+            reg = new JsonConfiguration(tmpFile2);
+
+            // Assert
+            Assert.AreEqual(true, reg.DevBuilds);
+
+            File.Delete(tmpFile1);
+            File.Delete(tmpFile2);
         }
     }
 }

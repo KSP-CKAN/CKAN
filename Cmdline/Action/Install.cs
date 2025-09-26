@@ -135,13 +135,19 @@ namespace CKAN.CmdLine
                 {
                     // Request the user selects one of the mods
                     int result;
+                    var choices = ex.modules.OrderByDescending(m => repoData.GetDownloadCount(regMgr.registry.Repositories.Values,
+                                                                                              m.identifier)
+                                                                    ?? 0)
+                                            .ThenByDescending(m => m.identifier == ex.requested)
+                                            .ThenBy(m => m.identifier)
+                                            .ToArray();
                     try
                     {
                         result = user.RaiseSelectionDialog(
                             ex.Message,
-                            ex.modules.Select(m => string.Format("{0} ({1})",
-                                                                 m.identifier, m.name))
-                                      .ToArray());
+                            choices.Select(m => string.Format("{0} ({1})",
+                                                              m.identifier, m.name))
+                                   .ToArray());
                     }
                     catch (Kraken e)
                     {
@@ -156,7 +162,7 @@ namespace CKAN.CmdLine
                     }
 
                     // Add the module to the list.
-                    modules.Add(ex.modules[result]);
+                    modules.Add(choices[result]);
                     // DON'T return so we can loop around and try again
                 }
                 catch (CancelledActionKraken k)

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -72,8 +73,11 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
-                sut.RunSubCommand(null, subOpts);
+                var inst = manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
+                using (var regMgr = RegistryManager.Instance(inst, repoData.Manager))
+                {
+                    sut.RunSubCommand(null, subOpts);
+                }
 
                 // Assert
                 CollectionAssert.AreEqual(
@@ -207,12 +211,66 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
-                sut.RunSubCommand(null, subOpts);
+                var inst = manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
+                using (var regMgr = RegistryManager.Instance(inst, repoData.Manager))
+                {
+                    sut.RunSubCommand(null, subOpts);
+                }
 
                 // Assert
                 CollectionAssert.AreEqual(new string[] { $"Set default repository to '{TestData.TestKANTarGz()}'" },
                                           user.RaisedMessages);
+            }
+        }
+
+        [TestCase("add",
+                  new string[]
+                  {
+                      "repo add - Add a repository",
+                      "Usage: ckan repo add [options] name url",
+                  }),
+         TestCase("priority",
+                  new string[]
+                  {
+                      "repo priority - Set repository priority",
+                      "Usage: ckan repo priority [options] name priority",
+                  }),
+         TestCase("forget",
+                  new string[]
+                  {
+                      "repo forget - Forget a repository",
+                      "Usage: ckan repo forget [options] name",
+                  }),
+         TestCase("remove",
+                  new string[]
+                  {
+                      "repo forget - Forget a repository",
+                      "Usage: ckan repo forget [options] name",
+                  }),
+        ]
+        public void RunSubCommand_WithoutArguments_PrintsUsage(string verb, string[] help)
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var config   = new FakeConfiguration(new List<Tuple<string, string, string>>(),
+                                                        null, null))
+            using (var repoData = new TemporaryRepositoryData(user))
+            using (var manager  = new GameInstanceManager(new NullUser(), config))
+            {
+                ISubCommand sut      = new Repo(manager, repoData.Manager, user);
+                var         args     = new string[] { "repo", verb };
+                var         subOpts  = new SubCommandOptions(args);
+
+                // Act
+                sut.RunSubCommand(null, subOpts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "argument missing, perhaps you forgot it?",
+                                              " ",
+                                          }.Concat(help),
+                                          user.RaisedErrors);
             }
         }
 

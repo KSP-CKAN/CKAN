@@ -22,8 +22,8 @@ namespace Tests.Core.IO
             string ascii_file_1 = TestData.DataDir("FileIdentifier/test_ascii.txt");
             string ascii_file_2 = TestData.DataDir("FileIdentifier/test_ascii.tmp");
 
-            Assert.IsTrue(File.Exists(ascii_file_1));
-            Assert.IsTrue(File.Exists(ascii_file_2));
+            FileAssert.Exists(ascii_file_1);
+            FileAssert.Exists(ascii_file_2);
 
             // Check that both files return a tar type.
             Assert.AreEqual(FileType.ASCII, FileIdentifier.IdentifyFile(ascii_file_1));
@@ -37,8 +37,8 @@ namespace Tests.Core.IO
             string tar_file_1 = TestData.DataDir("FileIdentifier/test_tar.tar");
             string tar_file_2 = TestData.DataDir("FileIdentifier/test_tar.tmp");
 
-            Assert.IsTrue(File.Exists(tar_file_1));
-            Assert.IsTrue(File.Exists(tar_file_2));
+            FileAssert.Exists(tar_file_1);
+            FileAssert.Exists(tar_file_2);
 
             // Check that both files return a tar type.
             Assert.AreEqual(FileType.Tar, FileIdentifier.IdentifyFile(tar_file_1));
@@ -74,8 +74,8 @@ namespace Tests.Core.IO
             string targz_file_1 = TestData.DataDir("FileIdentifier/test_targz.tar.gz");
             string targz_file_2 = TestData.DataDir("FileIdentifier/test_targz.tmp");
 
-            Assert.IsTrue(File.Exists(targz_file_1));
-            Assert.IsTrue(File.Exists(targz_file_2));
+            FileAssert.Exists(targz_file_1);
+            FileAssert.Exists(targz_file_2);
 
             // Check that both files return a tar.gz type.
             Assert.AreEqual(FileType.TarGz, FileIdentifier.IdentifyFile(targz_file_1));
@@ -112,8 +112,8 @@ namespace Tests.Core.IO
             string zip_file_1 = TestData.DataDir("FileIdentifier/test_zip.zip");
             string zip_file_2 = TestData.DataDir("FileIdentifier/test_zip.tmp");
 
-            Assert.IsTrue(File.Exists(zip_file_1));
-            Assert.IsTrue(File.Exists(zip_file_2));
+            FileAssert.Exists(zip_file_1);
+            FileAssert.Exists(zip_file_2);
 
             // Check that both files return a zip type.
             Assert.AreEqual(FileType.Zip, FileIdentifier.IdentifyFile(zip_file_1));

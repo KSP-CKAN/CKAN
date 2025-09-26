@@ -309,13 +309,13 @@ namespace CKAN
                 var hashMap = registry.GetDownloadUrlHashIndex();
 
                 // Prune the module lists to only those that are compatible
-                foreach (var kvp in hashMap)
+                foreach (var val in hashMap.Values)
                 {
-                    kvp.Value.RemoveAll(mod => !mod.IsCompatible(aggregateCriteria));
+                    val.RemoveAll(mod => !mod.IsCompatible(aggregateCriteria));
                 }
 
                 // Now get all the files in all the caches, including in progress...
-                List<FileInfo> files = allFiles(true);
+                var files = allFiles(true);
                 // ... and sort them by compatibility and timestamp...
                 files.Sort((a, b) => compareFiles(hashMap, a, b));
 

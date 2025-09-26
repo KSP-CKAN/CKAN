@@ -112,9 +112,9 @@ namespace CKAN.CmdLine
             }
             else
             {
-                List<CkanModule> matching = matching_compatible.Concat(matching_incompatible).ToList();
-                matching.Sort((x, y) => string.Compare(x.identifier, y.identifier, StringComparison.Ordinal));
-
+                var matching = matching_compatible.Concat(matching_incompatible)
+                                                  .OrderBy(x => x.identifier)
+                                                  .ToList();
                 foreach (CkanModule mod in matching)
                 {
                     user.RaiseMessage("{0}", mod.identifier);
@@ -144,26 +144,18 @@ namespace CKAN.CmdLine
 
             var registry = RegistryManager.Instance(instance, repoData).registry;
 
-            return searchIncompatible
-                ? registry
-                    .IncompatibleModules(instance.StabilityToleranceConfig,
-                                         instance.VersionCriteria())
+            return (searchIncompatible ? registry.IncompatibleModules(instance.StabilityToleranceConfig,
+                                                                      instance.VersionCriteria())
+                                       : registry.CompatibleModules(instance.StabilityToleranceConfig,
+                                                                    instance.VersionCriteria()))
                     // Look for a match in each string.
                     .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
                             || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
                             || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
                             || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
                             && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
-                    .ToList()
-                : registry
-                    .CompatibleModules(instance.StabilityToleranceConfig,
-                                       instance.VersionCriteria())
-                    // Look for a match in each string.
-                    .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
-                            && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
+                    .OrderBy(module => module.name)
+                    .ThenBy(module => module.identifier)
                     .ToList();
         }
 

@@ -8,7 +8,6 @@ using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
-using CKAN.Games.KerbalSpaceProgram;
 
 namespace Tests.NetKAN.Transformers
 {

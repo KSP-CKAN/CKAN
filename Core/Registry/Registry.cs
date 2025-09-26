@@ -808,7 +808,7 @@ namespace CKAN
                                 .GroupBy(tuple => tuple.tag,
                                          tuple => tuple.ident)
                                 .ToDictionary(grp => grp.Key,
-                                              grp => new ModuleTag(grp.Key) { ModuleIdentifiers = grp.ToHashSet() });
+                                              grp => new ModuleTag(grp.Key, grp.ToHashSet()));
             untagged = tags.TryGetValue("", out ModuleTag? t) ? t.ModuleIdentifiers
                                                               : new HashSet<string>();
             tags.Remove("");
@@ -1307,7 +1307,7 @@ namespace CKAN
                             .SelectMany(am => am.module_version.Values)
                             .SelectMany(m => m.download ?? Enumerable.Empty<Uri>())
                             .Distinct()
-                            .ToDictionary(url => NetFileCache.CreateURLHash(url),
+                            .ToDictionary(NetFileCache.CreateURLHash,
                                           url => url);
 
         /// <summary>

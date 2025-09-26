@@ -1,3 +1,5 @@
+using System.IO;
+
 using NUnit.Framework;
 
 using CKAN;
@@ -42,13 +44,15 @@ namespace Tests.CmdLine
         {
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var altDir  = new TemporaryDirectory())
             using (var inst    = new DisposableKSP())
             using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager = new GameInstanceManager(user, config))
-            using (var altDir  = new TemporaryDirectory())
             {
+                var cachePath = Path.Combine(altDir.Directory.FullName, "cache");
+                Directory.CreateDirectory(cachePath);
                 ISubCommand sut     = new Cache(manager, user);
-                var         args    = new string[] { "cache", "set", altDir.Directory.FullName };
+                var         args    = new string[] { "cache", "set", cachePath };
                 var         subOpts = new SubCommandOptions(args);
 
                 // Act
@@ -56,7 +60,7 @@ namespace Tests.CmdLine
                 sut.RunSubCommand(null, subOpts);
 
                 // Assert
-                Assert.AreEqual(altDir.Directory.FullName,
+                Assert.AreEqual(cachePath,
                                 config.DownloadCacheDir);
             }
         }
@@ -160,6 +164,35 @@ namespace Tests.CmdLine
                 // Assert
                 Assert.AreEqual(1000 * 1024 * 1024,
                                 config.CacheSizeLimit);
+            }
+        }
+
+        [Test]
+        public void RunSubCommand_NoArguments_PrintsUsage()
+        {
+            // Arrange
+            var user = new CapturingUser(false, q => true, (msg, objs) => 0);
+            using (var inst    = new DisposableKSP())
+            using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager = new GameInstanceManager(user, config))
+            {
+                ISubCommand sut     = new Cache(manager, user);
+                var         args    = new string[] { "cache", "set" };
+                var         subOpts = new SubCommandOptions(args);
+
+                // Act
+                manager.SetCurrentInstance(inst.KSP);
+                sut.RunSubCommand(null, subOpts);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[]
+                                          {
+                                              "argument missing, perhaps you forgot it?",
+                                              " ",
+                                              "cache set - Set the download cache path",
+                                              "Usage: ckan cache set [options] path",
+                                          },
+                                          user.RaisedErrors);
             }
         }
     }

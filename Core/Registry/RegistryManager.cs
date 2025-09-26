@@ -206,7 +206,7 @@ namespace CKAN
         /// Tries to lock the registry by creating a lock file.
         /// </summary>
         /// <returns><c>true</c>, if lock was gotten, <c>false</c> otherwise.</returns>
-        public bool GetLock()
+        private bool GetLock()
         {
             try
             {

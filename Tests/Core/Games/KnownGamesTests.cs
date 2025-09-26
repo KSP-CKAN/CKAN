@@ -35,5 +35,16 @@ namespace Tests.Core.Games
             Assert.IsTrue(ksp2 is KerbalSpaceProgram2);
             Assert.IsNull(ksp3);
         }
+
+        [Test]
+        public void AllInstanceAnchorFiles()
+        {
+            var ksp1 = new KerbalSpaceProgram();
+            var ksp2 = new KerbalSpaceProgram2();
+
+            CollectionAssert.AreEquivalent(
+                ksp1.InstanceAnchorFiles.Concat(ksp2.InstanceAnchorFiles),
+                KnownGames.AllInstanceAnchorFiles);
+        }
     }
 }
