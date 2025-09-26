@@ -245,31 +245,33 @@ namespace Tests.Core.IO
         {
             // Arrange
             // Create a ZIP file with an entry that tries to exploit Zip Slip
-            var zip = ZipFile.Create(new MemoryStream());
-            zip.BeginUpdate();
-            zip.AddDirectory("AwesomeMod");
-            zip.Add(new ZipEntry("AwesomeMod/../../../outside.txt") { Size = 0, CompressedSize = 0 });
-            zip.CommitUpdate();
-            // Create a mod that would install the top folder of that path
-            var mod = CkanModule.FromJson(@"
-                {
-                    ""spec_version"": 1,
-                    ""identifier"": ""AwesomeMod"",
-                    ""author"": ""AwesomeModder"",
-                    ""version"": ""1.0.0"",
-                    ""download"": ""https://awesomemod.example/AwesomeMod.zip""
-                }");
-
-            // Act / Assert
-            Assert.Throws<BadInstallLocationKraken>(
-                delegate
-                {
-                    using (var ksp = new DisposableKSP())
+            using (var zip = ZipFile.Create(new MemoryStream()))
+            {
+                zip.BeginUpdate();
+                zip.AddDirectory("AwesomeMod");
+                zip.Add(new ZipEntry("AwesomeMod/../../../outside.txt") { Size = 0, CompressedSize = 0 });
+                zip.CommitUpdate();
+                // Create a mod that would install the top folder of that path
+                var mod = CkanModule.FromJson(@"
                     {
-                        var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP);
-                    }
-                },
-                "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
+                        ""spec_version"": 1,
+                        ""identifier"": ""AwesomeMod"",
+                        ""author"": ""AwesomeModder"",
+                        ""version"": ""1.0.0"",
+                        ""download"": ""https://awesomemod.example/AwesomeMod.zip""
+                    }");
+
+                // Act / Assert
+                Assert.Throws<BadInstallLocationKraken>(
+                    delegate
+                    {
+                        using (var ksp = new DisposableKSP())
+                        {
+                            var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP);
+                        }
+                    },
+                    "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
+            }
         }
 
         [Test]
@@ -353,16 +355,17 @@ namespace Tests.Core.IO
 
         private static string CopyDogeFromZip()
         {
-            ZipFile zipfile = new ZipFile(TestData.DogeCoinFlagZip());
+            using (ZipFile zipfile = new ZipFile(TestData.DogeCoinFlagZip()))
+            {
+                ZipEntry entry = zipfile.GetEntry(flag_path);
+                string tmpfile = Path.GetTempFileName();
 
-            ZipEntry entry = zipfile.GetEntry(flag_path);
-            string tmpfile = Path.GetTempFileName();
+                // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
+                File.Delete(tmpfile);
+                ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
 
-            // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
-            File.Delete(tmpfile);
-            ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
-
-            return tmpfile;
+                return tmpfile;
+            }
         }
 
         [Test]
@@ -647,9 +650,10 @@ namespace Tests.Core.IO
             // Arrange
             using (var inst     = new DisposableKSP())
             using (var repoData = new TemporaryRepositoryData(nullUser))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager))
             {
                 var game     = new KerbalSpaceProgram();
-                var registry = RegistryManager.Instance(inst.KSP, repoData.Manager).registry;
+                var registry = regMgr.registry;
                 // Make files to be registered to another mod
                 var absFiles = registeredFiles.Select(inst.KSP.ToAbsoluteGameDir)
                                               .ToList();
@@ -1744,15 +1748,18 @@ namespace Tests.Core.IO
                 manager.Cache!.Store(TestData.DogeCoinFlag_101_module(),
                                      TestData.DogeCoinFlagZip(), null);
                 cfg.Directory!.Create();
-                var zip = new ZipFile(TestData.DogeCoinFlagZip());
-                var entry = zip.GetEntry(flag_path);
-                using (var outStream = File.Create(cfg.FullName))
+                using (var zip = new ZipFile(TestData.DogeCoinFlagZip()))
                 {
-                    zip.GetInputStream(entry).CopyTo(outStream);
+                    var entry = zip.GetEntry(flag_path);
+                    using (var outStream = File.Create(cfg.FullName))
+                    {
+                        zip.GetInputStream(entry).CopyTo(outStream);
+                    }
+
+                    // Act / Assert
+                    Assert.AreEqual(entry.Size, cfg.Length);
                 }
 
-                // Act / Assert
-                Assert.AreEqual(entry.Size, cfg.Length);
                 if (headless)
                 {
                     // Headless mode skips the check for overwriteable files and complains about them
@@ -1867,7 +1874,7 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
-                                                        cacheDir.Directory.FullName))
+                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
             using (var manager  = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
@@ -1936,7 +1943,6 @@ namespace Tests.Core.IO
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
             using (var inst1    = new DisposableKSP("inst1", new KerbalSpaceProgram()))
             using (var inst2    = new DisposableKSP("inst2", new KerbalSpaceProgram()))
-            using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(
                                       new List<Tuple<string, string, string>>
                                       {
@@ -1949,7 +1955,7 @@ namespace Tests.Core.IO
                                               inst2.KSP.GameDir,
                                               inst2.KSP.Game.ShortName),
                                       },
-                                      null, cacheDir.Directory.FullName))
+                                      null, null))
             using (var manager  = new GameInstanceManager(user, config))
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))

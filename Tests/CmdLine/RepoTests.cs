@@ -72,8 +72,11 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
-                sut.RunSubCommand(null, subOpts);
+                var inst = manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
+                using (var regMgr = RegistryManager.Instance(inst, repoData.Manager))
+                {
+                    sut.RunSubCommand(null, subOpts);
+                }
 
                 // Assert
                 CollectionAssert.AreEqual(
@@ -207,8 +210,11 @@ namespace Tests.CmdLine
                 var         subOpts  = new SubCommandOptions(args);
 
                 // Act
-                manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
-                sut.RunSubCommand(null, subOpts);
+                var inst = manager.FakeInstance(gameMock.Object, "test", instDir.Directory.FullName, gv);
+                using (var regMgr = RegistryManager.Instance(inst, repoData.Manager))
+                {
+                    sut.RunSubCommand(null, subOpts);
+                }
 
                 // Assert
                 CollectionAssert.AreEqual(new string[] { $"Set default repository to '{TestData.TestKANTarGz()}'" },

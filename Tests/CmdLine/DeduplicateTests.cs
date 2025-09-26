@@ -24,7 +24,6 @@ namespace Tests.CmdLine
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
             using (var inst1    = new DisposableKSP("inst1", new KerbalSpaceProgram()))
             using (var inst2    = new DisposableKSP("inst2", new KerbalSpaceProgram()))
-            using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(
                                       new List<Tuple<string, string, string>>
                                       {
@@ -37,7 +36,7 @@ namespace Tests.CmdLine
                                               inst2.KSP.GameDir,
                                               inst2.KSP.Game.ShortName),
                                       },
-                                      null, cacheDir.Directory.FullName))
+                                      null, null))
             using (var manager  = new GameInstanceManager(user, config))
             using (var repo     = new TemporaryRepository())
             using (var repoData = new TemporaryRepositoryData(new NullUser(), repo.repo))
