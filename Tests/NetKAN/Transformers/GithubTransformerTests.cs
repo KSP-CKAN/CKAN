@@ -5,10 +5,13 @@ using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
+using CKAN;
+using CKAN.Versioning;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Transformers;
+using Tests.Data;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -23,6 +26,7 @@ namespace Tests.NetKAN.Transformers
                                                     It.IsAny<string?>(), It.IsAny<string?>()))
                          .Returns(@"{
                                       ""name"": ""Example Project"",
+                                      ""description"": ""A fake project for testing"",
                                       ""owner"": {
                                           ""login"": ""authoruser"",
                                           ""type"":  ""User""
@@ -125,7 +129,7 @@ namespace Tests.NetKAN.Transformers
             });
 
             // Act
-            var result          = sut.Transform(metadata, opts).First();
+            var result          = sut.Transform(metadata, opts).Single();
             var transformedJson = result.Json();
 
             // Assert
@@ -153,7 +157,7 @@ namespace Tests.NetKAN.Transformers
             });
 
             // Act
-            var result          = sut.Transform(metadata, opts).First();
+            var result          = sut.Transform(metadata, opts).Single();
             var transformedJson = result.Json();
 
             // Assert
@@ -241,6 +245,158 @@ namespace Tests.NetKAN.Transformers
                             results[0]?.Version?.ToString());
             Assert.AreEqual("1.2",
                             results[1]?.Version?.ToString());
+        }
+
+        [Test]
+        public void Transform_NoRepo_Throws()
+        {
+            // Arrange
+            var ghApi = new Mock<IGithubApi>();
+            ghApi.Setup(gh => gh.GetRepo(It.IsAny<GithubRef>()))
+                 .Returns((GithubRepo?)null);
+            var sut      = new GithubTransformer(ghApi.Object, null);
+            var opts     = new TransformOptions(1, null, null, null, false, null);
+            var metadata = new Metadata(new JObject()
+            {
+                { "spec_version", 1                                             },
+                { "identifier",   "ExampleProject6"                             },
+                { "$kref",        "#/ckan/github/ExampleAccount/ExampleProject" },
+            });
+
+            // Act / Assert
+            var exc = Assert.Throws<Kraken>(() => sut.Transform(metadata, opts).ToArray())!;
+
+            // Assert
+            Assert.AreEqual("Failed to get GitHub repo info!", exc.Message);
+        }
+
+        [Test]
+        public void Transform_RepoArchived_Warns()
+        {
+            // Arrange
+            var ghApi = new Mock<IGithubApi>();
+            ghApi.Setup(gh => gh.GetRepo(It.IsAny<GithubRef>()))
+                 .Returns(new GithubRepo() { Archived = true });
+            ghApi.Setup(gh => gh.GetAllReleases(It.IsAny<GithubRef>(), It.IsAny<bool?>()))
+                 .Returns(new GithubRelease[]
+                          {
+                              new GithubRelease()
+                              {
+                                  Tag    = new ModuleVersion("1.0"),
+                                  Assets = new GithubReleaseAsset[]
+                                           {
+                                               new GithubReleaseAsset()
+                                               {
+                                                   Name     = "file.zip",
+                                                   Download = new Uri("https://examplemod.com/download"),
+                                               },
+                                           },
+                              },
+                          });
+            var sut      = new GithubTransformer(ghApi.Object, null);
+            var opts     = new TransformOptions(1, null, null, null, false, null);
+            var metadata = new Metadata(new JObject()
+            {
+                { "spec_version", 1                                             },
+                { "identifier",   "ExampleProject7"                             },
+                { "$kref",        "#/ckan/github/ExampleAccount/ExampleProject" },
+            });
+
+            using (var appender = new TemporaryWarningCapturer(nameof(GithubTransformer)))
+            {
+                // Act / Assert
+                var results = sut.Transform(metadata, opts).ToArray();
+
+                // Assert
+                Assert.AreEqual("Repo is archived, consider freezing",
+                                appender.Warnings.Single());
+            }
+        }
+
+        [Test]
+        public void Transform_UseSourceArchive_Works()
+        {
+            // Arrange
+            var download = new Uri("https://examplemod.com/source");
+            var ghApi    = new Mock<IGithubApi>();
+            ghApi.Setup(gh => gh.GetRepo(It.IsAny<GithubRef>()))
+                 .Returns(new GithubRepo());
+            ghApi.Setup(gh => gh.GetAllReleases(It.IsAny<GithubRef>(), It.IsAny<bool?>()))
+                 .Returns(new GithubRelease[]
+                          {
+                              new GithubRelease()
+                              {
+                                  Tag           = new ModuleVersion("1.0"),
+                                  SourceArchive = download,
+                              },
+                          });
+            var sut      = new GithubTransformer(ghApi.Object, null);
+            var opts     = new TransformOptions(1, null, null, null, false, null);
+            var metadata = new Metadata(new JObject()
+            {
+                { "spec_version",    1                                                },
+                { "identifier",      "ExampleProject8"                                },
+                { "$kref",           "#/ckan/github/ExampleAccount/ExampleProject"    },
+                { "x_netkan_github", new JObject() { { "use_source_archive", true } } },
+            });
+
+            // Act / Assert
+            var result = sut.Transform(metadata, opts).Single();
+
+            // Assert
+            CollectionAssert.AreEqual(new Uri[] { download }, result.Download);
+        }
+
+        [Test]
+        public void Transform_VersionFromAssetMissingCapturingGroup_Throws()
+        {
+            // Arrange
+            var sut      = new GithubTransformer(new GithubApi(httpSvcMockUp.Object), false);
+            var opts     = new TransformOptions(1, 1, null, null, false, null);
+            var metadata = new Metadata(new JObject()
+            {
+                { "spec_version", 1                                                                                          },
+                { "identifier",   "ExampleProject9"                                                                          },
+                { "$kref",        "#/ckan/github/ExampleAccount/ExampleProject/version_from_asset/^.+_(?<name>.+)\\.zip$" },
+            });
+
+            // Act / Assert
+            var exc = Assert.Throws<Kraken>(() =>
+            {
+                var results = sut.Transform(metadata, opts).ToArray();
+            })!;
+
+            // Assert
+            Assert.AreEqual("version_from_asset contains no 'version' capturing group", exc.Message);
+        }
+
+        [Test]
+        public void Transform_NoReleases_Warns()
+        {
+            // Arrange
+            var ghApi = new Mock<IGithubApi>();
+            ghApi.Setup(gh => gh.GetRepo(It.IsAny<GithubRef>()))
+                 .Returns(new GithubRepo());
+            ghApi.Setup(gh => gh.GetAllReleases(It.IsAny<GithubRef>(), It.IsAny<bool?>()))
+                 .Returns(new GithubRelease[] { });
+            var sut      = new GithubTransformer(ghApi.Object, null);
+            var opts     = new TransformOptions(1, null, null, null, false, null);
+            var metadata = new Metadata(new JObject()
+            {
+                { "spec_version", 1                                             },
+                { "identifier",   "ExampleProject10"                            },
+                { "$kref",        "#/ckan/github/ExampleAccount/ExampleProject" },
+            });
+
+            using (var appender = new TemporaryWarningCapturer(nameof(GithubTransformer)))
+            {
+                // Act / Assert
+                var results = sut.Transform(metadata, opts).ToArray();
+
+                // Assert
+                Assert.AreEqual("No releases found for ExampleAccount/ExampleProject",
+                                appender.Warnings.Single());
+            }
         }
 
         private readonly Mock<IHttpService> httpSvcMockUp = new Mock<IHttpService>();
