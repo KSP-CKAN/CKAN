@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using ICSharpCode.SharpZipLib.Zip;
@@ -25,6 +27,15 @@ namespace Tests.NetKAN.Transformers
             var http     = new Mock<IHttpService>();
             http.Setup(h => h.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(TestData.DogeCoinFlagZip());
+            http.Setup(h => h.DownloadText(It.IsAny<Uri>(),
+                                           It.IsAny<string?>(),
+                                           It.IsAny<string?>()))
+                .Returns(@"{
+                             ""name"":        ""Mod with swinfo"",
+                             ""author"":      ""Mod author"",
+                             ""description"": ""Online copy of the info"",
+                             ""version"":     ""1.0.0""
+                         }");
             var ghApi    = new Mock<IGithubApi>();
             var modSvc   = new Mock<IModuleService>();
             modSvc.Setup(ms => ms.GetInternalSpaceWarpInfo(It.IsAny<CkanModule>(),
@@ -32,11 +43,14 @@ namespace Tests.NetKAN.Transformers
                                                            It.IsAny<string?>()))
                   .Returns(new SpaceWarpInfo()
                            {
-                               name        = "Mod with swinfo",
-                               author      = "Mod author",
-                               description = "A mod that contains a swinfo.json and gets many properties from it",
-                               version     = "1.0.0",
+                               name          = "Mod with swinfo",
+                               author        = "Mod author",
+                               description   = "A mod that contains a swinfo.json and gets many properties from it",
+                               version       = "1.0.0",
+                               version_check = new Uri("https://modwithswinfo.com/swinfo.json"),
                            });
+            modSvc.Setup(ms => ms.ParseSpaceWarpJson(It.IsAny<string?>()))
+                  .Returns((string json) => JsonConvert.DeserializeObject<SpaceWarpInfo>(json, (JsonSerializerSettings?)null));
             var sut      = new SpaceWarpInfoTransformer(http.Object,
                                                         ghApi.Object,
                                                         modSvc.Object);
@@ -55,7 +69,7 @@ namespace Tests.NetKAN.Transformers
             // Assert
             Assert.AreEqual("Mod with swinfo", (string?)transformedJson?["name"]);
             Assert.AreEqual("Mod author",      (string?)transformedJson?["author"]);
-            Assert.AreEqual("A mod that contains a swinfo.json and gets many properties from it",
+            Assert.AreEqual("Online copy of the info",
                             (string?)transformedJson?["abstract"]);
             Assert.AreEqual("1.0.0",           (string?)transformedJson?["version"]);
         }
