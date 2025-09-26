@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 using log4net;
@@ -18,6 +19,7 @@ namespace CKAN.NetKAN.Processors
 {
     public class Inflator
     {
+        [ExcludeFromCodeCoverage]
         public Inflator(string? cacheDir,
                         bool    overwriteCache,
                         string? githubToken,
@@ -143,6 +145,7 @@ namespace CKAN.NetKAN.Processors
             ckanValidator.Validate(ckan);
         }
 
+        [ExcludeFromCodeCoverage]
         private static NetFileCache FindCache(IConfiguration cfg, string? cacheDir)
         {
             if (cacheDir != null)
@@ -159,7 +162,6 @@ namespace CKAN.NetKAN.Processors
             }
             catch
             {
-                // Meh, can't find KSP. 'Scool, bro.
             }
 
             var tempdir = Path.GetTempPath();
