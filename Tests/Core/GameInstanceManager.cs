@@ -72,33 +72,39 @@ namespace Tests.Core
         }
 
         [Test]
-        public void RemoveInstance_HasInstanceReturnsFalse()
+        public void RemoveInstance_HasInstance_ReturnsFalse()
         {
             manager?.RemoveInstance(nameInReg);
             Assert.False(manager?.HasInstance(nameInReg));
         }
 
         [Test]
-        public void RenameInstance_HasInstanceOriginalName_ReturnsFalse()
+        public void RenameInstance_NewName_Works()
         {
-            manager?.RenameInstance(nameInReg,"newname");
-            Assert.False(manager?.HasInstance(nameInReg));
+            const string newname = "newname";
+            manager!.RenameInstance(nameInReg, newname);
+            Assert.False(manager.HasInstance(nameInReg));
+            Assert.True(manager.HasInstance(newname));
         }
 
         [Test]
-        public void RenameInstance_HasInstanceNewName()
+        public void RenameInstance_SameName_Throws()
         {
-            const string newname = "newname";
-            manager?.RenameInstance(nameInReg, newname);
-            Assert.True(manager?.HasInstance(newname));
+            var fakeName = "fake";
+            using (var tidy2 = new DisposableKSP(fakeName, tidy!.KSP.Game))
+            {
+                manager!.AddInstance(tidy2.KSP);
+                Assert.Throws<InstanceNameTakenKraken>(() =>
+                {
+                    manager!.RenameInstance(nameInReg, fakeName);
+                });
+            }
         }
 
         [Test]
         public void ClearAutoStart_UpdatesValueInWin32Reg()
         {
-
             Assert.That(cfg?.AutoStartInstance, Is.Null.Or.Empty);
-
         }
 
         [Test]
@@ -106,7 +112,6 @@ namespace Tests.Core
         {
             var name = manager?.GetNextValidInstanceName(nameInReg)!;
             Assert.That(manager?.HasInstance(name), Is.False);
-
         }
 
         [Test]
