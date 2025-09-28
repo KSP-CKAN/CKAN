@@ -428,6 +428,9 @@ Que voulez-vous faire ?</value>
   <data name="ModuleInstallerInstalledMod" xml:space="preserve">
     <value>Fin de l'installation de {0}</value>
   </data>
+  <data name="ModuleInstallerInstalledModFiltered" xml:space="preserve">
+    <value>Fin de l'installation de {0} ({1} fichiers filtrés)</value>
+  </data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve">
     <value>Mise à jour du registre</value>
   </data>
