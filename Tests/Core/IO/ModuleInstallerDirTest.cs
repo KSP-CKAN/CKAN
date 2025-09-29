@@ -111,7 +111,7 @@ namespace Tests.Core.IO
             Assert.DoesNotThrow(delegate ()
             {
                 _installer?.AddParentDirectories(new HashSet<string>());
-                _installer?.AddParentDirectories(new HashSet<string>() { string.Empty });
+                _installer?.AddParentDirectories(new HashSet<string>() { "" });
                 _installer?.AddParentDirectories(new HashSet<string>() { Path.GetPathRoot(Environment.CurrentDirectory)! });
             });
         }

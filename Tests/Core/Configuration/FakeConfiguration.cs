@@ -94,7 +94,7 @@ namespace Tests.Core.Configuration
         /// </summary>
         public string? AutoStartInstance
         {
-            get => _AutoStartInstance ?? string.Empty;
+            get => _AutoStartInstance ?? "";
             #pragma warning disable IDE0027
             set
             {

@@ -74,7 +74,7 @@ namespace CKAN.Exporters
 
         private string WriteUri(Uri? uri)
             => uri != null ? QuoteIfNecessary(Net.NormalizeUri(uri.OriginalString))
-                           : string.Empty;
+                           : "";
 
         private string WriteUri(List<Uri>? uris)
             => WriteUri(//uris is [Uri uri, ..]

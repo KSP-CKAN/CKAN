@@ -601,7 +601,7 @@ namespace CKAN.Versioning
 
             var s = sb.ToString();
 
-            return s.Equals(string.Empty) ? null : s;
+            return s.Equals("") ? null : s;
         }
 
         /// <summary>

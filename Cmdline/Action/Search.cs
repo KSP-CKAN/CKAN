@@ -139,8 +139,8 @@ namespace CKAN.CmdLine
                                               bool              searchIncompatible = false)
         {
             // Remove spaces and special characters from the search term.
-            term   = string.IsNullOrWhiteSpace(term)   ? string.Empty : CkanModule.nonAlphaNums.Replace(term, "");
-            author = string.IsNullOrWhiteSpace(author) ? string.Empty : CkanModule.nonAlphaNums.Replace(author, "");
+            term   = string.IsNullOrWhiteSpace(term)   ? "" : CkanModule.nonAlphaNums.Replace(term, "");
+            author = string.IsNullOrWhiteSpace(author) ? "" : CkanModule.nonAlphaNums.Replace(author, "");
 
             var registry = RegistryManager.Instance(instance, repoData).registry;
 

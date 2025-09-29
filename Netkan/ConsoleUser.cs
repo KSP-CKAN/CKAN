@@ -67,7 +67,7 @@ namespace CKAN.NetKAN
                 {
                     return false;
                 }
-                if (input.Equals(string.Empty))
+                if (input.Equals(""))
                 {
                     // User pressed enter without any text, assuming default choice.
                     return true;

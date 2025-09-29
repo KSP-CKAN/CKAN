@@ -382,13 +382,13 @@ namespace CKAN
          MemberNotNull(nameof(SearchableAuthors))]
         private void CalculateSearchables()
         {
-            SearchableIdentifier  = identifier  == null ? string.Empty : nonAlphaNums.Replace(identifier, "");
-            SearchableName        = name        == null ? string.Empty : nonAlphaNums.Replace(name, "");
-            SearchableAbstract    = @abstract   == null ? string.Empty : nonAlphaNums.Replace(@abstract, "");
-            SearchableDescription = description == null ? string.Empty : nonAlphaNums.Replace(description, "");
+            SearchableIdentifier  = identifier  == null ? "" : nonAlphaNums.Replace(identifier, "");
+            SearchableName        = name        == null ? "" : nonAlphaNums.Replace(name, "");
+            SearchableAbstract    = @abstract   == null ? "" : nonAlphaNums.Replace(@abstract, "");
+            SearchableDescription = description == null ? "" : nonAlphaNums.Replace(description, "");
             SearchableAuthors     = author?.Select(auth => nonAlphaNums.Replace(auth, ""))
                                            .ToList()
-                                          ?? new List<string> { string.Empty };
+                                          ?? new List<string> { "" };
         }
 
         public string serialise()
@@ -408,8 +408,8 @@ namespace CKAN
             }
 
             license   ??= new List<License> { License.UnknownLicense };
-            @abstract ??= string.Empty;
-            name      ??= string.Empty;
+            @abstract ??= "";
+            name      ??= "";
 
             if (kind == ModuleKind.dlc && version is not UnmanagedModuleVersion)
             {
