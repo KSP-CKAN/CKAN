@@ -352,7 +352,7 @@ namespace CKAN.Versioning
         /// <c>true</c> if the input parameter was converted successfully; otherwise, <c>false</c>.
         /// </returns>
         public static bool TryParse(string? input,
-                                    [NotNullWhen(returnValue: true)] out GameVersion? result)
+                                    [NotNullWhen(true)] out GameVersion? result)
         {
             result = null;
 

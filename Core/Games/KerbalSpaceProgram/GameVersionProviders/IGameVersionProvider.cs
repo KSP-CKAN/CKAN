@@ -6,6 +6,6 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
     public interface IGameVersionProvider
     {
         bool TryGetVersion(string directory,
-                           [NotNullWhen(returnValue: true)] out GameVersion? result);
+                           [NotNullWhen(true)] out GameVersion? result);
     }
 }

@@ -47,7 +47,7 @@ namespace CKAN.Configuration
         /// True if found, false otherwise
         /// </returns>
         bool TryGetAuthToken(string host,
-                             [NotNullWhen(returnValue: true)] out string? token);
+                             [NotNullWhen(true)] out string? token);
 
         /// <summary>
         /// Set an auth token in the registry

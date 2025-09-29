@@ -63,8 +63,8 @@ namespace CKAN.Games.KerbalSpaceProgram.DLC
         }
 
         public virtual bool IsInstalled(GameInstance                ksp,
-                                        [NotNullWhen(returnValue: true)] out string?                 identifier,
-                                        [NotNullWhen(returnValue: true)] out UnmanagedModuleVersion? version)
+                                        [NotNullWhen(true)] out string?                 identifier,
+                                        [NotNullWhen(true)] out UnmanagedModuleVersion? version)
         {
             var directoryPath = Path.Combine(ksp.GameDir, InstallPath());
             var readmeFilePath = Path.Combine(directoryPath, "readme.txt");

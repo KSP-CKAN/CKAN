@@ -164,7 +164,7 @@ namespace Tests.Core.Configuration
         }
 
         public bool TryGetAuthToken(string host,
-                                    [NotNullWhen(returnValue: true)] out string? token)
+                                    [NotNullWhen(true)] out string? token)
             => authTokens.TryGetValue(host, out token);
 
         private readonly Dictionary<string, string> authTokens = new Dictionary<string, string>();
