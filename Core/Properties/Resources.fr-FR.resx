@@ -630,7 +630,7 @@ Consultez cette page pour obtenir de l'aide :
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
@@ -754,5 +754,23 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="ModuleLabelListHeld" xml:space="preserve">
     <value>Gelé</value>
+  </data>
+  <data name="RelationshipTypeProvides" xml:space="preserve">
+    <value>Fournit</value>
+  </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve">
+    <value>Dépendance</value>
+  </data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve">
+    <value>Recommandé</value>
+  </data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve">
+    <value>Suggéré</value>
+  </data>
+  <data name="RelationshipTypeSupports" xml:space="preserve">
+    <value>Supporte</value>
+  </data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve">
+    <value>Conflits</value>
   </data>
 </root>
