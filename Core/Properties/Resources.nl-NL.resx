@@ -125,4 +125,22 @@
   <data name="KrakenBadMetadata" xml:space="preserve">
     <value>Verkeerde metadata gedetecteerd voor module {0}: {1}</value>
   </data>
+  <data name="RelationshipTypeProvides" xml:space="preserve">
+    <value>Aanbieders</value>
+  </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve">
+    <value>Afhankelijk</value>
+  </data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve">
+    <value>Aanbevolen</value>
+  </data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve">
+    <value>Suggesties</value>
+  </data>
+  <data name="RelationshipTypeSupports" xml:space="preserve">
+    <value>Ondersteunt</value>
+  </data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve">
+    <value>Conflict</value>
+  </data>
 </root>

@@ -367,4 +367,10 @@ Free up space on that device or change your settings to use another location.
   <data name="ModuleLabelListFavourites" xml:space="preserve"><value>Favourites</value></data>
   <data name="ModuleLabelListHidden" xml:space="preserve"><value>Hidden</value></data>
   <data name="ModuleLabelListHeld" xml:space="preserve"><value>Held</value></data>
+  <data name="RelationshipTypeProvides" xml:space="preserve"><value>Provides</value></data>
+  <data name="RelationshipTypeDepends" xml:space="preserve"><value>Depends</value></data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve"><value>Recommends</value></data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve"><value>Suggests</value></data>
+  <data name="RelationshipTypeSupports" xml:space="preserve"><value>Supports</value></data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve"><value>Conflicts</value></data>
 </root>

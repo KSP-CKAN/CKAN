@@ -787,21 +787,6 @@ CKANにこの動作をする許可を与えますか？ いいえをクリック
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
-  <data name="RelationshipTypeDepends" xml:space="preserve">
-    <value>依存</value>
-  </data>
-  <data name="RelationshipTypeRecommends" xml:space="preserve">
-    <value>推奨</value>
-  </data>
-  <data name="RelationshipTypeSuggests" xml:space="preserve">
-    <value>提案</value>
-  </data>
-  <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>サポート</value>
-  </data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>衝突</value>
-  </data>
   <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
     <value>削除</value>
   </data>
