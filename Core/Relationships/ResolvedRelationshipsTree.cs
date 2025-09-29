@@ -96,7 +96,7 @@ namespace CKAN
             => relationshipCache.TryGetValue(rel, out ResolvedRelationship? rr)
                && rr is ResolvedByNew resRel
                    ? resRel.resolved
-                           .Where(kvp => AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
+                           .Where(kvp => kvp.Key.DependsAndConflictsOK(installing)
                                          && kvp.Value.All(subRR => !subRR.Unsatisfied(installing)))
                            .Select(kvp => kvp.Key)
                    : Enumerable.Empty<CkanModule>();

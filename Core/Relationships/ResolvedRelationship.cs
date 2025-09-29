@@ -186,7 +186,7 @@ namespace CKAN
         public override bool Unsatisfied(IReadOnlyCollection<CkanModule> installing)
             => reason is SelectionReason.Depends
                && !resolved.Any(kvp => !kvp.Key.IsDLC
-                                       && AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
+                                       && kvp.Key.DependsAndConflictsOK(installing)
                                        && kvp.Value.All(rr => !rr.Unsatisfied(installing)));
 
         [ExcludeFromCodeCoverage]
