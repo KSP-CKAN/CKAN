@@ -59,17 +59,14 @@ namespace CKAN
                                                      options.stability_tolerance ?? new StabilityToleranceConfig(""),
                                                      versionCrit,
                                                      options.OptionalHandling());
-            if (!options.proceed_with_inconsistencies)
+            if (!options.proceed_with_inconsistencies
+                && resolved.Unsatisfied().ToArray() is { Length: > 0 } unsatisfied)
             {
-                var unsatisfied = resolved.Unsatisfied().ToArray();
-                if (unsatisfied.Length > 0)
-                {
-                    log.DebugFormat("Dependencies failed!{0}{0}{1}{0}{0}{2}",
-                                    Environment.NewLine,
-                                    Environment.StackTrace,
-                                    resolved);
-                    throw new DependenciesNotSatisfiedKraken(unsatisfied, registry, game, resolved);
-                }
+                log.DebugFormat("Dependencies failed!{0}{0}{1}{0}{0}{2}",
+                                Environment.NewLine,
+                                Environment.StackTrace,
+                                resolved);
+                throw new DependenciesNotSatisfiedKraken(unsatisfied, registry, game, resolved);
             }
 
             AddModulesToInstall(toInst);
@@ -280,58 +277,33 @@ namespace CKAN
                     }
                     continue;
                 }
-                if (descriptor.ContainsAny(installed_modules.Select(im => im.identifier)))
-                {
-                    // We need a different version of the mod than is already installed
-                    var module = installed_modules.FirstOrDefault(m => descriptor.ContainsAny(new string[] { m.identifier }));
-                    log.DebugFormat("Found installed mod {0}, which doesn't match {1}",
-                                    module, descriptor.ToString());
-                    if (options.proceed_with_inconsistencies)
-                    {
-                        if (module != null && reason is SelectionReason.RelationshipReason rel)
-                        {
-                            conflicts.Add(new ModPair(module, rel.Parent));
-                            conflicts.Add(new ModPair(rel.Parent, module));
-                        }
-                        continue;
-                    }
-                    else
-                    {
-                        throw new InconsistentKraken(string.Format(
-                            Properties.Resources.RelationshipResolverRequiredButInstalled,
-                            descriptor));
-                    }
-                }
 
-                var candidates = resolved.Candidates(descriptor,
+                IReadOnlyList<CkanModule>? candidates = null;
+                try
+                {
+                    candidates = resolved.Candidates(descriptor,
                                                      modlist.Values.Except(user_requested_mods)
-                                                                   .ToArray())
-                                         .ToArray();
-                log.DebugFormat("Got {0} candidates for {1}",
-                                candidates.Length, descriptor.ToString());
-                if (candidates.Length == 0)
+                                                                   .ToArray(),
+                                                     registry, game);
+                    log.DebugFormat("Got {0} candidates for {1}",
+                                    candidates.Count, descriptor);
+                }
+                catch (DependenciesNotSatisfiedKraken)
+                when (soft_resolve || options.proceed_with_inconsistencies)
                 {
-                    if (!soft_resolve
-                        && !options.proceed_with_inconsistencies
-                        && reason is SelectionReason.RelationshipReason rel)
-                    {
-                        log.InfoFormat("Dependency on {0} found but it is not listed in the index, or not available for your game version.", descriptor.ToString());
-
-                        throw new DependenciesNotSatisfiedKraken(
-                            new ResolvedByNew(rel.Parent, descriptor, reason),
-                            registry, game, resolved);
-                    }
-                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your game version.", descriptor.ToString());
+                    log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your game version.",
+                                   descriptor);
                     continue;
                 }
-                if (candidates.Length > 1)
+
+                if (candidates.Count > 1)
                 {
                     // Oh no, too many to pick from!
                     if (options.without_toomanyprovides_kraken)
                     {
                         if (options.get_recommenders && reason is not SelectionReason.Depends)
                         {
-                            for (int i = 0; i < candidates.Length; ++i)
+                            for (int i = 0; i < candidates.Count; ++i)
                             {
                                 Add(candidates[i], reason is SelectionReason.Recommended rec
                                                        ? rec.WithIndex(i)
@@ -352,20 +324,18 @@ namespace CKAN
                             // We still have either nothing, or too many to pick from
                             // Just throw the TMP now
                             throw new TooManyModsProvideKraken(rel.Parent, descriptor.ToString() ?? "",
-                                                               candidates.ToList(),
-                                                               descriptor.choice_help_text);
+                                                               candidates, descriptor.choice_help_text);
                         }
-                        candidates[0] = provide.First();
+                        candidates = new List<CkanModule> { provide.First() };
                     }
                     else if (reason is SelectionReason.RelationshipReason rel)
                     {
                         throw new TooManyModsProvideKraken(rel.Parent, descriptor.ToString() ?? "",
-                                                           candidates.ToList(),
-                                                           descriptor.choice_help_text);
+                                                           candidates, descriptor.choice_help_text);
                     }
                 }
 
-                CkanModule candidate = candidates.First();
+                CkanModule candidate = candidates.Single();
 
                 // Finally, check our candidate against everything which might object
                 // to it being installed; that's all the mods which are fixed in our

@@ -1631,6 +1631,242 @@ namespace Tests.Core.Relationships
             }
         }
 
+        [TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""ModToInstall"",
+                          ""depends"": [
+                              {
+                                  ""name"": ""Dependency1""
+                              },
+                              {
+                                  ""name"": ""Dependency2""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency1"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""1.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency2"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""2.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""1.0""
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""2.0""
+                      }",
+                  },
+                  new string[] { "ModToInstall" },
+                  new string[] { "Unsatisfied dependency VersionedDep 2.0 (KSP All versions) needed for: Dependency2 1.0 (needed for ModToInstall 1.0)" }),
+         TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""ModToInstall"",
+                          ""depends"": [
+                              {
+                                  ""name"": ""Dependency1""
+                              },
+                              {
+                                  ""name"": ""Dependency2""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency1"",
+                          ""depends"": [
+                              {
+                                  ""name"": ""NestedDependency1""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency2"",
+                          ""depends"": [
+                              {
+                                  ""name"": ""NestedDependency2""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""NestedDependency1"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""1.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""NestedDependency2"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""2.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""1.0""
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""2.0""
+                      }",
+                  },
+                  new string[] { "ModToInstall" },
+                  new string[] { "Unsatisfied dependency VersionedDep 2.0 (KSP All versions) needed for: NestedDependency2 1.0 (needed for Dependency2 1.0, needed for ModToInstall 1.0)" }),
+         TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""Dependency1"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""1.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency2"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""2.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""1.0""
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""2.0""
+                      }",
+                  },
+                  new string[] { "Dependency1", "Dependency2" },
+                  new string[]
+                  {
+                      "Unsatisfied dependency VersionedDep 1.0 (KSP All versions) needed for: Dependency1 1.0",
+                      "Unsatisfied dependency VersionedDep 2.0 (KSP All versions) needed for: Dependency2 1.0"
+                  }),
+         TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""ModToInstall"",
+                          ""depends"": [
+                              {
+                                  ""name"": ""Dependency""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""1.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""1.0""
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""2.0""
+                      }",
+                  },
+                  new string[] { "VersionedDep", "ModToInstall" },
+                  new string[] { "Unsatisfied dependency Dependency (KSP All versions) needed for: ModToInstall 1.0" }),
+         TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""ModToInstall"",
+                          ""depends"": [
+                              {
+                                  ""name"": ""Dependency""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""Dependency"",
+                          ""depends"": [
+                              {
+                                  ""name"":    ""VersionedDep"",
+                                  ""version"": ""1.0""
+                              }
+                          ]
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""1.0""
+                      }",
+                      @"{
+                          ""identifier"": ""VersionedDep"",
+                          ""version"":    ""2.0""
+                      }",
+                  },
+                  new string[] { "ModToInstall", "VersionedDep" },
+                  new string[] { "Unsatisfied dependency Dependency (KSP All versions) needed for: ModToInstall 1.0" }),
+        ]
+        public void Constructor_DifferentVersionDepends_Throws(string[] availableModules,
+                                                               string[] installIdents,
+                                                               string[] errors)
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var inst     = new DisposableKSP())
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var registry  = regMgr.registry;
+                var opts      = RelationshipResolverOptions.DefaultOpts(inst.KSP.StabilityToleranceConfig);
+                var toInstall = installIdents.Select(ident => registry.LatestAvailable(ident,
+                                                                  inst.KSP.StabilityToleranceConfig,
+                                                                  inst.KSP.VersionCriteria()))
+                                             .OfType<CkanModule>()
+                                             .ToArray();
+
+                // Act / Assert
+                var exc = Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+                {
+                    var sut = new RelationshipResolver(toInstall, Array.Empty<CkanModule>(), opts,
+                                                       registry, inst.KSP.Game, inst.KSP.VersionCriteria());
+                })!;
+                CollectionAssert.AreEqual(errors, exc.Message.Split(new string[] { Environment.NewLine},
+                                                                    StringSplitOptions.RemoveEmptyEntries));
+
+                opts.proceed_with_inconsistencies = true;
+                opts.without_enforce_consistency  = true;
+                Assert.DoesNotThrow(() =>
+                {
+                    var sut = new RelationshipResolver(toInstall, Array.Empty<CkanModule>(), opts,
+                                                       registry, inst.KSP.Game, inst.KSP.VersionCriteria());
+                });
+            }
+        }
+
         public static string MergeWithDefaults(string json)
         {
             var incoming = JObject.Parse(json);
