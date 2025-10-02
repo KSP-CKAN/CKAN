@@ -149,15 +149,18 @@ namespace CKAN.CmdLine
                                        : registry.CompatibleModules(instance.StabilityToleranceConfig,
                                                                     instance.VersionCriteria()))
                     // Look for a match in each string.
-                    .Where(module => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
-                            || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
-                            && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1))
+                    .Where(module => TermMatchesModule(module, term, author))
                     .OrderBy(module => module.name)
                     .ThenBy(module => module.identifier)
                     .ToList();
         }
+
+        public static bool TermMatchesModule(CkanModule module, string term, string author)
+            => (module.SearchableName.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                || module.SearchableIdentifier.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                || module.SearchableAbstract.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1
+                || module.SearchableDescription.IndexOf(term, StringComparison.OrdinalIgnoreCase) > -1)
+               && module.SearchableAuthors.Any((auth) => auth.IndexOf(author, StringComparison.OrdinalIgnoreCase) > -1);
 
         /// <summary>
         /// Find the proper capitalization of an identifier
