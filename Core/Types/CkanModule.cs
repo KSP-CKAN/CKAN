@@ -860,64 +860,36 @@ namespace CKAN
         }
 
         public bool DependsAndConflictsOK(IReadOnlyCollection<CkanModule> others)
-        {
-            if (depends != null)
-            {
-                foreach (RelationshipDescriptor rel in depends)
-                {
-                    // If 'others' matches an identifier, it must also match the versions, else fail
-                    if (rel.ContainsAny(others.Select(m => m.identifier)) && !rel.MatchesAny(others, null, null))
-                    {
-                        log.DebugFormat("Unsatisfied dependency {0}, rejecting {1}", rel, this);
-                        return false;
-                    }
-                }
-            }
-            var othersMinusSelf = others.Where(m => m.identifier != identifier).ToList();
-            if (conflicts != null)
-            {
-                // Skip self-conflicts (but catch other modules providing self)
-                foreach (RelationshipDescriptor rel in conflicts)
-                {
-                    // If any of the conflicts are present, fail
-                    if (rel.MatchesAny(othersMinusSelf, null, null, out CkanModule? matched))
-                    {
-                        log.DebugFormat("Found conflict with {0}, rejecting {1}", matched, this);
-                        return false;
-                    }
-                }
-            }
-            // Check reverse conflicts so user isn't prompted to choose modules that will error out immediately
-            var selfArray = new CkanModule[] { this };
-            foreach (CkanModule other in othersMinusSelf)
-            {
-                if (other.conflicts != null)
-                {
-                    foreach (RelationshipDescriptor rel in other.conflicts)
-                    {
-                        if (rel.MatchesAny(selfArray, null, null))
-                        {
-                            log.DebugFormat("Found reverse conflict with {0}, rejecting {1}", other, this);
-                            return false;
-                        }
-                    }
-                }
-                // And check reverse depends for version limits
-                if (other.depends != null)
-                {
-                    foreach (RelationshipDescriptor rel in other.depends)
-                    {
-                        // If 'others' matches an identifier, it must also match the versions, else fail
-                        if (rel.ContainsAny(Enumerable.Repeat(identifier, 1))
-                            && !rel.MatchesAny(selfArray, null, null))
-                        {
-                            log.DebugFormat("Unmatched reverse dependency from {0}, rejecting", other);
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
-        }
+            => !BadRelationships(others).Any();
+
+        public IEnumerable<Relationship> BadRelationships(IReadOnlyCollection<CkanModule> others)
+            => BadRelationships(others,
+                                others.Where(other => other.identifier != identifier).ToArray(),
+                                new CkanModule[] { this });
+
+        private IEnumerable<Relationship> BadRelationships(IReadOnlyCollection<CkanModule> others,
+                                                           IReadOnlyCollection<CkanModule> othersMinusSelf,
+                                                           IReadOnlyCollection<CkanModule> selfArray)
+            => (depends ?? Enumerable.Empty<RelationshipDescriptor>())
+                   .Where(rel => BadDepends(rel, others))
+                   .Select(rel => new Relationship(this, RelationshipType.Depends, rel))
+
+               .Concat((conflicts ?? Enumerable.Empty<RelationshipDescriptor>())
+                           .Where(rel => rel.MatchesAny(othersMinusSelf, null, null))
+                           .Select(rel => new Relationship(this, RelationshipType.Conflicts, rel)))
+
+               .Concat(othersMinusSelf.SelectMany(other =>
+
+                   (other.depends ?? Enumerable.Empty<RelationshipDescriptor>())
+                       .Where(rel => BadDepends(rel, selfArray))
+                       .Select(rel => new Relationship(other, RelationshipType.Depends, rel))
+
+                   .Concat((other.conflicts ?? Enumerable.Empty<RelationshipDescriptor>())
+                       .Where(rel => rel.MatchesAny(selfArray, null, null))
+                       .Select(rel => new Relationship(other, RelationshipType.Conflicts, rel)))));
+
+        private static bool BadDepends(RelationshipDescriptor          dep,
+                                       IReadOnlyCollection<CkanModule> targets)
+            => dep.ContainsAny(targets.Select(m => m.identifier)) && !dep.MatchesAny(targets, null, null);
     }
 }
