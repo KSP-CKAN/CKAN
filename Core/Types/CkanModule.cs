@@ -391,9 +391,6 @@ namespace CKAN
                                           ?? new List<string> { "" };
         }
 
-        public string serialise()
-            => JsonConvert.SerializeObject(this);
-
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
         {
