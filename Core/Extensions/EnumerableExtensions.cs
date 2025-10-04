@@ -72,16 +72,6 @@ namespace CKAN.Extensions
                                 (a, b) => a + b);
 
         /// <summary>
-        /// Select : SelectMany :: Zip : ZipMany
-        /// </summary>
-        /// <param name="seq1">Sequence from which to get first values</param>
-        /// <param name="seq2">Sequence from which to get second values</param>
-        /// <param name="func">Function to transform a value from each input sequence into a sequence of multiple outputs</param>
-        /// <returns>Flattened sequence of values from func applies to seq1 and seq2</returns>
-        public static IEnumerable<V> ZipMany<T, U, V>(this IEnumerable<T> seq1, IEnumerable<U> seq2, Func<T, U, IEnumerable<V>> func)
-            => seq1.Zip(seq2, func).SelectMany(seqs => seqs);
-
-        /// <summary>
         /// Zip a sequence with a sequence generated from the first sequence using the given function
         /// </summary>
         /// <typeparam name="T">Source sequence type</typeparam>
@@ -173,16 +163,6 @@ namespace CKAN.Extensions
                 yield return t;
             }
         }
-
-        /// <summary>
-        /// Try matching a regex against a series of strings and return the Match objects
-        /// </summary>
-        /// <param name="source">Sequence of strings to scan</param>
-        /// <param name="pattern">Pattern to match</param>
-        /// <returns>Sequence of Match objects</returns>
-        public static IEnumerable<Match> WithMatches(this IEnumerable<string> source, Regex pattern)
-            => source.Select(val => pattern.TryMatch(val, out Match? match) ? match : null)
-                     .OfType<Match>();
 
         /// <summary>
         /// Apply a function to a sequence and handle any exceptions that are thrown

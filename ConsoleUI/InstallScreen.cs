@@ -140,7 +140,7 @@ namespace CKAN.ConsoleUI {
                                 theme,
                                 ex.Message,
                                 Properties.Resources.InstallTooManyModsNameHeader,
-                                ex.modules,
+                                ex.modules.ToList(),
                                 mod => mod.ToString()
                             );
                             var chosen = ch.Run();

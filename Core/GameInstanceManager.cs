@@ -625,7 +625,7 @@ namespace CKAN
         /// </returns>
         public bool TrySetupCache(string?        path,
                                   IProgress<int> progress,
-                                  [NotNullWhen(returnValue: false)]
+                                  [NotNullWhen(false)]
                                   out string?    failureReason)
         {
             var origPath  = Configuration.DownloadCacheDir;

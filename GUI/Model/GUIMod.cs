@@ -250,7 +250,7 @@ namespace CKAN.GUI
 
             Name          = mod.name.Trim();
             Abstract      = mod.@abstract.Trim();
-            Description   = mod.description?.Trim() ?? string.Empty;
+            Description   = mod.description?.Trim() ?? "";
             Abbrevation   = new string(Name.Split(' ')
                                            .Select(s => //s is [char first, ..]
                                                         s.Length > 0

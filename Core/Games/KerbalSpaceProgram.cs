@@ -108,7 +108,7 @@ namespace CKAN.Games.KerbalSpaceProgram
             || path == ShipsSph(inst)  || path == ShipsThumbsSPH(inst)
             || path == ShipsScript(inst);
 
-        public bool AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path)
+        public bool AllowInstallationIn(string name, [NotNullWhen(true)] out string? path)
             => allowedFolders.TryGetValue(name, out path);
 
         public void RebuildSubdirectories(string absGameRoot)

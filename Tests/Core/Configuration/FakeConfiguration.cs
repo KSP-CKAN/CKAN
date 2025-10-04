@@ -94,7 +94,7 @@ namespace Tests.Core.Configuration
         /// </summary>
         public string? AutoStartInstance
         {
-            get => _AutoStartInstance ?? string.Empty;
+            get => _AutoStartInstance ?? "";
             #pragma warning disable IDE0027
             set
             {
@@ -164,7 +164,7 @@ namespace Tests.Core.Configuration
         }
 
         public bool TryGetAuthToken(string host,
-                                    [NotNullWhen(returnValue: true)] out string? token)
+                                    [NotNullWhen(true)] out string? token)
             => authTokens.TryGetValue(host, out token);
 
         private readonly Dictionary<string, string> authTokens = new Dictionary<string, string>();

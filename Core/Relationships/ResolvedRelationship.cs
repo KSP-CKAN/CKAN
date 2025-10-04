@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using CKAN.Configuration;
 using CKAN.Versioning;
+using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -29,10 +30,7 @@ namespace CKAN
         public virtual bool Contains(CkanModule mod)
             => false;
 
-        public virtual bool Unsatisfied()
-            => false;
-
-        public virtual bool Unsatisfied(IReadOnlyCollection<CkanModule> installing)
+        protected virtual bool Unsatisfied()
             => false;
 
         [ExcludeFromCodeCoverage]
@@ -56,6 +54,14 @@ namespace CKAN
 
         public override int GetHashCode()
             => (source, relationship, reason).GetHashCode();
+
+        public virtual IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom()
+            => reason is SelectionReason.Depends && Unsatisfied()
+                   ? Enumerable.Repeat(new ResolvedRelationship[] { this }, 1)
+                   : Enumerable.Empty<ResolvedRelationship[]>();
+
+        public virtual IReadOnlyCollection<(ResolvedRelationship[], Relationship)> BadRelationships(IReadOnlyCollection<CkanModule> installing)
+            => Array.Empty<(ResolvedRelationship[], Relationship)>();
     }
 
     public class ResolvedByInstalled : ResolvedRelationship
@@ -179,15 +185,9 @@ namespace CKAN
         public override bool Contains(CkanModule mod)
             => resolved.Any(rr => rr.Key == mod || rr.Value.Any(rrr => rrr.Contains(mod)));
 
-        public override bool Unsatisfied()
+        protected override bool Unsatisfied()
             => reason is SelectionReason.Depends
                && !resolved.Keys.Any(m => !m.IsDLC);
-
-        public override bool Unsatisfied(IReadOnlyCollection<CkanModule> installing)
-            => reason is SelectionReason.Depends
-               && !resolved.Any(kvp => !kvp.Key.IsDLC
-                                       && AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
-                                       && kvp.Value.All(rr => !rr.Unsatisfied(installing)));
 
         [ExcludeFromCodeCoverage]
         public override string ToString()
@@ -207,5 +207,68 @@ namespace CKAN
 
         public override ResolvedRelationship WithSource(CkanModule newSrc, SelectionReason newRsn)
             => new ResolvedByNew(newSrc, relationship, newRsn, resolved);
+
+        public override IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom()
+        {
+            // Our goal here is to return an array of ResolvedRelationships for each full
+            // trace from rr to a relationship we can't satisfy.
+            // First we need to make sure we even care about this one, i.e. that it's required.
+            if (reason is SelectionReason.Depends)
+            {
+                // Now if this relationship itself can't be resolved directly, return it.
+                if (Unsatisfied())
+                {
+                    return Enumerable.Repeat(new ResolvedRelationship[] { this }, 1);
+                }
+                // Now we know it's a dependency that has at least one option for satisfying it,
+                // but those options may or may not be fully satisfied when considering _their_ dependencies.
+
+                // If any of these options works, then we want to return nothing.
+                // Otherwise we want to return all of the descriptions of why everything failed,
+                // with rr prepended to the start of each array.
+                var unsats = resolved.Values.Select(modsRels => modsRels.SelectMany(rr => rr.UnsatisfiedFrom())
+                                                                        .ToArray())
+                                            .Memoize();
+
+                return unsats.Any(u => u.Length == 0)
+                    // One of the dependencies is fully satisfied
+                    ? Enumerable.Empty<ResolvedRelationship[]>()
+                    : unsats.SelectMany(uns => uns.Select(u => u.Prepend(this).ToArray()));
+            }
+            return Enumerable.Empty<ResolvedRelationship[]>();
+        }
+
+        public override IReadOnlyCollection<(ResolvedRelationship[], Relationship)> BadRelationships(IReadOnlyCollection<CkanModule> installing)
+        {
+            if (reason is SelectionReason.Depends)
+            {
+                var unsatisfied = new List<(ResolvedRelationship[], Relationship)>();
+                foreach ((CkanModule module, ResolvedRelationship[] resRels) in resolved)
+                {
+                    if (module.BadRelationships(installing)
+                              .Select(r => (new ResolvedRelationship[] { this }, r))
+                              .ToArray()
+                        is { Length: > 0 } badRels)
+                    {
+                        unsatisfied.AddRange(badRels);
+                    }
+                    else if (resRels.SelectMany(rr => rr.BadRelationships(installing))
+                                    .Select(tuple => (tuple.Item1.Prepend(this).ToArray(),
+                                                      tuple.Item2))
+                                    .ToArray()
+                             is { Length: > 0 } badRRs)
+                    {
+                        unsatisfied.AddRange(badRRs);
+                    }
+                    else
+                    {
+                        // This relationship is satisfied
+                        return Array.Empty<(ResolvedRelationship[], Relationship)>();
+                    }
+                }
+                return unsatisfied;
+            }
+            return Array.Empty<(ResolvedRelationship[], Relationship)>();
+        }
     }
 }

@@ -728,4 +728,22 @@ Owning Mod(已有Mod): {2}</value>
   <data name="ModuleLabelListHeld" xml:space="preserve">
     <value>已使用</value>
   </data>
+  <data name="RelationshipTypeProvides" xml:space="preserve">
+    <value>提供</value>
+  </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve">
+    <value>依赖</value>
+  </data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve">
+    <value>推荐</value>
+  </data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve">
+    <value>建议</value>
+  </data>
+  <data name="RelationshipTypeSupports" xml:space="preserve">
+    <value>支持</value>
+  </data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve">
+    <value>冲突</value>
+  </data>
 </root>

@@ -382,17 +382,14 @@ namespace CKAN
          MemberNotNull(nameof(SearchableAuthors))]
         private void CalculateSearchables()
         {
-            SearchableIdentifier  = identifier  == null ? string.Empty : nonAlphaNums.Replace(identifier, "");
-            SearchableName        = name        == null ? string.Empty : nonAlphaNums.Replace(name, "");
-            SearchableAbstract    = @abstract   == null ? string.Empty : nonAlphaNums.Replace(@abstract, "");
-            SearchableDescription = description == null ? string.Empty : nonAlphaNums.Replace(description, "");
+            SearchableIdentifier  = identifier  == null ? "" : nonAlphaNums.Replace(identifier, "");
+            SearchableName        = name        == null ? "" : nonAlphaNums.Replace(name, "");
+            SearchableAbstract    = @abstract   == null ? "" : nonAlphaNums.Replace(@abstract, "");
+            SearchableDescription = description == null ? "" : nonAlphaNums.Replace(description, "");
             SearchableAuthors     = author?.Select(auth => nonAlphaNums.Replace(auth, ""))
                                            .ToList()
-                                          ?? new List<string> { string.Empty };
+                                          ?? new List<string> { "" };
         }
-
-        public string serialise()
-            => JsonConvert.SerializeObject(this);
 
         [OnDeserialized]
         private void DeSerialisationFixes(StreamingContext like_i_could_care)
@@ -408,8 +405,8 @@ namespace CKAN
             }
 
             license   ??= new List<License> { License.UnknownLicense };
-            @abstract ??= string.Empty;
-            name      ??= string.Empty;
+            @abstract ??= "";
+            name      ??= "";
 
             if (kind == ModuleKind.dlc && version is not UnmanagedModuleVersion)
             {
@@ -861,6 +858,38 @@ namespace CKAN
                 }
             }
         }
-    }
 
+        public bool DependsAndConflictsOK(IReadOnlyCollection<CkanModule> others)
+            => !BadRelationships(others).Any();
+
+        public IEnumerable<Relationship> BadRelationships(IReadOnlyCollection<CkanModule> others)
+            => BadRelationships(others,
+                                others.Where(other => other.identifier != identifier).ToArray(),
+                                new CkanModule[] { this });
+
+        private IEnumerable<Relationship> BadRelationships(IReadOnlyCollection<CkanModule> others,
+                                                           IReadOnlyCollection<CkanModule> othersMinusSelf,
+                                                           IReadOnlyCollection<CkanModule> selfArray)
+            => (depends ?? Enumerable.Empty<RelationshipDescriptor>())
+                   .Where(rel => BadDepends(rel, others))
+                   .Select(rel => new Relationship(this, RelationshipType.Depends, rel))
+
+               .Concat((conflicts ?? Enumerable.Empty<RelationshipDescriptor>())
+                           .Where(rel => rel.MatchesAny(othersMinusSelf, null, null))
+                           .Select(rel => new Relationship(this, RelationshipType.Conflicts, rel)))
+
+               .Concat(othersMinusSelf.SelectMany(other =>
+
+                   (other.depends ?? Enumerable.Empty<RelationshipDescriptor>())
+                       .Where(rel => BadDepends(rel, selfArray))
+                       .Select(rel => new Relationship(other, RelationshipType.Depends, rel))
+
+                   .Concat((other.conflicts ?? Enumerable.Empty<RelationshipDescriptor>())
+                       .Where(rel => rel.MatchesAny(selfArray, null, null))
+                       .Select(rel => new Relationship(other, RelationshipType.Conflicts, rel)))));
+
+        private static bool BadDepends(RelationshipDescriptor          dep,
+                                       IReadOnlyCollection<CkanModule> targets)
+            => dep.ContainsAny(targets.Select(m => m.identifier)) && !dep.MatchesAny(targets, null, null);
+    }
 }

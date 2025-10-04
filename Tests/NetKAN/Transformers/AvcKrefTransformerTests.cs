@@ -26,6 +26,10 @@ namespace Tests.NetKAN.Transformers
                     ""NAME"":     ""AwesomeMod"",
                     ""URL"":      ""https://mysite.org/AwesomeMod.version"",
                     ""DOWNLOAD"": ""https://mysite.org/AwesomeMod.zip"",
+                    ""GITHUB"": {
+                        ""USERNAME"":   ""AwesomeModder"",
+                        ""REPOSITORY"": ""AwesomeMod""
+                    },
                     ""VERSION"": {
                         ""MAJOR"": 1,
                         ""MINOR"": 0,
@@ -39,12 +43,18 @@ namespace Tests.NetKAN.Transformers
                 }"
             )
         ]
-        public void Transform_SimpleVersionFile_PropertiesSet(string remoteUrl, string version, string GameVersion, string download, string remoteAvc)
+        public void Transform_SimpleVersionFile_PropertiesSet(string remoteUrl,
+                                                              string version,
+                                                              string GameVersion,
+                                                              string download,
+                                                              string remoteAvc)
         {
             // Arrange
             var mHttp = new Mock<IHttpService>();
-            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(), It.IsAny<string?>(), It.IsAny<string?>()))
-                .Returns(remoteAvc);
+            mHttp.Setup(i => i.DownloadText(It.IsAny<Uri>(),
+                                            It.IsAny<string?>(),
+                                            It.IsAny<string?>()))
+                 .Returns(remoteAvc);
 
             // Act
             Metadata? m = null;
@@ -55,14 +65,18 @@ namespace Tests.NetKAN.Transformers
             Assert.AreEqual(version,     (string?)json?["version"]);
             Assert.AreEqual(GameVersion, (string?)json?["ksp_version"]);
             Assert.AreEqual(download,    (string?)json?["download"]);
+            Assert.AreEqual("https://github.com/AwesomeModder/AwesomeMod",
+                            (string?)json?["resources"]?["repository"]);
         }
 
         private Metadata TryKref(IHttpService http, string kref)
         {
             // Arrange
-            var json = new JObject();
-            json["spec_version"] = 1;
-            json["identifier"]   = "AwesomeMod";
+            var json = new JObject()
+            {
+                { "spec_version", 1            },
+                { "identifier",   "AwesomeMod" },
+            };
             if (kref != null)
             {
                 json["$kref"] = kref;

@@ -158,15 +158,6 @@
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
-  <data name="RelationshipTypeProvides" xml:space="preserve">
-    <value>Sağlar</value>
-  </data>
-  <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>Destekler</value>
-  </data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>Çakışır</value>
-  </data>
   <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
     <value>İptal</value>
   </data>

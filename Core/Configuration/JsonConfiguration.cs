@@ -187,7 +187,7 @@ namespace CKAN.Configuration
                                 ?? Enumerable.Empty<string>();
 
         public bool TryGetAuthToken(string host,
-                                    [NotNullWhen(returnValue: true)] out string? token)
+                                    [NotNullWhen(true)] out string? token)
         {
             if (config.AuthTokens == null)
             {

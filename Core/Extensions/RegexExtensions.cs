@@ -13,7 +13,7 @@ namespace CKAN.Extensions
         /// <param name="match">Object representing the match, if any</param>
         /// <returns>True if the regex matched the value, false otherwise</returns>
         public static bool TryMatch(this Regex regex, string value,
-                                    [NotNullWhen(returnValue: true)] out Match? match)
+                                    [NotNullWhen(true)] out Match? match)
         {
             match = regex.Match(value);
             return match.Success;

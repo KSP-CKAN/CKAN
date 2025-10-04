@@ -702,24 +702,6 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
-  <data name="RelationshipTypeProvides" xml:space="preserve">
-    <value>Liefert</value>
-  </data>
-  <data name="RelationshipTypeDepends" xml:space="preserve">
-    <value>Abhängigkeit</value>
-  </data>
-  <data name="RelationshipTypeRecommends" xml:space="preserve">
-    <value>Empfehlung</value>
-  </data>
-  <data name="RelationshipTypeSuggests" xml:space="preserve">
-    <value>Vorschlag</value>
-  </data>
-  <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>Unterstützt</value>
-  </data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>Konflikt</value>
-  </data>
   <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
     <value>Löschen</value>
   </data>

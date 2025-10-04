@@ -937,24 +937,6 @@ Sei sicuro di voler saltare questo cambiamento?</value>
   <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve">
     <value>Interrompi l'aggiornamento</value>
   </data>
-  <data name="RelationshipTypeProvides" xml:space="preserve">
-    <value>Fornisce</value>
-  </data>
-  <data name="RelationshipTypeDepends" xml:space="preserve">
-    <value>Dipendenti</value>
-  </data>
-  <data name="RelationshipTypeRecommends" xml:space="preserve">
-    <value>Raccomandate</value>
-  </data>
-  <data name="RelationshipTypeSuggests" xml:space="preserve">
-    <value>Suggerite</value>
-  </data>
-  <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>Supporta</value>
-  </data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>Conflitto</value>
-  </data>
   <data name="AuthorSearchName">
     <value>Mod di {0}</value>
   </data>
