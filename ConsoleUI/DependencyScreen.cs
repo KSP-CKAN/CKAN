@@ -168,7 +168,7 @@ namespace CKAN.ConsoleUI {
             rejected.UnionWith(inst);
 
             if (ModuleInstaller.FindRecommendations(
-                    instance, inst, inst, rejected, registry,
+                    instance, inst, inst, Array.Empty<CkanModule>(), rejected, registry,
                     out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                     out Dictionary<CkanModule, List<string>> suggestions,
                     out Dictionary<CkanModule, HashSet<string>> supporters

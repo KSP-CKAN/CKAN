@@ -763,6 +763,7 @@ namespace Tests.Core.IO
                                                                               .ToHashSet(),
                                                                  Array.Empty<CkanModule>(),
                                                                  Array.Empty<CkanModule>(),
+                                                                 Array.Empty<CkanModule>(),
                                                                  registry,
                                                                  out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                                                  out Dictionary<CkanModule, List<string>> suggestions,
@@ -812,6 +813,7 @@ namespace Tests.Core.IO
                                                                  installIdents.Select(ident => registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, crit))
                                                                               .OfType<CkanModule>()
                                                                               .ToHashSet(),
+                                                                 Array.Empty<CkanModule>(),
                                                                  Array.Empty<CkanModule>(),
                                                                  Array.Empty<CkanModule>(),
                                                                  registry,
@@ -877,6 +879,7 @@ namespace Tests.Core.IO
                                  inst.KSP, toInstall,
                                  Array.Empty<CkanModule>(),
                                  Array.Empty<CkanModule>(),
+                                 Array.Empty<CkanModule>(),
                                  registry,
                                  out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                                  out Dictionary<CkanModule, List<string>> suggestions,
@@ -885,6 +888,83 @@ namespace Tests.Core.IO
                 // Assert
                 CollectionAssert.AreEquivalent(sugg, suggestions.Keys);
                 CollectionAssert.AreEquivalent(supp, supporters.Keys);
+            }
+        }
+
+        [Test]
+        public void FindRecommendations_ReplaceParallaxWithParallaxContinued_1ThousandRecommendationsNotIncluded()
+        {
+            // Arrange
+            using (var inst     = new DisposableKSP())
+            using (var repo     = new TemporaryRepository(
+                                      Relationships.RelationshipResolverTests.MergeWithDefaults(
+                                          @"{
+                                              ""identifier"": ""Parallax"",
+                                              ""depends"": [ { ""name"": ""ParallaxTextures"" } ]
+                                          }",
+                                          @"{
+                                              ""identifier"": ""ParallaxTextures""
+                                          }",
+                                          @"{
+                                              ""identifier"": ""ParallaxContinued"",
+                                              ""conflicts"": [
+                                                  { ""name"": ""Parallax"" },
+                                                  { ""name"": ""ParallaxTextures"" }
+                                              ],
+                                              ""depends"":    [ { ""name"": ""ParallaxContinuedTextures"" } ],
+                                              ""recommends"": [ { ""name"": ""Recommend"" } ]
+                                          }",
+                                          @"{
+                                              ""identifier"": ""ParallaxContinuedTextures"",
+                                              ""conflicts"": [
+                                                  { ""name"": ""Parallax"" },
+                                                  { ""name"": ""ParallaxTextures"" }
+                                              ]
+                                          }",
+                                          @"{
+                                              ""identifier"": ""LandOf1ThousandDances"",
+                                              ""provides"":   [ ""ParallaxContinuedTextures"" ],
+                                              ""recommends"": [ { ""name"": ""DoNotRecommend"" } ]
+                                          }",
+                                          @"{
+                                              ""identifier"": ""DoNotRecommend""
+                                          }",
+                                          @"{
+                                              ""identifier"": ""Recommend""
+                                          }"
+                                          ).ToArray()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            {
+                var registry          = regMgr.registry;
+                var parallax          = registry.LatestAvailable("Parallax",
+                                                                 inst.KSP.StabilityToleranceConfig,
+                                                                 inst.KSP.VersionCriteria())!;
+                var parallaxTextures  = registry.LatestAvailable("ParallaxTextures",
+                                                                 inst.KSP.StabilityToleranceConfig,
+                                                                 inst.KSP.VersionCriteria())!;
+                var parallaxContinued = registry.LatestAvailable("ParallaxContinued",
+                                                                 inst.KSP.StabilityToleranceConfig,
+                                                                 inst.KSP.VersionCriteria())!;
+
+                var toInstall = new CkanModule[] { parallaxContinued };
+                var toRemove  = new CkanModule[] { parallax };
+
+                // Act
+                registry.RegisterModule(parallax, Array.Empty<string>(), inst.KSP, false);
+                registry.RegisterModule(parallaxTextures, Array.Empty<string>(), inst.KSP, true);
+                var result = ModuleInstaller.FindRecommendations(
+                                 inst.KSP,
+                                 toInstall, toInstall, toRemove, Array.Empty<CkanModule>(),
+                                 registry,
+                                 out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
+                                 out Dictionary<CkanModule, List<string>> suggestions,
+                                 out Dictionary<CkanModule, HashSet<string>> supporters);
+
+                // Assert
+                CollectionAssert.AreEqual(new string[] { "Recommend" },
+                                          recommendations.Keys.Select(m => m.identifier));
             }
         }
 

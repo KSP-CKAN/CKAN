@@ -815,6 +815,7 @@ namespace CKAN.IO
                                   IReadOnlyCollection<CkanModule>? installing    = null)
         {
             mods = mods.Memoize();
+            installing ??= Array.Empty<CkanModule>();
             // Pre-check, have they even asked for things which are installed?
 
             foreach (string mod in mods.Where(mod => registry_manager.registry.InstalledModule(mod) == null))
@@ -833,22 +834,17 @@ namespace CKAN.IO
             // Find all the things which need uninstalling.
             var revdep = mods
                 .Union(registry_manager.registry.FindReverseDependencies(
-                    mods.Except(installing?.Select(m => m.identifier) ?? Array.Empty<string>())
-                        .ToArray(),
+                    mods.Except(installing.Select(m => m.identifier)).ToArray(),
                     installing))
                 .ToArray();
 
             var goners = revdep.Union(
-                    registry_manager.registry.FindRemovableAutoInstalled(
-                        registry_manager.registry.InstalledModules
-                            .Where(im => !revdep.Contains(im.identifier))
-                            .ToArray(),
-                        installing ?? Array.Empty<CkanModule>(),
-                        instance.Game, instance.StabilityToleranceConfig,
-                        instance.VersionCriteria())
-                    .Select(im => im.identifier))
-                .Order()
-                .ToArray();
+                                registry_manager.registry.FindRemovableAutoInstalled(installing,
+                                                                                     revdep.ToHashSet(),
+                                                                                     instance)
+                                                         .Select(im => im.identifier))
+                               .Order()
+                               .ToArray();
 
             // If there is nothing to uninstall, skip out.
             if (goners.Length == 0)
@@ -1330,13 +1326,7 @@ namespace CKAN.IO
                                          .Intersect(modules.Select(m => m.identifier))
                                          .ToHashSet();
             var autoRemoving = registry
-                .FindRemovableAutoInstalled(
-                    // Conjure the future state of the installed modules list after upgrading
-                    registry.InstalledModules
-                            .Where(im => !removingIdents.Contains(im.identifier))
-                            .ToArray(),
-                    modules,
-                    instance.Game, instance.StabilityToleranceConfig, instance.VersionCriteria())
+                .FindRemovableAutoInstalled(modules, removingIdents, instance)
                 .ToHashSet();
 
             var resolver = new RelationshipResolver(
@@ -1601,6 +1591,7 @@ namespace CKAN.IO
         /// <param name="instance">Game instance to use</param>
         /// <param name="sourceModules">Modules to check for relationships, should contain the complete changeset including dependencies</param>
         /// <param name="toInstall">Modules already being installed, to be omitted from search</param>
+        /// <param name="toRemove">Modules being removed, to be excluded from relationship resolution</param>
         /// <param name="exclude">Modules the user has already seen and decided not to install</param>
         /// <param name="registry">Registry to use</param>
         /// <param name="recommendations">Modules that are recommended to install</param>
@@ -1612,6 +1603,7 @@ namespace CKAN.IO
         public static bool FindRecommendations(GameInstance                                          instance,
                                                IReadOnlyCollection<CkanModule>                       sourceModules,
                                                IReadOnlyCollection<CkanModule>                       toInstall,
+                                               IReadOnlyCollection<CkanModule>                       toRemove,
                                                IReadOnlyCollection<CkanModule>                       exclude,
                                                Registry                                              registry,
                                                out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
@@ -1620,8 +1612,15 @@ namespace CKAN.IO
         {
             log.DebugFormat("Finding recommendations for: {0}", string.Join(", ", sourceModules));
             var crit     = instance.VersionCriteria();
+
+            var rmvIdents = toRemove.Select(m => m.identifier).ToHashSet();
+            var allRemoving = toRemove
+                .Concat(registry.FindRemovableAutoInstalled(sourceModules, rmvIdents, instance)
+                                .Select(im => im.Module))
+                .ToArray();
+
             var resolver = new RelationshipResolver(sourceModules.Where(m => !m.IsDLC),
-                                                    null,
+                                                    allRemoving,
                                                     RelationshipResolverOptions.KitchenSinkOpts(instance.StabilityToleranceConfig),
                                                     registry, instance.Game, crit);
             var recommenders = resolver.Dependencies().ToHashSet();
@@ -1632,7 +1631,7 @@ namespace CKAN.IO
                                       .Where(m => resolver.ReasonsFor(m)
                                                           .Any(r => r is SelectionReason.Recommended { ProvidesIndex: 0 }))
                                       .ToHashSet();
-            var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), null,
+            var conflicting = new RelationshipResolver(toInstall.Concat(checkedRecs), allRemoving,
                                                        RelationshipResolverOptions.ConflictsOpts(instance.StabilityToleranceConfig),
                                                        registry, instance.Game, crit)
                                   .ConflictList.Keys;

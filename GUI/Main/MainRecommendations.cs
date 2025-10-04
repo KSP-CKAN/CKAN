@@ -52,6 +52,7 @@ namespace CKAN.GUI
                         registry.InstalledModules.Select(im => im.Module).ToHashSet(),
                         Array.Empty<CkanModule>(),
                         Array.Empty<CkanModule>(),
+                        Array.Empty<CkanModule>(),
                         registry,
                         out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                         out Dictionary<CkanModule, List<string>> suggestions,
