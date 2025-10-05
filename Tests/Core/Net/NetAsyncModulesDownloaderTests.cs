@@ -19,7 +19,7 @@ namespace Tests.Core.Net
     [TestFixture]
     public class NetAsyncModulesDownloaderTests
     {
-        private GameInstanceManager?     manager;
+        private TemporaryDirectory?      cacheDir;
         private RegistryManager?         registry_manager;
         private CKAN.Registry?           registry;
         private DisposableKSP?           ksp;
@@ -45,14 +45,14 @@ namespace Tests.Core.Net
             // Give us a registry to play with.
             ksp = new DisposableKSP();
             config = new FakeConfiguration(ksp.KSP, ksp.KSP.Name);
-            manager = new GameInstanceManager(user, config);
             registry_manager = RegistryManager.Instance(ksp.KSP, repoData.Manager,
                                                         repos.Values);
             registry = registry_manager.registry;
             registry.Installed().Clear();
 
             // General shortcuts
-            cache = manager.Cache;
+            cacheDir = new TemporaryDirectory();
+            cache = new NetModuleCache(cacheDir.Directory.FullName);
         }
 
         [TearDown]
@@ -60,7 +60,8 @@ namespace Tests.Core.Net
         {
             registry_manager?.Dispose();
             config?.Dispose();
-            manager?.Dispose();
+            cache?.Dispose();
+            cacheDir?.Dispose();
             ksp?.Dispose();
             repoData?.Dispose();
         }
