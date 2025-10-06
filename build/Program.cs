@@ -416,6 +416,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
             context.RunAltCover("-q",
                                 @"-e ""Microsoft|NUnit3|testhost|CKAN\\.Tests|IndexRange|OxyPlot""",
                                 @"-t ""System|Microsoft""",
+                                "-p Monitor.cs",
                                 "-p _build",
                                 "-p Tests",
                                 "-p ConsoleUI",
@@ -463,7 +464,7 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
     ];
 
     public override IEnumerable<string> PathFilter => [
-        "_build", "Tests", "ConsoleUI",
+        "Monitor.cs", "_build", "Tests", "ConsoleUI",
         "GUI/Dialogs", "GUI/Controls", "GUI/Main",
     ];
 
