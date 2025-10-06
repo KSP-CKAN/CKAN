@@ -280,7 +280,7 @@ namespace Tests.Core.Net
             using (var cache    = new NetModuleCache(cacheDir.Directory.FullName))
             {
                 var downloader = new NetAsyncModulesDownloader(new NullUser(), cache);
-                var modules    = pathsWithinTestData.Select(TestData.DataDir)
+                var modules    = pathsWithinTestData.Select(TestData.DataFile)
                                                     .Select(Path.GetFullPath)
                                                     .Select(CKANPathUtils.NormalizePath)
                                                     .Select((p, i) =>
@@ -291,7 +291,7 @@ namespace Tests.Core.Net
                                                         }}")
                                                     .Select(CkanModule.FromJson)
                                                     .ToArray();
-                var badURLs    = failCases.Select(TestData.DataDir)
+                var badURLs    = failCases.Select(TestData.DataFile)
                                           .Select(Path.GetFullPath)
                                           .Select(CKANPathUtils.NormalizePath)
                                           .Select(p => new Uri(p))

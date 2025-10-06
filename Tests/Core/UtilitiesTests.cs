@@ -49,7 +49,7 @@ namespace Tests.Core
                 var tempDir = dir.Directory.FullName;
 
                 // Act
-                Utilities.CopyDirectory(Path.Combine(TestData.DataDir(), "KSP"), tempDir,
+                Utilities.CopyDirectory(Path.Combine(TestData.DataDir, "KSP"), tempDir,
                                         new string[] { "KSP-0.25/GameData" }, Array.Empty<string>());
 
                 // Assert

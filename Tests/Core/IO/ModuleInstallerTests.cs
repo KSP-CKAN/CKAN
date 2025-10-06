@@ -1034,7 +1034,7 @@ namespace Tests.Core.IO
                         "net8.0";
                     #endif
                 // Do not Dispose this, we want it to persist for GitHub workflow caching
-                var cacheDir = TestData.DataDir($"../../_build/test/cache/{targetFramework}");
+                var cacheDir = TestData.DataFile($"../../_build/test/cache/{targetFramework}");
                 Directory.CreateDirectory(cacheDir);
                 var cache     = new NetModuleCache(cacheDir);
                 var registry  = CKAN.Registry.Empty(repoData.Manager);

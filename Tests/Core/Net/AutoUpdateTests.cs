@@ -91,7 +91,7 @@ namespace Tests.Core.Net.AutoUpdateTests
             // Arrange / Act
             var upd = new S3BuildCkanUpdate(
                 JsonConvert.DeserializeObject<S3BuildVersionInfo>(
-                    File.ReadAllText(TestData.DataDir("version.json"))));
+                    File.ReadAllText(TestData.DataFile("version.json"))));
 
             // Assert
             CollectionAssert.AreEqual(

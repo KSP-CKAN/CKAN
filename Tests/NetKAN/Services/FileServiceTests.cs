@@ -88,7 +88,7 @@ namespace Tests.NetKAN.Services
             var sut = new FileService(_cache!);
 
             // Act
-            var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_ascii.txt"));
+            var result = sut.GetMimetype(TestData.DataFile("FileIdentifier/test_ascii.txt"));
 
             // Assert
             Assert.That(result, Is.EqualTo("text/plain"),
@@ -103,7 +103,7 @@ namespace Tests.NetKAN.Services
             var sut = new FileService(_cache!);
 
             // Act
-            var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_gzip.gz"));
+            var result = sut.GetMimetype(TestData.DataFile("FileIdentifier/test_gzip.gz"));
 
             // Assert
             Assert.That(result, Is.EqualTo("application/x-gzip"),
@@ -118,7 +118,7 @@ namespace Tests.NetKAN.Services
             var sut = new FileService(_cache!);
 
             // Act
-            var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_tar.tar"));
+            var result = sut.GetMimetype(TestData.DataFile("FileIdentifier/test_tar.tar"));
 
             // Assert
             Assert.That(result, Is.EqualTo("application/x-tar"),
@@ -133,7 +133,7 @@ namespace Tests.NetKAN.Services
             var sut = new FileService(_cache!);
 
             // Act
-            var result = sut.GetMimetype(TestData.DataDir("FileIdentifier/test_targz.tar.gz"));
+            var result = sut.GetMimetype(TestData.DataFile("FileIdentifier/test_targz.tar.gz"));
 
             // Assert
             Assert.That(result, Is.EqualTo("application/x-compressed-tar"),
@@ -161,7 +161,7 @@ namespace Tests.NetKAN.Services
         {
             // Arrange
             var sut = new FileService(_cache!);
-            string random_bin = TestData.DataDir("FileIdentifier/random.bin");
+            string random_bin = TestData.DataFile("FileIdentifier/random.bin");
             FileAssert.Exists(random_bin);
 
             // Act
