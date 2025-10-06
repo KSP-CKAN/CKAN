@@ -19,8 +19,8 @@ namespace Tests.Core.IO
         public void IdentifyFile_ASCII_Works()
         {
             // Check that we have the text files to compare against.
-            string ascii_file_1 = TestData.DataDir("FileIdentifier/test_ascii.txt");
-            string ascii_file_2 = TestData.DataDir("FileIdentifier/test_ascii.tmp");
+            string ascii_file_1 = TestData.DataFile("FileIdentifier/test_ascii.txt");
+            string ascii_file_2 = TestData.DataFile("FileIdentifier/test_ascii.tmp");
 
             FileAssert.Exists(ascii_file_1);
             FileAssert.Exists(ascii_file_2);
@@ -34,8 +34,8 @@ namespace Tests.Core.IO
         public void IdentifyFile_Tar_Works()
         {
             // Check that we have the tar files to compare against.
-            string tar_file_1 = TestData.DataDir("FileIdentifier/test_tar.tar");
-            string tar_file_2 = TestData.DataDir("FileIdentifier/test_tar.tmp");
+            string tar_file_1 = TestData.DataFile("FileIdentifier/test_tar.tar");
+            string tar_file_2 = TestData.DataFile("FileIdentifier/test_tar.tmp");
 
             FileAssert.Exists(tar_file_1);
             FileAssert.Exists(tar_file_2);
@@ -71,8 +71,8 @@ namespace Tests.Core.IO
         public void IdentifyFile_TarGz_Works()
         {
             // Check that we have the tar.gz files to compare against.
-            string targz_file_1 = TestData.DataDir("FileIdentifier/test_targz.tar.gz");
-            string targz_file_2 = TestData.DataDir("FileIdentifier/test_targz.tmp");
+            string targz_file_1 = TestData.DataFile("FileIdentifier/test_targz.tar.gz");
+            string targz_file_2 = TestData.DataFile("FileIdentifier/test_targz.tmp");
 
             FileAssert.Exists(targz_file_1);
             FileAssert.Exists(targz_file_2);
@@ -109,8 +109,8 @@ namespace Tests.Core.IO
         public void IdentifyFile_Zip_Works()
         {
             // Check that we have the zip files to compare against.
-            string zip_file_1 = TestData.DataDir("FileIdentifier/test_zip.zip");
-            string zip_file_2 = TestData.DataDir("FileIdentifier/test_zip.tmp");
+            string zip_file_1 = TestData.DataFile("FileIdentifier/test_zip.zip");
+            string zip_file_2 = TestData.DataFile("FileIdentifier/test_zip.tmp");
 
             FileAssert.Exists(zip_file_1);
             FileAssert.Exists(zip_file_2);

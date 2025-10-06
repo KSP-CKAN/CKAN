@@ -735,4 +735,22 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   <data name="ModuleLabelListHeld" xml:space="preserve">
     <value>Trzymane</value>
   </data>
+  <data name="RelationshipTypeProvides" xml:space="preserve">
+    <value>Zapewnia</value>
+  </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve">
+    <value>Zależne</value>
+  </data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve">
+    <value>Zalecenia</value>
+  </data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve">
+    <value>Sugerowane</value>
+  </data>
+  <data name="RelationshipTypeSupports" xml:space="preserve">
+    <value>Wspiera</value>
+  </data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve">
+    <value>Konflikty</value>
+  </data>
 </root>

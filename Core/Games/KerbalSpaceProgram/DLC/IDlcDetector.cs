@@ -39,8 +39,8 @@ namespace CKAN.DLC
         /// </list>
         /// </returns>
         bool IsInstalled(GameInstance inst,
-                         [NotNullWhen(returnValue: true)] out string? identifier,
-                         [NotNullWhen(returnValue: true)] out UnmanagedModuleVersion? version);
+                         [NotNullWhen(true)] out string? identifier,
+                         [NotNullWhen(true)] out UnmanagedModuleVersion? version);
 
         /// <summary>
         /// Path to the DLC directory relative to GameDir.

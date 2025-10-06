@@ -130,75 +130,13 @@ namespace CKAN
             }
             if (installed != null)
             {
-                modules = modules.Where(m => DependsAndConflictsOK(m, installed));
+                modules = modules.Where(m => m.DependsAndConflictsOK(installed));
             }
             if (toInstall != null)
             {
-                modules = modules.Where(m => DependsAndConflictsOK(m, toInstall));
+                modules = modules.Where(m => m.DependsAndConflictsOK(toInstall));
             }
             return modules.FirstOrDefault();
-        }
-
-        public static bool DependsAndConflictsOK(CkanModule                      module,
-                                                 IReadOnlyCollection<CkanModule> others)
-        {
-            if (module.depends != null)
-            {
-                foreach (RelationshipDescriptor rel in module.depends)
-                {
-                    // If 'others' matches an identifier, it must also match the versions, else fail
-                    if (rel.ContainsAny(others.Select(m => m.identifier)) && !rel.MatchesAny(others, null, null))
-                    {
-                        log.DebugFormat("Unsatisfied dependency {0}, rejecting {1}", rel, module);
-                        return false;
-                    }
-                }
-            }
-            var othersMinusSelf = others.Where(m => m.identifier != module.identifier).ToList();
-            if (module.conflicts != null)
-            {
-                // Skip self-conflicts (but catch other modules providing self)
-                foreach (RelationshipDescriptor rel in module.conflicts)
-                {
-                    // If any of the conflicts are present, fail
-                    if (rel.MatchesAny(othersMinusSelf, null, null, out CkanModule? matched))
-                    {
-                        log.DebugFormat("Found conflict with {0}, rejecting {1}", matched, module);
-                        return false;
-                    }
-                }
-            }
-            // Check reverse conflicts so user isn't prompted to choose modules that will error out immediately
-            var selfArray = new CkanModule[] { module };
-            foreach (CkanModule other in othersMinusSelf)
-            {
-                if (other.conflicts != null)
-                {
-                    foreach (RelationshipDescriptor rel in other.conflicts)
-                    {
-                        if (rel.MatchesAny(selfArray, null, null))
-                        {
-                            log.DebugFormat("Found reverse conflict with {0}, rejecting {1}", other, module);
-                            return false;
-                        }
-                    }
-                }
-                // And check reverse depends for version limits
-                if (other.depends != null)
-                {
-                    foreach (RelationshipDescriptor rel in other.depends)
-                    {
-                        // If 'others' matches an identifier, it must also match the versions, else fail
-                        if (rel.ContainsAny(Enumerable.Repeat(module.identifier, 1))
-                            && !rel.MatchesAny(selfArray, null, null))
-                        {
-                            log.DebugFormat("Unmatched reverse dependency from {0}, rejecting", other);
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ namespace CKAN.Games
         string[]       CreateableDirs     { get; }
         string[]       AutoRemovableDirs  { get; }
         bool           IsReservedDirectory(GameInstance inst, string path);
-        bool           AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path);
+        bool           AllowInstallationIn(string name, [NotNullWhen(true)] out string? path);
         void           RebuildSubdirectories(string absGameRoot);
         string[]       DefaultCommandLines(SteamLibrary steamLib, DirectoryInfo path);
         string[]       AdjustCommandLine(string[] args, GameVersion? installedVersion);

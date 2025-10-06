@@ -20,7 +20,7 @@ using CKAN.Games;
 namespace CKAN
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class ModuleInstallDescriptor : ICloneable, IEquatable<ModuleInstallDescriptor>
+    public class ModuleInstallDescriptor : IEquatable<ModuleInstallDescriptor>
     {
 
         #region Properties
@@ -106,7 +106,7 @@ namespace CKAN
 
         #endregion
 
-        #region Constructors and clones
+        #region Constructors
 
         [JsonConstructor]
         private ModuleInstallDescriptor()
@@ -119,11 +119,19 @@ namespace CKAN
         }
 
         /// <summary>
-        /// Returns a deep clone of our object. Implements ICloneable.
+        /// Returns a default install stanza for the identifier provided.
         /// </summary>
-        public object Clone()
-            // Deep clone our object by running it through a serialisation cycle.
-            => JsonConvert.DeserializeObject<ModuleInstallDescriptor>(JsonConvert.SerializeObject(this, Formatting.None))!;
+        /// <returns>
+        /// { "find": "ident", "install_to": "GameData" }
+        /// </returns>
+        public static ModuleInstallDescriptor DefaultInstallStanza(IGame game, string ident)
+            => new ModuleInstallDescriptor()
+               {
+                   find       = ident,
+                   install_to = game.PrimaryModDirectoryRelative,
+               };
+
+        #endregion
 
         /// <summary>
         /// Compare two install stanzas
@@ -133,9 +141,7 @@ namespace CKAN
         /// True if they're equivalent, false if they're different.
         /// </returns>
         public override bool Equals(object? other)
-        {
-            return Equals(other as ModuleInstallDescriptor);
-        }
+            => Equals(other as ModuleInstallDescriptor);
 
         /// <summary>
         /// Compare two install stanzas
@@ -231,42 +237,19 @@ namespace CKAN
         }
 
         public override int GetHashCode()
-        {
             // Tuple.Create only handles up to 8 params, we have 10+
-            return Tuple.Create(
-                Tuple.Create(
-                    file,
-                    find,
-                    find_regexp,
-                    find_matches_files,
-                    install_to,
-                    @as
-                ),
-                Tuple.Create(
-                    filter,
-                    filter_regexp,
-                    include_only,
-                    include_only_regexp
-                )
-            ).GetHashCode();
-        }
+            => Tuple.Create(Tuple.Create(file,
+                                         find,
+                                         find_regexp,
+                                         find_matches_files,
+                                         install_to,
+                                         @as),
+                            Tuple.Create(filter,
+                                         filter_regexp,
+                                         include_only,
+                                         include_only_regexp))
+                    .GetHashCode();
 
-        /// <summary>
-        /// Returns a default install stanza for the identifier provided.
-        /// </summary>
-        /// <returns>
-        /// { "find": "ident", "install_to": "GameData" }
-        /// </returns>
-        public static ModuleInstallDescriptor DefaultInstallStanza(IGame game, string ident)
-        {
-            return new ModuleInstallDescriptor()
-            {
-                find       = ident,
-                install_to = game.PrimaryModDirectoryRelative,
-            };
-        }
-
-        #endregion
 
         private Regex EnsurePattern()
         {
@@ -473,7 +456,8 @@ namespace CKAN
         }
 
         private static bool AllowDirectoryCreation(IGame game, string relativePath)
-            => game.CreateableDirs.Any(dir => relativePath == dir || relativePath.StartsWith($"{dir}/"));
+            => game.CreateableDirs.Any(dir => relativePath == dir
+                                           || relativePath.StartsWith($"{dir}/"));
 
         /// <summary>
         /// Transforms the name of the output. This will strip the leading directories from the stanza file from

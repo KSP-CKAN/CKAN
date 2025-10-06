@@ -1,17 +1,19 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 
 using CKAN;
+using CKAN.Extensions;
 using CKAN.Versioning;
 
 namespace Tests.Data
 {
     public static class TestData
     {
-        public static string DataDir()
+        public static readonly string DataDir =
             // FIXME: Come up with a better solution for test data
             // 1. This is fragile with respect to changes in directory structure.
             // 2. This forces us to disable ReSharper's test assembly shadow copying
@@ -19,54 +21,58 @@ namespace Tests.Data
             //    But this makes updates hard.
             // 4. A better, but much harder solution, is to not require harded files on disk for any of our tests, but that's
             //    a lot of work.
-            => Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName,
-                            "../../../../../../Tests/Data");
+            Enumerable.Repeat("..", 20)
+                      .Accumulate("", Path.Combine)
+                      .Select(dots => Path.Combine(Directory.GetParent(Assembly.GetExecutingAssembly().Location)!.FullName,
+                                                   dots,
+                                                   "Tests", "Data"))
+                      .First(Directory.Exists);
 
-        public static string DataDir(string file)
-            => Path.Combine(DataDir(), file);
+        public static string DataFile(string file)
+            => Path.Combine(DataDir, file);
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01.zip
         /// </summary>
         public static string DogeCoinFlagZip()
-            => DataDir("DogeCoinFlag-1.01.zip");
+            => DataFile("DogeCoinFlag-1.01.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-avc.zip
         /// </summary>
         public static string DogeCoinFlagAvcZip()
-            => DataDir("DogeCoinFlag-1.01-avc.zip");
+            => DataFile("DogeCoinFlag-1.01-avc.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-avc.zip
         /// </summary>
         public static string DogeCoinFlagImportableZip()
-            => DataDir("DogeCoinFlag-1.01-importable.zip");
+            => DataFile("DogeCoinFlag-1.01-importable.zip");
 
         /// <summary>
         /// Returns DogeCoinFlag.zip, with extra files inside.
         /// Great for testing filters.
         /// </summary>
         public static string DogeCoinFlagZipWithExtras()
-            => DataDir("DogeCoinFlag-extra-files.zip");
+            => DataFile("DogeCoinFlag-extra-files.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-corrupt.zip
         /// </summary>
         public static string DogeCoinFlagZipCorrupt()
-            => DataDir("DogeCoinFlag-1.01-corrupt.zip");
+            => DataFile("DogeCoinFlag-1.01-corrupt.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-zip-bomb.zip
         /// </summary>
         public static string DogeCoinFlagZipBombZip()
-            => DataDir("DogeCoinFlag-1.01-zip-bomb.zip");
+            => DataFile("DogeCoinFlag-1.01-zip-bomb.zip");
 
         /// <summary>
         /// Returns the full path to DogeCoinFlag-1.01-zip-slip.zip
         /// </summary>
         public static string DogeCoinFlagZipSlipZip()
-            => DataDir("DogeCoinFlag-1.01-zip-slip.zip");
+            => DataFile("DogeCoinFlag-1.01-zip-slip.zip");
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This doesn't contain any bugs.
@@ -110,17 +116,17 @@ namespace Tests.Data
         /// <summary>
         /// Test case for LZMA-format ZIPs
         /// </summary>
-        public static readonly string DogeCoinFlagZipLZMA = DataDir("DogeCoinFlag-1.01-LZMA.zip");
+        public static readonly string DogeCoinFlagZipLZMA = DataFile("DogeCoinFlag-1.01-LZMA.zip");
 
         /// <summary>
         /// Contains files with names that include characters that aren't allowed on Windows
         /// </summary>
-        public static readonly string ZipWithBadChars = DataDir("ZipWithBadChars.zip");
+        public static readonly string ZipWithBadChars = DataFile("ZipWithBadChars.zip");
 
         /// <summary>
         /// Contains files with names that differ in their Unicode and "original" representation.
         /// </summary>
-        public static readonly string ZipWithUnicodeChars = DataDir("ZipWithUnicodeChars.zip");
+        public static readonly string ZipWithUnicodeChars = DataFile("ZipWithUnicodeChars.zip");
 
         ///<summary>
         /// DogeCoinFlag 1.01 info. This contains a bug where the
@@ -448,7 +454,7 @@ namespace Tests.Data
         /// </summary>
         /// <returns>The coin plugin.</returns>
         public static string DogeCoinPluginZip()
-            => DataDir("DogeCoinPlugin.zip");
+            => DataFile("DogeCoinPlugin.zip");
 
         public static string DogeCoinPluginAddonFerram()
             => @"
@@ -487,7 +493,7 @@ namespace Tests.Data
         /// </summary>
         /// <returns>The coin plugin.</returns>
         public static string DogeCoinPluginAddonFerramZip()
-            => DataDir("DogeCoinPluginAddonFerram.zip");
+            => DataFile("DogeCoinPluginAddonFerram.zip");
 
         /// <summary>
         /// Taurus HCV pod, which seems to cause weird KS errors when the unescaped
@@ -530,29 +536,29 @@ namespace Tests.Data
 
         // TestKAN in tar.gz format.
         public static Uri TestKANTarGz()
-            => new Uri(DataDir("CKAN-meta-testkan.tar.gz"));
+            => new Uri(DataFile("CKAN-meta-testkan.tar.gz"));
 
         // TestKAN in zip format.
         public static Uri TestKANZip()
-            => new Uri(DataDir("CKAN-meta-testkan.zip"));
+            => new Uri(DataFile("CKAN-meta-testkan.zip"));
 
         // A repo full of deliciously bad metadata in tar.gz format.
         public static Uri BadKANTarGz()
-            => new Uri(DataDir("CKAN-meta-badkan.tar.gz"));
+            => new Uri(DataFile("CKAN-meta-badkan.tar.gz"));
 
         // A repo full of deliciously bad metadata in zip format.
         public static Uri BadKANZip()
-            => new Uri(DataDir("CKAN-meta-badkan.zip"));
+            => new Uri(DataFile("CKAN-meta-badkan.zip"));
 
         public static string good_ksp_dir()
-            => DataDir("KSP/KSP-0.25");
+            => DataFile("KSP/KSP-0.25");
 
         public static IEnumerable<string> bad_ksp_dirs()
         {
             var dirs = new List<string>
             {
-                DataDir("KSP/bad-KSP"),
-                DataDir("KSP/missing-gamedata")
+                DataFile("KSP/bad-KSP"),
+                DataFile("KSP/missing-gamedata")
             };
 
             return dirs;
@@ -696,73 +702,76 @@ namespace Tests.Data
             => CkanModule.FromJson(kOS_014_epoch());
 
         public static string KS_CustomAsteroids_string()
-            => File.ReadAllText(DataDir("KS/CustomAsteroids.json"));
+            => File.ReadAllText(DataFile("KS/CustomAsteroids.json"));
 
         public static CkanModule FireSpitterModule()
-            => CkanModule.FromFile(DataDir("Firespitter-6.3.5.ckan"));
+            => CkanModule.FromFile(DataFile("Firespitter-6.3.5.ckan"));
 
         public static string KspAvcJson()
-            => File.ReadAllText(DataDir("ksp-avc.version"));
+            => File.ReadAllText(DataFile("ksp-avc.version"));
 
         public static string KspAvcJsonOneLineVersion()
-            => File.ReadAllText(DataDir("ksp-avc-one-line.version"));
+            => File.ReadAllText(DataFile("ksp-avc-one-line.version"));
 
         public static string ModuleManagerModuleCkan()
-            => DataDir("ModuleManager-2.5.1.ckan");
+            => DataFile("ModuleManager-2.5.1.ckan");
 
         public static CkanModule ModuleManagerModule()
             => CkanModule.FromFile(ModuleManagerModuleCkan());
 
         public static string ModuleManagerZip()
-            => DataDir("ModuleManager-2.5.1.zip");
+            => DataFile("ModuleManager-2.5.1.zip");
 
         public static CkanModule MissionModule()
-            => CkanModule.FromFile(DataDir("MissionTest-1.0.ckan"));
+            => CkanModule.FromFile(DataFile("MissionTest-1.0.ckan"));
 
         public static string MissionZip()
-            => DataDir("MissionTest-1.0.zip");
+            => DataFile("MissionTest-1.0.zip");
 
         public static string BurnController()
-            => File.ReadAllText(DataDir("BurnController-0.8.1.ckan"));
+            => File.ReadAllText(DataFile("BurnController-0.8.1.ckan"));
 
         public static CkanModule BurnControllerModule()
-            => CkanModule.FromFile(DataDir("BurnController-0.8.1.ckan"));
+            => CkanModule.FromFile(DataFile("BurnController-0.8.1.ckan"));
 
         public static string BurnControllerZip()
-            => DataDir("BurnController-0.8.1.zip");
+            => DataFile("BurnController-0.8.1.zip");
 
         public static string BurnControllerNoSwinfoZip()
-            => DataDir("BurnControllerNoSwinfo-0.8.1.zip");
+            => DataFile("BurnControllerNoSwinfo-0.8.1.zip");
+
+        public static string BurnControllerImportableZip()
+            => DataFile("BurnController-0.8.1-importable.zip");
 
         public static string TestRepository()
-            => DataDir("repository.json");
+            => DataFile("repository.json");
 
         public static Uri TestRepositoriesURL()
-            => new Uri(DataDir("repositories.json"));
+            => new Uri(DataFile("repositories.json"));
 
         /// <summary>
         /// A path to our test registry.json file. Please copy before using.
         /// </summary>
         public static string TestRegistry()
-            => DataDir("registry.json");
+            => DataFile("registry.json");
 
         public static string TestRegistryZeroBytes()
-            => DataDir("zero-byte-registry.json");
+            => DataFile("zero-byte-registry.json");
 
         public static string TestRegistryVersion1()
-            => DataDir("registry-version-1.json");
+            => DataFile("registry-version-1.json");
 
         public static string TestRegistryVersion999()
-            => DataDir("registry-version-999.json");
+            => DataFile("registry-version-999.json");
 
         public static string TestNetkanPath()
-            => DataDir("DogeCoinFlag.netkan");
+            => DataFile("DogeCoinFlag.netkan");
 
         public static string TestNetkanContents()
             => File.ReadAllText(TestNetkanPath());
 
         public static string LabelListPath()
-            => DataDir("labels.json");
+            => DataFile("labels.json");
 
         // Where's my mkdtemp? Instead we'll make a random file, delete it, and
         // fill its place with a directory.

@@ -23,7 +23,7 @@ namespace Tests.Core.Net
         {
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser(), () => null);
-            var fromPath   = TestData.DataDir(pathWithinTestData);
+            var fromPath   = TestData.DataFile(pathWithinTestData);
             var target     = new NetAsyncDownloader.DownloadTargetFile(new Uri(fromPath),
                                                                        Path.GetTempFileName());
             var targets    = new NetAsyncDownloader.DownloadTarget[] { target };
@@ -69,7 +69,7 @@ namespace Tests.Core.Net
         {
             // Arrange
             var downloader = new NetAsyncDownloader(new NullUser(), () => null);
-            var fromPaths  = pathsWithinTestData.Select(TestData.DataDir).ToArray();
+            var fromPaths  = pathsWithinTestData.Select(TestData.DataFile).ToArray();
             var targets    = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
                                                                                              Path.GetTempFileName()))
                                       .ToArray();
@@ -185,7 +185,7 @@ namespace Tests.Core.Net
         {
             // Arrange
             var downloader   = new NetAsyncDownloader(new NullUser(), () => null);
-            var fromPaths    = pathsWithinTestData.Select(p => Path.GetFullPath(TestData.DataDir(p))).ToArray();
+            var fromPaths    = pathsWithinTestData.Select(p => Path.GetFullPath(TestData.DataFile(p))).ToArray();
             var targets      = fromPaths.Select(p => new NetAsyncDownloader.DownloadTargetFile(new Uri(p),
                                                                                                Path.GetTempFileName()))
                                         .ToArray();

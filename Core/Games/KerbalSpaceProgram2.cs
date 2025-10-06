@@ -94,7 +94,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
                                .Select(CKANPathUtils.NormalizePath)
                                .Contains(path);
 
-        public bool AllowInstallationIn(string name, [NotNullWhen(returnValue: true)] out string? path)
+        public bool AllowInstallationIn(string name, [NotNullWhen(true)] out string? path)
             => allowedFolders.TryGetValue(name, out path);
 
         public void RebuildSubdirectories(string absGameRoot)

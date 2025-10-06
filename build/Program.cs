@@ -18,6 +18,7 @@ using Cake.Common.Tools.MSBuild;
 using Cake.Common.Tools.NUnit;
 using Cake.Core.IO;
 using Cake.Frosting;
+using AltCover.Cake;
 
 namespace Build;
 
@@ -353,13 +354,6 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                                 .Combine("nunit");
         context.CreateDirectory(nunitOutputDirectory);
         context.CreateDirectory(context.Paths.CoverageOutputDirectory);
-        var testDir = context.Paths.OutDirectory
-                                   .Combine("CKAN.Tests")
-                                   .Combine(context.BuildConfiguration)
-                                   .Combine("bin")
-                                   .Combine(context.BuildNetFramework);
-        var instrumentedDir = testDir.GetParent()
-                                     .Combine($"{context.BuildNetFramework}__Instrumented");
         var dotNetFilter = where?.Replace("class=", "FullyQualifiedName=",
                                           StringComparison.CurrentCultureIgnoreCase)
                                  .Replace("category=", "TestCategory=",
@@ -370,13 +364,19 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                           StringComparison.CurrentCultureIgnoreCase)
                                  .Replace("name=", "Name~",
                                           StringComparison.CurrentCultureIgnoreCase);
-        var testFile = instrumentedDir.CombineWithFilePath("CKAN.Tests.dll");
 
         // Only Mono's msbuild can handle WinForms on Linux,
         // but dotnet build can handle multi-targeting on Windows
         if (context.IsRunningOnWindows())
         {
-            context.DotNetTest(context.Solution, new DotNetTestSettings
+            var altcoverSettings = new CoverageSettings
+            {
+                PreparationPhase = new MyPrepareOptions(context),
+                // CollectionPhase  = new CollectOptions(),
+                CollectionPhase  = new MyCollectOptions(context),
+                Options          = new TestOptions(),
+            };
+            var testSettings = new DotNetTestSettings
             {
                 Configuration    = context.BuildConfiguration,
                 NoRestore        = true,
@@ -385,10 +385,21 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 Filter           = dotNetFilter,
                 ResultsDirectory = nunitOutputDirectory,
                 Verbosity        = DotNetVerbosity.Minimal,
-            });
+            };
+            testSettings.ArgumentCustomization = altcoverSettings.Concatenate(testSettings.ArgumentCustomization);
+            context.DotNetTest(context.Solution, testSettings);
         }
         else
         {
+            var testDir = context.Paths.OutDirectory
+                                       .Combine("CKAN.Tests")
+                                       .Combine(context.BuildConfiguration)
+                                       .Combine("bin")
+                                       .Combine(context.BuildNetFramework);
+            var instrumentedDir = testDir.GetParent()
+                                         .Combine($"{context.BuildNetFramework}__Instrumented");
+            var testFile = instrumentedDir.CombineWithFilePath("CKAN.Tests.dll");
+
             context.DotNetTest(context.Solution, new DotNetTestSettings
             {
                 Configuration    = "NoGUI",
@@ -434,6 +445,61 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                 $"-c {context.Paths.CoverageOutputDirectory.CombineWithFilePath("cobertura.xml")}");
         }
     }
+}
+
+// AltCover.cake regrettably requires defining new types rather than just filling in a struct
+
+public class MyPrepareOptions(BuildContext context) : PrepareOptions
+{
+     public override TraceLevel Verbosity => TraceLevel.Info;
+
+    public override IEnumerable<string> AssemblyExcludeFilter => [
+        "Microsoft", "NUnit3", "testhost", "IndexRange", "OxyPlot",
+        "CKAN\\.ConsoleUI", "CKAN\\.Tests",
+    ];
+
+    public override IEnumerable<string> TypeFilter => [
+        "System", "Microsoft",
+    ];
+
+    public override IEnumerable<string> PathFilter => [
+        "_build", "Tests", "ConsoleUI",
+        "GUI/Dialogs", "GUI/Controls", "GUI/Main",
+    ];
+
+    public override IEnumerable<string> AttributeFilter => [
+        "ExcludeFromCodeCoverage",
+    ];
+
+    public override string Report => OutputPath("coverage.xml");
+
+    private string OutputPath(string filename)
+        => context.Paths.CoverageOutputDirectory
+                        .CombineWithFilePath(filename)
+                        .ToString();
+
+    private readonly BuildContext context = context;
+}
+
+public class MyCollectOptions(BuildContext context) : CollectOptions
+{
+    public override TraceLevel Verbosity => TraceLevel.Info;
+    public override string SummaryFormat => "O";
+    public override string OutputFile    => OutputPath("coverage.xml");
+    public override string Cobertura     => OutputPath("cobertura.xml");
+    public override string LcovReport    => OutputPath("lcov.info");
+
+    private string OutputPath(string filename)
+        => context.Paths.CoverageOutputDirectory
+                        .CombineWithFilePath(filename)
+                        .ToString();
+
+    private readonly BuildContext context = context;
+}
+
+public class MyTestOptions : TestOptions
+{
+    public override string ShowSummary => "O";
 }
 
 [TaskName("Version")]

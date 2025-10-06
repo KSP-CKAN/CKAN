@@ -2,10 +2,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
+using CKAN.Games;
 using CKAN.Configuration;
 using CKAN.Versioning;
-using CKAN.Extensions;
 
 namespace CKAN
 {
@@ -55,52 +56,64 @@ namespace CKAN
                                            definitelyInstalling, allInstalling, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache));
 
         public IEnumerable<ResolvedRelationship[]> Unsatisfied()
-            => resolved.SelectMany(UnsatisfiedFrom);
+            => resolved.SelectMany(rr => rr.UnsatisfiedFrom());
 
-        private static IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom(ResolvedRelationship rr)
+        public IReadOnlyList<CkanModule> Candidates(RelationshipDescriptor          rel,
+                                                    IReadOnlyCollection<CkanModule> installing,
+                                                    IRegistryQuerier                registry,
+                                                    IGame                           game)
         {
-            // Our goal here is to return an array of ResolvedRelationships for each full
-            // trace from rr to a relationship we can't satisfy.
-            // First we need to make sure we even care about this one, i.e. that it's required.
-            if (rr.reason is SelectionReason.Depends)
+            var candidates = new List<CkanModule>();
+            var unresolved = new List<ResolvedRelationship[]>();
+            switch (relationshipCache.GetValueOrDefault(rel))
             {
-                // Now if this relationship itself can't be resolved directly, return it.
-                if (rr.Unsatisfied())
-                {
-                    return Enumerable.Repeat(new ResolvedRelationship[] { rr }, 1);
-                }
-                // Now we know it's a dependency that has at least one option for satisfying it,
-                // but those options may or may not be fully satisfied when considering _their_ dependencies.
+                case ResolvedByInstalling resInstalling:
+                    candidates.Add(resInstalling.installing);
+                    break;
 
-                // If any of these options works, then we want to return nothing.
-                // Otherwise we want to return all of the descriptions of why everything failed,
-                // with rr prepended to the start of each array.
-                if (rr is ResolvedByNew rbn)
-                {
-                    var unsats = rbn.resolved.Values
-                                             .Select(modsRels => modsRels.SelectMany(UnsatisfiedFrom)
-                                                                         .ToArray())
-                                             .Memoize();
+                case ResolvedByInstalled resInstalled:
+                    candidates.Add(resInstalled.installed);
+                    break;
 
-                    return unsats.Any(u => u.Length == 0)
-                        // One of the dependencies is fully satisfied
-                        ? Enumerable.Empty<ResolvedRelationship[]>()
-                        : unsats.SelectMany(uns => uns.Select(u => u.Prepend(rr).ToArray()));
-                }
+                case ResolvedByNew resRel:
+                    // We need to have this loop at this level to accumulate the list of candidates
+                    foreach ((CkanModule module, ResolvedRelationship[] rrs) in resRel.resolved)
+                    {
+                        if (module.BadRelationships(installing)
+                                  .Select(r => relationshipCache.GetValueOrDefault(r.Descriptor))
+                                  .OfType<ResolvedRelationship>()
+                                  .Select(badRR => new ResolvedRelationship[] { resRel, badRR })
+                                  .ToArray()
+                            is { Length: > 0 } badRels)
+                        {
+                            unresolved.AddRange(badRels);
+                        }
+                        else if (rrs.SelectMany(subRR => subRR.BadRelationships(installing))
+                                    .Select(tuple => tuple.Item2.Type == RelationshipType.Depends
+                                                     && relationshipCache.TryGetValue(tuple.Item2.Descriptor,
+                                                                                      out ResolvedRelationship? leaf)
+                                                         ? tuple.Item1.Prepend(resRel).Append(leaf).ToArray()
+                                                         : tuple.Item1.Prepend(resRel).ToArray())
+                                    .ToArray()
+                                 is { Length: > 0 } badRRs)
+                        {
+                            unresolved.AddRange(badRRs);
+                        }
+                        else
+                        {
+                            candidates.Add(module);
+                        }
+                    }
+                    break;
             }
-            return Enumerable.Empty<ResolvedRelationship[]>();
+            if (candidates.Count == 0)
+            {
+                throw new DependenciesNotSatisfiedKraken(unresolved, registry, game, this);
+            }
+            return candidates;
         }
 
-        public IEnumerable<CkanModule> Candidates(RelationshipDescriptor          rel,
-                                                  IReadOnlyCollection<CkanModule> installing)
-            => relationshipCache.TryGetValue(rel, out ResolvedRelationship? rr)
-               && rr is ResolvedByNew resRel
-                   ? resRel.resolved
-                           .Where(kvp => AvailableModule.DependsAndConflictsOK(kvp.Key, installing)
-                                         && kvp.Value.All(subRR => !subRR.Unsatisfied(installing)))
-                           .Select(kvp => kvp.Key)
-                   : Enumerable.Empty<CkanModule>();
-
+        [ExcludeFromCodeCoverage]
         public override string ToString()
             => string.Join(Environment.NewLine,
                            resolved.Select(rr => rr.ToString()));

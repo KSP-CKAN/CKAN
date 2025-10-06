@@ -35,28 +35,23 @@ namespace CKAN.CmdLine
             var registry = RegistryManager.Instance(instance, repoData).registry;
             foreach (string modName in options.modules)
             {
-                var installedModuleToShow = registry.InstalledModule(modName);
-                if (installedModuleToShow != null)
+                (InstalledModule?, CkanModule?) toShow = (null, null);
+                if (registry.InstalledModule(modName) is InstalledModule instModule)
                 {
-                    // Show the installed module.
-                    combined_exit_code = CombineExitCodes(combined_exit_code,
-                                                          ShowMod(installedModuleToShow, options));
-                    if (options.with_versions)
-                    {
-                        ShowVersionTable(instance, registry.AvailableByIdentifier(installedModuleToShow.identifier).ToList());
-                    }
-                    user.RaiseMessage("");
-                    continue;
+                    // Show the installed module
+                    toShow = (instModule, null);
                 }
-
-                // Module was not installed, look for an exact match in the available modules,
-                // either by "name" (the user-friendly display name) or by identifier
-                var moduleToShow = registry.CompatibleModules(instance.StabilityToleranceConfig,
-                                                              instance.VersionCriteria())
-                                           .SingleOrDefault(
-                                                 mod => mod.name       == modName
-                                                     || mod.identifier == modName);
-                if (moduleToShow == null)
+                else if (registry.CompatibleModules(instance.StabilityToleranceConfig,
+                                                    instance.VersionCriteria())
+                                 .SingleOrDefault(mod => mod.name       == modName
+                                                      || mod.identifier == modName)
+                         is CkanModule module)
+                {
+                    // Fall back to exact match in the available modules, if any,
+                    // either by "name" (the user-friendly display name) or by identifier
+                    toShow = (null, module);
+                }
+                else
                 {
                     // No exact match found. Try to look for a close match for this KSP version.
                     user.RaiseMessage(Properties.Resources.ShowNotInstalledOrCompatible,
@@ -64,59 +59,73 @@ namespace CKAN.CmdLine
                         instance.Game.ShortName,
                         string.Join(", ", instance.VersionCriteria().Versions.Select(v => v.ToString())));
                     user.RaiseMessage(Properties.Resources.ShowLookingForClose);
+                    user.RaiseMessage("");
 
-                    Search search = new Search(repoData, user);
-                    var matches = search.PerformSearch(instance, modName);
+                    var instMods = registry.InstalledModules
+                                           .Where(im => Search.TermMatchesModule(im.Module, modName, ""))
+                                           .OrderBy(im => im.Module.name)
+                                           .ThenBy(im => im.identifier)
+                                           .ToArray();
+                    var search     = new Search(repoData, user);
+                    var uninstMods = search.PerformSearch(instance, modName)
+                                           .Where(m => !instMods.Any(im => im.identifier == m.identifier))
+                                           .ToArray();
+                    // Collect all matches in (InstalledModule?, CkanModule?) tuples so we can present one prompt for all
+                    var both = instMods.Select(im => ((InstalledModule?)im, (CkanModule?)null))
+                                       .Concat(uninstMods.Select(m => ((InstalledModule?)null, (CkanModule?)m)))
+                                       .ToArray();
 
                     // Display the results of the search.
-                    if (matches.Count == 0)
+                    if (both.Length == 0)
                     {
                         // No matches found.
                         user.RaiseMessage(Properties.Resources.ShowNoClose);
                         combined_exit_code = CombineExitCodes(combined_exit_code, Exit.BADOPT);
-                        user.RaiseMessage("");
-                        continue;
-                    }
-                    else if (//matches is [CkanModule oneMod]
-                             matches.Count == 1
-                             && matches[0] is CkanModule oneMod)
-                    {
-                        // If there is only 1 match, display it.
-                        user.RaiseMessage(Properties.Resources.ShowFoundOne, oneMod.name);
-                        user.RaiseMessage("");
-
-                        moduleToShow = oneMod;
                     }
                     else
                     {
-                        // Display the found close matches.
-                        int selection = user.RaiseSelectionDialog(
-                            Properties.Resources.ShowClosePrompt,
-                            matches.Select(m => m.name).ToArray());
-                        user.RaiseMessage("");
-                        if (selection < 0)
-                        {
-                            combined_exit_code = CombineExitCodes(combined_exit_code, Exit.BADOPT);
-                            continue;
-                        }
-
-                        // Mark the selection as the one to show.
-                        moduleToShow = matches[selection];
+                        toShow = Choose(both, tuple => tuple.Item1?.Module.name ?? tuple.Item2?.name ?? "");
                     }
                 }
-
-                combined_exit_code = CombineExitCodes(
-                    combined_exit_code,
-                    ShowMod(moduleToShow, options)
-                );
-                if (options.with_versions)
+                switch (toShow)
                 {
-                    ShowVersionTable(instance, registry.AvailableByIdentifier(moduleToShow.identifier).ToList());
+                    case (InstalledModule im, _):
+                        combined_exit_code = CombineExitCodes(combined_exit_code,
+                                                              ShowMod(im, options));
+                        if (options.with_versions)
+                        {
+                            ShowVersionTable(instance, registry.AvailableByIdentifier(im.identifier)
+                                                               .ToArray());
+                        }
+                        break;
+
+                    case (_, CkanModule m):
+                        combined_exit_code = CombineExitCodes(combined_exit_code,
+                                                              ShowMod(m, options));
+                        if (options.with_versions)
+                        {
+                            ShowVersionTable(instance, registry.AvailableByIdentifier(m.identifier)
+                                                               .ToArray());
+                        }
+                        break;
                 }
                 user.RaiseMessage("");
             }
             return combined_exit_code;
         }
+
+        private T? Choose<T>(IReadOnlyList<T> choices,
+                             Func<T, string>  getLabel)
+            where T: notnull
+            => choices switch
+               {
+                   { Count: 1 } => choices.Single(),
+                   _            => user.RaiseSelectionDialog(Properties.Resources.ShowClosePrompt,
+                                                             choices.Select(getLabel).ToArray())
+                                   is >= 0 and int choice
+                                       ? choices[choice]
+                                       : default,
+               };
 
         /// <summary>
         /// Shows information about the mod.
@@ -131,18 +140,11 @@ namespace CKAN.CmdLine
             if (!opts.without_files && !module.Module.IsDLC)
             {
                 // Display InstalledModule specific information.
-                if (module.Files is IReadOnlyCollection<string> files)
+                user.RaiseMessage("");
+                user.RaiseMessage(Properties.Resources.ShowFilesHeader, module.Files.Count);
+                foreach (string file in module.Files)
                 {
-                    user.RaiseMessage("");
-                    user.RaiseMessage(Properties.Resources.ShowFilesHeader, files.Count);
-                    foreach (string file in files)
-                    {
-                        user.RaiseMessage("  - {0}", file);
-                    }
-                }
-                else
-                {
-                    throw new InvalidCastException();
+                    user.RaiseMessage("  - {0}", file);
                 }
             }
 
@@ -189,7 +191,7 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
-                    // Did you know that authors are optional in the spec?
+                    // Did you know that authors used to be optional in the spec?
                     // You do now. #673.
                     user.RaiseMessage(Properties.Resources.ShowAuthorUnknown);
                 }
@@ -329,7 +331,7 @@ namespace CKAN.CmdLine
             return a == Exit.OK ? b : a;
         }
 
-        private void ShowVersionTable(CKAN.GameInstance inst, List<CkanModule> modules)
+        private void ShowVersionTable(CKAN.GameInstance inst, IReadOnlyCollection<CkanModule> modules)
         {
             var versions     = modules.Select(m => m.version.ToString()).ToList();
             var gameVersions = modules.Select(m =>

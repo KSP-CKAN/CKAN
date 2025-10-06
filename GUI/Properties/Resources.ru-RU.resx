@@ -839,24 +839,6 @@
   <data name="RepoDownloadsFailedAbortBtn" xml:space="preserve">
     <value>Отменить обновление</value>
   </data>
-  <data name="RelationshipTypeProvides" xml:space="preserve">
-    <value>Предоставляет</value>
-  </data>
-  <data name="RelationshipTypeDepends" xml:space="preserve">
-    <value>Обязательно</value>
-  </data>
-  <data name="RelationshipTypeRecommends" xml:space="preserve">
-    <value>Рекомендовать</value>
-  </data>
-  <data name="RelationshipTypeSuggests" xml:space="preserve">
-    <value>Предлагать</value>
-  </data>
-  <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>Поддерживает</value>
-  </data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>Конфликтует с</value>
-  </data>
   <data name="AuthorSearchName">
     <value>Моды от {0}</value>
   </data>

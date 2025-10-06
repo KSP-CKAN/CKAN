@@ -23,7 +23,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         };
 
         public bool TryGetVersion(string directory,
-                                  [NotNullWhen(returnValue: true)] out GameVersion? result)
+                                  [NotNullWhen(true)] out GameVersion? result)
         {
             var foundVersions = buildIDfilenames
                 .Select(filename => TryGetVersionFromFile(Path.Combine(directory, filename),
@@ -50,7 +50,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         }
 
         private bool TryGetVersionFromFile(string file,
-                                           [NotNullWhen(returnValue: true)] out GameVersion? result)
+                                           [NotNullWhen(true)] out GameVersion? result)
         {
             if (File.Exists(file))
             {

@@ -15,7 +15,7 @@ namespace CKAN.Games.KerbalSpaceProgram.GameVersionProviders
         );
 
         public bool TryGetVersion(string directory,
-                                  [NotNullWhen(returnValue: true)] out GameVersion? result)
+                                  [NotNullWhen(true)] out GameVersion? result)
         {
             var readmePath = Path.Combine(directory, "readme.txt");
 

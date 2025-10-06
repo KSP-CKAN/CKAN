@@ -580,6 +580,20 @@ namespace CKAN
                                                   instance.StabilityToleranceConfig,
                                                   instance.VersionCriteria());
 
+        public static IEnumerable<InstalledModule> FindRemovableAutoInstalled(
+            this IRegistryQuerier           querier,
+            IReadOnlyCollection<CkanModule> installing,
+            HashSet<string>                 removingIdentifiers,
+            GameInstance                    instance)
+            => querier.FindRemovableAutoInstalled(
+                   querier.InstalledModules
+                          .Where(im => !removingIdentifiers.Contains(im.identifier))
+                          .ToArray(),
+                   installing,
+                   instance.Game,
+                   instance.StabilityToleranceConfig,
+                   instance.VersionCriteria());
+
         private static readonly ILog log = LogManager.GetLogger(typeof(IRegistryQuerierHelpers));
     }
 }

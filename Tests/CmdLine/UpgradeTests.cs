@@ -25,7 +25,7 @@ namespace Tests.CmdLine
                              ""download"":     ""https://github.com/"",
                              ""install"": [
                                  {
-                                     ""find"": ""DogeCoinFlag"",
+                                     ""find_regexp"": ""^DogeCoinFlag$"",
                                      ""install_to"": ""GameData""
                                  }
                              ]

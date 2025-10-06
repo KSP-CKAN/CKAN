@@ -297,7 +297,7 @@ namespace CKAN
             // URL missing
             => r.uri == null
                // No ETag on file
-               ||!etags.TryGetValue(r.uri, out string? etag)
+               || !etags.TryGetValue(r.uri, out string? etag)
                // No data on disk
                || !File.Exists(GetRepoDataPath(r))
                // Current ETag doesn't match

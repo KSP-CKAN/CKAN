@@ -231,11 +231,11 @@ namespace CKAN
 
     public class TooManyModsProvideKraken : Kraken
     {
-        public TooManyModsProvideKraken(CkanModule       requester,
-                                        string           requested,
-                                        List<CkanModule> modules,
-                                        string?          choice_help_text = null,
-                                        Exception?       innerException   = null)
+        public TooManyModsProvideKraken(CkanModule                requester,
+                                        string                    requested,
+                                        IReadOnlyList<CkanModule> modules,
+                                        string?                   choice_help_text = null,
+                                        Exception?                innerException   = null)
             : base(choice_help_text
                    ?? string.Format(Properties.Resources.KrakenProvidedByMoreThanOne,
                                     requested, requester.name),
@@ -247,10 +247,10 @@ namespace CKAN
             this.choice_help_text = choice_help_text;
         }
 
-        public readonly CkanModule       requester;
-        public readonly List<CkanModule> modules;
-        public readonly string           requested;
-        public readonly string?          choice_help_text;
+        public readonly CkanModule                requester;
+        public readonly IReadOnlyList<CkanModule> modules;
+        public readonly string                    requested;
+        public readonly string?                   choice_help_text;
     }
 
     /// <summary>
