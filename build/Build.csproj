@@ -15,8 +15,12 @@
   </PropertyGroup>
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
   <ItemGroup>
+    <PackageReference Include="Microsoft.TestPlatform.ObjectModel" Version="18.0.0" />
+    <PackageReference Include="PowerShellStandard.Library" Version="5.1.1" />
     <PackageReference Include="Cake.Frosting" Version="5.0.0" />
     <PackageReference Include="Cake.Frosting.Git" Version="5.0.1" />
+    <PackageReference Include="altcover.api" Version="9.0.1" />
+    <PackageReference Include="altcover.cake" Version="9.0.1" />
     <PackageReference Include="ILRepack" Version="2.0.39">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
