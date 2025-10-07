@@ -1,5 +1,6 @@
 using NUnit.Framework;
 
+using CKAN.Games.KerbalSpaceProgram;
 using CKAN.Games.KerbalSpaceProgram.GameVersionProviders;
 
 namespace Tests.Core.Games
@@ -8,8 +9,7 @@ namespace Tests.Core.Games
     public class KspBuildMapTests
     {
         [Test]
-        [Category("Online")]
-        public void KnownVersions_WithInstance_Works()
+        public void KnownVersions_Uncached_ReturnsEmbedded()
         {
             // Arrange
             var map = new KspBuildMap();
@@ -18,7 +18,7 @@ namespace Tests.Core.Games
             var result = map.KnownVersions;
 
             // Assert
-            CollectionAssert.IsNotEmpty(result);
+            CollectionAssert.AreEqual(new KerbalSpaceProgram().EmbeddedGameVersions, result);
         }
     }
 }
