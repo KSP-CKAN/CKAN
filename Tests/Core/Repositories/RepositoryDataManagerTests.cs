@@ -1,12 +1,12 @@
 using System.Linq;
 
 using NUnit.Framework;
-
-using Tests.Data;
+using Moq;
 
 using CKAN;
+using CKAN.Games;
 using CKAN.Versioning;
-using CKAN.Games.KerbalSpaceProgram;
+using Tests.Data;
 
 namespace Tests.Core.Repositories
 {
@@ -87,12 +87,13 @@ namespace Tests.Core.Repositories
         public void Prepopulate_PreviouslyLoadedDir_LoadsMetadata()
         {
             // Arrange
+            var game  = new Mock<IGame>();
             var user  = new NullUser();
             var repos = new Repository[] { new Repository("TestRepo", TestData.TestKANTarGz()) };
             using (var reposDir = new TemporaryDirectory())
             {
                 var prev  = new RepositoryDataManager(reposDir.Directory.FullName);
-                prev.Update(repos, new KerbalSpaceProgram(), true,
+                prev.Update(repos, game.Object, true,
                             new NetAsyncDownloader(user, () => null ), user);
                 var sut = new RepositoryDataManager(reposDir.Directory.FullName);
 

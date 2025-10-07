@@ -24,18 +24,17 @@ namespace CKAN.CmdLine
         /// </summary>
         public Options(string[] args)
         {
-            Parser.Default.ParseArgumentsStrict
-            (
-                args, new Actions(), (verb, suboptions) =>
-                {
-                    action  = verb;
-                    options = suboptions;
-                },
-                delegate
-                {
-                    throw new BadCommandKraken();
-                }
-            );
+            Parser.Default.ParseArgumentsStrict(args,
+                                                new Actions(),
+                                                (verb, suboptions) =>
+                                                {
+                                                    action  = verb;
+                                                    options = suboptions;
+                                                },
+                                                delegate
+                                                {
+                                                    throw new BadCommandKraken();
+                                                });
             // These are just here so the compiler knows they're never null,
             // the above callback should always set them
             action  ??= "";
@@ -57,7 +56,7 @@ namespace CKAN.CmdLine
         public ConsoleUIOptions? ConsoleUIOptions { get; set; }
 
         [VerbOption("prompt", HelpText = "Run CKAN prompt for executing multiple commands in a row")]
-        public CommonOptions? PromptOptions { get; set; }
+        public PromptOptions? PromptOptions { get; set; }
 
         [VerbOption("search", HelpText = "Search for mods")]
         public SearchOptions? SearchOptions { get; set; }
@@ -397,6 +396,7 @@ namespace CKAN.CmdLine
     internal class ScanOptions : InstanceSpecificOptions { }
 
     internal class VersionOptions   : CommonOptions { }
+    internal class PromptOptions    : CommonOptions { }
     internal class CleanOptions     : InstanceSpecificOptions { }
 
     #if NETFRAMEWORK || WINDOWS

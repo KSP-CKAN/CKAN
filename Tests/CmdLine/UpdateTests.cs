@@ -1,9 +1,14 @@
 using System.Linq;
+using System.Collections.Generic;
+using System.IO;
 
 using NUnit.Framework;
+using Moq;
 
 using CKAN;
+using CKAN.Games;
 using CKAN.CmdLine;
+using CKAN.Versioning;
 using Tests.Data;
 using Tests.Core.Configuration;
 
@@ -18,19 +23,22 @@ namespace Tests.CmdLine
         {
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
-            using (var inst     = new DisposableKSP())
+            using (var inst     = new DisposableKSP("disposable", FakeGame()))
             using (var repoData = new TemporaryRepositoryData(user))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { new Repository("test", TestData.TestKANTarGz()) }))
             {
-                // Not an ICommand because it can update CKAN itself
+                // Set our instance explicitly because GameInstanceManager.LoadInstances
+                // won't know about our custom IGame
+                manager.SetCurrentInstance(inst.KSP);
+                // Not an ICommand because it can update a repo without a game instance
                 var sut  = new Update(repoData.Manager, user, manager);
                 var opts = new UpdateOptions() { list_changes = listChanges };
 
                 // Act
-                sut.RunCommand(opts);
+                sut.RunCommand(opts, inst.KSP.Game);
 
                 // Assert
                 CollectionAssert.IsNotEmpty(regMgr.registry.CompatibleModules(inst.KSP.StabilityToleranceConfig,
@@ -62,14 +70,14 @@ namespace Tests.CmdLine
         {
             // Arrange
             var user = new CapturingUser(false, q => true, (msg, objs) => 0);
-            using (var inst     = new DisposableKSP())
+            using (var inst     = new DisposableKSP("disposable", FakeGame()))
             using (var repoData = new TemporaryRepositoryData(user))
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager  = new GameInstanceManager(user, config))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { new Repository("test", TestData.TestKANTarGz()) }))
             {
-                // Not an ICommand because it can update CKAN itself
+                // Not an ICommand because it can update a repo without a game instance
                 var sut  = new Update(repoData.Manager, user, manager);
                 var opts = new UpdateOptions()
                            {
@@ -82,7 +90,7 @@ namespace Tests.CmdLine
                            };
 
                 // Act
-                sut.RunCommand(opts);
+                sut.RunCommand(opts, inst.KSP.Game);
 
                 // Assert
                 CollectionAssert.IsNotEmpty(regMgr.registry.CompatibleModules(inst.KSP.StabilityToleranceConfig,
@@ -155,5 +163,19 @@ namespace Tests.CmdLine
             "MechJeb (MechJeb2)",
             "Real Fuels (RealFuels)",
         };
+
+        private static IGame FakeGame()
+        {
+            var game = new Mock<IGame>();
+            game.Setup(g => g.ShortName).Returns("FakeGame");
+            game.Setup(g => g.CompatibleVersionsFile).Returns("dummy.txt");
+            game.Setup(g => g.StockFolders).Returns(new string[] {});
+            game.Setup(g => g.PrimaryModDirectoryRelative).Returns("GameData");
+            game.Setup(g => g.GameInFolder(It.IsAny<DirectoryInfo>())).Returns(true);
+            var gv = new GameVersion(0, 25, 0);
+            game.Setup(g => g.KnownVersions).Returns(new List<GameVersion> { gv });
+            game.Setup(g => g.DetectVersion(It.IsAny<DirectoryInfo>())).Returns(gv);
+            return game.Object;
+        }
     }
 }
