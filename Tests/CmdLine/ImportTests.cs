@@ -35,11 +35,11 @@ namespace Tests.CmdLine
                                     Headless = true,
                                     paths    = new List<string>
                                                {
-                                                   zipDir.Directory.FullName,
+                                                   zipDir,
                                                },
                                 };
                 File.Copy(TestData.DogeCoinPluginZip(),
-                          Path.Combine(zipDir.Directory.FullName,
+                          Path.Combine(zipDir,
                                        Path.GetFileName(TestData.DogeCoinPluginZip())));
 
                 // Act

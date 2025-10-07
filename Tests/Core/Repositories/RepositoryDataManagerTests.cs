@@ -92,10 +92,10 @@ namespace Tests.Core.Repositories
             var repos = new Repository[] { new Repository("TestRepo", TestData.TestKANTarGz()) };
             using (var reposDir = new TemporaryDirectory())
             {
-                var prev  = new RepositoryDataManager(reposDir.Directory.FullName);
+                var prev  = new RepositoryDataManager(reposDir);
                 prev.Update(repos, game.Object, true,
                             new NetAsyncDownloader(user, () => null ), user);
-                var sut = new RepositoryDataManager(reposDir.Directory.FullName);
+                var sut = new RepositoryDataManager(reposDir);
 
                 // Act
                 sut.Prepopulate(repos, null);

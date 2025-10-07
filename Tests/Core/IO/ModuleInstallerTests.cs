@@ -1465,7 +1465,7 @@ namespace Tests.Core.IO
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager()))
             {
-                var cache     = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache     = new NetModuleCache(cacheDir);
                 var installer = new ModuleInstaller(inst.KSP, cache, config, user);
                 var opts      = RelationshipResolverOptions.DependsOnlyOpts(inst.KSP.StabilityToleranceConfig);
                 var modules   = new CkanModule[]
@@ -1732,7 +1732,7 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
-                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
+                                                        Path.Combine(cacheDir, "cache")))
             using (var manager  = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
@@ -2022,7 +2022,7 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
-                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
+                                                        Path.Combine(cacheDir, "cache")))
             using (var manager  = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
@@ -2240,7 +2240,7 @@ namespace Tests.Core.IO
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             {
-                var cache  = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache  = new NetModuleCache(cacheDir);
                 var module = regMgr.registry.LatestAvailable("KSP2ModPack",
                                                              inst.KSP.StabilityToleranceConfig,
                                                              inst.KSP.VersionCriteria())!;

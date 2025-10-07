@@ -17,9 +17,9 @@ namespace Tests.Core.IO
             using (var dir = new TemporaryDirectory())
             {
                 // Arrange
-                var target    = new DirectoryInfo(Path.Combine(dir.Directory.FullName,
+                var target    = new DirectoryInfo(Path.Combine(dir,
                                                                "targetdir"));
-                var dirlink   = new DirectoryInfo(Path.Combine(dir.Directory.FullName,
+                var dirlink   = new DirectoryInfo(Path.Combine(dir,
                                                                "dirlink"));
                 var file1Orig = new FileInfo(Path.Combine(target.FullName,  "file1.txt"));
                 var file2Orig = new FileInfo(Path.Combine(target.FullName,  "file2.txt"));

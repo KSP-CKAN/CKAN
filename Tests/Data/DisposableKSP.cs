@@ -25,17 +25,17 @@ namespace Tests.Data
         public DisposableKSP(string name, IGame game)
         {
             Utilities.CopyDirectory(TestData.good_ksp_dir(),
-                                    _disposableDir.Directory.FullName,
+                                    _disposableDir,
                                     Array.Empty<string>(),
                                     Array.Empty<string>());
-            KSP = new GameInstance(game, _disposableDir.Directory.FullName,
+            KSP = new GameInstance(game, _disposableDir,
                                    name, new NullUser());
         }
 
         public DisposableKSP(string registryFile)
             : this()
         {
-            var registryDir = Path.Combine(_disposableDir.Directory.FullName, "CKAN");
+            var registryDir = Path.Combine(_disposableDir, "CKAN");
             Directory.CreateDirectory(registryDir);
             File.Copy(registryFile, Path.Combine(registryDir, "registry.json"), true);
         }

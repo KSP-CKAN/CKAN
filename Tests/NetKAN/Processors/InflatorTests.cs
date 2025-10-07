@@ -26,7 +26,7 @@ namespace Tests.NetKAN.Processors
             {
                 var http     = new Mock<IHttpService>();
                 var game     = new KerbalSpaceProgram();
-                var cache    = new NetFileCache(cacheDir.Directory.FullName);
+                var cache    = new NetFileCache(cacheDir);
                 var modSvc   = new ModuleService(game);
                 var fileSvc  = new FileService(cache);
                 var sut      = new Inflator(null, null, null, null,
@@ -87,7 +87,7 @@ namespace Tests.NetKAN.Processors
             using (var cacheDir = new TemporaryDirectory())
             {
                 var game    = new KerbalSpaceProgram();
-                var cache   = new NetFileCache(cacheDir.Directory.FullName);
+                var cache   = new NetFileCache(cacheDir);
                 var http    = new Mock<IHttpService>();
                 var modSvc  = new ModuleService(game);
                 var fileSvc = new FileService(cache);

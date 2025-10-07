@@ -21,7 +21,7 @@ namespace Tests.Core
             // Arrange
             var module = TestData.DogeCoinFlag_101_module();
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetModuleCache(dir.Directory.FullName))
+            using (var cache = new NetModuleCache(dir))
             {
                 int storeCount = 0;
                 int purgeCount = 0;
@@ -61,7 +61,7 @@ namespace Tests.Core
         public void Store_Invalid_Throws()
         {
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetModuleCache(dir.Directory.FullName))
+            using (var cache = new NetModuleCache(dir))
             {
                 // Try to store a nonexistent zip into a NetModuleCache
                 // and expect an FileNotFoundKraken
@@ -132,7 +132,7 @@ namespace Tests.Core
             using (var cacheDir = new TemporaryDirectory())
             {
                 var registry = CKAN.Registry.Empty(new RepositoryDataManager());
-                var sut      = new NetModuleCache(cacheDir.Directory.FullName);
+                var sut      = new NetModuleCache(cacheDir);
 
                 // Act
                 var stored   = sut.Store(TestData.DogeCoinFlag_101_module(),
@@ -161,7 +161,7 @@ namespace Tests.Core
             // Arrange
             using (var cacheDir = new TemporaryDirectory())
             {
-                var sut = new NetModuleCache(cacheDir.Directory.FullName);
+                var sut = new NetModuleCache(cacheDir);
 
                 // Act / Assert
                 Assert.DoesNotThrow(() => sut.CheckFreeSpace(1024));

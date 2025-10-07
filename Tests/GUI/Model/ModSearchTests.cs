@@ -186,7 +186,7 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var search1  = ModSearch.Parse(labels, inst.KSP, "is:replaceable")!;
                 var search2  = ModSearch.Parse(labels, inst.KSP, "not:replaceable")!;

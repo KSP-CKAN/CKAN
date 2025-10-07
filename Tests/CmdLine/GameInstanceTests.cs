@@ -116,7 +116,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "add",
-                                          "test", nonInst.Directory.FullName,
+                                          "test", nonInst,
                                       };
                 var         subOpts = new SubCommandOptions(args);
 
@@ -126,7 +126,7 @@ namespace Tests.CmdLine
                 // Assert
                 CollectionAssert.AreEqual(new string[]
                                           {
-                                              $"Sorry, {nonInst.Directory.FullName} does not appear to be a game instance",
+                                              $"Sorry, {nonInst} does not appear to be a game instance",
                                           },
                                           user.RaisedErrors);
             }
@@ -146,7 +146,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "clone", "disposable",
-                                          "myClone", targDir.Directory.FullName,
+                                          "myClone", targDir,
                                       };
                 var         subOpts = new SubCommandOptions(args);
 
@@ -172,7 +172,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "clone", inst.KSP.GameDir,
-                                          "myClone", targDir.Directory.FullName,
+                                          "myClone", targDir,
                                       };
                 var         subOpts = new SubCommandOptions(args);
 
@@ -198,8 +198,8 @@ namespace Tests.CmdLine
                 ISubCommand sut     = new GameInstance(manager, user);
                 var         args    = new string[]
                                       {
-                                          "instance", "clone", notInst.Directory.FullName,
-                                          "myClone", targDir.Directory.FullName,
+                                          "instance", "clone", notInst,
+                                          "myClone", targDir,
                                       };
                 var         subOpts = new SubCommandOptions(args);
 
@@ -209,7 +209,7 @@ namespace Tests.CmdLine
                 // Assert
                 CollectionAssert.AreEqual(new string[]
                                           {
-                                              $"Sorry, {notInst.Directory.FullName} does not appear to be a game instance",
+                                              $"Sorry, {notInst} does not appear to be a game instance",
                                           },
                                           user.RaisedErrors);
             }
@@ -229,7 +229,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "clone", inst.KSP.GameDir,
-                                          "disposable", targDir.Directory.FullName,
+                                          "disposable", targDir,
                                       };
                 var         subOpts = new SubCommandOptions(args);
 
@@ -441,7 +441,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "fake",
-                                          "fakeInstance", fakeDir.Directory.FullName, "1.12.5",
+                                          "fakeInstance", fakeDir, "1.12.5",
                                           "--MakingHistory", "1.0.0",
                                           "--BreakingGround", "1.0.0",
                                           "--set-default",
@@ -471,7 +471,7 @@ namespace Tests.CmdLine
                 var         args    = new string[]
                                       {
                                           "instance", "fake",
-                                          "disposable", fakeDir.Directory.FullName, "1.12.5",
+                                          "disposable", fakeDir, "1.12.5",
                                           "--MakingHistory", "1.0.0",
                                           "--BreakingGround", "1.0.0",
                                       };
@@ -500,13 +500,13 @@ namespace Tests.CmdLine
             using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager = new GameInstanceManager(user, config))
             {
-                File.WriteAllText(Path.Combine(fakeDir.Directory.FullName, "dummy.txt"),
+                File.WriteAllText(Path.Combine(fakeDir, "dummy.txt"),
                                   "File that already exists in destination directory");
                 ISubCommand sut     = new GameInstance(manager, user);
                 var         args    = new string[]
                                       {
                                           "instance", "fake",
-                                          "fakeInstance", fakeDir.Directory.FullName, "1.12.5",
+                                          "fakeInstance", fakeDir, "1.12.5",
                                           "--MakingHistory", "1.0.0",
                                           "--BreakingGround", "1.0.0",
                                       };

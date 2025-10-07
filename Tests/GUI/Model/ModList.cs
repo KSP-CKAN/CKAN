@@ -37,7 +37,7 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("Firespitter", "6.3.5");
                 Assert.IsNotNull(ckan_mod);
@@ -79,7 +79,7 @@ namespace Tests.GUI
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var main_mod_list = new ModList(
                     new List<GUIMod>
@@ -185,7 +185,7 @@ namespace Tests.GUI
                                                            new Repository[] { repo }))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = regMgr.registry;
                 var labels   = ModuleLabelList.GetDefaultLabels();
                 var favLbl   = labels.Labels.First(l => l.Name == "Favourites");
@@ -225,7 +225,7 @@ namespace Tests.GUI
                                                            new Repository[] { repo }))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = regMgr.registry;
                 var labels   = ModuleLabelList.GetDefaultLabels();
                 var mods     = ModList.GetGUIMods(registry, repoData.Manager,
@@ -265,7 +265,7 @@ namespace Tests.GUI
                                                            new Repository[] { repo }))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = regMgr.registry;
 
                 // Act
@@ -482,7 +482,7 @@ namespace Tests.GUI
                                                            new Repository[] { repo }))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry = regMgr.registry;
                 var mods     = ModList.GetGUIMods(registry, repoData.Manager,
                                                   instance.KSP, ModuleLabelList.GetDefaultLabels(),
@@ -546,7 +546,7 @@ namespace Tests.GUI
                                                            new Repository[] { repo }))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 var registry  = regMgr.registry;
                 var labels    = ModuleLabelList.GetDefaultLabels();
                 var mods      = ModList.GetGUIMods(registry, repoData.Manager, inst.KSP, labels, cache, guiConfig)
@@ -628,7 +628,7 @@ namespace Tests.GUI
                                                            new Repository[] { repo.repo }))
             using (var cacheDir = new TemporaryDirectory())
             {
-                var cache = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache = new NetModuleCache(cacheDir);
                 manager.SetCurrentInstance(instance.KSP);
                 var registry = regMgr.registry;
                 // A module with a ksp_version of "any" to repro our issue

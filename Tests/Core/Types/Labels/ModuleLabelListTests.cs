@@ -41,7 +41,7 @@ namespace Tests.Core
                         new ModuleLabel("Label3"),
                     }
                 };
-                var path = Path.Combine(dir.Directory.FullName, "labels.json");
+                var path = Path.Combine(dir, "labels.json");
 
                 // Act
                 lbls.Save(path);

@@ -26,7 +26,7 @@ namespace Tests.Core.IO
             using (var cacheDir = new TemporaryDirectory())
             {
                 var registry  = CKAN.Registry.Empty(repoData.Manager);
-                var cache     = new NetModuleCache(cacheDir.Directory.FullName);
+                var cache     = new NetModuleCache(cacheDir);
                 var files     = new HashSet<FileInfo> { new FileInfo(zipPath) };
                 var toInstall = new List<CkanModule>();
 

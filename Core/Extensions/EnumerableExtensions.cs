@@ -5,7 +5,6 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
 
 namespace CKAN.Extensions
 {

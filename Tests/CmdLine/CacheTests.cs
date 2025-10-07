@@ -49,7 +49,7 @@ namespace Tests.CmdLine
             using (var config  = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var manager = new GameInstanceManager(user, config))
             {
-                var cachePath = Path.Combine(altDir.Directory.FullName, "cache");
+                var cachePath = Path.Combine(altDir, "cache");
                 Directory.CreateDirectory(cachePath);
                 ISubCommand sut     = new Cache(manager, user);
                 var         args    = new string[] { "cache", "set", cachePath };
