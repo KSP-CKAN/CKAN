@@ -1088,7 +1088,6 @@ namespace Tests.Core.IO
         }
 
         [Test]
-        [Category("Online")]
         public void InstallList_KSP1InstallFilterPresets_InstallsZeroMiniAVCWithoutMiniAVC()
         {
             // Arrange
@@ -1098,54 +1097,44 @@ namespace Tests.Core.IO
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var cacheDir = new TemporaryDirectory())
             {
                 config.SetGlobalInstallFilters(inst.KSP.Game,
                                                inst.KSP.Game.InstallFilterPresets
                                                             .SelectMany(kvp => kvp.Value)
                                                             .ToArray());
-                // The tests for different targets can run in parallel,
-                // so they don't share a cache nicely
-                const string targetFramework =
-                    #if NETFRAMEWORK
-                        "net481";
-                    #elif WINDOWS
-                        "net8.0-windows";
-                    #else
-                        "net8.0";
-                    #endif
-                // Do not Dispose this, we want it to persist for GitHub workflow caching
-                var cacheDir = TestData.DataFile($"../../_build/test/cache/{targetFramework}");
-                Directory.CreateDirectory(cacheDir);
                 var cache     = new NetModuleCache(cacheDir);
                 var registry  = CKAN.Registry.Empty(repoData.Manager);
                 var installer = new ModuleInstaller(inst.KSP, cache, config, nullUser);
                 var modules   = new string[]
                     {
-                        // MiniAVC (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
+                        // These mods are GPL-3.0 licensed, so instead of the actual ZIPs,
+                        // we use copies with the contained file sizes zeroed out.
                         @"{
                             ""identifier"": ""MiniAVC"",
                             ""version"":    ""1.4.1.3"",
-                            ""download"":   ""https://github.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.3/MiniAVC-1.8.0-1.4.1.3.zip""
+                            ""download"":   ""https://notgithub.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.3/MiniAVC-1.8.0-1.4.1.3.zip""
                         }",
-                        // MiniAVC-V2 (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
                         @"{
                             ""identifier"": ""MiniAVC-V2"",
                             ""version"":    ""1.4.1.5"",
-                            ""download"":   ""https://github.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.5/MiniAVC-V2-1.10.1-2.0.0MiniAVC.zip""
+                            ""download"":   ""https://notgithub.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.5/MiniAVC-V2-1.10.1-2.0.0MiniAVC.zip""
                         }",
-                        // ZeroMiniAVC (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
                         @"{
                             ""identifier"": ""ZeroMiniAVC"",
                             ""version"":    ""1.1.3.3"",
-                            ""download"":   ""https://github.com/linuxgurugamer/ZeroMiniAVC/releases/download/1.1.3.3/ZeroMiniAVC-1.12.0-1.1.3.3.zip""
+                            ""download"":   ""https://notgithub.com/linuxgurugamer/ZeroMiniAVC/releases/download/1.1.3.3/ZeroMiniAVC-1.12.0-1.1.3.3.zip""
                         }",
                     }
                     .Select(CkanModule.FromJson)
-                    .ToArray();
+                    .ToDictionary(m => m.identifier, m => m);
 
                 // Act
+                cache.Store(modules["MiniAVC"],     TestData.DataFile("MiniAVC.zip"),     null);
+                cache.Store(modules["MiniAVC-V2"],  TestData.DataFile("MiniAVC-V2.zip"),  null);
+                cache.Store(modules["ZeroMiniAVC"], TestData.DataFile("ZeroMiniAVC.zip"), null);
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                installer.InstallList(modules,
+                installer.InstallList(modules.Values,
                                       new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                       regMgr, ref possibleConfigOnlyDirs);
 
@@ -1157,7 +1146,7 @@ namespace Tests.Core.IO
                 CollectionAssert.DoesNotContain(installedFileNames, "MiniAVC.dll",
                                                 "The KSP1 filter presets should block MiniAVC");
                 CollectionAssert.DoesNotContain(installedFileNames, "MiniAVC-V2.dll",
-                                                "The KSP1 filter presets should block MiniAVC");
+                                                "The KSP1 filter presets should block MiniAVC-V2");
                 CollectionAssert.Contains(installedFileNames, "ZeroMiniAVC.dll",
                                           "The KSP1 filter presets should not block ZeroMiniAVC");
             }
