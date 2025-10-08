@@ -4,18 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using System.Net;
 
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
+using WireMock.Server;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Matchers;
 
 using CKAN;
 using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games.KerbalSpaceProgram2;
 
 using Tests.Core.Configuration;
 using Tests.Data;
-using CKAN.Games.KerbalSpaceProgram2;
 
 namespace Tests.Core.IO
 {
@@ -1712,8 +1717,6 @@ namespace Tests.Core.IO
          TestCase(true,  false),
          TestCase(false, true),
          TestCase(false, false)]
-        // Resumption of downloads is only possible for HTTP(S)
-        [Category("Online")]
         public void Upgrade_IncompleteInCache_Completes(bool startInstalled,
                                                         bool withIncomplete)
         {
@@ -1727,6 +1730,7 @@ namespace Tests.Core.IO
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var server   = DogeCoinFlagServer())
             {
                 var registry  = regMgr.registry;
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
@@ -1735,11 +1739,7 @@ namespace Tests.Core.IO
                 var module      = registry.LatestAvailable("DogeCoinFlag",
                                                            inst.KSP.StabilityToleranceConfig,
                                                            inst.KSP.VersionCriteria())!;
-                module.download = new List<Uri>
-                {
-                    new Uri("https://github.com/KSP-CKAN/CKAN"
-                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
-                };
+                module.download = new List<Uri> { new Uri($"{server.Url}/DogeCoinFlag-1.01.zip") };
 
                 if (withIncomplete)
                 {
@@ -2003,8 +2003,6 @@ namespace Tests.Core.IO
         }
 
         [Test]
-        // Resumption of downloads is only possible for HTTP(S)
-        [Category("Online")]
         public void InstallList_IncompleteInCache_Completes()
         {
             // Arrange
@@ -2017,6 +2015,7 @@ namespace Tests.Core.IO
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var server   = DogeCoinFlagServer())
             {
                 var registry  = regMgr.registry;
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
@@ -2025,11 +2024,7 @@ namespace Tests.Core.IO
                 var module      = registry.LatestAvailable("DogeCoinFlag",
                                                            inst.KSP.StabilityToleranceConfig,
                                                            inst.KSP.VersionCriteria())!;
-                module.download = new List<Uri>
-                {
-                    new Uri("https://github.com/KSP-CKAN/CKAN"
-                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
-                };
+                module.download = new List<Uri> { new Uri($"{server.Url}/DogeCoinFlag-1.01.zip") };
 
                 // Dump about half the ZIP to the in-progress dir
                 var filename = manager.Cache!.GetInProgressFileName(module)!.FullName;
@@ -2047,6 +2042,27 @@ namespace Tests.Core.IO
                                           ref possibleConfigOnlyDirs);
                 });
             }
+        }
+
+        private static WireMockServer DogeCoinFlagServer()
+        {
+            var server = WireMockServer.Start();
+            server.Given(Request.Create()
+                                .WithHeader("Range", new ExactMatcher("bytes=20000-"))
+                                .WithPath("/DogeCoinFlag-1.01.zip")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.OK)
+                                       .WithBody(File.ReadAllBytes(TestData.DogeCoinFlagZip())
+                                                     .Skip(20000)
+                                                     .ToArray()));
+            server.Given(Request.Create()
+                                .WithPath("/DogeCoinFlag-1.01.zip")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.OK)
+                                       .WithBodyFromFile(TestData.DogeCoinFlagZip()));
+            return server;
         }
 
         [TestCase]
