@@ -41,5 +41,19 @@ namespace Tests.Core.Games
             CollectionAssert.AreEqual(correctCompatVersions.Select(GameVersion.Parse),
                                       compat);
         }
+
+        [Test]
+        [Category("Online")]
+        public void RefreshVersions_NoUserAgent_GetsVersions()
+        {
+            // Arrange
+            var sut = new KerbalSpaceProgram();
+
+            // Act
+            sut.RefreshVersions(null);
+
+            // Assert
+            CollectionAssert.IsNotEmpty(sut.KnownVersions);
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace Tests.Core.Net
 
             // General shortcuts
             cacheDir = new TemporaryDirectory();
-            cache = new NetModuleCache(cacheDir.Directory.FullName);
+            cache = new NetModuleCache(cacheDir);
         }
 
         [TearDown]
@@ -277,7 +277,7 @@ namespace Tests.Core.Net
         {
             // Arrange
             using (var cacheDir = new TemporaryDirectory())
-            using (var cache    = new NetModuleCache(cacheDir.Directory.FullName))
+            using (var cache    = new NetModuleCache(cacheDir))
             {
                 var downloader = new NetAsyncModulesDownloader(new NullUser(), cache);
                 var modules    = pathsWithinTestData.Select(TestData.DataFile)

@@ -33,7 +33,7 @@ namespace Tests.Core.IO
                                  }))
             {
                 // Act
-                var lib = new SteamLibrary(dir.Directory.FullName);
+                var lib = new SteamLibrary(dir);
 
                 // Assert
                 CollectionAssert.AreEquivalent(new string[]
@@ -78,7 +78,7 @@ namespace Tests.Core.IO
                 using (var noLog = new TemporaryLogSuppressor())
                 {
                     // Act
-                    var lib = new SteamLibrary(dir.Directory.FullName);
+                    var lib = new SteamLibrary(dir);
 
                     // Assert
                     CollectionAssert.AreEquivalent(new string[]

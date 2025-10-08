@@ -27,6 +27,12 @@ namespace Tests.Data
             GC.SuppressFinalize(this);
         }
 
+        public static implicit operator string(TemporaryDirectory td)
+            => td.ToString();
+
+        public override string ToString()
+            => Directory.FullName;
+
         public readonly DirectoryInfo Directory;
     }
 }

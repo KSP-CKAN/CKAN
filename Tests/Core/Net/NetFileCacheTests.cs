@@ -102,14 +102,13 @@ namespace Tests.Core
         {
             string dir = "/this/path/better/not/exist";
 
-            try
+            var exc = Assert.Throws<DirectoryNotFoundKraken>(() =>
             {
-                new NetFileCache(dir);
-            }
-            catch (DirectoryNotFoundKraken kraken)
-            {
-                Assert.AreSame(dir, kraken.directory);
-            }
+                using (var cache = new NetFileCache(dir))
+                {
+                }
+            })!;
+            Assert.AreEqual(dir, exc.directory);
         }
 
         [Test]

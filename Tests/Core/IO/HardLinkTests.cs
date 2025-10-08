@@ -18,12 +18,12 @@ namespace Tests.Core.IO
             // Arrange
             using (var dir1 = new TemporaryDirectory())
             {
-                var target = Path.Combine(dir1.Directory.FullName,
+                var target = Path.Combine(dir1,
                                           "original.txt");
                 File.Copy(TestData.DogeCoinFlagZip(), target);
                 using (var dir2 = new TemporaryDirectory())
                 {
-                    var link = Path.Combine(dir2.Directory.FullName,
+                    var link = Path.Combine(dir2,
                                             "hardlink.txt");
 
                     // Act

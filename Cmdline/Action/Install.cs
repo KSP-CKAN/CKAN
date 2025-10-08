@@ -34,6 +34,8 @@ namespace CKAN.CmdLine
         /// </returns>
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
+            RegistryManager.Instance(instance, repoData).ScanUnmanagedFiles();
+
             var options = raw_options as InstallOptions;
             if (options?.modules?.Count == 0 && options.ckan_files == null)
             {

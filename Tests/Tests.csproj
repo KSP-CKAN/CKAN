@@ -37,6 +37,7 @@
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="WireMock.Net.Minimal" Version="1.14.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">
     <Reference Include="Microsoft.CSharp" />

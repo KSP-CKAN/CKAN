@@ -24,9 +24,9 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP("disposable", game))
             using (var repoData = new TemporaryRepositoryData(user))
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
                 var registry  = CKAN.Registry.Empty(repoData.Manager);
-                var cache     = new NetModuleCache(cacheDir.Directory.FullName);
                 var files     = new HashSet<FileInfo> { new FileInfo(zipPath) };
                 var toInstall = new List<CkanModule>();
 

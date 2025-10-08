@@ -32,18 +32,14 @@ namespace CKAN.CmdLine
         /// <returns>
         /// Exit code for shell environment
         /// </returns>
-        public int RunCommand(object raw_options)
+        public int RunCommand(object raw_options, IGame? game)
         {
             UpdateOptions options = (UpdateOptions) raw_options;
 
             try
             {
-                var instance = MainClass.GetGameInstance(manager);
-                var stabilityTolerance = instance.StabilityToleranceConfig;
                 if (options.repositoryURLs != null || options.game != null)
                 {
-                    var game  = options.game == null ? KnownGames.knownGames.First()
-                                                     : KnownGames.GameByShortName(options.game);
                     if (game == null)
                     {
                         user.RaiseError(Properties.Resources.UpdateBadGame,
@@ -61,13 +57,13 @@ namespace CKAN.CmdLine
                     if (options.list_changes)
                     {
                         var availablePrior = repoData.GetAllAvailableModules(repos)
-                                                     .Select(am => am.Latest(stabilityTolerance))
+                                                     .Select(am => am.Latest(ReleaseStatus.stable))
                                                      .OfType<CkanModule>()
                                                      .ToList();
                         UpdateRepositories(game, repos, options.NetUserAgent, options.force);
                         PrintChanges(availablePrior,
                                      repoData.GetAllAvailableModules(repos)
-                                             .Select(am => am.Latest(stabilityTolerance))
+                                             .Select(am => am.Latest(ReleaseStatus.stable))
                                              .OfType<CkanModule>()
                                              .ToList());
                     }
@@ -78,6 +74,8 @@ namespace CKAN.CmdLine
                 }
                 else
                 {
+                    var instance = MainClass.GetGameInstance(manager);
+                    var stabilityTolerance = instance.StabilityToleranceConfig;
                     if (options.list_changes)
                     {
                         // Get a list of compatible modules prior to the update.

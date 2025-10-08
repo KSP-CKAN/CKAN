@@ -30,7 +30,7 @@ namespace Tests.Core
                     GameVersionWhenWritten = gameVer,
                     Identifiers            = identifiers,
                 };
-                var filename = Path.Combine(dir.Directory.FullName, "suppressed.json");
+                var filename = Path.Combine(dir, "suppressed.json");
 
                 // Act
                 suppressed.SaveTo(filename);
@@ -48,7 +48,7 @@ namespace Tests.Core
             using (var dir = new TemporaryDirectory())
             {
                 var gameVer  = new GameVersion(1, 12, 5);
-                var filename = Path.Combine(dir.Directory.FullName, "suppressed.json");
+                var filename = Path.Combine(dir, "suppressed.json");
 
                 // Act
                 File.WriteAllText(filename, "");

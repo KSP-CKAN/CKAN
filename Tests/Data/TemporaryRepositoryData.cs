@@ -4,9 +4,10 @@ using System.Linq;
 using System.Collections.Generic;
 
 using log4net;
+using Moq;
 
 using CKAN;
-using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games;
 
 namespace Tests.Data
 {
@@ -22,7 +23,9 @@ namespace Tests.Data
             Manager = new RepositoryDataManager(repoDataDir);
             if (repos.Length > 0)
             {
-                Manager.Update(repos, new KerbalSpaceProgram(),
+                // Mock a game that doesn't try to retrieve known versions from the network
+                var game = new Mock<IGame>();
+                Manager.Update(repos, game.Object,
                                false, new NetAsyncDownloader(user, () => null), user);
             }
         }

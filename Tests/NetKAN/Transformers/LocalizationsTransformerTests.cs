@@ -30,7 +30,7 @@ namespace Tests.NetKAN.Transformers
             };
             using (var dir = new TemporaryDirectory())
             {
-                var cfgPath = Path.Combine(dir.Directory.FullName, "lang.cfg");
+                var cfgPath = Path.Combine(dir, "lang.cfg");
                 File.WriteAllLines(cfgPath,
                                    new string[]
                                    {
@@ -56,7 +56,7 @@ namespace Tests.NetKAN.Transformers
                                        "}",
                                        "",
                                    });
-                var zipPath = Path.Combine(dir.Directory.FullName, "mod.zip");
+                var zipPath = Path.Combine(dir, "mod.zip");
                 using (var zip = ZipFile.Create(zipPath))
                 {
                     zip.BeginUpdate();

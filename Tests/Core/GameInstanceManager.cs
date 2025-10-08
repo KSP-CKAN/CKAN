@@ -192,7 +192,7 @@ namespace Tests.Core
                 // Act / Assert
                 Assert.Throws<BadGameVersionKraken>(() =>
                     manager?.FakeInstance(new KerbalSpaceProgram(), name,
-                                          tempdir.Directory.FullName, version));
+                                          tempdir, version));
                 Assert.IsFalse(manager?.HasInstance(name));
             }
         }
@@ -216,7 +216,7 @@ namespace Tests.Core
                 // Act / Assert
                 Assert.Throws<WrongGameVersionKraken>(() =>
                     manager?.FakeInstance(new KerbalSpaceProgram(), name,
-                                          tempdir.Directory.FullName, version, dlcs));
+                                          tempdir, version, dlcs));
                 Assert.IsFalse(manager?.HasInstance(name));
             }
         }
@@ -230,14 +230,14 @@ namespace Tests.Core
 
             using (var tempdir = new TemporaryDirectory())
             {
-                File.Create(Path.Combine(tempdir.Directory.FullName,
+                File.Create(Path.Combine(tempdir,
                                          "shouldntbehere.txt"))
                     .Close();
 
                 // Act / Assert
                 Assert.Throws<BadInstallLocationKraken>(() =>
                     manager?.FakeInstance(new KerbalSpaceProgram(), name,
-                                          tempdir.Directory.FullName, version));
+                                          tempdir, version));
                 Assert.IsFalse(manager?.HasInstance(name));
             }
         }
@@ -265,15 +265,15 @@ namespace Tests.Core
             {
                 // Act
                 var newKSP = manager!.FakeInstance(new KerbalSpaceProgram(), name,
-                                                   tempdir.Directory.FullName, version, dlcs);
+                                                   tempdir, version, dlcs);
 
                 Assert.IsTrue(manager?.HasInstance(name));
                 Assert.IsTrue(mhDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedMhVersion));
                 Assert.AreEqual(unmanagedMhVersion, detectedMhVersion);
                 Assert.IsTrue(bgDetector.IsInstalled(newKSP, out string? _, out UnmanagedModuleVersion? detectedBgVersion));
                 Assert.AreEqual(unmanagedBgVersion, detectedBgVersion);
-                FileAssert.Exists(Path.Combine(tempdir.Directory.FullName, "buildID.txt"));
-                FileAssert.Exists(Path.Combine(tempdir.Directory.FullName, "buildID64.txt"));
+                FileAssert.Exists(Path.Combine(tempdir, "buildID.txt"));
+                FileAssert.Exists(Path.Combine(tempdir, "buildID64.txt"));
             }
         }
 
@@ -378,7 +378,7 @@ namespace Tests.Core
                                       absPath: Path.GetFullPath(TestData.good_ksp_dir())),
                                  }))
             {
-                var steamLib = new SteamLibrary(dir.Directory.FullName);
+                var steamLib = new SteamLibrary(dir);
                 using (var mgr = new GameInstanceManager(new NullUser(), config, steamLib))
                 {
                     foreach (var g in steamLib.Games.OfType<SteamGame>())
@@ -410,10 +410,10 @@ namespace Tests.Core
             // Arrange
             using (var dir = new TemporaryDirectory())
             {
-                var cachePath = Path.Combine(dir.Directory.FullName, "cachetest");
+                var cachePath = Path.Combine(dir, "cachetest");
                 DirectoryAssert.DoesNotExist(cachePath);
 
-                var configPath = Path.Combine(dir.Directory.FullName, "config.json");
+                var configPath = Path.Combine(dir, "config.json");
                 File.WriteAllText(configPath, "{}");
                 var config = new JsonConfiguration(configPath)
                 {

@@ -21,7 +21,7 @@ namespace Tests.NetKAN.Sources.Github
         {
             // Arrange
             using (var dir   = new TemporaryDirectory())
-            using (var cache = new NetFileCache(dir.Directory.FullName))
+            using (var cache = new NetFileCache(dir))
             {
                 var http      = new Mock<IHttpService>();
                 http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.AbsolutePath.StartsWith("/repos/")

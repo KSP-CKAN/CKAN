@@ -4,18 +4,23 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Transactions;
+using System.Net;
 
 using ICSharpCode.SharpZipLib.Zip;
 using NUnit.Framework;
+using WireMock.Server;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Matchers;
 
 using CKAN;
 using CKAN.IO;
 using CKAN.Versioning;
 using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games.KerbalSpaceProgram2;
 
 using Tests.Core.Configuration;
 using Tests.Data;
-using CKAN.Games.KerbalSpaceProgram2;
 
 namespace Tests.Core.IO
 {
@@ -1088,7 +1093,6 @@ namespace Tests.Core.IO
         }
 
         [Test]
-        [Category("Online")]
         public void InstallList_KSP1InstallFilterPresets_InstallsZeroMiniAVCWithoutMiniAVC()
         {
             // Arrange
@@ -1098,54 +1102,44 @@ namespace Tests.Core.IO
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
                 config.SetGlobalInstallFilters(inst.KSP.Game,
                                                inst.KSP.Game.InstallFilterPresets
                                                             .SelectMany(kvp => kvp.Value)
                                                             .ToArray());
-                // The tests for different targets can run in parallel,
-                // so they don't share a cache nicely
-                const string targetFramework =
-                    #if NETFRAMEWORK
-                        "net481";
-                    #elif WINDOWS
-                        "net8.0-windows";
-                    #else
-                        "net8.0";
-                    #endif
-                // Do not Dispose this, we want it to persist for GitHub workflow caching
-                var cacheDir = TestData.DataFile($"../../_build/test/cache/{targetFramework}");
-                Directory.CreateDirectory(cacheDir);
-                var cache     = new NetModuleCache(cacheDir);
                 var registry  = CKAN.Registry.Empty(repoData.Manager);
                 var installer = new ModuleInstaller(inst.KSP, cache, config, nullUser);
                 var modules   = new string[]
                     {
-                        // MiniAVC (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
+                        // These mods are GPL-3.0 licensed, so instead of the actual ZIPs,
+                        // we use copies with the contained file sizes zeroed out.
                         @"{
                             ""identifier"": ""MiniAVC"",
                             ""version"":    ""1.4.1.3"",
-                            ""download"":   ""https://github.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.3/MiniAVC-1.8.0-1.4.1.3.zip""
+                            ""download"":   ""https://notgithub.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.3/MiniAVC-1.8.0-1.4.1.3.zip""
                         }",
-                        // MiniAVC-V2 (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
                         @"{
                             ""identifier"": ""MiniAVC-V2"",
                             ""version"":    ""1.4.1.5"",
-                            ""download"":   ""https://github.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.5/MiniAVC-V2-1.10.1-2.0.0MiniAVC.zip""
+                            ""download"":   ""https://notgithub.com/linuxgurugamer/KSPAddonVersionChecker/releases/download/1.4.1.5/MiniAVC-V2-1.10.1-2.0.0MiniAVC.zip""
                         }",
-                        // ZeroMiniAVC (GPL-3.0 license, so we don't embed it in our MIT-licensed repo)
                         @"{
                             ""identifier"": ""ZeroMiniAVC"",
                             ""version"":    ""1.1.3.3"",
-                            ""download"":   ""https://github.com/linuxgurugamer/ZeroMiniAVC/releases/download/1.1.3.3/ZeroMiniAVC-1.12.0-1.1.3.3.zip""
+                            ""download"":   ""https://notgithub.com/linuxgurugamer/ZeroMiniAVC/releases/download/1.1.3.3/ZeroMiniAVC-1.12.0-1.1.3.3.zip""
                         }",
                     }
                     .Select(CkanModule.FromJson)
-                    .ToArray();
+                    .ToDictionary(m => m.identifier, m => m);
 
                 // Act
+                cache.Store(modules["MiniAVC"],     TestData.DataFile("MiniAVC.zip"),     null);
+                cache.Store(modules["MiniAVC-V2"],  TestData.DataFile("MiniAVC-V2.zip"),  null);
+                cache.Store(modules["ZeroMiniAVC"], TestData.DataFile("ZeroMiniAVC.zip"), null);
                 HashSet<string>? possibleConfigOnlyDirs = null;
-                installer.InstallList(modules,
+                installer.InstallList(modules.Values,
                                       new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
                                       regMgr, ref possibleConfigOnlyDirs);
 
@@ -1157,7 +1151,7 @@ namespace Tests.Core.IO
                 CollectionAssert.DoesNotContain(installedFileNames, "MiniAVC.dll",
                                                 "The KSP1 filter presets should block MiniAVC");
                 CollectionAssert.DoesNotContain(installedFileNames, "MiniAVC-V2.dll",
-                                                "The KSP1 filter presets should block MiniAVC");
+                                                "The KSP1 filter presets should block MiniAVC-V2");
                 CollectionAssert.Contains(installedFileNames, "ZeroMiniAVC.dll",
                                           "The KSP1 filter presets should not block ZeroMiniAVC");
             }
@@ -1464,8 +1458,8 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager()))
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache     = new NetModuleCache(cacheDir.Directory.FullName);
                 var installer = new ModuleInstaller(inst.KSP, cache, config, user);
                 var opts      = RelationshipResolverOptions.DependsOnlyOpts(inst.KSP.StabilityToleranceConfig);
                 var modules   = new CkanModule[]
@@ -1723,8 +1717,6 @@ namespace Tests.Core.IO
          TestCase(true,  false),
          TestCase(false, true),
          TestCase(false, false)]
-        // Resumption of downloads is only possible for HTTP(S)
-        [Category("Online")]
         public void Upgrade_IncompleteInCache_Completes(bool startInstalled,
                                                         bool withIncomplete)
         {
@@ -1732,12 +1724,13 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
-                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
+                                                        Path.Combine(cacheDir, "cache")))
             using (var manager  = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var server   = DogeCoinFlagServer())
             {
                 var registry  = regMgr.registry;
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
@@ -1746,11 +1739,7 @@ namespace Tests.Core.IO
                 var module      = registry.LatestAvailable("DogeCoinFlag",
                                                            inst.KSP.StabilityToleranceConfig,
                                                            inst.KSP.VersionCriteria())!;
-                module.download = new List<Uri>
-                {
-                    new Uri("https://github.com/KSP-CKAN/CKAN"
-                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
-                };
+                module.download = new List<Uri> { new Uri($"{server.Url}/DogeCoinFlag-1.01.zip") };
 
                 if (withIncomplete)
                 {
@@ -2014,20 +2003,19 @@ namespace Tests.Core.IO
         }
 
         [Test]
-        // Resumption of downloads is only possible for HTTP(S)
-        [Category("Online")]
         public void InstallList_IncompleteInCache_Completes()
         {
             // Arrange
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name,
-                                                        Path.Combine(cacheDir.Directory.FullName, "cache")))
+                                                        Path.Combine(cacheDir, "cache")))
             using (var manager  = new GameInstanceManager(nullUser, config))
             using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
             using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var server   = DogeCoinFlagServer())
             {
                 var registry  = regMgr.registry;
                 var installer = new ModuleInstaller(inst.KSP, manager.Cache!, config, nullUser);
@@ -2036,11 +2024,7 @@ namespace Tests.Core.IO
                 var module      = registry.LatestAvailable("DogeCoinFlag",
                                                            inst.KSP.StabilityToleranceConfig,
                                                            inst.KSP.VersionCriteria())!;
-                module.download = new List<Uri>
-                {
-                    new Uri("https://github.com/KSP-CKAN/CKAN"
-                            + "/raw/refs/heads/master/Tests/Data/DogeCoinFlag-1.01.zip")
-                };
+                module.download = new List<Uri> { new Uri($"{server.Url}/DogeCoinFlag-1.01.zip") };
 
                 // Dump about half the ZIP to the in-progress dir
                 var filename = manager.Cache!.GetInProgressFileName(module)!.FullName;
@@ -2058,6 +2042,27 @@ namespace Tests.Core.IO
                                           ref possibleConfigOnlyDirs);
                 });
             }
+        }
+
+        private static WireMockServer DogeCoinFlagServer()
+        {
+            var server = WireMockServer.Start();
+            server.Given(Request.Create()
+                                .WithHeader("Range", new ExactMatcher("bytes=20000-"))
+                                .WithPath("/DogeCoinFlag-1.01.zip")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.OK)
+                                       .WithBody(File.ReadAllBytes(TestData.DogeCoinFlagZip())
+                                                     .Skip(20000)
+                                                     .ToArray()));
+            server.Given(Request.Create()
+                                .WithPath("/DogeCoinFlag-1.01.zip")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.OK)
+                                       .WithBodyFromFile(TestData.DogeCoinFlagZip()));
+            return server;
         }
 
         [TestCase]
@@ -2239,8 +2244,8 @@ namespace Tests.Core.IO
             using (var cacheDir = new TemporaryDirectory())
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache  = new NetModuleCache(cacheDir.Directory.FullName);
                 var module = regMgr.registry.LatestAvailable("KSP2ModPack",
                                                              inst.KSP.StabilityToleranceConfig,
                                                              inst.KSP.VersionCriteria())!;

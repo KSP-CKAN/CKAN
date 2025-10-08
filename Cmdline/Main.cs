@@ -18,6 +18,7 @@ using log4net.Core;
 
 using CKAN.Configuration;
 using CKAN.Versioning;
+using CKAN.Games;
 
 namespace CKAN.CmdLine
 {
@@ -204,88 +205,60 @@ namespace CKAN.CmdLine
         /// </summary>
         /// <returns>The exit status that should be returned to the system.</returns>
         [ExcludeFromCodeCoverage]
-        private static int RunSimpleAction(Options cmdline, CommonOptions options, string[] args, IUser user, GameInstanceManager manager)
+        private static int RunSimpleAction(Options             cmdline,
+                                           CommonOptions       options,
+                                           string[]            args,
+                                           IUser               user,
+                                           GameInstanceManager manager)
         {
             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
             try
             {
-                switch (cmdline.action)
+                return options switch
                 {
                     #if NETFRAMEWORK || WINDOWS
-                    case "gui":
+                        GuiOptions opts =>
                         #if NET6_0_OR_GREATER
-                        if (Platform.IsWindows)
-                        {
+                            Platform.IsWindows ?
                         #endif
-                            return Gui(manager, (GuiOptions)options, args);
+                            Gui(manager, opts, args)
                         #if NET6_0_OR_GREATER
-                        }
-                        else
-                        {
-                            return Exit.ERROR;
-                        }
-                        #else
+                            : Exit.ERROR
                         #endif
+                        ,
                     #endif
-
-                    case "consoleui":
-                        return ConsoleUi(manager, (ConsoleUIOptions)options);
-
-                    case "prompt":
-                        return new Prompt(manager, repoData, user).RunCommand(cmdline.options);
-
-                    case "version":
-                        return Version(user);
-
-                    case "update":
-                        return (new Update(repoData, user, manager)).RunCommand(cmdline.options);
-
-                    case "available":
-                        return (new Available(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "install":
-                        Scan(GetGameInstance(manager), repoData);
-                        return (new Install(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "scan":
-                        return Scan(GetGameInstance(manager), repoData);
-
-                    case "list":
-                        return (new List(repoData, user, Console.OpenStandardOutput())).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "show":
-                        return (new Show(repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "replace":
-                        Scan(GetGameInstance(manager), repoData);
-                        return (new Replace(manager, repoData, user)).RunCommand(GetGameInstance(manager), (ReplaceOptions)cmdline.options);
-
-                    case "upgrade":
-                        Scan(GetGameInstance(manager), repoData);
-                        return (new Upgrade(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "search":
-                        return (new Search(repoData, user)).RunCommand(GetGameInstance(manager), options);
-
-                    case "remove":
-                        return (new Remove(manager, repoData, user)).RunCommand(GetGameInstance(manager), cmdline.options);
-
-                    case "import":
-                        return (new Import(manager, repoData, user)).RunCommand(GetGameInstance(manager), options);
-
-                    case "clean":
-                        return Clean(manager.Cache);
-
-                    case "dedup":
-                        return new Deduplicate(manager, repoData, user).RunCommand();
-
-                    case "compare":
-                        return (new Compare(user)).RunCommand(cmdline.options);
-
-                    default:
-                        user.RaiseMessage(Properties.Resources.MainUnknownCommand);
-                        return Exit.BADOPT;
-                }
+                    ConsoleUIOptions   opts => ConsoleUi(manager, opts),
+                    PromptOptions      opts => new Prompt(manager, repoData, user).RunCommand(opts),
+                    VersionOptions     opts => Version(user),
+                    UpdateOptions      opts => new Update(repoData, user, manager)
+                                                   .RunCommand(opts,
+                                                               opts.game == null
+                                                                   ? KnownGames.knownGames.First()
+                                                                   : KnownGames.GameByShortName(opts.game)),
+                    AvailableOptions   opts => new Available(repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    InstallOptions     opts => new Install(manager, repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    ScanOptions        opts => Scan(GetGameInstance(manager), repoData),
+                    ListOptions        opts => new List(repoData, user, Console.OpenStandardOutput())
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    ShowOptions        opts => new Show(repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    RepoListOptions    opts => new Replace(manager, repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    UpgradeOptions     opts => new Upgrade(manager, repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    SearchOptions      opts => new Search(repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    RemoveOptions      opts => new Remove(manager, repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    ImportOptions      opts => new Import(manager, repoData, user)
+                                                   .RunCommand(GetGameInstance(manager), opts),
+                    CleanOptions       opts => Clean(manager.Cache),
+                    DeduplicateOptions opts => new Deduplicate(manager, repoData, user).RunCommand(),
+                    CompareOptions     opts => new Compare(user).RunCommand(opts),
+                    _                       => UnknownCommand(user),
+                };
             }
             catch (NoGameInstanceKraken)
             {
@@ -295,6 +268,13 @@ namespace CKAN.CmdLine
             {
                 RegistryManager.DisposeAll();
             }
+        }
+
+        [ExcludeFromCodeCoverage]
+        private static int UnknownCommand(IUser user)
+        {
+            user.RaiseMessage(Properties.Resources.MainUnknownCommand);
+            return Exit.BADOPT;
         }
 
         [ExcludeFromCodeCoverage]

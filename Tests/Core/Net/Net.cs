@@ -1,7 +1,11 @@
 using System;
 using System.IO;
+using System.Net;
 
 using NUnit.Framework;
+using WireMock.Server;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 
 namespace Tests.Core.Net
 {
@@ -11,38 +15,47 @@ namespace Tests.Core.Net
     public class NetTests
     {
         // TODO: Test certificate errors. How?
-        // URL we expect to always be up.
-        private static readonly Uri KnownURL = new Uri("http://example.com/");
-
-        [TestCase("cheese sandwich")]
-        [Category("Online")]
-        public void Download_InvalidURL_Throws(string url)
-        {
-            // Download should throw an exception on an invalid URL.
-            Assert.Throws<UriFormatException>(() =>
-            {
-                Net.Download(new Uri(url), out _);
-            });
-        }
 
         [TestCase("example.txt")]
-        [Category("Online")]
         public void Download_WithFilename_ReturnsSavefileNameAndSavefileExists(string savefile)
         {
-            // Three-argument test, should save to the file we supply
-            string downloaded = Net.Download(KnownURL, out _, null, savefile);
-            Assert.AreEqual(savefile, downloaded);
-            Assert.That(File.Exists(savefile));
-            File.Delete(savefile);
+            // Arrange
+            using (var server = MakeMockServer())
+            {
+                var uri = new Uri(server.Url!);
+
+                // Act
+                // Three-argument test, should save to the file we supply
+                string downloaded = Net.Download(uri, out string? etag, null, savefile);
+
+                // Assert
+                Assert.AreEqual(savefile, downloaded);
+                Assert.That(File.Exists(savefile));
+                Assert.AreEqual("deadbeef", etag);
+
+                // Teardown
+                File.Delete(savefile);
+            }
         }
 
         [Test]
-        [Category("Online")]
         public void Download_NoFilename_SavesToTemporaryFile()
         {
-            string downloaded = Net.Download(KnownURL, out _);
-            Assert.That(File.Exists(downloaded));
-            File.Delete(downloaded);
+            // Arrange
+            using (var server = MakeMockServer())
+            {
+                var uri = new Uri(server.Url!);
+
+                // Act
+                string downloaded = Net.Download(uri, out string? etag);
+
+                // Assert
+                Assert.That(File.Exists(downloaded));
+                Assert.AreEqual("deadbeef", etag);
+
+                // Teardown
+                File.Delete(downloaded);
+            }
         }
 
         [TestCase("https://spacedock.info/mod/132/Contract%20Reward%20Modifier/download/2.1")]
@@ -63,35 +76,40 @@ namespace Tests.Core.Net
             File.Delete(downloaded);
         }
 
-        [TestCase("https://www.kerbaltek.com/_IamCKAN_Gimme_hyperedit_")]
-        [Category("Online")]
-        public void Download_Redirect_Works(string url)
+        [Test]
+        public void Download_Redirect_Works()
         {
             // Arrange
-            var uri = new Uri(url);
+            using (var server = MakeMockServer())
+            {
+                var uri = new Uri($"{server.Url}/redirect-me");
 
-            // Act
-            var downloaded = Net.Download(uri, out _);
+                // Act
+                var downloaded = Net.Download(uri, out string? etag);
 
-            // Assert
-            Assert.That(File.Exists(downloaded));
+                // Assert
+                Assert.That(File.Exists(downloaded));
+                Assert.AreEqual("deadbeef", etag);
 
-            // Teardown
-            File.Delete(downloaded);
+                // Teardown
+                File.Delete(downloaded);
+            }
         }
 
-        [TestCase("https://github.com/")]
-        [Category("Online")]
-        public void CurrentETag_ValidHost_NonEmpty(string url)
+        [Test]
+        public void CurrentETag_ValidHost_NonEmpty()
         {
             // Arrange
-            var uri = new Uri(url);
+            using (var server = MakeMockServer())
+            {
+                var uri = new Uri(server.Url!);
 
-            // Act
-            var etag = Net.CurrentETag(uri);
+                // Act
+                var etag = Net.CurrentETag(uri);
 
-            // Assert
-            Assert.IsNotEmpty(etag);
+                // Assert
+                Assert.AreEqual("deadbeef", etag);
+            }
         }
 
         [TestCase("https://github.com/",
@@ -119,5 +137,31 @@ namespace Tests.Core.Net
                   ExpectedResult = "https://github.com/KSP-CKAN/CKAN/releases/lastest/download/whatever")]
         public string GetRawUri(string url)
             => Net.GetRawUri(new Uri(url)).OriginalString;
+
+        private static WireMockServer MakeMockServer()
+        {
+            var server = WireMockServer.Start();
+            server.Given(Request.Create()
+                                .WithPath("/")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.OK)
+                                       .WithHeader("ETag", "\"deadbeef\"")
+                                       .WithBody("<html></html>"));
+            server.Given(Request.Create()
+                                .WithPath("/")
+                                .UsingHead())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.OK)
+                                       .WithHeader("ETag", "\"deadbeef\""));
+            server.Given(Request.Create()
+                                .WithPath("/redirect-me")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.TemporaryRedirect)
+                                       .WithHeader("Location", server.Url!));
+            return server;
+        }
+
     }
 }
