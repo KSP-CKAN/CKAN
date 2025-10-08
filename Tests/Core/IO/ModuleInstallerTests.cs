@@ -1103,12 +1103,12 @@ namespace Tests.Core.IO
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
                 config.SetGlobalInstallFilters(inst.KSP.Game,
                                                inst.KSP.Game.InstallFilterPresets
                                                             .SelectMany(kvp => kvp.Value)
                                                             .ToArray());
-                var cache     = new NetModuleCache(cacheDir);
                 var registry  = CKAN.Registry.Empty(repoData.Manager);
                 var installer = new ModuleInstaller(inst.KSP, cache, config, nullUser);
                 var modules   = new string[]
@@ -1458,8 +1458,8 @@ namespace Tests.Core.IO
             using (var inst     = new DisposableKSP())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager()))
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache     = new NetModuleCache(cacheDir);
                 var installer = new ModuleInstaller(inst.KSP, cache, config, user);
                 var opts      = RelationshipResolverOptions.DependsOnlyOpts(inst.KSP.StabilityToleranceConfig);
                 var modules   = new CkanModule[]
@@ -2244,8 +2244,8 @@ namespace Tests.Core.IO
             using (var cacheDir = new TemporaryDirectory())
             using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
                                                            new Repository[] { repo.repo }))
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache  = new NetModuleCache(cacheDir);
                 var module = regMgr.registry.LatestAvailable("KSP2ModPack",
                                                              inst.KSP.StabilityToleranceConfig,
                                                              inst.KSP.VersionCriteria())!;

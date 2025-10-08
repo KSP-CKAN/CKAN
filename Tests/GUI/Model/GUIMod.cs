@@ -34,8 +34,8 @@ namespace Tests.GUI
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache = new NetModuleCache(cacheDir);
                 var registry = new Registry(repoData.Manager, repo.repo);
                 var ckan_mod = registry.GetModuleByVersion("kOS", "0.14");
 
@@ -63,8 +63,8 @@ namespace Tests.GUI
                                                           new_version.ToJson()))
                 using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache = new NetModuleCache(cacheDir);
                     var registry = new Registry(repoData.Manager, repo.repo);
 
                     registry.RegisterModule(old_version, new List<string>(), tidy.KSP, false);
@@ -107,8 +107,8 @@ namespace Tests.GUI
                 }"))
             using (var repoData = new TemporaryRepositoryData(user, repo.repo))
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache = new NetModuleCache(cacheDir);
                 var registry = new Registry(repoData.Manager, repo.repo);
 
                 var mainVersion = registry.GetModuleByVersion("OutOfOrderMod", "1.2.0");
@@ -129,9 +129,9 @@ namespace Tests.GUI
         {
             // Arrange
             using (var cacheDir = new TemporaryDirectory())
-            using (var inst = new DisposableKSP())
+            using (var inst     = new DisposableKSP())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache    = new NetModuleCache(cacheDir);
                 var repoData = new RepositoryDataManager();
                 var sut      = new GUIMod(TestData.ModuleManagerModule(),
                                           repoData,
@@ -173,8 +173,8 @@ namespace Tests.GUI
             var repoData = new RepositoryDataManager();
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var cache   = new NetModuleCache(cacheDir);
                 var sut     = new GUIMod(instMod, repoData, Registry.Empty(repoData),
                                          inst.KSP.StabilityToleranceConfig, inst.KSP,
                                          cache, false, true, true);
@@ -205,8 +205,8 @@ namespace Tests.GUI
             var module   = TestData.ModuleManagerModule();
             using (var inst     = new DisposableKSP())
             using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
             {
-                var    cache  = new NetModuleCache(cacheDir);
                 var    sut    = new GUIMod(module, repoData, Registry.Empty(repoData),
                                            inst.KSP.StabilityToleranceConfig, inst.KSP,
                                            cache, false, true, true);

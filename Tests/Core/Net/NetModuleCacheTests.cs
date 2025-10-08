@@ -130,9 +130,9 @@ namespace Tests.Core
         {
             // Arrange
             using (var cacheDir = new TemporaryDirectory())
+            using (var sut      = new NetModuleCache(cacheDir))
             {
                 var registry = CKAN.Registry.Empty(new RepositoryDataManager());
-                var sut      = new NetModuleCache(cacheDir);
 
                 // Act
                 var stored   = sut.Store(TestData.DogeCoinFlag_101_module(),
@@ -160,8 +160,8 @@ namespace Tests.Core
         {
             // Arrange
             using (var cacheDir = new TemporaryDirectory())
+            using (var sut      = new NetModuleCache(cacheDir))
             {
-                var sut = new NetModuleCache(cacheDir);
 
                 // Act / Assert
                 Assert.DoesNotThrow(() => sut.CheckFreeSpace(1024));
