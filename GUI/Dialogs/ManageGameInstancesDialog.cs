@@ -288,7 +288,7 @@ namespace CKAN.GUI
                     return;
                 }
 
-                SetAsDefaultCheckbox.Checked = manager.AutoStartInstance?.Equals(inst.Name) ?? false;
+                SetAsDefaultCheckbox.Checked = manager.Configuration.AutoStartInstance?.Equals(inst.Name) ?? false;
             }
         }
 

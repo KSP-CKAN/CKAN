@@ -57,10 +57,10 @@ namespace Tests.Core
         [Test]
         public void SetAutoStart_ValidName_SetsAutoStart()
         {
-            Assert.That(manager?.AutoStartInstance, Is.EqualTo(null));
+            Assert.That(manager?.Configuration.AutoStartInstance, Is.EqualTo(null));
 
             manager?.SetAutoStart(nameInReg);
-            Assert.That(manager?.AutoStartInstance, Is.EqualTo(nameInReg));
+            Assert.That(manager?.Configuration.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
         [Test]
@@ -68,7 +68,7 @@ namespace Tests.Core
         {
             manager?.SetAutoStart(nameInReg);
             Assert.Throws<InvalidGameInstanceKraken>(() => manager?.SetAutoStart("invalid"));
-            Assert.That(manager?.AutoStartInstance, Is.EqualTo(nameInReg));
+            Assert.That(manager?.Configuration.AutoStartInstance, Is.EqualTo(nameInReg));
         }
 
         [Test]

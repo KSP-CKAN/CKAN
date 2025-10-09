@@ -50,7 +50,7 @@ namespace CKAN.GUI
                           .ToList();
             comboBoxKnownInstance.Text = selectedInstanceName
                                              ?? manager.CurrentInstance?.Name
-                                             ?? manager.AutoStartInstance
+                                             ?? manager.Configuration.AutoStartInstance
                                              ?? "";
 
             if (Platform.IsWindows)
