@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || WINDOWS
+
 using System;
 using System.Threading;
 using System.Drawing;
@@ -158,3 +160,5 @@ namespace Tests.GUI
 
     }
 }
+
+#endif

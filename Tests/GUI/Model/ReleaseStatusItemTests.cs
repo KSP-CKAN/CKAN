@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || WINDOWS
+
 using NUnit.Framework;
 
 using CKAN;
@@ -15,3 +17,5 @@ namespace Tests.GUI
             => new ReleaseStatusItem(stat).ToString();
     }
 }
+
+#endif

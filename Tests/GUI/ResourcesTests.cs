@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || WINDOWS
+
 using System;
 using System.Linq;
 using System.Resources;
@@ -109,3 +111,5 @@ namespace Tests.GUI
                           .ToArray();
     }
 }
+
+#endif

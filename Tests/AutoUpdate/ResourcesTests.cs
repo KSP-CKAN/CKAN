@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || WINDOWS
+
 using System.Linq;
 using System.Resources;
 using System.Globalization;
@@ -37,3 +39,5 @@ namespace Tests.AutoUpdateHelper
             .ToArray();
     }
 }
+
+#endif
