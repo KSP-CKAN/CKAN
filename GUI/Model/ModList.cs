@@ -32,6 +32,7 @@ namespace CKAN.GUI
         /// <param name="modules">A list of modules that may require updating</param>
         /// <param name="instance">Game instance for getting labels</param>
         /// <param name="allLabels">All label definitions</param>
+        /// <param name="allTags">All tag definitions</param>
         /// <param name="coreConfig">Core configuration</param>
         /// <param name="guiConfig">GUI configuration</param>
         /// <param name="mc">Changes the user has made</param>
@@ -39,11 +40,13 @@ namespace CKAN.GUI
         public ModList(IReadOnlyCollection<GUIMod> modules,
                        GameInstance                instance,
                        ModuleLabelList             allLabels,
+                       ModuleTagList               allTags,
                        IConfiguration              coreConfig,
                        GUIConfiguration            guiConfig,
                        List<ModChange>?            mc = null)
         {
             this.allLabels        = allLabels;
+            this.allTags          = allTags;
             this.coreConfig       = coreConfig;
             this.guiConfig        = guiConfig;
             activeSearches        = guiConfig.DefaultSearches
@@ -582,7 +585,7 @@ namespace CKAN.GUI
                                              .Any(l => l.ContainsModule(instance.Game, m.Identifier))
                                             ?? false)
                || (registry.Tags?.Values
-                                 .Where(t => !TagInSearches(t) && ModuleTagList.ModuleTags.HiddenTags.Contains(t.Name))
+                                 .Where(t => !TagInSearches(t) && allTags.HiddenTags.Contains(t.Name))
                                  .Any(t => t.ModuleIdentifiers.Contains(m.Identifier))
                                 ?? false);
 
@@ -650,6 +653,7 @@ namespace CKAN.GUI
                };
 
         private readonly ModuleLabelList                allLabels;
+        private readonly ModuleTagList                  allTags;
         private readonly IConfiguration                 coreConfig;
         private readonly GUIConfiguration               guiConfig;
         private          IReadOnlyCollection<ModSearch> activeSearches;

@@ -14,12 +14,11 @@ using System.Runtime.Versioning;
 using NUnit.Framework;
 using CategoryAttribute = NUnit.Framework.CategoryAttribute;
 
-using Tests.Core.Configuration;
-using Tests.Data;
-
 using CKAN;
 using CKAN.IO;
 using CKAN.GUI;
+using Tests.Core.Configuration;
+using Tests.Data;
 
 namespace Tests.GUI
 {
@@ -44,7 +43,8 @@ namespace Tests.GUI
                 var ckan_mod = registry.GetModuleByVersion("Firespitter", "6.3.5");
                 Assert.IsNotNull(ckan_mod);
 
-                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP,
+                                       ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
                                        config, new GUIConfiguration());
                 Assert.That(item.IsVisible(
                     new GUIMod(ckan_mod!, repoData.Manager, registry,
@@ -63,7 +63,8 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             {
-                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP,
+                                       ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
                                        config, new GUIConfiguration());
                 Assert.That(item.CountModsByFilter(tidy.KSP, filter), Is.EqualTo(0));
             }
@@ -93,7 +94,8 @@ namespace Tests.GUI
                                    tidy.KSP.StabilityToleranceConfig, tidy.KSP, cache,
                                    null, false, false)
                     },
-                    tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                    tidy.KSP,
+                    ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
                     config, new GUIConfiguration()
                 );
                 Assert.That(main_mod_list.full_list_of_mod_rows.Values, Has.Count.EqualTo(2));
@@ -108,7 +110,8 @@ namespace Tests.GUI
             using (var config = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             {
                 var guiConfig = new GUIConfiguration();
-                var modlist   = new ModList(Array.Empty<GUIMod>(), inst.KSP, ModuleLabelList.GetDefaultLabels(),
+                var modlist   = new ModList(Array.Empty<GUIMod>(), inst.KSP,
+                                            ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
                                             config, guiConfig);
                 bool called   = false;
                 modlist.ModFiltersUpdated += () => { called = true; };
@@ -194,7 +197,9 @@ namespace Tests.GUI
                 var mods     = ModList.GetGUIMods(registry, repoData.Manager,
                                                   inst.KSP, labels, cache, new GUIConfiguration())
                                       .ToArray();
-                var modlist  = new ModList(mods, inst.KSP, labels, config, new GUIConfiguration());
+                var modlist  = new ModList(mods, inst.KSP,
+                                           labels, new ModuleTagList(),
+                                           config, new GUIConfiguration());
                 var mod      = mods.First();
 
                 // Act
@@ -233,7 +238,8 @@ namespace Tests.GUI
                 var mods     = ModList.GetGUIMods(registry, repoData.Manager,
                                                   inst.KSP, labels, cache, new GUIConfiguration())
                                       .ToArray();
-                var modlist = new ModList(mods, inst.KSP, labels,
+                var modlist = new ModList(mods, inst.KSP,
+                                          labels, new ModuleTagList(),
                                           config, new GUIConfiguration());
                 var grid = new DataGridView();
                 grid.Columns.AddRange(StandardColumns);
@@ -490,7 +496,9 @@ namespace Tests.GUI
                                                   instance.KSP, ModuleLabelList.GetDefaultLabels(),
                                                   cache, new GUIConfiguration())
                                       .ToArray();
-                var modlist  = new ModList(mods, instance.KSP, ModuleLabelList.GetDefaultLabels(), config, new GUIConfiguration());
+                var modlist  = new ModList(mods, instance.KSP,
+                                           ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
+                                           config, new GUIConfiguration());
 
                 // Act
                 foreach (var mod in mods.OrderBy(m => m.Identifier).Take(5))
@@ -520,7 +528,8 @@ namespace Tests.GUI
             using (var tidy = new DisposableKSP())
             using (var config = new FakeConfiguration(tidy.KSP, tidy.KSP.Name))
             {
-                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP, ModuleLabelList.GetDefaultLabels(),
+                var item = new ModList(Array.Empty<GUIMod>(), tidy.KSP,
+                                       ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
                                        config, new GUIConfiguration());
                 Assert.That(item.ComputeUserChangeSet(Registry.Empty(repoData.Manager), tidy.KSP, null, null), Is.Empty);
             }
@@ -553,7 +562,9 @@ namespace Tests.GUI
                 var labels    = ModuleLabelList.GetDefaultLabels();
                 var mods      = ModList.GetGUIMods(registry, repoData.Manager, inst.KSP, labels, cache, guiConfig)
                                        .ToArray();
-                var modlist   = new ModList(mods, inst.KSP, labels, config, guiConfig);
+                var modlist   = new ModList(mods, inst.KSP,
+                                            labels, new ModuleTagList(),
+                                            config, guiConfig);
 
                 // Act
                 var b9         = mods.First(m => m.Identifier == "B9");
@@ -669,7 +680,8 @@ namespace Tests.GUI
                                               null, false, false))
                     .ToList();
 
-                var modList = new ModList(modules, instance.KSP, ModuleLabelList.GetDefaultLabels(),
+                var modList = new ModList(modules, instance.KSP,
+                                          ModuleLabelList.GetDefaultLabels(), new ModuleTagList(),
                                           config, new GUIConfiguration());
                 Assert.IsFalse(modList.HasVisibleInstalled());
 
