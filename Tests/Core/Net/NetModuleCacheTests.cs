@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 using CKAN;
 using Tests.Data;
+using Tests.Core.Configuration;
 
 namespace Tests.Core
 {
@@ -129,8 +130,11 @@ namespace Tests.Core
         public void EnforceSizeLimit_HighAndLowLimits_DeletesWithSmallLimit()
         {
             // Arrange
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var manager  = new GameInstanceManager(new NullUser(), config))
             using (var cacheDir = new TemporaryDirectory())
-            using (var sut      = new NetModuleCache(cacheDir))
+            using (var sut      = new NetModuleCache(manager,cacheDir))
             {
                 var registry = CKAN.Registry.Empty(new RepositoryDataManager());
 
