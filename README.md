@@ -66,7 +66,7 @@ Note: Are you looking for the Open Data portal software called CKAN? If so, thei
  [5]: https://github.com/KSP-CKAN/CKAN/wiki
  [6]: https://github.com/KSP-CKAN/CKAN/issues/new
  [7]: https://github.com/KSP-CKAN/NetKAN/issues/new
- [8]: http://schemastore.org/json/
+ [8]: https://schemastore.org/
  [9]: https://github.com/ckan/ckan
  [10]: https://signpath.io/
  [11]: https://signpath.org/
