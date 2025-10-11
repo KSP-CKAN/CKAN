@@ -34,7 +34,7 @@ namespace Tests.GUI
                                         new List<string> { "MIT" },
                                         new List<string> { "en-us" },
                                         new List<string> { "ModuleManager" },
-                                        new List<string> { "Kopernicus" },
+                                        new List<string> { "-Kopernicus" },
                                         new List<string> { "Scatterer" },
                                         new List<string> { "JNSQ" },
                                         new List<string> { "RasterPropMonitor" },
@@ -43,7 +43,7 @@ namespace Tests.GUI
                                         true, true, false, null, null, null);
 
                 // Assert
-                Assert.AreEqual("modname @author1 desc:description lic:MIT lang:en-us dep:ModuleManager rec:Kopernicus sug:Scatterer conf:JNSQ sup:RasterPropMonitor tag:planet-pack label:Favorites is:compatible is:installed not:cached",
+                Assert.AreEqual("modname @author1 desc:description lic:MIT lang:en-us dep:ModuleManager -rec:Kopernicus sug:Scatterer conf:JNSQ sup:RasterPropMonitor tag:planet-pack label:Favorites is:compatible is:installed not:cached",
                                 sut.Combined);
             }
         }
@@ -101,34 +101,45 @@ namespace Tests.GUI
             {
 
                 // Act
-                var sut = ModSearch.Parse(labels, inst.KSP,
-                                          "modname @author1 desc:description lic:MIT lang:en-us dep:ModuleManager rec:Kopernicus sug:Scatterer conf:JNSQ sup:RasterPropMonitor tag:planet-pack label:Favorites is:compatible is:installed not:cached")!;
+                var sut1 = ModSearch.Parse(labels, inst.KSP,
+                                           "modname @author1 desc:description lic:MIT lang:en-us dep:ModuleManager rec:Kopernicus sug:Scatterer conf:JNSQ sup:RasterPropMonitor tag:planet-pack label:Favorites is:compatible is:installed not:cached is:newly-compatible is:upgradeable")!;
+                var sut2 = ModSearch.Parse(labels, inst.KSP,
+                                           "-@author2 not:compatible not:installed is:cached not:newly-compatible not:upgradeable")!;
 
                 // Assert
-                Assert.AreEqual("modname", sut.Name);
-                Assert.AreEqual("description", sut.Description);
+                Assert.AreEqual("modname", sut1.Name);
+                Assert.AreEqual("description", sut1.Description);
                 CollectionAssert.AreEquivalent(new string[] { "author1" },
-                                               sut.Authors);
+                                               sut1.Authors);
                 CollectionAssert.AreEquivalent(new string[] { "ModuleManager" },
-                                               sut.DependsOn);
+                                               sut1.DependsOn);
                 CollectionAssert.AreEquivalent(new string[] { "Kopernicus" },
-                                               sut.Recommends);
+                                               sut1.Recommends);
                 CollectionAssert.AreEquivalent(new string[] { "Scatterer" },
-                                               sut.Suggests);
+                                               sut1.Suggests);
                 CollectionAssert.AreEquivalent(new string[] { "JNSQ" },
-                                               sut.ConflictsWith);
+                                               sut1.ConflictsWith);
                 CollectionAssert.AreEquivalent(new string[] { "RasterPropMonitor" },
-                                               sut.Supports);
+                                               sut1.Supports);
                 CollectionAssert.AreEquivalent(new string[] { "planet-pack" },
-                                               sut.TagNames);
+                                               sut1.TagNames);
                 CollectionAssert.AreEquivalent(new string[] { "Favorites" },
-                                               sut.LabelNames);
-                Assert.IsTrue(sut.Compatible);
-                Assert.IsTrue(sut.Installed);
-                Assert.IsFalse(sut.Cached);
-                Assert.IsNull(sut.NewlyCompatible);
-                Assert.IsNull(sut.Upgradeable);
-                Assert.IsNull(sut.Replaceable);
+                                               sut1.LabelNames);
+                Assert.IsTrue(sut1.Compatible);
+                Assert.IsTrue(sut1.Installed);
+                Assert.IsTrue(sut1.NewlyCompatible);
+                Assert.IsTrue(sut1.Upgradeable);
+                Assert.IsFalse(sut1.Cached);
+                Assert.IsNull(sut1.Replaceable);
+
+                CollectionAssert.AreEquivalent(new string[] { "-author2" },
+                                               sut2.Authors);
+                Assert.IsFalse(sut2.Compatible);
+                Assert.IsFalse(sut2.Installed);
+                Assert.IsFalse(sut2.NewlyCompatible);
+                Assert.IsFalse(sut2.Upgradeable);
+                Assert.IsTrue(sut2.Cached);
+                Assert.IsNull(sut2.Replaceable);
             }
         }
 
