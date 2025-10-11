@@ -175,24 +175,6 @@ namespace CKAN
             }
         }
 
-        /// <summary>
-        /// Load a repo data object from a downloaded .zip or .tar.gz file
-        /// downloaded from the repo
-        /// </summary>
-        /// <param name="path">Filename of the archive to load</param>
-        /// <param name="game">The game for which this repo has data, used for parsing the game versions because the format can vary</param>
-        /// <param name="progress">Object for reporting progress in loading, since it can take a while</param>
-        /// <returns>A repo data object</returns>
-        public static RepositoryData FromDownload(string path, IGame game, IProgress<long> progress)
-        {
-            switch (FileIdentifier.IdentifyFile(path))
-            {
-                case FileType.TarGz: return FromTarGz(path, game, progress);
-                case FileType.Zip:   return FromZip(path, game, progress);
-                default: throw new UnsupportedKraken(string.Format(Properties.Resources.NetRepoNotATarGz, path));
-            }
-        }
-
         public static RepositoryData FromStream(Stream stream, IGame game, IProgress<long> progress)
         {
             switch (FileIdentifier.IdentifyFile(stream))
@@ -200,14 +182,6 @@ namespace CKAN
                 case FileType.TarGz: return FromTarGzStream(stream, game, progress);
                 case FileType.Zip:   return FromZipStream(stream, game, progress);
                 default: throw new UnsupportedKraken(Properties.Resources.NetRepoNotATarGzStream);
-            }
-        }
-
-        private static RepositoryData FromTarGz(string path, IGame game, IProgress<long> progress)
-        {
-            using (var inputStream = File.OpenRead(path))
-            {
-                return FromTarGzStream(inputStream, game, progress);
             }
         }
 
@@ -268,14 +242,6 @@ namespace CKAN
 
             // Convert the buffer data to a string.
             return Encoding.UTF8.GetString(buffer);
-        }
-
-        private static RepositoryData FromZip(string path, IGame game, IProgress<long> progress)
-        {
-            using (var inputStream = File.OpenRead(path))
-            {
-                return FromZipStream(inputStream, game, progress);
-            }
         }
 
         private static RepositoryData FromZipStream(Stream inputStream, IGame game, IProgress<long> progress)
