@@ -68,21 +68,6 @@ namespace CKAN
         public bool IsCached(CkanModule m)
             => m.download?.Any(cache.IsCached)
                 ?? false;
-        public bool IsCached(CkanModule m, out string? outFilename)
-        {
-            if (m.download != null)
-            {
-                foreach (var dlUri in m.download)
-                {
-                    if (cache.IsCached(dlUri, out outFilename))
-                    {
-                        return true;
-                    }
-                }
-            }
-            outFilename = null;
-            return false;
-        }
         public bool IsMaybeCachedZip(CkanModule m)
             => m.download?.Any(dlUri => cache.IsMaybeCachedZip(dlUri, m.release_date))
                 ?? false;

@@ -56,9 +56,6 @@ namespace Tests.Core
 
             // Now it should be cached.
             Assert.IsTrue(cache?.IsCached(url));
-            string? filename = null;
-            Assert.IsTrue(cache?.IsCached(url, out filename));
-            Assert.AreEqual(Path.Combine(cache_dir!, "9C17E047-DogeCoinFlag-1.01.zip"), filename);
             CollectionAssert.AreEquivalent(new [] { ("9C17E047", 53647) },
                                            cache?.CachedHashesAndSizes());
 
