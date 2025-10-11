@@ -133,8 +133,10 @@ namespace Tests.Core.Net
                   ExpectedResult = "https://raw.githubusercontent.com:443/KSP-CKAN/CKAN/branchname/whatever")]
         [TestCase("https://github.com/KSP-CKAN/CKAN/tree/branchname/whatever",
                   ExpectedResult = "https://raw.githubusercontent.com:443/KSP-CKAN/CKAN/branchname/whatever")]
-        [TestCase("https://github.com/KSP-CKAN/CKAN/releases/lastest/download/whatever",
-                  ExpectedResult = "https://github.com/KSP-CKAN/CKAN/releases/lastest/download/whatever")]
+        [TestCase("https://github.com/KSP-CKAN/CKAN/releases/latest/download/whatever",
+                  ExpectedResult = "https://github.com/KSP-CKAN/CKAN/releases/latest/download/whatever")]
+        [TestCase("https://github.com/KSP-CKAN/CKAN/",
+                  ExpectedResult = "https://github.com/KSP-CKAN/CKAN/")]
         public string GetRawUri(string url)
             => Net.GetRawUri(new Uri(url)).OriginalString;
 
