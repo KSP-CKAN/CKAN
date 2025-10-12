@@ -44,19 +44,6 @@ namespace CKAN
 
         private readonly SortedList<string, GameInstance> instances = new SortedList<string, GameInstance>();
 
-        public string? AutoStartInstance
-        {
-            get => Configuration.AutoStartInstance != null
-                   && HasInstance(Configuration.AutoStartInstance)
-                       ? Configuration.AutoStartInstance
-                       : null;
-
-            private set
-            {
-                Configuration.AutoStartInstance = value;
-            }
-        }
-
         public SortedList<string, GameInstance> Instances => new SortedList<string, GameInstance>(instances);
 
         public GameInstanceManager(IUser          user,
@@ -130,8 +117,8 @@ namespace CKAN
             // Return the autostart, if we can find it.
             // We check both null and "" as we can't write NULL to the config, so we write an empty string instead
             // This is necessary so we can indicate that the user wants to reset the current AutoStartInstance without clearing the config!
-            if (AutoStartInstance is { Length: > 0 }
-                && instances.TryGetValue(AutoStartInstance, out GameInstance? autoInst)
+            if (Configuration.AutoStartInstance is { Length: > 0 } instName
+                && instances.TryGetValue(instName, out GameInstance? autoInst)
                 && autoInst.Valid)
             {
                 return autoInst;
@@ -545,7 +532,7 @@ namespace CKAN
             {
                 throw new NotGameDirKraken(instances[name].GameDir);
             }
-            AutoStartInstance = name;
+            Configuration.AutoStartInstance = name;
         }
 
         public bool HasInstance(string name)

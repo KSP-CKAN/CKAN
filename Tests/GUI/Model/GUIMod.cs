@@ -1,9 +1,12 @@
+#if NETFRAMEWORK || WINDOWS
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
+using System.Windows.Forms;
 
 using NUnit.Framework;
 
@@ -14,7 +17,6 @@ using CKAN.Versioning;
 
 using Tests.Core.Configuration;
 using Tests.Data;
-using System.Windows.Forms;
 
 namespace Tests.GUI
 {
@@ -225,3 +227,5 @@ namespace Tests.GUI
         }
     }
 }
+
+#endif

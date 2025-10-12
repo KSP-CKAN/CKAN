@@ -10,6 +10,10 @@ using CKAN.Configuration;
 using CKAN.Games.KerbalSpaceProgram;
 using Tests.Data;
 
+// We want to creating a new instance to be part of Arrange,
+// separate from setting properties in Act.
+#pragma warning disable IDE0017
+
 namespace Tests.Core.Configuration
 {
     [TestFixture]
@@ -97,7 +101,7 @@ namespace Tests.Core.Configuration
 
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
 
-            Assert.AreEqual("", reg.AutoStartInstance);
+            Assert.AreEqual(null, reg.AutoStartInstance);
             Assert.IsNull(reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(4, reg.RefreshRate);
@@ -114,7 +118,7 @@ namespace Tests.Core.Configuration
             CollectionAssert.AreEquivalent(new List<Tuple<string, string>>(), reg.GetInstances());
             CollectionAssert.AreEquivalent(new List<string>(), reg.GetAuthTokenHosts());
 
-            Assert.AreEqual("", reg.AutoStartInstance);
+            Assert.AreEqual(null, reg.AutoStartInstance);
             Assert.IsNull(reg.DownloadCacheDir);
             Assert.AreEqual(null, reg.CacheSizeLimit);
             Assert.AreEqual(0, reg.RefreshRate);
@@ -183,7 +187,7 @@ namespace Tests.Core.Configuration
         [Test,
             TestCase("asi-test", "asi-test"),
             TestCase("", ""),
-            TestCase(null, "")]
+            TestCase(null, null)]
         public void AutoStartInstancePersists(string val, string expected)
         {
             string tmpFile1 = Path.GetTempFileName();

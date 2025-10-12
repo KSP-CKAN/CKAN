@@ -147,7 +147,7 @@ namespace CKAN.ConsoleUI {
                 if (instanceList.Selection is GameInstance inst)
                 {
                     string name = inst.Name;
-                    if (name == manager.AutoStartInstance) {
+                    if (name == manager.Configuration.AutoStartInstance) {
                         manager.ClearAutoStart();
                     } else {
                         try {
@@ -268,7 +268,7 @@ namespace CKAN.ConsoleUI {
 
         private string StatusSymbol(GameInstance k)
         {
-            return k.Name == manager.AutoStartInstance
+            return k.Name == manager.Configuration.AutoStartInstance
                 ? defaultMark
                 : " ";
         }

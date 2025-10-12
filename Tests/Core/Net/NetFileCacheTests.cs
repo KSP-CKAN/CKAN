@@ -6,6 +6,7 @@ using System.Threading;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Extensions;
 using Tests.Data;
 
 namespace Tests.Core
@@ -56,9 +57,6 @@ namespace Tests.Core
 
             // Now it should be cached.
             Assert.IsTrue(cache?.IsCached(url));
-            string? filename = null;
-            Assert.IsTrue(cache?.IsCached(url, out filename));
-            Assert.AreEqual(Path.Combine(cache_dir!, "9C17E047-DogeCoinFlag-1.01.zip"), filename);
             CollectionAssert.AreEquivalent(new [] { ("9C17E047", 53647) },
                                            cache?.CachedHashesAndSizes());
 
@@ -156,6 +154,39 @@ namespace Tests.Core
 
             // Make sure it's stored, and valid.
             Assert.IsTrue(cache?.IsCached(url));
+        }
+
+        [Test]
+        public void MoveFrom_TempDirWithFiles_MovesAndDeletes()
+        {
+            // Arrange
+            var names = Enumerable.Range(0, 5)
+                                  .Select(i => $"dummy{i}.txt")
+                                  .ToArray();
+            var content = string.Join(Environment.NewLine,
+                                      Enumerable.Range(1, 3)
+                                                .Select(i => $"Line {i}"));
+            var sameFile = Path.Combine(cache_dir!, names[2]);
+            content.WriteThroughTo(sameFile);
+            File.SetCreationTimeUtc(sameFile, DateTime.UtcNow.AddHours(-1));
+            using (var sourceDir = new TemporaryDirectory())
+            {
+                var sourceFiles = names.Select(p => Path.Combine(sourceDir, p))
+                                       .ToArray();
+                foreach (var f in sourceFiles)
+                {
+                    content.WriteThroughTo(f);
+                }
+
+                // Act
+                cache!.MoveFrom(sourceDir.Directory, new Progress<int>());
+
+                // Assert
+                CollectionAssert.IsEmpty(Directory.EnumerateFiles(sourceDir));
+                CollectionAssert.AreEquivalent(names,
+                                               Directory.EnumerateFiles(cache_dir!)
+                                                        .Select(f => Path.GetFileName(f)));
+            }
         }
 
         [Test]

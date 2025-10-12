@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || WINDOWS
+
 using System;
 using System.Reflection;
 using System.Collections.Generic;
@@ -85,3 +87,5 @@ namespace Tests.GUI
         private static readonly string winformsNamespace = typeof(Control).Namespace!;
     }
 }
+
+#endif

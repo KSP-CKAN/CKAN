@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || WINDOWS
+
 using NUnit.Framework;
 
 using CKAN.GUI;
@@ -413,3 +415,5 @@ namespace Tests.GUI
         }
     }
 }
+
+#endif

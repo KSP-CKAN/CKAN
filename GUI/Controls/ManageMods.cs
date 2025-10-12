@@ -1603,7 +1603,8 @@ namespace CKAN.GUI
 
             RaiseMessage?.Invoke(Properties.Resources.MainModListPopulatingList);
             // Update our mod listing
-            mainModList = new ModList(guiMods, currentInstance, ModuleLabelList.ModuleLabels,
+            mainModList = new ModList(guiMods, currentInstance,
+                                      ModuleLabelList.ModuleLabels, ModuleTagList.ModuleTags,
                                       ServiceLocator.Container.Resolve<IConfiguration>(), guiConfig, ChangeSet);
             mainModList.ModFiltersUpdated += UpdateFilters;
 

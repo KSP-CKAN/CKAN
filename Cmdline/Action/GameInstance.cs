@@ -226,7 +226,7 @@ namespace CKAN.CmdLine
         private int ListInstances()
         {
             var output = Manager.Instances.Values
-                .OrderByDescending(i => i.Name == Manager.AutoStartInstance)
+                .OrderByDescending(i => i.Name == Manager.Configuration.AutoStartInstance)
                 .ThenByDescending(i => i.Game.FirstReleaseDate)
                 .ThenByDescending(i => i.Version() ?? GameVersion.Any)
                 .ThenBy(i => i.Name)
@@ -234,7 +234,7 @@ namespace CKAN.CmdLine
                                 i.Name,
                                 i.Game.ShortName,
                                 i.Version()?.ToString() ?? Properties.Resources.InstanceListNoVersion,
-                                i.Name == Manager.AutoStartInstance
+                                i.Name == Manager.Configuration.AutoStartInstance
                                     ? Properties.Resources.InstanceListYes
                                     : Properties.Resources.InstanceListNo,
                                 Platform.FormatPath(i.GameDir)))

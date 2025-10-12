@@ -392,14 +392,14 @@ namespace Tests.CmdLine
                 ISubCommand sut = new GameInstance(manager, user);
 
                 // Act / Assert
-                Assert.IsNull(manager.AutoStartInstance);
+                Assert.IsNull(config.AutoStartInstance);
                 sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default" }));
                 Assert.IsTrue(asked);
-                Assert.AreEqual("inst1", manager.AutoStartInstance);
+                Assert.AreEqual("inst1", config.AutoStartInstance);
                 sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "default", "inst2" }));
-                Assert.AreEqual("inst2", manager.AutoStartInstance);
+                Assert.AreEqual("inst2", config.AutoStartInstance);
                 sut.RunSubCommand(null, new SubCommandOptions(new string[] { "instance", "use", "inst1" }));
-                Assert.AreEqual("inst1", manager.AutoStartInstance);
+                Assert.AreEqual("inst1", config.AutoStartInstance);
             }
         }
 
@@ -453,7 +453,7 @@ namespace Tests.CmdLine
 
                 // Assert
                 Assert.Contains("fakeInstance", manager.Instances.Keys.ToArray());
-                Assert.AreEqual("fakeInstance", manager.AutoStartInstance);
+                Assert.AreEqual("fakeInstance", config.AutoStartInstance);
             }
         }
 

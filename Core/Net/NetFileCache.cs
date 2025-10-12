@@ -161,14 +161,6 @@ namespace CKAN
         // returns true if a url is already in the cache
         public bool IsCached(Uri url) => GetCachedFilename(url) != null;
 
-        // returns true if a url is already in the cache
-        // returns the filename in the outFilename parameter
-        public bool IsCached(Uri url, out string? outFilename)
-        {
-            outFilename = GetCachedFilename(url);
-            return outFilename != null;
-        }
-
         /// <summary>
         /// Returns true if a file matching the given URL is cached, but makes no
         /// attempts to check if it's even valid. This is very fast.

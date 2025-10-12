@@ -156,11 +156,11 @@ namespace CKAN.Configuration
 
         public string? AutoStartInstance
         {
-            get => config.AutoStartInstance ?? "";
+            get => config.AutoStartInstance;
 
             set
             {
-                config.AutoStartInstance = value ?? "";
+                config.AutoStartInstance = value;
                 SaveConfig();
             }
         }
