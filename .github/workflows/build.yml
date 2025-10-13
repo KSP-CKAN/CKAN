@@ -23,11 +23,6 @@ jobs:
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
-      - name: Restore cache for _build/cake
-        uses: actions/cache@v4
-        with:
-          path: _build/cake
-          key: build-cake-${{ hashFiles('build/*') }}
       - name: Restore cache for _build/lib/nuget
         uses: actions/cache@v4
         with:
@@ -37,25 +32,6 @@ jobs:
           key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
       - name: Build ckan.exe and netkan.exe
         run: ./build.sh --configuration=${{ inputs.configuration }}
-      - name: Build CKAN.app
-        if: inputs.configuration == 'Release'
-        run: |
-          sudo apt-get install -y libplist-utils rdfind symlinks genisoimage
-          ./build.sh osx-app --configuration=${{ inputs.configuration }} --exclusive
-      - name: Ad hoc codesign x86_64 binary
-        if: inputs.configuration == 'Release'
-        uses: indygreg/apple-code-sign-action@v1
-        with:
-          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/x86_64/CKAN-CmdLine
-      - name: Ad hoc codesign arm64 binary
-        if: inputs.configuration == 'Release'
-        uses: indygreg/apple-code-sign-action@v1
-        with:
-          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/arm64/CKAN-CmdLine
-      - name: Build CKAN.dmg
-        if: inputs.configuration == 'Release'
-        run: |
-          ./build.sh osx-dmg --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload repack artifact
         id: upload-repack-artifact
         uses: actions/upload-artifact@v4
@@ -88,8 +64,41 @@ jobs:
           name: ckan.exe
           path: _build/repack/Release/ckan.exe
           retention-days: 7
+
+  build-osx:
+    needs:
+      - build
+    runs-on: ubuntu-22.04
+    if: inputs.configuration == 'Release'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v4
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
+      - name: Download out artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: ${{ inputs.configuration }}-out-unsigned
+          path: _build/out/
+      - name: Build CKAN.app
+        run: |
+          chmod a+x _build/out/Build/*/bin/net8.0/Build _build/out/Build/*/obj/*/net8.0/apphost
+          sudo apt-get install -y libplist-utils rdfind symlinks genisoimage
+          ./build.sh osx-app --configuration=${{ inputs.configuration }} --exclusive
+      - name: Ad hoc codesign x86_64 binary
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/x86_64/CKAN-CmdLine
+      - name: Ad hoc codesign arm64 binary
+        uses: indygreg/apple-code-sign-action@v1
+        with:
+          input_path: _build/osx/dmg/CKAN.app/Contents/MacOS/arm64/CKAN-CmdLine
+      - name: Build CKAN.dmg
+        run: |
+          ./build.sh osx-dmg --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload CKAN.dmg artifact
-        if: inputs.configuration == 'Release'
         uses: actions/upload-artifact@v4
         with:
           name: CKAN.dmg

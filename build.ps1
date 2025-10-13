@@ -17,8 +17,9 @@ if (($PSVersionTable.PSVersion -lt $minPSVer)) {
 }
 
 # Globals
-$RootDir            = "${PSScriptRoot}"
-$ScriptFile         = "${RootDir}/build/Build.csproj"
+$RootDir    = "${PSScriptRoot}"
+$ScriptFile = "${RootDir}/build/Build.csproj"
+$Env:DOTNET_CLI_TELEMETRY_OPTOUT = "true"
 
 # Build args
 $cakeArgs = @()

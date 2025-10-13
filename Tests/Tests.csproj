@@ -24,6 +24,7 @@
     <NoWarn>IDE1006,NU1701</NoWarn>
     <TargetFrameworks>net481;net8.0;net8.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="altcover" Version="9.0.1" />
