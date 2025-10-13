@@ -33,6 +33,7 @@ namespace CKAN
     /// To be used in tests.
     /// Supresses all output.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class NullUser : IUser
     {
         /// <summary>
