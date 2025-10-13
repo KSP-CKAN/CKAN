@@ -25,6 +25,9 @@ public class BuildPaths
     public DirectoryPath CoverageOutputDirectory => BuildDirectory.Combine("test")
                                                                   .Combine("coverage");
 
+    public FilePath CoverageOutputFile(string filename)
+        => CoverageOutputDirectory.CombineWithFilePath(filename);
+
     public BuildPaths(DirectoryPath rootDirectory, string configuration, SemVersion version)
     {
         RootDirectory = rootDirectory;

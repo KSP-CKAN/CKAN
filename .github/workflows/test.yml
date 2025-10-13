@@ -12,37 +12,83 @@ on:
 jobs:
   build-debug:
     uses: ./.github/workflows/build.yml
-  test-build:
+  run-tests:
     needs: build-debug
-    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - windows-latest
+          - ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Install runtime dependencies
-        run: sudo apt-get install -y xvfb
-      - name: Download out artifact
-        uses: actions/download-artifact@v4
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v4
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
+      - name: Download out artifact on Linux
+        if: matrix.os == 'ubuntu-22.04'
+        uses: actions/download-artifact@v5
         with:
           name: Debug-out-unsigned
           path: _build/out/
       - name: Restore permissions discarded by zip/unzip of artifact
+        if: matrix.os == 'ubuntu-22.04'
         run: |
           chmod a+x _build/out/Build/*/bin/net8.0/Build _build/out/Build/*/obj/*/net8.0/apphost
-      - name: Download repack artifact
-        uses: actions/download-artifact@v4
+      - name: Download repack artifact on Linux (for smoke tests)
+        if: matrix.os == 'ubuntu-22.04'
+        uses: actions/download-artifact@v5
         with:
           name: Debug-repack-unsigned
           path: _build/repack/
-      - name: Run tests
-        run: xvfb-run ./build.sh test+only --configuration=Debug --where="Category!=FlakyNetwork"
+      - name: Run tests on Linux
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get install -y xvfb
+          ln -s Debug _build/out/CKAN.Tests/NoGUI
+          xvfb-run ./build.sh test+only --configuration=Debug --where="Category!=FlakyNetwork"
+      - name: Build and run tests on Windows
+        if: matrix.os == 'windows-latest'
+        env:
+          ErrorView: NormalView
+        shell: powershell
+        run: .\build.ps1 test --configuration=Debug --where="Category!=FlakyNetwork"
       - name: Report Coveralls
         uses: coverallsapp/github-action@v2
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        with:
+          parallel: true
+          flag-name: ${{ matrix.os }}
+
+  coveralls-finish:
+    needs: run-tests
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    env:
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+    steps:
+      - name: Finish Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true
+      - name: Ask Coveralls to report accurate data (see lemurheavy/coveralls-public#1629)
+        run: |
+          if [[ -n "${COVERALLS_REPO_TOKEN}" ]]
+          then
+            echo SECRET EXISTS
+          else
+            echo SECRET DOES NOT EXIST
+          fi
+          curl --silent --location --request GET "https://coveralls.io/rerun_build?repo_token=${COVERALLS_REPO_TOKEN}&build_num=${{ github.run_id }}"
 
   # notify:
   #   needs:
   #     - build-debug
-  #     - test-build
+  #     - run-tests
   #   if: failure()
   #   uses: ./.github/workflows/notify.yml
   #   with:
