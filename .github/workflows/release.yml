@@ -19,7 +19,7 @@ jobs:
       - sign-assets
     steps:
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download CKAN.dmg artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: CKAN.dmg
           path: _build/osx
@@ -60,7 +60,7 @@ jobs:
           aws-region: us-east-1
       - uses: actions/checkout@v4
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
@@ -113,7 +113,7 @@ jobs:
       - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
@@ -155,7 +155,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
