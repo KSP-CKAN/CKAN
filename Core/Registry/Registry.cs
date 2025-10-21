@@ -754,10 +754,8 @@ namespace CKAN
                                                             .SelectMany(m => m.ProvidesList)
                                                             .Distinct()
                                                             .Select(provided => (provided, am)))
-                                        .GroupBy(tuple => tuple.provided,
-                                                 tuple => tuple.am)
-                                        .ToDictionary(grp => grp.Key,
-                                                      grp => grp.ToArray());
+                                        .ToGroupedDictionary(tuple => tuple.provided,
+                                                             tuple => tuple.am);
 
         [JsonIgnore]
         public Dictionary<string, ModuleTag> Tags

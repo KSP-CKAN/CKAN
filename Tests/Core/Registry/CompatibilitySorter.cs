@@ -4,6 +4,7 @@ using System.Linq;
 using NUnit.Framework;
 
 using CKAN;
+using CKAN.Extensions;
 using CKAN.Configuration;
 using CKAN.Versioning;
 
@@ -74,9 +75,8 @@ namespace Tests.Core.Registry
                 var repos     = new Repository[] { repo1.repo, repo2.repo };
                 var providers = repoData.Manager
                                         .GetAllAvailableModules(repos)
-                                        .GroupBy(am => am.AllAvailable().First().identifier)
-                                        .ToDictionary(grp => grp.Key,
-                                                      grp => grp.ToArray());
+                                        .ToGroupedDictionary(am => am.AllAvailable()
+                                                                     .First().identifier);
                 var installed = new Dictionary<string, InstalledModule>();
                 var dlls      = new Dictionary<string, string>().Keys;
                 var dlcs      = new Dictionary<string, UnmanagedModuleVersion>();

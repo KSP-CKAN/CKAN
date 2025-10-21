@@ -364,10 +364,8 @@ namespace CKAN.IO
                     // Skip the file if it's a ckan file, these should never be copied to GameData
                     .Where(instF => !IsInternalCkan(instF.source))
                     // Check whether each file matches any installation filter
-                    .GroupBy(instF => filters.Any(filt => instF.destination != null
-                                                          && instF.destination.Contains(filt)))
-                    .ToDictionary(grp => grp.Key,
-                                  grp => grp.ToArray());
+                    .ToGroupedDictionary(instF => filters.Any(filt => instF.destination != null
+                                                                      && instF.destination.Contains(filt)));
                 var files = groups.GetValueOrDefault(false) ?? Array.Empty<InstallableFile>();
                 filteredCount = groups.GetValueOrDefault(true)?.Length ?? 0;
                 try

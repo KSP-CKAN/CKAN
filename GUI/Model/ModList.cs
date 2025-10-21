@@ -400,11 +400,11 @@ namespace CKAN.GUI
                                                               }
                                                             : registry.InstalledModule(mod.identifier)
                                                               is InstalledModule found
-                                                                ? new GUIMod(found,
-                                                                         repoData, registry,
-                                                                         inst.StabilityToleranceConfig,
-                                                                         inst, cache, null,
-                                                                         hideEpochs, hideV)
+                                                              ? new GUIMod(found,
+                                                                           repoData, registry,
+                                                                           inst.StabilityToleranceConfig,
+                                                                           inst, cache, null,
+                                                                           hideEpochs, hideV)
                                                               {
                                                                   HasUpdate = kvp.Key,
                                                               }

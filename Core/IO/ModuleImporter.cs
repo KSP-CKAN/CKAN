@@ -70,9 +70,7 @@ namespace CKAN.IO
             var cachedGroups = matched.SelectMany(kvp => kvp.Value.DistinctBy(m => m.download?.First())
                                                                   .Select(m => (File:   kvp.Key,
                                                                                 Module: m)))
-                                      .GroupBy(tuple => Cache.IsMaybeCachedZip(tuple.Module))
-                                      .ToDictionary(grp => grp.Key,
-                                                    grp => grp.ToArray());
+                                      .ToGroupedDictionary(tuple => Cache.IsMaybeCachedZip(tuple.Module));
             if (cachedGroups.TryGetValue(true, out (FileInfo File, CkanModule Module)[]? alreadyStored))
             {
                 // Notify about files that are already cached

@@ -55,12 +55,10 @@ namespace CKAN.IO
                                                            ?.InstalledModules
                                                             .Select(im => (instance: inst, instMod: im))
                                                            ?? Enumerable.Empty<(GameInstance instance, InstalledModule instMod)>())
-                        .GroupBy(tuple => (tuple.instMod.identifier,
-                                           tuple.instMod.Module.version),
-                                 tuple => (tuple.instance,
-                                           tuple.instMod))
-                        .ToDictionary(grp => grp.Key,
-                                      grp => grp.ToArray());
+                        .ToGroupedDictionary(tuple => (tuple.instMod.identifier,
+                                                       tuple.instMod.Module.version),
+                                             tuple => (tuple.instance,
+                                                       tuple.instMod));
 
         /// <summary>
         /// Creates a new instance of the InstalledFilesDeduplicator class.
@@ -101,10 +99,8 @@ namespace CKAN.IO
                                                                    out (GameInstance instance, InstalledModule instMod)[]? sources)
                                                      ? sources.SelectMany(DupEntries)
                                                      : Enumerable.Empty<(string relPath, string absPath)>()))
-                             .GroupBy(tuple => tuple.relPath,
-                                      tuple => tuple.absPath)
-                             .ToDictionary(grp => grp.Key,
-                                           grp => grp.ToArray());
+                             .ToGroupedDictionary(tuple => tuple.relPath,
+                                                  tuple => tuple.absPath);
 
         /// <summary>
         /// Reduces the disk space used by all game instances
