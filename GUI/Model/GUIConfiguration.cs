@@ -187,30 +187,34 @@ namespace CKAN.GUI
         {
             var serializer = new XmlSerializer(typeof(GUIConfiguration));
             var xmlFI = new FileInfo(LegacyConfigPath(instance));
-            GUIConfiguration? configuration;
-            using (var stream = new StreamReader(xmlFI.OpenRead()))
+            GUIConfiguration? configuration = null;
+            try
             {
-                try
+                using (var stream = new StreamReader(xmlFI.OpenRead()))
                 {
                     configuration = serializer.Deserialize(stream) as GUIConfiguration;
                 }
-                catch (Exception e) when (e is InvalidOperationException or XmlException)
-                {
-                    throw new Kraken(
-                        string.Format(Properties.Resources.ConfigurationParseError,
-                                      xmlFI.FullName,
-                                      e switch
-                                      {
-                                          // Exception thrown in Windows / .NET
-                                          InvalidOperationException { InnerException: Exception inner }
-                                                          => inner.Message,
-                                          // Exception thrown in Mono
-                                          XmlException xe => xe.Message,
-                                          _               => "",
-                                      },
-                                      xmlFI.Name, xmlFI.DirectoryName),
-                        e);
-                }
+            }
+            catch (Exception e) when (e is InvalidOperationException or XmlException)
+            {
+                throw new Kraken(
+                    string.Format(Properties.Resources.ConfigurationParseError,
+                                  xmlFI.FullName,
+                                  e switch
+                                  {
+                                      // Exception thrown in Windows / .NET
+                                      InvalidOperationException { InnerException: Exception inner }
+                                                      => inner.Message,
+                                      // Exception thrown in Mono
+                                      XmlException xe => xe.Message,
+                                      _               => "",
+                                  },
+                                  xmlFI.Name, xmlFI.DirectoryName),
+                    e);
+            }
+            catch
+            {
+                return null;
             }
             if (configuration != null)
             {

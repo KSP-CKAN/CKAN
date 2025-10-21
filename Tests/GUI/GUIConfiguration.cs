@@ -48,13 +48,33 @@ namespace Tests.GUI
                 }
                 var steamLib = new SteamLibrary(null);
 
-                // Act / Assert
+                // Act
                 var result = GUIConfiguration.LoadOrCreateConfiguration(inst.KSP, steamLib);
+
+                // Assert
                 Assert.IsNotNull(result);
                 Assert.AreEqual(512, result.WindowLoc.X);
                 Assert.AreEqual(136, result.WindowLoc.Y);
                 FileAssert.DoesNotExist(xmlPath);
                 FileAssert.Exists(jsonPath);
+            }
+        }
+
+        [Test]
+        public void LoadOrCreateConfiguration_NoConfigurationFile_DoesNotThrow()
+        {
+            // Arrange
+            using (var inst = new DisposableKSP())
+            {
+                var steamLib = new SteamLibrary(null);
+
+                // Act
+                var result = GUIConfiguration.LoadOrCreateConfiguration(inst.KSP, steamLib);
+
+                // Assert
+                Assert.IsNotNull(result);
+                Assert.AreEqual(-1, result.WindowLoc.X);
+                Assert.AreEqual(-1, result.WindowLoc.Y);
             }
         }
 
