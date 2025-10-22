@@ -19,7 +19,7 @@ import click
 from click import command, option, argument
 from git import Repo, Remote, RemoteReference
 from git.objects import Commit
-from github import Github
+from github import Github, Auth
 from github.PullRequest import PullRequest
 
 class CkanRepo(Repo):
@@ -183,7 +183,7 @@ class CkanPullRequest:
 def merge_pr(repo_path: str, token: str, self_review: bool, pr_num: int) -> None:
     """Main driver; gets the repo and PR and attempts the merge"""
     ckr = CkanRepo(repo_path)
-    ckpr = CkanPullRequest(Github(token).get_repo('KSP-CKAN/CKAN').get_pull(pr_num))
+    ckpr = CkanPullRequest(Github(auth=Auth.Token(token)).get_repo('KSP-CKAN/CKAN').get_pull(pr_num))
     sys.exit(ExitStatus.success
              if ckpr.merge_into(ckr, self_review)
              else ExitStatus.failure)
