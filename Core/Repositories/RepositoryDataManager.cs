@@ -42,9 +42,7 @@ namespace CKAN
         public IEnumerable<AvailableModule> GetAvailableModules(IEnumerable<Repository>? repos,
                                                                 string                   identifier)
             => GetRepoDatas(repos)
-                .Select(data => data.AvailableModules != null
-                                && data.AvailableModules.TryGetValue(identifier, out AvailableModule? am)
-                                    ? am : null)
+                .Select(data => data.AvailableModules?.GetValueOrDefault(identifier))
                 .OfType<AvailableModule>();
 
         /// <summary>
@@ -77,8 +75,7 @@ namespace CKAN
         public int? GetDownloadCount(IEnumerable<Repository>? repos, string identifier)
             => GetRepoDatas(repos).Select(data => data.DownloadCounts)
                                   .OfType<SortedDictionary<string, int>>()
-                                  .Select(counts => counts.TryGetValue(identifier, out int count)
-                                                        ? (int?)count : null)
+                                  .Select(counts => counts.GetValueOrDefault(identifier))
                                   .OfType<int>()
                                   .FirstOrDefault();
 

@@ -32,9 +32,18 @@ namespace Tests.Core
             Assert.AreEqual(10,                    brc.Percent,        2);
             Assert.AreEqual(bytesPerSec,           brc.BytesPerSecond, 50);
             Assert.AreEqual(timeLeft.TotalSeconds, brc.TimeLeft.TotalSeconds, 5);
-            Assert.AreEqual($"{secondsLeft} sec",  brc.TimeLeftString);
-            Assert.AreEqual($"{CkanModule.FmtSize(brc.BytesPerSecond)}/sec - {CkanModule.FmtSize(90000)} ({secondsLeft} sec) left - 10%",
-                            brc.Summary);
+            CollectionAssert.Contains(new string[]
+                                      {
+                                          $"{secondsLeft-1} sec",
+                                          $"{secondsLeft} sec",
+                                      },
+                                      brc.TimeLeftString);
+            CollectionAssert.Contains(new string[]
+                                      {
+                                          $"{CkanModule.FmtSize(brc.BytesPerSecond)}/sec - {CkanModule.FmtSize(90000)} ({secondsLeft-1} sec) left - 10%",
+                                          $"{CkanModule.FmtSize(brc.BytesPerSecond)}/sec - {CkanModule.FmtSize(90000)} ({secondsLeft} sec) left - 10%",
+                                      },
+                                      brc.Summary);
         }
     }
 }

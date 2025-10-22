@@ -55,12 +55,10 @@ namespace CKAN.IO
                                                            ?.InstalledModules
                                                             .Select(im => (instance: inst, instMod: im))
                                                            ?? Enumerable.Empty<(GameInstance instance, InstalledModule instMod)>())
-                        .GroupBy(tuple => (tuple.instMod.identifier,
-                                           tuple.instMod.Module.version),
-                                 tuple => (tuple.instance,
-                                           tuple.instMod))
-                        .ToDictionary(grp => grp.Key,
-                                      grp => grp.ToArray());
+                        .ToGroupedDictionary(tuple => (tuple.instMod.identifier,
+                                                       tuple.instMod.Module.version),
+                                             tuple => (tuple.instance,
+                                                       tuple.instMod));
 
         /// <summary>
         /// Creates a new instance of the InstalledFilesDeduplicator class.
@@ -87,24 +85,22 @@ namespace CKAN.IO
         }
 
         /// <summary>
-        /// Returns a dictionary of all installed files for a given module, from all instances, grouped by file name.
+        /// Returns a dictionary of all installed files for a given module, from all instances, grouped by file name and size.
         /// Only files larger than 128 KiB are included.
-        /// The dictionary contains the relative path as the key and an array of absolute paths as the value.
+        /// The dictionary contains the relative path and size as the key and an array of absolute paths as the value.
         /// </summary>
         /// <param name="identifier">Identifier of the module</param>
         /// <param name="version">Version of the module</param>
         /// <returns>Mapping from relative path to array of absolute paths</returns>
-        public Dictionary<string, string[]> ModuleCandidateDuplicates(string        identifier,
-                                                                      ModuleVersion version)
+        public Dictionary<(string relPath, long size), string[]> ModuleCandidateDuplicates(string        identifier,
+                                                                                           ModuleVersion version)
             => InstalledWhere.Values
-                             .SelectMany(dict => (dict.TryGetValue((identifier, version),
-                                                                   out (GameInstance instance, InstalledModule instMod)[]? sources)
-                                                     ? sources.SelectMany(DupEntries)
-                                                     : Enumerable.Empty<(string relPath, string absPath)>()))
-                             .GroupBy(tuple => tuple.relPath,
-                                      tuple => tuple.absPath)
-                             .ToDictionary(grp => grp.Key,
-                                           grp => grp.ToArray());
+                             .SelectMany(dict => dict.GetValueOrDefault((identifier, version))
+                                                     ?.SelectMany(DupEntries)
+                                                     ?? Enumerable.Empty<(string relPath, string absPath)>())
+                             .Where(tuple => File.Exists(tuple.absPath))
+                             .ToGroupedDictionary(tuple => (tuple.relPath, new FileInfo(tuple.absPath).Length),
+                                                  tuple => tuple.absPath);
 
         /// <summary>
         /// Reduces the disk space used by all game instances
@@ -154,7 +150,7 @@ namespace CKAN.IO
                             }
                             user.RaiseProgress(string.Format(Properties.Resources.DeduplicatedRelPath,
                                                              grp.Count() - 1,
-                                                             Platform.FormatPath(grp.Key)),
+                                                             Platform.FormatPath(grp.Key.relPath)),
                                                100 * doneCount / dupCount);
                         }
                     }
@@ -172,7 +168,7 @@ namespace CKAN.IO
             }
         }
 
-        private static IEnumerable<IGrouping<string, string>> GetDuplicateGroups((GameInstance instance, InstalledModule instMod)[] tuples)
+        private static IEnumerable<IGrouping<(string relPath, long size), string>> GetDuplicateGroups((GameInstance instance, InstalledModule instMod)[] tuples)
             => tuples.SelectMany(DupEntries)
                      .ZipBy(tuples => HardLink.GetFileIdentifiers(tuples.Select(tuple => tuple.absPath)))
                      .DistinctBy(tuple => tuple.Second)
@@ -180,7 +176,8 @@ namespace CKAN.IO
                      .ZipBy(tuples => HardLink.GetLinkCounts(tuples.Select(tuple => tuple.absPath)))
                      .OrderByDescending(tuple => tuple.Second)
                      .Select(tuple => tuple.First)
-                     .GroupBy(tuple => tuple.relPath,
+                     .GroupBy(tuple => (tuple.relPath,
+                                        size: new FileInfo(tuple.absPath).Length),
                               tuple => tuple.absPath)
                      .Where(grp => grp.Count() > 1);
 

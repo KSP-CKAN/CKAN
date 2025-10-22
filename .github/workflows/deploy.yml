@@ -53,12 +53,12 @@ jobs:
           aws-region: us-east-1
       - uses: actions/checkout@v4
       - name: Download repack artifact to get netkan.exe
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: Release-repack-unsigned
           path: _build/repack
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
@@ -96,7 +96,7 @@ jobs:
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Download CKAN.dmg artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: CKAN.dmg
           path: _build/osx
@@ -121,7 +121,7 @@ jobs:
           aws-region: us-east-1
       - uses: actions/checkout@v4
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
@@ -180,7 +180,7 @@ jobs:
       - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
       - name: Download signed artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: signed
           path: _build/signed
@@ -215,7 +215,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Download Inflator image artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: inflator-image
           path: /tmp
@@ -249,7 +249,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download out artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: Release-out-unsigned
           path: _build/out/

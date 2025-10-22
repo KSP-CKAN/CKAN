@@ -237,6 +237,22 @@ namespace CKAN.Extensions
         public static bool IsEmptyOrAny<T>(this IReadOnlyCollection<T> source,
                                            Func<T, bool>               func)
             => source.Count == 0 || source.Any(func);
+
+        public static Dictionary<K, T[]> ToGroupedDictionary<T, K>(this IEnumerable<T> source,
+                                                                   Func<T, K>          keyFunc)
+            where K: notnull
+            => source.GroupBy(keyFunc)
+                     .ToDictionary(grp => grp.Key,
+                                   grp => grp.ToArray());
+
+        public static Dictionary<K, V[]> ToGroupedDictionary<T, K, V>(this IEnumerable<T> source,
+                                                                      Func<T, K>          keyFunc,
+                                                                      Func<T, V>          valFunc)
+            where K: notnull
+            => source.GroupBy(keyFunc, valFunc)
+                     .ToDictionary(grp => grp.Key,
+                                   grp => grp.ToArray());
+
     }
 
     /// <summary>

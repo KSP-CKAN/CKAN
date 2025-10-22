@@ -252,12 +252,12 @@ namespace CKAN.IO
         ///
         /// TODO: The name of this and InstallModule() need to be made more distinctive.
         /// </summary>
-        private void Install(CkanModule                    module,
-                             bool                          autoInstalled,
-                             Registry                      registry,
-                             Dictionary<string, string[]>? candidateDuplicates,
-                             ref HashSet<string>?          possibleConfigOnlyDirs,
-                             IProgress<long>?              progress)
+        private void Install(CkanModule                                         module,
+                             bool                                               autoInstalled,
+                             Registry                                           registry,
+                             Dictionary<(string relPath, long size), string[]>? candidateDuplicates,
+                             ref HashSet<string>?                               possibleConfigOnlyDirs,
+                             IProgress<long>?                                   progress)
         {
             CheckKindInstallationKraken(module);
             var version = registry.InstalledVersion(module.identifier);
@@ -339,13 +339,13 @@ namespace CKAN.IO
         /// Propagates a CancelledActionKraken if the user decides not to overwite unowned files.
         /// Propagates a FileExistsKraken if we were going to overwrite a file.
         /// </summary>
-        private List<string> InstallModule(CkanModule                    module,
-                                           string?                       zip_filename,
-                                           Registry                      registry,
-                                           Dictionary<string, string[]>? candidateDuplicates,
-                                           ref HashSet<string>?          possibleConfigOnlyDirs,
-                                           out int                       filteredCount,
-                                           IProgress<long>?              moduleProgress)
+        private List<string> InstallModule(CkanModule                                         module,
+                                           string?                                            zip_filename,
+                                           Registry                                           registry,
+                                           Dictionary<(string relPath, long size), string[]>? candidateDuplicates,
+                                           ref HashSet<string>?                               possibleConfigOnlyDirs,
+                                           out int                                            filteredCount,
+                                           IProgress<long>?                                   moduleProgress)
         {
             var createdPaths = new List<string>();
             if (module.IsMetapackage || zip_filename == null)
@@ -364,10 +364,8 @@ namespace CKAN.IO
                     // Skip the file if it's a ckan file, these should never be copied to GameData
                     .Where(instF => !IsInternalCkan(instF.source))
                     // Check whether each file matches any installation filter
-                    .GroupBy(instF => filters.Any(filt => instF.destination != null
-                                                          && instF.destination.Contains(filt)))
-                    .ToDictionary(grp => grp.Key,
-                                  grp => grp.ToArray());
+                    .ToGroupedDictionary(instF => filters.Any(filt => instF.destination != null
+                                                                      && instF.destination.Contains(filt)));
                 var files = groups.GetValueOrDefault(false) ?? Array.Empty<InstallableFile>();
                 filteredCount = groups.GetValueOrDefault(true)?.Length ?? 0;
                 try
@@ -433,11 +431,9 @@ namespace CKAN.IO
                         }
                         log.DebugFormat("Copying {0}", file.source.Name);
                         var path = InstallFile(zipfile, file.source, file.destination, file.makedir,
-                                               (candidateDuplicates != null
-                                                && candidateDuplicates.TryGetValue(instance.ToRelativeGameDir(file.destination),
-                                                                                   out string[]? duplicates))
-                                                   ? duplicates
-                                                   : Array.Empty<string>(),
+                                               candidateDuplicates?.GetValueOrDefault((relPath: instance.ToRelativeGameDir(file.destination),
+                                                                                       size:    file.source.Size))
+                                                                  ?? Array.Empty<string>(),
                                                fileProgress);
                         installedBytes += file.source.Size;
                         if (path != null)
