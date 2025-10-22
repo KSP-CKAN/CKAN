@@ -95,10 +95,9 @@ namespace CKAN.IO
         public Dictionary<string, string[]> ModuleCandidateDuplicates(string        identifier,
                                                                       ModuleVersion version)
             => InstalledWhere.Values
-                             .SelectMany(dict => (dict.TryGetValue((identifier, version),
-                                                                   out (GameInstance instance, InstalledModule instMod)[]? sources)
-                                                     ? sources.SelectMany(DupEntries)
-                                                     : Enumerable.Empty<(string relPath, string absPath)>()))
+                             .SelectMany(dict => dict.GetValueOrDefault((identifier, version))
+                                                     ?.SelectMany(DupEntries)
+                                                     ?? Enumerable.Empty<(string relPath, string absPath)>())
                              .ToGroupedDictionary(tuple => tuple.relPath,
                                                   tuple => tuple.absPath);
 

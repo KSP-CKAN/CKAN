@@ -238,9 +238,7 @@ namespace CKAN.CmdLine
                     foreach (var request in identsAndVersions)
                     {
                         var module = CkanModule.FromIDandVersion(registry, request, crit)
-                                     ?? (upgradeable.TryGetValue(request, out CkanModule? m)
-                                        ? m
-                                        : null);
+                                     ?? (upgradeable.GetValueOrDefault(request));
                         if (module == null)
                         {
                             user.RaiseMessage(Properties.Resources.UpgradeAlreadyUpToDate, request);

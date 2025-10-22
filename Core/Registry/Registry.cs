@@ -129,9 +129,7 @@ namespace CKAN
         /// null if not found.
         /// </summary>
         public string? DllPath(string identifier)
-            => installed_dlls.TryGetValue(identifier, out string? path)
-                ? path
-                : null;
+            => installed_dlls.GetValueOrDefault(identifier);
 
         /// <summary>
         /// A map between module identifiers and versions for official DLC that are installed.
@@ -1056,9 +1054,7 @@ namespace CKAN
         /// <see cref = "IRegistryQuerier.InstalledModule" />
         /// </summary>
         public InstalledModule? InstalledModule(string module)
-            => installed_modules.TryGetValue(module, out InstalledModule? installedModule)
-                ? installedModule
-                : null;
+            => installed_modules.GetValueOrDefault(module);
 
         /// <summary>
         /// Find modules provided by currently installed modules
@@ -1084,9 +1080,7 @@ namespace CKAN
         private ProvidesModuleVersion? ProvidedByInstalled(string provided)
             => installedProvides != null
                    // The dictionary helps if we already have it cached...
-                   ? installedProvides.TryGetValue(provided, out ProvidesModuleVersion? version)
-                         ? version
-                         : null
+                   ? installedProvides.GetValueOrDefault(provided)
                    // ... but otherwise it's not worth the expense to calculate it
                    : installed_modules.Values
                                       .Select(im => im.Module)

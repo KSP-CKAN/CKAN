@@ -172,7 +172,7 @@ namespace CKAN
         /// Returns the module with the specified version, or null if that does not exist.
         /// </summary>
         public CkanModule? ByVersion(ModuleVersion v)
-            => module_version.TryGetValue(v, out CkanModule? module) ? module : null;
+            => module_version.GetValueOrDefault(v);
 
         /// <summary>
         /// Some code may expect this to be sorted in descending order
