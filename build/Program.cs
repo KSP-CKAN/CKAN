@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -18,6 +19,7 @@ using Cake.Common.Tools.MSBuild;
 using Cake.Common.Tools.NUnit;
 using Cake.Core.IO;
 using Cake.Frosting;
+using AltCover;
 using AltCover.Cake;
 
 namespace Build;
@@ -25,8 +27,7 @@ namespace Build;
 public static class Program
 {
     public static int Main(string[] args)
-    {
-        return new CakeHost()
+        => new CakeHost()
             .ConfigureServices(services =>
             {
                 services.UseToolPath(new DirectoryPath(Environment.CurrentDirectory)
@@ -36,11 +37,12 @@ public static class Program
             })
             .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.27"))
             .InstallTool(new Uri("nuget:?package=NUnit.ConsoleRunner&version=3.16.3"))
+            .InstallTool(new Uri("nuget:?package=altcover&version=9.0.1"))
             .InstallTool(new Uri("nuget:?package=altcover.api&version=9.0.1"))
+            .InstallTool(new Uri("nuget:?package=altcover.cake&version=9.0.1"))
             .UseContext<BuildContext>()
             .UseLifetime<BuildLifetime>()
             .Run(args);
-    }
 }
 
 [TaskName("Default")]
@@ -133,22 +135,21 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             {
                 Configuration = context.BuildConfiguration,
             });
-            // Publish Netkan for Inflator and Metadata containers
-            context.DotNetPublish(context.Paths.NetkanProject.FullPath, new DotNetPublishSettings
+
+            if (context.BuildConfiguration == "Release")
             {
-                Configuration  = context.BuildConfiguration,
-                Framework      = "net8.0",
-                Runtime        = "linux-x64",
-                SelfContained  = true,
-            });
-            // Publish Cmdline for Metadata container
-            context.DotNetPublish(context.Paths.CmdlineProject.FullPath, new DotNetPublishSettings
-            {
-                Configuration  = context.BuildConfiguration,
-                Framework      = "net8.0",
-                Runtime        = "linux-x64",
-                SelfContained  = true,
-            });
+                var pubSettings = new DotNetPublishSettings
+                {
+                    Configuration  = context.BuildConfiguration,
+                    Framework      = "net8.0",
+                    Runtime        = "linux-x64",
+                    SelfContained  = true,
+                };
+                // Publish Netkan for Inflator and Metadata containers
+                context.DotNetPublish(context.Paths.NetkanProject.FullPath, pubSettings);
+                // Publish Cmdline for Metadata container
+                context.DotNetPublish(context.Paths.CmdlineProject.FullPath, pubSettings);
+            }
 
             // Use Mono to build for net481 since dotnet can't use WinForms on Linux
             context.MSBuild(context.Solution, new MSBuildSettings
@@ -176,10 +177,11 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
     {
         context.CreateDirectory(context.Paths.RepackDirectory.Combine(context.BuildConfiguration));
 
-        var cmdLineBinDirectory = context.Paths.OutDirectory.Combine("CKAN-CmdLine")
-                                              .Combine(context.BuildConfiguration)
-                                              .Combine("bin")
-                                              .Combine(context.BuildNetFramework);
+        var cmdLineBinDirectory = context.Paths.OutDirectory
+                                               .Combine("CKAN-CmdLine")
+                                               .Combine(context.BuildConfiguration)
+                                               .Combine("bin")
+                                               .Combine(context.BuildNetFramework);
         var assemblyPaths = context.GetFiles($"{cmdLineBinDirectory}/*.dll");
         assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-GUI.exe"));
         assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
@@ -367,15 +369,14 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
 
         // Only Mono's msbuild can handle WinForms on Linux,
         // but dotnet build can handle multi-targeting on Windows
+        var altcoverSettings = new CoverageSettings
+        {
+            PreparationPhase = new MyPrepareOptions(context),
+            CollectionPhase  = new MyCollectOptions(context),
+            Options          = new MyTestOptions(),
+        };
         if (context.IsRunningOnWindows())
         {
-            var altcoverSettings = new CoverageSettings
-            {
-                PreparationPhase = new MyPrepareOptions(context),
-                // CollectionPhase  = new CollectOptions(),
-                CollectionPhase  = new MyCollectOptions(context),
-                Options          = new TestOptions(),
-            };
             var testSettings = new DotNetTestSettings
             {
                 Configuration    = context.BuildConfiguration,
@@ -413,20 +414,9 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
             });
 
             // Add coverage instrumentation to our test assemblies
-            context.RunAltCover("-q",
-                                @"-e ""Microsoft|NUnit3|testhost|CKAN\\.Tests|IndexRange|OxyPlot""",
-                                @"-t ""System|Microsoft""",
-                                "-l",
-                                "-p _build",
-                                "-p Tests",
-                                "-p ConsoleUI",
-                                "-p GUI/Dialogs",
-                                "-p GUI/Controls",
-                                "-p GUI/Main",
-                                "-a ExcludeFromCodeCoverage",
-                                $"-i {testDir}",
-                                $"-o {instrumentedDir}",
-                                "--save");
+            context.RunAltCover(altcoverSettings.PreparationPhase
+                                                .ToArguments(testDir, instrumentedDir));
+
             // Run the tests
             context.NUnit3(testFile.FullPath, new NUnit3Settings
             {
@@ -438,12 +428,10 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
                 Process       = NUnit3ProcessOption.InProcess,
             });
+
             // Transform the raw coverage data into coverage.xml and print a summary
-            context.RunAltCover("runner", "--collect",
-                                "--summary=O",
-                                $"-r {instrumentedDir}",
-                                $"-l {context.Paths.CoverageOutputDirectory.CombineWithFilePath("lcov.info")}",
-                                $"-c {context.Paths.CoverageOutputDirectory.CombineWithFilePath("cobertura.xml")}");
+            context.RunAltCover(altcoverSettings.CollectionPhase
+                                                .ToArguments(instrumentedDir));
         }
     }
 }
@@ -452,11 +440,12 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
 
 public class MyPrepareOptions(BuildContext context) : PrepareOptions
 {
-     public override TraceLevel Verbosity => TraceLevel.Info;
+    public override TraceLevel Verbosity => TraceLevel.Info;
 
-    public override IEnumerable<string> AssemblyExcludeFilter => [
-        "Microsoft", "NUnit3", "testhost", "IndexRange", "OxyPlot",
-        "CKAN\\.ConsoleUI", "CKAN\\.Tests",
+    public override IEnumerable<string> AssemblyFilter => [
+        "Microsoft", "NUnit3", "testhost",
+        "IndexRange", "OxyPlot", "Humanizer", @"AltCover\.Monitor",
+        "CKAN-ConsoleUI", @"CKAN\.Tests",
     ];
 
     public override IEnumerable<string> TypeFilter => [
@@ -464,8 +453,9 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
     ];
 
     public override IEnumerable<string> PathFilter => [
-        "_build", "Tests", "ConsoleUI",
+        "_build",
         "GUI/Dialogs", "GUI/Controls", "GUI/Main",
+        @"GUI\\Dialogs", @"GUI\\Controls", @"GUI\\Main",
     ];
 
     public override IEnumerable<string> AttributeFilter => [
@@ -477,9 +467,7 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
     public override string Report => OutputPath("coverage.xml");
 
     private string OutputPath(string filename)
-        => context.Paths.CoverageOutputDirectory
-                        .CombineWithFilePath(filename)
-                        .ToString();
+        => context.Paths.CoverageOutputFile(filename).FullPath;
 
     private readonly BuildContext context = context;
 }
@@ -487,22 +475,65 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
 public class MyCollectOptions(BuildContext context) : CollectOptions
 {
     public override TraceLevel Verbosity => TraceLevel.Info;
-    public override string SummaryFormat => "O";
-    public override string OutputFile    => OutputPath("coverage.xml");
+    public override string OutputFile    => OutputPath("output.xml");
     public override string Cobertura     => OutputPath("cobertura.xml");
     public override string LcovReport    => OutputPath("lcov.info");
 
     private string OutputPath(string filename)
-        => context.Paths.CoverageOutputDirectory
-                        .CombineWithFilePath(filename)
-                        .ToString();
+        => context.Paths.CoverageOutputFile(filename).FullPath;
 
     private readonly BuildContext context = context;
 }
 
 public class MyTestOptions : TestOptions
 {
-    public override string ShowSummary => "O";
+    public override bool ForceDelete => true;
+    public override bool FailFast    => true;
+}
+
+public static class CoverageExtensions
+{
+    public static string[] ToArguments(this Abstract.IPrepareOptions opts,
+                                       DirectoryPath                 inDir,
+                                       DirectoryPath                 outDir)
+        =>
+        [
+            .. Verbosity(opts.Verbosity),
+            .. opts.AssemblyFilter.Select(f => $"-s {f}"),
+            .. opts.AssemblyExcludeFilter.Select(f => $"-e {f}"),
+            .. opts.TypeFilter.Select(f => $"-t {f}"),
+            .. opts.PathFilter.Select(f => $"-p {f}"),
+            .. opts.AttributeFilter.Select(f => $"-a {f}"),
+            .. opts.LocalSource ? Enumerable.Repeat("-l", 1) : [],
+            $"-i {inDir}",
+            $"-o {outDir}",
+            "--save",
+        ];
+
+    public static string[] ToArguments(this Abstract.ICollectOptions opts,
+                                       DirectoryPath                 dir)
+        =>
+        [
+            "runner",
+            "--collect",
+            .. Verbosity(opts.Verbosity),
+            $"--summary={opts.SummaryFormat}",
+            $"-r {dir}",
+            $"-l {opts.LcovReport}",
+            $"-c {opts.Cobertura}",
+            $"-o {opts.OutputFile}",
+        ];
+
+    private static IEnumerable<string> Verbosity(TraceLevel level)
+        => level switch
+           {
+               TraceLevel.Off     => Enumerable.Repeat("-q", 3),
+               TraceLevel.Error   => Enumerable.Repeat("-q", 2),
+               TraceLevel.Warning => Enumerable.Repeat("-q", 1),
+               TraceLevel.Info    => [],
+               TraceLevel.Verbose => Enumerable.Repeat("--verbose", 1),
+               _                  => [],
+           };
 }
 
 [TaskName("Version")]

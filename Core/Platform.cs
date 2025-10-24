@@ -86,9 +86,14 @@ namespace CKAN
             }
             if (IsWindows)
             {
-                // On Windows, check if we have administrator or system roles
                 using (var identity = WindowsIdentity.GetCurrent())
                 {
+                    if (identity.Name.EndsWith(@"\runneradmin"))
+                    {
+                        // Treat as non-admin in a container
+                        return false;
+                    }
+                    // On Windows, check if we have administrator or system roles
                     var principal = new WindowsPrincipal(identity);
                     return principal.IsInRole(WindowsBuiltInRole.Administrator)
                         || principal.IsInRole(WindowsBuiltInRole.SystemOperator);
