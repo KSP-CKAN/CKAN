@@ -15,7 +15,9 @@ namespace CKAN
     /// Removes CkanModule objects from AvailableModule.module_version
     /// if License throws BadMetadataKraken.
     /// </summary>
-    public class JsonLeakySortedDictionaryConverter<K, V> : JsonConverter where K: class where V: class
+    public class JsonLeakySortedDictionaryConverter<K, V> : JsonConverter
+        where K : class
+        where V : class
     {
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
