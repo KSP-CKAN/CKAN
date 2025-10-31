@@ -12,8 +12,9 @@ dotnet_diagnostic.IDE0010.severity = none
 # Don't "simplify" if statements that throw
 dotnet_diagnostic.IDE0016.severity = none
 
-# Expression bodies are good for methods
+# Expression bodies are good for methods and coversion operators
 dotnet_diagnostic.IDE0022.severity = none
+dotnet_diagnostic.IDE0023.severity = none
 
 # Expression bodies are fine for operators
 dotnet_diagnostic.IDE0024.severity = none

@@ -89,7 +89,8 @@ namespace CKAN.NetKAN.Extensions
             }
         }
 
-        public static JToken? ToJValueOrJArray<T>(this IEnumerable<T?> source) where T: notnull
+        public static JToken? ToJValueOrJArray<T>(this IEnumerable<T?> source)
+            where T : notnull
         {
             var items = source.OfType<T>()
                               .Distinct()

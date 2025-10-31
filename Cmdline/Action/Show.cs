@@ -116,7 +116,7 @@ namespace CKAN.CmdLine
 
         private T? Choose<T>(IReadOnlyList<T> choices,
                              Func<T, string>  getLabel)
-            where T: notnull
+            where T : notnull
             => choices switch
                {
                    { Count: 1 } => choices.Single(),

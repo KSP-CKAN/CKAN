@@ -203,7 +203,8 @@ namespace CKAN.ConsoleUI {
             }
         }
 
-        private static V? SortedDictFind<K, V>(SortedDictionary<K, V> dict, Func<V, bool> pred) where K: class
+        private static V? SortedDictFind<K, V>(SortedDictionary<K, V> dict, Func<V, bool> pred)
+            where K : class
         {
             foreach (var kvp in dict) {
                 if (pred(kvp.Value)) {

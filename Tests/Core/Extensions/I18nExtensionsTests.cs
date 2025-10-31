@@ -16,7 +16,8 @@ namespace Tests.Core.Extensions
         [TestCase(RelationshipType.Suggests, ExpectedResult = "Suggests")]
         [TestCase(GUIModChangeType.Install,  ExpectedResult = "Install")]
         #endif
-        public string LocalizeName_WithLocalizedEnums_Works<T>(T val) where T: System.Enum
+        public string LocalizeName_WithLocalizedEnums_Works<T>(T val)
+            where T : System.Enum
             => val.LocalizeName();
 
         [TestCase(ReleaseStatus.testing,     ExpectedResult = "Pre-releases for adventurous users")]
@@ -24,7 +25,8 @@ namespace Tests.Core.Extensions
         [TestCase(RelationshipType.Suggests, ExpectedResult = "Suggests")]
         [TestCase(GUIModChangeType.Install,  ExpectedResult = "Install")]
         #endif
-        public string LocalizeDescription_WithLocalizedEnums_Works<T>(T val) where T: System.Enum
+        public string LocalizeDescription_WithLocalizedEnums_Works<T>(T val)
+            where T : System.Enum
             => val.LocalizeDescription();
     }
 }

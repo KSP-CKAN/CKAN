@@ -36,6 +36,8 @@ if [ -n "$arg0" ]; then
 fi
 
 export PATH="$PATH:$HOME/.dotnet/tools"
+export DOTNET_CLI_TELEMETRY_OPTOUT=true
+
 # shellcheck disable=SC2086
 dotnet run --project "$scriptFile" -- --verbosity Minimal $cakeArgs $remainingArgs
 exit $?

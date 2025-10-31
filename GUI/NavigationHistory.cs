@@ -8,7 +8,8 @@ namespace CKAN.GUI
     /// Generic class for keeping a browser-like navigation history.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class NavigationHistory<T> where T: notnull
+    public class NavigationHistory<T>
+        where T : notnull
     {
         private readonly List<T> m_navigationHistory;
         private int m_currentIndex;

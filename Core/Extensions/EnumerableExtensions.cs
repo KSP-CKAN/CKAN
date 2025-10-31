@@ -10,7 +10,8 @@ namespace CKAN.Extensions
 {
     public static class EnumerableExtensions
     {
-        public static ConcurrentDictionary<K, V> ToConcurrentDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs) where K: class
+        public static ConcurrentDictionary<K, V> ToConcurrentDictionary<K, V>(this IEnumerable<KeyValuePair<K, V>> pairs)
+            where K : class
             => new ConcurrentDictionary<K, V>(pairs);
 
         public static IEnumerable<T> AsParallelIf<T>(this IEnumerable<T> source,
@@ -46,7 +47,8 @@ namespace CKAN.Extensions
                    : new Memoized<T>(source);
 
         public static void RemoveWhere<K, V>(this Dictionary<K, V> source,
-                                             Func<KeyValuePair<K, V>, bool> predicate) where K: class
+                                             Func<KeyValuePair<K, V>, bool> predicate)
+            where K : class
         {
             var pairs = source.ToList();
             foreach (var kvp in pairs)
@@ -240,7 +242,7 @@ namespace CKAN.Extensions
 
         public static Dictionary<K, T[]> ToGroupedDictionary<T, K>(this IEnumerable<T> source,
                                                                    Func<T, K>          keyFunc)
-            where K: notnull
+            where K : notnull
             => source.GroupBy(keyFunc)
                      .ToDictionary(grp => grp.Key,
                                    grp => grp.ToArray());
@@ -248,7 +250,7 @@ namespace CKAN.Extensions
         public static Dictionary<K, V[]> ToGroupedDictionary<T, K, V>(this IEnumerable<T> source,
                                                                       Func<T, K>          keyFunc,
                                                                       Func<T, V>          valFunc)
-            where K: notnull
+            where K : notnull
             => source.GroupBy(keyFunc, valFunc)
                      .ToDictionary(grp => grp.Key,
                                    grp => grp.ToArray());
