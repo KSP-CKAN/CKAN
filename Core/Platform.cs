@@ -79,7 +79,8 @@ namespace CKAN
 
         public static bool IsAdministrator()
         {
-            if (File.Exists("/.dockerenv"))
+            if (File.Exists("/.dockerenv")
+                || Environment.GetEnvironmentVariable("container") is "podman" or "buildah")
             {
                 // Treat as non-admin in a docker container, regardless of platform
                 return false;
