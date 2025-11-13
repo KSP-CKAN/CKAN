@@ -539,21 +539,12 @@ namespace CKAN
         }
 
         public string DescribeMatch()
-        {
-            StringBuilder sb = new StringBuilder();
-            if (!string.IsNullOrEmpty(file))
-            {
-                sb.AppendFormat("file=\"{0}\"", file);
-            }
-            if (!string.IsNullOrEmpty(find))
-            {
-                sb.AppendFormat("find=\"{0}\"", find);
-            }
-            if (!string.IsNullOrEmpty(find_regexp))
-            {
-                sb.AppendFormat("find_regexp=\"{0}\"", find_regexp);
-            }
-            return sb.ToString();
-        }
+            => this switch
+               {
+                   { file:        { Length: > 0 } } => $@"file=""{file}""",
+                   { find:        { Length: > 0 } } => $@"find=""{find}""",
+                   { find_regexp: { Length: > 0 } } => $@"find_regexp=""{find_regexp}""",
+                   _                                => "",
+               };
     }
 }
