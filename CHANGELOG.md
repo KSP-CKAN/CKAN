@@ -6,13 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
-- [Multiple] Mod file deduplication across game instances (#4358, #4453 by: HebaruSan)
-- [Multiple] Translation updates from Crowdin (#4359 by: HebaruSan)
+- [Multiple] Mod file deduplication across game instances (#4358, #4440, #4453 by: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4359, #4422, #4443 by: HebaruSan)
 - [Multiple] Make global install filters and presets game-specific (#4361 by: HebaruSan)
 - [GUI] Add download count to Metadata Tab (#4363, #4368 by: averageksp; reviewed: HebaruSan)
 - [GUI] Calculate size of cached files per host (#4377 by: HebaruSan)
 - [GUI] Show recommendations of chosen recommendations in GUI, readable foreground colors for labels (#4381, #4382 by: HebaruSan)
 - [Multiple] Mod list multi-select (#4386 by: HebaruSan)
+- [Multiple] Report number of filtered files in install (#4443 by: HebaruSan)
 
 ### Bugfixes
 
@@ -24,6 +25,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix upgrading with conflicts between old and new dependencies (#4369, #4371, #4374, #4378 by: HebaruSan)
 - [ConsoleUI] Recommendations of full changeset in ConsoleUI (#4416 by: HebaruSan)
 - [GUI] Fix GUI exceptions for module not in available modules list (#4431 by: HebaruSan)
+- [Core] Don't clone with symlinks on Linux (#4441 by: HebaruSan)
 
 ### Internal
 
