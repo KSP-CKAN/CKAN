@@ -585,13 +585,9 @@ namespace CKAN.IO
             try
             {
                 // Use the provided stanzas, or use the default install stanza if they're absent.
-                return module.install is { Length: > 0 }
-                    ? module.install
-                            .SelectMany(stanza => stanza.FindInstallableFiles(zipfile, inst))
-                            .ToList()
-                    : ModuleInstallDescriptor.DefaultInstallStanza(game,
-                                                                   module.identifier)
-                                             .FindInstallableFiles(zipfile, inst);
+                return module.GetInstallStanzas(game)
+                             .SelectMany(stanza => stanza.FindInstallableFiles(zipfile, game))
+                             .ToArray();
             }
             catch (BadMetadataKraken kraken)
             {

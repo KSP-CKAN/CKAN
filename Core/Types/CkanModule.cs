@@ -140,6 +140,16 @@ namespace CKAN
         [JsonProperty("install", Order = 24, NullValueHandling = NullValueHandling.Ignore)]
         public ModuleInstallDescriptor[]? install;
 
+        public ModuleInstallDescriptor[] GetInstallStanzas(IGame game)
+            => install switch
+               {
+                   { Length: > 0 } => install,
+                   _ => new ModuleInstallDescriptor[]
+                        {
+                            ModuleInstallDescriptor.DefaultInstallStanza(game, identifier)
+                        }
+               };
+
         [JsonProperty("localizations", Order = 17, NullValueHandling = NullValueHandling.Ignore)]
         public string[]? localizations;
 
@@ -705,10 +715,7 @@ namespace CKAN
             => string.Format("{0} {1}", identifier, version);
 
         public string DescribeInstallStanzas(IGame game)
-            => install == null
-                ? ModuleInstallDescriptor.DefaultInstallStanza(game, identifier)
-                                         .DescribeMatch()
-                : string.Join(", ", install.Select(mid => mid.DescribeMatch()));
+            => string.Join(", ", GetInstallStanzas(game).Select(mid => mid.DescribeMatch()));
 
         /// <summary>
         /// Return an archive.org URL for this download, or null if it's not there.
