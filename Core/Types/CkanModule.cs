@@ -182,23 +182,14 @@ namespace CKAN
         [JsonProperty("release_date", Order = 30, NullValueHandling = NullValueHandling.Ignore)]
         public DateTime? release_date;
 
+        [JsonIgnore]
+        private string[]? providesList = null;
+
         // A list of eveything this mod provides.
-        public List<string> ProvidesList
-        {
-            // TODO: Consider caching this, but not in a way that the serialiser will try and
-            // serialise it.
-            get
-            {
-                var provides = new List<string> { identifier };
-
-                if (this.provides != null)
-                {
-                    provides.AddRange(this.provides);
-                }
-
-                return provides;
-            }
-        }
+        public string[] ProvidesList
+            => providesList ??= (provides ?? Enumerable.Empty<string>())
+                                    .Prepend(identifier)
+                                    .ToArray();
 
         // These are used to simplify the search by dropping special chars.
         [JsonIgnore]
