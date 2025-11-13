@@ -36,7 +36,6 @@
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="log4net" Version="2.0.15" />
-    <PackageReference Include="Namotion.Reflection" Version="2.1.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="YamlDotNet" Version="9.1.0" />
     <PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
