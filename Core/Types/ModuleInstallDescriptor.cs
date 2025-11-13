@@ -65,8 +65,19 @@ namespace CKAN
         [JsonIgnore]
         private Regex? inst_pattern = null;
 
-        private static readonly Regex trailingSlashPattern = new Regex("/$",
-            RegexOptions.Compiled);
+        [JsonIgnore]
+        private Regex InstallPattern
+            => inst_pattern ??= new Regex(
+                   this switch
+                   {
+                       { file:        string f } => $"^{Regex.Escape(CKANPathUtils.NormalizePath(f))}(/|$)",
+                       { find:        string f } => $"(?:^|/){Regex.Escape(CKANPathUtils.NormalizePath(f))}(/|$)",
+                       { find_regexp: string f } => f,
+                       _ => throw new Kraken(Properties.Resources.ModuleInstallDescriptorRequireFileFind),
+                   },
+                   RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+        private static readonly Regex trailingSlashPattern = new Regex("/$", RegexOptions.Compiled);
 
         [OnDeserialized]
         internal void DeSerialisationFixes(StreamingContext like_i_could_care)
@@ -251,44 +262,12 @@ namespace CKAN
                     .GetHashCode();
 
 
-        private Regex EnsurePattern()
-        {
-            if (inst_pattern == null)
-            {
-                if (file != null)
-                {
-                    file = CKANPathUtils.NormalizePath(file);
-                    inst_pattern = new Regex(@"^" + Regex.Escape(file) + @"(/|$)",
-                        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                }
-                else if (find != null)
-                {
-                    find = CKANPathUtils.NormalizePath(find);
-                    inst_pattern = new Regex(@"(?:^|/)" + Regex.Escape(find) + @"(/|$)",
-                        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                }
-                else if (find_regexp != null)
-                {
-                    inst_pattern = new Regex(find_regexp,
-                        RegexOptions.IgnoreCase | RegexOptions.Compiled);
-                }
-                else
-                {
-                    throw new Kraken(Properties.Resources.ModuleInstallDescriptorRequireFileFind);
-                }
-            }
-            return inst_pattern;
-        }
-
         /// <summary>
         /// Returns true if the path provided should be installed by this stanza.
-        /// Can *only* be used on `file` stanzas, throws an UnsupportedKraken if called
-        /// on a `find` stanza.
-        /// Use `ConvertFindToFile` to convert `find` to `file` stanzas.
         /// </summary>
         private bool IsWanted(string path, int? matchWhere)
         {
-            var pat = EnsurePattern();
+            var pat = InstallPattern;
 
             // Make sure our path always uses slashes we expect.
             string normalised_path = path.Replace('\\', '/');
@@ -395,7 +374,7 @@ namespace CKAN
                 }
             }
 
-            var pat = EnsurePattern();
+            var pat = InstallPattern;
 
             // `find` is supposed to match the "topmost" folder. Find it.
             var shortestMatch = find == null ? null
@@ -529,7 +508,7 @@ namespace CKAN
 
         private string ShortestMatchingPrefix(string fullPath)
         {
-            var pat = EnsurePattern();
+            var pat = InstallPattern;
 
             string shortest = fullPath;
             for (var path = trailingSlashPattern.Replace(fullPath.Replace('\\', '/'), "");
