@@ -16,6 +16,7 @@ namespace CKAN.NetKAN.Validators
                              IGame          game,
                              string?        githubToken)        {
             var ghApi = new GithubApi(downloader, githubToken);
+            var swLoader = new SpaceWarpInfoLoader(downloader, ghApi);
             _validators = new List<IValidator>
             {
                 new IsCkanModuleValidator(),
@@ -34,7 +35,7 @@ namespace CKAN.NetKAN.Validators
                 new ModuleManagerDependsValidator(downloader, moduleService),
                 new PluginsValidator(downloader, moduleService, game),
                 new CraftsInShipsValidator(downloader, moduleService),
-                new SpaceWarpInfoValidator(downloader, ghApi, moduleService),
+                new SpaceWarpInfoValidator(downloader, swLoader, moduleService),
             };
         }
 

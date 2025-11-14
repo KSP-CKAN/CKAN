@@ -115,20 +115,20 @@ namespace Tests.NetKAN.Services
             // Arrange
             using (var gameDir = new TemporaryDirectory())
             {
-                var            game  = new KerbalSpaceProgram2();
-                var            http  = new Mock<IHttpService>();
-                var            ghApi = new Mock<IGithubApi>();
-                IModuleService sut   = new ModuleService(game);
+                var            game   = new KerbalSpaceProgram2();
+                var            http   = new Mock<IHttpService>();
+                var            ghApi  = new Mock<IGithubApi>();
+                var            loader = new SpaceWarpInfoLoader(http.Object, ghApi.Object);
+                IModuleService sut    = new ModuleService(game);
 
                 // Act
-                var result = sut.GetSpaceWarpInfo(TestData.BurnControllerModule(),
-                                                  new ZipFile(TestData.BurnControllerZip()),
-                                                  ghApi.Object, http.Object);
+                var result = sut.GetInternalSpaceWarpInfos(TestData.BurnControllerModule(),
+                                                           new ZipFile(TestData.BurnControllerZip()))
+                                .Select(loader.Load)
+                                .FirstOrDefault();
 
                 // Assert
                 Assert.IsNotNull(result);
-                Assert.Multiple(() =>
-                {
                 Assert.AreEqual("BurnController",                result?.mod_id);
                 Assert.AreEqual("Burn Controller",               result?.name);
                 Assert.AreEqual("Lets you set up engine burns.", result?.description);
@@ -139,7 +139,6 @@ namespace Tests.NetKAN.Services
                 Assert.AreEqual(new Uri("https://github.com/JohnsterSpaceProgramOfficial/BurnController/raw/main/Burn Controller/swinfo.json"),
                                 result!.version_check);
                 CollectionAssert.AreEquivalent(new string[] { "SpaceWarp" }, result!.dependencies!.Select(d => d.id));
-                });
             }
         }
     }

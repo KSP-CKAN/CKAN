@@ -4,31 +4,33 @@ using System.Linq;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
 
+using CKAN.SpaceWarp;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Sources.Github;
-using CKAN.SpaceWarp;
 
 namespace CKAN.NetKAN.Validators
 {
     internal sealed class SpaceWarpInfoValidator : IValidator
     {
-        public SpaceWarpInfoValidator(IHttpService   httpSvc,
-                                      IGithubApi     githubApi,
-                                      IModuleService modSvc)
+        public SpaceWarpInfoValidator(IHttpService         httpSvc,
+                                      ISpaceWarpInfoLoader loader,
+                                      IModuleService       modSvc)
         {
-            this.httpSvc   = httpSvc;
-            this.githubApi = githubApi;
-            this.modSvc    = modSvc;
+            this.httpSvc = httpSvc;
+            this.loader  = loader;
+            this.modSvc  = modSvc;
         }
 
         public void Validate(Metadata metadata)
         {
             var moduleJson = metadata.AllJson;
-            CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
+            var mod = CkanModule.FromJson(moduleJson.ToString());
             if (httpSvc.DownloadModule(metadata) is string file
                 && new ZipFile(file) is ZipFile zip
-                && modSvc.GetSpaceWarpInfo(mod, zip, githubApi, httpSvc) is SpaceWarpInfo swinfo)
+                && modSvc.GetInternalSpaceWarpInfos(mod, zip, null)
+                         .Select(loader.Load)
+                         .FirstOrDefault()
+                   is SpaceWarpInfo swinfo)
             {
                 var moduleDeps = (mod.depends?.OfType<ModuleRelationshipDescriptor>()
                                               .Select(r => r.name)
@@ -53,9 +55,9 @@ namespace CKAN.NetKAN.Validators
             }
         }
 
-        private readonly IHttpService   httpSvc;
-        private readonly IGithubApi     githubApi;
-        private readonly IModuleService modSvc;
+        private readonly IHttpService         httpSvc;
+        private readonly ISpaceWarpInfoLoader loader;
+        private readonly IModuleService       modSvc;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SpaceWarpInfoValidator));
     }
