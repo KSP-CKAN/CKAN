@@ -332,7 +332,7 @@ namespace CKAN
             string? install_to = CKANPathUtils.NormalizePath(this.install_to ?? "");
 
             // The installation path cannot contain updirs
-            if (install_to.Contains("/../") || install_to.EndsWith("/.."))
+            if (updirRegex.IsMatch(install_to))
             {
                 throw new BadInstallLocationKraken(string.Format(
                     Properties.Resources.ModuleInstallDescriptorInvalidInstallPath, install_to));
@@ -433,6 +433,9 @@ namespace CKAN
 
             return files;
         }
+
+        private static readonly Regex updirRegex = new Regex(@"/\.\.(/|$)",
+                                                             RegexOptions.Compiled);
 
         private static bool AllowDirectoryCreation(IGame game, string relativePath)
             => game.CreateableDirs.Any(dir => relativePath == dir
