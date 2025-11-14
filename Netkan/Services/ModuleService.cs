@@ -71,9 +71,8 @@ namespace CKAN.NetKAN.Services
                 .FirstOrDefault();
 
         public bool HasInstallableFiles(CkanModule module, string filePath)
-            // TODO: DBB: Let's not use exceptions for flow control
             => Utilities.DefaultIfThrows(() =>
-                   ModuleInstaller.FindInstallableFiles(module, filePath, game))
+                   ModuleInstaller.FindInstallableFiles(module, filePath, game).ToArray())
                            != null;
 
         public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)

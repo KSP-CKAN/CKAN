@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Moq;
 
 using CKAN.Games.KerbalSpaceProgram;
+using CKAN.Games.KerbalSpaceProgram2;
 using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
@@ -95,7 +96,7 @@ namespace Tests.NetKAN.Validators
             var http     = new Mock<IHttpService>();
             http.Setup(h => h.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(zip);
-            var modSvc   = new ModuleService(new KerbalSpaceProgram());
+            var modSvc   = new ModuleService(new KerbalSpaceProgram2());
             var sut      = new VrefValidator(http.Object, modSvc);
 
             using (var appender = new TemporaryWarningCapturer(nameof(VrefValidator)))

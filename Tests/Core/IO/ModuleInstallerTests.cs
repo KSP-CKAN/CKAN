@@ -61,7 +61,7 @@ namespace Tests.Core.IO
         [TestCaseSource(nameof(doge_mods))]
         public void FindInstallableFiles(CkanModule mod)
         {
-            List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(mod, TestData.DogeCoinFlagZip(), ksp.KSP);
+            var contents = ModuleInstaller.FindInstallableFiles(mod, TestData.DogeCoinFlagZip(), ksp.KSP.Game).ToList();
             List<string> filenames = new List<string>();
 
             Assert.IsNotNull(contents);
@@ -90,7 +90,7 @@ namespace Tests.Core.IO
         {
             using (var tidy = new DisposableKSP())
             {
-                List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(mod, TestData.DogeCoinFlagZip(), tidy.KSP);
+                var contents = ModuleInstaller.FindInstallableFiles(mod, TestData.DogeCoinFlagZip(), tidy.KSP.Game).ToList();
 
                 // See if we can find an expected destination path in the right place.
                 var file = contents
@@ -122,9 +122,9 @@ namespace Tests.Core.IO
             dogemod.install![0].install_to = path;
             using (var tidy = new DisposableKSP())
             {
-                IEnumerable<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(
-                                                            dogemod, TestData.DogeCoinFlagZip(), tidy.KSP
-                                                        );
+                var contents = ModuleInstaller.FindInstallableFiles(
+                                                            dogemod, TestData.DogeCoinFlagZip(), tidy.KSP.Game
+                                                        ).ToList();
 
                 var file = contents
                     .Select(x => x.destination)
@@ -139,7 +139,7 @@ namespace Tests.Core.IO
         {
             using (var tidy = new DisposableKSP())
             {
-                List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(TestData.ModuleManagerModule(), TestData.ModuleManagerZip(), tidy.KSP);
+                var contents = ModuleInstaller.FindInstallableFiles(TestData.ModuleManagerModule(), TestData.ModuleManagerZip(), tidy.KSP.Game).ToList();
 
                 var file = contents
                     .Select(x => x.destination)
@@ -154,7 +154,7 @@ namespace Tests.Core.IO
         {
             using (var tidy = new DisposableKSP())
             {
-                List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(TestData.MissionModule(), TestData.MissionZip(), tidy.KSP);
+                var contents = ModuleInstaller.FindInstallableFiles(TestData.MissionModule(), TestData.MissionZip(), tidy.KSP.Game).ToList();
 
                 var failBanner = contents.Select(x => x.destination).FirstOrDefault(
                     x => Regex.IsMatch(x, "Missions/AwesomeMission/Banners/Fail/default\\.png$"));
@@ -182,7 +182,7 @@ namespace Tests.Core.IO
         {
             string extra_doge = TestData.DogeCoinFlagZipWithExtras();
 
-            List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(mod, extra_doge, ksp.KSP);
+            var contents = ModuleInstaller.FindInstallableFiles(mod, extra_doge, ksp.KSP.Game).ToList();
 
             var files = contents.Select(x => x.source.Name);
 
@@ -199,7 +199,7 @@ namespace Tests.Core.IO
             string extra_doge = TestData.DogeCoinFlagZipWithExtras();
             CkanModule mod = TestData.DogeCoinFlag_101_module_include();
 
-            List<InstallableFile> contents = ModuleInstaller.FindInstallableFiles(mod, extra_doge, ksp.KSP);
+            var contents = ModuleInstaller.FindInstallableFiles(mod, extra_doge, ksp.KSP.Game).ToList();
 
             var files = contents.Select(x => x.source.Name);
 
@@ -218,7 +218,7 @@ namespace Tests.Core.IO
 
             var exc = Assert.Throws<BadMetadataKraken>(delegate
                 {
-                    ModuleInstaller.FindInstallableFiles(bugged_mod, TestData.DogeCoinFlagZip(), ksp.KSP);
+                    ModuleInstaller.FindInstallableFiles(bugged_mod, TestData.DogeCoinFlagZip(), ksp.KSP.Game).ToList();
                 });
 
             // Make sure our module information is attached.
@@ -243,7 +243,7 @@ namespace Tests.Core.IO
 
             Assert.Throws<BadInstallLocationKraken>(delegate
             {
-                ModuleInstaller.FindInstallableFiles(dogemod, TestData.DogeCoinFlagZip(), ksp.KSP);
+                ModuleInstaller.FindInstallableFiles(dogemod, TestData.DogeCoinFlagZip(), ksp.KSP.Game).ToList();
             });
         }
 
@@ -274,7 +274,7 @@ namespace Tests.Core.IO
                     {
                         using (var ksp = new DisposableKSP())
                         {
-                            var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP);
+                            var contents = ModuleInstaller.FindInstallableFiles(mod, zip, ksp.KSP.Game).ToList();
                         }
                     },
                     "Kraken should be thrown if ZIP file attempts to exploit Zip Slip vulnerability");
@@ -354,7 +354,7 @@ namespace Tests.Core.IO
 
                     // FindInstallableFiles
                     ModuleInstaller.FindInstallableFiles(TestData.DogeCoinFlag_101_module(),
-                                                         corrupt_dogezip, ksp.KSP);
+                                                         corrupt_dogezip, ksp.KSP.Game).ToList();
                 }
             });
             Assert.AreEqual("Cannot find central directory", exc?.Message);
