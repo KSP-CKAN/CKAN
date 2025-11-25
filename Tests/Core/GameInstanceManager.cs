@@ -362,6 +362,7 @@ namespace Tests.Core
         {
             // Arrange
             using (var config = new FakeConfiguration(new List<Tuple<string, string, string>>(), null, null))
+            using (var nonSteamGameDir = TemporaryDirectory.CopiedFromDir(TestData.good_ksp_dir()))
             using (var dir = new TemporarySteamDirectory(
                                  new (string acfFileName, int appId, string appName)[]
                                  {
@@ -375,7 +376,7 @@ namespace Tests.Core
                                  new (string name, string absPath)[]
                                  {
                                      (name:    "Test Instance",
-                                      absPath: Path.GetFullPath(TestData.good_ksp_dir())),
+                                      absPath: nonSteamGameDir),
                                  }))
             {
                 var steamLib = new SteamLibrary(dir);

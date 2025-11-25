@@ -16,6 +16,7 @@ namespace Tests.Core.IO
         public void Constructor_WithValidLibrary_Works()
         {
             // Arrange
+            using (var nonSteamGameDir = TemporaryDirectory.CopiedFromDir(TestData.good_ksp_dir()))
             using (var dir = new TemporarySteamDirectory(
                                  new (string acfFileName, int appId, string appName)[]
                                  {
@@ -29,7 +30,7 @@ namespace Tests.Core.IO
                                  new (string name, string absPath)[]
                                  {
                                      (name:    "Test Instance",
-                                      absPath: Path.GetFullPath(TestData.good_ksp_dir())),
+                                      absPath: nonSteamGameDir),
                                  }))
             {
                 // Act
@@ -50,6 +51,7 @@ namespace Tests.Core.IO
         public void Constructor_WithCorruptedLibrary_Works()
         {
             // Arrange
+            using (var nonSteamGameDir = TemporaryDirectory.CopiedFromDir(TestData.good_ksp_dir()))
             using (var dir = new TemporarySteamDirectory(
                                  new (string acfFileName, int appId, string appName)[]
                                  {
@@ -63,7 +65,7 @@ namespace Tests.Core.IO
                                  new (string name, string absPath)[]
                                  {
                                      (name:    "Test Instance",
-                                      absPath: Path.GetFullPath(TestData.good_ksp_dir())),
+                                      absPath: nonSteamGameDir),
                                      (name:    "Empty StartDir",
                                       absPath: ""),
                                  }))
