@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 using Newtonsoft.Json;
 
@@ -388,7 +388,7 @@ namespace CKAN
 
         public void Save(bool enforce_consistency = true)
         {
-            TxFileManager file_transaction = new TxFileManager();
+            var txFileMgr = new TxFileManager(gameInstance.CkanDir);
 
             log.InfoFormat("Saving CKAN registry at {0}", path);
 
@@ -412,7 +412,7 @@ namespace CKAN
                 Directory.CreateDirectory(directoryPath);
             }
 
-            file_transaction.WriteAllText(path, Serialize());
+            txFileMgr.WriteAllText(path, Serialize());
 
             if (!Directory.Exists(gameInstance.InstallHistoryDir))
             {
@@ -444,11 +444,11 @@ namespace CKAN
                                      bool                recommends,
                                      bool                withVersions)
         {
-            var tx         = new TxFileManager();
+            var txFileMgr = new TxFileManager(gameInstance.CkanDir);
             var serialized = SerializeCurrentInstall(recommends, withVersions);
             foreach (var path in paths)
             {
-                tx.WriteAllText(path, serialized);
+                txFileMgr.WriteAllText(path, serialized);
             }
         }
 

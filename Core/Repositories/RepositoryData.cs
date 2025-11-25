@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using ICSharpCode.SharpZipLib.Zip;
@@ -126,8 +126,8 @@ namespace CKAN
                 JsonSerializer serializer = new JsonSerializer();
                 serializer.Serialize(writer, this);
             }
-            TxFileManager file_transaction = new TxFileManager();
-            file_transaction.WriteAllText(path, sw + Environment.NewLine);
+            var txFileMgr = new TxFileManager();
+            txFileMgr.WriteAllText(path, sw + Environment.NewLine);
         }
 
         /// <summary>

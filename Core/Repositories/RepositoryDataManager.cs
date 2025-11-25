@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.IO;
@@ -270,8 +270,8 @@ namespace CKAN
 
         private void saveETags()
         {
-            TxFileManager file_transaction = new TxFileManager();
-            file_transaction.WriteAllText(etagsPath, JsonConvert.SerializeObject(etags, Formatting.Indented));
+            var txFileMgr = new TxFileManager();
+            txFileMgr.WriteAllText(etagsPath, JsonConvert.SerializeObject(etags, Formatting.Indented));
         }
 
         private void setETag(NetAsyncDownloader.DownloadTarget target,

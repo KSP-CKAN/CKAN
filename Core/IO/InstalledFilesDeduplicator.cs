@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.Versioning;
@@ -136,13 +136,13 @@ namespace CKAN.IO
                     log.DebugFormat("Deduplicating all...");
                     using (var tx = CkanTransaction.CreateTransactionScope())
                     {
-                        var file_transaction = new TxFileManager();
+                        var txFileMgr = new TxFileManager();
                         foreach (var grp in fileGroups)
                         {
                             var target = grp.First();
                             foreach (var linkPath in grp.Skip(1))
                             {
-                                file_transaction.Delete(linkPath);
+                                txFileMgr.Delete(linkPath);
                                 // If this fails (e.g., if the files are on different volumes), it throws,
                                 // the transaction is aborted, and all changes are reverted.
                                 HardLink.Create(target, linkPath);
@@ -183,19 +183,19 @@ namespace CKAN.IO
 
         public static void CreateOrCopy(FileInfo      target,
                                         string        linkPath,
-                                        TxFileManager file_transaction)
+                                        TxFileManager txFileMgr)
         {
             if (target.Length >= MinDedupFileSize)
             {
                 // If >=128KiB, try making a hard link, then fall back to copying if it fails
                 log.DebugFormat("Creating a hard link from {0} to {1}...", target, linkPath);
-                HardLink.CreateOrCopy(target.FullName, linkPath, file_transaction);
+                HardLink.CreateOrCopy(target.FullName, linkPath, txFileMgr);
             }
             else
             {
                 // If <128KiB, just copy the file
                 log.DebugFormat("Copying from {0} to {1}...", target, linkPath);
-                file_transaction.Copy(target.FullName, linkPath, false);
+                txFileMgr.Copy(target.FullName, linkPath, false);
             }
         }
 

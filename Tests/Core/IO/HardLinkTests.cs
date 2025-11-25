@@ -2,7 +2,7 @@ using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 
 using CKAN.IO;
 using Tests.Data;

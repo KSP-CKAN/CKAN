@@ -6,7 +6,7 @@ using System.Transactions;
 using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.IO;
@@ -305,7 +305,7 @@ namespace CKAN
         public GameInstance FakeInstance(IGame game, string newName, string newPath, GameVersion version,
                                          Dictionary<IDlcDetector, GameVersion>? dlcs = null)
         {
-            TxFileManager fileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager();
             using (TransactionScope transaction = CkanTransaction.CreateTransactionScope())
             {
                 if (HasInstance(newName))
@@ -326,13 +326,13 @@ namespace CKAN
                 log.DebugFormat("Creating folder structure and text files at {0} for {1} version {2}", Path.GetFullPath(newPath), game.ShortName, version.ToString());
 
                 // Create a game root directory, containing a GameData folder, a buildID.txt/buildID64.txt and a readme.txt
-                fileMgr.CreateDirectory(newPath);
-                fileMgr.CreateDirectory(Path.Combine(newPath, game.PrimaryModDirectoryRelative));
+                txFileMgr.CreateDirectory(newPath);
+                txFileMgr.CreateDirectory(Path.Combine(newPath, game.PrimaryModDirectoryRelative));
                 game.RebuildSubdirectories(newPath);
 
                 foreach (var anchor in game.InstanceAnchorFiles)
                 {
-                    fileMgr.WriteAllText(Path.Combine(newPath, anchor),
+                    txFileMgr.WriteAllText(Path.Combine(newPath, anchor),
                                          version.WithoutBuild.ToString());
                 }
 
@@ -341,13 +341,13 @@ namespace CKAN
                 {
                     foreach (var b in KspBuildIdVersionProvider.buildIDfilenames)
                     {
-                        fileMgr.WriteAllText(Path.Combine(newPath, b),
+                        txFileMgr.WriteAllText(Path.Combine(newPath, b),
                                              string.Format("build id = {0}", version.Build));
                     }
                 }
 
                 // Create the readme.txt WITHOUT build number
-                fileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"),
+                txFileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"),
                                      string.Format("Version {0}",
                                                    version.WithoutBuild.ToString()));
 
@@ -367,8 +367,8 @@ namespace CKAN
                         }
 
                         string dlcDir = Path.Combine(newPath, dlcDetector.InstallPath());
-                        fileMgr.CreateDirectory(dlcDir);
-                        fileMgr.WriteAllText(
+                        txFileMgr.CreateDirectory(dlcDir);
+                        txFileMgr.WriteAllText(
                             Path.Combine(dlcDir, "readme.txt"),
                             string.Format("Version {0}", dlcVersion));
                     }

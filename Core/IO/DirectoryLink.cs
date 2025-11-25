@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Win32.SafeHandles;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 
 namespace CKAN.IO
 {

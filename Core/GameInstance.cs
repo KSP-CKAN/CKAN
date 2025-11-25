@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 using Newtonsoft.Json;
 
@@ -73,7 +73,7 @@ namespace CKAN
             log.InfoFormat("Initialising {0}", CkanDir);
 
             // TxFileManager knows if we are in a transaction
-            TxFileManager txFileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager(CkanDir);
 
             if (!Directory.Exists(CkanDir))
             {

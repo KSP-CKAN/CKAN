@@ -8,7 +8,7 @@ using Microsoft.Win32.SafeHandles;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using FileMode = System.IO.FileMode;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 namespace CKAN.IO
@@ -44,16 +44,16 @@ namespace CKAN.IO
         /// </summary>
         /// <param name="target">The original file</param>
         /// <param name="linkPath">The place where we want to make a link or copy</param>
-        /// <param name="file_transaction">Transaction in case we need to roll back</param>
+        /// <param name="txFileMgr">Transaction in case we need to roll back</param>
         public static void CreateOrCopy(string        target,
                                         string        linkPath,
-                                        TxFileManager file_transaction)
+                                        TxFileManager txFileMgr)
         {
             log.DebugFormat("Creating hard link or copy from {0} to {1}...", target, linkPath);
             if (!CreateImpl(target, linkPath))
             {
                 // If we can't create a hard link (e.g., if the paths are on separate volumes), copy instead
-                file_transaction.Copy(target, linkPath, false);
+                txFileMgr.Copy(target, linkPath, false);
             }
         }
 

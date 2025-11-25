@@ -7,6 +7,7 @@ using System.Transactions;
 using System.Net;
 
 using ICSharpCode.SharpZipLib.Zip;
+using ChinhDo.Transactions;
 using NUnit.Framework;
 using WireMock.Server;
 using WireMock.RequestBuilders;
@@ -330,7 +331,7 @@ namespace Tests.Core.IO
 
                 Assert.Throws<FileExistsKraken>(delegate
                 {
-                    ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
+                    ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, new TxFileManager(), Array.Empty<string>(), null);
                 });
 
                 // Cleanup
@@ -368,7 +369,7 @@ namespace Tests.Core.IO
 
                 // We have to delete our temporary file, as CZE refuses to overwrite; huzzah!
                 File.Delete(tmpfile);
-                ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, Array.Empty<string>(), null);
+                ModuleInstaller.InstallFile(zipfile, entry, tmpfile, false, new TxFileManager(), Array.Empty<string>(), null);
 
                 return tmpfile;
             }

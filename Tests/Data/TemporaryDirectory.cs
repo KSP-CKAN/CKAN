@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 
+using CKAN;
+
 namespace Tests.Data
 {
     public class TemporaryDirectory : IDisposable
@@ -19,6 +21,14 @@ namespace Tests.Data
         public TemporaryDirectory()
             : this(TestData.NewTempDir())
         {
+        }
+
+        public static TemporaryDirectory CopiedFromDir(string fromPath)
+        {
+            var dir = new TemporaryDirectory();
+            Utilities.CopyDirectory(fromPath, dir,
+                                    Array.Empty<string>(), Array.Empty<string>());
+            return dir;
         }
 
         public void Dispose()

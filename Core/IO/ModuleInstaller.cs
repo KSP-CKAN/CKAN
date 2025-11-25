@@ -7,7 +7,7 @@ using System.Threading;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 
 using CKAN.Extensions;
 using CKAN.Versioning;
@@ -32,12 +32,13 @@ namespace CKAN.IO
                                IUser             user,
                                CancellationToken cancelToken = default)
         {
-            User        = user;
-            this.cache  = cache;
-            this.config = config;
-            instance    = inst;
+            log.DebugFormat("Creating ModuleInstaller for {0}", inst.GameDir);
+            instance         = inst;
+            // Make a transaction file manager that uses a temp dir in the instance's CKAN dir
+            this.cache       = cache;
+            this.config      = config;
+            User             = user;
             this.cancelToken = cancelToken;
-            log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir);
         }
 
         public IUser User { get; set; }
@@ -394,9 +395,9 @@ namespace CKAN.IO
                             // Delete the manually installed DLL transaction-style because we believe we'll be replacing it
                             var toDelete = instance.ToAbsoluteGameDir(dll);
                             log.DebugFormat("Deleting manually installed DLL {0}", toDelete);
-                            TxFileManager file_transaction = new TxFileManager();
-                            file_transaction.Snapshot(toDelete);
-                            file_transaction.Delete(toDelete);
+                            var txFileMgr = new TxFileManager(instance.CkanDir);
+                            txFileMgr.Snapshot(toDelete);
+                            txFileMgr.Delete(toDelete);
                         }
                     }
 
@@ -543,13 +544,13 @@ namespace CKAN.IO
         /// fails at a later stage.
         /// </summary>
         /// <param name="files">The files to overwrite</param>
-        private static void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
+        private void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
         {
-            TxFileManager file_transaction = new TxFileManager();
+            var txFileMgr = new TxFileManager(instance.CkanDir);
             foreach (InstallableFile file in files)
             {
                 log.DebugFormat("Trying to delete {0}", file.destination);
-                file_transaction.Delete(file.destination);
+                txFileMgr.Delete(file.destination);
             }
         }
 
@@ -695,6 +696,16 @@ namespace CKAN.IO
 
         #endregion
 
+        private string? InstallFile(ZipFile          zipfile,
+                                    ZipEntry         entry,
+                                    string           fullPath,
+                                    bool             makeDirs,
+                                    string[]         candidateDuplicates,
+                                    IProgress<long>? progress)
+            => InstallFile(zipfile, entry, fullPath, makeDirs,
+                           new TxFileManager(instance.CkanDir),
+                           candidateDuplicates, progress);
+
         /// <summary>
         /// Copy the entry from the opened zipfile to the path specified.
         /// </summary>
@@ -707,11 +718,10 @@ namespace CKAN.IO
                                             ZipEntry         entry,
                                             string           fullPath,
                                             bool             makeDirs,
+                                            IFileManager     txFileMgr,
                                             string[]         candidateDuplicates,
                                             IProgress<long>? progress)
         {
-            var file_transaction = new TxFileManager();
-
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
@@ -727,7 +737,7 @@ namespace CKAN.IO
                     : fullPath;
 
                 log.DebugFormat("Making directory '{0}'", fullPath);
-                file_transaction.CreateDirectory(fullPath);
+                txFileMgr.CreateDirectory(fullPath);
             }
             else
             {
@@ -737,11 +747,11 @@ namespace CKAN.IO
                 if (makeDirs && Path.GetDirectoryName(fullPath) is string d)
                 {
                     log.DebugFormat("Making parent directory '{0}'", d);
-                    file_transaction.CreateDirectory(d);
+                    txFileMgr.CreateDirectory(d);
                 }
 
                 // We don't allow for the overwriting of files. See #208.
-                if (file_transaction.FileExists(fullPath))
+                if (txFileMgr.FileExists(fullPath))
                 {
                     throw new FileExistsKraken(fullPath);
                 }
@@ -749,7 +759,7 @@ namespace CKAN.IO
                 // Snapshot whatever was there before. If there's nothing, this will just
                 // remove our file on rollback. We still need this even though we won't
                 // overwite files, as it ensures deletion on rollback.
-                file_transaction.Snapshot(fullPath);
+                txFileMgr.Snapshot(fullPath);
 
                 // Try making hard links if already installed in another instance (faster, less space)
                 foreach (var installedSource in candidateDuplicates)
@@ -918,7 +928,7 @@ namespace CKAN.IO
                                Registry             registry,
                                IProgress<long>      progress)
         {
-            var file_transaction = new TxFileManager();
+            var txFileMgr = new TxFileManager(instance.CkanDir);
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
@@ -972,7 +982,7 @@ namespace CKAN.IO
                             bytesDeleted += new FileInfo(absPath).Length;
                             progress.Report(bytesDeleted);
                             log.DebugFormat("Removing {0}", relPath);
-                            file_transaction.Delete(absPath);
+                            txFileMgr.Delete(absPath);
                         }
                     }
                     catch (FileNotFoundException exc)
@@ -1044,7 +1054,7 @@ namespace CKAN.IO
                         if (File.Exists(absPath))
                         {
                             log.DebugFormat("Attempting transaction deletion of file {0}", absPath);
-                            file_transaction.Delete(absPath);
+                            txFileMgr.Delete(absPath);
                         }
                         else if (Directory.Exists(absPath))
                         {
@@ -1063,7 +1073,7 @@ namespace CKAN.IO
 
                     if (notRemovable.Length < 1)
                     {
-                        // We *don't* use our file_transaction to delete files here, because
+                        // We *don't* use our txFileMgr to delete files here, because
                         // it fails if the system's temp directory is on a different device
                         // to KSP. However we *can* safely delete it now we know it's empty,
                         // because the TxFileMgr *will* put it back if there's a file inside that

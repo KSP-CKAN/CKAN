@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 
 using Autofac;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.Extensions;
@@ -66,10 +66,10 @@ namespace CKAN
                                       IUser?      user      = null)
         {
             user?.RaiseMessage(Properties.Resources.NetDownloading, url);
-            var FileTransaction = new TxFileManager();
+            var txFileMgr = new TxFileManager();
 
             // Generate a temporary file if none is provided.
-            filename ??= FileTransaction.GetTempFileName();
+            filename ??= txFileMgr.CreateTempFileName();
 
             log.DebugFormat("Downloading {0} to {1}", url, filename);
 
@@ -118,7 +118,7 @@ namespace CKAN
                     // Clean up our file, it's unlikely to be complete.
                     // We do this even though we're using transactional files, as we may not be in a transaction.
                     log.DebugFormat("Removing {0} after web error failure", filename);
-                    FileTransaction.Delete(filename);
+                    txFileMgr.Delete(filename);
                 }
                 catch
                 {
