@@ -6,7 +6,7 @@ using System.Transactions;
 using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.IO;

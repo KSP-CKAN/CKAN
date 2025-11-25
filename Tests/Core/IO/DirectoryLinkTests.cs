@@ -1,6 +1,6 @@
 using System.IO;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using NUnit.Framework;
 
 using CKAN.IO;

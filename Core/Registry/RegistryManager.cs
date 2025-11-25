@@ -8,7 +8,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Diagnostics.CodeAnalysis;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 using Newtonsoft.Json;
 

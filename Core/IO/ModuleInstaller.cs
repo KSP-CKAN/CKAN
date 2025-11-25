@@ -7,7 +7,7 @@ using System.Threading;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip;
 using log4net;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 
 using CKAN.Extensions;
 using CKAN.Versioning;

@@ -13,7 +13,7 @@ using System.Security.Permissions;
 #endif
 
 using log4net;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 
 using CKAN.IO;
 using CKAN.Extensions;

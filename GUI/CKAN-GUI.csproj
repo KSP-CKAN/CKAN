@@ -55,7 +55,6 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="6.2.0" />
-    <PackageReference Include="TxFileManager.NETStandard" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

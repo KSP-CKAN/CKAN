@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 using Newtonsoft.Json;
 

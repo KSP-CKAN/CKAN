@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.IO;

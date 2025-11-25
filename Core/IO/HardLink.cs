@@ -8,7 +8,7 @@ using Microsoft.Win32.SafeHandles;
 using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 using FileMode = System.IO.FileMode;
 
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 namespace CKAN.IO

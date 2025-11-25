@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 
 using Autofac;
-using ChinhDo.Transactions.FileManager;
+using ChinhDo.Transactions;
 using log4net;
 
 using CKAN.Extensions;
@@ -69,7 +69,7 @@ namespace CKAN
             var txFileMgr = new TxFileManager();
 
             // Generate a temporary file if none is provided.
-            filename ??= txFileMgr.GetTempFileName();
+            filename ??= txFileMgr.CreateTempFileName();
 
             log.DebugFormat("Downloading {0} to {1}", url, filename);
 
