@@ -25,11 +25,11 @@ namespace Tests.Core.IO
                 var file2Orig = new FileInfo(Path.Combine(target.FullName,  "file2.txt"));
                 var file1Link = new FileInfo(Path.Combine(dirlink.FullName, "file1.txt"));
                 var file2Link = new FileInfo(Path.Combine(dirlink.FullName, "file2.txt"));
-                var tx        = new TxFileManager();
+                var txFileMgr = new TxFileManager();
 
                 // Act
                 target.Create();
-                DirectoryLink.Create(target.FullName, dirlink.FullName, tx);
+                DirectoryLink.Create(target.FullName, dirlink.FullName, txFileMgr);
                 Assert.IsTrue(dirlink.Exists);
                 File.WriteAllText(file1Orig.FullName, "");
                 File.WriteAllText(file2Link.FullName, "");

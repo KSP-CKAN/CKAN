@@ -92,7 +92,7 @@ namespace CKAN
 
         private static void CopyDirectory(string        sourceDirPath,
                                           string        destDirPath,
-                                          TxFileManager file_transaction,
+                                          TxFileManager txFileMgr,
                                           string[]      subFolderRelPathsToSymlink,
                                           string[]      subFolderRelPathsToLeaveEmpty)
         {
@@ -107,7 +107,7 @@ namespace CKAN
             // If the destination directory doesn't exist, create it
             if (!Directory.Exists(destDirPath))
             {
-                file_transaction.CreateDirectory(destDirPath);
+                txFileMgr.CreateDirectory(destDirPath);
             }
             else if (Directory.GetDirectories(destDirPath).Length != 0 || Directory.GetFiles(destDirPath).Length != 0)
             {
@@ -123,7 +123,7 @@ namespace CKAN
                 }
                 InstalledFilesDeduplicator.CreateOrCopy(file,
                                                         Path.Combine(destDirPath, file.Name),
-                                                        file_transaction);
+                                                        txFileMgr);
             }
 
             // Create all first level subdirectories
@@ -134,22 +134,22 @@ namespace CKAN
                 if (DirectoryLink.TryGetTarget(subdir.FullName, out string? existingLinkTarget)
                     && existingLinkTarget is not null)
                 {
-                    DirectoryLink.Create(existingLinkTarget, temppath, file_transaction);
+                    DirectoryLink.Create(existingLinkTarget, temppath, txFileMgr);
                 }
                 else
                 {
                     if (subFolderRelPathsToSymlink.Contains(subdir.Name, Platform.PathComparer))
                     {
-                        DirectoryLink.Create(subdir.FullName, temppath, file_transaction);
+                        DirectoryLink.Create(subdir.FullName, temppath, txFileMgr);
                     }
                     else
                     {
-                        file_transaction.CreateDirectory(temppath);
+                        txFileMgr.CreateDirectory(temppath);
 
                         if (!subFolderRelPathsToLeaveEmpty.Contains(subdir.Name, Platform.PathComparer))
                         {
                             // Copy subdir contents to new location
-                            CopyDirectory(subdir.FullName, temppath, file_transaction,
+                            CopyDirectory(subdir.FullName, temppath, txFileMgr,
                                           SubPaths(subdir.Name, subFolderRelPathsToSymlink).ToArray(),
                                           SubPaths(subdir.Name, subFolderRelPathsToLeaveEmpty).ToArray());
                         }

@@ -73,7 +73,7 @@ namespace CKAN
             log.InfoFormat("Initialising {0}", CkanDir);
 
             // TxFileManager knows if we are in a transaction
-            TxFileManager txFileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager();
 
             if (!Directory.Exists(CkanDir))
             {

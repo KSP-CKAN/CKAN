@@ -406,7 +406,7 @@ namespace CKAN
         {
             log.DebugFormat("Storing {0}", url);
 
-            TxFileManager tx_file = new TxFileManager();
+            var txFileMgr = new TxFileManager();
 
             // Clear our cache entry first
             Remove(url);
@@ -423,17 +423,17 @@ namespace CKAN
             string targetPath = Path.Combine(cachePath.FullName, fullName);
 
             // Purge hashes associated with the new file
-            PurgeHashes(tx_file, targetPath);
+            PurgeHashes(txFileMgr, targetPath);
 
             log.InfoFormat("Storing {0} in {1}", path, targetPath);
 
             if (move)
             {
-                tx_file.Move(path, targetPath);
+                txFileMgr.Move(path, targetPath);
             }
             else
             {
-                tx_file.Copy(path, targetPath, true);
+                txFileMgr.Copy(path, targetPath, true);
             }
 
             // We've changed our cache, so signal that immediately.
@@ -455,11 +455,11 @@ namespace CKAN
             if (GetCachedFilename(url) is string file
                 && File.Exists(file))
             {
-                TxFileManager tx_file = new TxFileManager();
-                tx_file.Delete(file);
+                var txFileMgr = new TxFileManager();
+                txFileMgr.Delete(file);
                 // We've changed our cache, so signal that immediately.
                 cachedFiles?.Remove(CreateURLHash(url));
-                PurgeHashes(tx_file, file);
+                PurgeHashes(txFileMgr, file);
                 return true;
             }
             return false;
@@ -471,16 +471,16 @@ namespace CKAN
                    .ToArray()
                    .Any(found => found);
 
-        private void PurgeHashes(TxFileManager? tx_file, string file)
+        private void PurgeHashes(TxFileManager? txFileMgr, string file)
         {
             try
             {
                 sha1Cache.TryRemove(file, out _);
                 sha256Cache.TryRemove(file, out _);
 
-                tx_file ??= new TxFileManager();
-                tx_file.Delete($"{file}.sha1");
-                tx_file.Delete($"{file}.sha256");
+                txFileMgr ??= new TxFileManager();
+                txFileMgr.Delete($"{file}.sha1");
+                txFileMgr.Delete($"{file}.sha256");
             }
             catch
             {
