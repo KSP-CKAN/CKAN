@@ -32,12 +32,13 @@ namespace CKAN.IO
                                IUser             user,
                                CancellationToken cancelToken = default)
         {
-            User        = user;
-            this.cache  = cache;
-            this.config = config;
-            instance    = inst;
+            log.DebugFormat("Creating ModuleInstaller for {0}", inst.GameDir);
+            instance         = inst;
+            // Make a transaction file manager that uses a temp dir in the instance's CKAN dir
+            this.cache       = cache;
+            this.config      = config;
+            User             = user;
             this.cancelToken = cancelToken;
-            log.DebugFormat("Creating ModuleInstaller for {0}", instance.GameDir);
         }
 
         public IUser User { get; set; }
@@ -394,7 +395,7 @@ namespace CKAN.IO
                             // Delete the manually installed DLL transaction-style because we believe we'll be replacing it
                             var toDelete = instance.ToAbsoluteGameDir(dll);
                             log.DebugFormat("Deleting manually installed DLL {0}", toDelete);
-                            var txFileMgr = new TxFileManager();
+                            var txFileMgr = new TxFileManager(instance.CkanDir);
                             txFileMgr.Snapshot(toDelete);
                             txFileMgr.Delete(toDelete);
                         }
@@ -543,9 +544,9 @@ namespace CKAN.IO
         /// fails at a later stage.
         /// </summary>
         /// <param name="files">The files to overwrite</param>
-        private static void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
+        private void DeleteConflictingFiles(IEnumerable<InstallableFile> files)
         {
-            var txFileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager(instance.CkanDir);
             foreach (InstallableFile file in files)
             {
                 log.DebugFormat("Trying to delete {0}", file.destination);
@@ -695,6 +696,16 @@ namespace CKAN.IO
 
         #endregion
 
+        private string? InstallFile(ZipFile          zipfile,
+                                    ZipEntry         entry,
+                                    string           fullPath,
+                                    bool             makeDirs,
+                                    string[]         candidateDuplicates,
+                                    IProgress<long>? progress)
+            => InstallFile(zipfile, entry, fullPath, makeDirs,
+                           new TxFileManager(instance.CkanDir),
+                           candidateDuplicates, progress);
+
         /// <summary>
         /// Copy the entry from the opened zipfile to the path specified.
         /// </summary>
@@ -707,11 +718,10 @@ namespace CKAN.IO
                                             ZipEntry         entry,
                                             string           fullPath,
                                             bool             makeDirs,
+                                            IFileManager     txFileMgr,
                                             string[]         candidateDuplicates,
                                             IProgress<long>? progress)
         {
-            var txFileMgr = new TxFileManager();
-
             if (entry.IsDirectory)
             {
                 // Skip if we're not making directories for this install.
@@ -918,7 +928,7 @@ namespace CKAN.IO
                                Registry             registry,
                                IProgress<long>      progress)
         {
-            var txFileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager(instance.CkanDir);
 
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {

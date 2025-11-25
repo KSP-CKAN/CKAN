@@ -388,7 +388,7 @@ namespace CKAN
 
         public void Save(bool enforce_consistency = true)
         {
-            var txFileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager(gameInstance.CkanDir);
 
             log.InfoFormat("Saving CKAN registry at {0}", path);
 
@@ -444,7 +444,7 @@ namespace CKAN
                                      bool                recommends,
                                      bool                withVersions)
         {
-            var txFileMgr = new TxFileManager();
+            var txFileMgr = new TxFileManager(gameInstance.CkanDir);
             var serialized = SerializeCurrentInstall(recommends, withVersions);
             foreach (var path in paths)
             {
