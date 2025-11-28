@@ -74,7 +74,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string[] CreateableDirs => new string[]
         {
-            "redux_updater"
+            "redux_updater",
             "mods",
             "GameData",
             "GameData/Mods",
@@ -258,7 +258,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
         // (PrimaryModDirectoryRelative is allowed implicitly)
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {
-            { "redux_updater",         "redux_updater"        }
+            { "redux_updater",         "redux_updater"        },
             { "mods",         "mods"         },
             { "BepInEx",         "BepInEx"         },
             { "BepInEx/plugins", "BepInEx/plugins" },
