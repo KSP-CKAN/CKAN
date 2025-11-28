@@ -258,8 +258,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
         // (PrimaryModDirectoryRelative is allowed implicitly)
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {
-            { "redux_updater",         "redux_updater"        },
-            { "mods",         "mods"         },
+            { "redux_updater",   "redux_updater"   },
+            { "mods",            "mods"            },
             { "BepInEx",         "BepInEx"         },
             { "BepInEx/plugins", "BepInEx/plugins" },
         };
