@@ -60,8 +60,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             DataDir,
             "MonoBleedingEdge",
             "PDLauncher",
-            "pm_cache",
-            "Redux",
+            "Redux/Addressables",
         };
 
         public string[] LeaveEmptyInClones => new string[]
