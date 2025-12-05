@@ -78,6 +78,8 @@ namespace CKAN.GUI
             this.RefreshTextBox = new System.Windows.Forms.TextBox();
             this.RefreshPostLabel = new System.Windows.Forms.Label();
             this.PauseRefreshCheckBox = new System.Windows.Forms.CheckBox();
+            this.FontScaleLabel = new System.Windows.Forms.Label();
+            this.FontScaleTextBox = new System.Windows.Forms.TextBox();
             this.MoreSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.LanguageSelectionLabel = new System.Windows.Forms.Label();
             this.LanguageSelectionComboBox = new System.Windows.Forms.ComboBox();
@@ -544,6 +546,8 @@ namespace CKAN.GUI
             this.BehaviourGroupBox.Controls.Add(this.RefreshTextBox);
             this.BehaviourGroupBox.Controls.Add(this.RefreshPostLabel);
             this.BehaviourGroupBox.Controls.Add(this.PauseRefreshCheckBox);
+            this.BehaviourGroupBox.Controls.Add(this.FontScaleLabel);
+            this.BehaviourGroupBox.Controls.Add(this.FontScaleTextBox);
             this.BehaviourGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.BehaviourGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BehaviourGroupBox.Location = new System.Drawing.Point(12, 310);
@@ -615,6 +619,21 @@ namespace CKAN.GUI
             this.PauseRefreshCheckBox.TabIndex = 38;
             this.PauseRefreshCheckBox.CheckedChanged += new System.EventHandler(this.PauseRefreshCheckBox_CheckedChanged);
             resources.ApplyResources(this.PauseRefreshCheckBox, "PauseRefreshCheckBox");
+            //
+            // FontScale
+            //
+            this.FontScaleLabel.AutoSize = true;
+            this.FontScaleLabel.Location = new System.Drawing.Point(9, 140);
+            this.FontScaleLabel.Size = new System.Drawing.Size(114, 26);
+            resources.ApplyResources(this.FontScaleLabel, "FontScaleLabel");
+
+            this.FontScaleTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.FontScaleTextBox.Location = new System.Drawing.Point(125, 138);
+            this.FontScaleTextBox.Name = "FontScaleTextBox";
+            this.FontScaleTextBox.Size = new System.Drawing.Size(25, 20);
+            this.FontScaleTextBox.TabIndex = 39;
+            this.FontScaleTextBox.TextChanged += new System.EventHandler(this.FontScaleTextBox_TextChanged);
+            this.FontScaleTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FontScaleTextBox_KeyPress);
             //
             // MoreSettingsGroupBox
             //
@@ -805,6 +824,8 @@ namespace CKAN.GUI
         private System.Windows.Forms.TextBox RefreshTextBox;
         private System.Windows.Forms.Label RefreshPostLabel;
         private System.Windows.Forms.CheckBox PauseRefreshCheckBox;
+        private System.Windows.Forms.Label FontScaleLabel;
+        private System.Windows.Forms.TextBox FontScaleTextBox;
         private System.Windows.Forms.GroupBox MoreSettingsGroupBox;
         private System.Windows.Forms.Label LanguageSelectionLabel;
         private System.Windows.Forms.ComboBox LanguageSelectionComboBox;

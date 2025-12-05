@@ -15,7 +15,7 @@ namespace CKAN.GUI
     [SupportedOSPlatform("windows")]
     #endif
     [ExcludeFromCodeCoverage]
-    public abstract class FormCompatibility : Form
+    public abstract class FormCompatibility : Forms.Form
     {
         private const int formHeightDifference = 24;
 

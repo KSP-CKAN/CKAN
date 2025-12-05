@@ -125,7 +125,7 @@ namespace CKAN.GUI
             this.LabelSelectionTree.HideSelection = false;
             this.LabelSelectionTree.Indent = 16;
             this.LabelSelectionTree.ItemHeight = 24;
-            this.LabelSelectionTree.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.LabelSelectionTree.Font = Styling.Fonts.Bold;
             this.LabelSelectionTree.Name = "LabelSelectionTree";
             this.LabelSelectionTree.ShowPlusMinus = false;
             this.LabelSelectionTree.ShowRootLines = false;

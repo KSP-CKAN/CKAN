@@ -15,7 +15,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class CompatibleGameVersionsDialog : Form
+    public partial class CompatibleGameVersionsDialog : Forms.Form
     {
         private readonly GameInstance _inst;
 

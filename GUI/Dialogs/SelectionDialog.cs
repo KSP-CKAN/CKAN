@@ -12,7 +12,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class SelectionDialog : Form
+    public partial class SelectionDialog : Forms.Form
     {
         public SelectionDialog()
         {

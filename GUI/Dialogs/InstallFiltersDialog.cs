@@ -15,7 +15,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class InstallFiltersDialog : Form
+    public partial class InstallFiltersDialog : Forms.Form
     {
         public InstallFiltersDialog(IConfiguration globalConfig, GameInstance instance)
         {

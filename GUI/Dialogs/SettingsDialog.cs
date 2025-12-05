@@ -17,7 +17,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class SettingsDialog : Form
+    public partial class SettingsDialog : Forms.Form
     {
         /// <summary>
         /// Initialize a settings window
@@ -74,6 +74,7 @@ namespace CKAN.GUI
             PauseRefreshCheckBox.Checked = guiConfig.RefreshPaused;
 
             UpdateRefreshRate();
+            UpdateFontScale();
 
             UpdateCacheInfo(coreConfig.DownloadCacheDir ?? GameInstanceManager.DefaultDownloadCacheDir);
             UpdateStabilityToleranceComboBox();
@@ -848,6 +849,11 @@ namespace CKAN.GUI
             }
         }
 
+        private void UpdateFontScale()
+        {
+            FontScaleTextBox.Text = coreConfig.FontScale.ToString();
+        }
+
         private void EnableTrayIconCheckBox_CheckedChanged(object? sender, EventArgs? e)
         {
             MinimizeToTrayCheckBox.Enabled = guiConfig.EnableTrayIcon = EnableTrayIconCheckBox.Checked;
@@ -872,6 +878,21 @@ namespace CKAN.GUI
             {
                 e.Handled = true;
             }
+        }
+
+        private void FontScaleTextBox_TextChanged(object? sender, EventArgs? e)
+        {
+            coreConfig.FontScale = string.IsNullOrEmpty(FontScaleTextBox.Text) ? 1.0f : float.Parse(FontScaleTextBox.Text);
+            UpdateFontScale();
+        }
+
+        private void FontScaleTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+            {
+                e.Handled = true;
+            }
+            Console.WriteLine(e.KeyChar);
         }
 
         private void PauseRefreshCheckBox_CheckedChanged(object? sender, EventArgs? e)

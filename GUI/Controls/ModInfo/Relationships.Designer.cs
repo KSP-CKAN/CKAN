@@ -123,7 +123,7 @@ namespace CKAN.GUI
             // LegendInstalledLabel
             //
             this.LegendInstalledLabel.AutoSize = true;
-            this.LegendInstalledLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
+            this.LegendInstalledLabel.Font = Styling.Fonts.Bold;
             this.LegendInstalledLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendInstalledLabel, "LegendInstalledLabel");
             //

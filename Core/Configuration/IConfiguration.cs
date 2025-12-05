@@ -30,6 +30,8 @@ namespace CKAN.Configuration
 
         string? Language { get; set; }
 
+        float FontScale { get; set; }
+
         /// <summary>
         /// Get the hosts that have auth tokens stored in the registry
         /// </summary>

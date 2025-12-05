@@ -8,7 +8,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class RenameInstanceDialog : Form
+    public partial class RenameInstanceDialog : Forms.Form
     {
         public RenameInstanceDialog()
         {

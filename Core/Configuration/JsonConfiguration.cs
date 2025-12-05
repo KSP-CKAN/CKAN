@@ -36,6 +36,7 @@ namespace CKAN.Configuration
             public Dictionary<string, string[]>? GlobalInstallFilters { get; set; } = new Dictionary<string, string[]>();
             public string?[]?                    PreferredHosts       { get; set; } = Array.Empty<string>();
             public bool?                         DevBuilds            { get; set; }
+            public float?                        FontScale            { get; set; }
         }
 
         /// <summary>
@@ -151,6 +152,17 @@ namespace CKAN.Configuration
                     config.Language = value;
                     SaveConfig();
                 }
+            }
+        }
+
+        public float FontScale
+        {
+            get => config.FontScale ?? 1.0f;
+
+            set
+            {
+                config.FontScale = value;
+                SaveConfig();
             }
         }
 

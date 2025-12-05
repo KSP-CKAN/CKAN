@@ -12,7 +12,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class GameCommandLineOptionsDialog : Form
+    public partial class GameCommandLineOptionsDialog : Forms.Form
     {
         public GameCommandLineOptionsDialog()
         {

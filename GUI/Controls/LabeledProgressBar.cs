@@ -22,7 +22,6 @@ namespace CKAN.GUI
             SetStyle(ControlStyles.OptimizedDoubleBuffer
                      | ControlStyles.UserPaint,
                      true);
-            Font = SystemFonts.DefaultFont;
             Text = "";
         }
 

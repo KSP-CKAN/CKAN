@@ -11,7 +11,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class NewRepoDialog : Form
+    public partial class NewRepoDialog : Forms.Form
     {
         public NewRepoDialog(Repository[] repos)
         {

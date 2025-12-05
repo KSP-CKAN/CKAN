@@ -18,7 +18,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class ManageGameInstancesDialog : Form
+    public partial class ManageGameInstancesDialog : Forms.Form
     {
         /// <summary>
         /// Initialize the game instance selection window

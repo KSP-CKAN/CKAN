@@ -379,10 +379,7 @@ namespace CKAN.GUI
                 ForeColor   = (compatible && !missingDLC)
                                   ? SystemColors.WindowText
                                   : Color.Red,
-                NodeFont    = new Font(DependsGraphTree.Font,
-                                       registry.IsInstalled(module.identifier, false)
-                                           ? FontStyle.Bold
-                                           : FontStyle.Regular),
+                NodeFont = registry.IsInstalled(module.identifier, false) ? Styling.Fonts.Bold : Styling.Fonts.Regular,
             };
         }
 
@@ -395,8 +392,7 @@ namespace CKAN.GUI
             {
                 Name        = relDescr.ToString(),
                 ToolTipText = relationship.LocalizeDescription(),
-                NodeFont    = new Font(DependsGraphTree.Font,
-                                       FontStyle.Bold),
+                NodeFont = Styling.Fonts.Bold,
             };
         }
 
