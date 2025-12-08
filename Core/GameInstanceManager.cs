@@ -284,9 +284,11 @@ namespace CKAN
 
             log.Debug("Copying directory.");
             Utilities.CopyDirectory(existingInstance.GameDir, newPath,
+                                    new string[] { "CKAN/registry.locked", "CKAN/playtime.json" },
                                     shareStockFolders ? existingInstance.Game.StockFolders
                                                       : Array.Empty<string>(),
-                                    leaveEmpty);
+                                    leaveEmpty,
+                                    new string[] { "CKAN" });
 
             // Add the new instance to the config
             AddInstance(new GameInstance(existingInstance.Game, newPath, newName, User));

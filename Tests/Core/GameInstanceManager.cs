@@ -133,48 +133,78 @@ namespace Tests.Core
         public void CloneInstance_BadInstance_ThrowsNotKSPDirKraken()
         {
             string badName = "badInstance";
-            string tempdir = TestData.NewTempDir();
-            GameInstance badKSP = new GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
+            using (var tempdir = new TemporaryDirectory())
+            {
+                var badKSP = new GameInstance(new KerbalSpaceProgram(),
+                                              TestData.bad_ksp_dirs().First(),
+                                              "badDir", new NullUser());
 
-            Assert.Throws<NotGameDirKraken>(() =>
-                manager?.CloneInstance(badKSP, badName, tempdir));
-            Assert.IsFalse(manager?.HasInstance(badName));
-
-            // Tidy up
-            Directory.Delete(tempdir, true);
+                Assert.Throws<NotGameDirKraken>(() =>
+                    manager?.CloneInstance(badKSP, badName, tempdir));
+                Assert.IsFalse(manager?.HasInstance(badName));
+            }
         }
 
         [Test]
         public void CloneInstance_ToNotEmptyFolder_ThrowsPathErrorKraken()
         {
-            using (var KSP = new DisposableKSP())
+            string instanceName = "newInstance";
+            using (var tempdir = new TemporaryDirectory())
             {
-                string instanceName = "newInstance";
-                string tempdir = TestData.NewTempDir();
                 File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
                 Assert.Throws<PathErrorKraken>(() =>
-                    manager?.CloneInstance(KSP.KSP, instanceName, tempdir));
+                    manager?.CloneInstance(tidy!.KSP, instanceName, tempdir));
                 Assert.IsFalse(manager?.HasInstance(instanceName));
-
-                // Tidy up.
-                Directory.Delete(tempdir, true);
             }
         }
 
         [Test]
         public void CloneInstance_GoodInstance_ManagerHasValidInstance()
         {
-            using (var KSP = new DisposableKSP())
+            string instanceName = "newInstance";
+            using (var tempdir = new TemporaryDirectory())
             {
-                string instanceName = "newInstance";
-                string tempdir = TestData.NewTempDir();
-
-                manager?.CloneInstance(KSP.KSP, instanceName, tempdir);
+                manager?.CloneInstance(tidy!.KSP, instanceName, tempdir);
                 Assert.IsTrue(manager?.HasInstance(instanceName));
+            }
+        }
 
-                // Tidy up.
-                Directory.Delete(tempdir, true);
+        [Test]
+        public void CloneInstance_WithCKANDirFiles_OmittedAndCopied()
+        {
+            // Arrange
+            var inst = tidy!.KSP;
+            string instanceName = "newInstance";
+            using (var tempdir = new TemporaryDirectory())
+            {
+                var origReg = Path.Combine(inst.CkanDir, "registry.json");
+                var origFI  = new FileInfo(origReg);
+                File.Copy(TestData.TestRegistry(), origReg);
+                File.WriteAllText(Path.Combine(inst.CkanDir, "registry.locked"), "1234");
+                File.WriteAllText(Path.Combine(inst.CkanDir, "playtime.json"),   "{}");
+
+                // Act
+                manager!.CloneInstance(inst, instanceName, tempdir);
+                var clone    = manager.Instances[instanceName];
+                var cloneReg = Path.Combine(clone.CkanDir, "registry.json");
+
+                // Assert
+                FileAssert.DoesNotExist(Path.Combine(clone.CkanDir, "registry.locked"));
+                FileAssert.DoesNotExist(Path.Combine(clone.CkanDir, "playtime.json"));
+                FileAssert.Exists(cloneReg);
+
+                // Act
+                using (var regMgr = RegistryManager.Instance(clone, new RepositoryDataManager()))
+                {
+                    regMgr.Save();
+
+                    // Assert
+                    FileAssert.AreEqual(new FileInfo(TestData.TestRegistry()), origFI,
+                                        "Original registry should be unchanged");
+                    FileAssert.AreNotEqual(origFI, new FileInfo(cloneReg),
+                                           "Updating the cloned registry should not affect the original");
+                }
             }
         }
 
@@ -386,6 +416,8 @@ namespace Tests.Core
                     {
                         Utilities.CopyDirectory(TestData.good_ksp_dir(),
                                                 g.GameDir!.FullName,
+                                                Array.Empty<string>(),
+                                                Array.Empty<string>(),
                                                 Array.Empty<string>(),
                                                 Array.Empty<string>());
                     }
