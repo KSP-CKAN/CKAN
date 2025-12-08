@@ -27,6 +27,7 @@ namespace Tests.Data
         {
             var dir = new TemporaryDirectory();
             Utilities.CopyDirectory(fromPath, dir,
+                                    Array.Empty<string>(), Array.Empty<string>(),
                                     Array.Empty<string>(), Array.Empty<string>());
             return dir;
         }

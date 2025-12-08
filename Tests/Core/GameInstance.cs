@@ -24,7 +24,7 @@ namespace Tests.Core
         {
             ksp_dir = TestData.NewTempDir();
             nullUser = new NullUser();
-            Utilities.CopyDirectory(TestData.good_ksp_dir(), ksp_dir, Array.Empty<string>(), Array.Empty<string>());
+            Utilities.CopyDirectory(TestData.good_ksp_dir(), ksp_dir, Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
             ksp = new GameInstance(new KerbalSpaceProgram(), ksp_dir, "test", nullUser);
         }
 
@@ -112,7 +112,7 @@ namespace Tests.Core
             }";
 
             // Generate a valid game dir except for missing buildID.txt and readme.txt
-            Utilities.CopyDirectory(TestData.good_ksp_dir(), gamedir, Array.Empty<string>(), Array.Empty<string>());
+            Utilities.CopyDirectory(TestData.good_ksp_dir(), gamedir, Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
             File.Delete(buildid);
             File.Delete(readme);
 
@@ -144,7 +144,7 @@ namespace Tests.Core
             }";
 
             // Generate a valid game dir except for missing buildID.txt and readme.txt
-            Utilities.CopyDirectory(TestData.good_ksp_dir(), gamedir, Array.Empty<string>(), Array.Empty<string>());
+            Utilities.CopyDirectory(TestData.good_ksp_dir(), gamedir, Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
             File.Delete(buildid);
             File.Delete(readme);
 

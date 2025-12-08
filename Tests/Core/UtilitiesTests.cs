@@ -22,6 +22,7 @@ namespace Tests.Core
 
                 // Act
                 Utilities.CopyDirectory(goodKspDir, tempDir,
+                                        Array.Empty<string>(), Array.Empty<string>(),
                                         Array.Empty<string>(), Array.Empty<string>());
                 var fi = new FileInfo(Path.Combine(tempDir, "GameData"));
 
@@ -50,7 +51,9 @@ namespace Tests.Core
 
                 // Act
                 Utilities.CopyDirectory(Path.Combine(TestData.DataDir, "KSP"), tempDir,
-                                        new string[] { "KSP-0.25/GameData" }, Array.Empty<string>());
+                                        Array.Empty<string>(),
+                                        new string[] { "KSP-0.25/GameData" },
+                                        Array.Empty<string>(), Array.Empty<string>());
 
                 // Assert
                 var fi1 = new FileInfo(Path.Combine(tempDir, "KSP-0.25"));
@@ -79,6 +82,7 @@ namespace Tests.Core
                 // Act / Assert
                 Assert.Throws<DirectoryNotFoundKraken>(() =>
                     Utilities.CopyDirectory(sourceDir, tempDir!,
+                                            Array.Empty<string>(), Array.Empty<string>(),
                                             Array.Empty<string>(), Array.Empty<string>()));
             }
         }
@@ -97,6 +101,7 @@ namespace Tests.Core
                 // Act / Assert
                 Assert.Throws<PathErrorKraken>(() =>
                     Utilities.CopyDirectory(goodKspDir, tempDir,
+                                            Array.Empty<string>(), Array.Empty<string>(),
                                             Array.Empty<string>(), Array.Empty<string>()));
             }
         }

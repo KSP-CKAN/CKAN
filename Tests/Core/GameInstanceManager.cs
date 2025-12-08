@@ -170,6 +170,44 @@ namespace Tests.Core
             }
         }
 
+        [Test]
+        public void CloneInstance_WithCKANDirFiles_OmittedAndCopied()
+        {
+            // Arrange
+            var inst = tidy!.KSP;
+            string instanceName = "newInstance";
+            using (var tempdir = new TemporaryDirectory())
+            {
+                var origReg = Path.Combine(inst.CkanDir, "registry.json");
+                var origFI  = new FileInfo(origReg);
+                File.Copy(TestData.TestRegistry(), origReg);
+                File.WriteAllText(Path.Combine(inst.CkanDir, "registry.locked"), "1234");
+                File.WriteAllText(Path.Combine(inst.CkanDir, "playtime.json"),   "{}");
+
+                // Act
+                manager!.CloneInstance(inst, instanceName, tempdir);
+                var clone    = manager.Instances[instanceName];
+                var cloneReg = Path.Combine(clone.CkanDir, "registry.json");
+
+                // Assert
+                FileAssert.DoesNotExist(Path.Combine(clone.CkanDir, "registry.locked"));
+                FileAssert.DoesNotExist(Path.Combine(clone.CkanDir, "playtime.json"));
+                FileAssert.Exists(cloneReg);
+
+                // Act
+                using (var regMgr = RegistryManager.Instance(clone, new RepositoryDataManager()))
+                {
+                    regMgr.Save();
+
+                    // Assert
+                    FileAssert.AreEqual(new FileInfo(TestData.TestRegistry()), origFI,
+                                        "Original registry should be unchanged");
+                    FileAssert.AreNotEqual(origFI, new FileInfo(cloneReg),
+                                           "Updating the cloned registry should not affect the original");
+                }
+            }
+        }
+
         // FakeInstance
 
         [Test]
@@ -378,6 +416,8 @@ namespace Tests.Core
                     {
                         Utilities.CopyDirectory(TestData.good_ksp_dir(),
                                                 g.GameDir!.FullName,
+                                                Array.Empty<string>(),
+                                                Array.Empty<string>(),
                                                 Array.Empty<string>(),
                                                 Array.Empty<string>());
                     }

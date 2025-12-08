@@ -75,17 +75,24 @@ namespace CKAN
         /// </summary>
         /// <param name="sourceDirPath">Source directory path</param>
         /// <param name="destDirPath">Destination directory path</param>
+        /// <param name="fileRelPathsToIgnore">Files to skip</param>
         /// <param name="subFolderRelPathsToSymlink">Relative subdirs that should be symlinked to the originals instead of copied</param>
         /// <param name="subFolderRelPathsToLeaveEmpty">Relative subdirs that should be left empty</param>
+        /// <param name="subFolderRelPathsToForbidHardlinks">Relative subdirs that should always have their files copied instead of hardlinked</param>
         public static void CopyDirectory(string   sourceDirPath,
                                          string   destDirPath,
+                                         string[] fileRelPathsToIgnore,
                                          string[] subFolderRelPathsToSymlink,
-                                         string[] subFolderRelPathsToLeaveEmpty)
+                                         string[] subFolderRelPathsToLeaveEmpty,
+                                         string[] subFolderRelPathsToForbidHardlinks)
         {
             using (var transaction = CkanTransaction.CreateTransactionScope())
             {
                 CopyDirectory(sourceDirPath, destDirPath, new TxFileManager(),
-                              subFolderRelPathsToSymlink, subFolderRelPathsToLeaveEmpty);
+                              fileRelPathsToIgnore,
+                              subFolderRelPathsToSymlink,
+                              subFolderRelPathsToLeaveEmpty,
+                              subFolderRelPathsToForbidHardlinks);
                 transaction.Complete();
             }
         }
@@ -93,8 +100,11 @@ namespace CKAN
         private static void CopyDirectory(string        sourceDirPath,
                                           string        destDirPath,
                                           TxFileManager txFileMgr,
+                                          string[]      fileRelPathsToIgnore,
                                           string[]      subFolderRelPathsToSymlink,
-                                          string[]      subFolderRelPathsToLeaveEmpty)
+                                          string[]      subFolderRelPathsToLeaveEmpty,
+                                          string[]      subFolderRelPathsToForbidHardlinks,
+                                          bool          allowHardLinks = true)
         {
             var sourceDir = new DirectoryInfo(sourceDirPath);
             if (!sourceDir.Exists)
@@ -117,13 +127,20 @@ namespace CKAN
             // Get the files in the directory and copy them to the new location
             foreach (var file in sourceDir.GetFiles())
             {
-                if (file.Name is "registry.locked" or "playtime.json")
+                if (fileRelPathsToIgnore.Contains(file.Name))
                 {
                     continue;
                 }
-                InstalledFilesDeduplicator.CreateOrCopy(file,
-                                                        Path.Combine(destDirPath, file.Name),
-                                                        txFileMgr);
+                if (allowHardLinks)
+                {
+                    InstalledFilesDeduplicator.CreateOrCopy(file,
+                                                            Path.Combine(destDirPath, file.Name),
+                                                            txFileMgr);
+                }
+                else
+                {
+                    txFileMgr.Copy(file.FullName, Path.Combine(destDirPath, file.Name), false);
+                }
             }
 
             // Create all first level subdirectories
@@ -150,8 +167,11 @@ namespace CKAN
                         {
                             // Copy subdir contents to new location
                             CopyDirectory(subdir.FullName, temppath, txFileMgr,
+                                          SubPaths(subdir.Name, fileRelPathsToIgnore).ToArray(),
                                           SubPaths(subdir.Name, subFolderRelPathsToSymlink).ToArray(),
-                                          SubPaths(subdir.Name, subFolderRelPathsToLeaveEmpty).ToArray());
+                                          SubPaths(subdir.Name, subFolderRelPathsToLeaveEmpty).ToArray(),
+                                          SubPaths(subdir.Name, subFolderRelPathsToForbidHardlinks).ToArray(),
+                                          allowHardLinks && !subFolderRelPathsToForbidHardlinks.Contains(subdir.Name));
                         }
                     }
                 }

@@ -27,6 +27,8 @@ namespace Tests.Data
             Utilities.CopyDirectory(TestData.good_ksp_dir(),
                                     _disposableDir,
                                     Array.Empty<string>(),
+                                    Array.Empty<string>(),
+                                    Array.Empty<string>(),
                                     Array.Empty<string>());
             KSP = new GameInstance(game, _disposableDir,
                                    name, new NullUser());
