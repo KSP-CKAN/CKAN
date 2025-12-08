@@ -133,48 +133,40 @@ namespace Tests.Core
         public void CloneInstance_BadInstance_ThrowsNotKSPDirKraken()
         {
             string badName = "badInstance";
-            string tempdir = TestData.NewTempDir();
-            GameInstance badKSP = new GameInstance(new KerbalSpaceProgram(), TestData.bad_ksp_dirs().First(), "badDir", new NullUser());
+            using (var tempdir = new TemporaryDirectory())
+            {
+                var badKSP = new GameInstance(new KerbalSpaceProgram(),
+                                              TestData.bad_ksp_dirs().First(),
+                                              "badDir", new NullUser());
 
-            Assert.Throws<NotGameDirKraken>(() =>
-                manager?.CloneInstance(badKSP, badName, tempdir));
-            Assert.IsFalse(manager?.HasInstance(badName));
-
-            // Tidy up
-            Directory.Delete(tempdir, true);
+                Assert.Throws<NotGameDirKraken>(() =>
+                    manager?.CloneInstance(badKSP, badName, tempdir));
+                Assert.IsFalse(manager?.HasInstance(badName));
+            }
         }
 
         [Test]
         public void CloneInstance_ToNotEmptyFolder_ThrowsPathErrorKraken()
         {
-            using (var KSP = new DisposableKSP())
+            string instanceName = "newInstance";
+            using (var tempdir = new TemporaryDirectory())
             {
-                string instanceName = "newInstance";
-                string tempdir = TestData.NewTempDir();
                 File.Create(Path.Combine(tempdir, "shouldntbehere.txt")).Close();
 
                 Assert.Throws<PathErrorKraken>(() =>
-                    manager?.CloneInstance(KSP.KSP, instanceName, tempdir));
+                    manager?.CloneInstance(tidy!.KSP, instanceName, tempdir));
                 Assert.IsFalse(manager?.HasInstance(instanceName));
-
-                // Tidy up.
-                Directory.Delete(tempdir, true);
             }
         }
 
         [Test]
         public void CloneInstance_GoodInstance_ManagerHasValidInstance()
         {
-            using (var KSP = new DisposableKSP())
+            string instanceName = "newInstance";
+            using (var tempdir = new TemporaryDirectory())
             {
-                string instanceName = "newInstance";
-                string tempdir = TestData.NewTempDir();
-
-                manager?.CloneInstance(KSP.KSP, instanceName, tempdir);
+                manager?.CloneInstance(tidy!.KSP, instanceName, tempdir);
                 Assert.IsTrue(manager?.HasInstance(instanceName));
-
-                // Tidy up.
-                Directory.Delete(tempdir, true);
             }
         }
 
