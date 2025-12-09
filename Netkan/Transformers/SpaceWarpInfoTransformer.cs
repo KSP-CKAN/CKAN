@@ -1,25 +1,28 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using ICSharpCode.SharpZipLib.Zip;
-using log4net;
 using Newtonsoft.Json.Linq;
+using log4net;
 
+using CKAN.Versioning;
+using CKAN.SpaceWarp;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Extensions;
-using CKAN.NetKAN.Sources.Github;
-using CKAN.Versioning;
 
 namespace CKAN.NetKAN.Transformers
 {
     internal sealed class SpaceWarpInfoTransformer : ITransformer
     {
-        public SpaceWarpInfoTransformer(IHttpService httpSvc, IGithubApi githubApi, IModuleService modSvc)
+        public SpaceWarpInfoTransformer(IHttpService         httpSvc,
+                                        ISpaceWarpInfoLoader loader,
+                                        IModuleService       modSvc)
         {
-            this.httpSvc   = httpSvc;
-            this.githubApi = githubApi;
-            this.modSvc    = modSvc;
+            this.httpSvc = httpSvc;
+            this.loader  = loader;
+            this.modSvc  = modSvc;
         }
 
         public string Name => "space_warp_info";
@@ -30,10 +33,12 @@ namespace CKAN.NetKAN.Transformers
             {
                 var moduleJson = metadata.Json();
                 moduleJson.SafeAdd("version", "1");
-                CkanModule    mod    = CkanModule.FromJson(moduleJson.ToString());
-                ZipFile       zip    = new ZipFile(httpSvc.DownloadModule(metadata));
-                var swinfo = modSvc.GetInternalSpaceWarpInfo(mod, zip, metadata.Vref.Id);
-                if (swinfo != null)
+                CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
+                ZipFile    zip = new ZipFile(httpSvc.DownloadModule(metadata));
+                if (modSvc.GetInternalSpaceWarpInfos(mod, zip, metadata.Vref.Id)
+                          .Select(loader.Load)
+                          .FirstOrDefault()
+                    is SpaceWarpInfo swinfo)
                 {
                     log.Info("Found swinfo.json file");
                     var json = metadata.Json();
@@ -47,23 +52,6 @@ namespace CKAN.NetKAN.Transformers
                             json["resources"] = resourcesJson = new JObject();
                         }
                         resourcesJson.SafeAdd("remote-swinfo", swinfo.version_check.OriginalString);
-
-                        try
-                        {
-                            var remoteInfo = modSvc.ParseSpaceWarpJson(
-                                githubApi?.DownloadText(swinfo.version_check)
-                                ?? httpSvc.DownloadText(swinfo.version_check));
-                            if (remoteInfo != null && swinfo.version == remoteInfo.version)
-                            {
-                                log.InfoFormat("Using remote swinfo.json file: {0}",
-                                               swinfo.version_check);
-                                swinfo = remoteInfo;
-                            }
-                        }
-                        catch (Exception exc)
-                        {
-                            throw new Kraken($"Error fetching remote swinfo {swinfo.version_check}: {exc.Message}");
-                        }
                     }
 
                     json.SafeAdd("name",     swinfo.name);
@@ -88,9 +76,9 @@ namespace CKAN.NetKAN.Transformers
             yield return metadata;
         }
 
-        private readonly IHttpService   httpSvc;
-        private readonly IGithubApi     githubApi;
-        private readonly IModuleService modSvc;
+        private readonly IHttpService         httpSvc;
+        private readonly ISpaceWarpInfoLoader loader;
+        private readonly IModuleService       modSvc;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SpaceWarpInfoTransformer));
     }

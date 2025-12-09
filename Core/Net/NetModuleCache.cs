@@ -142,7 +142,7 @@ namespace CKAN
         /// </summary>
         /// <param name="module">The module object corresponding to the download</param>
         /// <param name="path">Path to the file to add</param>
-        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with byte counts</param>
         /// <param name="description">Description of the file</param>
         /// <param name="move">True to move the file, false to copy</param>
         /// <param name="cancelToken">Cancellation token to cancel the operation</param>
@@ -209,7 +209,7 @@ namespace CKAN
         /// </summary>
         /// <param name="filename">Path to zip file to check</param>
         /// <param name="invalidReason">Description of problem with the file</param>
-        /// <param name="progress">Callback to notify as we traverse the input, called with percentages from 0 to 100</param>
+        /// <param name="progress">Callback to notify as we traverse the input, called with byte counts</param>
         /// <param name="cancelToken">Cancellation token to cancel the operation</param>
         /// <returns>
         /// True if valid, false otherwise. See invalidReason param for explanation.

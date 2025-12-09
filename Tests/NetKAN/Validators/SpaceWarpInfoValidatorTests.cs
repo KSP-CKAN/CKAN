@@ -6,7 +6,6 @@ using NUnit.Framework;
 using Moq;
 
 using CKAN;
-using CKAN.SpaceWarp;
 using CKAN.NetKAN.Validators;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.NetKAN.Sources.Github;
@@ -28,31 +27,28 @@ namespace Tests.NetKAN.Validators
                 .Returns(TestData.DogeCoinFlagZip());
             var github = new Mock<IGithubApi>();
             var modSvc = new Mock<IModuleService>();
-            modSvc.Setup(ms => ms.GetSpaceWarpInfo(It.IsAny<CkanModule>(),
-                                                   It.IsAny<ZipFile>(),
-                                                   It.IsAny<IGithubApi>(),
-                                                   It.IsAny<IHttpService>(),
-                                                   It.IsAny<string?>()))
-                  .Returns(new SpaceWarpInfo()
-                           {
-                               name        = "Mod with swinfo",
-                               author      = "Mod author",
-                               description = "A mod that contains a swinfo.json and gets many properties from it",
-                               version     = "1.0.0",
-                               dependencies = new string[]
-                                              {
-                                                  "Missing1",
-                                                  "Present1",
-                                                  "With.Name.Space.Prefix.Missing2",
-                                                  "With.Name.Space.Prefix.Present2",
-                                                  "missing3",
-                                                  "present3",
-                                              }.Select(ident => new Dependency() { id = ident })
-                                               .ToArray(),
-                           });
+            modSvc.Setup(ms => ms.GetInternalSpaceWarpInfos(It.IsAny<CkanModule>(),
+                                                            It.IsAny<ZipFile>(),
+                                                            It.IsAny<string?>()))
+                  .Returns(Enumerable.Repeat(
+                      @"{
+                          ""name"":        ""Mod with swinfo"",
+                          ""author"":      ""Mod author"",
+                          ""description"": ""A mod that contains a swinfo.json and gets many properties from it"",
+                          ""version"":     ""1.0.0"",
+                          ""dependencies"": [
+                              { ""id"": ""Missing1"" },
+                              { ""id"": ""Present1"" },
+                              { ""id"": ""With.Name.Space.Prefix.Missing2"" },
+                              { ""id"": ""With.Name.Space.Prefix.Present2"" },
+                              { ""id"": ""missing3"" },
+                              { ""id"": ""present3"" }
+                          ]
+                      }", 1));
             var game = new KerbalSpaceProgram();
+            var loader = new SpaceWarpInfoLoader(http.Object, github.Object);
             var sut  = new SpaceWarpInfoValidator(http.Object,
-                                                  github.Object,
+                                                  loader,
                                                   modSvc.Object);
             var metadata = new Metadata(new JObject()
             {

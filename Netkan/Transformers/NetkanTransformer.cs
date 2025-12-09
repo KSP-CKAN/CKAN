@@ -33,6 +33,7 @@ namespace CKAN.NetKAN.Transformers
             var ghApi = new GithubApi(http, githubToken);
             var glApi = new GitlabApi(http, gitlabToken);
             var sfApi = new SourceForgeApi(http);
+            var swLoader = new SpaceWarpInfoLoader(http, ghApi);
             _transformers = InjectVersionedOverrideTransformers(new ITransformer[]
             {
                 new StagingTransformer(game),
@@ -45,7 +46,7 @@ namespace CKAN.NetKAN.Transformers
                 new JenkinsTransformer(new JenkinsApi(http)),
                 new AvcKrefTransformer(http, ghApi),
                 new InternalCkanTransformer(http, moduleService),
-                new SpaceWarpInfoTransformer(http, ghApi, moduleService),
+                new SpaceWarpInfoTransformer(http, swLoader, moduleService),
                 new AvcTransformer(http, moduleService, ghApi),
                 new LocalizationsTransformer(http, moduleService),
                 new VersionEditTransformer(),

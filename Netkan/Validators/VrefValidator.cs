@@ -1,6 +1,8 @@
-using log4net;
-using Newtonsoft.Json.Linq;
+using System.Linq;
+
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json.Linq;
+using log4net;
 
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Model;
@@ -82,7 +84,7 @@ namespace CKAN.NetKAN.Validators
                     bool hasSWVref = (metadata.Vref?.Source == "space-warp");
                     using (var zipfile = new ZipFile(zipFilePath))
                     {
-                        bool hasSWInfo = _moduleService.GetInternalSpaceWarpInfo(mod, zipfile) != null;
+                        bool hasSWInfo = _moduleService.GetInternalSpaceWarpInfos(mod, zipfile).Any();
                         if (hasSWVref && !hasSWInfo)
                         {
                             Log.Warn("$vref is space-warp, swinfo.json file missing");

@@ -108,14 +108,14 @@ namespace Tests.Core.Types
                 using (var inst = new DisposableKSP())
                 {
                     // Act
-                    var results = mod.install!.SelectMany(i => i.FindInstallableFiles(zip, inst.KSP))
+                    var results = mod.install!.SelectMany(i => i.FindInstallableFiles(mod, zip, inst.KSP.Game))
                                               .ToArray();
 
                     // Assert
                     CollectionAssert.AreEquivalent(
                         new string[]
                         {
-                            inst.KSP.ToAbsoluteGameDir($"{directory}/AwesomeShip.craft"),
+                            $"{directory}/AwesomeShip.craft",
                         },
                         results.Select(f => f.destination));
                 }
@@ -155,14 +155,14 @@ namespace Tests.Core.Types
                 using (var inst = new DisposableKSP())
                 {
                     // Act
-                    var results = mod.install!.SelectMany(i => i.FindInstallableFiles(zip, inst.KSP))
+                    var results = mod.install!.SelectMany(i => i.FindInstallableFiles(mod, zip, inst.KSP.Game))
                                               .ToArray();
 
                     // Assert
                     CollectionAssert.AreEquivalent(
                         new string[]
                         {
-                            inst.KSP.ToAbsoluteGameDir("saves/scenarios/AwesomeRace.sfs"),
+                            "saves/scenarios/AwesomeRace.sfs",
                         },
                         results.Select(f => f.destination));
                 }

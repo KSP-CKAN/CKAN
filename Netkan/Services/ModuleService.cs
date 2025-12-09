@@ -4,17 +4,15 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-using log4net;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using log4net;
 
 using CKAN.IO;
 using CKAN.Extensions;
 using CKAN.Avc;
-using CKAN.SpaceWarp;
 using CKAN.Games;
-using CKAN.NetKAN.Sources.Github;
 
 namespace CKAN.NetKAN.Services
 {
@@ -71,9 +69,8 @@ namespace CKAN.NetKAN.Services
                 .FirstOrDefault();
 
         public bool HasInstallableFiles(CkanModule module, string filePath)
-            // TODO: DBB: Let's not use exceptions for flow control
             => Utilities.DefaultIfThrows(() =>
-                   ModuleInstaller.FindInstallableFiles(module, filePath, game))
+                   ModuleInstaller.FindInstallableFiles(module, filePath, game).ToArray())
                            != null;
 
         public IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip)
@@ -232,46 +229,16 @@ namespace CKAN.NetKAN.Services
             }
         }
 
-        private const string SpaceWarpInfoFilename = "swinfo.json";
-        private static readonly JsonSerializerSettings ignoreJsonErrors = new JsonSerializerSettings()
-        {
-            DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-            Error = (sender, e) => e.ErrorContext.Handled = true
-        };
-
-        public SpaceWarpInfo? ParseSpaceWarpJson(string? json)
-            => json == null ? null : JsonConvert.DeserializeObject<SpaceWarpInfo>(json, ignoreJsonErrors);
-
-        public SpaceWarpInfo? GetInternalSpaceWarpInfo(CkanModule   module,
-                                                       ZipFile      zip,
-                                                       string?      internalFilePath = null)
-            => GetInternalSpaceWarpInfos(module, zip, internalFilePath).FirstOrDefault();
-
-        private IEnumerable<SpaceWarpInfo> GetInternalSpaceWarpInfos(CkanModule   module,
-                                                                     ZipFile      zip,
-                                                                     string?      internalFilePath = null)
-            => (string.IsNullOrWhiteSpace(internalFilePath)
-                    ? GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, game)
-                    : ModuleInstaller.FindInstallableFiles(module, zip, game)
-                                     .Where(instF => instF.source.Name == internalFilePath))
+        public IEnumerable<string> GetInternalSpaceWarpInfos(CkanModule module,
+                                                             ZipFile    zip,
+                                                             string?    internalFilePath = null)
+            => (internalFilePath is { Length: > 0 }
+                    ? ModuleInstaller.FindInstallableFiles(module, zip, game)
+                                     .Where(instF => instF.source.Name == internalFilePath)
+                    : GetFilesBySuffix(module, zip, SpaceWarpInfoFilename, game))
                 .Select(instF => instF.source)
-                .Select(entry => ParseSpaceWarpJson(new StreamReader(zip.GetInputStream(entry)).ReadToEnd()))
-                .OfType<SpaceWarpInfo>();
+                .Select(entry => new StreamReader(zip.GetInputStream(entry)).ReadToEnd());
 
-        public SpaceWarpInfo? GetSpaceWarpInfo(CkanModule   module,
-                                               ZipFile      zip,
-                                               IGithubApi   githubApi,
-                                               IHttpService httpSvc,
-                                               string?      internalFilePath = null)
-            => GetInternalSpaceWarpInfos(module, zip, internalFilePath)
-               .Select(swinfo => swinfo.version_check != null
-                                 && Uri.IsWellFormedUriString(swinfo.version_check.OriginalString, UriKind.Absolute)
-                                 && ParseSpaceWarpJson(githubApi?.DownloadText(swinfo.version_check)
-                                                                ?? httpSvc.DownloadText(swinfo.version_check))
-                                    is SpaceWarpInfo remoteSwinfo
-                                 && remoteSwinfo.version == swinfo.version
-                                     ? remoteSwinfo
-                                     : swinfo)
-               .FirstOrDefault();
+        private const string SpaceWarpInfoFilename = "swinfo.json";
     }
 }

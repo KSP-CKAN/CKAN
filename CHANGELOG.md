@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - [Netkan] Make CachingHttpService more thread-safe (#4402 by: HebaruSan)
 - [Netkan] Lookback for `version_from_asset` (#4407 by: HebaruSan)
 - [Build] Migrate Mac app bundle from Mono to dotnet (#4410, #4418 by: HebaruSan; reviewed: lewisfm)
+- [Core] Refactor module installer to use relative paths internally (#4469 by: HebaruSan)
 
 ## v1.36.0 (Quasar)
 
