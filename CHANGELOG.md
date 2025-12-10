@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix GUI exceptions for module not in available modules list (#4431 by: HebaruSan)
 - [Core] Don't clone with symlinks on Linux (#4441 by: HebaruSan)
 - [Core] Use temp dir in instance for mod file transactions (#4462 by: HebaruSan)
+- [Core] Fix creating directories for Scenarios (#4471 by: HebaruSan)
 
 ### Internal
 
