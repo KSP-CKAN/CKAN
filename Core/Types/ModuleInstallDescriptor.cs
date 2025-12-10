@@ -384,6 +384,8 @@ namespace CKAN
                                              .DefaultIfEmpty()
                                              .Min(match => match?.Index);
 
+            var allowDirs = AnyEqualsOrStartsWith(game.CreateableInstallTos, install_to);
+
             // O(N^2) solution, as we're walking the zipfile for each stanza.
             // Surely there's a better way, although this is fast enough we may not care.
             foreach (ZipEntry entry in zipfile)
@@ -404,7 +406,7 @@ namespace CKAN
                 yield return new InstallableFile
                 {
                     source      = entry,
-                    makedir     = AllowDirectoryCreation(game, dest),
+                    makedir     = allowDirs || AnyEqualsOrStartsWith(game.CreateableDirs, dest),
                     destination = dest,
                 };
                 ++fileCount;
@@ -423,9 +425,10 @@ namespace CKAN
         private static readonly Regex updirRegex = new Regex(@"/\.\.(/|$)",
                                                              RegexOptions.Compiled);
 
-        private static bool AllowDirectoryCreation(IGame game, string relativePath)
-            => game.CreateableDirs.Any(dir => relativePath == dir
-                                           || relativePath.StartsWith($"{dir}/"));
+        private static bool AnyEqualsOrStartsWith(IEnumerable<string> haystack,
+                                                  string              needle)
+            => haystack.Any(dir => needle == dir
+                                || needle.StartsWith($"{dir}/"));
 
         /// <summary>
         /// Transforms the name of the output. This will strip the leading directories from the stanza file from

@@ -82,9 +82,14 @@ namespace CKAN.Games.KerbalSpaceProgram
             "GameData", "Ships", "Missions"
         };
 
+        public string[] CreateableInstallTos => new string[]
+        {
+            "GameData", "Tutorial", "Scenarios", "Missions",
+        };
+
         public string[] CreateableDirs => new string[]
         {
-            "GameData", "Tutorial", "Scenarios", "Missions", "Ships/Script"
+            "Ships/Script",
         };
 
         public string[] AutoRemovableDirs => new string[]

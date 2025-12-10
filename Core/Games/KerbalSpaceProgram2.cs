@@ -70,6 +70,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string[] ReservedPaths => Array.Empty<string>();
 
+        public string[] CreateableInstallTos => Array.Empty<string>();
+
         public string[] CreateableDirs => new string[]
         {
             "GameData",

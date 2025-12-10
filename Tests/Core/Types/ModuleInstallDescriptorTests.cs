@@ -134,7 +134,9 @@ namespace Tests.Core.Types
                 zip.BeginUpdate();
                 zip.AddDirectory("saves");
                 zip.AddDirectory("saves/scenarios");
+                zip.AddDirectory("saves/scenarios/AwesomeRace");
                 zip.Add(new ZipEntry("saves/scenarios/AwesomeRace.sfs") { Size = 0, CompressedSize = 0 });
+                zip.Add(new ZipEntry("saves/scenarios/AwesomeRace/persistent.sfs") { Size = 0, CompressedSize = 0 });
                 zip.CommitUpdate();
 
                 var mod = CkanModule.FromJson(@"
@@ -147,6 +149,10 @@ namespace Tests.Core.Types
                         ""install"": [
                             {
                                 ""file"": ""saves/scenarios/AwesomeRace.sfs"",
+                                ""install_to"": ""Scenarios""
+                            },
+                            {
+                                ""file"": ""saves/scenarios/AwesomeRace"",
                                 ""install_to"": ""Scenarios""
                             }
                         ]
@@ -163,8 +169,11 @@ namespace Tests.Core.Types
                         new string[]
                         {
                             "saves/scenarios/AwesomeRace.sfs",
+                            "saves/scenarios/AwesomeRace",
+                            "saves/scenarios/AwesomeRace/persistent.sfs",
                         },
                         results.Select(f => f.destination));
+                    Assert.IsTrue(results.All(f => f.makedir));
                 }
             }
         }
