@@ -72,6 +72,11 @@ namespace CKAN.CmdLine
                                         .Where(mod => !mod.Module.IsDLC)
                                         .Select(mod => mod.identifier)
                                         .ToList();
+                if (options.modules.Count < 1)
+                {
+                    user.RaiseMessage(Properties.Resources.RemoveAllNothingInstalled);
+                    return Exit.BADOPT;
+                }
             }
 
             if (options.modules != null
