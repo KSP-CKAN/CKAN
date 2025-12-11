@@ -108,7 +108,17 @@ namespace CKAN
             }
             if (candidates.Count == 0)
             {
-                throw new DependenciesNotSatisfiedKraken(unresolved, registry, game, this);
+                if (unresolved.Count > 0)
+                {
+                    throw new DependenciesNotSatisfiedKraken(unresolved, registry, game, this);
+                }
+                else
+                {
+                    throw new InconsistentKraken(string.Format(Properties.Resources.ResolvedRelationshipsTreeUnsatisfied,
+                                                               rel,
+                                                               string.Join(Environment.NewLine,
+                                                                           installing.OrderBy(i => i.identifier))));
+                }
             }
             return candidates;
         }
