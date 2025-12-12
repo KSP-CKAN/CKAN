@@ -2,12 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
-- [GUI] Add global font scaling:
-  * Centralized class to store all font definitions
-  * Cleanup same font redifinitions across the GUI
-  * Standardize font units across GUI, no more Point/Pixel mixture
-  * FontScale settings variable to set the font scale
-
 ## v1.36.1
 
 ### Features
