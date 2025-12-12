@@ -2,12 +2,18 @@ using System.Drawing;
 using Autofac;
 using CKAN.Configuration;
 using CKAN.GUI.Styling;
+#if NET5_0_OR_GREATER
+using System.Runtime.Versioning;
+#endif
 
 namespace CKAN.GUI
 {
     namespace Styling
     {
         // Set of fonts used accross GUI
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         public static class Fonts
         {
             private static readonly float FontScale;
@@ -30,6 +36,9 @@ namespace CKAN.GUI
     // Wrppers to make setting scaled default font easier
     namespace Forms
     {
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         public class Form : System.Windows.Forms.Form
         {
             public Form() : base()
@@ -37,6 +46,9 @@ namespace CKAN.GUI
                 Font = Fonts.Regular;
             }
         }
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         public class MenuStrip : System.Windows.Forms.MenuStrip
         {
             public MenuStrip() : base()
@@ -44,6 +56,9 @@ namespace CKAN.GUI
                 Font = Fonts.Regular;
             }
         }
+        #if NET5_0_OR_GREATER
+        [SupportedOSPlatform("windows")]
+        #endif
         public class ToolStripMenuItem : System.Windows.Forms.ToolStripMenuItem
         {
             public ToolStripMenuItem() : base()
