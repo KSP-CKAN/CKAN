@@ -55,6 +55,7 @@ namespace CKAN
         public override int GetHashCode()
             => (source, relationship, reason).GetHashCode();
 
+
         public virtual IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom()
             => reason is SelectionReason.Depends && Unsatisfied()
                    ? Enumerable.Repeat(new ResolvedRelationship[] { this }, 1)
@@ -85,7 +86,8 @@ namespace CKAN
             => $"{source} {relationship}: Installed {installed}";
 
         public override ResolvedRelationship WithSource(CkanModule newSrc, SelectionReason newRsn)
-            => new ResolvedByInstalled(newSrc, relationship, newRsn, installed);
+            => source == newSrc ? this
+                                : new ResolvedByInstalled(newSrc, relationship, newRsn, installed);
     }
 
     public class ResolvedByInstalling : ResolvedRelationship
@@ -109,7 +111,8 @@ namespace CKAN
             => $"{base.ToString()}: Installing {installing}";
 
         public override ResolvedRelationship WithSource(CkanModule newSrc, SelectionReason newRsn)
-            => new ResolvedByInstalling(newSrc, relationship, newRsn, installing);
+            => source == newSrc ? this
+                                : new ResolvedByInstalling(newSrc, relationship, newRsn, installing);
     }
 
     public class ResolvedByDLL : ResolvedRelationship
@@ -126,7 +129,8 @@ namespace CKAN
             => $"{base.ToString()}: DLL";
 
         public override ResolvedRelationship WithSource(CkanModule newSrc, SelectionReason newRsn)
-            => new ResolvedByDLL(newSrc, relationship, newRsn);
+            => source == newSrc ? this
+                                : new ResolvedByDLL(newSrc, relationship, newRsn);
     }
 
     public class ResolvedByNew : ResolvedRelationship
@@ -151,7 +155,7 @@ namespace CKAN
         public ResolvedByNew(CkanModule                      source,
                              RelationshipDescriptor          relationship,
                              SelectionReason                 reason,
-                             IEnumerable<CkanModule>         providers,
+                             IReadOnlyCollection<CkanModule> providers,
                              IReadOnlyCollection<CkanModule> definitelyInstalling,
                              IReadOnlyCollection<CkanModule> allInstalling,
                              IRegistryQuerier                registry,
@@ -171,7 +175,11 @@ namespace CKAN
                                                            : (optRels & OptionalRelationships.AllSuggestions) == 0
                                                                ? optRels & ~OptionalRelationships.Suggestions
                                                                : optRels,
-                                                       relationshipCache)
+                                                       // If we are choosing between multiple options,
+                                                       // cache the branches separately
+                                                       providers.Count == 1
+                                                           ? relationshipCache
+                                                           : new RelationshipCache(relationshipCache))
                                                        .ToArray()))
         {
         }
@@ -206,7 +214,9 @@ namespace CKAN
                                          .Select(line => $"\t{line}"));
 
         public override ResolvedRelationship WithSource(CkanModule newSrc, SelectionReason newRsn)
-            => new ResolvedByNew(newSrc, relationship, newRsn, resolved);
+            => source == newSrc ? this
+                                : new ResolvedByNew(newSrc, relationship, newRsn, resolved);
+
 
         public override IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom()
         {

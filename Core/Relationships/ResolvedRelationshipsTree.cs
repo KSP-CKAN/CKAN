@@ -168,30 +168,25 @@ namespace CKAN
                                                     GameVersionCriteria             crit,
                                                     OptionalRelationships           optRels,
                                                     RelationshipCache               relationshipCache)
-            => relationshipCache.TryGetValue(relationship,
-                                             out ResolvedRelationship? cachedRel)
-                ? cachedRel.WithSource(source, reason)
-                : relationship.MatchesAny(installed, dlls, registry.InstalledDlc,
-                                          out CkanModule? installedMatch)
-                        ? relationshipCache.GetOrAdd(
-                            relationship,
-                            installedMatch == null ? new ResolvedByDLL(source, relationship, reason)
-                                                   : new ResolvedByInstalled(source, relationship, reason,
-                                                                             installedMatch))
-                        : relationship.MatchesAny(allInstalling, null, null,
-                                                  out CkanModule? installingMatch)
-                          && installingMatch != null
-                            // Installing mods are branch-specific, so don't cache them
-                            ? new ResolvedByInstalling(source, relationship, reason, installingMatch)
-                            : relationshipCache.GetOrAdd(
-                                relationship,
-                                new ResolvedByNew(source, relationship, reason,
-                                                  relationship.LatestAvailableWithProvides(registry, stabilityTolerance, crit,
-                                                                                           installed, definitelyInstalling),
-                                                  definitelyInstalling,
-                                                  allInstalling.Append(source).ToArray(),
-                                                  registry, dlls, installed, stabilityTolerance, crit, optRels,
-                                                  relationshipCache));
+            => relationshipCache.GetOrAdd(relationship,
+                                          rel => rel.MatchesAny(installed, dlls, registry.InstalledDlc,
+                                                                out CkanModule? installedMatch)
+                                                     ? installedMatch == null
+                                                         ? new ResolvedByDLL(source, rel, reason)
+                                                         : new ResolvedByInstalled(source, rel, reason, installedMatch)
+
+                                               : rel.MatchesAny(allInstalling, null, null,
+                                                                out CkanModule? installingMatch)
+                                                 && installingMatch != null
+                                                     ? new ResolvedByInstalling(source, rel, reason, installingMatch)
+
+                                               : new ResolvedByNew(source, rel, reason,
+                                                                   rel.LatestAvailableWithProvides(registry, stabilityTolerance, crit,
+                                                                                                   installed, definitelyInstalling),
+                                                                   definitelyInstalling, allInstalling.Append(source).ToArray(),
+                                                                   registry, dlls, installed, stabilityTolerance,
+                                                                   crit, optRels, relationshipCache))
+                                .WithSource(source, reason);
 
         private readonly ResolvedRelationship[] resolved;
         private readonly RelationshipCache      relationshipCache = new RelationshipCache();
