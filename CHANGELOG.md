@@ -28,6 +28,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Don't clone with symlinks on Linux (#4441 by: HebaruSan)
 - [Core] Use temp dir in instance for mod file transactions (#4462 by: HebaruSan)
 - [Core] Fix creating directories for Scenarios (#4471 by: HebaruSan)
+- [Multiple] Independent caching for virtual dependency choices (#4472 by: HebaruSan)
 
 ### Internal
 

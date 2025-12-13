@@ -248,6 +248,7 @@ Press tab to auto-complete commands and modules.
   <data name="PromptWithInstance" xml:space="preserve"><value>CKAN {0}: {1} {2} ({3})&gt; </value></data>
   <data name="PromptWithoutInstance" xml:space="preserve"><value>CKAN {0}&gt; </value></data>
   <data name="RemoveCancelled" xml:space="preserve"><value>Remove aborted: {0}</value></data>
+  <data name="RemoveAllNothingInstalled" xml:space="preserve"><value>No modules are installed, so there is nothing to remove.</value></data>
   <data name="RepairHelpSummary" xml:space="preserve"><value>Attempt various automatic repairs</value></data>
   <data name="RepairUnknownCommand" xml:space="preserve"><value>Unknown command: repair {0}</value></data>
   <data name="Repaired" xml:space="preserve"><value>Registry repairs attempted. Hope it helped.</value></data>

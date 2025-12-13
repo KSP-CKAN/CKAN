@@ -288,7 +288,7 @@ namespace CKAN
                     log.DebugFormat("Got {0} candidates for {1}",
                                     candidates.Count, descriptor);
                 }
-                catch (DependenciesNotSatisfiedKraken)
+                catch
                 when (soft_resolve || options.proceed_with_inconsistencies)
                 {
                     log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your game version.",

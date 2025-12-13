@@ -346,6 +346,8 @@ Free up space on that device or change your settings to use another location.
   <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>Suggested by {0}</value></data>
   <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>Dependency of {0}</value></data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Recommended by {0}</value></data>
+  <data name="ResolvedRelationshipsTreeUnsatisfied" xml:space="preserve"><value>Could not satisfy {0} while installing:
+{1}</value></data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve"><value>{0} {1} (metapackage)</value></data>
   <data name="NetModuleCacheModuleCached" xml:space="preserve"><value>{0} {1} (cached)</value></data>
   <data name="NetModuleCacheModuleHostSize" xml:space="preserve"><value>{0} {1} ({2}, {3})</value></data>

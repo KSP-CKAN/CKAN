@@ -239,8 +239,10 @@ namespace CKAN.CmdLine
             if (Headless)
             {
                 // Special GitHub Action formatting for mutli-line errors
-                log.ErrorFormat(message.Replace("\r\n", "%0A"),
-                                args.Select(a => a.ToString()?.Replace("\r\n", "%0A"))
+                log.ErrorFormat(message.Replace("\r\n", "%0A")
+                                       .Replace("\n",   "%0A"),
+                                args.Select(a => a.ToString()?.Replace("\r\n", "%0A")
+                                                              .Replace("\n",   "%0A"))
                                     .OfType<string>()
                                     .ToArray());
             }
