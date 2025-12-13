@@ -48,7 +48,7 @@ namespace CKAN.GUI
             this.projectNameLabel.AutoSize = true;
             this.projectNameLabel.Location = new System.Drawing.Point(6, 5);
             this.projectNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.projectNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.projectNameLabel.Font = Styling.Fonts.Bold;
             this.projectNameLabel.Name = "projectNameLabel";
             this.projectNameLabel.Size = new System.Drawing.Size(380, 13);
             this.projectNameLabel.TabIndex = 0;

@@ -51,7 +51,7 @@ namespace CKAN.GUI
             // ExplanationLabel
             // 
             this.ExplanationLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.ExplanationLabel.Font = Styling.Fonts.Bold;
             this.ExplanationLabel.Location = new System.Drawing.Point(5, 0);
             this.ExplanationLabel.Name = "ExplanationLabel";
             this.ExplanationLabel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
@@ -160,7 +160,7 @@ namespace CKAN.GUI
             this.DeleteButton.AutoSize = true;
             this.DeleteButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.DeleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DeleteButton.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
+            this.DeleteButton.Font = Styling.Fonts.Bold;
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(112, 30);
             this.DeleteButton.TabIndex = 4;

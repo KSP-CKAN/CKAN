@@ -183,6 +183,14 @@ namespace Tests.Core.Configuration
             }
         }
 
+        private float? _FontScale;
+        public float FontScale
+        {
+            get => _FontScale ?? 1.0f;
+
+            set => _FontScale = value;
+        }
+
         private readonly IDictionary<string, string[]> globalInstallFilters = new Dictionary<string, string[]>();
 
         public string[] GetGlobalInstallFilters(IGame game)
