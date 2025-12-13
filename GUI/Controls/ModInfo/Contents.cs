@@ -77,9 +77,18 @@ namespace CKAN.GUI
 
         private void ContentsPreviewTree_NodeMouseDoubleClick(object? sender, TreeNodeMouseClickEventArgs? e)
         {
-            if (e != null && manager?.CurrentInstance is GameInstance inst)
+            if (e != null
+                && manager?.CurrentInstance is GameInstance inst
+                && SelectedModule is GUIMod mod)
             {
-                Utilities.OpenFileBrowser(inst.ToAbsoluteGameDir(e.Node.Name));
+                if (mod.IsInstalled && e.Node.Name.Length > 0)
+                {
+                    Utilities.OpenFileBrowser(inst.ToAbsoluteGameDir(e.Node.Name));
+                }
+                else if (manager.Cache?.GetCachedFilename(mod.Module) is string s)
+                {
+                    Utilities.ProcessStartURL(s);
+                }
             }
         }
 
