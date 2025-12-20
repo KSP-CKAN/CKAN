@@ -482,4 +482,12 @@ This action cannot be undone!</value></data>
   <data name="DownloadStatisticsPieChartTitle" xml:space="preserve"><value>Downloads by Host</value></data>
   <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve"><value>Donate</value></data>
   <data name="DownloadStatisticsTableDonateLinkToolTip" xml:space="preserve"><value>Click to open the donation link for {0} in your browser</value></data>
+  <data name="InstallAllCheckboxConfirmation" xml:space="preserve"><value>You have some mods selected but not yet installed:
+
+{0}
+
+Using this checkbox will de-select these mods. This cannot be undone.
+Are you sure?</value></data>
+  <data name="InstallAllCheckboxConfirmationYes" xml:space="preserve"><value>De-select</value></data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve"><value>Cancel</value></data>
 </root>
