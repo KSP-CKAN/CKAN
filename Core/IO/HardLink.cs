@@ -87,6 +87,9 @@ namespace CKAN.IO
                                .Select(v => v.FirstOrDefault())
                          : Enumerable.Empty<ulong?>();
 
+        public static IEnumerable<ulong?> GetDeviceIdentifiers(params string[] paths)
+            => GetDeviceIdentifiers(paths as IEnumerable<string>);
+
         /// <summary>
         /// Get the identifiers of files.
         /// This is a unique identifier for the file on the filesystem.

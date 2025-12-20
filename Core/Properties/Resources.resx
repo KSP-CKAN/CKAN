@@ -212,6 +212,7 @@ What would you like to do?</value></data>
   <data name="GameInstanceManagerCacheMigrationRevert" xml:space="preserve"><value>Revert back to using the old cache folder</value></data>
   <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve"><value>Not enough space to move files!</value></data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve"><value>The specified instance is not a valid {0} instance</value></data>
+  <data name="GameInstanceManagerCloneNotEnoughFreeSpace" xml:space="preserve"><value>Not enough space at target path to copy files!</value></data>
   <data name="GameInstanceFakeBadVersion" xml:space="preserve"><value>The specified {0} version is not a known version: {1}</value></data>
   <data name="GameInstanceFakeNotEmpty" xml:space="preserve"><value>The specified folder already exists and is not empty</value></data>
   <data name="GameInstanceFakeDLCNotAllowed" xml:space="preserve"><value>{0} version {1} or above is needed for {2} DLC</value></data>

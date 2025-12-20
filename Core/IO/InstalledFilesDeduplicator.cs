@@ -185,7 +185,7 @@ namespace CKAN.IO
                                         string        linkPath,
                                         TxFileManager txFileMgr)
         {
-            if (target.Length >= MinDedupFileSize)
+            if (UseHardLink(target))
             {
                 // If >=128KiB, try making a hard link, then fall back to copying if it fails
                 log.DebugFormat("Creating a hard link from {0} to {1}...", target, linkPath);
@@ -198,6 +198,9 @@ namespace CKAN.IO
                 txFileMgr.Copy(target.FullName, linkPath, false);
             }
         }
+
+        public static bool UseHardLink(FileInfo target)
+            => target.Length >= MinDedupFileSize;
 
         /// <summary>
         /// Minimum file size for deduplication.

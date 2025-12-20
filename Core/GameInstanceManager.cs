@@ -282,6 +282,19 @@ namespace CKAN
                     Properties.Resources.GameInstanceCloneInvalid, existingInstance.Game.ShortName));
             }
 
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(newPath) switch
+                                         {
+                                             { Exists: true } di => di,
+                                             var di              => di.Parent ?? di.Root,
+                                         },
+                                         HardLink.GetDeviceIdentifiers(existingInstance.GameDir,
+                                                                       newPath)
+                                                 .Distinct()
+                                                 .Count() > 1
+                                             ? existingInstance.TotalSize
+                                             : existingInstance.NonHardLinkableSize(leaveEmpty),
+                                         Properties.Resources.GameInstanceManagerCloneNotEnoughFreeSpace);
+
             log.Debug("Copying directory.");
             Utilities.CopyDirectory(existingInstance.GameDir, newPath,
                                     new string[] { "CKAN/registry.locked", "CKAN/playtime.json" },

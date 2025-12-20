@@ -129,7 +129,7 @@ namespace CKAN
             // Get the files in the directory and copy them to the new location
             foreach (var file in sourceDir.GetFiles())
             {
-                if (fileRelPathsToIgnore.Contains(file.Name))
+                if (fileRelPathsToIgnore.Contains(file.Name, Platform.PathComparer))
                 {
                     continue;
                 }
@@ -179,6 +179,27 @@ namespace CKAN
                 }
             }
         }
+
+        public static long DirectoryNonHardLinkableSize(DirectoryInfo where,
+                                                        string[]      fileRelPathsToIgnore,
+                                                        string[]      subFolderRelPathsToSymlink,
+                                                        string[]      subFolderRelPathsToLeaveEmpty,
+                                                        string[]      subFolderRelPathsToForbidHardlinks,
+                                                        bool          allowHardLinks = true)
+            => where.EnumerateFiles()
+                    .Where(f => !fileRelPathsToIgnore.Contains(f.Name, Platform.PathComparer)
+                                && !(allowHardLinks && InstalledFilesDeduplicator.UseHardLink(f)))
+                    .Sum(f => f.Length)
+             + where.EnumerateDirectories()
+                    .Where(d => !subFolderRelPathsToLeaveEmpty.Contains(d.Name, Platform.PathComparer)
+                                && !subFolderRelPathsToSymlink.Contains(d.Name, Platform.PathComparer))
+                    .Sum(d => DirectoryNonHardLinkableSize(
+                                  d,
+                                  SubPaths(d.Name, fileRelPathsToIgnore).ToArray(),
+                                  SubPaths(d.Name, subFolderRelPathsToSymlink).ToArray(),
+                                  SubPaths(d.Name, subFolderRelPathsToLeaveEmpty).ToArray(),
+                                  SubPaths(d.Name, subFolderRelPathsToForbidHardlinks).ToArray(),
+                                  allowHardLinks && !subFolderRelPathsToForbidHardlinks.Contains(d.Name)));
 
         // Select only paths within subdir, prune prefixes
         private static IEnumerable<string> SubPaths(string parent, string[] paths)
