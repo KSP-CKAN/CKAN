@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 
@@ -352,37 +351,21 @@ namespace CKAN.CmdLine
                 // There is no instance with this name or at this path.
                 else
                 {
-                    throw new NoGameInstanceKraken();
+                    user.RaiseError(Properties.Resources.InstanceCloneNotFound, instanceNameOrPath);
+                    ListInstances();
+                    return Exit.ERROR;
                 }
             }
-            catch (NotGameDirKraken kraken)
+            catch (Kraken k)
             {
-                user.RaiseError(Properties.Resources.InstanceNotInstance, kraken.path);
+                user.RaiseError("{0}", k.Message);
                 return Exit.ERROR;
             }
-            catch (PathErrorKraken kraken)
-            {
-                // The new path is not empty
-                // The kraken contains a message to inform the user.
-                log.Error(kraken.Message + kraken.path);
-                return Exit.ERROR;
-            }
-            catch (IOException e)
+            catch (Exception e)
             {
                 // Something went wrong copying the files. Contains a message.
                 log.Error(e);
                 return Exit.ERROR;
-            }
-            catch (NoGameInstanceKraken)
-            {
-                user.RaiseError(Properties.Resources.InstanceCloneNotFound, instanceNameOrPath);
-                ListInstances();
-                return Exit.ERROR;
-            }
-            catch (InstanceNameTakenKraken kraken)
-            {
-                user.RaiseError(Properties.Resources.InstanceDuplicate, kraken.instName);
-                return Exit.BADOPT;
             }
 
             // Test if the instance was added to the registry.

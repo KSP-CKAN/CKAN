@@ -333,6 +333,10 @@ Do you want to delete this lock file to force access?</value></data>
 Need to store {3} to {1}, but only {2} is available!
 Free up space on that device or change your settings to use another location.
 </value></data>
+  <data name="KrakenNotGameDir" xml:space="preserve"><value>The instance is not valid: {0}</value></data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve"><value>This instance name is already taken: {0}</value></data>
+  <data name="KrakenNoInstance" xml:space="preserve"><value>No instance with this name or at this path: {0}</value></data>
+  <data name="DirectoryNotEmpty" xml:space="preserve"><value>Directory not empty: {0}</value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="RelationshipResolverConflictingModDescription" xml:space="preserve"><value>{0} (needed for: {1})</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>{0} required, but an incompatible version is in the resolver</value></data>

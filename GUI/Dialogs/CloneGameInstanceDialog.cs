@@ -197,26 +197,9 @@ namespace CKAN.GUI
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            catch (InstanceNameTakenKraken)
+            catch (Kraken kraken)
             {
-                user.RaiseError(Properties.Resources.CloneFakeKspDialogNameAlreadyUsed);
-                reactivateDialog();
-            }
-            catch (NotGameDirKraken kraken)
-            {
-                user.RaiseError(Properties.Resources.CloneFakeKspDialogInstanceNotValid,
-                                Platform.FormatPath(kraken.path));
-                reactivateDialog();
-            }
-            catch (PathErrorKraken kraken)
-            {
-                user.RaiseError(Properties.Resources.CloneFakeKspDialogDestinationNotEmpty,
-                                Platform.FormatPath(kraken?.path ?? ""));
-                reactivateDialog();
-            }
-            catch (IOException ex)
-            {
-                user.RaiseError(Properties.Resources.CloneFakeKspDialogCloneFailed, ex.Message);
+                user.RaiseError("{0}", kraken.Message);
                 reactivateDialog();
             }
             catch (Exception ex)

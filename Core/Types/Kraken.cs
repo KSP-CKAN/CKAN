@@ -174,7 +174,9 @@ namespace CKAN
         public NotGameDirKraken(string     path,
                                 string?    reason         = null,
                                 Exception? innerException = null)
-            : base(reason, innerException)
+            : base(reason ?? string.Format(Properties.Resources.KrakenNotGameDir,
+                                           Platform.FormatPath(path)),
+                   innerException)
         {
             this.path = path;
         }
@@ -653,7 +655,7 @@ namespace CKAN
     {
         public InstanceNameTakenKraken(string  name,
                                        string? reason = null)
-            : base(reason)
+            : base(reason ?? string.Format(Properties.Resources.KrakenInstanceNameTaken, name))
         {
             instName = name;
         }

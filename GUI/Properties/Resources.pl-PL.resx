@@ -140,20 +140,11 @@
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
     <value>"Klonowanie instalacji..."</value>
   </data>
-  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
-    <value>Instalacja, którą chcesz klonować, jest nieprawidłowa: {0}</value>
-  </data>
-  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve">
-    <value>Folder docelowy nie jest pusty: {0}</value>
-  </data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve">
     <value>Klonowanie nie powiodło się: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
     <value>Pomyślnie sklonowano instalacje.</value>
-  </data>
-  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
-    <value>Ta nazwa jest już w użyciu.</value>
   </data>
   <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve">
     <value>Utwórz punkty złączenia (Windows) lub linki symboliczne (Unix) do katalogów domyślnych zamiast kopiowania ich.
