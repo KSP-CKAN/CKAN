@@ -1160,27 +1160,45 @@ namespace CKAN.GUI
             });
         }
 
-        private void InstallAllCheckbox_CheckChanged(object? sender, EventArgs? e)
+        private void InstallAllCheckbox_CheckedChanged(object? sender, EventArgs? e)
         {
-            WithFrozenChangeset(() =>
+            if (ChangeSet?.Where(ch => ch.ChangeType == GUIModChangeType.Install)
+                          .Select(ch => ch.Mod)
+                          .ToArray()
+                is { Length: > 0 } installing
+                && Main.Instance?.YesNoDialog(string.Format(Properties.Resources.InstallAllCheckboxConfirmation,
+                                                            string.Join(Environment.NewLine,
+                                                                        installing.Select(i => $"- {i}"))),
+                                              Properties.Resources.InstallAllCheckboxConfirmationYes,
+                                              Properties.Resources.InstallAllCheckboxConfirmationNo)
+                   is false)
             {
-                if (InstallAllCheckbox.Checked)
+                InstallAllCheckbox.CheckedChanged -= this.InstallAllCheckbox_CheckedChanged;
+                InstallAllCheckbox.Checked = !InstallAllCheckbox.Checked;
+                InstallAllCheckbox.CheckedChanged += this.InstallAllCheckbox_CheckedChanged;
+            }
+            else
+            {
+                WithFrozenChangeset(() =>
                 {
-                    // Reset changeset
-                    ClearChangeSet();
-                }
-                else if (mainModList != null)
-                {
-                    // Uninstall all and cancel upgrades
-                    foreach (var row in mainModList.full_list_of_mod_rows.Values)
+                    if (InstallAllCheckbox.Checked)
                     {
-                        if (row.Tag is GUIMod gmod)
+                        // Reset changeset
+                        ClearChangeSet();
+                    }
+                    else if (mainModList != null)
+                    {
+                        // Uninstall all and cancel upgrades
+                        foreach (var row in mainModList.full_list_of_mod_rows.Values)
                         {
-                            gmod.SelectedMod = null;
+                            if (row.Tag is GUIMod gmod)
+                            {
+                                gmod.SelectedMod = null;
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
 
         public void ClearChangeSet()

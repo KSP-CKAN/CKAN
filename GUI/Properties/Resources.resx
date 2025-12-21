@@ -126,11 +126,8 @@
   <data name="CloneFakeKspDialogEnterName" xml:space="preserve"><value>Please enter a name for the new instance.</value></data>
   <data name="CloneFakeKspDialogEnterPath" xml:space="preserve"><value>Please enter a path for the new instance.</value></data>
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve"><value>"Cloning instance..."</value></data>
-  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve"><value>The instance you wanted to clone is not valid: {0}</value></data>
-  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve"><value>The destination folder is not empty: {0}</value></data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve"><value>Clone failed: {0}</value></data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve"><value>Successfully cloned instance.</value></data>
-  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve"><value>This name is already used.</value></data>
   <data name="CloneGameInstanceToolTipShareStock" xml:space="preserve"><value>Create junction points (Windows) or symbolic links (Unix) to stock directories instead of copying them.
 If you choose this option, DO NOT move or delete the old instance!!</value></data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve"><value>&lt;NONE&gt;</value></data>
@@ -482,4 +479,12 @@ This action cannot be undone!</value></data>
   <data name="DownloadStatisticsPieChartTitle" xml:space="preserve"><value>Downloads by Host</value></data>
   <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve"><value>Donate</value></data>
   <data name="DownloadStatisticsTableDonateLinkToolTip" xml:space="preserve"><value>Click to open the donation link for {0} in your browser</value></data>
+  <data name="InstallAllCheckboxConfirmation" xml:space="preserve"><value>You have some mods selected but not yet installed:
+
+{0}
+
+Using this checkbox will de-select these mods. This cannot be undone.
+Are you sure?</value></data>
+  <data name="InstallAllCheckboxConfirmationYes" xml:space="preserve"><value>De-select</value></data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve"><value>Cancel</value></data>
 </root>

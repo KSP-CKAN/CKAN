@@ -209,7 +209,7 @@ namespace Tests.CmdLine
                 // Assert
                 CollectionAssert.AreEqual(new string[]
                                           {
-                                              $"Sorry, {notInst} does not appear to be a game instance",
+                                              $"The instance is not valid: {notInst}",
                                           },
                                           user.RaisedErrors);
             }

@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Show recommendations of chosen recommendations in GUI, readable foreground colors for labels (#4381, #4382 by: HebaruSan)
 - [Multiple] Mod list multi-select (#4386 by: HebaruSan)
 - [Multiple] Report number of filtered files in install (#4443 by: HebaruSan)
+- [Multiple] Check free space before cloning (#4473 by: HebaruSan)
 
 ### Bugfixes
 

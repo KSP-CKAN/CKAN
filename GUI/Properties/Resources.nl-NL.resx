@@ -137,20 +137,11 @@
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
     <value>"Bezig met klonen... "</value>
   </data>
-  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
-    <value>De instantie die je wilt klonen is niet geldig: {0}</value>
-  </data>
-  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve">
-    <value>De bestemming map is niet leeg: {0}</value>
-  </data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve">
     <value>Kopiëren mislukt: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
     <value>Instantie succesvol gekopieerd.</value>
-  </data>
-  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
-    <value>Deze naam is reeds in gebruik.</value>
   </data>
   <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
     <value>&lt;NONE&gt;</value>

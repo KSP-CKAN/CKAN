@@ -212,6 +212,7 @@ What would you like to do?</value></data>
   <data name="GameInstanceManagerCacheMigrationRevert" xml:space="preserve"><value>Revert back to using the old cache folder</value></data>
   <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve"><value>Not enough space to move files!</value></data>
   <data name="GameInstanceCloneInvalid" xml:space="preserve"><value>The specified instance is not a valid {0} instance</value></data>
+  <data name="GameInstanceManagerCloneNotEnoughFreeSpace" xml:space="preserve"><value>Not enough space at target path to copy files!</value></data>
   <data name="GameInstanceFakeBadVersion" xml:space="preserve"><value>The specified {0} version is not a known version: {1}</value></data>
   <data name="GameInstanceFakeNotEmpty" xml:space="preserve"><value>The specified folder already exists and is not empty</value></data>
   <data name="GameInstanceFakeDLCNotAllowed" xml:space="preserve"><value>{0} version {1} or above is needed for {2} DLC</value></data>
@@ -333,6 +334,10 @@ Do you want to delete this lock file to force access?</value></data>
 Need to store {3} to {1}, but only {2} is available!
 Free up space on that device or change your settings to use another location.
 </value></data>
+  <data name="KrakenNotGameDir" xml:space="preserve"><value>The instance is not valid: {0}</value></data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve"><value>This instance name is already taken: {0}</value></data>
+  <data name="KrakenNoInstance" xml:space="preserve"><value>No instance with this name or at this path: {0}</value></data>
+  <data name="DirectoryNotEmpty" xml:space="preserve"><value>Directory not empty: {0}</value></data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="RelationshipResolverConflictingModDescription" xml:space="preserve"><value>{0} (needed for: {1})</value></data>
   <data name="RelationshipResolverRequiredButResolver" xml:space="preserve"><value>{0} required, but an incompatible version is in the resolver</value></data>

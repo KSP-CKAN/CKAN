@@ -137,20 +137,11 @@
   <data name="CloneFakeKspDialogCloningInstance" xml:space="preserve">
     <value>Klone Instanz...</value>
   </data>
-  <data name="CloneFakeKspDialogInstanceNotValid" xml:space="preserve">
-    <value>Die zu klonende Instanz ist ungültig: {0}</value>
-  </data>
-  <data name="CloneFakeKspDialogDestinationNotEmpty" xml:space="preserve">
-    <value>Der Zielordner ist nicht leer: {0}</value>
-  </data>
   <data name="CloneFakeKspDialogCloneFailed" xml:space="preserve">
     <value>Klonen fehlgeschlagen: {0}</value>
   </data>
   <data name="CloneFakeKspDialogSuccessfulClone" xml:space="preserve">
     <value>Instanz erfolgreich geklont.</value>
-  </data>
-  <data name="CloneFakeKspDialogNameAlreadyUsed" xml:space="preserve">
-    <value>Dieser Name wird bereits verwendet.</value>
   </data>
   <data name="CompatibleGameVersionsDialogVersionDetails" xml:space="preserve">
     <value>{0} (vorherige Version: {1})</value>
