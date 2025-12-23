@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Linq;
 using System.Transactions;
 using System.Diagnostics.CodeAnalysis;
@@ -348,7 +349,8 @@ namespace CKAN
                 foreach (var anchor in game.InstanceAnchorFiles)
                 {
                     txFileMgr.WriteAllText(Path.Combine(newPath, anchor),
-                                         version.WithoutBuild.ToString());
+                                           version.WithoutBuild.ToString(),
+                                           Encoding.UTF8);
                 }
 
                 // Don't write the buildID.txts if we have no build, otherwise it would be -1.
@@ -357,14 +359,16 @@ namespace CKAN
                     foreach (var b in KspBuildIdVersionProvider.buildIDfilenames)
                     {
                         txFileMgr.WriteAllText(Path.Combine(newPath, b),
-                                             string.Format("build id = {0}", version.Build));
+                                               string.Format("build id = {0}", version.Build),
+                                               Encoding.UTF8);
                     }
                 }
 
                 // Create the readme.txt WITHOUT build number
                 txFileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"),
-                                     string.Format("Version {0}",
-                                                   version.WithoutBuild.ToString()));
+                                       string.Format("Version {0}",
+                                                     version.WithoutBuild.ToString()),
+                                       Encoding.UTF8);
 
                 // Create the needed folder structure and the readme.txt for DLCs that should be simulated.
                 if (dlcs != null)
@@ -385,7 +389,8 @@ namespace CKAN
                         txFileMgr.CreateDirectory(dlcDir);
                         txFileMgr.WriteAllText(
                             Path.Combine(dlcDir, "readme.txt"),
-                            string.Format("Version {0}", dlcVersion));
+                            string.Format("Version {0}", dlcVersion),
+                            Encoding.UTF8);
                     }
                 }
 
