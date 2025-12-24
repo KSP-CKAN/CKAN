@@ -23,7 +23,8 @@ namespace CKAN.NetKAN.Transformers
         {
             Log.Debug("Fixing version strings (if required)...");
 
-            JObject? json = null;
+            JObject?       json = null;
+            ModuleVersion? v    = metadata.Version;
 
             // Implicit if zero. No need to add
             if (metadata.Epoch is not null and not 0)
@@ -31,7 +32,8 @@ namespace CKAN.NetKAN.Transformers
                 json ??= metadata.Json();
                 Log.InfoFormat("Executing epoch transformation with {0}", metadata.Kref);
                 Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
-                json["version"] = $"{metadata.Epoch}:{metadata.Version}";
+                v = new ModuleVersion($"{metadata.Epoch}:{metadata.Version}");
+                json["version"] = v.ToString(false, false);
                 Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
             }
 
@@ -39,7 +41,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 Log.Debug("Out of order versions enabled in netkan, skipping OOO check");
             }
-            else if (metadata.Version != null
+            else if (v != null
                      && (metadata.Prerelease
                              ? new ModuleVersion?[]
                                {
@@ -55,7 +57,7 @@ namespace CKAN.NetKAN.Transformers
                         is ModuleVersion highest)
             {
                 json ??= metadata.Json();
-                json["version"] = CheckOutOfOrder(opts, highest, metadata.Version)
+                json["version"] = CheckOutOfOrder(opts, highest, v)
                                       .ToString();
             }
 
@@ -80,7 +82,7 @@ namespace CKAN.NetKAN.Transformers
             {
                 if (opts.FlakyAPI)
                 {
-                    throw new Kraken($"Out-of-order version found on unreliable server: {start} < {highest} < {current}");
+                    throw new Kraken($"Out-of-order version found on unreliable host: {start} < {highest} < {current}");
                 }
                 else
                 {
