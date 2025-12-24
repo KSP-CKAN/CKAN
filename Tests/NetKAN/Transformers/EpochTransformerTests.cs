@@ -110,5 +110,47 @@ namespace Tests.NetKAN.Transformers
             Assert.AreEqual(expected, (string?)transformedJson["version"]);
             Assert.AreEqual(staged,   opts.Staged);
         }
+
+        [TestCase("v1.0.7",    "1.0.8", null, true),
+         TestCase("v1.0.7",    "1.0.8", 1,    false),
+         TestCase("v.1.0.7",   "1.0.8", null, true),
+         TestCase("v.1.0.7",   "1.0.8", 1,    false),
+         TestCase("1:v.1.0.7", "1.0.8", 1,    true),
+         TestCase("1:v.1.0.7", "1.0.8", 2,    false),
+        ]
+        public void Transform_OnUnreliableHost_ThrowsIffOutOfOrder(string highest,
+                                                                   string version,
+                                                                   int?   epoch,
+                                                                   bool   throws)
+        {
+            // Arrange
+            var opts = new TransformOptions(1, null, new ModuleVersion(highest),
+                                            null, false, null)
+                       {
+                           FlakyAPI = true,
+                       };
+            var sut  = new EpochTransformer();
+            var json = new JObject() { { "version", version } };
+            if (epoch != null)
+            {
+                json["x_netkan_epoch"] = epoch;
+            }
+            var metadata = new Metadata(json);
+            var vWithEpoch = epoch != null ? $"{epoch}:{version}"     : version;
+            var vWithNext  = epoch != null ? $"{epoch + 1}:{version}" : $"1:{version}";
+
+            // Act / Assert
+            if (throws)
+            {
+                var exc = Assert.Throws<Kraken>(() => sut.Transform(metadata, opts).Single())!;
+                Assert.AreEqual($"Out-of-order version found on unreliable host: {vWithEpoch} < {highest} < {vWithNext}",
+                                exc.Message);
+            }
+            else
+            {
+                var result = sut.Transform(metadata, opts).Single();
+                Assert.AreEqual(vWithEpoch, result.Version?.ToString(false, false));
+            }
+        }
     }
 }
