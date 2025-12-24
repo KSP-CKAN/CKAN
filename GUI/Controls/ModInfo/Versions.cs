@@ -227,15 +227,11 @@ namespace CKAN.GUI
                     };
                     if (installedVersion != null && installedVersion.Equals(module.version))
                     {
-                        toRet.Font = new Font(toRet.Font,
-                                              module.release_status <= stabilityTolerance
-                                                  ? InstalledLabel.Font.Style
-                                                  : InstalledLabel.Font.Style
-                                                    | PrereleaseLabel.Font.Style);
+                        toRet.Font = module.release_status <= stabilityTolerance ? Styling.Fonts.Regular : Styling.Fonts.Italic;
                     }
                     else if (module.release_status > stabilityTolerance)
                     {
-                        toRet.Font = new Font(toRet.Font, PrereleaseLabel.Font.Style);
+                        toRet.Font = Styling.Fonts.Italic;
                     }
                     if (module.release_status > stabilityTolerance)
                     {
