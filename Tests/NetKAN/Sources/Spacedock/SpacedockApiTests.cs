@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.IO;
-using System.Text;
 using System.Net;
 
 using NUnit.Framework;
@@ -100,7 +99,7 @@ namespace Tests.NetKAN.Sources.Spacedock
             // Arrange
             var response = new Mock<WebResponse>();
             response.Setup(r => r.GetResponseStream())
-                    .Returns(new MemoryStream(Encoding.ASCII.GetBytes(
+                    .Returns(new MemoryStream(Encoding.UTF8.GetBytes(
                         @"{
                             ""error"":  true,
                             ""reason"": ""Fake failure reason for testing""
