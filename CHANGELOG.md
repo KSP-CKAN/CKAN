@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.3
 
+### Internal
 
+- [Docs] Update download count image for Minkowski² (#4474 by: Clayell; reviewed: HebaruSan)
 
 ## v1.36.2 (Politas)
 
