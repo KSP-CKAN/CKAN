@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfixes
 
-- [Core] Ensure encoding is UTF-8 when saving JSON (#4475 by: HebaruSan)
+- [Core] Ensure encoding is UTF-8 when saving JSON (#4475, #4478 by: HebaruSan)
 
 ### Internal
 

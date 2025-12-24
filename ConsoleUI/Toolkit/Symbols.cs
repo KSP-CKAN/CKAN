@@ -1,6 +1,9 @@
+#if !NETFRAMEWORK
 using System.Text;
+#endif
 
 namespace CKAN.ConsoleUI.Toolkit {
+    using Encoding = System.Text.Encoding;
 
     /// <summary>
     /// Glyphs for drawing text UIs

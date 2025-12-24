@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using Microsoft.Win32.SafeHandles;
 
 using ChinhDo.Transactions;
@@ -183,7 +182,7 @@ namespace CKAN.IO
             public static ReparseDataBuffer FromPath(string target, out int byteCount)
             {
                 var fullTarget = $@"\??\{Path.GetFullPath(target)}";
-                byteCount = Encoding.Unicode.GetByteCount(fullTarget);
+                byteCount = System.Text.Encoding.Unicode.GetByteCount(fullTarget);
                 return new ReparseDataBuffer
                 {
                     ReparseTag           = IO_REPARSE_TAG_MOUNT_POINT,
