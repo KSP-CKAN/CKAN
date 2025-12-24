@@ -127,7 +127,8 @@ namespace CKAN
                 serializer.Serialize(writer, this);
             }
             var txFileMgr = new TxFileManager();
-            txFileMgr.WriteAllText(path, sw + Environment.NewLine);
+            txFileMgr.WriteAllText(path, sw + Environment.NewLine,
+                                   Encoding.UTF8);
         }
 
         /// <summary>
@@ -150,7 +151,7 @@ namespace CKAN
                         ? null
                         // Treat JSON parsing as the first 50%
                         : new ProgressImmediate<long>(p => progress.Report((int)(50 * p / fileSize)))))
-                using (var reader = new StreamReader(progressStream))
+                using (var reader = new StreamReader(progressStream, Encoding.UTF8))
                 using (var jStream = new JsonTextReader(reader))
                 {
                     var settings = new JsonSerializerSettings()

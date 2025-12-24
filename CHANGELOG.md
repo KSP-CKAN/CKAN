@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.3
 
+### Bugfixes
+
+- [Core] Ensure encoding is UTF-8 when saving JSON (#4475 by: HebaruSan)
+
 ### Internal
 
 - [Docs] Update download count image for Minkowski² (#4474 by: Clayell; reviewed: HebaruSan)

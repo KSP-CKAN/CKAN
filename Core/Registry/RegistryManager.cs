@@ -344,7 +344,8 @@ namespace CKAN
         private static Registry LoadRegistry(GameInstance          inst,
                                              RepositoryDataManager repoData)
             => Registry.FromJson(inst, repoData,
-                                 File.ReadAllText(Path.Combine(inst.CkanDir, "registry.json")));
+                                 File.ReadAllText(Path.Combine(inst.CkanDir, "registry.json"),
+                                                  Encoding.UTF8));
 
         [MemberNotNull(nameof(registry))]
         private void Create(RepositoryDataManager   repoData,
@@ -412,7 +413,7 @@ namespace CKAN
                 Directory.CreateDirectory(directoryPath);
             }
 
-            txFileMgr.WriteAllText(path, Serialize());
+            txFileMgr.WriteAllText(path, Serialize(), Encoding.UTF8);
 
             if (!Directory.Exists(gameInstance.InstallHistoryDir))
             {
@@ -448,7 +449,7 @@ namespace CKAN
             var serialized = SerializeCurrentInstall(recommends, withVersions);
             foreach (var path in paths)
             {
-                txFileMgr.WriteAllText(path, serialized);
+                txFileMgr.WriteAllText(path, serialized, Encoding.UTF8);
             }
         }
 
