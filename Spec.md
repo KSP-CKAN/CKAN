@@ -218,8 +218,8 @@ The version of the mod. Versions have the format `[epoch:]mod_version`.
 
 ###### epoch
 
-`epoch` is a single (generally small) unsigned integer. It may be omitted, in
-which case zero is assumed.
+`epoch` is a single (generally small) unsigned 64 bit integer.
+It may be omitted, in which case zero is assumed.
 
 It is provided to allow mistakes in the version numbers of older versions of a
 package, and also a package's previous version numbering schemes, to be left
@@ -244,10 +244,9 @@ are encouraged to restrict version names to letters, digits, and the
 
 ###### Version ordering
 
-When comparing two version numbers, first the `epoch` (continous integers at
-the start of the version string followed by the character ":" or 0 if none is
-found), then the `mod_version`if both `epoch` are equal. The `mod_version` 
-is compared using the following algorithm:
+When comparing two version strings, first the `epoch` are compared numerically,
+then, if both `epoch` are equal, the `mod_version` is compared
+using the following algorithm:
 
 Both strings are split into alternating segments consisting of consecutive digits
 and consecutive non-digits, starting with non-digits.
@@ -256,32 +255,29 @@ ASCII strings, with the exception of a dot which is considered larger than
 any other character.
 If one non-numerical segment runs out before the other it's considered smaller.
 
-We're well aware this system has flaws, changing it hovewer would break backwards
-compatibility without providing material benefits.
-
 ###### Examples:
     "2:1.0" > "1:999.9"    Epoch is most significant
     "0:1.0" == "1.0"       Missing epoch is treated as 0
-    "1.10" > "1.2"         v
-    "1.01" == "1.1"        v
+    "1.10" > "1.2"         Numeric segments are compared as integers
+    "1.01" == "1.1"        Numeric segments are compared as integers
     "1.01.0" == "1.1.0"    Numeric segments are compared as integers
-    "1.0b" > "1.0a"        v
-    "1.0a" > "1.0%"        v
-    "1.0|" > "1.0a"        v
-    "1.0aa" > "1.0aA"      v
+    "1.0b" > "1.0a"        Non-digits are compared as ASCII strings
+    "1.0a" > "1.0%"        Non-digits are compared as ASCII strings
+    "1.0|" > "1.0a"        Non-digits are compared as ASCII strings
+    "1.0aa" > "1.0aA"      Non-digits are compared as ASCII strings
     "1.0b" > "1.0a9"       Non-digits are compared as ASCII strings
-    "1.0" > "1-0"          v
+    "1.0" > "1-0"          Single dot is the highest character
     "1.0" > "1a"           Single dot is the highest character
     "1.0.0" > "1.0"        Extended string is considered larger
     "1.0aa0" > 1.0a0"      Non-digit string that runs out first is smaller
-    "1.0" > "1a"           v
-    "beta" > "1.0"         v
+    "1.0" > "1a"           First non-digit string has lenght 0 on the right
+    "beta" > "1.0"         First non-digit string has lenght 0 on the right
     "v1.0" > "9.9"         First non-digit string has lenght 0 on the right
-    "1.0" > "1..0"         v
-    "1.0.b" == "1.0.a"     v
-    "1.0a.b" > "1.0a.a"    v
-    "1.a.b" == "1.a.a"     v
-    "1.0..b" == "1.0.a"    v
+    "1.0" > "1..0"         ¯\_(ツ)_/¯
+    "1.0.b" == "1.0.a"     ¯\_(ツ)_/¯
+    "1.0a.b" > "1.0a.a"    ¯\_(ツ)_/¯
+    "1.a.b" == "1.a.a"     ¯\_(ツ)_/¯
+    "1.0..b" == "1.0.a"    ¯\_(ツ)_/¯
     "1.0...b" == "1.0.a"   ¯\_(ツ)_/¯
 
 
