@@ -71,7 +71,7 @@ jobs:
       - name: Set deb version
         run: |
           VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d "v")
-          echo "DEB_VERSION=${VERSION}.$(git show -s --format='%cd' --date=format:'%g%j')" >> $GITHUB_ENV
+          echo "DEB_VERSION=${VERSION}.$(git show -s --format='%cd' --date=format:'%y%j')" >> $GITHUB_ENV
       - name: Build deb
         env:
           CODENAME: stable
@@ -124,7 +124,7 @@ jobs:
       - name: Set rpm version
         run: |
           VERSION=$(echo "${{ github.event.release.tag_name }}" | tr -d v)
-          echo "RPM_VERSION=${VERSION}.$(git show -s --format='%cd' --date=format:'%g%j')" >> $GITHUB_ENV
+          echo "RPM_VERSION=${VERSION}.$(git show -s --format='%cd' --date=format:'%y%j')" >> $GITHUB_ENV
       - name: Build rpm
         run: ./build.sh rpm --configuration=Release --exclusive
       - name: Import GPG key

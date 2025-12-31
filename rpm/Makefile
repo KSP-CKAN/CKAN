@@ -14,7 +14,7 @@ ICONSRC:=$(foreach size,$(ICONSIZES),../assets/ckan-$(size).png)
 CONFIGURATION?=Release
 EXESRC:=$(shell pwd)/../_build/repack/$(CONFIGURATION)/ckan.exe
 CHANGELOGSRC:=../CHANGELOG.md
-VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' ).$(shell git show -s --format='%cd' --date=format:'%g%j')
+VERSION:=$(shell egrep '^\s*\#\#\s+v.*$$' $(CHANGELOGSRC) | head -1 | sed -e 's/^\s*\#\#\s\+v//' -e 's/-/_/g' ).$(shell git show -s --format='%cd' --date=format:'%y%j')
 RPM:=$(TOPDIR)/RPMS/noarch/ckan-$(VERSION)-1.noarch.rpm
 
 CREATEREPO:=$(if $(shell which createrepo),createrepo,createrepo_c)

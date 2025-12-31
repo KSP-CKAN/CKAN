@@ -9,7 +9,7 @@ from git import Repo
 
 # Get the year and day of year from the latest commit
 repo = Repo('.', search_parent_directories=True)
-yyddd = repo.head.commit.committed_datetime.strftime(r'%g%j')
+yyddd = repo.head.commit.committed_datetime.strftime(r'%y%j')
 version = ''
 changes = ''
 
