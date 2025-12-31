@@ -21,7 +21,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class CloneGameInstanceDialog : Form
+    public partial class CloneGameInstanceDialog : Forms.Form
     {
         private readonly GameInstanceManager manager;
         private readonly IUser               user;

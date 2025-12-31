@@ -2,7 +2,7 @@ using System.Windows.Forms;
 
 namespace CKAN.GUI
 {
-    public partial class AskUserForAutoUpdatesDialog : Form
+    public partial class AskUserForAutoUpdatesDialog : Forms.Form
     {
         public AskUserForAutoUpdatesDialog()
         {
