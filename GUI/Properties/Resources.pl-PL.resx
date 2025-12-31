@@ -1046,4 +1046,7 @@ Tej akcji nie można cofnąć!</value>
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>Dodaj {0}</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Anuluj</value>
+  </data>
 </root>

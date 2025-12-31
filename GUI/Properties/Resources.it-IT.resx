@@ -974,4 +974,7 @@ Questa azione non può essere annullata!</value>
   <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve">
     <value>Fai una donazione</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
 </root>

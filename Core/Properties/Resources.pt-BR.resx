@@ -189,6 +189,9 @@ e tente novamente.</value>
   <data name="KrakenIsDLC" xml:space="preserve">
     <value>O CKAN não pode instalar a expansão '{0}' para você.</value>
   </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Este nome de instância já foi usado: {0}</value>
+  </data>
   <data name="RelationshipResolverUserReason" xml:space="preserve">
     <value>Nova instalação de mod selecionada pelo usuário</value>
   </data>

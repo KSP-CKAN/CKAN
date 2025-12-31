@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.3
 
+### Features
+
+- [Multiple] Translation updates (#4483 by: gongasss, vinix38; reviewed: HebaruSan)
+
 ### Bugfixes
 
 - [Core] Ensure encoding is UTF-8 when saving JSON (#4475, #4478 by: HebaruSan)

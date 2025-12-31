@@ -1045,4 +1045,7 @@ Ctrl-单击或Shift-单击以合并当前搜索</value>
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>过滤 {0}</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>取消</value>
+  </data>
 </root>

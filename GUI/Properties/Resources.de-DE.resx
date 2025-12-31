@@ -702,4 +702,7 @@ Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>{0} hinzufügen</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Abbrechen</value>
+  </data>
 </root>

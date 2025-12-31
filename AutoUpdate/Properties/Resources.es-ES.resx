@@ -117,33 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="GameInstancePlayGameFailed" xml:space="preserve">
-    <value>Kan spel niet starten.
-
+  <data name="Usage" xml:space="preserve">
+    <value>Uso</value>
+  </data>
+  <data name="DownloadNotFound" xml:space="preserve">
+    <value>ckan.exe descargado no encontrado en: {0}</value>
+  </data>
+  <data name="FailedToWait" xml:space="preserve">
+    <value>Error al esperar a que CKAN cierre: {0}</value>
+  </data>
+  <data name="FailedToDelete" xml:space="preserve">
+    <value>No se pudo eliminar {0}: {1}</value>
+  </data>
+  <data name="UnhandledException" xml:space="preserve">
+    <value>Excepción no controlada:
 {0}</value>
   </data>
-  <data name="KrakenBadMetadata" xml:space="preserve">
-    <value>Verkeerde metadata gedetecteerd voor module {0}: {1}</value>
-  </data>
-  <data name="KrakenInstanceNameTaken" xml:space="preserve">
-    <value>Deze instantienaam is al in gebruik: {0}</value>
-  </data>
-  <data name="RelationshipTypeProvides" xml:space="preserve">
-    <value>Aanbieders</value>
-  </data>
-  <data name="RelationshipTypeDepends" xml:space="preserve">
-    <value>Afhankelijk</value>
-  </data>
-  <data name="RelationshipTypeRecommends" xml:space="preserve">
-    <value>Aanbevolen</value>
-  </data>
-  <data name="RelationshipTypeSuggests" xml:space="preserve">
-    <value>Suggesties</value>
-  </data>
-  <data name="RelationshipTypeSupports" xml:space="preserve">
-    <value>Ondersteunt</value>
-  </data>
-  <data name="RelationshipTypeConflicts" xml:space="preserve">
-    <value>Conflict</value>
+  <data name="FatalErrorTitle" xml:space="preserve">
+    <value>Error Crítico del Actualizador Automático</value>
   </data>
 </root>

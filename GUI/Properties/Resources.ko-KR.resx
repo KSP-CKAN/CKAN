@@ -800,4 +800,7 @@ CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지�
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>{0} 추가</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>취소하기</value>
+  </data>
 </root>

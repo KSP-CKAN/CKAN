@@ -784,4 +784,7 @@ CKANにこの動作をする許可を与えますか？ いいえをクリック
   <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
     <value>取り消し</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>取り消し</value>
+  </data>
 </root>
