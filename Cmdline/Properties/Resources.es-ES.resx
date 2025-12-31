@@ -1,0 +1,780 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Usage" xml:space="preserve">
+    <value>Uso</value>
+  </data>
+  <data name="Command" xml:space="preserve">
+    <value>comando</value>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Comando desconocido</value>
+  </data>
+  <data name="Options" xml:space="preserve">
+    <value>opciones</value>
+  </data>
+  <data name="ArgumentMissing" xml:space="preserve">
+    <value>faltan parámetros, ¿Quizás lo olvidó?</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>ruta</value>
+  </data>
+  <data name="MainVersion" xml:space="preserve">
+    <value>Está usando la versión de CKAN {0}</value>
+  </data>
+  <data name="MainUnknownCommand" xml:space="preserve">
+    <value>Comando desconocido, intente --help</value>
+  </data>
+  <data name="MainMissingInstance" xml:space="preserve">
+    <value>No sé donde está instalada la instancia del juego.
+Use 'ckan instance help' para ayuda en esta configuración.</value>
+  </data>
+  <data name="OptionsRootError" xml:space="preserve">
+    <value>
+Está intentando ejecutar CKAN como administrador.
+Esto proporciona a los programas capacidad ilimitada para hacer cambios no autorizados a cualquier parte de su sistema.
+Lo hacemos lo mejor que podemos para evitar errores y código malicioso, ¡pero no deberías confiar tanto en nosotros!
+
+Ejecutar como administrador también puede causar problemas con los permisos del sistema de archivos, ya que los archivos instalados como administrador no pueden ser eliminados sin ser administrador.
+
+Ejecute CKAN sin permisos de administrador para proteger su sistema de estos riesgos. Si necesita ejecutarlo como administrador, el parámetro `--asroot` desactiva este aviso.</value>
+  </data>
+  <data name="OptionsPressAnyKey" xml:space="preserve">
+    <value>Pulse cualquier tecla para salir...</value>
+  </data>
+  <data name="OptionsRootWarning" xml:space="preserve">
+    <value>Advertencia: ¡CKAN se está ejecutando con permisos de administrador!</value>
+  </data>
+  <data name="OptionsMonoWarning" xml:space="preserve">
+    <value>Advertencia: ¡Mono {0} detectado, la versión recomendada es {1} o más reciente!</value>
+  </data>
+  <data name="OptionsInstanceAndGameDir" xml:space="preserve">
+    <value>--instance y --gamedir no pueden especificarse al mismo tiempo</value>
+  </data>
+  <data name="OptionsInvalidInstance" xml:space="preserve">
+    <value>Se ha especificado una instancia de juego no válida "{0}", utilice '--gamedir' para especificar una ruta, o 'instance list' para ver todas las instancias de juego conocidas</value>
+  </data>
+  <data name="InstanceNotInstance" xml:space="preserve">
+    <value>Lo sentimos, {0} no parece ser una instancia del juego</value>
+  </data>
+  <data name="InstanceDuplicate" xml:space="preserve">
+    <value>Este nombre de instancia ya está siendo utilizado: {0}</value>
+  </data>
+  <data name="UserYesNoPromptSuffix" xml:space="preserve">
+    <value>[S/n]</value>
+  </data>
+  <data name="UserYesNoY" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="UserYesNoYes" xml:space="preserve">
+    <value>si</value>
+  </data>
+  <data name="UserYesNoN" xml:space="preserve">
+    <value>n</value>
+  </data>
+  <data name="UserYesNoNo" xml:space="preserve">
+    <value>no</value>
+  </data>
+  <data name="UserYesNoInvalid" xml:space="preserve">
+    <value>Entrada no válida. Por favor, introduzca si o no</value>
+  </data>
+  <data name="UserSelectionPromptWithDefault" xml:space="preserve">
+    <value>Introduzca un número entre {0} y {1} (Para cancelar pulse "c" o "n". "Enter" seleccionará {2}.): </value>
+  </data>
+  <data name="UserSelectionPromptWithoutDefault" xml:space="preserve">
+    <value>Introduzca un número entre {0} y {1} (Para cancelar pulse "c" o "n".): </value>
+  </data>
+  <data name="UserSelectionC" xml:space="preserve">
+    <value>c</value>
+  </data>
+  <data name="UserSelectionN" xml:space="preserve">
+    <value>n</value>
+  </data>
+  <data name="UserSelectionCancelled" xml:space="preserve">
+    <value>Selección cancelada</value>
+  </data>
+  <data name="UserSelectionNotNumber" xml:space="preserve">
+    <value>El valor especificado no es un número</value>
+  </data>
+  <data name="UserSelectionTooLarge" xml:space="preserve">
+    <value>El valor especificado es demasiado grande</value>
+  </data>
+  <data name="UserSelectionTooSmall" xml:space="preserve">
+    <value>El valor especificado es demasiado pequeño</value>
+  </data>
+  <data name="AuthTokenHostHeader" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="AuthTokenTokenHeader" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AuthTokenHelpSummary" xml:space="preserve">
+    <value>Administrar tokens de autenticación</value>
+  </data>
+  <data name="AuthTokenInvalidHostName" xml:space="preserve">
+    <value>Nombre de host no válido: {0}</value>
+  </data>
+  <data name="AvailableHeader" xml:space="preserve">
+    <value>Módulos compatibles con {0} {1}</value>
+  </data>
+  <data name="CacheHelpSummary" xml:space="preserve">
+    <value>Gestionar la ruta de caché de descargas de CKAN</value>
+  </data>
+  <data name="CacheSet" xml:space="preserve">
+    <value>Caché de descargas establecida en {0}</value>
+  </data>
+  <data name="CacheInvalidPath" xml:space="preserve">
+    <value>Ruta no válida: {0}</value>
+  </data>
+  <data name="CacheCleared" xml:space="preserve">
+    <value>Caché de descargas eliminada</value>
+  </data>
+  <data name="CacheReset" xml:space="preserve">
+    <value>Caché de descargas reestablecida a {0}</value>
+  </data>
+  <data name="CacheResetFailed" xml:space="preserve">
+    <value>No se puede restablecer la ruta de caché: {0}</value>
+  </data>
+  <data name="CacheUnlimited" xml:space="preserve">
+    <value>Ilimitado</value>
+  </data>
+  <data name="CacheInfo" xml:space="preserve">
+    <value>{0} ficheros, {1}, {2} libres</value>
+  </data>
+  <data name="CacheInfoFreeSpaceUnknown" xml:space="preserve">
+    <value>{0} ficheros, {1}, espacio libre desconocido</value>
+  </data>
+  <data name="CompareSame" xml:space="preserve">
+    <value>"{0}" y "{1}" son las mismas versiones.</value>
+  </data>
+  <data name="CompareLower" xml:space="preserve">
+    <value>"{0}" es inferior a "{1}".</value>
+  </data>
+  <data name="CompareHigher" xml:space="preserve">
+    <value>"{0}" es superior a "{1}".</value>
+  </data>
+  <data name="CompatHelpSummary" xml:space="preserve">
+    <value>Gestionar compatibilidad con versiones del juego</value>
+  </data>
+  <data name="CompatVersionHeader" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="CompatActualHeader" xml:space="preserve">
+    <value>Actual</value>
+  </data>
+  <data name="CompatMissing" xml:space="preserve">
+    <value>¡No se han especificado versiones del juego!</value>
+  </data>
+  <data name="CompatInvalid" xml:space="preserve">
+    <value>Versiones de juego no válidas: {0}</value>
+  </data>
+  <data name="CompatCantForget" xml:space="preserve">
+    <value>No se puede olvidar la versión actual del juego: {0}</value>
+  </data>
+  <data name="InstanceHelpSummary" xml:space="preserve">
+    <value>Gestionar instancias de juego</value>
+  </data>
+  <data name="InstanceListNoVersion" xml:space="preserve">
+    <value>&lt;NINGUNO&gt;</value>
+  </data>
+  <data name="InstanceListYes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="InstanceListNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="InstanceListNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Juego</value>
+  </data>
+  <data name="InstanceListVersionHeader" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve">
+    <value>Predeterminado</value>
+  </data>
+  <data name="InstanceListPathHeader" xml:space="preserve">
+    <value>Ruta</value>
+  </data>
+  <data name="InstanceAddDuplicate" xml:space="preserve">
+    <value>La instalación con el nombre "{0}" ya existe, abortando</value>
+  </data>
+  <data name="InstanceAdded" xml:space="preserve">
+    <value>Añadido "{0}" con raíz "{1}" a instalaciones conocidas</value>
+  </data>
+  <data name="InstanceCloneNotFound" xml:space="preserve">
+    <value>Ninguna instancia con este nombre o en esta ruta: {0}
+Ver abajo para una lista de instancias conocidas:
+</value>
+  </data>
+  <data name="InstanceCloneFailed" xml:space="preserve">
+    <value>Algo salió mal. Por favor, mire si el nuevo directorio ha sido creado.
+Intenta agregar la nueva instancia manualmente con "ckan instance add".
+</value>
+  </data>
+  <data name="InstanceNotFound" xml:space="preserve">
+    <value>No se pudo encontrar la instalación con el nombre "{0}", abortando</value>
+  </data>
+  <data name="InstanceRenamed" xml:space="preserve">
+    <value>Cambiado el nombre con éxito "{0}" a "{1}"</value>
+  </data>
+  <data name="InstanceForgot" xml:space="preserve">
+    <value>Eliminado con éxito "{0}"</value>
+  </data>
+  <data name="InstanceDefaultArgumentMissing" xml:space="preserve">
+    <value>falta un argumento, por favor seleccione uno de la lista de abajo</value>
+  </data>
+  <data name="InstanceDefaultSet" xml:space="preserve">
+    <value>"{0}" se ha establecido con éxito como instancia de juego predeterminada</value>
+  </data>
+  <data name="InstanceFakeFailed" xml:space="preserve">
+    <value>Algo salió mal. Intenta añadir la instancia manualmente con "ckan instance add". Verifique también si el nuevo directorio ha sido creado.</value>
+  </data>
+  <data name="InstanceFakeBadArguments" xml:space="preserve">
+    <value>--Error: argumentos(s) incorrecto(s)--</value>
+  </data>
+  <data name="InstanceFakeMakingHistory" xml:space="preserve">
+    <value>Por favor, compruebe el argumento de versión del DLC Making History - Formatéelo como: Maj.Min.Patch - Ejemplo: 1.1.0</value>
+  </data>
+  <data name="InstanceFakeBreakingGround" xml:space="preserve">
+    <value>Por favor, compruebe el argumento de versión del DLC Breaking Ground - Formatéelo como: Maj.Min.Patch - Ejemplo: 1.1.0</value>
+  </data>
+  <data name="InstanceFakeVersion" xml:space="preserve">
+    <value>Por favor, compruebe el argumento de versión - Formatéelo como: Maj.Min.Patch[.Build] - Ejemplo: 1.2.2.1622</value>
+  </data>
+  <data name="InstanceFakeBadGame" xml:space="preserve">
+    <value>¡No existe el juego {0}!</value>
+  </data>
+  <data name="InstanceFakeBadGameVersion" xml:space="preserve">
+    <value>No se pudo encontrar una versión válida del juego para su inserción. Asegúrese de introducir los valores de versión mayores y menores con el formato Mayor.Menor - Por ejemplo: 1.5</value>
+  </data>
+  <data name="InstanceFakeCancelled" xml:space="preserve">
+    <value>¡Selección cancelada! Por favor, utilice 'ckan instance fake' de nuevo</value>
+  </data>
+  <data name="InstanceFakeCreating" xml:space="preserve">
+    <value>Creando nueva instancia de juego falsa {0} en {1} con la versión {2}</value>
+  </data>
+  <data name="InstanceFakeDefault" xml:space="preserve">
+    <value>Estableciendo nueva instancia como predeterminada...</value>
+  </data>
+  <data name="InstanceFakeDone" xml:space="preserve">
+    <value>--Hecho--</value>
+  </data>
+  <data name="ImportError" xml:space="preserve">
+    <value>Error de importación: {0}</value>
+  </data>
+  <data name="ImportNotFound" xml:space="preserve">
+    <value>Archivo no encontrado: {0}</value>
+  </data>
+  <data name="InstallNotFound" xml:space="preserve">
+    <value>Archivo no encontrado, saliendo: {0}</value>
+  </data>
+  <data name="InstallTryAgain" xml:space="preserve">
+    <value>
+Puede utilizar el comando `ckan compat` para cambiar qué versiones del juego se consideran compatibles.
+Si una nueva versión compatible acaba de lanzarse, puede utilizar `ckan update` e intentarlo de nuevo.
+O puede utilizar `ckan install --allow-incompatible` para ignorar la compatibilidad de los módulos en la línea de comandos (pero no las dependencias).</value>
+  </data>
+  <data name="InstallCancelled" xml:space="preserve">
+    <value>Instalación cancelada. Sus archivos han sido devueltos a su estado inicial.</value>
+  </data>
+  <data name="InstallAborted" xml:space="preserve">
+    <value>Instalación abortada: {0}</value>
+  </data>
+  <data name="InstallTryAuthToken" xml:space="preserve">
+    <value>Prueba el comando authtoken. Ver {0} para más detalles.</value>
+  </data>
+  <data name="ListUnknownFormat" xml:space="preserve">
+    <value>Formato de exportación desconocido: {0}</value>
+  </data>
+  <data name="ListGameFound" xml:space="preserve">
+    <value>{0} encontrado en: {1}</value>
+  </data>
+  <data name="ListGameVersion" xml:space="preserve">
+    <value>Versión de {0}: {1}</value>
+  </data>
+  <data name="ListGameModulesHeader" xml:space="preserve">
+    <value>Módulos instalados:</value>
+  </data>
+  <data name="ListLegend" xml:space="preserve">
+    <value>Leyenda: -: Al día. +:Auto-instalado. X: Incompatible. ^: Actualizable. >: Reemplazable
+        A: Autodetectado. ?: Desconocido. *: Roto.</value>
+  </data>
+  <data name="MarkHelpSummary" xml:space="preserve">
+    <value>Editar atributos de los módulos</value>
+  </data>
+  <data name="MarkUnknownCommand" xml:space="preserve">
+    <value>Comando desconocido: mark{0}</value>
+  </data>
+  <data name="MarkNotInstalled" xml:space="preserve">
+    <value>{0} no está instalado</value>
+  </data>
+  <data name="MarkAlready" xml:space="preserve">
+    <value>{0} ya está marcado como {1}</value>
+  </data>
+  <data name="Marking" xml:space="preserve">
+    <value>Marcando {0} como {1}...</value>
+  </data>
+  <data name="MarkDLC" xml:space="preserve">
+    <value>No se puede marcar la expansión '{0}' como auto-instalada</value>
+  </data>
+  <data name="MarkChanged" xml:space="preserve">
+    <value>¡Cambios realizados!</value>
+  </data>
+  <data name="MarkAutoInstalled" xml:space="preserve">
+    <value>autoinstalado</value>
+  </data>
+  <data name="MarkUserSelected" xml:space="preserve">
+    <value>seleccionado por el usuario</value>
+  </data>
+  <data name="PromptWelcome" xml:space="preserve">
+    <value>¡Bienvenido a CKAN!
+
+Para obtener ayuda, escriba help y presione enter. Para salir, escriba {0} y presione enter. Presione tabulador para auto-completar comandos y módulos.
+</value>
+  </data>
+  <data name="PromptWithInstance" xml:space="preserve">
+    <value>CKAN {0}: {1} {2} ({3})&gt; </value>
+  </data>
+  <data name="PromptWithoutInstance" xml:space="preserve">
+    <value>CKAN {0}&gt; </value>
+  </data>
+  <data name="RemoveCancelled" xml:space="preserve">
+    <value>Eliminación abortada: {0}</value>
+  </data>
+  <data name="RemoveAllNothingInstalled" xml:space="preserve">
+    <value>No hay módulos instalados, así que no hay nada que eliminar.</value>
+  </data>
+  <data name="RepairHelpSummary" xml:space="preserve">
+    <value>Intentar varias reparaciones automáticas</value>
+  </data>
+  <data name="RepairUnknownCommand" xml:space="preserve">
+    <value>Comando desconocido: repair {0}</value>
+  </data>
+  <data name="Repaired" xml:space="preserve">
+    <value>Se intentaron reparaciones del registro. Esperamos que haya funcionado.</value>
+  </data>
+  <data name="ReplaceModuleNotFound" xml:space="preserve">
+    <value>Módulo {0} no encontrado</value>
+  </data>
+  <data name="Replacing" xml:space="preserve">
+    <value>Reemplazando módulos...</value>
+  </data>
+  <data name="ReplaceFound" xml:space="preserve">
+    <value>Reemplazo {0} {1} encontrado para {2} {3}</value>
+  </data>
+  <data name="ReplaceContinuePrompt" xml:space="preserve">
+    <value>¿Continuar?</value>
+  </data>
+  <data name="ReplaceCancelled" xml:space="preserve">
+    <value>Reemplazos cancelados por petición del usuario</value>
+  </data>
+  <data name="ReplaceNotFound" xml:space="preserve">
+    <value>No se han encontrado reemplazos</value>
+  </data>
+  <data name="RepoHelpSummary" xml:space="preserve">
+    <value>Gestionar repositorios de CKAN</value>
+  </data>
+  <data name="RepoUnknownCommand" xml:space="preserve">
+    <value>Comando desconocido: repo {0}</value>
+  </data>
+  <data name="RepoAvailableHeader" xml:space="preserve">
+    <value>Listando todos repositorios (canónicos) disponibles:</value>
+  </data>
+  <data name="RepoAvailableFailed" xml:space="preserve">
+    <value>No se pudo obtener la lista maestra de repositorios de CKAN desde {0}</value>
+  </data>
+  <data name="RepoListPriorityHeader" xml:space="preserve">
+    <value>Prioridad</value>
+  </data>
+  <data name="RepoListNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="RepoListURLHeader" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="RepoAddNotFound" xml:space="preserve">
+    <value>Nombre {0} no encontrado en la lista maestra, por favor indique el nombre y la uri</value>
+  </data>
+  <data name="RepoAddDuplicate" xml:space="preserve">
+    <value>El repositorio con nombre "{0}" ya existe, abortando</value>
+  </data>
+  <data name="RepoAddDuplicateURL" xml:space="preserve">
+    <value>El repositorio con la URL "{0}" ya existe, abortando</value>
+  </data>
+  <data name="RepoAdded" xml:space="preserve">
+    <value>Repositorio añadido '{0}' - '{1}'</value>
+  </data>
+  <data name="RepoPriorityNotFound" xml:space="preserve">
+    <value>No se pudo encontrar el repositorio con el nombre "{0}", abortando</value>
+  </data>
+  <data name="RepoPriorityInvalid" xml:space="preserve">
+    <value>Prioridad no válida: {0}, los valores permitidos son 0 y {1}</value>
+  </data>
+  <data name="RepoForgetNotFound" xml:space="preserve">
+    <value>No se pudo encontrar el repositorio con nombre "{0}", abortando</value>
+  </data>
+  <data name="RepoForgetRemoving" xml:space="preserve">
+    <value>Eliminando coincidencia insensible "{0}"</value>
+  </data>
+  <data name="RepoForgetRemoved" xml:space="preserve">
+    <value>"{0}" eliminado con éxito</value>
+  </data>
+  <data name="RepoSet" xml:space="preserve">
+    <value>Establecer repositorio {0} a '{1}'</value>
+  </data>
+  <data name="SearchFoundByAuthorWithIncompat" xml:space="preserve">
+    <value>Se encontraron {0} mods compatibles y {1} incompatibles que coinciden con "{2}" por "{3}"</value>
+  </data>
+  <data name="SearchFoundWithIncompat" xml:space="preserve">
+    <value>Se encontraron {0} mods compatibles y {1} incompatibles que coinciden con "{2}"</value>
+  </data>
+  <data name="SearchFoundByAuthor" xml:space="preserve">
+    <value>Se encontraron {0} mods compatibles que coinciden con "{1}" por "{2}"</value>
+  </data>
+  <data name="SearchFound" xml:space="preserve">
+    <value>Se encontraron {0} mods compatibles que coinciden con "{1}"</value>
+  </data>
+  <data name="SearchCompatibleModsHeader" xml:space="preserve">
+    <value>Mods compatibles que coincidan:</value>
+  </data>
+  <data name="SearchCompatibleMod" xml:space="preserve">
+    <value>* {0} ({1}) - {2} por {3} - {4}</value>
+  </data>
+  <data name="SearchIncompatibleModsHeader" xml:space="preserve">
+    <value>Mods incompatibles que coincidan:</value>
+  </data>
+  <data name="SearchIncompatibleMod" xml:space="preserve">
+    <value>* {0} ({1} - {2}) - {3} por {4} - {5}</value>
+  </data>
+  <data name="ShowNotInstalledOrCompatible" xml:space="preserve">
+    <value>{0} no instalado o compatible con {1} {2}</value>
+  </data>
+  <data name="ShowLookingForClose" xml:space="preserve">
+    <value>Buscando coincidencias en mods compatibles...</value>
+  </data>
+  <data name="ShowNoClose" xml:space="preserve">
+    <value>No se han encontrado coincidencias</value>
+  </data>
+  <data name="ShowFoundOne" xml:space="preserve">
+    <value>Encontrada 1 coincidencia: {0}</value>
+  </data>
+  <data name="ShowClosePrompt" xml:space="preserve">
+    <value>Coincidencias:</value>
+  </data>
+  <data name="ShowFilesHeader" xml:space="preserve">
+    <value>Mostrando {0} archivos instalados:</value>
+  </data>
+  <data name="ShowModuleInfoHeader" xml:space="preserve">
+    <value>Información del módulo:</value>
+  </data>
+  <data name="ShowVersion" xml:space="preserve">
+    <value>  Versión:	{0}</value>
+  </data>
+  <data name="ShowAuthor" xml:space="preserve">
+    <value>  Autores:	{0}</value>
+  </data>
+  <data name="ShowAuthorUnknown" xml:space="preserve">
+    <value>  Autores:	DESCONOCIDO</value>
+  </data>
+  <data name="ShowStatus" xml:space="preserve">
+    <value>  Estado: {0}</value>
+  </data>
+  <data name="ShowLicence" xml:space="preserve">
+    <value>  Licencia:	{0}</value>
+  </data>
+  <data name="ShowTags" xml:space="preserve">
+    <value>  Etiquetas: 	{0}</value>
+  </data>
+  <data name="ShowLanguages" xml:space="preserve">
+    <value>  Idiomas:	{0}</value>
+  </data>
+  <data name="ShowDependsHeader" xml:space="preserve">
+    <value>Depende de:</value>
+  </data>
+  <data name="ShowRecommendsHeader" xml:space="preserve">
+    <value>Se recomienda:</value>
+  </data>
+  <data name="ShowSuggestsHeader" xml:space="preserve">
+    <value>Sugerencias:</value>
+  </data>
+  <data name="ShowSupportsHeader" xml:space="preserve">
+    <value>Soporta:</value>
+  </data>
+  <data name="ShowProvidesHeader" xml:space="preserve">
+    <value>Proporciona:</value>
+  </data>
+  <data name="ShowResourcesHeader" xml:space="preserve">
+    <value>Recursos:</value>
+  </data>
+  <data name="ShowHomePage" xml:space="preserve">
+    <value>  Página de inicio:	{0}</value>
+  </data>
+  <data name="ShowManual" xml:space="preserve">
+    <value>  Manual:	{0}</value>
+  </data>
+  <data name="ShowSpaceDock" xml:space="preserve">
+    <value>  SpaceDock:	{0}</value>
+  </data>
+  <data name="ShowRepository" xml:space="preserve">
+    <value>  Repositorio:	{0}</value>
+  </data>
+  <data name="ShowBugTracker" xml:space="preserve">
+    <value>  Seguimiento de errores:	{0}</value>
+  </data>
+  <data name="ShowDiscussions" xml:space="preserve">
+    <value>  Discusiones:	{0}</value>
+  </data>
+  <data name="ShowCurse" xml:space="preserve">
+    <value>  Curse:	{0}</value>
+  </data>
+  <data name="ShowStore" xml:space="preserve">
+    <value>  Tienda:	{0}</value>
+  </data>
+  <data name="ShowSteamStore" xml:space="preserve">
+    <value>  Tienda de Steam:	{0}</value>
+  </data>
+  <data name="ShowGogStore" xml:space="preserve">
+    <value>  Tienda GOG:	{0}</value>
+  </data>
+  <data name="ShowEpicStore" xml:space="preserve">
+    <value>  Tienda de Epic Games:	{0}</value>
+  </data>
+  <data name="ShowVersionFile" xml:space="preserve">
+    <value>  Versión del archivo: {0}</value>
+  </data>
+  <data name="ShowSpaceWarpInfo" xml:space="preserve">
+    <value>  Archivo SWInfo:	{0}</value>
+  </data>
+  <data name="ShowFileName" xml:space="preserve">
+    <value>Nombre de archivo: {0}</value>
+  </data>
+  <data name="ShowVersionHeader" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="ShowGameVersionsHeader" xml:space="preserve">
+    <value>Versiones del juego</value>
+  </data>
+  <data name="UpdateBadGame" xml:space="preserve">
+    <value>¡Juego {0} no encontrado! Las opciones válidas son: {1}</value>
+  </data>
+  <data name="UpdateURLRepoName" xml:space="preserve">
+    <value>URL #{0}</value>
+  </data>
+  <data name="UpdateChangesSummary" xml:space="preserve">
+    <value>Encontrados {0} nuevos módulos, {1} eliminados y {2} actualizados.</value>
+  </data>
+  <data name="UpdateAddedHeader" xml:space="preserve">
+    <value>Nuevos módulos [Nombre (identificador CKAN)]:</value>
+  </data>
+  <data name="UpdateRemovedHeader" xml:space="preserve">
+    <value>Módulos eliminados [Nombre (identificador CKAN)]:</value>
+  </data>
+  <data name="UpdateUpdatedHeader" xml:space="preserve">
+    <value>Módulos actualizados [Nombre (identificador CKAN)]:</value>
+  </data>
+  <data name="UpdateSummary" xml:space="preserve">
+    <value>Información de {0} módulos actualizada.</value>
+  </data>
+  <data name="UpgradeCannotCombineFlags" xml:space="preserve">
+    <value>¡Los argumentos `--dev-build` y `--stable-release` no se pueden combinar!</value>
+  </data>
+  <data name="UpgradeSwitchingToDevBuilds" xml:space="preserve">
+    <value>Cambiando a versiones de desarrollo</value>
+  </data>
+  <data name="UpgradeSwitchingToStableReleases" xml:space="preserve">
+    <value>Cambiando a versiones estables</value>
+  </data>
+  <data name="UpgradeQueryingCKAN" xml:space="preserve">
+    <value>Consultando la última versión de CKAN</value>
+  </data>
+  <data name="UpgradeNewCKANAvailable" xml:space="preserve">
+    <value>Nueva versión de CKAN disponible - {0}</value>
+  </data>
+  <data name="UpgradeProceed" xml:space="preserve">
+    <value>¿Proceder con la instalación?</value>
+  </data>
+  <data name="UpgradePleaseWait" xml:space="preserve">
+    <value>Actualizando CKAN, por favor espere...</value>
+  </data>
+  <data name="UpgradeAlreadyHaveLatest" xml:space="preserve">
+    <value>Ya tiene la última versión</value>
+  </data>
+  <data name="UpgradeAborted" xml:space="preserve">
+    <value>Actualización abortada: {0}</value>
+  </data>
+  <data name="UpgradeFailed" xml:space="preserve">
+    <value>Actualización fallida: {0}"</value>
+  </data>
+  <data name="UpgradeAlreadyUpToDate" xml:space="preserve">
+    <value>El módulo {0} ya está actualizado</value>
+  </data>
+  <data name="UpgradeAllUpToDate" xml:space="preserve">
+    <value>Todos los módulos están actualizados</value>
+  </data>
+  <data name="FilterListGlobalHeader" xml:space="preserve">
+    <value>Filtros globales para {0}:</value>
+  </data>
+  <data name="FilterListInstanceHeader" xml:space="preserve">
+    <value>Filtros de instancia para {0}:</value>
+  </data>
+  <data name="FilterAddGlobalDuplicateError" xml:space="preserve">
+    <value>Filtros globales ya establecidos: {0}</value>
+  </data>
+  <data name="FilterAddInstanceDuplicateError" xml:space="preserve">
+    <value>Filtros de instancia ya establecidos: {0}</value>
+  </data>
+  <data name="FilterRemoveGlobalNotFoundError" xml:space="preserve">
+    <value>Filtros globales no encontrados: {0}</value>
+  </data>
+  <data name="FilterRemoveInstanceNotFoundError" xml:space="preserve">
+    <value>Filtros de instancia no encontrados: {0}</value>
+  </data>
+  <data name="FilterGameNotFoundError" xml:space="preserve">
+    <value>Juego {0} no encontrado! Intente uno de: {1}</value>
+  </data>
+  <data name="FilterHelpSummary" xml:space="preserve">
+    <value>Ver o editar filtros de instalación</value>
+  </data>
+  <data name="StabilityUnknownCommand" xml:space="preserve">
+    <value>Comando desconocido: stability {0}</value>
+  </data>
+  <data name="StabilityHelpSummary" xml:space="preserve">
+    <value>Ver o editar ajustes de estabilidad</value>
+  </data>
+  <data name="StabilityOverallLabel" xml:space="preserve">
+    <value>Tolerancia general de estabilidad: {0}</value>
+  </data>
+  <data name="StabilityListModHeader" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="StabilityListStabilityHeader" xml:space="preserve">
+    <value>Sobrescribir</value>
+  </data>
+  <data name="CompletionNotAvailable" xml:space="preserve">
+    <value>
+No hay instancia de juego seleccionada, completado de identificador no disponible.
+Use el comando `instance default` para seleccionar una instancia.</value>
+  </data>
+  <data name="ScanningForDuplicates" xml:space="preserve">
+    <value>Buscando archivos instalados duplicados...</value>
+  </data>
+</root>

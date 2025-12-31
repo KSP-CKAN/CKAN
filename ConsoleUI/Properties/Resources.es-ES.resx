@@ -1,0 +1,962 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Accept" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="DefaultGhostText" xml:space="preserve">
+    <value>&lt;Introducir un valor&gt;</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="AscendingSortTip" xml:space="preserve">
+    <value>Ordenar la lista en orden ascendente</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="DescendingSortTip" xml:space="preserve">
+    <value>Ordenar la lista en orden descendente</value>
+  </data>
+  <data name="ColumnNumber" xml:space="preserve">
+    <value>Columna #{0}</value>
+  </data>
+  <data name="ColumnNumberSortTip" xml:space="preserve">
+    <value>Ordenar la lista por columna #{0}</value>
+  </data>
+  <data name="ColumnNameSortTip" xml:space="preserve">
+    <value>Ordenar la lista por la columna {0}</value>
+  </data>
+  <data name="CursorKeys" xml:space="preserve">
+    <value>Teclas de cursor</value>
+  </data>
+  <data name="Scroll" xml:space="preserve">
+    <value>Desplazamiento</value>
+  </data>
+  <data name="ScrollMessages" xml:space="preserve">
+    <value>Desplazar mensajes</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menú</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Si</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="Force" xml:space="preserve">
+    <value>Forzar</value>
+  </data>
+  <data name="Tab" xml:space="preserve">
+    <value>Tabulador</value>
+  </data>
+  <data name="Enter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="Esc" xml:space="preserve">
+    <value>Esc</value>
+  </data>
+  <data name="Ctrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="Alt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="Remove" xml:space="preserve">
+    <value>Quitar</value>
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Editar</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>Ordenar</value>
+  </data>
+  <data name="Toggle" xml:space="preserve">
+    <value>Alternar</value>
+  </data>
+  <data name="Select" xml:space="preserve">
+    <value>Seleccionar</value>
+  </data>
+  <data name="SelectAll" xml:space="preserve">
+    <value>Seleccionar todo</value>
+  </data>
+  <data name="DeselectAll" xml:space="preserve">
+    <value>Deseleccionar todo</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="Up" xml:space="preserve">
+    <value>Arriba</value>
+  </data>
+  <data name="Down" xml:space="preserve">
+    <value>Abajo</value>
+  </data>
+  <data name="FileSelectDirectory" xml:space="preserve">
+    <value>Directorio:</value>
+  </data>
+  <data name="FileSelectCountFooter" xml:space="preserve">
+    <value>{0} seleccionado, {1}</value>
+  </data>
+  <data name="FileSelectNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="FileSelectSizeHeader" xml:space="preserve">
+    <value>Tamaño</value>
+  </data>
+  <data name="FileSelectTimestampHeader" xml:space="preserve">
+    <value>Accedido</value>
+  </data>
+  <data name="FileSelectChangeDirectory" xml:space="preserve">
+    <value>Cambiar directorio</value>
+  </data>
+  <data name="FileSelectSelect" xml:space="preserve">
+    <value>Seleccionar</value>
+  </data>
+  <data name="FileSelectDirSize" xml:space="preserve">
+    <value>&lt;DIR&gt;</value>
+  </data>
+  <data name="AuthTokenListTitle" xml:space="preserve">
+    <value>Token de autenticación</value>
+  </data>
+  <data name="AuthTokenListGitHubLink" xml:space="preserve">
+    <value>Crear un token para GitHub API</value>
+  </data>
+  <data name="AuthTokenListGitHubLinkTip" xml:space="preserve">
+    <value>Abrir la web para crear tokens de autenticación para la GitHub API</value>
+  </data>
+  <data name="AuthTokenListLabel" xml:space="preserve">
+    <value>Tokens de autenticación para descargas:</value>
+  </data>
+  <data name="AuthTokenListHostHeader" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="AuthTokenListTokenHeader" xml:space="preserve">
+    <value>Token</value>
+  </data>
+  <data name="AuthTokenListWarning" xml:space="preserve">
+    <value>NOTA: ¡Estos valores son privados! ¡No comparta capturas de esta pantalla!</value>
+  </data>
+  <data name="AuthTokenListMissingToken" xml:space="preserve">
+    <value>&lt;ERROR&gt;</value>
+  </data>
+  <data name="AuthTokenAddTitle" xml:space="preserve">
+    <value>Crear clave de autenticación</value>
+  </data>
+  <data name="AuthTokenAddHost" xml:space="preserve">
+    <value>Host:</value>
+  </data>
+  <data name="AuthTokenAddHostGhostText" xml:space="preserve">
+    <value>&lt;Introducir nombre de host&gt;</value>
+  </data>
+  <data name="AuthTokenAddToken" xml:space="preserve">
+    <value>Token:</value>
+  </data>
+  <data name="AuthTokenAddTokenGhostText" xml:space="preserve">
+    <value>&lt;Introducir token de autenticación&gt;</value>
+  </data>
+  <data name="CompatibleVersionsTitle" xml:space="preserve">
+    <value>Seleccionar versión compatible</value>
+  </data>
+  <data name="CompatibleVersionsListHeader" xml:space="preserve">
+    <value>Versión predefinida</value>
+  </data>
+  <data name="CompatibleVersionsListAcceptTip" xml:space="preserve">
+    <value>Seleccionar versión</value>
+  </data>
+  <data name="CompatibleVersionsGhostText" xml:space="preserve">
+    <value>&lt;Introducir versión&gt;</value>
+  </data>
+  <data name="CompatibleVersionsEntryAcceptTip" xml:space="preserve">
+    <value>Aceptar valor</value>
+  </data>
+  <data name="ThemeNotFound" xml:space="preserve">
+    <value>No existe el tema: {0}</value>
+  </data>
+  <data name="ThemeList" xml:space="preserve">
+    <value>Temas disponibles: {0}</value>
+  </data>
+  <data name="RecommendationsLabel" xml:space="preserve">
+    <value>Se recomiendan o sugieren mods adicionales:</value>
+  </data>
+  <data name="RecommendationsInstallHeader" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="RecommendationsNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="RecommendationsSourcesHeader" xml:space="preserve">
+    <value>Fuentes</value>
+  </data>
+  <data name="RecommendationsTitle" xml:space="preserve">
+    <value>Recomendaciones y sugerencias</value>
+  </data>
+  <data name="ImportSelectTitle" xml:space="preserve">
+    <value>Importar descargas</value>
+  </data>
+  <data name="ImportSelectHeader" xml:space="preserve">
+    <value>Importar</value>
+  </data>
+  <data name="ImportProgressTitle" xml:space="preserve">
+    <value>Importando descargas</value>
+  </data>
+  <data name="ImportProgressMessage" xml:space="preserve">
+    <value>Calculando...</value>
+  </data>
+  <data name="InstanceNameLabel" xml:space="preserve">
+    <value>Nombre:</value>
+  </data>
+  <data name="InstanceNameGhostText" xml:space="preserve">
+    <value>&lt;Introduce el nombre a utilizar para esta instancia del juego&gt;</value>
+  </data>
+  <data name="InstancePathGhostText" xml:space="preserve">
+    <value>&lt;Introducir la ubicación de esta instancia en el disco&gt;</value>
+  </data>
+  <data name="InstancePathLabel" xml:space="preserve">
+    <value>Ruta a la instancia del juego:</value>
+  </data>
+  <data name="InstanceNameEmptyError" xml:space="preserve">
+    <value>¡El nombre no puede quedar vacío!</value>
+  </data>
+  <data name="InstanceNameDuplicateError" xml:space="preserve">
+    <value>¡{0} ya existe!</value>
+  </data>
+  <data name="InstancePathNotGameFolderError" xml:space="preserve">
+    <value>¡La ruta no corresponde a una carpeta del juego!</value>
+  </data>
+  <data name="InstanceAddExample" xml:space="preserve">
+    <value>Ejemplo: {0}</value>
+  </data>
+  <data name="InstanceAddTitle" xml:space="preserve">
+    <value>Añadir instancia de juego</value>
+  </data>
+  <data name="InstanceEditTitle" xml:space="preserve">
+    <value>Editar instancia del juego</value>
+  </data>
+  <data name="InstanceEditStabilityToleranceHeader" xml:space="preserve">
+    <value>Tolerancia de estabilidad:</value>
+  </data>
+  <data name="InstanceEditRepoFrameTitle" xml:space="preserve">
+    <value>Fuentes de la lista de mods</value>
+  </data>
+  <data name="InstanceEditCompatFrameTitle" xml:space="preserve">
+    <value>Versiones Compatibles Adicionales</value>
+  </data>
+  <data name="InstanceEditRepoIndexHeader" xml:space="preserve">
+    <value>Índice</value>
+  </data>
+  <data name="InstanceEditRepoNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="InstanceEditRepoURLHeader" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="InstanceEditCompatVersionHeader" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="InstanceEditRegistryParseError" xml:space="preserve">
+    <value>Error al extraer las fuentes de la lista de mods de {0}.</value>
+  </data>
+  <data name="InstanceListTitle" xml:space="preserve">
+    <value>Instancias de juego</value>
+  </data>
+  <data name="InstanceListLabel" xml:space="preserve">
+    <value>Seleccionar o añadir una instancia de juego:</value>
+  </data>
+  <data name="InstanceListDefaultHeader" xml:space="preserve">
+    <value>Predeterminado</value>
+  </data>
+  <data name="InstanceListNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="InstanceListGameHeader" xml:space="preserve">
+    <value>Juego</value>
+  </data>
+  <data name="InstanceListVersionHeader" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="InstanceListPathHeader" xml:space="preserve">
+    <value>Ruta</value>
+  </data>
+  <data name="InstanceListLoadingInstance" xml:space="preserve">
+    <value>Cargando instancia {0}...</value>
+  </data>
+  <data name="InstanceListDefaultToggle" xml:space="preserve">
+    <value>Por defecto</value>
+  </data>
+  <data name="InstanceListLoadingError" xml:space="preserve">
+    <value>Error al cargar {0}:
+{1}</value>
+  </data>
+  <data name="InstanceListNoVersion" xml:space="preserve">
+    <value>&lt;NINGUNO&gt;</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>Instalando, Actualizando, y Eliminando Mods</value>
+  </data>
+  <data name="InstallMessage" xml:space="preserve">
+    <value>Calculando...</value>
+  </data>
+  <data name="InstallFilesReverted" xml:space="preserve">
+    <value>Archivos de juego revertidos.</value>
+  </data>
+  <data name="InstallAuthTokenPrompt" xml:space="preserve">
+    <value>{0}
+
+¿Editar los tokens de autenticación ahora?</value>
+  </data>
+  <data name="InstallTooManyModsNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="InstallDeduplicateScanning" xml:space="preserve">
+    <value>Comprobando otras instancias de juego para ver posibles archivos instalados duplicados...</value>
+  </data>
+  <data name="DeleteDirectoriesHeader" xml:space="preserve">
+    <value>Eliminar directorios</value>
+  </data>
+  <data name="DeleteDirectoriesHelpLabel" xml:space="preserve">
+    <value>Advertencia, algunas carpetas se han quedado atrás porque CKAN no sabe si es seguro o no borrar los archivos restantes. ¡Algunas de esas carpetas pueden romper otros mods! Si no necesita esos archivos, se recomienda borrar las carpetas.</value>
+  </data>
+  <data name="DeleteDirectoriesFoldersHeader" xml:space="preserve">
+    <value>Directorios</value>
+  </data>
+  <data name="DeleteDirectoriesFilesHeader" xml:space="preserve">
+    <value>Contenido del directorio</value>
+  </data>
+  <data name="DeleteDirectoriesDeleteDirTip" xml:space="preserve">
+    <value>Borrar carpeta</value>
+  </data>
+  <data name="DeleteDirectoriesKeepDirTip" xml:space="preserve">
+    <value>Mantener carpeta</value>
+  </data>
+  <data name="DeleteDirectoriesCancelTip" xml:space="preserve">
+    <value>Mantener todo</value>
+  </data>
+  <data name="DeleteDirectoriesApplyTip" xml:space="preserve">
+    <value>Eliminar selección</value>
+  </data>
+  <data name="ModInfoTitle" xml:space="preserve">
+    <value>Detalles del Mod</value>
+  </data>
+  <data name="ModInfoMenuTip" xml:space="preserve">
+    <value>Links</value>
+  </data>
+  <data name="ModInfoAuthors" xml:space="preserve">
+    <value>Por {0}</value>
+  </data>
+  <data name="ModInfoLicence" xml:space="preserve">
+    <value>Licencia:</value>
+  </data>
+  <data name="ModInfoDownload" xml:space="preserve">
+    <value>Descarga:</value>
+  </data>
+  <data name="ModInfoInstall" xml:space="preserve">
+    <value>Instalación:</value>
+  </data>
+  <data name="ModInfoStabilityToleranceHeader" xml:space="preserve">
+    <value>Anular la tolerancia de estabilidad de los mods:</value>
+  </data>
+  <data name="ModInfoStabilityToleranceNull" xml:space="preserve">
+    <value>No anular</value>
+  </data>
+  <data name="ModInfoDescriptionFrame" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="ModInfoUnavailableWarning" xml:space="preserve">
+    <value>
+NOTA: Este mod está instalado pero ya no está disponible. Si lo desinstala, CKAN no podrá reinstalarlo.</value>
+  </data>
+  <data name="ModInfoDownloadToCache" xml:space="preserve">
+    <value>Descargar a la caché (no se instalará)</value>
+  </data>
+  <data name="ModInfoHomePage" xml:space="preserve">
+    <value>Página de inicio</value>
+  </data>
+  <data name="ModInfoHomePageTip" xml:space="preserve">
+    <value>Abrir la URL de la página de inicio en el navegador</value>
+  </data>
+  <data name="ModInfoRepository" xml:space="preserve">
+    <value>Repositorio</value>
+  </data>
+  <data name="ModInfoRepositoryTip" xml:space="preserve">
+    <value>Abrir la URL del repositorio en el navegador</value>
+  </data>
+  <data name="ModInfoBugtracker" xml:space="preserve">
+    <value>Seguimiento de errores</value>
+  </data>
+  <data name="ModInfoBugtrackerTip" xml:space="preserve">
+    <value>Abrir la URL del seguimiento de errores en el navegador</value>
+  </data>
+  <data name="ModInfoDiscussions" xml:space="preserve">
+    <value>Discusiones</value>
+  </data>
+  <data name="ModInfoDiscussionsTip" xml:space="preserve">
+    <value>Abrir la URL de las discusiones en el navegador</value>
+  </data>
+  <data name="ModInfoSpaceDock" xml:space="preserve">
+    <value>SpaceDock</value>
+  </data>
+  <data name="ModInfoSpaceDockTip" xml:space="preserve">
+    <value>Abrir la URL de SpaceDock en el navegador</value>
+  </data>
+  <data name="ModInfoCurse" xml:space="preserve">
+    <value>Curse</value>
+  </data>
+  <data name="ModInfoCurseTip" xml:space="preserve">
+    <value>Abrir la URL de Curse en el navegador</value>
+  </data>
+  <data name="ModInfoStore" xml:space="preserve">
+    <value>Tienda</value>
+  </data>
+  <data name="ModInfoStoreTip" xml:space="preserve">
+    <value>Abrir la URL de la tienda en el navegador</value>
+  </data>
+  <data name="ModInfoSteamStore" xml:space="preserve">
+    <value>Tienda de Steam</value>
+  </data>
+  <data name="ModInfoSteamStoreTip" xml:space="preserve">
+    <value>Abrir la URL de la tienda de Steam en el navegador</value>
+  </data>
+  <data name="ModInfoViewMetadata" xml:space="preserve">
+    <value>DEPURACIÓN: Ver metadatos</value>
+  </data>
+  <data name="ModInfoViewMetadataTip" xml:space="preserve">
+    <value>Mostrar todos los datos del registro para este mod</value>
+  </data>
+  <data name="ModInfoViewMetadataTitle" xml:space="preserve">
+    <value>Metadatos {0}</value>
+  </data>
+  <data name="ModInfoURLLaunching" xml:space="preserve">
+    <value>Inicializando...</value>
+  </data>
+  <data name="ModInfoDependenciesFrame" xml:space="preserve">
+    <value>Dependencias</value>
+  </data>
+  <data name="ModInfoRequiredLabel" xml:space="preserve">
+    <value>Requerido ({0}):</value>
+  </data>
+  <data name="ModInfoConflictsLabel" xml:space="preserve">
+    <value>Conflictos ({0}):</value>
+  </data>
+  <data name="ModInfoReplacedBy" xml:space="preserve">
+    <value>Reemplazado por {0}:</value>
+  </data>
+  <data name="ModInfoInstalledOn" xml:space="preserve">
+    <value>Instalado {0}</value>
+  </data>
+  <data name="ModInfoInstalledManually" xml:space="preserve">
+    <value>Instalado manualmente</value>
+  </data>
+  <data name="ModInfoLatestInstalledOn" xml:space="preserve">
+    <value>Último/Instalado {0}</value>
+  </data>
+  <data name="ModInfoLatestInstalledManually" xml:space="preserve">
+    <value>Último/Instalado manualmente</value>
+  </data>
+  <data name="ModInfoLatestVersion" xml:space="preserve">
+    <value>Última versión</value>
+  </data>
+  <data name="ModInfoOtherVersions" xml:space="preserve">
+    <value>Otras versiones</value>
+  </data>
+  <data name="ModInfoUnavailableInstalledOn" xml:space="preserve">
+    <value>NO DISPONIBLE/Instalado {0}</value>
+  </data>
+  <data name="ModInfoUnavailableInstalledManually" xml:space="preserve">
+    <value>NO DISPONIBLE/Instalado manualmente</value>
+  </data>
+  <data name="ModInfoCompatibleWith" xml:space="preserve">
+    <value>Compatible con:</value>
+  </data>
+  <data name="ModInfoHostedOn" xml:space="preserve">
+    <value>Alojado en {0}</value>
+  </data>
+  <data name="ModInfoReportBugsOn" xml:space="preserve">
+    <value>Reporta errores en {0}</value>
+  </data>
+  <data name="ModInfoRepositoryOn" xml:space="preserve">
+    <value>Repositorio en {0}</value>
+  </data>
+  <data name="ModInfoHomePageOn" xml:space="preserve">
+    <value>Página de inicio en {0}</value>
+  </data>
+  <data name="ModInfoBuyFromKSPStore" xml:space="preserve">
+    <value>Comprar en la tienda de KSP</value>
+  </data>
+  <data name="ModInfoBuyFromSteamStore" xml:space="preserve">
+    <value>Comprar en la tienda de Steam</value>
+  </data>
+  <data name="ModInfoBuyFromKSPStoreOrSteamStore" xml:space="preserve">
+    <value>Comprar en la tienda de KSP o en la tienda de Steam</value>
+  </data>
+  <data name="ModInfoDownloading" xml:space="preserve">
+    <value>Descargando {0}</value>
+  </data>
+  <data name="ModInfoDownloadFailed" xml:space="preserve">
+    <value>Descarga fallida: {0}</value>
+  </data>
+  <data name="ProgressTitle" xml:space="preserve">
+    <value>Progreso</value>
+  </data>
+  <data name="ProgressMessages" xml:space="preserve">
+    <value>Mensajes</value>
+  </data>
+  <data name="SplashLoading" xml:space="preserve">
+    <value>Cargando...</value>
+  </data>
+  <data name="SplashPressAnyKey" xml:space="preserve">
+    <value>Pulsa cualquier tecla para continuar</value>
+  </data>
+  <data name="RepoNameLabel" xml:space="preserve">
+    <value>Nombre:</value>
+  </data>
+  <data name="RepoNameGhostText" xml:space="preserve">
+    <value>&lt;Introduzca el nombre a utilizar por este repositorio&gt;</value>
+  </data>
+  <data name="RepoURLLabel" xml:space="preserve">
+    <value>URL:</value>
+  </data>
+  <data name="RepoURLGhostText" xml:space="preserve">
+    <value>&lt;Introduzca la URL de este repositorio&gt;</value>
+  </data>
+  <data name="RepoImportTip" xml:space="preserve">
+    <value>Importar valores de la fuente por defecto de la lista de mods {0}</value>
+  </data>
+  <data name="RepoTitle" xml:space="preserve">
+    <value>Editar Fuente de Lista de Mods</value>
+  </data>
+  <data name="RepoNameEmptyError" xml:space="preserve">
+    <value>¡El nombre no puede quedar vacío!</value>
+  </data>
+  <data name="RepoNameDuplicateError" xml:space="preserve">
+    <value>¡{0} ya existe!</value>
+  </data>
+  <data name="RepoURLEmptyError" xml:space="preserve">
+    <value>¡La URL no puede estar vacía!</value>
+  </data>
+  <data name="ModListNameHeader" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="ModListVersionHeader" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="ModListMaxGameVersionHeader" xml:space="preserve">
+    <value>Versión máxima del juego</value>
+  </data>
+  <data name="ModListDownloadsHeader" xml:space="preserve">
+    <value>Descargas</value>
+  </data>
+  <data name="ModListSearchFocusedGhostText" xml:space="preserve">
+    <value>&lt;Escriba para buscar&gt;</value>
+  </data>
+  <data name="ModListSearchUnfocusedGhostText" xml:space="preserve">
+    <value>&lt;Ctrl+F para buscar&gt;</value>
+  </data>
+  <data name="ModListCount" xml:space="preserve">
+    <value>{0} mods</value>
+  </data>
+  <data name="ModListSizeOnDisk" xml:space="preserve">
+    <value>{0} instalado(s)</value>
+  </data>
+  <data name="ModListInstallTip" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="ModListUpgradeTip" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="ModListReplaceTip" xml:space="preserve">
+    <value>Reemplazar</value>
+  </data>
+  <data name="ModListRemoveTip" xml:space="preserve">
+    <value>Quitar</value>
+  </data>
+  <data name="ModListAutoInstTip" xml:space="preserve">
+    <value>Marcar autoinstalado</value>
+  </data>
+  <data name="ModListUserSelectedTip" xml:space="preserve">
+    <value>Marcar seleccionado por el usuario</value>
+  </data>
+  <data name="ModListApplyChangesTip" xml:space="preserve">
+    <value>Aplicar cambios</value>
+  </data>
+  <data name="ModListUpdatedDayAgo" xml:space="preserve">
+    <value>Actualizado hace {0} día(s)</value>
+  </data>
+  <data name="ModListUpdatedDaysAgo" xml:space="preserve">
+    <value>Actualizado hace {0} día(s)</value>
+  </data>
+  <data name="ModListPlayMenu" xml:space="preserve">
+    <value>Jugar</value>
+  </data>
+  <data name="ModListPlayMenuTip" xml:space="preserve">
+    <value>Iniciar el juego</value>
+  </data>
+  <data name="ModListSortMenu" xml:space="preserve">
+    <value>Ordenar...</value>
+  </data>
+  <data name="ModListSortMenuTip" xml:space="preserve">
+    <value>Cambiar el orden de la lista de mods</value>
+  </data>
+  <data name="ModListRefreshMenu" xml:space="preserve">
+    <value>Actualizar lista de mods</value>
+  </data>
+  <data name="ModListRefreshMenuTip" xml:space="preserve">
+    <value>Actualizar la lista de mods</value>
+  </data>
+  <data name="ModListUpgradeMenu" xml:space="preserve">
+    <value>Actualizar todo</value>
+  </data>
+  <data name="ModListUpgradeMenuTip" xml:space="preserve">
+    <value>Marcar todas las actualizaciones disponibles para la instalación</value>
+  </data>
+  <data name="ModListAuditRecsMenu" xml:space="preserve">
+    <value>Revisar recomendaciones</value>
+  </data>
+  <data name="ModListAuditRecsMenuTip" xml:space="preserve">
+    <value>Lista de mods sugeridos y recomendados por mods instalados</value>
+  </data>
+  <data name="ModListImportMenu" xml:space="preserve">
+    <value>Importar descargas...</value>
+  </data>
+  <data name="ModListImportMenuTip" xml:space="preserve">
+    <value>Seleccionar manualmente mods descargados para importar en CKAN</value>
+  </data>
+  <data name="ModListExportMenu" xml:space="preserve">
+    <value>Exportar instalados...</value>
+  </data>
+  <data name="ModListExportMenuTip" xml:space="preserve">
+    <value>Guardar tu lista de mods</value>
+  </data>
+  <data name="ModListInstallFromCkanMenu" xml:space="preserve">
+    <value>Instalar desde archivo .ckan...</value>
+  </data>
+  <data name="ModListInstallFromCkanMenuTip" xml:space="preserve">
+    <value>Instalar modpacks o módulos personalizados</value>
+  </data>
+  <data name="CkanFileSelectTitle" xml:space="preserve">
+    <value>Elegir archivos .ckan para instalar</value>
+  </data>
+  <data name="CkanFileSelectHeader" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="ModListInstanceSettingsMenu" xml:space="preserve">
+    <value>Ajustes de instancia...</value>
+  </data>
+  <data name="ModListInstanceSettingsMenuTip" xml:space="preserve">
+    <value>Configurar la instancia actual</value>
+  </data>
+  <data name="ModListSelectInstanceMenu" xml:space="preserve">
+    <value>Seleccione la instancia del juego...</value>
+  </data>
+  <data name="ModListSelectInstanceMenuTip" xml:space="preserve">
+    <value>Cambiar a otra instancia del juego</value>
+  </data>
+  <data name="ModListAuthTokenMenu" xml:space="preserve">
+    <value>Tokens de autenticación...</value>
+  </data>
+  <data name="ModListAuthTokenMenuTip" xml:space="preserve">
+    <value>Editar tokens de autenticación enviados a los servidores de descarga</value>
+  </data>
+  <data name="ModListFilterMenu" xml:space="preserve">
+    <value>Filtros de instalación...</value>
+  </data>
+  <data name="ModListFilterMenuTip" xml:space="preserve">
+    <value>Editar lista de archivos y carpetas a excluir de la instalación</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesMenu" xml:space="preserve">
+    <value>Deduplicar archivos instalados...</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesMenuTip" xml:space="preserve">
+    <value>Buscar instancias de juego con múltiples copias del mismo archivo y consolidar duplicados con hard links</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesProgressTitle" xml:space="preserve">
+    <value>Deduplicando archivos instalados</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesProgressMessage" xml:space="preserve">
+    <value>Escaneando instancias por duplicados...</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesScanning" xml:space="preserve">
+    <value>Escaneando instancias por duplicados...</value>
+  </data>
+  <data name="ModListHelpMenu" xml:space="preserve">
+    <value>Ayuda</value>
+  </data>
+  <data name="ModListHelpMenuTip" xml:space="preserve">
+    <value>Trucos y consejos</value>
+  </data>
+  <data name="ModListQuitMenu" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="ModListQuitMenuTip" xml:space="preserve">
+    <value>Salir a DOS</value>
+  </data>
+  <data name="ModListCaptureKeyMenu" xml:space="preserve">
+    <value>DEPURACIÓN: Capturar tecla...</value>
+  </data>
+  <data name="ModListCaptureKeyMenuTip" xml:space="preserve">
+    <value>Mostrar detalles de cómo el sistema reporta la pulsación de una tecla para depuración</value>
+  </data>
+  <data name="ModListPressAKey" xml:space="preserve">
+    <value>Pulse una tecla</value>
+  </data>
+  <data name="ModListAuditNotFound" xml:space="preserve">
+    <value>Los mods instalados no tienen recomendaciones o sugerencias insatisfechas.</value>
+  </data>
+  <data name="ModListUpdateRegistryTitle" xml:space="preserve">
+    <value>Actualizando Registro</value>
+  </data>
+  <data name="ModListUpdateRegistryMessage" xml:space="preserve">
+    <value>Buscando actualizaciones</value>
+  </data>
+  <data name="ModListNewMod" xml:space="preserve">
+    <value>{0} nuevo mod disponible desde la última actualización. ¿Mostrarlo?</value>
+  </data>
+  <data name="ModListNewMods" xml:space="preserve">
+    <value>{0} nuevos mods disponibles desde la última actualización. ¿Mostrarlos?</value>
+  </data>
+  <data name="ModListScanBad" xml:space="preserve">
+    <value>{0} El repositorio no ha sido guardado.</value>
+  </data>
+  <data name="ModListExportPrefix" xml:space="preserve">
+    <value>instalados</value>
+  </data>
+  <data name="ModListExported" xml:space="preserve">
+    <value>Lista de mods exportada a {0}</value>
+  </data>
+  <data name="ModListExportFailed" xml:space="preserve">
+    <value>Exportación fallida: {0}</value>
+  </data>
+  <data name="ModListHelpSymbolHeader" xml:space="preserve">
+    <value>Símbolos de estado</value>
+  </data>
+  <data name="ModListHelpInstalled" xml:space="preserve">
+    <value>Instalado</value>
+  </data>
+  <data name="ModListHelpAutoInstalled" xml:space="preserve">
+    <value>Autoinstalado</value>
+  </data>
+  <data name="ModListHelpUpgradeable" xml:space="preserve">
+    <value>Actualizable</value>
+  </data>
+  <data name="ModListHelpManuallyInstalled" xml:space="preserve">
+    <value>Instalado manualmente</value>
+  </data>
+  <data name="ModListHelpReplaceable" xml:space="preserve">
+    <value>Reemplazable</value>
+  </data>
+  <data name="ModListHelpUnavailable" xml:space="preserve">
+    <value>No disponible</value>
+  </data>
+  <data name="ModListHelpBasicKeysHeader" xml:space="preserve">
+    <value>Teclas básicas</value>
+  </data>
+  <data name="ModListHelpMoveFocus" xml:space="preserve">
+    <value>Mover enfoque</value>
+  </data>
+  <data name="ModListHelpSelectRow" xml:space="preserve">
+    <value>Seleccionar fila</value>
+  </data>
+  <data name="ModListHelpClearSearch" xml:space="preserve">
+    <value>Limpiar Búsqueda</value>
+  </data>
+  <data name="ModListHelpSpecialSearchesHeader" xml:space="preserve">
+    <value>Búsqueda Especial</value>
+  </data>
+  <data name="ModListHelpAuthor" xml:space="preserve">
+    <value>autor</value>
+  </data>
+  <data name="ModListHelpName" xml:space="preserve">
+    <value>nombre</value>
+  </data>
+  <data name="ModListHelpSearchAuthor" xml:space="preserve">
+    <value>Mods por autor</value>
+  </data>
+  <data name="ModListHelpSearchInstalled" xml:space="preserve">
+    <value>Mods instalados</value>
+  </data>
+  <data name="ModListHelpSearchUpgradeable" xml:space="preserve">
+    <value>Mods actualizables</value>
+  </data>
+  <data name="ModListHelpSearchDepends" xml:space="preserve">
+    <value>Depender del nombre</value>
+  </data>
+  <data name="ModListHelpSearchConflicts" xml:space="preserve">
+    <value>Conflicto con nombre</value>
+  </data>
+  <data name="ModListHelpSearchNew" xml:space="preserve">
+    <value>Nuevos mods</value>
+  </data>
+  <data name="FiltersTitle" xml:space="preserve">
+    <value>Filtros de instalación</value>
+  </data>
+  <data name="FiltersAddMiniAVCMenu" xml:space="preserve">
+    <value>Añadir MiniAVC</value>
+  </data>
+  <data name="FiltersAddMiniAVCMenuTip" xml:space="preserve">
+    <value>Evitar que MiniAVC sea instalado</value>
+  </data>
+  <data name="FiltersGlobalHeader" xml:space="preserve">
+    <value>Filtros globales para {0}</value>
+  </data>
+  <data name="FiltersInstanceHeader" xml:space="preserve">
+    <value>Filtros de Instancia</value>
+  </data>
+  <data name="FilterAddGhostText" xml:space="preserve">
+    <value>&lt;Introducir un filtro&gt;</value>
+  </data>
+  <data name="FilterAddAcceptTip" xml:space="preserve">
+    <value>Aceptar valor</value>
+  </data>
+  <data name="FilterAddTitle" xml:space="preserve">
+    <value>Añadir filtro</value>
+  </data>
+  <data name="ExitTitle" xml:space="preserve">
+    <value>{0}, the Comprehensive Kerbal Archive Network</value>
+  </data>
+  <data name="ExitBody" xml:space="preserve">
+    <value>ESTÁ USANDO {1}.
+
+Gracias por descargar {0}. Esperamos que te diviertas tanto usándola como nosotros haciéndola.
+
+Si has pagado por {0}, intenta recuperar tu dinero, ya que puedes descargar {0} de manera gratuita desde {2}
+
+Si tienes algún problema utilizando {0}, por favor envía un issue en {3}
+
+{0} HA SIDO DESARROLLADO POR LOS AUTORES DE {0}:
+{4}
+</value>
+  </data>
+</root>

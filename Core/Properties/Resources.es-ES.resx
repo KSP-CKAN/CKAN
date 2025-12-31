@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Microsoft ResX Schema
+
+    Version 2.0
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
+    associated with the data types.
+
+    Example:
+
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+
+    There are any number of "resheader" rows that contain simple
+    name/value pairs.
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
+    mimetype set.
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
+    extensible. For a given mimetype the value must be set accordingly:
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
+    read any of the formats listed below.
+
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AutoUpdateNotFetched" xml:space="preserve">
+    <value>Aún no hemos obtenido la información de la versión. No se puede actualizar.</value>
+  </data>
+  <data name="NetDownloading" xml:space="preserve">
+    <value>Descargando {0}</value>
+  </data>
+  <data name="NetInvalidLocation" xml:space="preserve">
+    <value>URL no válida en el encabezado de ubicación: {0}</value>
+  </data>
+  <data name="ByteRateCounterRateSummary" xml:space="preserve">
+    <value>{0}/s - {1} ({2}) restante - {3}%</value>
+  </data>
+  <data name="ByteRateCounterSummary" xml:space="preserve">
+    <value>{0} restante - {1}%</value>
+  </data>
+  <data name="ByteRateCounterHoursMinutesSeconds" xml:space="preserve">
+    <value>{0} horas, {1} min, {2} seg</value>
+  </data>
+  <data name="ByteRateCounterMinutesSeconds" xml:space="preserve">
+    <value>{0} min, {1} seg</value>
+  </data>
+  <data name="ByteRateCounterSeconds" xml:space="preserve">
+    <value>{0} seg</value>
+  </data>
+  <data name="NetAsyncDownloaderDownloading" xml:space="preserve">
+    <value>Descargando {0} ...</value>
+  </data>
+  <data name="NetAsyncDownloaderCancelled" xml:space="preserve">
+    <value>Descarga cancelada por el usuario</value>
+  </data>
+  <data name="NetAsyncDownloaderValidating" xml:space="preserve">
+    <value>Se ha finalizado la descarga de {0}, validando y almacenando en caché...</value>
+  </data>
+  <data name="NetFileCacheCannotFind" xml:space="preserve">
+    <value>No se puede encontrar el directorio de caché: {0}</value>
+  </data>
+  <data name="NetFileCacheZipError" xml:space="preserve">
+    <value>Error en el paso {0} para {1}: {2}</value>
+  </data>
+  <data name="NetFileCacheZipTestArchiveFalse" xml:space="preserve">
+    <value>ZipFile.TestArchive(true) ha devuelto false</value>
+  </data>
+  <data name="NetFileCacheNullFileName" xml:space="preserve">
+    <value>Nombre del archivo nulo</value>
+  </data>
+  <data name="NetFileCacheMonoNotSupported" xml:space="preserve">
+    <value>{0}
+
+Instala el paquete `mono-complete` o equivalente para tu sistema operativo.</value>
+  </data>
+  <data name="NetModuleCacheBadLength" xml:space="preserve">
+    <value>{0}: {1} tiene longitud {2}, debe ser {3}</value>
+  </data>
+  <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
+    <value>{0}: {1} no es un archivo ZIP válido: {2}</value>
+  </data>
+  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
+    <value>{0}: {1} tiene SHA256 {2}, debe ser {3}</value>
+  </data>
+  <data name="NetRepoUpdatingBuildMap" xml:space="preserve">
+    <value>Actualizando datos de la versión del juego</value>
+  </data>
+  <data name="NetRepoCheckingForUpdates" xml:space="preserve">
+    <value>Buscando actualizaciones</value>
+  </data>
+  <data name="NetRepoAlreadyUpToDate" xml:space="preserve">
+    <value>Ya está actualizado</value>
+  </data>
+  <data name="NetRepoNoChanges" xml:space="preserve">
+    <value>No hay cambios desde la última actualización</value>
+  </data>
+  <data name="NetRepoUpdating" xml:space="preserve">
+    <value>Actualizando {0}</value>
+  </data>
+  <data name="NetRepoLoadingModulesFromRepo" xml:space="preserve">
+    <value>Cargando módulos del repositorio {0} descargado...</value>
+  </data>
+  <data name="NetRepoNotATarGz" xml:space="preserve">
+    <value>No es un .tar.gz o .zip, no se puede procesar: {0}</value>
+  </data>
+  <data name="NetRepoNotATarGzStream" xml:space="preserve">
+    <value>La entrada no es .tar.gz o .zip, no se puede procesar</value>
+  </data>
+  <data name="JsonRelationshipConverterAnyOfCombined" xml:space="preserve">
+    <value>`any_of` no debe combinarse con `{0}`</value>
+  </data>
+  <data name="RegistryFileConflict" xml:space="preserve">
+    <value>{0} desea instalar {1}, pero este archivo está registrado en {2}</value>
+  </data>
+  <data name="RegistryFileNotRemoved" xml:space="preserve">
+    <value>Error al quitar {1}, archivo no eliminado: {0}</value>
+  </data>
+  <data name="RegistryDefaultDLCAbstract" xml:space="preserve">
+    <value>Un paquete de expansión oficial</value>
+  </data>
+  <data name="RegistryManagerDirectoryNotFound" xml:space="preserve">
+    <value>No se puede encontrar un directorio en {0}</value>
+  </data>
+  <data name="RegistryManagerExportFilenamePrefix" xml:space="preserve">
+    <value>instalado</value>
+  </data>
+  <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve">
+    <value>Una lista de módulos instalados en la instancia de KSP {0}</value>
+  </data>
+  <data name="RegistryManagerRegistryVersionNotSupported" xml:space="preserve">
+    <value>Esta versión de CKAN es demasiado antigua para cargar:
+{0}
+Actualice CKAN para cargar esta instancia de juego.</value>
+  </data>
+  <data name="CkanModuleDeserialisationError" xml:space="preserve">
+    <value>Error de deserialización JSON: {0}</value>
+  </data>
+  <data name="CkanModuleUnsupportedSpec" xml:space="preserve">
+    <value>{0} requiere CKAN {1}, no es posible leerlo.</value>
+  </data>
+  <data name="CkanModuleMissingRequired" xml:space="preserve">
+    <value>{0} falta el campo requerido {1}</value>
+  </data>
+  <data name="CkanModuleKspVersionMixed" xml:space="preserve">
+    <value>ksp_version mezclado con ksp_version_(min|max)</value>
+  </data>
+  <data name="CkanModuleNotAvailable" xml:space="preserve">
+    <value>El Módulo {0} versión {1} no está disponible</value>
+  </data>
+  <data name="CkanModuleAllVersions" xml:space="preserve">
+    <value>Todas las versiones</value>
+  </data>
+  <data name="LicenceInvalid" xml:space="preserve">
+    <value>La licencia {0} no es válida</value>
+  </data>
+  <data name="ModuleInstallDescriptorMustHaveInstallTo" xml:space="preserve">
+    <value>Los bloques de instalación deben tener un install_to</value>
+  </data>
+  <data name="ModuleInstallDescriptorRequireFileFind" xml:space="preserve">
+    <value>Los bloques de instalación deben incluir una directiva file, find o find_regexp</value>
+  </data>
+  <data name="ModuleInstallDescriptorTooManyFileFind" xml:space="preserve">
+    <value>Los bloques de instalación deben incluir solo una de las directivas file, find o find_regexp</value>
+  </data>
+  <data name="ModuleInstallDescriptorTooManyFilterInclude" xml:space="preserve">
+    <value>Los bloques de instalación solo pueden contener una directiva filter o include_only, no ambas</value>
+  </data>
+  <data name="ModuleInstallDescriptorInvalidInstallPath" xml:space="preserve">
+    <value>Ruta de instalación no válida: {0}</value>
+  </data>
+  <data name="ModuleInstallDescriptorUnknownInstallPath" xml:space="preserve">
+    <value>install_to desconocido: {0}</value>
+  </data>
+  <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve">
+    <value>¡No se encontraron archivos que coincidan con {0} para instalar!</value>
+  </data>
+  <data name="ModuleInstallerContinuePrompt" xml:space="preserve">
+    <value>¿Continuar?</value>
+  </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Este nombre de instancia ya está siendo utilizado: {0}</value>
+  </data>
+</root>
