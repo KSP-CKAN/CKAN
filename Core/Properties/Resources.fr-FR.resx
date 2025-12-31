@@ -390,6 +390,9 @@ Que voulez-vous faire ?</value>
   <data name="GameInstanceCloneInvalid" xml:space="preserve">
     <value>L'instance spécifiée n'est pas une instance {0} valide</value>
   </data>
+  <data name="GameInstanceManagerCloneNotEnoughFreeSpace" xml:space="preserve">
+    <value>Pas assez d'espace sur le chemin de destination pour copier les fichiers !</value>
+  </data>
   <data name="GameInstanceFakeBadVersion" xml:space="preserve">
     <value>La version spécifiée {0} n'est pas une version connue : {1}</value>
   </data>
@@ -630,7 +633,7 @@ Consultez cette page pour obtenir de l'aide :
   <data name="KrakenAlreadyRunning" xml:space="preserve">
     <value>Fichier verrou avec un ID de processus actif à {0}
 
-Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu.
+Un autre processus CKAN est probablement déjà en train d'accéder à ce dossier de jeu. Si vous êtes sûr que ce fichier verrou est périmé, vous pouvez supprimer ce fichier pour continuer. Mais si ce n'est pas le cas, les deux CKAN risque de rentrer en conflit et corrompre votre registre de mods et votre dossier de jeu. 
 
 Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
   </data>
@@ -652,6 +655,18 @@ Voulez-vous supprimez ce fichier verrou pour forcer l'accès ?</value>
 Besoin d'enregistrer {3} dans {1}, mais seulement {2} est disponible !
 Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser un autre emplacement.
 </value>
+  </data>
+  <data name="KrakenNotGameDir" xml:space="preserve">
+    <value>L'instance n'est pas valide : {0}</value>
+  </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Ce nom d'instance est déjà pris : {0}</value>
+  </data>
+  <data name="KrakenNoInstance" xml:space="preserve">
+    <value>Aucune instance avec ce nom ou avec ce chemin : {0}</value>
+  </data>
+  <data name="DirectoryNotEmpty" xml:space="preserve">
+    <value>Le répertoire n'est pas vide : {0}</value>
   </data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} est en conflit avec {1}</value>
@@ -691,6 +706,10 @@ Libérez de l'espace sur cet appareil ou modifiez vos paramètres pour utiliser 
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>Recommandé par {0}</value>
+  </data>
+  <data name="ResolvedRelationshipsTreeUnsatisfied" xml:space="preserve">
+    <value>Impossible de satisfaire {0} lors de l'installation :
+{1}</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (méta-paquet)</value>

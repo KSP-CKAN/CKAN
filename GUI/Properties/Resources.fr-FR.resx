@@ -1093,4 +1093,18 @@ Cette action est irréversible !</value>
   <data name="DownloadStatisticsTableDonateLinkToolTip" xml:space="preserve">
     <value>Cliquez pour ouvrir le lien de don de {0} dans votre navigateur</value>
   </data>
+  <data name="InstallAllCheckboxConfirmation" xml:space="preserve">
+    <value>Vous avez des mods sélectionnés mais pas encore installés :
+
+{0}
+
+Décocher cette case désélectionnera ces mods. Cela ne peut pas être annulé.
+Êtes-vous sûr·e ?</value>
+  </data>
+  <data name="InstallAllCheckboxConfirmationYes" xml:space="preserve">
+    <value>Désélectionner</value>
+  </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
 </root>

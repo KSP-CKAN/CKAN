@@ -461,6 +461,9 @@ Appuyez sur tabulation pour compléter les commandes et les modules.
   <data name="RemoveCancelled" xml:space="preserve">
     <value>Retrait annulé : {0}</value>
   </data>
+  <data name="RemoveAllNothingInstalled" xml:space="preserve">
+    <value>Aucun module n'est installé, il n'y a donc rien à supprimer.</value>
+  </data>
   <data name="RepairHelpSummary" xml:space="preserve">
     <value>Essayer des réparations automatiques diverses</value>
   </data>
