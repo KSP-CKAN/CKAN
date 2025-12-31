@@ -218,8 +218,8 @@ The version of the mod. Versions have the format `[epoch:]mod_version`.
 
 ###### epoch
 
-`epoch` is a single (generally small) unsigned integer. It may be omitted, in
-which case zero is assumed.
+`epoch` is a single (generally small) unsigned 64 bit integer.
+It may be omitted, in which case zero is assumed.
 
 It is provided to allow mistakes in the version numbers of older versions of a
 package, and also a package's previous version numbering schemes, to be left
@@ -237,40 +237,49 @@ The comparison behavior of the package management system with respect to the
 `mod_version` is described below. The `mod_version` portion of the version
 number is mandatory.
 
-While the CKAN will accept *any* string as a `mod_version`, mod authors are
-encouraged to restrict version names to ASCII-letters, ASCII-digits, and the characters `.` `+` `-` `_`
-(full stop, plus, dash, underscore) and should start with a digit.
+While the CKAN will accept *any* ASCII string as a `mod_version`, mod authors
+are encouraged to restrict version names to letters, digits, and the
+ characters `.` `+` `-` `_` (full stop, plus, dash, underscore) and should
+ start with a digit.
 
 ###### Version ordering
 
-When comparing two version numbers, first the `epoch` of each are compared, then
-the `mod_version` if `epoch` is equal. `epoch` is compared numerically. The
-`mod_version` part is compared by the package management system using the
-following algorithm:
+When comparing two version strings, first the `epoch` are compared numerically,
+then, if both `epoch` are equal, the `mod_version` is compared
+using the following algorithm:
 
-The strings are compared from left to right.
+Both strings are split into alternating segments consisting of consecutive digits
+and consecutive non-digits, starting with non-digits.
+Numeric segments are compared as integers, non-numeric segments are compared as
+ASCII strings, with the exception of a dot which is considered larger than 
+any other character.
+If one non-numerical segment runs out before the other it's considered smaller.
 
-First the initial part of each string consisting entirely of non-digit
-characters is determined. These two parts (one of which may be empty) are
-compared lexically. If a difference is found it is returned. The lexical
-comparison is a comparison of ASCII values modified so that all the letters sort
-earlier than all the non-letters.
+###### Examples:
+    "2:1.0" > "1:999.9"    Epoch is most significant
+    "0:1.0" == "1.0"       Missing epoch is treated as 0
+    "1.10" > "1.2"         Numeric segments are compared as integers
+    "1.01" == "1.1"        Numeric segments are compared as integers
+    "1.01.0" == "1.1.0"    Numeric segments are compared as integers
+    "1.0b" > "1.0a"        Non-digits are compared as ASCII strings
+    "1.0a" > "1.0%"        Non-digits are compared as ASCII strings
+    "1.0|" > "1.0a"        Non-digits are compared as ASCII strings
+    "1.0aa" > "1.0aA"      Non-digits are compared as ASCII strings
+    "1.0b" > "1.0a9"       Non-digits are compared as ASCII strings
+    "1.0" > "1-0"          Single dot is the highest character
+    "1.0" > "1a"           Single dot is the highest character
+    "1.0.0" > "1.0"        Extended string is considered larger
+    "1.0aa0" > 1.0a0"      Non-digit string that runs out first is smaller
+    "1.0" > "1a"           First non-digit string has lenght 0 on the right
+    "beta" > "1.0"         First non-digit string has lenght 0 on the right
+    "v1.0" > "9.9"         First non-digit string has lenght 0 on the right
+    "1.0" > "1..0"         ¯\_(ツ)_/¯
+    "1.0.b" == "1.0.a"     ¯\_(ツ)_/¯
+    "1.0a.b" > "1.0a.a"    ¯\_(ツ)_/¯
+    "1.a.b" == "1.a.a"     ¯\_(ツ)_/¯
+    "1.0..b" == "1.0.a"    ¯\_(ツ)_/¯
+    "1.0...b" == "1.0.a"   ¯\_(ツ)_/¯
 
-Then the initial part of the remainder of each string which consists entirely of
-digit characters is determined. The numerical values of these two parts are
-compared, and any difference found is returned as the result of the
-comparison. For these purposes an empty string (which can only occur at the end
-of one or both version strings being compared) counts as zero.
-
-These two steps (comparing and removing initial non-digit strings and initial
-digit strings) are repeated until a difference is found or both strings are
-exhausted.
-
-Note that the purpose of epochs is to allow us to leave behind mistakes in
-version numbering, and to cope with situations where the version numbering
-scheme changes. It is not intended to cope with version numbers containing
-strings of letters which the package management system cannot interpret (such as
-ALPHA or pre-), or with silly orderings.
 
 #### Optional fields
 

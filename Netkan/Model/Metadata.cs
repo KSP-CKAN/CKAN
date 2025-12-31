@@ -59,7 +59,7 @@ namespace CKAN.NetKAN.Model
         public readonly ModuleVersion? Version;
 
         [JsonProperty("x_netkan_epoch", NullValueHandling = NullValueHandling.Ignore)]
-        public readonly uint? Epoch;
+        public readonly ulong? Epoch;
 
         [JsonProperty("license")]
         [JsonConverter(typeof(JsonSingleOrArrayConverter<License>))]
