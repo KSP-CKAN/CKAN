@@ -353,6 +353,51 @@ Versuchen Sie, die neue Instanz manuell mit "ckan instance add" hinzuzufügen.
   <data name="InstanceFakeMakingHistory" xml:space="preserve">
     <value>Bitte überprüfen Sie das Making History DLC Versionsargument - Format wie Maj.Min.Patch - z.B. 1.1.0</value>
   </data>
+  <data name="InstanceFakeBreakingGround" xml:space="preserve">
+    <value>Bitte überprüfen Sie das Breaking Ground DLC Versionsargument - Formatieren Sie dies so Maj.Min.Patch - z.B. 1.1.0</value>
+  </data>
+  <data name="InstanceFakeVersion" xml:space="preserve">
+    <value>Bitte überprüfen Sie das Versionsargument - Formatieren Sie dies so Maj.Min.Patch[.Build] - z.B. 1.6.0 oder 1.2.2.1622</value>
+  </data>
+  <data name="InstanceFakeBadGame" xml:space="preserve">
+    <value>Spiel namens {0} existiert nicht!</value>
+  </data>
+  <data name="InstanceFakeBadGameVersion" xml:space="preserve">
+    <value>Es konnte keine gültige Spielversion für die Eingabe gefunden werden. Stellen Sie sicher, dass zumindest die Maximal- und Mindestwerte in dem Format Maj.Min angegeben sind - z. B. 1.5</value>
+  </data>
+  <data name="InstanceFakeCancelled" xml:space="preserve">
+    <value>Auswahl storniert! Rufen Sie bitte "ckan instance fake" erneut auf</value>
+  </data>
+  <data name="InstanceFakeCreating" xml:space="preserve">
+    <value>Neue imitierte Instanz {0} bei {1} mit Version {2}N wird erstellt</value>
+  </data>
+  <data name="InstanceFakeDefault" xml:space="preserve">
+    <value>Neue Instanz wird auf Standardeinstellung gesetzt...</value>
+  </data>
+  <data name="InstanceFakeDone" xml:space="preserve">
+    <value>--Fertig--</value>
+  </data>
+  <data name="ImportError" xml:space="preserve">
+    <value>Importfehler: {0}</value>
+  </data>
+  <data name="ImportNotFound" xml:space="preserve">
+    <value>Datei nicht gefunden: {0}</value>
+  </data>
+  <data name="InstallNotFound" xml:space="preserve">
+    <value>Datei nicht gefunden, Programm wird beendet: {0}</value>
+  </data>
+  <data name="InstallTryAgain" xml:space="preserve">
+    <value>
+Um zu verändern, welche Versionen als kompatibel betrachtet werden können die "ckan compat" Befehle verwendet werden.
+Sollte eine neue, kompatible Version vor kurzem erschienen sein, können Sie es mit "ckan update" erneut versuchen.
+Alternativ kann mit "ckan install --allow-incompatible" die Kompatibilität der Module in der Befehlszeile ignoriert werden (jedoch nicht die Abhängigkeiten).</value>
+  </data>
+  <data name="InstallCancelled" xml:space="preserve">
+    <value>Installation abgebrochen. Dateien wurden zum Ursprung zurückgesetzt.</value>
+  </data>
+  <data name="InstallAborted" xml:space="preserve">
+    <value>Installation abgebrochen: {0}</value>
+  </data>
   <data name="RepoListNameHeader" xml:space="preserve">
     <value>Name</value>
   </data>

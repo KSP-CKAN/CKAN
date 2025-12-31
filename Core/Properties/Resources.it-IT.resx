@@ -623,6 +623,9 @@ Hai bisogno di memorizzare {3} su {1}, ma sono disponibili soltanto {2}!
 Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'altra posizione.
 </value>
   </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Il nome dell'istanza è già stato preso: {0}</value>
+  </data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} conflitti con {1}</value>
   </data>

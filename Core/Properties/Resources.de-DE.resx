@@ -245,6 +245,9 @@ und versuche es erneut.</value>
   <data name="KrakenIsDLC" xml:space="preserve">
     <value>CKAN kann die Erweiterung '{0}' nicht für dich installieren.</value>
   </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Dieser Instanzname ist bereits vergeben: {0}</value>
+  </data>
   <data name="RelationshipResolverUserReason" xml:space="preserve">
     <value>Neue Mod-Installation ausgewählt vom Nutzer</value>
   </data>

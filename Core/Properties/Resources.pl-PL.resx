@@ -645,6 +645,9 @@ Należy przechować {3} do {1}, ale dostępne jest tylko {2}!
 Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokalizacji.
 </value>
   </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Ta nazwa instalacji jest już zajęta: {0}</value>
+  </data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} koliduje z {1}</value>
   </data>

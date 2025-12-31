@@ -161,4 +161,7 @@
   <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
     <value>İptal</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>İptal</value>
+  </data>
 </root>

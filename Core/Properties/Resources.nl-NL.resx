@@ -125,6 +125,9 @@
   <data name="KrakenBadMetadata" xml:space="preserve">
     <value>Verkeerde metadata gedetecteerd voor module {0}: {1}</value>
   </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>Deze instantienaam is al in gebruik: {0}</value>
+  </data>
   <data name="RelationshipTypeProvides" xml:space="preserve">
     <value>Aanbieders</value>
   </data>

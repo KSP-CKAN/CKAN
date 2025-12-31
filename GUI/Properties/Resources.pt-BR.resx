@@ -725,4 +725,7 @@ Você deseja permitir que o CKAN faça isso? Se você clicar em Não, você não
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>Adicionar {0}</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
 </root>

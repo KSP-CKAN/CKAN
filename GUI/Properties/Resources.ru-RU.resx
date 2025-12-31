@@ -846,4 +846,7 @@ Ctrl-клик или Shift-клик для совмещения с текущи�
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>Добавить {0}</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
 </root>

@@ -532,4 +532,7 @@ Als je een bug ziet in de client: https://github.com/KSP-CKAN/CKAN/issues/new/ch
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>Voeg {0} toe</value>
   </data>
+  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
+    <value>Annuleer</value>
+  </data>
 </root>
