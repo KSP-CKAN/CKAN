@@ -220,7 +220,7 @@ namespace CKAN.GUI
                         GameVersionRange.VersionSpan(currentInstance.Game,
                                                      minKsp ?? GameVersion.Any,
                                                      maxKsp ?? GameVersion.Any),
-                        module.release_date?.ToString("g") ?? ""
+                        module.release_date?.ToLocalTime().ToString("g") ?? ""
                     })
                     {
                         Tag = module,
