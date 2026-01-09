@@ -34,7 +34,7 @@ namespace CKAN.Versioning
 
     public partial class ModuleVersion
     {
-        private readonly int _epoch;
+        private readonly ulong _epoch;
         private readonly string _version;
         private readonly string _string;
 
@@ -54,7 +54,7 @@ namespace CKAN.Versioning
             // If we have an epoch, then record it.
             if (match.Groups["epoch"].Value.Length > 0)
             {
-                _epoch = Convert.ToInt32( match.Groups["epoch"].Value );
+                _epoch = Convert.ToUInt64( match.Groups["epoch"].Value );
             }
 
             _version = match.Groups["version"].Value;
