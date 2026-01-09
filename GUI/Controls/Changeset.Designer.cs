@@ -28,6 +28,7 @@ namespace CKAN.GUI
         /// </summary>
         private void InitializeComponent()
         {
+            Font = Styling.Fonts.Regular;
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Changeset));
             this.ChangesGrid = new System.Windows.Forms.DataGridView();
@@ -119,7 +120,7 @@ namespace CKAN.GUI
             // CloseTheGameLabel
             //
             this.CloseTheGameLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.CloseTheGameLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.CloseTheGameLabel.Font = Styling.Fonts.Bold;
             this.CloseTheGameLabel.Location = new System.Drawing.Point(9, 18);
             this.CloseTheGameLabel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.CloseTheGameLabel.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);

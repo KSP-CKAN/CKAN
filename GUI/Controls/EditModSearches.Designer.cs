@@ -29,6 +29,7 @@ namespace CKAN.GUI
         /// </summary>
         private void InitializeComponent()
         {
+            Font = Styling.Fonts.Regular;
             this.components = new System.ComponentModel.Container();
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.AddSearchButton = new System.Windows.Forms.Button();
@@ -48,7 +49,7 @@ namespace CKAN.GUI
             this.AddSearchButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AddSearchButton.Cursor = System.Windows.Forms.Cursors.Hand;
             this.AddSearchButton.Enabled = false;
-            this.AddSearchButton.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8F, System.Drawing.FontStyle.Bold);
+            this.AddSearchButton.Font = Styling.Fonts.Bold;
             this.AddSearchButton.Location = new System.Drawing.Point(426, 2);
             this.AddSearchButton.Name = "AddSearchButton";
             this.AddSearchButton.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);

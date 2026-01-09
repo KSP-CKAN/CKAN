@@ -13,7 +13,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class EditLabelsDialog : Form
+    public partial class EditLabelsDialog : Forms.Form
     {
         public EditLabelsDialog(IUser user, GameInstanceManager manager, ModuleLabelList labels)
         {
@@ -58,9 +58,9 @@ namespace CKAN.GUI
                                                // than TreeNode.Font, so to ensure there's enough space,
                                                // we have to make the default bold and then override it
                                                // for non-bold nodes.
-                                               NodeFont  = new Font(LabelSelectionTree.Font, FontStyle.Regular),
-                                               BackColor = mlbl.Color ?? Color.Transparent,
-                                               ForeColor = mlbl.Color?.ForeColorForBackColor()
+                                           NodeFont = Styling.Fonts.Regular,
+                                           BackColor = mlbl.Color ?? Color.Transparent,
+                                           ForeColor = mlbl.Color?.ForeColorForBackColor()
                                                                      ?? SystemColors.WindowText,
                                                Tag       = mlbl,
                                            })

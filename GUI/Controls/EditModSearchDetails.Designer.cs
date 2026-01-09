@@ -375,6 +375,7 @@ namespace CKAN.GUI
             // InstalledLabel
             //
             this.InstalledLabel.AutoSize = true;
+            this.InstalledLabel.Font = Styling.Fonts.Regular;
             this.InstalledLabel.BackColor = System.Drawing.Color.Transparent;
             this.InstalledLabel.Location = new System.Drawing.Point(6, 347);
             this.InstalledLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);

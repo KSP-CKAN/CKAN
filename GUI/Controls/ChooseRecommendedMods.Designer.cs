@@ -30,7 +30,7 @@ namespace CKAN.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ChooseRecommendedMods));
-            this.Toolbar = new System.Windows.Forms.MenuStrip();
+            this.Toolbar = new Forms.MenuStrip();
             this.UncheckAllButton = new System.Windows.Forms.ToolStripSplitButton();
             this.UncheckAllDropdown = new System.Windows.Forms.ToolStripDropDownMenu();
             this.AlwaysUncheckAllButton = new System.Windows.Forms.ToolStripMenuItem();

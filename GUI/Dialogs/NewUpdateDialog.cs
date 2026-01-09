@@ -8,7 +8,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class NewUpdateDialog : Form
+    public partial class NewUpdateDialog : Forms.Form
     {
         /// <summary>
         /// Iniitialize the update info form with version and release notes

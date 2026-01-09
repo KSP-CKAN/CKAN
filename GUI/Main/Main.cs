@@ -27,7 +27,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class Main : Form, IMessageFilter
+    public partial class Main : Forms.Form, IMessageFilter
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Main));
 

@@ -28,31 +28,32 @@ namespace CKAN.GUI
         /// </summary>
         private void InitializeComponent()
         {
+            Font = Styling.Fonts.Regular;
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(ManageMods));
             this.ToolTip = new System.Windows.Forms.ToolTip();
-            this.Toolbar = new System.Windows.Forms.MenuStrip();
-            this.LaunchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.Toolbar = new Forms.MenuStrip();
+            this.LaunchGameToolStripMenuItem = new Forms.ToolStripMenuItem();
             this.CommandLinesToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.EditCommandLinesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.RefreshToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.UpdateAllToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.ApplyToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterCompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterInstalledUpdateButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterReplaceableButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterCachedButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterUncachedButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterNewButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterNotInstalledButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterLabelsToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.FilterTagsToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
-            this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditCommandLinesToolStripMenuItem = new Forms.ToolStripMenuItem();
+            this.RefreshToolButton = new Forms.ToolStripMenuItem();
+            this.UpdateAllToolButton = new Forms.ToolStripMenuItem();
+            this.ApplyToolButton = new Forms.ToolStripMenuItem();
+            this.FilterToolButton = new Forms.ToolStripMenuItem();
+            this.FilterCompatibleButton = new Forms.ToolStripMenuItem();
+            this.FilterInstalledButton = new Forms.ToolStripMenuItem();
+            this.FilterInstalledUpdateButton = new Forms.ToolStripMenuItem();
+            this.FilterReplaceableButton = new Forms.ToolStripMenuItem();
+            this.FilterCachedButton = new Forms.ToolStripMenuItem();
+            this.FilterUncachedButton = new Forms.ToolStripMenuItem();
+            this.FilterNewButton = new Forms.ToolStripMenuItem();
+            this.FilterNotInstalledButton = new Forms.ToolStripMenuItem();
+            this.FilterIncompatibleButton = new Forms.ToolStripMenuItem();
+            this.FilterAllButton = new Forms.ToolStripMenuItem();
+            this.FilterLabelsToolButton = new Forms.ToolStripMenuItem();
+            this.FilterTagsToolButton = new Forms.ToolStripMenuItem();
+            this.NavBackwardToolButton = new Forms.ToolStripMenuItem();
+            this.NavForwardToolButton = new Forms.ToolStripMenuItem();
             this.EditModSearches = new CKAN.GUI.EditModSearches();
             this.ModGrid = new System.Windows.Forms.DataGridView();
             this.InstallAllCheckbox = new System.Windows.Forms.CheckBox();
@@ -77,12 +78,12 @@ namespace CKAN.GUI
             this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.untaggedFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.labelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelsToolStripMenuItem = new Forms.ToolStripMenuItem();
             this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.purgeContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editLabelsToolStripMenuItem = new Forms.ToolStripMenuItem();
+            this.reinstallToolStripMenuItem = new Forms.ToolStripMenuItem();
+            this.downloadContentsToolStripMenuItem = new Forms.ToolStripMenuItem();
+            this.purgeContentsToolStripMenuItem = new Forms.ToolStripMenuItem();
             this.hiddenTagsLabelsLinkList = new CKAN.GUI.TagsLabelsLinkList();
             this.Toolbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModGrid)).BeginInit();
@@ -368,6 +369,9 @@ namespace CKAN.GUI
             this.ModGrid.CurrentCellDirtyStateChanged += new System.EventHandler(this.ModGrid_CurrentCellDirtyStateChanged);
             this.ModGrid.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModGrid_CellValueChanged);
             this.ModGrid.Resize += new System.EventHandler(this.ModGrid_Resize);
+            this.ModGrid.Font = Styling.Fonts.Regular;
+            ModGrid.DefaultCellStyle.Font = Styling.Fonts.Regular;
+            ModGrid.ColumnHeadersDefaultCellStyle.Font = Styling.Fonts.Regular;
             //
             // Installed
             //
@@ -566,6 +570,7 @@ namespace CKAN.GUI
             this.hiddenTagsLabelsLinkList.LabelClicked += this.hiddenTagsLabelsLinkList_LabelClicked;
             this.hiddenTagsLabelsLinkList.AddRemoveModuleLabel += this.TagsLabelsLinkList_AddRemoveModuleLabel;
             this.hiddenTagsLabelsLinkList.ShowHideTag += this.TagsLabelsLinkList_ShowHideTag;
+            this.hiddenTagsLabelsLinkList.Font = Styling.Fonts.Regular;
             resources.ApplyResources(this.hiddenTagsLabelsLinkList, "hiddenTagsLabelsLinkList");
             //
             // ManageMods
@@ -594,29 +599,29 @@ namespace CKAN.GUI
         #endregion
 
         private System.Windows.Forms.ToolTip ToolTip;
-        private System.Windows.Forms.MenuStrip Toolbar;
+        private Forms.MenuStrip Toolbar;
         private System.Windows.Forms.CheckBox InstallAllCheckbox;
-        private System.Windows.Forms.ToolStripMenuItem LaunchGameToolStripMenuItem;
+        private Forms.ToolStripMenuItem LaunchGameToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator CommandLinesToolStripSeparator;
-        private System.Windows.Forms.ToolStripMenuItem EditCommandLinesToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem RefreshToolButton;
-        private System.Windows.Forms.ToolStripMenuItem UpdateAllToolButton;
-        private System.Windows.Forms.ToolStripMenuItem ApplyToolButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterToolButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterCompatibleButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterInstalledButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterInstalledUpdateButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterReplaceableButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterCachedButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterUncachedButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterNewButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterNotInstalledButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterIncompatibleButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterAllButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterLabelsToolButton;
-        private System.Windows.Forms.ToolStripMenuItem FilterTagsToolButton;
-        private System.Windows.Forms.ToolStripMenuItem NavBackwardToolButton;
-        private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
+        private Forms.ToolStripMenuItem EditCommandLinesToolStripMenuItem;
+        private Forms.ToolStripMenuItem RefreshToolButton;
+        private Forms.ToolStripMenuItem UpdateAllToolButton;
+        private Forms.ToolStripMenuItem ApplyToolButton;
+        private Forms.ToolStripMenuItem FilterToolButton;
+        private Forms.ToolStripMenuItem FilterCompatibleButton;
+        private Forms.ToolStripMenuItem FilterInstalledButton;
+        private Forms.ToolStripMenuItem FilterInstalledUpdateButton;
+        private Forms.ToolStripMenuItem FilterReplaceableButton;
+        private Forms.ToolStripMenuItem FilterCachedButton;
+        private Forms.ToolStripMenuItem FilterUncachedButton;
+        private Forms.ToolStripMenuItem FilterNewButton;
+        private Forms.ToolStripMenuItem FilterNotInstalledButton;
+        private Forms.ToolStripMenuItem FilterIncompatibleButton;
+        private Forms.ToolStripMenuItem FilterAllButton;
+        private Forms.ToolStripMenuItem FilterLabelsToolButton;
+        private Forms.ToolStripMenuItem FilterTagsToolButton;
+        private Forms.ToolStripMenuItem NavBackwardToolButton;
+        private Forms.ToolStripMenuItem NavForwardToolButton;
         private CKAN.GUI.EditModSearches EditModSearches;
         public System.Windows.Forms.DataGridView ModGrid;
         private System.Windows.Forms.DataGridViewCheckBoxColumn Installed;
@@ -640,12 +645,12 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripSeparator untaggedFilterToolStripSeparator;
         private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem labelsToolStripMenuItem;
+        private Forms.ToolStripMenuItem labelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator labelToolStripSeparator;
-        private System.Windows.Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
+        private Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
+        private Forms.ToolStripMenuItem reinstallToolStripMenuItem;
+        private Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;
+        private Forms.ToolStripMenuItem purgeContentsToolStripMenuItem;
         private CKAN.GUI.TagsLabelsLinkList hiddenTagsLabelsLinkList;
     }
 }

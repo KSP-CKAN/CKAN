@@ -156,6 +156,7 @@
   <data name="RefreshPreLabel.Text" xml:space="preserve"><value>Refresh modlist every</value></data>
   <data name="RefreshPostLabel.Text" xml:space="preserve"><value>minute(s)</value></data>
   <data name="PauseRefreshCheckBox.Text" xml:space="preserve"><value>Pause refreshing</value></data>
+  <data name="FontScaleLabel.Text" xml:space="preserve"><value>Font scale</value></data>
   <data name="MoreSettingsGroupBox.Text" xml:space="preserve"><value>More Settings</value></data>
   <data name="LanguageSelectionLabel.Text" xml:space="preserve"><value>Language (requires restart):</value></data>
   <data name="RefreshOnStartupCheckbox.Text" xml:space="preserve"><value>Update repositories on launch</value></data>

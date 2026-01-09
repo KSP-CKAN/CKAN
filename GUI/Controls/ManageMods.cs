@@ -90,8 +90,6 @@ namespace CKAN.GUI
         private DateTime lastSearchTime;
         private string? lastSearchKey;
         private readonly NavigationHistory<GUIMod> navHistory;
-        private static readonly Font uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
-
         private List<ModChange>?            currentChangeSet;
         private Dictionary<GUIMod, string>? conflicts;
         private bool freezeChangeSet = false;
@@ -191,12 +189,12 @@ namespace CKAN.GUI
                         if (removing.Contains(ident))
                         {
                             // Set strikeout font for rows being uninstalled
-                            row.DefaultCellStyle.Font = uninstallingFont;
+                            row.DefaultCellStyle.Font = Styling.Fonts.Strikeout;
                         }
                         else if (row.DefaultCellStyle.Font != null)
                         {
                             // Clear strikeout font for rows not being uninstalled
-                            row.DefaultCellStyle.Font = null;
+                            row.DefaultCellStyle.Font = Styling.Fonts.Regular;
                         }
                     }
                 }

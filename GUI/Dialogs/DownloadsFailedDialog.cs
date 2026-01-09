@@ -38,7 +38,7 @@ namespace CKAN.GUI
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
-    public partial class DownloadsFailedDialog : Form
+    public partial class DownloadsFailedDialog : Forms.Form
     {
         /// <summary>
         /// Initialize the form, loads the grid and sets the height to fit
