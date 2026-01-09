@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 ### Bugfixes
 
 - [Core] Ensure encoding is UTF-8 when saving JSON (#4475, #4478 by: HebaruSan)
+- [GUI] Display release date in local time zone (#4488 by: HebaruSan)
 
 ### Internal
 
