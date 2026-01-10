@@ -235,6 +235,10 @@
                 }
             }
         }
+        "x_netkan_check_parent_downloads": {
+            "description": "If true (default), check the downloads of up to 3 levels of parent repos",
+            "type": "boolean"
+        },
     },
     "required" : [
         "identifier"
