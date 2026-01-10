@@ -1203,3 +1203,15 @@ to check manually that the changes are correct before they are released to users
 To make the review process easier, set `x_netkan_staging_reason` to a string explaining why staging is enabled. This will
 be inserted into the body of the pull request as a reminder of the manual checks that should be performed before merging.
 For example, you may advise reviewers to check a module's game compatibility metadata against its forum thread.
+
+##### `x_netkan_check_parent_downloads`
+
+If true (default), check the downloads of up to 3 levels of parent repos.
+
+This should be used for forks of mods that do not want to continue the download count from their parent mods.
+
+An example `.netkan` excerpt:
+
+```yaml
+x_netkan_check_parent_downloads: false
+```
