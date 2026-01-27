@@ -1208,7 +1208,7 @@ For example, you may advise reviewers to check a module's game compatibility met
 
 If true (default), check the downloads of up to 3 levels of parent repos.
 
-This should be used for forks of mods that do not want to continue the download count from their parent mods.
+Should be set to false for forks of mods that do not want to continue the download count from their parent mods.
 
 An example `.netkan` excerpt:
 
