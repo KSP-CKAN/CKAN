@@ -999,9 +999,11 @@ namespace CKAN.GUI
             tabController.ShowTab(ChangesetTabPage.Name, 1);
         }
 
-        private void RefreshModList(bool allowAutoUpdate, Dictionary<string, bool>? oldModules = null)
+        private void RefreshModList(bool                      allowAutoUpdate,
+                                    Dictionary<string, bool>? oldModules = null)
         {
-            tabController.RenameTab(WaitTabPage.Name, Properties.Resources.MainModListWaitTitle);
+            tabController.RenameTab(WaitTabPage.Name,
+                                    Properties.Resources.MainModListWaitTitle);
             ShowWaitDialog();
             DisableMainWindow();
             ActiveModInfo = null;
@@ -1009,14 +1011,25 @@ namespace CKAN.GUI
                 ManageMods.Update,
                 (sender, e) =>
                 {
-                    if (e != null)
+                    switch (e)
                     {
-                        if (allowAutoUpdate && e.Result is bool b && !b)
-                        {
+                        case { Error: Kraken k }:
+                            currentUser.RaiseMessage("{0}", k.Message);
+                            EnableMainWindow();
+                            Wait.Finish();
+                            break;
+
+                        case { Error: Exception exc }:
+                            currentUser.RaiseMessage("{0}", exc.ToString());
+                            EnableMainWindow();
+                            Wait.Finish();
+                            break;
+
+                        case { Result: false } when allowAutoUpdate:
                             UpdateRepo();
-                        }
-                        else
-                        {
+                            break;
+
+                        default:
                             UpdateTrayInfo();
                             HideWaitDialog();
                             EnableMainWindow();
@@ -1028,7 +1041,7 @@ namespace CKAN.GUI
                                 // Only do it the first time
                                 focusIdent = null;
                             }
-                        }
+                            break;
                     }
                 },
                 false,
