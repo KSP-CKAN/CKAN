@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Translation updates (#4483 by: gongasss, vinix38; reviewed: HebaruSan)
 - [Multiple] Mark virtual dependencies as auto-installed (#4499 by: HebaruSan)
 - [Build] Don't leave launch shell waiting for CKAN to close on Linux (#4517 by: nuew; reviewed: HebaruSan)
+- [GUI] Sort Contents tab alphanumerically, folders first (#4529 by: HebaruSan)
 
 ### Bugfixes
 
