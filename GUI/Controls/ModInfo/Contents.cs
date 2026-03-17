@@ -223,6 +223,7 @@ namespace CKAN.GUI
                                               ? ModuleInstaller.GetModuleContents(inst, instMod.Files, filters)
                                               : ModuleInstaller.GetModuleContents(manager.Cache, inst,
                                                                                   module, filters))
+                                         .OrderBy(tuple => tuple.path, Platform.PathComparer)
                                          // Load fully in bg
                                          .ToArray();
                             // Stop if user switched to another mod
@@ -269,14 +270,25 @@ namespace CKAN.GUI
                 var node = parent.Nodes[key];
                 if (node == null)
                 {
-                    var iconKey = dir || pieces.Length > 1 ? "folder" : "file";
-                    node = parent.Nodes.Add(key, firstPiece, iconKey, iconKey);
+                    var dirPiece = dir || pieces.Length > 1;
+                    if (dirPiece)
+                    {
+                        var lastDirIndex = parent.Nodes.OfType<TreeNode>()
+                                                       .LastOrDefault(nd => nd.ImageKey == "folder")
+                                                       ?.Index
+                                                       ?? -1;
+                        node = parent.Nodes.Insert(lastDirIndex + 1,
+                                                   key, firstPiece, "folder", "folder");
+                    }
+                    else
+                    {
+                        node = parent.Nodes.Add(key, firstPiece, "file", "file");
+                    }
                     if (!exists && (pieces.Length == 1 || !Directory.Exists(inst.ToAbsoluteGameDir(key))))
                     {
                         node.ForeColor   = Color.Red;
-                        node.ToolTipText = iconKey == "folder"
-                                               ? Properties.Resources.ModInfoFolderNotFound
-                                               : Properties.Resources.ModInfoFileNotFound;
+                        node.ToolTipText = dirPiece ? Properties.Resources.ModInfoFolderNotFound
+                                                    : Properties.Resources.ModInfoFileNotFound;
                     }
                 }
                 if (pieces.Length > 1)
