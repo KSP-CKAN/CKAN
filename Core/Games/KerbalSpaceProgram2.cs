@@ -48,7 +48,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             return null;
         }
 
-        public string PrimaryModDirectoryRelative => "GameData/Mods";
+        public string PrimaryModDirectoryRelative => "mods";
         public string[] AlternateModDirectoriesRelative => new string[] { "BepInEx/plugins" };
 
         public string PrimaryModDirectory(GameInstance inst)
@@ -60,6 +60,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             DataDir,
             "MonoBleedingEdge",
             "PDLauncher",
+            "Redux/Addressables",
         };
 
         public string[] LeaveEmptyInClones => new string[]
@@ -74,6 +75,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
 
         public string[] CreateableDirs => new string[]
         {
+            "redux_updater",
+            "mods",
             "GameData",
             "GameData/Mods",
             "BepInEx",
@@ -256,6 +259,8 @@ namespace CKAN.Games.KerbalSpaceProgram2
         // (PrimaryModDirectoryRelative is allowed implicitly)
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {
+            { "redux_updater",   "redux_updater"   },
+            { "mods",            "mods"            },
             { "BepInEx",         "BepInEx"         },
             { "BepInEx/plugins", "BepInEx/plugins" },
         };
