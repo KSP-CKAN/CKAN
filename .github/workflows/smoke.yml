@@ -22,18 +22,18 @@ jobs:
     needs: build-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download out artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Release-out-unsigned
           path: _build/out/
       - name: Restore permissions discarded by zip/unzip of artifact
         run: chmod a+x _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish/CKAN-NetKAN
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Build Inflator image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           file: netkan.Dockerfile
           context: _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish
@@ -46,14 +46,14 @@ jobs:
           docker run --rm --entrypoint /bin/bash kspckan/inflator -c "./CKAN-NetKAN
           https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan"
       - name: Export Inflator image tar file
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v7
         with:
           file: netkan.Dockerfile
           context: _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish
           tags: kspckan/inflator
           outputs: type=docker,dest=/tmp/inflator-image.tar
       - name: Upload Inflator image tar file artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: inflator-image
           path: /tmp/inflator-image.tar

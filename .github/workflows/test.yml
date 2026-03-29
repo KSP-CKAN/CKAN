@@ -19,21 +19,21 @@ jobs:
           - ubuntu-22.04
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Restore cache for _build/tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
       - name: Download out artifact on Linux
         if: matrix.os == 'ubuntu-22.04'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Debug-out-unsigned
           path: _build/out/
       - name: Download repack artifact on Linux (for smoke tests)
         if: matrix.os == 'ubuntu-22.04'
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Debug-repack-unsigned
           path: _build/repack/

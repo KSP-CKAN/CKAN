@@ -19,7 +19,7 @@ jobs:
       - sign-assets
     steps:
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed
@@ -36,9 +36,9 @@ jobs:
     needs:
       - sign-assets
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download CKAN.dmg artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: CKAN.dmg
           path: _build/osx
@@ -53,14 +53,14 @@ jobs:
       - sign-assets
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed
@@ -104,16 +104,16 @@ jobs:
       - sign-assets
     steps:
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed
@@ -153,9 +153,9 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed

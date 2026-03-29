@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clone Discord hooks repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: DiscordHooks/github-actions-discord-webhook
           path: webhook

@@ -25,7 +25,7 @@ jobs:
       dev-build: ${{ steps.check-version.outputs.dev-build }}
     if: github.event_name != 'repository_dispatch'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Treat as dev build if final piece of version is odd
         id: check-version
         shell: bash
@@ -46,19 +46,19 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download repack artifact to get netkan.exe
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Release-repack-unsigned
           path: _build/repack
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed
@@ -66,7 +66,7 @@ jobs:
         run: |
           mkdir -p _build/repack/Release
           cp _build/signed/*.exe _build/repack/Release
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: 3.11
       - name: Create a version.json file for dev builds on S3
@@ -90,13 +90,13 @@ jobs:
     if: github.event_name != 'repository_dispatch' && needs.check-dev-build.outputs.dev-build
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       - name: Download CKAN.dmg artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: CKAN.dmg
           path: _build/osx
@@ -114,14 +114,14 @@ jobs:
     if: github.event_name != 'repository_dispatch' && needs.check-dev-build.outputs.dev-build
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed
@@ -154,7 +154,7 @@ jobs:
         env:
           REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
         if: env.REPO_ACCESS_TOKEN
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@v4
         with:
           repository: KSP-CKAN/CKAN-ModInstaller
           event-type: deploy
@@ -171,16 +171,16 @@ jobs:
     if: github.event_name != 'repository_dispatch' && needs.check-dev-build.outputs.dev-build
     steps:
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install rpm build dependencies
         run: sudo apt-get install -y createrepo-c
       - name: Download signed artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: signed
           path: _build/signed
@@ -213,16 +213,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Download Inflator image artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: inflator-image
           path: /tmp
       - name: Load Inflator image
         run: docker load --input /tmp/inflator-image.tar
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -247,9 +247,9 @@ jobs:
       - sign-assets
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Download out artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: Release-out-unsigned
           path: _build/out/
@@ -258,14 +258,14 @@ jobs:
           chmod a+x _build/out/CKAN-NetKAN/Release/bin/net8.0/linux-x64/publish/CKAN-NetKAN \
                     _build/out/CKAN-CmdLine/Release/bin/net8.0/linux-x64/publish/CKAN-CmdLine
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Generate metadata tester Docker image and publish to Hub
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           file: metadata.Dockerfile
           context: .

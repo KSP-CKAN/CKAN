@@ -17,14 +17,14 @@ jobs:
     outputs:
       unsigned-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Restore cache for _build/tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
       - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             _build/lib/nuget
@@ -34,13 +34,13 @@ jobs:
         run: ./build.sh --configuration=${{ inputs.configuration }}
       - name: Upload repack artifact
         id: upload-repack-artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.configuration }}-repack-unsigned
           path: _build/repack/
           retention-days: 1
       - name: Upload out artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ inputs.configuration }}-out-unsigned
           path: _build/out/
@@ -52,14 +52,14 @@ jobs:
       - name: Upload unsigned artifact
         id: upload-unsigned-artifact
         if: inputs.configuration == 'Release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: unsigned
           path: _build/signpath/Release
           retention-days: 1
       - name: Upload ckan.exe artifact
         if: inputs.configuration == 'Release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ckan.exe
           path: _build/repack/Release/ckan.exe
@@ -71,14 +71,14 @@ jobs:
     runs-on: ubuntu-22.04
     if: inputs.configuration == 'Release'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Restore cache for _build/tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
       - name: Download out artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.configuration }}-out-unsigned
           path: _build/out/
@@ -99,7 +99,7 @@ jobs:
         run: |
           ./build.sh osx-dmg --configuration=${{ inputs.configuration }} --exclusive
       - name: Upload CKAN.dmg artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: CKAN.dmg
           path: _build/osx/CKAN.dmg
