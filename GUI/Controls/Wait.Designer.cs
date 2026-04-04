@@ -73,9 +73,9 @@ namespace CKAN.GUI
             //
             this.DialogProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.DialogProgressBar.Font = System.Drawing.SystemFonts.MessageBoxFont;
             this.DialogProgressBar.Location = new System.Drawing.Point(5, 7);
             this.DialogProgressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.DialogProgressBar.Font = new System.Drawing.Font(System.Drawing.SystemFonts.MessageBoxFont.Name, 12, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.DialogProgressBar.Minimum = 0;
             this.DialogProgressBar.Maximum = 100;
             this.DialogProgressBar.Name = "DialogProgressBar";
