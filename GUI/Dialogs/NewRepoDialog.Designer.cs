@@ -53,7 +53,7 @@ namespace CKAN.GUI
             this.RepositoryGroupBox.Location = new System.Drawing.Point(12, 12);
             this.RepositoryGroupBox.Name = "RepositoryGroupBox";
             this.RepositoryGroupBox.Size = new System.Drawing.Size(476, 380);
-            this.RepositoryGroupBox.TabIndex = 8;
+            this.RepositoryGroupBox.TabIndex = 0;
             this.RepositoryGroupBox.TabStop = false;
             resources.ApplyResources(this.RepositoryGroupBox, "RepositoryGroupBox");
             //
@@ -69,7 +69,7 @@ namespace CKAN.GUI
             this.ReposListBox.View = System.Windows.Forms.View.Details;
             this.ReposListBox.Name = "ReposListBox";
             this.ReposListBox.Size = new System.Drawing.Size(464, 355);
-            this.ReposListBox.TabIndex = 8;
+            this.ReposListBox.TabIndex = 1;
             this.ReposListBox.SelectedIndexChanged += new System.EventHandler(this.ReposListBox_SelectedIndexChanged);
             this.ReposListBox.DoubleClick += new System.EventHandler(this.ReposListBox_DoubleClick);
             //
@@ -80,11 +80,11 @@ namespace CKAN.GUI
             //
             // RepoURLHeader
             //
-            this.RepoURLHeader.Width = 370;
+            this.RepoURLHeader.Width = -1;
             resources.ApplyResources(this.RepoURLHeader, "RepoURLHeader");
-            // 
+            //
             // BottomPanel
-            // 
+            //
             this.BottomPanel.Controls.Add(this.RepoNameLabel);
             this.BottomPanel.Controls.Add(this.RepoNameTextBox);
             this.BottomPanel.Controls.Add(this.RepoUrlLabel);
@@ -101,7 +101,7 @@ namespace CKAN.GUI
             this.RepoNameLabel.Location = new System.Drawing.Point(6, 6);
             this.RepoNameLabel.Name = "RepoNameLabel";
             this.RepoNameLabel.Size = new System.Drawing.Size(70, 13);
-            this.RepoNameLabel.TabIndex = 1;
+            this.RepoNameLabel.TabIndex = 2;
             resources.ApplyResources(this.RepoNameLabel, "RepoNameLabel");
             //
             // RepoNameTextBox
@@ -111,7 +111,7 @@ namespace CKAN.GUI
             this.RepoNameTextBox.Location = new System.Drawing.Point(6, 22);
             this.RepoNameTextBox.Name = "RepoNameTextBox";
             this.RepoNameTextBox.Size = new System.Drawing.Size(110, 30);
-            this.RepoNameTextBox.TabIndex = 11;
+            this.RepoNameTextBox.TabIndex = 3;
             this.RepoNameTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.RepoNameTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.RepoNameTextBox.TextChanged += new System.EventHandler(this.RepoUrlTextBox_TextChanged);
@@ -122,7 +122,7 @@ namespace CKAN.GUI
             this.RepoUrlLabel.Location = new System.Drawing.Point(122, 6);
             this.RepoUrlLabel.Name = "RepoUrlLabel";
             this.RepoUrlLabel.Size = new System.Drawing.Size(70, 13);
-            this.RepoUrlLabel.TabIndex = 1;
+            this.RepoUrlLabel.TabIndex = 4;
             resources.ApplyResources(this.RepoUrlLabel, "RepoUrlLabel");
             //
             // RepoUrlTextBox
@@ -134,7 +134,7 @@ namespace CKAN.GUI
             this.RepoUrlTextBox.Location = new System.Drawing.Point(122, 22);
             this.RepoUrlTextBox.Name = "RepoUrlTextBox";
             this.RepoUrlTextBox.Size = new System.Drawing.Size(372, 30);
-            this.RepoUrlTextBox.TabIndex = 11;
+            this.RepoUrlTextBox.TabIndex = 5;
             this.RepoUrlTextBox.TextChanged += new System.EventHandler(this.RepoUrlTextBox_TextChanged);
             //
             // RepoCancel
@@ -145,7 +145,7 @@ namespace CKAN.GUI
             this.RepoCancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RepoCancel.Name = "RepoCancel";
             this.RepoCancel.Size = new System.Drawing.Size(70, 30);
-            this.RepoCancel.TabIndex = 10;
+            this.RepoCancel.TabIndex = 6;
             this.RepoCancel.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.RepoCancel, "RepoCancel");
             //
@@ -158,7 +158,7 @@ namespace CKAN.GUI
             this.RepoOK.Location = new System.Drawing.Point(424, 56);
             this.RepoOK.Name = "RepoOK";
             this.RepoOK.Size = new System.Drawing.Size(70, 30);
-            this.RepoOK.TabIndex = 9;
+            this.RepoOK.TabIndex = 7;
             this.RepoOK.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.RepoOK, "RepoOK");
             //
@@ -166,8 +166,10 @@ namespace CKAN.GUI
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.ClientSize = new System.Drawing.Size(500, 220);
             this.MinimumSize = new System.Drawing.Size(520, 260);
+            this.Padding = new System.Windows.Forms.Padding(6);
             this.Controls.Add(this.RepositoryGroupBox);
             this.Controls.Add(this.BottomPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Sizable;
