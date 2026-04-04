@@ -421,8 +421,6 @@ namespace CKAN.GUI
             // 
             // EditModpack
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.RelationshipsListView);
             this.Controls.Add(this.TopEditPanel);
             this.Controls.Add(this.BottomButtonPanel);
@@ -435,6 +433,8 @@ namespace CKAN.GUI
             this.BottomButtonPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
         }
 
         #endregion

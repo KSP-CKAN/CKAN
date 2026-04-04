@@ -187,7 +187,7 @@ namespace CKAN.GUI
                                                                 // If >1 rows, show 1 + active
                                                                 : progressBars.Values
                                                                               .Where(pb => pb.Value < 100))
-                                                    .Sum(pb => pb.GetPreferredSize(Size.Empty).Height
+                                                    .Sum(pb => CreateGraphics().ScaledHeight(pb.GetPreferredSize(Size.Empty).Height)
                                                                + pb.Margin.Vertical);
                         if (ProgressBarTable.Height < newHeight)
                         {

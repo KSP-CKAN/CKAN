@@ -100,7 +100,8 @@ namespace CKAN.GUI
             this.ContentsPreviewTree.ImageList = new System.Windows.Forms.ImageList(this.components)
             {
                 // ImageList's default makes icons look like garbage
-                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit,
+                ImageSize  = CreateGraphics().ScaledSize(16, 16),
             };
             this.ContentsPreviewTree.ImageList.Images.Add("folderZip", global::CKAN.GUI.EmbeddedImages.folderZip);
             this.ContentsPreviewTree.ImageList.Images.Add("folder", global::CKAN.GUI.EmbeddedImages.folder);
@@ -119,8 +120,8 @@ namespace CKAN.GUI
             //
             // Contents
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.ContentsPreviewTree);
             this.Controls.Add(this.ButtonsTable);
             this.Controls.Add(this.NotCachedLabel);

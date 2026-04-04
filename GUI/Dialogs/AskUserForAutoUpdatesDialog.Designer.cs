@@ -68,8 +68,8 @@ namespace CKAN.GUI
             //
             // AskUserForAutoUpdatesDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(562, 100);
             this.Controls.Add(this.NoButton);
             this.Controls.Add(this.YesButton);

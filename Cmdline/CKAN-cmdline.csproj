@@ -30,6 +30,8 @@
     <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <AppConfig>App.config</AppConfig>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <DpiAwarenessPerMonitor>true</DpiAwarenessPerMonitor>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />

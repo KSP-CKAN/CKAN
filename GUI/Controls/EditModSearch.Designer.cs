@@ -107,8 +107,6 @@ namespace CKAN.GUI
             //
             // EditModSearch
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.FilterCombinedLabel);
             this.Controls.Add(this.FilterOrLabel);
             this.Controls.Add(this.ExpandButton);
@@ -118,7 +116,8 @@ namespace CKAN.GUI
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
         }
 
         #endregion

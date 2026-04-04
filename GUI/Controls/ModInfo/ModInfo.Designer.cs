@@ -142,7 +142,8 @@ namespace CKAN.GUI
             this.ModInfoTabControl.ImageList = new System.Windows.Forms.ImageList(this.components)
             {
                 // ImageList's default makes icons look like garbage
-                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit,
+                ImageSize  = CreateGraphics().ScaledSize(16, 16),
             };
             this.ModInfoTabControl.ImageList.Images.Add("Stop", global::CKAN.GUI.EmbeddedImages.stop);
             this.ModInfoTabControl.SelectedIndexChanged += new System.EventHandler(this.ModInfoTabControl_SelectedIndexChanged);
@@ -216,8 +217,8 @@ namespace CKAN.GUI
             //
             // ModInfo
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.ModInfoTable);
             this.Name = "ModInfo";
             this.Padding = new System.Windows.Forms.Padding(0);

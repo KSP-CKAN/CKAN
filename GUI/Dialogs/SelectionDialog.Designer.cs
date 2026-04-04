@@ -122,8 +122,8 @@ namespace CKAN.GUI
             //
             // SelectionDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(420, 420);
             this.MinimumSize = new System.Drawing.Size(300, 200);
             this.AcceptButton = this.SelectButton;

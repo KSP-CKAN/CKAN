@@ -177,8 +177,8 @@ namespace CKAN.GUI
             //
             // DownloadsFailedDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.DownloadsGrid);
             this.Controls.Add(this.ExplanationLabel);
             this.Controls.Add(this.BottomButtonPanel);

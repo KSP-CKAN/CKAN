@@ -164,8 +164,8 @@ namespace CKAN.GUI
             //
             // NewRepoDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(500, 220);
             this.MinimumSize = new System.Drawing.Size(520, 260);
             this.Controls.Add(this.RepositoryGroupBox);

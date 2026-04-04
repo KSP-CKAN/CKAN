@@ -193,8 +193,6 @@ namespace CKAN.GUI
             //
             // PreferredHostsDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 360);
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.ExplanationLabel);
@@ -216,6 +214,8 @@ namespace CKAN.GUI
             this.Splitter.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 
         }
 

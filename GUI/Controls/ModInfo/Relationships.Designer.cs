@@ -72,7 +72,8 @@ namespace CKAN.GUI
             this.DependsGraphTree.ImageList = new System.Windows.Forms.ImageList(this.components)
             {
                 // ImageList's default makes icons look like garbage
-                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit
+                ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit,
+                ImageSize  = CreateGraphics().ScaledSize(16, 16),
             };
             this.DependsGraphTree.ImageList.Images.Add("Root", global::CKAN.GUI.EmbeddedImages.ksp);
             this.DependsGraphTree.ImageList.Images.Add("Provides", global::CKAN.GUI.EmbeddedImages.ballot);
@@ -241,8 +242,8 @@ namespace CKAN.GUI
             //
             // Relationships
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.DependsGraphTree);
             this.Controls.Add(this.LegendTable);
             this.Controls.Add(this.ReverseRelationshipsCheckbox);

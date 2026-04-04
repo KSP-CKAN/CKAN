@@ -105,8 +105,8 @@ namespace CKAN.GUI
             //
             // InstallFiltersDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(379, 390);
             this.Controls.Add(this.GlobalFiltersGroupBox);
             this.Controls.Add(this.InstanceFiltersGroupBox);

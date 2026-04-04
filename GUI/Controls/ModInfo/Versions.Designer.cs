@@ -201,8 +201,8 @@ namespace CKAN.GUI
             //
             // Versions
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.VersionsListView);
             this.Controls.Add(this.OverallSummaryLabel);
             this.Controls.Add(this.LabelTable);
