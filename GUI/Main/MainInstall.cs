@@ -338,9 +338,10 @@ namespace CKAN.GUI
                             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                             ChooseProvidedMods.LoadProviders(
                                 k.Message,
-                                k.modules.OrderByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
-                                                                                           m.identifier)
-                                                                 ?? 0)
+                                k.modules.OrderByDescending(Manager.Cache.IsCached)
+                                         .ThenByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
+                                                                                          m.identifier)
+                                                                ?? 0)
                                          .ThenByDescending(m => m.identifier == k.requested)
                                          .ThenBy(m => m.name)
                                          .ToList(),
