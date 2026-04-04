@@ -44,7 +44,7 @@ namespace CKAN.GUI
             //
             this.ChooseProvidedModsLabel.Dock = System.Windows.Forms.DockStyle.Top;
             this.ChooseProvidedModsLabel.Location = new System.Drawing.Point(9, 18);
-            this.ChooseProvidedModsLabel.Margin = new System.Windows.Forms.Padding(5,5,5,5);
+            this.ChooseProvidedModsLabel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.ChooseProvidedModsLabel.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.ChooseProvidedModsLabel.Name = "ChooseProvidedModsLabel";
             this.ChooseProvidedModsLabel.Size = new System.Drawing.Size(490, 40);
@@ -120,8 +120,8 @@ namespace CKAN.GUI
             this.Controls.Add(this.ChooseProvidedModsListView);
             this.Controls.Add(this.ChooseProvidedModsLabel);
             this.Controls.Add(this.BottomButtonPanel);
-            this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Name = "ChooseProvidedMods";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");

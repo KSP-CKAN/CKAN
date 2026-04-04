@@ -53,7 +53,7 @@ namespace CKAN.GUI
             this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
             this.ExplanationLabel.Location = new System.Drawing.Point(5, 0);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Padding = new System.Windows.Forms.Padding(0,0,0,8);
+            this.ExplanationLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.ExplanationLabel.Size = new System.Drawing.Size(490, 60);
             resources.ApplyResources(this.ExplanationLabel, "ExplanationLabel");
             //

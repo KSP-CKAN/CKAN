@@ -63,7 +63,7 @@ namespace CKAN.GUI
             // 
             this.Splitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Splitter.Location = new System.Drawing.Point(5, 70);
-            this.Splitter.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Splitter.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Splitter.Name = "Splitter";
             this.Splitter.Size = new System.Drawing.Size(490, 385);
             this.Splitter.SplitterDistance = 250;

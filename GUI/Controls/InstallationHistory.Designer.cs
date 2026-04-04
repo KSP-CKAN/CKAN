@@ -83,7 +83,7 @@ namespace CKAN.GUI
             this.Splitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.Splitter.IsSplitterFixed = true;
             this.Splitter.Location = new System.Drawing.Point(5, 70);
-            this.Splitter.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Splitter.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Splitter.Name = "Splitter";
             this.Splitter.Size = new System.Drawing.Size(490, 385);
             this.Splitter.SplitterDistance = 100;

@@ -426,8 +426,8 @@ namespace CKAN.GUI
             this.Controls.Add(this.RelationshipsListView);
             this.Controls.Add(this.TopEditPanel);
             this.Controls.Add(this.BottomButtonPanel);
-            this.Margin = new System.Windows.Forms.Padding(0,0,0,0);
-            this.Padding = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.Padding = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Name = "EditModpack";
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
