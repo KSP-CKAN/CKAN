@@ -53,6 +53,14 @@ namespace CKAN.GUI
                 {
                     ActiveModInfo = row.Tag as GUIMod;
                 }
+                else if (CurrentInstance != null)
+                {
+                    var registry = RegistryManager.Instance(CurrentInstance, repoData).registry;
+                    ShowSelectionModInfo(Utilities.DefaultIfThrows(() =>
+                        registry.LatestAvailable(ident,
+                                                 CurrentInstance.StabilityToleranceConfig,
+                                                 CurrentInstance.VersionCriteria())));
+                }
                 else
                 {
                     ActiveModInfo = null;
