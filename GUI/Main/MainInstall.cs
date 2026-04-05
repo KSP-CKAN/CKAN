@@ -170,8 +170,13 @@ namespace CKAN.GUI
                                                 .LabelsFor(CurrentInstance.Name)
                                                 .ToList();
                     var coreConfig = ServiceLocator.Container.Resolve<IConfiguration>();
+                    // The recommendations screen's conflicts check needs to know about all removals, auto or not
+                    var allUninstalling = toUninstall.Concat(changes.Where(ch => ch.IsAutoRemoval)
+                                                     .Select(ch => ch.Mod))
+                                                     .Distinct()
+                                                     .ToArray();
                     while (ModuleInstaller.FindRecommendations(
-                        CurrentInstance, sourceModules, toInstall, toUninstall, shown, registry,
+                        CurrentInstance, sourceModules, toInstall, allUninstalling, shown, registry,
                         out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                         out Dictionary<CkanModule, List<string>> suggestions,
                         out Dictionary<CkanModule, HashSet<string>> supporters)
@@ -179,7 +184,7 @@ namespace CKAN.GUI
                     {
                         tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                         ChooseRecommendedMods.LoadRecommendations(
-                            registry, toInstall, toUninstall,
+                            registry, toInstall, allUninstalling,
                             CurrentInstance.VersionCriteria(), Manager.Cache,
                             CurrentInstance.Game, labels, coreConfig, configuration,
                             recommendations, suggestions, supporters);
