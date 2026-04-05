@@ -197,6 +197,7 @@ namespace CKAN.GUI
                         var result = ChooseRecommendedMods.Wait();
 
                         tabController.SetTabLock(false);
+                        tabController.ShowTab(WaitTabPage.Name);
                         tabController.HideTab(ChooseRecommendedModsTabPage.Name);
                         if (result == null)
                         {
@@ -349,7 +350,6 @@ namespace CKAN.GUI
                             var chosen = ChooseProvidedMods.Wait();
                             // Close the selection prompt
                             tabController.SetTabLock(false);
-                            tabController.HideTab(ChooseProvidedModsTabPage.Name);
                             if (chosen != null)
                             {
                                 // User picked a mod, queue it up for installation
@@ -357,10 +357,12 @@ namespace CKAN.GUI
                                 autoInstalled.Add(chosen);
                                 // DON'T return so we can loop around and try the above InstallList call again
                                 tabController.ShowTab(WaitTabPage.Name);
+                                tabController.HideTab(ChooseProvidedModsTabPage.Name);
                                 Util.Invoke(this, () => StatusProgress.Visible = true);
                             }
                             else
                             {
+                                tabController.HideTab(ChooseProvidedModsTabPage.Name);
                                 e.Result = new InstallResult(false, changes);
                                 throw new CancelledActionKraken();
                             }
