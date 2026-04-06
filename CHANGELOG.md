@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Allow newly installed versions to satisfy deps (#4496 by: HebaruSan)
 - [GUI] Download errors dialog improvements (#4502 by: HebaruSan)
 - [GUI] Fix symlinks being generated on Linux (#4519 by: HebaruSan)
+- [ConsoleUI] Only scroll ConsoleUI log messages for small popups (#4547 by: HebaruSan)
 
 ### Internal
 
