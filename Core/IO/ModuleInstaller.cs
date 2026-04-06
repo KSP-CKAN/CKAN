@@ -616,12 +616,17 @@ namespace CKAN.IO
                 HashSet<string>     parents,
                 HashSet<string>     filters)
             => installed.Where(f => !filters.Any(filt => f.Contains(filt)))
-                        .GroupBy(parents.Contains)
+                        .Select(f => (relPath: f,
+                                      absPath: instance.ToAbsoluteGameDir(f)))
+                        .Select(f => (f.relPath, f.absPath,
+                                      dir: parents.Contains(f.relPath)
+                                           // Empty dirs are parents of nothing
+                                           || Directory.Exists(f.absPath)))
+                        .GroupBy(f => f.dir)
                         .SelectMany(grp =>
-                            grp.Select(p => (path:   p,
-                                             dir:    grp.Key,
-                                             exists: grp.Key ? Directory.Exists(instance.ToAbsoluteGameDir(p))
-                                                             : File.Exists(instance.ToAbsoluteGameDir(p)))));
+                            grp.Select(p => (path:   p.relPath, p.dir,
+                                             exists: grp.Key ? Directory.Exists(p.absPath)
+                                                             : File.Exists(p.absPath))));
 
         /// <summary>
         /// Returns the module contents if and only if we have it

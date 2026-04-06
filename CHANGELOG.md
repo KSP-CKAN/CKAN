@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Mark virtual dependencies as auto-installed (#4499 by: HebaruSan)
 - [Build] Don't leave launch shell waiting for CKAN to close on Linux (#4517 by: nuew; reviewed: HebaruSan)
 - [GUI] Sort Contents tab alphanumerically, folders first (#4529 by: HebaruSan)
+- [GUI] Auto-size new repo popup to fit rows in list (#4543 by: HebaruSan)
 
 ### Bugfixes
 

@@ -837,6 +837,7 @@ namespace CKAN
                            // Put the most popular one on top
                            .OrderByDescending(m => repoDataMgr?.GetDownloadCount(Repositories.Values, m.identifier)
                                                               ?? 0)
+                           .ThenBy(m => m.name)
                     // Nothing provides this
                     : Enumerable.Empty<CkanModule>())
                .ToList();

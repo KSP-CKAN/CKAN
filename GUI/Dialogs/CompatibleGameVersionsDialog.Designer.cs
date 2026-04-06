@@ -53,7 +53,7 @@ namespace CKAN.GUI
             // MessageLabel
             //
             this.MessageLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.MessageLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.MessageLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.MessageLabel.BackColor = System.Drawing.SystemColors.Window;
             this.MessageLabel.ForeColor = System.Drawing.SystemColors.WindowText;
             this.MessageLabel.Location = new System.Drawing.Point(0, 0);
@@ -259,8 +259,8 @@ namespace CKAN.GUI
             // CompatibleGameVersionsDialog
             //
             this.AcceptButton = this.SaveButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.CancelChooseCompatibleVersionsButton;
             this.ClientSize = new System.Drawing.Size(443, 383);
             this.Controls.Add(this.MainContentsPanel);

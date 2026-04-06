@@ -119,7 +119,7 @@ namespace CKAN.GUI
             // CloseTheGameLabel
             //
             this.CloseTheGameLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.CloseTheGameLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.CloseTheGameLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.CloseTheGameLabel.Location = new System.Drawing.Point(9, 18);
             this.CloseTheGameLabel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.CloseTheGameLabel.Padding = new System.Windows.Forms.Padding(0, 10, 0, 10);
@@ -175,8 +175,8 @@ namespace CKAN.GUI
             //
             // Changeset
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.ChangesGrid);
             this.Controls.Add(this.CloseTheGameLabel);
             this.Controls.Add(this.BottomButtonPanel);

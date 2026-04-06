@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
@@ -29,5 +30,23 @@ namespace CKAN.GUI
                                                     is TableLayoutPanelCellPosition pos
                                                     && pos.Column == column
                                                     && pos.Row    == row);
+
+        #region Icon sizing
+
+        public static int ScaledWidth(this Graphics g, int w)
+            => w * (int)g.DpiX / 96;
+
+        public static int ScaledHeight(this Graphics g, int h)
+            => h * (int)g.DpiY / 96;
+
+        public static Size ScaledSize(this Graphics g, int w, int h)
+            => new Size(g.ScaledWidth(w), g.ScaledHeight(h));
+
+        public static Size ScaledSize(this Graphics g, Size size)
+            => g.ScaledSize(size.Width, size.Height);
+
+        #endregion
+
+
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
 
 #if NET5_0_OR_GREATER
@@ -17,7 +18,6 @@ namespace CKAN.GUI
         {
             this.repos = repos;
             InitializeComponent();
-            StartPosition = FormStartPosition.CenterScreen;
         }
 
         public Repository Selection
@@ -33,6 +33,23 @@ namespace CKAN.GUI
                                       Tag = r
                                   })
                      .ToArray());
+            ClientSize = new Size(ClientSize.Width,
+                                  Math.Max(ClientSize.Height,
+                                           ClientSize.Height
+                                               - ReposListBox.Height
+                                               // Use the horizontal scrollbar as a proxy for the unknowable header height
+                                               + 3 * SystemInformation.HorizontalScrollBarHeight
+                                               + ReposListBox.Items.OfType<ListViewItem>()
+                                                                   .Sum(lvi => lvi.Bounds.Height)));
+            ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            ReposListBox.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         private void ReposListBox_SelectedIndexChanged(object? sender, EventArgs? e)

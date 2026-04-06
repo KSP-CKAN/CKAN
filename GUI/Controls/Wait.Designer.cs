@@ -60,8 +60,8 @@ namespace CKAN.GUI
             //
             // VerticalSplitter.Panel1
             //
-            this.VerticalSplitter.Panel1.Controls.Add(this.DialogProgressBar);
             this.VerticalSplitter.Panel1.Controls.Add(this.ProgressBarTable);
+            this.VerticalSplitter.Panel1.Controls.Add(this.DialogProgressBar);
             this.VerticalSplitter.Panel1MinSize = 50;
             //
             // VerticalSplitter.Panel2
@@ -71,11 +71,10 @@ namespace CKAN.GUI
             //
             // DialogProgressBar
             //
-            this.DialogProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.DialogProgressBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.DialogProgressBar.Font = System.Drawing.SystemFonts.MessageBoxFont;
             this.DialogProgressBar.Location = new System.Drawing.Point(5, 7);
             this.DialogProgressBar.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.DialogProgressBar.Font = new System.Drawing.Font(System.Drawing.SystemFonts.MessageBoxFont.Name, 12, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Pixel);
             this.DialogProgressBar.Minimum = 0;
             this.DialogProgressBar.Maximum = 100;
             this.DialogProgressBar.Name = "DialogProgressBar";
@@ -85,7 +84,7 @@ namespace CKAN.GUI
             //
             // ProgressBarTable
             //
-            this.ProgressBarTable.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right | System.Windows.Forms.AnchorStyles.Bottom;
+            this.ProgressBarTable.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ProgressBarTable.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ProgressBarTable.AutoScroll = true;
             this.ProgressBarTable.AutoSize = false;
@@ -160,8 +159,6 @@ namespace CKAN.GUI
             //
             // Wait
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.VerticalSplitter);
             this.Controls.Add(this.BottomButtonPanel);
             this.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -179,6 +176,8 @@ namespace CKAN.GUI
             this.VerticalSplitter.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
         }
 
         #endregion

@@ -51,7 +51,7 @@ namespace CKAN.GUI
             // ExplanationLabel
             // 
             this.ExplanationLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.ExplanationLabel.Location = new System.Drawing.Point(5, 0);
             this.ExplanationLabel.Name = "ExplanationLabel";
             this.ExplanationLabel.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
@@ -63,7 +63,7 @@ namespace CKAN.GUI
             // 
             this.Splitter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Splitter.Location = new System.Drawing.Point(5, 70);
-            this.Splitter.Margin = new System.Windows.Forms.Padding(0,0,0,0);
+            this.Splitter.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
             this.Splitter.Name = "Splitter";
             this.Splitter.Size = new System.Drawing.Size(490, 385);
             this.Splitter.SplitterDistance = 250;
@@ -170,8 +170,8 @@ namespace CKAN.GUI
             // 
             // DeleteDirectories
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.ExplanationLabel);
             this.Controls.Add(this.BottomButtonPanel);

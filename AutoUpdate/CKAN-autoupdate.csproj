@@ -28,6 +28,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>IDE1006</NoWarn>
     <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
+    <AppConfig>App.config</AppConfig>
   </PropertyGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">
     <Reference Include="System" />
@@ -57,9 +58,6 @@
                       Lines="$([System.IO.File]::ReadAllText('$(IntermediateOutputPath)Resources.Designer.cs').Replace('new global::System.Resources.ResourceManager', 'new SingleAssemblyResourceManager').Replace('internal', 'public'))"
                       Overwrite="true" />
   </Target>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
     <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"

@@ -152,12 +152,11 @@ namespace CKAN.GUI
                         RelationshipResolverOptions.ConflictsOpts(inst.StabilityToleranceConfig),
                         registry, game, versionCrit);
                     var conflicts = resolver.ConflictList;
-                    foreach (var item in RecommendedModsListView.Items.Cast<ListViewItem>()
-                        // Apparently ListView handes AddRange by:
-                        //   1. Expanding the Items list to the new size by filling it with nulls
-                        //   2. One by one, replace each null with a real item and call _ItemChecked
-                        // ... so the Items list can contain null!!
-                        .OfType<ListViewItem>())
+                    // Apparently ListView handes AddRange by:
+                    //   1. Expanding the Items list to the new size by filling it with nulls
+                    //   2. One by one, replace each null with a real item and call _ItemChecked
+                    // ... so the Items list can contain null!!
+                    foreach (var item in RecommendedModsListView.Items.OfType<ListViewItem>())
                     {
                         item.BackColor = item.Tag is CkanModule m && conflicts.ContainsKey(m)
                             ? Color.LightCoral

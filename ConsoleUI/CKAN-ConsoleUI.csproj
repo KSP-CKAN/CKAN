@@ -27,6 +27,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <NoWarn>IDE1006</NoWarn>
     <CoreCompileDependsOn>PrepareResources;$(CompileDependsOn)</CoreCompileDependsOn>
+    <AppConfig>App.config</AppConfig>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
@@ -75,9 +76,6 @@
                       .Replace('        [global::System.Diagnostics.CodeAnalysis', $([System.String]::Join('%0d%0a', '/// &lt;summary&gt;', '/// Constructor', '/// &lt;/summary&gt;', '        [global::System.Diagnostics.CodeAnalysis'))))"
                       Overwrite="true" />
   </Target>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
   <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
   <Target Name="MakeAssemblyInfo" BeforeTargets="BeforeBuild">
     <Exec Command="powershell.exe -ExecutionPolicy Unrestricted -Command &quot;.\build.ps1 Generate-GlobalAssemblyVersionInfo&quot;"

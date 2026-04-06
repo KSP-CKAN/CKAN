@@ -57,7 +57,7 @@ namespace CKAN.GUI
             // ExplanationLabel
             //
             this.ExplanationLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.ExplanationLabel.Location = new System.Drawing.Point(5, 0);
             this.ExplanationLabel.Name = "ExplanationLabel";
             this.ExplanationLabel.Padding = new System.Windows.Forms.Padding(10, 10, 10, 10);
@@ -94,7 +94,7 @@ namespace CKAN.GUI
             //
             this.AvailableHostsLabel.AutoSize = true;
             this.AvailableHostsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.AvailableHostsLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.AvailableHostsLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.AvailableHostsLabel.Location = new System.Drawing.Point(10, 10);
             this.AvailableHostsLabel.Name = "AvailableHostsLabel";
             this.AvailableHostsLabel.Size = new System.Drawing.Size(75, 23);
@@ -144,7 +144,7 @@ namespace CKAN.GUI
             //
             this.PreferredHostsLabel.AutoSize = true;
             this.PreferredHostsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left));
-            this.PreferredHostsLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.PreferredHostsLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.PreferredHostsLabel.Location = new System.Drawing.Point(0, 10);
             this.PreferredHostsLabel.Name = "PreferredHostsLabel";
             this.PreferredHostsLabel.Size = new System.Drawing.Size(75, 23);
@@ -193,8 +193,6 @@ namespace CKAN.GUI
             //
             // PreferredHostsDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(534, 360);
             this.Controls.Add(this.Splitter);
             this.Controls.Add(this.ExplanationLabel);
@@ -216,6 +214,8 @@ namespace CKAN.GUI
             this.Splitter.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 
         }
 

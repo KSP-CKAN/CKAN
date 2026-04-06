@@ -170,8 +170,13 @@ namespace CKAN.GUI
                                                 .LabelsFor(CurrentInstance.Name)
                                                 .ToList();
                     var coreConfig = ServiceLocator.Container.Resolve<IConfiguration>();
+                    // The recommendations screen's conflicts check needs to know about all removals, auto or not
+                    var allUninstalling = toUninstall.Concat(changes.Where(ch => ch.IsAutoRemoval)
+                                                     .Select(ch => ch.Mod))
+                                                     .Distinct()
+                                                     .ToArray();
                     while (ModuleInstaller.FindRecommendations(
-                        CurrentInstance, sourceModules, toInstall, toUninstall, shown, registry,
+                        CurrentInstance, sourceModules, toInstall, allUninstalling, shown, registry,
                         out Dictionary<CkanModule, Tuple<bool, List<string>>> recommendations,
                         out Dictionary<CkanModule, List<string>> suggestions,
                         out Dictionary<CkanModule, HashSet<string>> supporters)
@@ -179,7 +184,7 @@ namespace CKAN.GUI
                     {
                         tabController.ShowTab(ChooseRecommendedModsTabPage.Name, 3);
                         ChooseRecommendedMods.LoadRecommendations(
-                            registry, toInstall, toUninstall,
+                            registry, toInstall, allUninstalling,
                             CurrentInstance.VersionCriteria(), Manager.Cache,
                             CurrentInstance.Game, labels, coreConfig, configuration,
                             recommendations, suggestions, supporters);
@@ -192,6 +197,7 @@ namespace CKAN.GUI
                         var result = ChooseRecommendedMods.Wait();
 
                         tabController.SetTabLock(false);
+                        tabController.ShowTab(WaitTabPage.Name);
                         tabController.HideTab(ChooseRecommendedModsTabPage.Name);
                         if (result == null)
                         {
@@ -332,9 +338,10 @@ namespace CKAN.GUI
                             var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                             ChooseProvidedMods.LoadProviders(
                                 k.Message,
-                                k.modules.OrderByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
-                                                                                           m.identifier)
-                                                                 ?? 0)
+                                k.modules.OrderByDescending(Manager.Cache.IsCached)
+                                         .ThenByDescending(m => repoData.GetDownloadCount(registry.Repositories.Values,
+                                                                                          m.identifier)
+                                                                ?? 0)
                                          .ThenByDescending(m => m.identifier == k.requested)
                                          .ThenBy(m => m.name)
                                          .ToList(),
@@ -344,7 +351,6 @@ namespace CKAN.GUI
                             var chosen = ChooseProvidedMods.Wait();
                             // Close the selection prompt
                             tabController.SetTabLock(false);
-                            tabController.HideTab(ChooseProvidedModsTabPage.Name);
                             if (chosen != null)
                             {
                                 // User picked a mod, queue it up for installation
@@ -352,10 +358,12 @@ namespace CKAN.GUI
                                 autoInstalled.Add(chosen);
                                 // DON'T return so we can loop around and try the above InstallList call again
                                 tabController.ShowTab(WaitTabPage.Name);
+                                tabController.HideTab(ChooseProvidedModsTabPage.Name);
                                 Util.Invoke(this, () => StatusProgress.Visible = true);
                             }
                             else
                             {
+                                tabController.HideTab(ChooseProvidedModsTabPage.Name);
                                 e.Result = new InstallResult(false, changes);
                                 throw new CancelledActionKraken();
                             }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -33,6 +34,11 @@ namespace CKAN.GUI
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            if (Platform.IsWindows)
+            {
+                // By default, Windows will stretch the window and make it blurry; tell it not to.
+                SetProcessDPIAware();
+            }
 
             if (args.Contains(URLHandlers.UrlRegistrationArgument))
             {
@@ -62,5 +68,8 @@ namespace CKAN.GUI
                                                     exception.ToString());
             }
         }
+
+        [DllImport("user32.dll")]
+        private static extern bool SetProcessDPIAware();
     }
 }

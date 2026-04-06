@@ -50,10 +50,10 @@ namespace CKAN.GUI
             this.ExplanationLabel.AutoSize = true;
             this.ExplanationLabel.MaximumSize = new System.Drawing.Size(490, 0);
             this.ExplanationLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 12, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel);
+            this.ExplanationLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.ExplanationLabel.Location = new System.Drawing.Point(5, 0);
             this.ExplanationLabel.Name = "ExplanationLabel";
-            this.ExplanationLabel.Padding = new System.Windows.Forms.Padding(0,0,0,8);
+            this.ExplanationLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 8);
             this.ExplanationLabel.Size = new System.Drawing.Size(490, 60);
             resources.ApplyResources(this.ExplanationLabel, "ExplanationLabel");
             //
@@ -177,8 +177,8 @@ namespace CKAN.GUI
             //
             // DownloadsFailedDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.DownloadsGrid);
             this.Controls.Add(this.ExplanationLabel);
             this.Controls.Add(this.BottomButtonPanel);
