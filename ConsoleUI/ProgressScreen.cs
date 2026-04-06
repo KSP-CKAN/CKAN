@@ -90,9 +90,12 @@ namespace CKAN.ConsoleUI {
                 return false;
             });
 
-            // Scroll messages
-            d.AddTip(Properties.Resources.CursorKeys, Properties.Resources.ScrollMessages);
-            messages.AddScrollBindings(d, theme, true);
+            // Scroll log messages beneath popup if message is one line (otherwise the popup itself will scroll)
+            if (!question.Contains(Environment.NewLine))
+            {
+                d.AddTip(Properties.Resources.CursorKeys, Properties.Resources.ScrollMessages);
+                messages.AddScrollBindings(d, theme, true);
+            }
 
             bool val = d.Run() == 0;
             DrawBackground();

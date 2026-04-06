@@ -68,6 +68,17 @@ namespace CKAN.ConsoleUI.Toolkit {
             SetDimensions(l, t, r, b);
             int btnRow = GetBottom() - 2;
 
+            int btnLeft = (Console.WindowWidth - btnW) / 2;
+            for (int i = 0; i < btns.Count; ++i) {
+                string cap = btns[i];
+                int j = i;
+                AddObject(new ConsoleButton(btnLeft, btnRow, btnLeft + buttonWidth - 1, cap, () => {
+                    selectedButton = j;
+                    Quit();
+                }));
+                btnLeft += buttonWidth + buttonPadding;
+            }
+
             var tb = new ConsoleTextBox(
                 GetLeft() + 2, GetTop() + 2, GetRight() - 2, GetBottom() - 2 - (btns.Count > 0 ? 2 : 0),
                 false,
@@ -84,17 +95,6 @@ namespace CKAN.ConsoleUI.Toolkit {
                 // Scroll
                 AddTip(Properties.Resources.CursorKeys, Properties.Resources.Scroll);
                 tb.AddScrollBindings(this, theme);
-            }
-
-            int btnLeft = (Console.WindowWidth - btnW) / 2;
-            for (int i = 0; i < btns.Count; ++i) {
-                string cap = btns[i];
-                int j = i;
-                AddObject(new ConsoleButton(btnLeft, btnRow, btnLeft + buttonWidth - 1, cap, () => {
-                    selectedButton = j;
-                    Quit();
-                }));
-                btnLeft += buttonWidth + buttonPadding;
             }
         }
 
