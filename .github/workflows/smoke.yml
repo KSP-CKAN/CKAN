@@ -42,8 +42,11 @@ jobs:
             type=image
             type=docker
       - name: Smoke test Inflator image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >
           docker run --rm --entrypoint /bin/bash kspckan/inflator -c "./CKAN-NetKAN
+          --github-token $GITHUB_TOKEN
           https://raw.githubusercontent.com/KSP-CKAN/NetKAN/master/NetKAN/ZeroMiniAVC.netkan"
       - name: Export Inflator image tar file
         uses: docker/build-push-action@v7
