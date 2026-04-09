@@ -346,7 +346,13 @@ namespace CKAN
                 if (conflicting_mod == null)
                 {
                     // Okay, looks like we want this one. Adding.
-                    Add(candidate, reason);
+                    Add(candidate,
+                        descriptor is ModuleRelationshipDescriptor rel
+                        && rel.name != candidate.identifier
+                        && reason is SelectionReason.Depends depRsn
+                               ? new SelectionReason.VirtualDepends(depRsn.Parent,
+                                                                    descriptor.ToString() ?? "")
+                               : reason);
                     Resolve(candidate, options, stanza);
                 }
                 else if (options.proceed_with_inconsistencies)
@@ -404,8 +410,9 @@ namespace CKAN
                     else
                     {
                         // We should never add the same module twice!
-                        log.ErrorFormat("Assertion failed: Adding {0} twice in relationship resolution", module.identifier);
-                        throw new ArgumentException("Already contains module: " + module.identifier);
+                        log.ErrorFormat("Assertion failed: Already added {0}, can't add {1} ({2})",
+                                        possibleDup, module, reason);
+                        throw new ArgumentException($"Already added {possibleDup}, can't add {module} ({reason})");
                     }
                 }
                 else
