@@ -281,9 +281,7 @@ namespace CKAN
                 IReadOnlyList<CkanModule>? candidates = null;
                 try
                 {
-                    candidates = resolved.Candidates(descriptor,
-                                                     modlist.Values.Except(user_requested_mods)
-                                                                   .ToArray(),
+                    candidates = resolved.Candidates(descriptor, modlist.Values,
                                                      registry, game);
                     log.DebugFormat("Got {0} candidates for {1}",
                                     candidates.Count, descriptor);
