@@ -98,6 +98,10 @@ namespace CKAN.GUI
                 };
 
                 var registry_manager = RegistryManager.Instance(CurrentInstance, repoData);
+
+                currentUser.RaiseMessage(Properties.Resources.MainRepoScanning);
+                registry_manager.ScanUnmanagedFiles();
+
                 var registry = registry_manager.registry;
                 var stabilityTolerance = CurrentInstance.StabilityToleranceConfig;
                 var installer = new ModuleInstaller(CurrentInstance, Manager.Cache,
