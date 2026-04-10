@@ -372,6 +372,7 @@ namespace CKAN.GUI
             // Installed
             //
             this.Installed.Name = "Installed";
+            this.Installed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Installed.Frozen = true;
             this.Installed.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.Installed.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -381,6 +382,7 @@ namespace CKAN.GUI
             // AutoInstalled
             //
             this.AutoInstalled.Name = "AutoInstalled";
+            this.AutoInstalled.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AutoInstalled.Frozen = true;
             this.AutoInstalled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.AutoInstalled.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -390,6 +392,7 @@ namespace CKAN.GUI
             // UpdateCol
             //
             this.UpdateCol.Name = "UpdateCol";
+            this.UpdateCol.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UpdateCol.Frozen = true;
             this.UpdateCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.UpdateCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -399,6 +402,7 @@ namespace CKAN.GUI
             // ReplaceCol
             //
             this.ReplaceCol.Name = "ReplaceCol";
+            this.ReplaceCol.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReplaceCol.Frozen = true;
             this.ReplaceCol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
             this.ReplaceCol.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;

@@ -99,6 +99,7 @@ namespace CKAN.GUI
             this.RetryColumn.Name = "RetryColumn";
             this.RetryColumn.DataPropertyName = "Retry";
             this.RetryColumn.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.RetryColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.RetryColumn.Width = 46;
             this.RetryColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             resources.ApplyResources(this.RetryColumn, "RetryColumn");
@@ -108,6 +109,7 @@ namespace CKAN.GUI
             this.SkipColumn.Name = "SkipColumn";
             this.SkipColumn.DataPropertyName = "Skip";
             this.SkipColumn.DefaultCellStyle.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            this.SkipColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.SkipColumn.Width = 46;
             this.SkipColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             resources.ApplyResources(this.SkipColumn, "SkipColumn");
