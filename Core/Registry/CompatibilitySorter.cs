@@ -35,7 +35,7 @@ namespace CKAN
                                    IReadOnlyCollection<string>                      dlls,
                                    IDictionary<string, UnmanagedModuleVersion>      dlc)
         {
-            StabilityTolerance = stabilityTolerance;
+            StabilityTolerance = new StabilityToleranceConfig(stabilityTolerance);
             CompatibleVersions = crit;
             this.installed = installed;
             this.dlls = dlls;
