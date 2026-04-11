@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix symlinks being generated on Linux (#4519 by: HebaruSan)
 - [ConsoleUI] Only scroll ConsoleUI log messages for small popups (#4547 by: HebaruSan)
 - [Multiple] Exclude other versions of mods already in changeset from satisfying relationships (#4550 by: HebaruSan)
+- [Core] Properly recalculate compatible mods on stability tolerance change (#4552 by: HebaruSan)
 
 ### Internal
 

@@ -12,5 +12,9 @@ namespace CKAN.Extensions
                            && a.Keys.All(b.ContainsKey)
                            && b.Keys.All(k => a.ContainsKey(k)
                                               && EqualityComparer<V>.Default.Equals(a[k], b[k]));
+
+        public static int DictionaryHashcode<K, V>(this IDictionary<K, V> dict)
+            => dict.Select(kvp => (kvp.Key, kvp.Value))
+                   .ToSequenceHashCode();
     }
 }

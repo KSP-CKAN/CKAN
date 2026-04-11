@@ -1,4 +1,5 @@
 using System.IO;
+using System.Collections.Generic;
 
 using NUnit.Framework;
 
@@ -30,6 +31,7 @@ namespace Tests.Core.Configuration
                 orig.SetModStabilityTolerance("mod2", ReleaseStatus.testing);
                 orig.SetModStabilityTolerance("mod3", null);
                 var loaded = new StabilityToleranceConfig(path);
+                var hashSet = new HashSet<StabilityToleranceConfig>() { orig, loaded };
 
                 // Assert
                 Assert.AreEqual(3, changedCount);
@@ -37,6 +39,9 @@ namespace Tests.Core.Configuration
                 Assert.AreEqual(ReleaseStatus.stable,      loaded.ModStabilityTolerance("mod1"));
                 Assert.AreEqual(ReleaseStatus.testing,     loaded.ModStabilityTolerance("mod2"));
                 Assert.AreEqual(null,                      loaded.ModStabilityTolerance("mod3"));
+                Assert.AreEqual(orig, loaded);
+                Assert.IsTrue(orig == loaded);
+                Assert.AreEqual(1, hashSet.Count);
             }
         }
     }

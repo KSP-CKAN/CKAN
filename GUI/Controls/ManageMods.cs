@@ -646,7 +646,7 @@ namespace CKAN.GUI
             }
         }
 
-        private string CmdLineHelp(string cmdLine)
+        private static string CmdLineHelp(string cmdLine)
             => manager?.SteamLibrary.Games.Length > 0
                 ? SteamLibrary.IsSteamCmdLine(cmdLine)
                     ? Properties.Resources.ManageModsSteamPlayTimeYesTooltip
