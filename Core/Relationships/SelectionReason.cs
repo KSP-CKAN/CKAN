@@ -90,7 +90,7 @@ namespace CKAN
 
             public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverReplacementReason,
-                                 Parent.name);
+                                 Parent);
 
             public override string DescribeWith(IEnumerable<SelectionReason> others)
                 => string.Format(Properties.Resources.RelationshipResolverReplacementReason,
@@ -98,7 +98,7 @@ namespace CKAN
                                              Enumerable.Repeat(this, 1)
                                                        .Concat(others)
                                                        .OfType<RelationshipReason>()
-                                                       .Select(r => r.Parent.name)));
+                                                       .Select(r => r.Parent.ToString())));
         }
 
         public sealed class Suggested : RelationshipReason
@@ -110,10 +110,10 @@ namespace CKAN
 
             public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverSuggestedReason,
-                                 Parent.name);
+                                 Parent);
         }
 
-        public sealed class Depends : RelationshipReason
+        public class Depends : RelationshipReason
         {
             public Depends(CkanModule module)
                 : base(module)
@@ -122,7 +122,7 @@ namespace CKAN
 
             public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverDependsReason,
-                                 Parent.name);
+                                 Parent);
 
             public override string DescribeWith(IEnumerable<SelectionReason> others)
                 => string.Format(Properties.Resources.RelationshipResolverDependsReason,
@@ -130,7 +130,31 @@ namespace CKAN
                                              Enumerable.Repeat(this, 1)
                                                        .Concat(others)
                                                        .OfType<RelationshipReason>()
-                                                       .Select(r => r.Parent.name)));
+                                                       .Select(r => r.Parent.ToString())));
+        }
+
+        public sealed class VirtualDepends : Depends
+        {
+            public VirtualDepends(CkanModule module, string virtualIdentifier)
+                : base(module)
+            {
+                VirtualIdentifier = virtualIdentifier;
+            }
+
+            public override string ToString()
+                => string.Format(Properties.Resources.RelationshipResolverVirtualDependsReason,
+                                 Parent, VirtualIdentifier);
+
+            public override string DescribeWith(IEnumerable<SelectionReason> others)
+                => string.Format(Properties.Resources.RelationshipResolverVirtualDependsReason,
+                                 string.Join(", ",
+                                             Enumerable.Repeat(this, 1)
+                                                       .Concat(others)
+                                                       .OfType<RelationshipReason>()
+                                                       .Select(r => r.Parent.ToString())),
+                                 VirtualIdentifier);
+
+            private readonly string VirtualIdentifier;
         }
 
         public sealed class Recommended : RelationshipReason
@@ -148,7 +172,7 @@ namespace CKAN
 
             public override string ToString()
                 => string.Format(Properties.Resources.RelationshipResolverRecommendedReason,
-                                 Parent.name);
+                                 Parent);
         }
     }
 }

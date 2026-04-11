@@ -79,7 +79,12 @@ namespace CKAN
                     // We need to have this loop at this level to accumulate the list of candidates
                     foreach ((CkanModule module, ResolvedRelationship[] rrs) in resRel.resolved)
                     {
-                        if (module.BadRelationships(installing)
+                        if (installing.Any(m => m.identifier == module.identifier
+                                                && m.version != module.version))
+                        {
+                            // Skip other versions of mods being installed
+                        }
+                        else if (module.BadRelationships(installing)
                                   .Select(r => relationshipCache.GetValueOrDefault(r.Descriptor))
                                   .OfType<ResolvedRelationship>()
                                   .Select(badRR => new ResolvedRelationship[] { resRel, badRR })

@@ -350,6 +350,7 @@ Free up space on that device or change your settings to use another location.
   <data name="RelationshipResolverReplacementReason" xml:space="preserve"><value>Replacing {0}</value></data>
   <data name="RelationshipResolverSuggestedReason" xml:space="preserve"><value>Suggested by {0}</value></data>
   <data name="RelationshipResolverDependsReason" xml:space="preserve"><value>Dependency of {0}</value></data>
+  <data name="RelationshipResolverVirtualDependsReason" xml:space="preserve"><value>Dependency of {0} to satisfy {1}</value></data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve"><value>Recommended by {0}</value></data>
   <data name="ResolvedRelationshipsTreeUnsatisfied" xml:space="preserve"><value>Could not satisfy {0} while installing:
 {1}</value></data>

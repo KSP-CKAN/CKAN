@@ -1595,8 +1595,8 @@ namespace Tests.Core.Relationships
                                                            string[] goodSubstrings,
                                                            string[] badSubstrings)
         {
+            // Arrange
             var user = new NullUser();
-            var game = new KerbalSpaceProgram();
             var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
             using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
                                                                           .ToArray()))
@@ -1864,6 +1864,101 @@ namespace Tests.Core.Relationships
                     var sut = new RelationshipResolver(toInstall, Array.Empty<CkanModule>(), opts,
                                                        registry, inst.KSP.Game, inst.KSP.VersionCriteria());
                 });
+            }
+        }
+
+        [TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""JNSQ"",
+                          ""version"":    ""0.8.6"",
+                          ""provides"":   [ ""Kronometer"" ]
+                      }",
+                      @"{
+                          ""identifier"": ""JNSQ"",
+                          ""version"":    ""0.10.2"",
+                          ""depends"":    [ { ""name"": ""Kronometer"" } ]
+                      }",
+                      @"{
+                          ""identifier"": ""Kronometer"",
+                          ""version"":    ""v1.12.0.2""
+                      }",
+                  },
+                  new string[]  { "JNSQ" }),
+         TestCase(new string[]
+                  {
+                      @"{
+                          ""identifier"": ""JNSQ"",
+                          ""version"":    ""0.8.6"",
+                          ""provides"":   [ ""Kronometer"" ]
+                      }",
+                      @"{
+                          ""identifier"": ""JNSQ"",
+                          ""version"":    ""0.10.2"",
+                          ""depends"":    [ { ""name"": ""Kronometer"" } ]
+                      }",
+                      @"{
+                          ""identifier"": ""Kronometer"",
+                          ""version"":    ""v1.12.0.2""
+                      }",
+                      @"{
+                          ""identifier"": ""JNSQ-RibbonPack"",
+                          ""version"":    ""0.10.2"",
+                          ""depends"":    [ { ""name"": ""JNSQ"" } ]
+                      }",
+                  },
+                  new string[] { "JNSQ-RibbonPack" }),
+        ]
+        public void Constructor_OldSelfDependsLoop_DoesNotThrow(string[] availableModules,
+                                                                string[] installIdents)
+        {
+            // Arrange
+            var user = new NullUser();
+            var crit = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            using (var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults)
+                                                                          .ToArray()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act / Assert
+                Assert.DoesNotThrow(() =>
+                {
+                    var sut = new RelationshipResolver(
+                        installIdents.Select(ident => registry.LatestAvailable(ident, stabilityTolerance, crit))
+                                     .OfType<CkanModule>(),
+                        null,
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                        registry, game, crit);
+                });
+            }
+        }
+
+        [Test]
+        public void Constructor_DuplicateInChangeset_Throws()
+        {
+            // Arrange
+            var user   = new NullUser();
+            var crit   = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            var modGen = new RandomModuleGenerator(new Random());
+            var mod    = modGen.GenerateRandomModule();
+            var other  = modGen.GenerateRandomModule(identifier: mod.identifier);
+            var inst   = new CkanModule[] { mod, other };
+            using (var repo     = new TemporaryRepository(mod.ToJson(), other.ToJson()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act / Assert
+                var exc = Assert.Throws<ArgumentException>(() =>
+                {
+                    var sut = new RelationshipResolver(
+                        inst, null,
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                        registry, game, crit);
+                });
+                Assert.AreEqual($"Already added {mod}, can't add {other} (Requested by user)",
+                                exc?.Message);
             }
         }
 
