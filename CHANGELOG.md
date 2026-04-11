@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Only scroll ConsoleUI log messages for small popups (#4547 by: HebaruSan)
 - [Multiple] Exclude other versions of mods already in changeset from satisfying relationships (#4550 by: HebaruSan)
 - [Core] Properly recalculate compatible mods on stability tolerance change (#4552 by: HebaruSan)
+- [GUI] Don't copy Steam command lines into cloned instances (#4553 by: HebaruSan)
 
 ### Internal
 
