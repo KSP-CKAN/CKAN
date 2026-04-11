@@ -1934,6 +1934,34 @@ namespace Tests.Core.Relationships
             }
         }
 
+        [Test]
+        public void Constructor_DuplicateInChangeset_Throws()
+        {
+            // Arrange
+            var user   = new NullUser();
+            var crit   = new GameVersionCriteria(new GameVersion(1, 12, 5));
+            var modGen = new RandomModuleGenerator(new Random());
+            var mod    = modGen.GenerateRandomModule();
+            var other  = modGen.GenerateRandomModule(identifier: mod.identifier);
+            var inst   = new CkanModule[] { mod, other };
+            using (var repo     = new TemporaryRepository(mod.ToJson(), other.ToJson()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act / Assert
+                var exc = Assert.Throws<ArgumentException>(() =>
+                {
+                    var sut = new RelationshipResolver(
+                        inst, null,
+                        RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                        registry, game, crit);
+                });
+                Assert.AreEqual($"Already added {mod}, can't add {other} (Requested by user)",
+                                exc?.Message);
+            }
+        }
+
         public static string MergeWithDefaults(string json)
         {
             var incoming = JObject.Parse(json);
