@@ -11,6 +11,7 @@ using System.Runtime.Versioning;
 using Autofac;
 
 using CKAN.Games;
+using CKAN.IO;
 
 namespace CKAN.GUI
 {
@@ -167,14 +168,18 @@ namespace CKAN.GUI
                 {
                     if (instanceToClone.Valid)
                     {
-                        manager.CloneInstance(instanceToClone, newName, newPath,
-                                              OptionalPathsListView.Items
-                                                                   .OfType<ListViewItem>()
-                                                                   .Where(lvi => !lvi.Checked)
-                                                                   .Select(lvi => lvi.Tag)
-                                                                   .OfType<string>()
-                                                                   .ToArray(),
-                                              checkBoxShareStock.Checked);
+                        var cloned = manager.CloneInstance(instanceToClone, newName, newPath,
+                                                           OptionalPathsListView.Items
+                                                                                .OfType<ListViewItem>()
+                                                                                .Where(lvi => !lvi.Checked)
+                                                                                .Select(lvi => lvi.Tag)
+                                                                                .OfType<string>()
+                                                                                .ToArray(),
+                                                           checkBoxShareStock.Checked);
+                        var newGuiConfig = GUIConfiguration.LoadOrCreateConfiguration(instanceToClone, manager.SteamLibrary);
+                        // Don't clone Steam command lines
+                        newGuiConfig.CommandLines.RemoveAll(SteamLibrary.IsSteamCmdLine);
+                        newGuiConfig.Save(cloned);
                     }
                     else
                     {

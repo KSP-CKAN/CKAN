@@ -266,11 +266,11 @@ namespace CKAN
         /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
         /// <exception cref="PathErrorKraken">Thrown by CopyDirectory() if the target folder already exists and is not empty.</exception>
         /// <exception cref="IOException">Thrown by CopyDirectory() if something goes wrong during the process.</exception>
-        public void CloneInstance(GameInstance existingInstance,
-                                  string       newName,
-                                  string       newPath,
-                                  string[]     leaveEmpty,
-                                  bool         shareStockFolders = false)
+        public GameInstance CloneInstance(GameInstance existingInstance,
+                                          string       newName,
+                                          string       newPath,
+                                          string[]     leaveEmpty,
+                                          bool         shareStockFolders = false)
         {
             if (HasInstance(newName))
             {
@@ -297,14 +297,14 @@ namespace CKAN
 
             log.Debug("Copying directory.");
             Utilities.CopyDirectory(existingInstance.GameDir, newPath,
-                                    new string[] { "CKAN/registry.locked", "CKAN/playtime.json" },
+                                    new string[] { "CKAN/registry.locked", "CKAN/playtime.json", "CKAN/GUIConfig.json" },
                                     shareStockFolders ? existingInstance.Game.StockFolders
                                                       : Array.Empty<string>(),
                                     leaveEmpty,
                                     new string[] { "CKAN" });
 
             // Add the new instance to the config
-            AddInstance(new GameInstance(existingInstance.Game, newPath, newName, User));
+            return AddInstance(new GameInstance(existingInstance.Game, newPath, newName, User));
         }
 
         /// <summary>
