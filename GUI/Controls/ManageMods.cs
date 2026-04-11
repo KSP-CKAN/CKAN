@@ -261,8 +261,10 @@ namespace CKAN.GUI
                                            GameInstance inst,
                                            Registry     registry)
         {
-            var row = MainModList?.ReapplyLabels(guiMod, conflicted, inst, registry);
-            if (row != null)
+            if (MainModList?.ReapplyLabels(guiMod, conflicted, inst, registry)
+                is DataGridViewRow row
+                && ModGrid.Rows.Contains(row)
+                && row.Index >= 0)
             {
                 foreach (DataGridViewCell cell in row.Cells)
                 {
