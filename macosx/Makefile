@@ -26,8 +26,6 @@ $(DMG): app
 	genisoimage -V $(NAME) -D -R -apple -no-pad -o $@ $(DMGROOT)
 
 app: $(BUILDDIR_x86_64_DEST) $(BUILDDIR_arm64_DEST) $(SCRIPTDEST) $(ICNSDEST) $(PLISTDEST)
-	rdfind -minsize 10240 -makeresultsfile false -makesymlinks true $(BUILDDIR_x86_64_DEST) $(BUILDDIR_arm64_DEST)
-	symlinks -rc $(BUILDDIR_arm64_DEST)
 
 $(BUILDDIR_x86_64_DEST): $(BUILDDIR_x86_64_SRC)
 	mkdir -p $(shell dirname $@)
