@@ -126,6 +126,13 @@ namespace CKAN
                                                         destDirPath));
             }
 
+            if (new DirectoryInfo(sourceDirPath).AncestorPathOf(new DirectoryInfo(destDirPath)))
+            {
+                throw new PathErrorKraken(destDirPath,
+                                          string.Format(Properties.Resources.CannotCloneIntoSelf,
+                                                        Platform.FormatPath(sourceDirPath)));
+            }
+
             // Get the files in the directory and copy them to the new location
             foreach (var file in sourceDir.GetFiles())
             {
