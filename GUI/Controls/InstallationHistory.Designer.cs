@@ -69,7 +69,7 @@ namespace CKAN.GUI
             //
             // InstallButton
             //
-            //this.InstallButton.Image = global::CKAN.GUI.Properties.Resources.install;
+            this.InstallButton.Image = global::CKAN.GUI.EmbeddedImages.apply;
             this.InstallButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.InstallButton.Name = "InstallButton";
             this.InstallButton.Size = new System.Drawing.Size(114, 56);
