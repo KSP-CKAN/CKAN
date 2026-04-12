@@ -208,6 +208,21 @@ namespace Tests.Core
             }
         }
 
+        [Test]
+        public void CloneInstance_TargetInsideSource_Throws()
+        {
+            // Arrange
+            var inst = tidy!.KSP;
+            string instanceName = "newInstance";
+            var target = Path.Combine(inst.GameDir, "subclone");
+
+            // Act / Assert
+            var exc = Assert.Throws<PathErrorKraken>(() =>
+            {
+                manager!.CloneInstance(inst, instanceName, target);
+            });
+        }
+
         // FakeInstance
 
         [Test]

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
@@ -16,6 +17,11 @@ namespace CKAN.Extensions
         /// <returns>The DriveInfo associated with this directory, if any, else null</returns>
         public static DriveInfo? GetDrive(this DirectoryInfo dir)
             => Utilities.DefaultIfThrows(() => new DriveInfo(dir.FullName));
+
+        public static bool AncestorPathOf(this DirectoryInfo outer, DirectoryInfo inner)
+            => inner.TraverseNodes(di => di.Parent)
+                    .Select(di => di.FullName)
+                    .Any(di => outer.FullName.Equals(di, Platform.PathComparison));
 
         /// <summary>
         /// File.WriteAllText replacement that doesn't sometimes write all NULs instead on Windows.

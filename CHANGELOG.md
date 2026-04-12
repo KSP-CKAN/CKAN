@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Properly recalculate compatible mods on stability tolerance change (#4552 by: HebaruSan)
 - [GUI] Don't copy Steam command lines into cloned instances (#4553 by: HebaruSan)
 - [GUI] Apply installed module constraints to changeset (#4555 by: HebaruSan)
+- [Core] Try to stop users from cloning instances into themselves (#4556 by: HebaruSan)
 
 ### Internal
 
