@@ -198,7 +198,11 @@ namespace CKAN.GUI
                 {
                     LatestCompatibleMod = registry.LatestAvailable(Identifier,
                                                                    stabilityTolerance,
-                                                                   instance.VersionCriteria());
+                                                                   instance.VersionCriteria(),
+                                                                   null,
+                                                                   registry.InstalledModules
+                                                                           .Select(im => im.Module)
+                                                                           .ToArray());
                     latest_version = LatestCompatibleMod?.version;
                 }
                 catch (ModuleNotFoundKraken)
@@ -217,7 +221,10 @@ namespace CKAN.GUI
 
             try
             {
-                LatestAvailableMod = registry.LatestAvailable(Identifier, stabilityTolerance, null);
+                LatestAvailableMod = registry.LatestAvailable(Identifier, stabilityTolerance, null, null,
+                                                              registry.InstalledModules
+                                                                      .Select(im => im.Module)
+                                                                      .ToArray());
             }
             catch
             { }
