@@ -281,7 +281,10 @@ namespace CKAN
                 IReadOnlyList<CkanModule>? candidates = null;
                 try
                 {
-                    candidates = resolved.Candidates(descriptor, modlist.Values,
+                    candidates = resolved.Candidates(descriptor,
+                                                     options.get_recommenders
+                                                         ? Dependencies().ToArray()
+                                                         : modlist.Values,
                                                      registry, game);
                     log.DebugFormat("Got {0} candidates for {1}",
                                     candidates.Count, descriptor);
@@ -338,7 +341,10 @@ namespace CKAN
                 // Finally, check our candidate against everything which might object
                 // to it being installed; that's all the mods which are fixed in our
                 // list thus far, as well as everything on the system.
-                var fixed_mods = modlist.Values.Concat(installed_modules).ToHashSet();
+                var fixed_mods = (options.get_recommenders ? Dependencies()
+                                                           : modlist.Values)
+                                     .Concat(installed_modules)
+                                     .ToHashSet();
 
                 var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
                 if (conflicting_mod == null)

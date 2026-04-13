@@ -27,6 +27,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Don't copy Steam command lines into cloned instances (#4553 by: HebaruSan)
 - [GUI] Apply installed module constraints to changeset (#4555 by: HebaruSan)
 - [Core] Try to stop users from cloning instances into themselves (#4556 by: HebaruSan)
+- [Multiple] Fix missing conflicting recommendations (#4561 by: HebaruSan)
 
 ### Internal
 

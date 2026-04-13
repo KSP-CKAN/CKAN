@@ -1004,6 +1004,7 @@ namespace Tests.Data
             GameVersion?                  ksp_version = null,
             List<RelationshipDescriptor>? conflicts   = null,
             List<RelationshipDescriptor>? depends     = null,
+            List<RelationshipDescriptor>? recommends  = null,
             List<RelationshipDescriptor>? suggests    = null,
             List<string>?                 provides    = null,
             string?                       identifier  = null,
@@ -1021,6 +1022,7 @@ namespace Tests.Data
                 ksp_version = ksp_version,
                 conflicts   = conflicts,
                 depends     = depends,
+                recommends  = recommends,
                 suggests    = suggests,
                 provides    = provides,
             };

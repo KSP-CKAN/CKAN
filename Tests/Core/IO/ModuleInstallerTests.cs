@@ -974,6 +974,55 @@ namespace Tests.Core.IO
             }
         }
 
+        [Test]
+        public void FindRecommendations_WithConflictingRecommendations_FindsAll()
+        {
+            // Arrange
+            var user            = new NullUser();
+            var modGen          = new RandomModuleGenerator(new Random());
+            var recommendation1 = modGen.GenerateRandomModule();
+            var recommendation2 = modGen.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>()
+            {
+                new ModuleRelationshipDescriptor() { name = recommendation1.identifier },
+            });
+            var recommendation3 = modGen.GenerateRandomModule(conflicts: new List<RelationshipDescriptor>()
+            {
+                new ModuleRelationshipDescriptor() { name = recommendation1.identifier },
+                new ModuleRelationshipDescriptor() { name = recommendation2.identifier },
+            });
+            var recommender = modGen.GenerateRandomModule(recommends: new List<RelationshipDescriptor>()
+            {
+                new ModuleRelationshipDescriptor() { name = recommendation3.identifier },
+                new ModuleRelationshipDescriptor() { name = recommendation1.identifier },
+                new ModuleRelationshipDescriptor() { name = recommendation2.identifier },
+            });
+            using (var inst = new DisposableKSP())
+            using (var repo = new TemporaryRepository(recommendation1.ToJson(),
+                                                      recommendation2.ToJson(),
+                                                      recommendation3.ToJson(),
+                                                      recommender.ToJson()))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo.repo);
+
+                // Act
+                var result = ModuleInstaller.FindRecommendations(inst.KSP,
+                                                                 new CkanModule[] { recommender },
+                                                                 new CkanModule[] { recommender },
+                                                                 new CkanModule[] { },
+                                                                 new CkanModule[] { },
+                                                                 registry,
+                                                                 out var recs,
+                                                                 out var sugs,
+                                                                 out var sups);
+
+                // Assert
+                Assert.IsTrue(result);
+                CollectionAssert.AreEquivalent(new CkanModule[] { recommendation1, recommendation2, recommendation3 },
+                                               recs.Keys);
+            }
+        }
+
         [TestCase(new string[]
                   {
                       @"{
