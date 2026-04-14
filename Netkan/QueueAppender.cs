@@ -14,7 +14,8 @@ namespace CKAN.NetKAN
         protected override void Append(LoggingEvent evt)
         {
             // Skip duplicate messages for better multi-kref handling
-            if (!Warnings.Contains(evt.RenderedMessage))
+            if (evt.RenderedMessage != null
+                && !Warnings.Contains(evt.RenderedMessage))
             {
                 Warnings.Add(evt.RenderedMessage);
             }

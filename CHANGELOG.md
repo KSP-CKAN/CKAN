@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Docs] Update download count image for Minkowski² (#4474 by: Clayell; reviewed: HebaruSan)
 - [Netkan] Fix `x_netkan_epoch` not applied before unreliable server check (#4477 by: HebaruSan)
 - [Netkan] Gitea kref (#4494, #4498 by: HebaruSan)
+- [Build] Bump log4net from 2.0.15 to 3.3.0 (#4562 by: dependabot[bot])
 
 ## v1.36.2 (Politas)
 
