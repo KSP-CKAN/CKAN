@@ -85,7 +85,7 @@ jobs:
       - name: Build CKAN.app
         run: |
           chmod a+x _build/out/Build/*/bin/net8.0/Build _build/out/Build/*/obj/*/net8.0/apphost
-          sudo apt-get install -y libplist-utils rdfind symlinks genisoimage
+          sudo apt-get install -y libplist-utils genisoimage
           ./build.sh osx-app --configuration=${{ inputs.configuration }} --exclusive
       - name: Ad hoc codesign x86_64 binary
         uses: indygreg/apple-code-sign-action@v1
