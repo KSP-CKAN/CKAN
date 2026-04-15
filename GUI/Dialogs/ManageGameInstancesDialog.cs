@@ -33,6 +33,9 @@ namespace CKAN.GUI
             manager = mgr;
             this.user = user;
             InitializeComponent();
+            InstanceListContextMenuStrip.ScaleFonts();
+            AddNewMenu.ScaleFonts();
+            this.ScaleFonts();
             DialogResult = DialogResult.Cancel;
 
             instanceDialog.Filter = GameFolderFilter();

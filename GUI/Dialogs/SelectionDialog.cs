@@ -17,6 +17,7 @@ namespace CKAN.GUI
         public SelectionDialog()
         {
             InitializeComponent();
+            this.ScaleFonts();
             currentSelected = 0;
         }
 

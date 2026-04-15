@@ -36,6 +36,7 @@ namespace CKAN.GUI
             this.user    = user;
 
             InitializeComponent();
+            this.ScaleFonts();
 
             ToolTip.SetToolTip(checkBoxShareStock, Properties.Resources.CloneGameInstanceToolTipShareStock);
 

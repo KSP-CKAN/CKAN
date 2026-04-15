@@ -22,6 +22,8 @@ namespace CKAN.GUI
         public Changeset()
         {
             InitializeComponent();
+            ChangesGrid.ScaleFonts();
+            CloseTheGameLabel.ScaleFonts();
             // Reduce the grid's flickering
             ChangesGrid.GetType()
                        .GetProperty("DoubleBuffered",

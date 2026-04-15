@@ -18,6 +18,7 @@ namespace CKAN.GUI
         {
             this.repos = repos;
             InitializeComponent();
+            this.ScaleFonts();
         }
 
         public Repository Selection

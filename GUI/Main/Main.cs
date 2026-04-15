@@ -106,6 +106,12 @@ namespace CKAN.GUI
             Application.AddMessageFilter(this);
 
             InitializeComponent();
+            MainMenu.ScaleFonts();
+            StatusLabel.ScaleFonts();
+            StatusInstanceLabel.ScaleFonts();
+            StatusProgress.ScaleFonts();
+            minimizedContextMenuStrip.ScaleFonts();
+            this.ScaleFonts();
             // React when the user clicks a tag or filter link in mod info
             ModInfo.OnChangeFilter += ManageMods.Filter;
             ModInfo.ModuleDoubleClicked += ManageMods.ResetFilterAndSelectModOnList;

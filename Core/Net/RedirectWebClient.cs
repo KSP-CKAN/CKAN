@@ -11,6 +11,7 @@ namespace CKAN
         public RedirectWebClient(string userAgent)
         {
             Headers.Add("User-Agent", userAgent);
+            Encoding = System.Text.Encoding.UTF8;
         }
 
         protected override WebRequest GetWebRequest(Uri address)

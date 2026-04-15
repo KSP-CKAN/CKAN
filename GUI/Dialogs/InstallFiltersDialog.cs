@@ -20,6 +20,7 @@ namespace CKAN.GUI
         public InstallFiltersDialog(IConfiguration globalConfig, GameInstance instance)
         {
             InitializeComponent();
+            this.ScaleFonts();
             this.globalConfig = globalConfig;
             this.instance     = instance;
             presets           = instance.Game.InstallFilterPresets;

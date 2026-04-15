@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Don't leave launch shell waiting for CKAN to close on Linux (#4517 by: nuew; reviewed: HebaruSan)
 - [GUI] Sort Contents tab alphanumerically, folders first (#4529 by: HebaruSan)
 - [GUI] Auto-size new repo popup to fit rows in list (#4543 by: HebaruSan)
+- [GUI] DPI-based font scaling for Mono (#4566 by: HebaruSan)
 
 ### Bugfixes
 

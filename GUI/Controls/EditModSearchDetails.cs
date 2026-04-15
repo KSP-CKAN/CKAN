@@ -23,6 +23,7 @@ namespace CKAN.GUI
         public EditModSearchDetails()
         {
             InitializeComponent();
+            this.ScaleFonts();
             // Float over other controls
             SetTopLevel(true);
         }

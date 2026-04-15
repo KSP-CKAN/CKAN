@@ -28,6 +28,7 @@ namespace CKAN.GUI
         {
             _inst = inst;
             InitializeComponent();
+            this.ScaleFonts();
 
             if (centerScreen)
             {

@@ -18,6 +18,10 @@ namespace CKAN.GUI
         public PreferredHostsDialog(IConfiguration config, Registry registry)
         {
             InitializeComponent();
+            ExplanationLabel.ScaleFonts();
+            PreferredHostsLabel.ScaleFonts();
+            AvailableHostsLabel.ScaleFonts();
+            this.ScaleFonts();
             this.config = config;
             allHosts    = registry.GetAllHosts().ToArray();
             placeholder = Properties.Resources.PreferredHostsPlaceholder;

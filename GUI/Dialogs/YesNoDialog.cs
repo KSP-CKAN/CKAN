@@ -18,6 +18,7 @@ namespace CKAN.GUI
         public YesNoDialog()
         {
             InitializeComponent();
+            this.ScaleFonts();
             defaultYes = YesButton.Text;
             defaultNo  = NoButton.Text;
         }

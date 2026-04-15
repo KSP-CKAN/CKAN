@@ -18,6 +18,8 @@ namespace CKAN.GUI
         public EditLabelsDialog(IUser user, GameInstanceManager manager, ModuleLabelList labels)
         {
             InitializeComponent();
+            LabelSelectionTree.ScaleFonts();
+            this.ScaleFonts();
             this.user    = user;
             this.labels  = labels;
             InstanceNameComboBox.DataSource = new string[] { "" }

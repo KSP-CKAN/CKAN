@@ -17,6 +17,7 @@ namespace CKAN.GUI
         public InstallationHistory()
         {
             InitializeComponent();
+            Toolbar.ScaleFonts();
         }
 
         public void LoadHistory(GameInstance          inst,

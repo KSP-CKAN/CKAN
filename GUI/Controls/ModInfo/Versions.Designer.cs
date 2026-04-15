@@ -148,7 +148,7 @@ namespace CKAN.GUI
             // InstalledLabel
             //
             this.InstalledLabel.AutoSize = true;
-            this.InstalledLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8F, System.Drawing.FontStyle.Bold);
+            this.InstalledLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
             this.InstalledLabel.BackColor = System.Drawing.SystemColors.Window;
             this.InstalledLabel.ForeColor = System.Drawing.SystemColors.WindowText;
             this.InstalledLabel.Location = new System.Drawing.Point(0, 55);
@@ -157,13 +157,12 @@ namespace CKAN.GUI
             this.InstalledLabel.Name = "InstalledLabel";
             this.InstalledLabel.Size = new System.Drawing.Size(131, 13);
             this.InstalledLabel.TabIndex = 7;
-            this.InstalledLabel.Visible = false;
             resources.ApplyResources(this.InstalledLabel, "InstalledLabel");
             //
             // PrereleaseLabel
             //
             this.PrereleaseLabel.AutoSize = true;
-            this.PrereleaseLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.Name, 8F, System.Drawing.FontStyle.Italic);
+            this.PrereleaseLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Italic);
             this.PrereleaseLabel.BackColor = System.Drawing.Color.Gold;
             this.PrereleaseLabel.ForeColor = System.Drawing.SystemColors.WindowText;
             this.PrereleaseLabel.Location = new System.Drawing.Point(0, 74);
@@ -172,7 +171,6 @@ namespace CKAN.GUI
             this.PrereleaseLabel.Name = "PrereleaseLabel";
             this.PrereleaseLabel.Size = new System.Drawing.Size(131, 13);
             this.PrereleaseLabel.TabIndex = 7;
-            this.PrereleaseLabel.Visible = false;
             resources.ApplyResources(this.PrereleaseLabel, "PrereleaseLabel");
             //
             // StabilityToleranceLabel
