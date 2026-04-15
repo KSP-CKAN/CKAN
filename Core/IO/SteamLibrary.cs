@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using ValveKeyValue;
@@ -13,6 +14,7 @@ namespace CKAN.IO
 {
     public class SteamLibrary
     {
+        [ExcludeFromCodeCoverage]
         public SteamLibrary()
             : this(SteamPaths.FirstOrDefault(p => !string.IsNullOrEmpty(p)
                                                   && Directory.Exists(p)
@@ -85,15 +87,20 @@ namespace CKAN.IO
 
         private static IEnumerable<GameBase> LibraryPathGames(KVSerializer acfParser,
                                                               string       appPath)
-            => Directory.EnumerateFiles(appPath, "*.acf")
-                        .SelectWithCatch(acfFile => DeserializeAll<SteamGame>(acfParser, File.OpenRead(acfFile))
+            => Utilities.DefaultIfThrows(() => Directory.EnumerateFiles(appPath, "*.acf"),
+                                         exc => {
+                                             log.Warn($"Failed to enumerate files for {appPath}", exc);
+                                             return null;
+                                         })
+                        ?.SelectWithCatch(acfFile => DeserializeAll<SteamGame>(acfParser, File.OpenRead(acfFile))
                                                         .NormalizeDir(Path.Combine(appPath, "common")),
                                          (acfFile, exc) =>
                                          {
                                              log.Warn($"Failed to parse {acfFile}:", exc);
                                              return default;
                                          })
-                        .OfType<GameBase>();
+                         .OfType<GameBase>()
+                        ?? Enumerable.Empty<GameBase>();
 
         private static IEnumerable<GameBase> ShortcutsFileGames(KVSerializer vdfParser,
                                                                 string       path)
@@ -121,6 +128,7 @@ namespace CKAN.IO
         /// <returns>
         ///     The application data folder, e.g. <code>/Users/USER/Library/Application Support</code>
         /// </returns>
+        [ExcludeFromCodeCoverage]
         private static string GetMacOSApplicationDataFolder()
         {
             Debug.Assert(Platform.IsMac);
@@ -136,6 +144,7 @@ namespace CKAN.IO
 
         private const  string   registryKey   = @"HKEY_CURRENT_USER\Software\Valve\Steam";
         private const  string   registryValue = @"SteamPath";
+        [ExcludeFromCodeCoverage]
         private static string[] SteamPaths
             => Platform.IsWindows
                // First check the registry

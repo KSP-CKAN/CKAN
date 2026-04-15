@@ -44,11 +44,14 @@ namespace Tests.Core.IO
                                                    "Test Instance",
                                                },
                                                lib.Games.Select(g => g.Name));
+                CollectionAssert.AreEquivalent(new Uri[] { new Uri("steam://rungameid/220200") },
+                                               lib.GameAppURLs(new DirectoryInfo(Path.Combine(dir, "SteamApps", "common",
+                                                                                              "Kerbal Space Program"))));
             }
         }
 
         [Test]
-        public void Constructor_WithCorruptedLibrary_Works()
+        public void Constructor_WithEmptyAndNullManifestsAndBadNonSteamGame_Works()
         {
             // Arrange
             using (var nonSteamGameDir = TemporaryDirectory.CopiedFromDir(TestData.good_ksp_dir()))
@@ -91,6 +94,46 @@ namespace Tests.Core.IO
                                                        "Empty StartDir",
                                                    },
                                                    lib.Games.Select(g => g.Name));
+                }
+            }
+        }
+
+        [Test]
+        public void Constructor_WithBadLibraryFolderAndShortcuts_Works()
+        {
+            // Arrange
+            using (var dir = new TemporarySteamDirectory(
+                                 new (string acfFileName, int appId, string appName)[] { },
+                                 new (string name, string absPath)[] { }))
+            {
+                File.WriteAllBytes(Path.Combine(dir, "config", "libraryfolders.vdf"),
+                                   Enumerable.Repeat((byte)0, 128).ToArray());
+
+                File.WriteAllBytes(Path.Combine(dir, "userdata", "1", "config", "shortcuts.vdf"),
+                                   Enumerable.Repeat((byte)0, 128).ToArray());
+
+                // Act / Assert
+                using (var noLog = new TemporaryLogSuppressor())
+                {
+                    var lib = new SteamLibrary(dir);
+                }
+            }
+        }
+
+        [Test]
+        public void Constructor_WithMissingLibraryFolderConfig_Works()
+        {
+            // Arrange
+            using (var dir = new TemporarySteamDirectory(
+                                 new (string acfFileName, int appId, string appName)[] { },
+                                 new (string name, string absPath)[] { }))
+            {
+                File.Delete(Path.Combine(dir, "config", "libraryfolders.vdf"));
+
+                // Act / Assert
+                using (var noLog = new TemporaryLogSuppressor())
+                {
+                    var lib = new SteamLibrary(dir);
                 }
             }
         }
