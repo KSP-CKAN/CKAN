@@ -17,6 +17,11 @@ namespace CKAN
 {
     public class ResumingWebClient : WebClient
     {
+        public ResumingWebClient()
+        {
+            Encoding = System.Text.Encoding.UTF8;
+        }
+
         /// <summary>
         /// A version of DownloadFileAsync that appends to its destination
         /// file if it already exists and skips downloading the bytes

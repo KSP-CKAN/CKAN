@@ -32,6 +32,7 @@ namespace CKAN
             this.userAgent = userAgent;
             this.timeout   = timeout;
             this.mimeType  = mimeType;
+            Encoding       = System.Text.Encoding.UTF8;
         }
 
         protected override WebRequest GetWebRequest(Uri address)
