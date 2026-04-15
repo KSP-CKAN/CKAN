@@ -14,6 +14,7 @@ namespace CKAN.GUI
         public PluginsDialog()
         {
             InitializeComponent();
+            this.ScaleFonts();
         }
 
         private static PluginController? pluginController => Main.Instance?.pluginController;

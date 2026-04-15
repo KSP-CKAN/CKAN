@@ -51,6 +51,7 @@ namespace CKAN.GUI
             this.CachePathSaveButton = new System.Windows.Forms.Button();
             this.CachePathCancelButton = new System.Windows.Forms.Button();
             this.CacheSummary = new System.Windows.Forms.Label();
+            this.CacheLimitPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.CacheLimitPreLabel = new System.Windows.Forms.Label();
             this.CacheLimit = new System.Windows.Forms.TextBox();
             this.CacheLimitPostLabel = new System.Windows.Forms.Label();
@@ -352,9 +353,7 @@ namespace CKAN.GUI
             this.CacheGroupBox.Controls.Add(this.CachePathSaveButton);
             this.CacheGroupBox.Controls.Add(this.CachePathCancelButton);
             this.CacheGroupBox.Controls.Add(this.CacheSummary);
-            this.CacheGroupBox.Controls.Add(this.CacheLimitPreLabel);
-            this.CacheGroupBox.Controls.Add(this.CacheLimit);
-            this.CacheGroupBox.Controls.Add(this.CacheLimitPostLabel);
+            this.CacheGroupBox.Controls.Add(this.CacheLimitPanel);
             this.CacheGroupBox.Controls.Add(this.ChangeCacheButton);
             this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
             this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
@@ -432,6 +431,17 @@ namespace CKAN.GUI
             this.CacheSummary.TabIndex = 24;
             resources.ApplyResources(this.CacheSummary, "CacheSummary");
             //
+            // CacheLimitPanel
+            //
+            this.CacheLimitPanel.AutoSize = true;
+            this.CacheLimitPanel.Controls.Add(this.CacheLimitPreLabel);
+            this.CacheLimitPanel.Controls.Add(this.CacheLimit);
+            this.CacheLimitPanel.Controls.Add(this.CacheLimitPostLabel);
+            this.CacheLimitPanel.Location = new System.Drawing.Point(9, 65);
+            this.CacheLimitPanel.Name = "CacheLimitPanel";
+            this.CacheLimitPanel.Size = new System.Drawing.Size(500, 20);
+            this.CacheLimitPanel.TabIndex = 25;
+            //
             // CacheLimitPreLabel
             //
             this.CacheLimitPreLabel.AutoSize = true;
@@ -466,7 +476,7 @@ namespace CKAN.GUI
             // ChangeCacheButton
             //
             this.ChangeCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ChangeCacheButton.Location = new System.Drawing.Point(12, 89);
+            this.ChangeCacheButton.Location = new System.Drawing.Point(12, 100);
             this.ChangeCacheButton.Name = "ChangeCacheButton";
             this.ChangeCacheButton.Size = new System.Drawing.Size(75, 25);
             this.ChangeCacheButton.TabIndex = 28;
@@ -476,7 +486,7 @@ namespace CKAN.GUI
             // ClearCacheButton
             //
             this.ClearCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ClearCacheButton.Location = new System.Drawing.Point(93, 89);
+            this.ClearCacheButton.Location = new System.Drawing.Point(93, 100);
             this.ClearCacheButton.Menu = this.ClearCacheMenu;
             this.ClearCacheButton.Name = "ClearCacheButton";
             this.ClearCacheButton.Size = new System.Drawing.Size(75, 25);
@@ -508,7 +518,7 @@ namespace CKAN.GUI
             // ResetCacheButton
             //
             this.ResetCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ResetCacheButton.Location = new System.Drawing.Point(174, 89);
+            this.ResetCacheButton.Location = new System.Drawing.Point(174, 100);
             this.ResetCacheButton.Name = "ResetCacheButton";
             this.ResetCacheButton.Size = new System.Drawing.Size(75, 25);
             this.ResetCacheButton.TabIndex = 30;
@@ -518,7 +528,7 @@ namespace CKAN.GUI
             // OpenCacheButton
             //
             this.OpenCacheButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.OpenCacheButton.Location = new System.Drawing.Point(255, 89);
+            this.OpenCacheButton.Location = new System.Drawing.Point(255, 100);
             this.OpenCacheButton.Name = "OpenCacheButton";
             this.OpenCacheButton.Size = new System.Drawing.Size(75, 25);
             this.OpenCacheButton.TabIndex = 31;
@@ -778,6 +788,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.Button CachePathSaveButton;
         private System.Windows.Forms.Button CachePathCancelButton;
         private System.Windows.Forms.Label CacheSummary;
+        private System.Windows.Forms.FlowLayoutPanel CacheLimitPanel;
         private System.Windows.Forms.Label CacheLimitPreLabel;
         private System.Windows.Forms.TextBox CacheLimit;
         private System.Windows.Forms.Label CacheLimitPostLabel;

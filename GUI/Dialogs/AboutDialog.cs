@@ -13,6 +13,8 @@ namespace CKAN.GUI
         public AboutDialog()
         {
             InitializeComponent();
+            projectNameLabel.ScaleFonts();
+            this.ScaleFonts();
             ApplyFormCompatibilityFixes();
             versionLabel.Text = string.Format(Properties.Resources.AboutDialogLabel2Text, Meta.GetVersion());
         }

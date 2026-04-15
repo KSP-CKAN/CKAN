@@ -20,6 +20,7 @@ namespace CKAN.GUI
         public Wait()
         {
             InitializeComponent();
+            DialogProgressBar.ScaleFonts();
             emptyHeight = VerticalSplitter.SplitterDistance;
             bgWorker.DoWork             += DoWork;
             bgWorker.RunWorkerCompleted += RunWorkerCompleted;

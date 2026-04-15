@@ -218,6 +218,7 @@ namespace CKAN.GUI
                 menu.Renderer = new FlatToolStripRenderer();
             }
             menu.Items.Add(copyLink);
+            menu.ScaleFonts();
             menu.Show(where ?? Cursor.Position);
         }
 

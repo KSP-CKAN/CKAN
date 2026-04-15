@@ -56,6 +56,8 @@ namespace CKAN.GUI
             Func<object, object, bool> rowsLinked)
         {
             InitializeComponent();
+            GridContextMenuStrip.ScaleFonts();
+            this.ScaleFonts();
             if (Platform.IsMono)
             {
                 GridContextMenuStrip.Renderer = new FlatToolStripRenderer();

@@ -18,6 +18,7 @@ namespace CKAN.GUI
         public NewUpdateDialog(string version, string? releaseNotes)
         {
             InitializeComponent();
+            this.ScaleFonts();
             VersionLabel.Text = version;
             ReleaseNotesTextbox.Text = releaseNotes?.Trim() ?? "";
         }

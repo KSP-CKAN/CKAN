@@ -149,6 +149,7 @@ namespace CKAN.GUI
                 menu.Renderer = new FlatToolStripRenderer();
             }
             menu.Items.AddRange(options);
+            menu.ScaleFonts();
             menu.Show(label.PointToScreen(new Point(0, label.Height)));
         }
 

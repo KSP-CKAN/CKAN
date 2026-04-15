@@ -26,6 +26,17 @@ namespace CKAN.GUI
         public ManageMods()
         {
             InitializeComponent();
+            Toolbar.ScaleFonts();
+            ModGrid.ScaleFonts();
+            ModListContextMenuStrip.ScaleFonts();
+            ModListHeaderContextMenuStrip.ScaleFonts();
+            uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
+            if (Platform.IsMono
+                && (int)CreateGraphics().DpiX is int dpi
+                && dpi != 96)
+            {
+                uninstallingFont = uninstallingFont.Scale(dpi);
+            }
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
             FilterCompatibleButton.ToolTipText      = Properties.Resources.FilterLinkToolTip;
@@ -90,7 +101,7 @@ namespace CKAN.GUI
         private DateTime lastSearchTime;
         private string? lastSearchKey;
         private readonly NavigationHistory<GUIMod> navHistory;
-        private static readonly Font uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
+        private readonly Font uninstallingFont;
 
         private List<ModChange>?            currentChangeSet;
         private Dictionary<GUIMod, string>? conflicts;
@@ -197,7 +208,7 @@ namespace CKAN.GUI
                         else if (row.DefaultCellStyle.Font != null)
                         {
                             // Clear strikeout font for rows not being uninstalled
-                            row.DefaultCellStyle.Font = null;
+                            row.DefaultCellStyle.Font = ModGrid.DefaultCellStyle.Font;
                         }
                     }
                 }

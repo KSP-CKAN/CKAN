@@ -25,6 +25,7 @@ namespace CKAN.GUI
         public PlayTime()
         {
             InitializeComponent();
+            PlayTimeGrid.ScaleFonts();
         }
 
         /// <summary>

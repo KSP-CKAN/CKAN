@@ -25,6 +25,7 @@ namespace CKAN.GUI
         public Relationships()
         {
             InitializeComponent();
+            LegendInstalledLabel.ScaleFonts();
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             ToolTip.SetToolTip(ReverseRelationshipsCheckbox, Properties.Resources.ModInfoToolTipReverseRelationships);

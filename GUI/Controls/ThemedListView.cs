@@ -33,7 +33,21 @@ namespace CKAN.GUI
             rect.Offset(0, -1);
             e.Graphics.DrawRectangle(SystemPens.ControlDark, rect);
             // Text
-            e.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+            if (Platform.IsMono
+                && (int)e.Graphics.DpiX is int dpi
+                && dpi != 96
+                && e.Font is Font f)
+            {
+                var replacementEventArgs = new DrawListViewColumnHeaderEventArgs(
+                                               e.Graphics, e.Bounds, e.ColumnIndex, e.Header,
+                                               e.State, e.ForeColor, e.BackColor,
+                                               f.Scale(dpi));
+                replacementEventArgs.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+            }
+            else
+            {
+                e.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+            }
             // Alert event subscribers
             base.OnDrawColumnHeader(e);
         }

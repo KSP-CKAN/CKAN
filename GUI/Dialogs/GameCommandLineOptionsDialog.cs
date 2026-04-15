@@ -17,6 +17,8 @@ namespace CKAN.GUI
         public GameCommandLineOptionsDialog()
         {
             InitializeComponent();
+            CmdLineGrid.ScaleFonts();
+            this.ScaleFonts();
             if (Platform.IsMono)
             {
                 // Mono's DataGridView has showstopper bugs with AllowUserToAddRows,

@@ -32,13 +32,13 @@ namespace CKAN.GUI
             Logging.Initialize();
 
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionEventHandler;
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
             if (Platform.IsWindows)
             {
                 // By default, Windows will stretch the window and make it blurry; tell it not to.
                 SetProcessDPIAware();
             }
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
             if (args.Contains(URLHandlers.UrlRegistrationArgument))
             {

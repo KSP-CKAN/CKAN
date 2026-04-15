@@ -13,6 +13,7 @@ namespace CKAN.GUI
         public RenameInstanceDialog()
         {
             InitializeComponent();
+            this.ScaleFonts();
 
             // Set the default actions for pressing Enter and Escape.
             AcceptButton = OKButton;

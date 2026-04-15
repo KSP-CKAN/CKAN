@@ -20,6 +20,9 @@ namespace CKAN.GUI
         public ModInfo()
         {
             InitializeComponent();
+            MetadataModuleNameTextBox.ScaleFonts();
+            MetadataModuleAbstractLabel.ScaleFonts();
+            MetadataModuleDescriptionTextBox.ScaleFonts();
             Contents.OnDownloadClick += gmod => OnDownloadClick?.Invoke(gmod);
             Relationships.ModuleDoubleClicked += mod => ModuleDoubleClicked?.Invoke(mod);
             tagsLabelsLinkList.ShowHideTag += t => ShowHideTag?.Invoke(t);

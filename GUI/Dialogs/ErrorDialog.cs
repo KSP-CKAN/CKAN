@@ -20,6 +20,7 @@ namespace CKAN.GUI
         public ErrorDialog()
         {
             InitializeComponent();
+            this.ScaleFonts();
         }
 
         [ForbidGUICalls]

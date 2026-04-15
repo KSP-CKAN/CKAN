@@ -30,6 +30,8 @@ namespace CKAN.GUI
                               string?          userAgent)
         {
             InitializeComponent();
+            ClearCacheMenu.ScaleFonts();
+            this.ScaleFonts();
 
             ToolTip.SetToolTip(RefreshTextBox,    Properties.Resources.SettingsToolTipRefreshTextBox);
             ToolTip.SetToolTip(ChangeCacheButton, Properties.Resources.SettingsToolTipChangeCacheButton);
@@ -623,6 +625,7 @@ namespace CKAN.GUI
             newAuthTokenPopup.Controls.Add(cancelButton);
             newAuthTokenPopup.AcceptButton = acceptButton;
             newAuthTokenPopup.CancelButton = cancelButton;
+            newAuthTokenPopup.ScaleFonts();
 
             switch (newAuthTokenPopup.ShowDialog(this))
             {
