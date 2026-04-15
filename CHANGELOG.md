@@ -29,6 +29,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Apply installed module constraints to changeset (#4555 by: HebaruSan)
 - [Core] Try to stop users from cloning instances into themselves (#4556 by: HebaruSan)
 - [Multiple] Fix missing conflicting recommendations (#4561 by: HebaruSan)
+- [Core] Fix item with the same key exception (#4569 by: HebaruSan)
 
 ### Internal
 

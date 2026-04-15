@@ -66,6 +66,16 @@ namespace System.Linq
             => seq.GroupBy(func).Select(grp => grp.First());
 
         /// <summary>
+        /// Eliminate duplicate elements based on the value returned by a callback and a comparer
+        /// </summary>
+        /// <param name="seq">Sequence of elements to check</param>
+        /// <param name="func">Function to return a value per element</param>
+        /// <param name="comparer">Comparer to check whether two values are the same</param>
+        /// <returns>Sequence where each element has a unique return value</returns>
+        public static IEnumerable<T> DistinctBy<T, U>(this IEnumerable<T> seq, Func<T, U> func, IEqualityComparer<U> comparer)
+            => seq.GroupBy(func, comparer).Select(grp => grp.First());
+
+        /// <summary>
         /// Make pairs out of the elements of two sequences
         /// </summary>
         /// <param name="seq1">The first sequence</param>

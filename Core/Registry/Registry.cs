@@ -213,7 +213,8 @@ namespace CKAN
             {
                 // We need case insensitive path matching on Windows
                 // (already done when replacing this object in the above block, hence the 'else')
-                installed_files = new Dictionary<string, string>(installed_files, Platform.PathComparer);
+                installed_files = installed_files.DistinctBy(kvp => kvp.Key, Platform.PathComparer)
+                                                 .ToDictionary(Platform.PathComparer);
             }
 
             // Fix control lock, which previously was indexed with an invalid identifier.
