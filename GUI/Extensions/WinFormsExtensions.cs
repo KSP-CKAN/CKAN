@@ -61,8 +61,8 @@ namespace CKAN.GUI
                 control.Font = control.Font.Scale(dpi);
                 if (control is DataGridView grid)
                 {
-                    grid.DefaultCellStyle.Font = grid.DefaultCellStyle.Font.Scale(dpi);
-                    grid.ColumnHeadersDefaultCellStyle.Font = grid.ColumnHeadersDefaultCellStyle.Font.Scale(dpi);
+                    grid.DefaultCellStyle.Font = grid.DefaultCellStyle.Font?.Scale(dpi);
+                    grid.ColumnHeadersDefaultCellStyle.Font = grid.ColumnHeadersDefaultCellStyle.Font?.Scale(dpi);
                 }
             }
         }

@@ -37,7 +37,6 @@
 **/System.Net.WebSockets.Client.dll
 **/System.Net.WebSockets.dll
 **/System.Numerics.dll
-**/System.Numerics.Vectors.dll
 **/System.Reflection.DispatchProxy.dll
 **/System.Reflection.dll
 **/System.Reflection.Emit.dll

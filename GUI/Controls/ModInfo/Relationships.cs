@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
@@ -33,6 +34,7 @@ namespace CKAN.GUI
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GUIMod? SelectedModule
         {
             set
@@ -66,7 +68,7 @@ namespace CKAN.GUI
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Tag is CkanModule module)
+            if (e.Node?.Tag is CkanModule module)
             {
                 ModuleDoubleClicked?.Invoke(module);
             }

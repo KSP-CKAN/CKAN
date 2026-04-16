@@ -21,13 +21,6 @@ namespace CKAN
     /// </summary>
     public class NetModuleCache : IDisposable
     {
-        static NetModuleCache()
-        {
-            // SharpZibLib 1.1.0 changed this to default to false, but we depend on it for international mods.
-            // https://github.com/icsharpcode/SharpZipLib/issues/591
-            ZipStrings.UseUnicode = true;
-        }
-
         /// <summary>
         /// Initialize the cache
         /// </summary>

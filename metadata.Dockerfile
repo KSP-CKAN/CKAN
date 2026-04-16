@@ -52,7 +52,7 @@ COPY --from=build /usr/local /usr/local
 ADD Netkan/metadata.ini /usr/local/etc/.
 
 # Install the .NET assemblies the meta tester uses
-ADD _build/out/CKAN-CmdLine/${configuration}/bin/net8.0/linux-x64/publish/. /usr/local/bin/.
-ADD _build/out/CKAN-NetKAN/${configuration}/bin/net8.0/linux-x64/publish/. /usr/local/bin/.
+ADD _build/out/CKAN-CmdLine/${configuration}/bin/net10.0/linux-x64/publish/. /usr/local/bin/.
+ADD _build/out/CKAN-NetKAN/${configuration}/bin/net10.0/linux-x64/publish/. /usr/local/bin/.
 
 ENTRYPOINT ["ckanmetatester"]

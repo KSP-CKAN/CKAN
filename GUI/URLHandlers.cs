@@ -1,7 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+#if !NET5_0_OR_GREATER
 using System.Reflection;
+#endif
 using Microsoft.Win32;
 using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
@@ -70,12 +72,11 @@ namespace CKAN.GUI
                             return;
                         }
 
-                        if (Assembly.GetEntryAssembly() is Assembly ass
-                            && user != null
+                        if (user != null
                             && user.RaiseYesNoDialog(Properties.Resources.URLHandlersPrompt))
                         {
                             // we need elevation to write to the registry
-                            Process.Start(new ProcessStartInfo(ass.Location)
+                            Process.Start(new ProcessStartInfo(PathToRunningExe())
                             {
                                 // trigger a UAC prompt (if UAC is enabled)
                                 Verb      = "runas",
@@ -104,13 +105,20 @@ namespace CKAN.GUI
             }
         }
 
+        private static string PathToRunningExe()
+            #if NET5_0_OR_GREATER
+            => Environment.ProcessPath ?? "";
+            #else
+            => Assembly.GetEntryAssembly()?.Location ?? "";
+            #endif
+
         #if NET5_0_OR_GREATER
         [SupportedOSPlatform("windows")]
         #endif
         private static void RegisterURLHandler_Win32()
         {
             log.InfoFormat("Adding URL handler to registry");
-            string      urlCmd = $"{Assembly.GetExecutingAssembly().Location} gui %1";
+            string      urlCmd = $"{PathToRunningExe()} gui %1";
             RegistryKey root   = Microsoft.Win32.Registry.ClassesRoot;
             var ckanKey = root.OpenSubKey("ckan");
             if (ckanKey != null)
@@ -202,7 +210,7 @@ namespace CKAN.GUI
             data.Sections.AddSection("Desktop Entry");
             data["Desktop Entry"].AddKey("Version", "1.0");
             data["Desktop Entry"].AddKey("Type", "Application");
-            data["Desktop Entry"].AddKey("Exec", "mono \"" + Assembly.GetExecutingAssembly().Location + "\" gui %u");
+            data["Desktop Entry"].AddKey("Exec", "mono \"" + PathToRunningExe() + "\" gui %u");
             data["Desktop Entry"].AddKey("Icon", "ckan");
             data["Desktop Entry"].AddKey("StartupNotify", "true");
             data["Desktop Entry"].AddKey("NoDisplay", "true");

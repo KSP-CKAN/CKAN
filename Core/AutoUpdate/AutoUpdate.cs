@@ -1,3 +1,6 @@
+#if NET5_0_OR_GREATER
+using System;
+#endif
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
@@ -32,8 +35,13 @@ namespace CKAN
 
         private readonly Dictionary<bool, CkanUpdate> updates = new Dictionary<bool, CkanUpdate>();
 
-        // This is null when running tests, seemingly.
-        private static readonly string exePath = Assembly.GetEntryAssembly()?.Location ?? "";
+        private static string PathToRunningExe()
+            #if NET5_0_OR_GREATER
+            => Environment.ProcessPath ?? "";
+            #else
+            // This is null when running tests, seemingly.
+            => Assembly.GetEntryAssembly()?.Location ?? "";
+            #endif
 
         /// <summary>
         /// Report whether it's possible to run the auto-updater.
@@ -41,7 +49,7 @@ namespace CKAN
         /// Windows doesn't let us check this because it locks the EXE
         /// for a running process, so assume we can always overwrite on Windows.
         /// </summary>
-        public static readonly bool CanUpdate = Platform.IsWindows || CanWrite(exePath);
+        public static readonly bool CanUpdate = Platform.IsWindows || CanWrite(PathToRunningExe());
 
         /// <summary>
         /// Downloads the new ckan.exe version, as well as the updater helper,
@@ -67,7 +75,7 @@ namespace CKAN
                 Verb      = "runas",
                 FileName  = update.updaterFilename,
                 Arguments = string.Format(@"{0} ""{1}"" ""{2}"" {3}",
-                                          -pid, exePath,
+                                          -pid, PathToRunningExe(),
                                           update.ckanFilename,
                                           launchCKANAfterUpdate ? "launch" : "nolaunch"),
                 // .NET ignores Verb without this

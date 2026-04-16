@@ -735,10 +735,6 @@ namespace CKAN.GUI
                 Hide();
                 Main.Instance.UpdateCKAN();
             }
-            else
-            {
-                user.RaiseError(Properties.Resources.SettingsDialogUpdateFailed);
-            }
         }
 
         private void CheckUpdateOnLaunchCheckbox_CheckedChanged(object? sender, EventArgs? e)

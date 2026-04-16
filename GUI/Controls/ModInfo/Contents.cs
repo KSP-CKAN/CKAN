@@ -29,6 +29,7 @@ namespace CKAN.GUI
             coreCfg.PropertyChanged += Configuration_PropertyChanged;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GUIMod? SelectedModule
         {
             set
@@ -81,7 +82,7 @@ namespace CKAN.GUI
                 && manager?.CurrentInstance is GameInstance inst
                 && SelectedModule is GUIMod mod)
             {
-                if (mod.IsInstalled && e.Node.Name.Length > 0)
+                if (mod.IsInstalled && e.Node?.Name.Length > 0)
                 {
                     Utilities.OpenFileBrowser(inst.ToAbsoluteGameDir(e.Node.Name));
                 }

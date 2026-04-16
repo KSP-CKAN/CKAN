@@ -153,18 +153,20 @@ namespace CKAN.GUI
         /// </summary>
         private void DownloadsGrid_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            var binding = (BindingList<DownloadRow>)DownloadsGrid.DataSource;
-            var retry   = rows[e.RowIndex].Retry;
-            // Update all rows with this download
-            for (int i = 0; i < rows.Count; ++i)
+            if (DownloadsGrid.DataSource is BindingList<DownloadRow> binding)
             {
-                if (rowsLinked(rows[e.RowIndex].Data, rows[i].Data))
+                var retry   = rows[e.RowIndex].Retry;
+                // Update all rows with this download
+                for (int i = 0; i < rows.Count; ++i)
                 {
-                    if (i != e.RowIndex)
+                    if (rowsLinked(rows[e.RowIndex].Data, rows[i].Data))
                     {
-                        rows[i].Retry = retry;
+                        if (i != e.RowIndex)
+                        {
+                            rows[i].Retry = retry;
+                        }
+                        binding.ResetItem(i);
                     }
-                    binding.ResetItem(i);
                 }
             }
         }

@@ -20,7 +20,7 @@ public sealed class OsxAppTask() : MakeTask("macosx", "app")
         context.DotNetPublish(context.Paths.CmdlineProject.FullPath, new DotNetPublishSettings
         {
             Configuration  = context.BuildConfiguration,
-            Framework      = "net8.0",
+            Framework      = context.BuildDotNet,
             Runtime        = "osx-arm64",
             SelfContained  = true,
         });
@@ -28,7 +28,7 @@ public sealed class OsxAppTask() : MakeTask("macosx", "app")
         context.DotNetPublish(context.Paths.CmdlineProject.FullPath, new DotNetPublishSettings
         {
             Configuration  = context.BuildConfiguration,
-            Framework      = "net8.0",
+            Framework      = context.BuildDotNet,
             Runtime        = "osx-x64",
             SelfContained  = true,
         });

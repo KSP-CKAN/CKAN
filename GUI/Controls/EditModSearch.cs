@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
@@ -69,6 +70,7 @@ namespace CKAN.GUI
 
         public event Action<string>? ShowError;
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public ModSearch? Search
         {
             get => currentSearch;
@@ -80,6 +82,7 @@ namespace CKAN.GUI
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ShowLabel
         {
             set

@@ -61,8 +61,9 @@ namespace CKAN.GUI
             PreferredHostsListBox_SelectedIndexChanged(null, null);
         }
 
-        private void PreferredHostsDialog_Closing(object? sender, CancelEventArgs? e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            base.OnFormClosing(e);
             config.PreferredHosts = PreferredHostsListBox.Items
                                                          .OfType<string>()
                                                          .Select(h => h == placeholder ? null : h)

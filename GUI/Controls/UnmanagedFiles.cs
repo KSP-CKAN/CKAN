@@ -222,7 +222,10 @@ namespace CKAN.GUI
 
         private void GameFolderTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Utilities.OpenFileBrowser(e.Node.Name);
+            if (e.Node != null)
+            {
+                Utilities.OpenFileBrowser(e.Node.Name);
+            }
         }
 
         private void OKButton_Click(object? sender, EventArgs? e)

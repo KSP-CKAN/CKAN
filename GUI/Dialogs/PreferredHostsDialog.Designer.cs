@@ -205,7 +205,6 @@ namespace CKAN.GUI
             this.Name = "PreferredHostsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.PreferredHostsDialog_Load);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.PreferredHostsDialog_Closing);
             resources.ApplyResources(this, "$this");
             this.Splitter.Panel1.ResumeLayout(false);
             this.Splitter.Panel2.ResumeLayout(false);

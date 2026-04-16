@@ -1,4 +1,4 @@
-name: Build CKAN + NetKAN
+name: Build and test CKAN and NetKAN
 
 on:
   workflow_call:
@@ -9,11 +9,12 @@ on:
     outputs:
       unsigned-artifact-id:
         description: Artifact ID of the assets to be signed
-        value: ${{ jobs.build.outputs.unsigned-artifact-id }}
+        value: ${{ jobs.build-windows.outputs.unsigned-artifact-id }}
 
 jobs:
-  build:
-    runs-on: ubuntu-22.04
+  build-windows:
+    name: Build and test on Windows
+    runs-on: windows-latest
     outputs:
       unsigned-artifact-id: ${{ steps.upload-unsigned-artifact.outputs.artifact-id }}
     steps:
@@ -23,15 +24,29 @@ jobs:
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
-      - name: Restore cache for _build/lib/nuget
-        uses: actions/cache@v5
+      - name: Build and run tests on Windows
+        env:
+          ErrorView: NormalView
+        shell: powershell
+        run: .\build.ps1 test --configuration=${{ inputs.configuration }} --where="Category!=FlakyNetwork"
+      - name: Report Coveralls
+        uses: coverallsapp/github-action@v2
         with:
-          path: |
-            _build/lib/nuget
-            ~/.nuget/packages
-          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
-      - name: Build ckan.exe and netkan.exe
-        run: ./build.sh --configuration=${{ inputs.configuration }}
+          format: cobertura
+          parallel: true
+          flag-name: windows-latest
+      - name: Bundle assets for signing
+        if: inputs.configuration == 'Release'
+        shell: powershell
+        run: .\build.ps1 Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
+      - name: Upload unsigned artifact
+        id: upload-unsigned-artifact
+        if: inputs.configuration == 'Release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: unsigned
+          path: _build/signpath/${{ inputs.configuration }}
+          retention-days: 1
       - name: Upload repack artifact
         id: upload-repack-artifact
         uses: actions/upload-artifact@v7
@@ -46,28 +61,52 @@ jobs:
           path: _build/out/
           include-hidden-files: true
           retention-days: 1
-      - name: Bundle assets for signing
-        if: inputs.configuration == 'Release'
-        run: ./build.sh Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
-      - name: Upload unsigned artifact
-        id: upload-unsigned-artifact
-        if: inputs.configuration == 'Release'
-        uses: actions/upload-artifact@v7
-        with:
-          name: unsigned
-          path: _build/signpath/Release
-          retention-days: 1
       - name: Upload ckan.exe artifact
         if: inputs.configuration == 'Release'
         uses: actions/upload-artifact@v7
         with:
           name: ckan.exe
-          path: _build/repack/Release/ckan.exe
+          path: _build/repack/${{ inputs.configuration }}/ckan.exe
           retention-days: 7
+      - name: Upload ckan-windows.exe artifact
+        if: inputs.configuration == 'Release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: ckan-windows.exe
+          path: _build/repack/${{ inputs.configuration }}/ckan-windows.exe
+          retention-days: 7
+
+  build-linux:
+    name: Build and test on Linux
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+      - name: Restore cache for _build/tools
+        uses: actions/cache@v5
+        with:
+          path: _build/tools
+          key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
+      - name: Restore cache for _build/lib/nuget
+        uses: actions/cache@v5
+        with:
+          path: |
+            _build/lib/nuget
+            ~/.nuget/packages
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+      - name: Build and run tests on Linux
+        run: |
+          sudo apt-get install -y xvfb
+          xvfb-run ./build.sh test --configuration=${{ inputs.configuration }} --where="Category!=FlakyNetwork"
+      - name: Report Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          format: cobertura
+          parallel: true
+          flag-name: ubuntu-22.04
 
   build-osx:
     needs:
-      - build
+      - build-windows
     runs-on: ubuntu-22.04
     if: inputs.configuration == 'Release'
     steps:
@@ -84,7 +123,6 @@ jobs:
           path: _build/out/
       - name: Build CKAN.app
         run: |
-          chmod a+x _build/out/Build/*/bin/net8.0/Build _build/out/Build/*/obj/*/net8.0/apphost
           sudo apt-get install -y libplist-utils genisoimage
           ./build.sh osx-app --configuration=${{ inputs.configuration }} --exclusive
       - name: Ad hoc codesign x86_64 binary
@@ -104,3 +142,15 @@ jobs:
           name: CKAN.dmg
           path: _build/osx/CKAN.dmg
           retention-days: 7
+
+  coveralls-finish:
+    needs:
+      - build-windows
+      - build-linux
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Finish Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          parallel-finished: true

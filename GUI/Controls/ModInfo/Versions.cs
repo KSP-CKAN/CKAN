@@ -43,6 +43,7 @@ namespace CKAN.GUI
             VersionsListView.EndUpdate();
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GUIMod? SelectedModule
         {
             set

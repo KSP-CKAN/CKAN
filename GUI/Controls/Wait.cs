@@ -51,6 +51,7 @@ namespace CKAN.GUI
 
         #pragma warning disable IDE0027
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool RetryEnabled
         {
             [ForbidGUICalls]
@@ -60,6 +61,7 @@ namespace CKAN.GUI
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int ProgressValue
         {
             set
@@ -71,6 +73,7 @@ namespace CKAN.GUI
             }
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool ProgressIndeterminate
         {
             [ForbidGUICalls]

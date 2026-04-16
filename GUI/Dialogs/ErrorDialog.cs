@@ -62,8 +62,9 @@ namespace CKAN.GUI
             Close();
         }
 
-        protected override void OnClosed(EventArgs e)
+        protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            base.OnFormClosing(e);
             // Clear message on close so we start blank next time
             ErrorMessage.Text = "";
         }

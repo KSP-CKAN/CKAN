@@ -47,7 +47,7 @@ namespace CKAN
 
             var releaseAsset = releaseJson.assets.First(asset => asset.browser_download_url
                                                                       ?.ToString()
-                                                                       .EndsWith("ckan.exe")
+                                                                       .EndsWith(ExeName)
                                                                       ?? false);
             var updaterAsset = releaseJson.assets.First(asset => asset.browser_download_url
                                                                       ?.ToString()

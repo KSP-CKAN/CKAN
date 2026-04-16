@@ -20,28 +20,29 @@
     <Nullable>enable</Nullable>
     <StartupObject>CKAN.NetKAN.Program</StartupObject>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworks>net481;net8.0</TargetFrameworks>
+    <TargetFrameworks>net481;net10.0</TargetFrameworks>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
     <ILLinkTreatWarningsAsErrors>false</ILLinkTreatWarningsAsErrors>
     <NoWarn>IDE1006,NU1701</NoWarn>
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <AppConfig>App.config</AppConfig>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="AWSSDK.Core" Version="3.3.103.64" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.3.102.31" />
+    <PackageReference Include="Autofac" Version="9.1.0" />
+    <PackageReference Include="AWSSDK.Core" Version="4.0.3.30" />
+    <PackageReference Include="AWSSDK.SQS" Version="4.0.2.25" />
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
-    <PackageReference Include="SharpZipLib" Version="1.3.3" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="log4net" Version="3.3.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="YamlDotNet" Version="9.1.0" />
-    <PackageReference Include="System.ServiceModel.Syndication" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="YamlDotNet" Version="17.0.1" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.6" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
-    <PackageReference Include="IndexRange" Version="1.0.3" />
+    <PackageReference Include="IndexRange" Version="1.1.1" />
     <PackageReference Include="LazyCache" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net481' ">

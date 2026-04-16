@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -10,6 +11,7 @@ namespace CKAN.GUI
     #endif
     public class UsableSplitContainer : SplitContainer
     {
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public new int SplitterDistance
         {
             get => base.SplitterDistance;
