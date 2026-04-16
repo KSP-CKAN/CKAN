@@ -59,6 +59,8 @@ namespace CKAN.GUI
             //
             // VersionsListView
             //
+            this.VersionsListView.BackColor = System.Drawing.SystemColors.Window;
+            this.VersionsListView.ForeColor = System.Drawing.SystemColors.WindowText;
             this.VersionsListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.VersionsListView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.VersionsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {

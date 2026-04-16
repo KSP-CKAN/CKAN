@@ -132,6 +132,7 @@ namespace CKAN.GUI
             // GameFolderTree
             //
             this.GameFolderTree.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GameFolderTree.ForeColor = System.Drawing.SystemColors.WindowText;
             this.GameFolderTree.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.GameFolderTree.ImageList = new System.Windows.Forms.ImageList(this.components)
             {

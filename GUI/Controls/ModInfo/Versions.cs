@@ -31,6 +31,8 @@ namespace CKAN.GUI
             InitializeComponent();
             InstalledLabel.ScaleFonts();
             PrereleaseLabel.ScaleFonts();
+            CompatibleLabel.NormalizeForeColor();
+            PrereleaseLabel.NormalizeForeColor();
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
         }
 
@@ -243,6 +245,7 @@ namespace CKAN.GUI
                     if (module.release_status > stabilityTolerance)
                     {
                         toRet.BackColor = PrereleaseLabel.BackColor;
+                        toRet.ForeColor = PrereleaseLabel.ForeColor;
                     }
                     if (module.Equals(gmod.SelectedMod) && interactive)
                     {
@@ -300,6 +303,7 @@ namespace CKAN.GUI
                                else
                                {
                                    item.BackColor = CompatibleLabel.BackColor;
+                                   item.ForeColor = CompatibleLabel.ForeColor;
                                }
                            }));
                 Util.Invoke(this, () => UseWaitCursor = false);

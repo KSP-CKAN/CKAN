@@ -90,6 +90,7 @@ namespace CKAN.GUI
                            LinkVisited  = false,
                            Text         = text,
                            TabStop      = true,
+                           LinkColor    = BackColor.LinkColorForBackColor(),
                        };
             tooltip.SetToolTip(link, tooltipText);
             link.LinkClicked += (sender, e) => Util.HandleLinkClicked(url, e);

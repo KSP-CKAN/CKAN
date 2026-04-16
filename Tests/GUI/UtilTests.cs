@@ -3,6 +3,7 @@
 using System;
 using System.Threading;
 using System.Drawing;
+using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -128,9 +129,17 @@ namespace Tests.GUI
         ]
         public void ForeColorForBackColor_LightBackColor_BlackForeColor(string colorName)
         {
+            // Arrange
             var c = ColorFromNameOrRGB(colorName);
+            var lbl = new Label() { BackColor = c };
+
+            // Act
+            lbl.NormalizeForeColor();
+
+            // Assert
             Assert.AreEqual(Color.Black, c.ForeColorForBackColor(),
                             $"Foreground color for {c.Name} (brightness {c.GetBrightness()}) should be Black");
+            Assert.AreEqual(Color.Black, lbl.ForeColor);
         }
 
         [TestCase("Black"), TestCase("DarkSlateGray"),
@@ -144,10 +153,41 @@ namespace Tests.GUI
         ]
         public void ForeColorForBackColor_DarkBackColor_WhiteForeColor(string colorName)
         {
+            // Assert
             var c = ColorFromNameOrRGB(colorName);
+            var lbl = new Label() { BackColor = c };
+
+            // Act
+            lbl.NormalizeForeColor();
+
+            // Assert
             Assert.AreEqual(Color.White, c.ForeColorForBackColor(),
                             $"Foreground color for {c.Name} (brightness {c.GetBrightness()}) should be White");
+            Assert.AreEqual(Color.White, lbl.ForeColor);
         }
+
+        [TestCase("White")]
+        public void LinkColorForBackColor_LightBackColor_MidBlueForeColor(string colorName)
+        {
+            var c = ColorFromNameOrRGB(colorName);
+            Assert.AreEqual(Color.Blue, c.LinkColorForBackColor(),
+                            $"Link color for {c.Name} (brightness {c.GetBrightness()}) should be Blue");
+        }
+
+        [TestCase("Black"), TestCase("DarkSlateGray")]
+        public void LinkColorForBackColor_DarkBackColor_LightBlueForeColor(string colorName)
+        {
+            var c = ColorFromNameOrRGB(colorName);
+            Assert.AreEqual(LightBlue, c.LinkColorForBackColor(),
+                            $"Link color for {c.Name} (brightness {c.GetBrightness()}) should be light blue");
+        }
+
+        [TestCase("White", ExpectedResult = "#FFFFFF"),
+         TestCase("Black", ExpectedResult = "#000000"),
+         TestCase("Blue",  ExpectedResult = "#0000FF"),
+        ]
+        public string ToHex_WithColors_Works(string colorName)
+            => ColorFromNameOrRGB(colorName).ToHex();
 
         private static Color ColorFromNameOrRGB(string nameOrRGB)
             => nameOrRGB.StartsWith("#") ? Color.FromArgb(StringToColorChannel(nameOrRGB, 1),
@@ -158,6 +198,7 @@ namespace Tests.GUI
         private static int StringToColorChannel(string rgb, int start)
             => Convert.ToInt32(rgb.Substring(start, 2), 16);
 
+        private static readonly Color LightBlue = Util.BlendColors(Color.Blue, Color.White);
     }
 }
 

@@ -108,8 +108,9 @@ namespace CKAN.GUI
                 IRegistryQuerier registry = RegistryManager.Instance(Manager.CurrentInstance, repoData).registry;
                 TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
                 {
-                    Name = module.identifier,
-                    Tag  = module
+                    Name      = module.identifier,
+                    Tag       = module,
+                    ForeColor = SystemColors.WindowText,
                 };
                 DependsGraphTree.Nodes.Add(root);
                 AddChildren(registry, Manager.CurrentInstance.StabilityToleranceConfig, root);
@@ -423,6 +424,7 @@ namespace CKAN.GUI
             {
                 Name        = identifier,
                 ToolTipText = $"{RelationshipType.Provides.LocalizeDescription()} {identifier}",
+                ForeColor   = SystemColors.WindowText,
             };
 
     }

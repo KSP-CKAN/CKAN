@@ -128,9 +128,6 @@ namespace CKAN.GUI
             //
             // ModInfoTabControl
             //
-            this.ModInfoTabControl.Appearance = System.Windows.Forms.TabAppearance.Normal;
-            this.ModInfoTabControl.BackColor = System.Drawing.SystemColors.Control;
-            this.ModInfoTabControl.Multiline = true;
             this.ModInfoTabControl.Controls.Add(this.MetadataTabPage);
             this.ModInfoTabControl.Controls.Add(this.RelationshipTabPage);
             this.ModInfoTabControl.Controls.Add(this.ContentTabPage);
@@ -150,7 +147,6 @@ namespace CKAN.GUI
             //
             // MetadataTabPage
             //
-            this.MetadataTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.MetadataTabPage.Controls.Add(this.Metadata);
             this.MetadataTabPage.Name = "MetadataTabPage";
             this.MetadataTabPage.Padding = new System.Windows.Forms.Padding(6);
@@ -166,7 +162,6 @@ namespace CKAN.GUI
             //
             // RelationshipTabPage
             //
-            this.RelationshipTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.RelationshipTabPage.Controls.Add(this.Relationships);
             this.RelationshipTabPage.Name = "RelationshipTabPage";
             this.RelationshipTabPage.Padding = new System.Windows.Forms.Padding(6);
@@ -183,7 +178,6 @@ namespace CKAN.GUI
             //
             // ContentTabPage
             //
-            this.ContentTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ContentTabPage.Controls.Add(this.Contents);
             this.ContentTabPage.Name = "ContentTabPage";
             this.ContentTabPage.Padding = new System.Windows.Forms.Padding(6);
@@ -198,7 +192,6 @@ namespace CKAN.GUI
             //
             // VersionsTabPage
             //
-            this.VersionsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.VersionsTabPage.Controls.Add(this.Versions);
             this.VersionsTabPage.Padding = new System.Windows.Forms.Padding(6);
             this.VersionsTabPage.Name = "VersionsTabPage";

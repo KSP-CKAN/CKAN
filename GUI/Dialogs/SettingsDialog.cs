@@ -45,10 +45,7 @@ namespace CKAN.GUI
             this.updater    = updater;
             this.user       = user;
             this.userAgent  = userAgent;
-            if (Platform.IsMono)
-            {
-                ClearCacheMenu.Renderer = new FlatToolStripRenderer();
-            }
+            ClearCacheMenu.Renderer = new FlatToolStripRenderer();
             CachePathEditButton.Height = CachePathSaveButton.Height =
                 CachePathCancelButton.Height = CachePathTextBox.Height;
         }

@@ -23,6 +23,8 @@ namespace CKAN.GUI
         public ChooseRecommendedMods()
         {
             InitializeComponent();
+            Toolbar.Renderer = new FlatToolStripRenderer();
+            RecommendedModsListView.EnsureReadableGroupHeaders();
         }
 
         [ForbidGUICalls]

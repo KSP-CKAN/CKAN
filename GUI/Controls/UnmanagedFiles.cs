@@ -25,6 +25,7 @@ namespace CKAN.GUI
         public UnmanagedFiles()
         {
             InitializeComponent();
+            Toolbar.Renderer = new FlatToolStripRenderer();
             GameFolderTree.TreeViewNodeSorter = new DirsFirstSorter();
         }
 
@@ -64,6 +65,7 @@ namespace CKAN.GUI
                     "",
                     Platform.FormatPath(inst.GameDir),
                     "folder", "folder");
+                rootNode.ForeColor = SystemColors.WindowText;
 
                 UseWaitCursor = true;
                 Task.Run(() =>
@@ -119,6 +121,7 @@ namespace CKAN.GUI
                     : Path.Combine(parent.Name, firstPiece);
                 var node = parent.Nodes[key]
                         ?? parent.Nodes.Add(key, firstPiece, "file", "file");
+                node.ForeColor = SystemColors.WindowText;
                 AddContentPieces(node, pieces.Skip(1));
             }
         }

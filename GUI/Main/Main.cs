@@ -120,15 +120,11 @@ namespace CKAN.GUI
 
             Instance = this;
 
-            // Replace mono's broken, ugly toolstrip renderer
-            if (Platform.IsMono)
-            {
-                MainMenu.Renderer = new FlatToolStripRenderer();
-                FileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
-                settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
-                helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
-                minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
-            }
+            MainMenu.Renderer = new FlatToolStripRenderer();
+            FileToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            settingsToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            helpToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            minimizedContextMenuStrip.Renderer = new FlatToolStripRenderer();
 
             // Initialize all user interaction dialogs.
             RecreateDialogs();

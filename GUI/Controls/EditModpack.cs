@@ -24,6 +24,7 @@ namespace CKAN.GUI
         public EditModpack()
         {
             InitializeComponent();
+            RelationshipsListView.EnsureReadableGroupHeaders();
 
             ToolTip.SetToolTip(IdentifierTextBox,       Properties.Resources.EditModpackTooltipIdentifier);
             ToolTip.SetToolTip(NameTextBox,             Properties.Resources.EditModpackTooltipName);

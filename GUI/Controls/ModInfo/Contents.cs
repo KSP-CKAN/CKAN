@@ -169,9 +169,6 @@ namespace CKAN.GUI
             }
             else
             {
-                ContentsPreviewTree.BackColor = SystemColors.Window;
-                ContentsPreviewTree.LineColor = SystemColors.WindowText;
-
                 if (Equals(module, currentModContentsModule) && !force)
                 {
                     return;

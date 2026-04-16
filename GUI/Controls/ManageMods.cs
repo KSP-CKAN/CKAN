@@ -30,6 +30,10 @@ namespace CKAN.GUI
             ModGrid.ScaleFonts();
             ModListContextMenuStrip.ScaleFonts();
             ModListHeaderContextMenuStrip.ScaleFonts();
+            if (Util.DarkMode)
+            {
+                ModGrid.BorderStyle = BorderStyle.None;
+            }
             uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
             if (Platform.IsMono
                 && (int)CreateGraphics().DpiX is int dpi
@@ -69,17 +73,17 @@ namespace CKAN.GUI
             // possible, once the UI is "settled" from its initial load.
             NavInit();
 
+            Toolbar.Renderer = new FlatToolStripRenderer();
+            FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+            FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+            FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
+            LaunchGameToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
+            ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
+            ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
+            LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
+
             if (Platform.IsMono)
             {
-                Toolbar.Renderer = new FlatToolStripRenderer();
-                FilterToolButton.DropDown.Renderer = new FlatToolStripRenderer();
-                FilterTagsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
-                FilterLabelsToolButton.DropDown.Renderer = new FlatToolStripRenderer();
-                LaunchGameToolStripMenuItem.DropDown.Renderer = new FlatToolStripRenderer();
-                ModListContextMenuStrip.Renderer = new FlatToolStripRenderer();
-                ModListHeaderContextMenuStrip.Renderer = new FlatToolStripRenderer();
-                LabelsContextMenuStrip.Renderer = new FlatToolStripRenderer();
-
                 ModGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
                 ResizeColumnHeaders();
                 ModGrid.ColumnWidthChanged += (sender, e) => ResizeColumnHeaders();

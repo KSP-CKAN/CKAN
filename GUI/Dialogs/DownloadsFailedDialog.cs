@@ -57,11 +57,8 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             GridContextMenuStrip.ScaleFonts();
+            GridContextMenuStrip.Renderer = new FlatToolStripRenderer();
             this.ScaleFonts();
-            if (Platform.IsMono)
-            {
-                GridContextMenuStrip.Renderer = new FlatToolStripRenderer();
-            }
             ExplanationLabel.Text = TopLabelMessage;
             ModColumn.HeaderText  = ModuleColumnHeader;
             AbortButton.Text      = AbortButtonCaption;

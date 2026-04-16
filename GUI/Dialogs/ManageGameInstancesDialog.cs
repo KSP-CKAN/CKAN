@@ -52,11 +52,8 @@ namespace CKAN.GUI
             }
 
             // Set the renderer for the AddNewMenu
-            if (Platform.IsMono)
-            {
-                AddNewMenu.Renderer = new FlatToolStripRenderer();
-                InstanceListContextMenuStrip.Renderer = new FlatToolStripRenderer();
-            }
+            AddNewMenu.Renderer = new FlatToolStripRenderer();
+            InstanceListContextMenuStrip.Renderer = new FlatToolStripRenderer();
 
             UpdateInstancesList();
             UpdateButtonState();

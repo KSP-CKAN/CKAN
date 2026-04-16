@@ -231,6 +231,8 @@ namespace CKAN.GUI
                     Padding  = new Padding(0, vPadding, 0, vPadding),
                     TabStop  = true,
                     Text     = link.ToString(),
+                    // Lighter colors for dark mode
+                    LinkColor = BackColor.LinkColorForBackColor(),
                 };
                 llbl.LinkClicked += new LinkLabelLinkClickedEventHandler(LinkLabel_LinkClicked);
                 llbl.KeyDown += new KeyEventHandler(LinkLabel_KeyDown);
