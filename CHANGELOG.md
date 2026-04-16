@@ -30,6 +30,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Try to stop users from cloning instances into themselves (#4556 by: HebaruSan)
 - [Multiple] Fix missing conflicting recommendations (#4561 by: HebaruSan)
 - [Core] Fix item with the same key exception (#4569 by: HebaruSan)
+- [Core] Silently skip Steam libraries on missing drives (#4570 by: HebaruSan)
 
 ### Internal
 
