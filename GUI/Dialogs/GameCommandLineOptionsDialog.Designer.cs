@@ -100,7 +100,7 @@ namespace CKAN.GUI
             this.ResetToDefaultsButton.Location = new System.Drawing.Point(316, 51);
             this.ResetToDefaultsButton.Margin = new System.Windows.Forms.Padding(0, 4, 8, 4);
             this.ResetToDefaultsButton.Name = "ResetToDefaultsButton";
-            this.ResetToDefaultsButton.Size = new System.Drawing.Size(75, 23);
+            this.ResetToDefaultsButton.Size = new System.Drawing.Size(75, 12);
             this.ResetToDefaultsButton.TabIndex = 2;
             this.ResetToDefaultsButton.UseVisualStyleBackColor = true;
             this.ResetToDefaultsButton.Click += this.ResetToDefaultsButton_Click;
@@ -114,7 +114,7 @@ namespace CKAN.GUI
             this.AddButton.Location = new System.Drawing.Point(316, 51);
             this.AddButton.Margin = new System.Windows.Forms.Padding(0, 4, 8, 4);
             this.AddButton.Name = "AddButton";
-            this.AddButton.Size = new System.Drawing.Size(75, 23);
+            this.AddButton.Size = new System.Drawing.Size(75, 12);
             this.AddButton.TabIndex = 2;
             this.AddButton.UseVisualStyleBackColor = true;
             this.AddButton.Visible = false;
@@ -130,7 +130,7 @@ namespace CKAN.GUI
             this.CancelChangesButton.Location = new System.Drawing.Point(316, 51);
             this.CancelChangesButton.Margin = new System.Windows.Forms.Padding(8, 4, 0, 4);
             this.CancelChangesButton.Name = "CancelChangesButton";
-            this.CancelChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelChangesButton.Size = new System.Drawing.Size(75, 12);
             this.CancelChangesButton.TabIndex = 2;
             this.CancelChangesButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.CancelChangesButton, "CancelChangesButton");
@@ -144,7 +144,7 @@ namespace CKAN.GUI
             this.AcceptChangesButton.Location = new System.Drawing.Point(397, 51);
             this.AcceptChangesButton.Margin = new System.Windows.Forms.Padding(8, 4, 0, 4);
             this.AcceptChangesButton.Name = "AcceptChangesButton";
-            this.AcceptChangesButton.Size = new System.Drawing.Size(75, 23);
+            this.AcceptChangesButton.Size = new System.Drawing.Size(75, 12);
             this.AcceptChangesButton.TabIndex = 3;
             this.AcceptChangesButton.UseVisualStyleBackColor = true;
             this.AcceptChangesButton.Click += this.AcceptChangesButton_Click;
@@ -154,7 +154,7 @@ namespace CKAN.GUI
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(320, 180);
+            this.ClientSize = new System.Drawing.Size(360, 220);
             this.ControlBox = false;
             this.Controls.Add(this.CmdLineGrid);
             this.Controls.Add(this.BottomButtonPanel);

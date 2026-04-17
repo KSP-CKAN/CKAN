@@ -353,12 +353,12 @@ namespace CKAN.GUI
             this.CacheGroupBox.Controls.Add(this.CachePathSaveButton);
             this.CacheGroupBox.Controls.Add(this.CachePathCancelButton);
             this.CacheGroupBox.Controls.Add(this.CacheSummary);
-            this.CacheGroupBox.Controls.Add(this.CacheLimitPanel);
             this.CacheGroupBox.Controls.Add(this.ChangeCacheButton);
             this.CacheGroupBox.Controls.Add(this.ClearCacheButton);
             this.CacheGroupBox.Controls.Add(this.ResetCacheButton);
             this.CacheGroupBox.Controls.Add(this.OpenCacheButton);
             this.CacheGroupBox.Controls.Add(this.MoveCacheProgressBar);
+            this.CacheGroupBox.Controls.Add(this.CacheLimitPanel);
             this.CacheGroupBox.ForeColor = System.Drawing.SystemColors.ControlText;
             this.CacheGroupBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CacheGroupBox.Location = new System.Drawing.Point(280, 144);
@@ -434,12 +434,13 @@ namespace CKAN.GUI
             // CacheLimitPanel
             //
             this.CacheLimitPanel.AutoSize = true;
+            this.CacheLimitPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.CacheLimitPanel.Controls.Add(this.CacheLimitPreLabel);
             this.CacheLimitPanel.Controls.Add(this.CacheLimit);
             this.CacheLimitPanel.Controls.Add(this.CacheLimitPostLabel);
             this.CacheLimitPanel.Location = new System.Drawing.Point(9, 65);
             this.CacheLimitPanel.Name = "CacheLimitPanel";
-            this.CacheLimitPanel.Size = new System.Drawing.Size(500, 20);
+            this.CacheLimitPanel.Size = new System.Drawing.Size(40, 13);
             this.CacheLimitPanel.TabIndex = 25;
             //
             // CacheLimitPreLabel
@@ -459,7 +460,7 @@ namespace CKAN.GUI
             this.CacheLimit.Location = new System.Drawing.Point(117, 63);
             this.CacheLimit.Margin = new System.Windows.Forms.Padding(2);
             this.CacheLimit.Name = "CacheLimit";
-            this.CacheLimit.Size = new System.Drawing.Size(50, 20);
+            this.CacheLimit.Size = new System.Drawing.Size(50, 13);
             this.CacheLimit.TabIndex = 26;
             this.CacheLimit.TextChanged += new System.EventHandler(this.CacheLimit_TextChanged);
             this.CacheLimit.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CacheLimit_KeyPress);

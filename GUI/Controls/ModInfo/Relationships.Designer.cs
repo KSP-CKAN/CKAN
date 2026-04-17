@@ -67,6 +67,7 @@ namespace CKAN.GUI
             this.DependsGraphTree.Name = "DependsGraphTree";
             this.DependsGraphTree.Size = new System.Drawing.Size(494, 340);
             this.DependsGraphTree.TabIndex = 0;
+            this.DependsGraphTree.Margin = new System.Windows.Forms.Padding(0);
             this.DependsGraphTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.DependsGraphTree_NodeMouseDoubleClick);
             this.DependsGraphTree.ShowNodeToolTips = true;
             this.DependsGraphTree.ImageList = new System.Windows.Forms.ImageList(this.components)
@@ -113,7 +114,7 @@ namespace CKAN.GUI
             this.LegendTable.Location = new System.Drawing.Point(0, 0);
             this.LegendTable.Name = "LegendTable";
             this.LegendTable.Padding = new System.Windows.Forms.Padding(0, 6, 0, 0);
-            this.LegendTable.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
+            this.LegendTable.Margin = new System.Windows.Forms.Padding(0);
             this.LegendTable.RowCount = 3;
             this.LegendTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
             this.LegendTable.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));

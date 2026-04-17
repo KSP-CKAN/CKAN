@@ -205,7 +205,6 @@ namespace CKAN.GUI
             this.Controls.Add(this.OverallSummaryLabel);
             this.Controls.Add(this.LabelTable);
             this.Name = "Versions";
-            this.Padding = new System.Windows.Forms.Padding(6);
             this.Size = new System.Drawing.Size(500, 500);
             resources.ApplyResources(this, "$this");
             this.LabelTable.ResumeLayout(false);

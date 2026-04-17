@@ -95,11 +95,11 @@ namespace CKAN.GUI
             //
             // WarningLabel
             //
-            this.WarningLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.WarningLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.WarningLabel.ForeColor = System.Drawing.Color.Red;
             this.WarningLabel.Location = new System.Drawing.Point(9, 354);
             this.WarningLabel.Name = "WarningLabel";
-            this.WarningLabel.Size = new System.Drawing.Size(360, 32);
+            this.WarningLabel.Size = new System.Drawing.Size(360, 40);
             this.WarningLabel.TabIndex = 5;
             resources.ApplyResources(this.WarningLabel, "WarningLabel");
             //

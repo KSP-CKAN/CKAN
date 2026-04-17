@@ -84,7 +84,7 @@ namespace CKAN.GUI
             this.MainContentsPanel.Controls.Add(this.SaveButton);
             this.MainContentsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.MainContentsPanel.Name = "MainContentsPanel";
-            this.MainContentsPanel.Size = new System.Drawing.Size(443, 383);
+            this.MainContentsPanel.Size = new System.Drawing.Size(443, 418);
             //
             // InstancePathLabel
             //
@@ -103,13 +103,14 @@ namespace CKAN.GUI
             this.ActualInstancePathLabel.AutoSize = false;
             this.ActualInstancePathLabel.Location = new System.Drawing.Point(100, 11);
             this.ActualInstancePathLabel.Name = "ActualInstancePathLabel";
-            this.ActualInstancePathLabel.Size = new System.Drawing.Size(336, 32);
+            this.ActualInstancePathLabel.Size = new System.Drawing.Size(336, 36);
             this.ActualInstancePathLabel.TabIndex = 1;
             resources.ApplyResources(this.ActualInstancePathLabel, "ActualInstancePathLabel");
             //
             // GameVersionLabel
             //
-            this.GameVersionLabel.Location = new System.Drawing.Point(12, 43);
+            this.GameVersionLabel.AutoSize = true;
+            this.GameVersionLabel.Location = new System.Drawing.Point(12, 48);
             this.GameVersionLabel.Name = "GameVersionLabel";
             this.GameVersionLabel.Size = new System.Drawing.Size(75, 13);
             this.GameVersionLabel.TabIndex = 2;
@@ -118,7 +119,7 @@ namespace CKAN.GUI
             // ActualGameVersionLabel
             //
             this.ActualGameVersionLabel.AutoSize = true;
-            this.ActualGameVersionLabel.Location = new System.Drawing.Point(100, 43);
+            this.ActualGameVersionLabel.Location = new System.Drawing.Point(100, 48);
             this.ActualGameVersionLabel.Name = "ActualGameVersionLabel";
             this.ActualGameVersionLabel.Size = new System.Drawing.Size(53, 13);
             this.ActualGameVersionLabel.TabIndex = 3;
@@ -126,6 +127,7 @@ namespace CKAN.GUI
             //
             // ListHeaderLabel
             //
+            this.ListHeaderLabel.AutoSize = true;
             this.ListHeaderLabel.Location = new System.Drawing.Point(12, 73);
             this.ListHeaderLabel.Name = "ListHeaderLabel";
             this.ListHeaderLabel.Size = new System.Drawing.Size(422, 13);
@@ -140,9 +142,9 @@ namespace CKAN.GUI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.SelectedVersionsCheckedListBox.CheckOnClick = true;
             this.SelectedVersionsCheckedListBox.FormattingEnabled = true;
-            this.SelectedVersionsCheckedListBox.Location = new System.Drawing.Point(12, 88);
+            this.SelectedVersionsCheckedListBox.Location = new System.Drawing.Point(12, 100);
             this.SelectedVersionsCheckedListBox.Name = "selectedVersionsCheckedListBox";
-            this.SelectedVersionsCheckedListBox.Size = new System.Drawing.Size(419, 115);
+            this.SelectedVersionsCheckedListBox.Size = new System.Drawing.Size(419, 103);
             this.SelectedVersionsCheckedListBox.TabIndex = 5;
             //
             // clearSelectionButton
@@ -163,7 +165,7 @@ namespace CKAN.GUI
             //
             this.AddVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.AddVersionLabel.AutoSize = true;
-            this.AddVersionLabel.Location = new System.Drawing.Point(111, 216);
+            this.AddVersionLabel.Location = new System.Drawing.Point(150, 216);
             this.AddVersionLabel.Name = "AddVersionLabel";
             this.AddVersionLabel.Size = new System.Drawing.Size(93, 13);
             this.AddVersionLabel.TabIndex = 7;
@@ -175,9 +177,9 @@ namespace CKAN.GUI
             | System.Windows.Forms.AnchorStyles.Right));
             this.AddVersionToListTextBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
             this.AddVersionToListTextBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.AddVersionToListTextBox.Location = new System.Drawing.Point(242, 211);
+            this.AddVersionToListTextBox.Location = new System.Drawing.Point(262, 211);
             this.AddVersionToListTextBox.Name = "addVersionToListTextBox";
-            this.AddVersionToListTextBox.Size = new System.Drawing.Size(113, 15);
+            this.AddVersionToListTextBox.Size = new System.Drawing.Size(93, 15);
             this.AddVersionToListTextBox.TabIndex = 8;
             //
             // AddVersionToListButton
@@ -201,7 +203,7 @@ namespace CKAN.GUI
             | System.Windows.Forms.AnchorStyles.Right));
             this.WildcardExplanationLabel.Location = new System.Drawing.Point(12, 240);
             this.WildcardExplanationLabel.Name = "WildcardExplanationLabel";
-            this.WildcardExplanationLabel.Size = new System.Drawing.Size(419, 32);
+            this.WildcardExplanationLabel.Size = new System.Drawing.Size(419, 40);
             this.WildcardExplanationLabel.TabIndex = 10;
             resources.ApplyResources(this.WildcardExplanationLabel, "WildcardExplanationLabel");
             //
@@ -209,10 +211,10 @@ namespace CKAN.GUI
             //
             this.FutureUpdatesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right));
-            this.FutureUpdatesLabel.Location = new System.Drawing.Point(12, 273);
+            this.FutureUpdatesLabel.Location = new System.Drawing.Point(12, 283);
             this.FutureUpdatesLabel.Name = "FutureUpdatesLabel";
-            this.FutureUpdatesLabel.Size = new System.Drawing.Size(419, 32);
-            this.FutureUpdatesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.FutureUpdatesLabel.Size = new System.Drawing.Size(419, 40);
+            // this.FutureUpdatesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.FutureUpdatesLabel.TabIndex = 11;
             resources.ApplyResources(this.FutureUpdatesLabel, "FutureUpdatesLabel");
             //
@@ -221,9 +223,9 @@ namespace CKAN.GUI
             this.WarningLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right));
             this.WarningLabel.ForeColor = System.Drawing.Color.Red;
-            this.WarningLabel.Location = new System.Drawing.Point(12, 315);
+            this.WarningLabel.Location = new System.Drawing.Point(12, 326);
             this.WarningLabel.Name = "WarningLabel";
-            this.WarningLabel.Size = new System.Drawing.Size(419, 32);
+            this.WarningLabel.Size = new System.Drawing.Size(419, 40);
             this.WarningLabel.TabIndex = 12;
             resources.ApplyResources(this.WarningLabel, "WarningLabel");
             //
@@ -234,7 +236,7 @@ namespace CKAN.GUI
             this.CancelChooseCompatibleVersionsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelChooseCompatibleVersionsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CancelChooseCompatibleVersionsButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelChooseCompatibleVersionsButton.Location = new System.Drawing.Point(275, 350);
+            this.CancelChooseCompatibleVersionsButton.Location = new System.Drawing.Point(275, 380);
             this.CancelChooseCompatibleVersionsButton.Name = "cancelButton";
             this.CancelChooseCompatibleVersionsButton.Size = new System.Drawing.Size(75, 23);
             this.CancelChooseCompatibleVersionsButton.TabIndex = 14;
@@ -248,7 +250,7 @@ namespace CKAN.GUI
             this.SaveButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.SaveButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SaveButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SaveButton.Location = new System.Drawing.Point(356, 350);
+            this.SaveButton.Location = new System.Drawing.Point(356, 380);
             this.SaveButton.Name = "saveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 13;
@@ -259,16 +261,14 @@ namespace CKAN.GUI
             // CompatibleGameVersionsDialog
             //
             this.AcceptButton = this.SaveButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.CancelChooseCompatibleVersionsButton;
-            this.ClientSize = new System.Drawing.Size(443, 383);
+            this.ClientSize = new System.Drawing.Size(443, 418);
             this.Controls.Add(this.MainContentsPanel);
             this.Controls.Add(this.MessageLabel);
             this.Icon = EmbeddedImages.AppIcon;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(443, 383);
+            this.MinimumSize = new System.Drawing.Size(443, 418);
             this.HelpButton = true;
             this.Name = "CompatibleGameVersionsDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -278,6 +278,8 @@ namespace CKAN.GUI
             this.MainContentsPanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
         }
 
         #endregion

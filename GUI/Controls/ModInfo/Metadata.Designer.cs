@@ -161,7 +161,7 @@ namespace CKAN.GUI
             //
             this.AuthorsPanel.AutoSize = true;
             this.AuthorsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.AuthorsPanel.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
+            this.AuthorsPanel.Margin = new System.Windows.Forms.Padding(4, 0, 0, 10);
             this.AuthorsPanel.Padding = new System.Windows.Forms.Padding(0);
             this.AuthorsPanel.Location = new System.Drawing.Point(0, 0);
             this.AuthorsPanel.Name = "AuthorsPanel";

@@ -124,9 +124,9 @@
   <data name="ClearSelectionButton.Text" xml:space="preserve"><value>Clear selection</value></data>
   <data name="AddVersionLabel.Text" xml:space="preserve"><value>Add version to list:</value></data>
   <data name="AddVersionToListButton.Text" xml:space="preserve"><value>Add</value></data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve"><value>Note: Adding a version like "1.12" will force all mods compatible with 1.12.x (1.12.0, 1.12.1, etc.) to be compatible with this game instance.</value></data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve"><value>If the game is updated this dialog will be shown again so you can adjust your settings.</value></data>
-  <data name="WarningLabel.Text" xml:space="preserve"><value>Warning! There is no way to check if mod is truly compatible with versions selected here! Please act carefully.</value></data>
+  <data name="WildcardExplanationLabel.Text" xml:space="preserve"><value>Note: Adding a version like "1.12" will force all mods compatible with 1.12.x (1.12.0, 1.12.1, etc.) to be treated as compatible with this game instance.</value></data>
+  <data name="FutureUpdatesLabel.Text" xml:space="preserve"><value>If the game is updated, this dialog will be shown again so you can adjust your settings.</value></data>
+  <data name="WarningLabel.Text" xml:space="preserve"><value>Warning! There is no way to check if a mod is truly compatible with versions selected here! Please choose carefully.</value></data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve"><value>Cancel</value></data>
   <data name="SaveButton.Text" xml:space="preserve"><value>Accept</value></data>
 </root>

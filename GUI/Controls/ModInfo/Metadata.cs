@@ -100,7 +100,8 @@ namespace CKAN.GUI
                     AddResourceLink(Properties.Resources.ModInfoGogStoreLabel,              res.gogstore);
                     AddResourceLink(Properties.Resources.ModInfoEpicStoreLabel,             res.epicstore);
                 }
-                MetadataTable.ResumeLayout();
+                MetadataTable.ResumeLayout(true);
+                ResizeResourceRows();
             });
         }
 
@@ -112,7 +113,7 @@ namespace CKAN.GUI
             AuthorsPanel.Controls.Clear();
             AuthorsPanel.Controls.AddRange(
                 authors.Select(AuthorLink).ToArray());
-            AuthorsPanel.ResumeLayout();
+            AuthorsPanel.ResumeLayout(true);
         }
 
         private LinkLabel AuthorLink(string name)
@@ -212,7 +213,7 @@ namespace CKAN.GUI
 
         private void AddResourceLink(string label, Uri? link)
         {
-            const int vPadding = 5;
+            const int vPadding = 3;
             if (link != null)
             {
                 Label lbl = new Label()
@@ -251,6 +252,7 @@ namespace CKAN.GUI
             {
                 MetadataTable.SuspendLayout();
                 var rWidth = RightColumnWidth;
+                var g = CreateGraphics();
                 for (int row = staticRowCount; row < MetadataTable.RowStyles.Count; ++row)
                 {
                     if (MetadataTable.GetControlFromPosition(0, row) is Label lab
@@ -258,11 +260,11 @@ namespace CKAN.GUI
                     {
                         MetadataTable.RowStyles[row].Height = Math.Max(
                             // "Remote version file" wraps
-                            Util.LabelStringHeight(CreateGraphics(), lab),
+                            Util.LabelStringHeight(g, lab),
                             LinkLabelStringHeight(link, rWidth));
                     }
                 }
-                MetadataTable.ResumeLayout();
+                MetadataTable.ResumeLayout(true);
             }
         }
 

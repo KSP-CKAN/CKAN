@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
@@ -75,5 +77,39 @@ namespace CKAN.GUI
             }
         }
 
+        public static IEnumerable<string> WordWrap(this Graphics g,
+                                                   string        orig,
+                                                   float         maxPixelWidth,
+                                                   Font?         font = null,
+                                                   string        delim = " ")
+        {
+            font ??= SystemFonts.DefaultFont;
+            var delims = new string[] { delim };
+            var delimWidth = g.MeasureString(delim, font).Width;
+            foreach (var line in orig.Split(new string[] {"\r\n", "\n"}, StringSplitOptions.None))
+            {
+                var piece      = "";
+                var pieceWidth = 0f;
+                foreach (var word in line.Split(delims, StringSplitOptions.None))
+                {
+                    var wordWidth = g.MeasureString(word, font).Width;
+                    if (pieceWidth + (pieceWidth > 0 ? delimWidth : 0) + g.MeasureString(word, font).Width < maxPixelWidth)
+                    {
+                        piece      += (pieceWidth > 0 ? delim      : "") + word;
+                        pieceWidth += (pieceWidth > 0 ? delimWidth :  0) + wordWidth;
+                    }
+                    else
+                    {
+                        yield return piece;
+                        piece      = word;
+                        pieceWidth = wordWidth;
+                    }
+                }
+                if (piece is { Length: > 0 })
+                {
+                    yield return piece;
+                }
+            }
+        }
     }
 }
