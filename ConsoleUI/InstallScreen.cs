@@ -59,12 +59,12 @@ namespace CKAN.ConsoleUI {
                     bool retry = false;
                     do {
                         Draw();
+                        var regMgr   = RegistryManager.Instance(manager.CurrentInstance, repoData);
+                        var registry = regMgr.registry;
                         try {
                             // Reset this so we stop unless an exception sets it to true
                             retry = false;
 
-                            var regMgr   = RegistryManager.Instance(manager.CurrentInstance, repoData);
-                            var registry = regMgr.registry;
                             var stabilityTolerance = manager.CurrentInstance.StabilityToleranceConfig;
 
                             // GUI prompts user to choose recs/sugs,
@@ -136,13 +136,14 @@ namespace CKAN.ConsoleUI {
                             HandlePossibleConfigOnlyDirs(theme, registry, possibleConfigOnlyDirs);
 
                         } catch (TooManyModsProvideKraken ex) {
-
                             var ch = new ConsoleChoiceDialog<CkanModule>(
                                 theme,
                                 ex.Message,
                                 Properties.Resources.InstallTooManyModsNameHeader,
                                 ex.modules.ToList(),
-                                mod => mod.ToString()
+                                mod => mod.ToString(),
+                                (a, b) => (repoData.GetDownloadCount(registry.Repositories.Values, b.identifier) ?? 0)
+                                          - (repoData.GetDownloadCount(registry.Repositories.Values, a.identifier) ?? 0)
                             );
                             var chosen = ch.Run();
                             DrawBackground();

@@ -31,6 +31,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix missing conflicting recommendations (#4561 by: HebaruSan)
 - [Core] Fix item with the same key exception (#4569 by: HebaruSan)
 - [Core] Silently skip Steam libraries on missing drives (#4570 by: HebaruSan)
+- [ConsoleUI] Fit mod choice prompt to screen height in ConsoleUI (#4573 by: HebaruSan)
 
 ### Internal
 
