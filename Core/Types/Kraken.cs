@@ -677,11 +677,13 @@ namespace CKAN
                            .OfType<Uri>()
                            .ToArray()
                        is Uri[] { Length: > 0 } urls
-                           ? Properties.Resources.KrakenIsDLC
+                           ? string.Format(Properties.Resources.KrakenIsDLC,
+                                           module.name)
                              + string.Format(Properties.Resources.KrakenIsDLCStorePage,
                                              string.Join(Environment.NewLine,
                                                          urls.Select(u => $"- {u}")))
-                           : Properties.Resources.KrakenIsDLC))
+                           : string.Format(Properties.Resources.KrakenIsDLC,
+                                           module.name)))
         {
             this.module = module;
         }
