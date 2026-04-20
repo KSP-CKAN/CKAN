@@ -2,16 +2,12 @@
 <root>
   <!--
     Microsoft ResX Schema
-
     Version 2.0
-
     The primary goals of this format is to allow a simple XML format
     that is mostly human readable. The generation and parsing of the
     various data types are done through the TypeConverter classes
     associated with the data types.
-
     Example:
-
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,34 +22,27 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
     There are any number of "resheader" rows that contain simple
     name/value pairs.
-
     Each data row contains a name, and value. The row also contains a
     type or mimetype. Type corresponds to a .NET class that support
     text/value conversion through the TypeConverter architecture.
     Classes that don't support this are serialized and stored with the
     mimetype set.
-
     The mimetype is used for serialized objects, and tells the
     ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-
     Note - application/x-microsoft.net.object.binary.base64 is the format
     that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-
     mimetype: application/x-microsoft.net.object.binary.base64
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
     mimetype: application/x-microsoft.net.object.soap.base64
     value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
-
     mimetype: application/x-microsoft.net.object.bytearray.base64
     value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
@@ -117,108 +106,52 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
-    <value>&lt;NINGUNO&gt;</value>
+  <data name="openDirectoryMenuItem.Text" xml:space="preserve">
+    <value>Abrir directorio</value>
   </data>
-  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve">
-    <value>Error</value>
+  <data name="GameInstallName.Text" xml:space="preserve">
+    <value>Nombre</value>
   </data>
-  <data name="MainDeleteLockfileYes" xml:space="preserve">
-    <value>Forzar</value>
+  <data name="Game.Text" xml:space="preserve">
+    <value>Juego</value>
   </data>
-  <data name="MainDeleteLockfileNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="GameInstallVersion.Text" xml:space="preserve">
+    <value>Versión</value>
   </data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Instalar</value>
+  <data name="GamePlayTime.Text" xml:space="preserve">
+    <value>Horas de juego</value>
   </data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="GameInstallPath.Text" xml:space="preserve">
+    <value>Ruta</value>
   </data>
-  <data name="MainInstallNo" xml:space="preserve">
-    <value>No</value>
+  <data name="SelectButton.Text" xml:space="preserve">
+    <value>Seleccionar</value>
   </data>
-  <data name="ModInfoLicenseLabel" xml:space="preserve">
-    <value>Licencia:</value>
+  <data name="AddNewButton.Text" xml:space="preserve">
+    <value>Nueva instancia de juego</value>
   </data>
-  <data name="Downloading" xml:space="preserve">
-    <value>Descargando {0}</value>
+  <data name="AddToCKANMenuItem.Text" xml:space="preserve">
+    <value>Agregar instancia a CKAN</value>
   </data>
-  <data name="SettingsDialogSummmary" xml:space="preserve">
-    <value>{0} ficheros, {1}, {2} libres</value>
+  <data name="ImportFromSteamMenuItem.Text" xml:space="preserve">
+    <value>Importar de Steam</value>
   </data>
-  <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve">
-    <value>{0} ficheros, {1}, espacio libre desconocido</value>
+  <data name="ImportFromSteamMenuItem.TooltipText" xml:space="preserve">
+    <value>Escanea tu biblioteca de Steam en busca de directorios reconocidos y añadirlos como instancias</value>
   </data>
-  <data name="SettingsDialogSummaryInvalid" xml:space="preserve">
-    <value>Ruta no válida: {0}</value>
+  <data name="CloneGameInstanceMenuItem.Text" xml:space="preserve">
+    <value>Clonar instancia</value>
   </data>
-  <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve">
-    <value>Eliminar</value>
+  <data name="RenameButton.Text" xml:space="preserve">
+    <value>Renombrar</value>
   </data>
-  <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="SetAsDefaultCheckbox.Text" xml:space="preserve">
+    <value>Establecer por defecto</value>
   </data>
-  <data name="AddAuthTokenHost" xml:space="preserve">
-    <value>Host:</value>
+  <data name="ForgetButton.Text" xml:space="preserve">
+    <value>Olvidar</value>
   </data>
-  <data name="AddAuthTokenToken" xml:space="preserve">
-    <value>Token:</value>
-  </data>
-  <data name="AddAuthTokenCancel" xml:space="preserve">
-    <value>&amp;Cancelar</value>
-  </data>
-  <data name="EditLabelsDialogDelete" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="EditLabelsDialogCancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="EditLabelsDialogSave" xml:space="preserve">
-    <value>Guardar</value>
-  </data>
-  <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="TriStateToggleYesTooltip" xml:space="preserve">
-    <value>Sí</value>
-  </data>
-  <data name="TriStateToggleNoTooltip" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="ModSearchInstalledSuffix" xml:space="preserve">
-    <value>instalado</value>
-  </data>
-  <data name="ChangeTypeInstall" xml:space="preserve">
-    <value>Instalar</value>
-  </data>
-  <data name="ChangeTypeRemove" xml:space="preserve">
-    <value>Quitar</value>
-  </data>
-  <data name="ChangeTypeUpdate" xml:space="preserve">
-    <value>Actualizar</value>
-  </data>
-  <data name="ChangeTypeReplace" xml:space="preserve">
-    <value>Reemplazar</value>
-  </data>
-  <data name="ModDownloadsFailedColHdr" xml:space="preserve">
-    <value>Mod</value>
-  </data>
-  <data name="RepoDownloadsFailedColHdr" xml:space="preserve">
-    <value>Repositorio</value>
-  </data>
-  <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Gestionar instancias de juego</value>
   </data>
 </root>

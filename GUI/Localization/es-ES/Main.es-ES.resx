@@ -117,108 +117,100 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
-    <value>&lt;NINGUNO&gt;</value>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>32</value>
+  </metadata>
+  <data name="FileToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Archivo</value>
   </data>
-  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve">
-    <value>Error</value>
+  <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Gestionar instancias de juego</value>
   </data>
-  <data name="MainDeleteLockfileYes" xml:space="preserve">
-    <value>Forzar</value>
+  <data name="ManageGameInstancesToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Añadir, clonar o cambiar a otras instancias de juego</value>
   </data>
-  <data name="MainDeleteLockfileNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Abrir directorio del juego</value>
   </data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Instalar</value>
+  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Historial de instalación...</value>
   </data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="InstallationHistoryToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Explorar historial de mods que fueron instalados anteriormente</value>
   </data>
-  <data name="MainInstallNo" xml:space="preserve">
-    <value>No</value>
+  <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Instalar desde archivo .ckan...</value>
   </data>
-  <data name="ModInfoLicenseLabel" xml:space="preserve">
-    <value>Licencia:</value>
+  <data name="InstallFromckanToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Elija un archivo .ckan que contenga metadatos para un módulo e instálelo</value>
   </data>
-  <data name="Downloading" xml:space="preserve">
-    <value>Descargando {0}</value>
+  <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Importar mods &amp;descargados...</value>
   </data>
-  <data name="SettingsDialogSummmary" xml:space="preserve">
-    <value>{0} ficheros, {1}, {2} libres</value>
+  <data name="ImportDownloadsToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Seleccionar archivos ZIP descargados fuera de CKAN y ponerlos en la caché para la instalación</value>
   </data>
-  <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve">
-    <value>{0} ficheros, {1}, espacio libre desconocido</value>
+  <data name="DeduplicateToolStripMenuItem.Text" xml:space="preserve">
+    <value>Deduplicar archivos instalados...</value>
   </data>
-  <data name="SettingsDialogSummaryInvalid" xml:space="preserve">
-    <value>Ruta no válida: {0}</value>
+  <data name="DeduplicateToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Escanear archivos instalados en todas las instancias de juego y compartir los que pueden ser compartidos</value>
   </data>
-  <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve">
-    <value>Eliminar</value>
+  <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Guardar lista de mods instalada (no se puede reimportar)...</value>
   </data>
-  <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="ExportModPackToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Exportar modpack (puede ser reimportado)...</value>
   </data>
-  <data name="AddAuthTokenHost" xml:space="preserve">
-    <value>Host:</value>
+  <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Revisar &amp;recomendaciones</value>
   </data>
-  <data name="AddAuthTokenToken" xml:space="preserve">
-    <value>Token:</value>
+  <data name="AuditRecommendationsToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Revisar recomendaciones y sugerencias de todos los mods instalados</value>
   </data>
-  <data name="AddAuthTokenCancel" xml:space="preserve">
-    <value>&amp;Cancelar</value>
+  <data name="DownloadStatisticsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Descargar estadísticas...</value>
   </data>
-  <data name="EditLabelsDialogDelete" xml:space="preserve">
-    <value>Eliminar</value>
+  <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Tiempo de juego...</value>
   </data>
-  <data name="EditLabelsDialogCancel" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="ViewPlayTimeToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Ver y editar cuánto tiempo has jugado cada instancia de juego</value>
   </data>
-  <data name="EditLabelsDialogSave" xml:space="preserve">
-    <value>Guardar</value>
+  <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Archivos no administrados...</value>
   </data>
-  <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="ViewUnmanagedFilesToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Listar archivos en esta instancia de juego que no fueron instalados por CKAN</value>
   </data>
-  <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Salir</value>
   </data>
-  <data name="TriStateToggleYesTooltip" xml:space="preserve">
-    <value>Sí</value>
+  <data name="settingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Ajustes</value>
   </data>
-  <data name="TriStateToggleNoTooltip" xml:space="preserve">
-    <value>No</value>
+  <data name="cKANSettingsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Ajustes de CKAN</value>
   </data>
-  <data name="ModSearchInstalledSuffix" xml:space="preserve">
-    <value>instalado</value>
+  <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Líneas de comandos del juego</value>
   </data>
-  <data name="ChangeTypeInstall" xml:space="preserve">
-    <value>Instalar</value>
+  <data name="GameCommandlineToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Configurar cómo ejecutar esta instancia del juego</value>
   </data>
-  <data name="ChangeTypeRemove" xml:space="preserve">
-    <value>Quitar</value>
+  <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Versiones de juego compatibles</value>
   </data>
-  <data name="ChangeTypeUpdate" xml:space="preserve">
+  <data name="minimizeNotifyIcon.Text" xml:space="preserve">
+    <value>CKAN</value>
+  </data>
+  <data name="refreshToolStripMenuItem.Text" xml:space="preserve">
     <value>Actualizar</value>
   </data>
-  <data name="ChangeTypeReplace" xml:space="preserve">
-    <value>Reemplazar</value>
+  <data name="cKANSettingsToolStripMenuItem1.Text" xml:space="preserve">
+    <value>Ajustes de CKAN</value>
   </data>
-  <data name="ModDownloadsFailedColHdr" xml:space="preserve">
-    <value>Mod</value>
-  </data>
-  <data name="RepoDownloadsFailedColHdr" xml:space="preserve">
-    <value>Repositorio</value>
-  </data>
-  <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="DownloadStatisticsOKButton.Text" xml:space="preserve">
+    <value>Ok</value>
   </data>
 </root>

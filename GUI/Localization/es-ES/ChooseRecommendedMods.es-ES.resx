@@ -117,108 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"/>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
-  <data name="CompatibleGameVersionsDialogNone" xml:space="preserve">
-    <value>&lt;NINGUNO&gt;</value>
+  <data name="UncheckAllButton.Text" xml:space="preserve">
+    <value>Deseleccionar todo</value>
   </data>
-  <data name="CompatibleGameVersionsDialogErrorTitle" xml:space="preserve">
-    <value>Error</value>
+  <data name="AlwaysUncheckAllButton.Text" xml:space="preserve">
+    <value>Siempre desmarcar todo</value>
   </data>
-  <data name="MainDeleteLockfileYes" xml:space="preserve">
-    <value>Forzar</value>
+  <data name="CheckAllButton.Text" xml:space="preserve">
+    <value>Seleccionar todo</value>
   </data>
-  <data name="MainDeleteLockfileNo" xml:space="preserve">
+  <data name="CheckRecommendationsButton.Text" xml:space="preserve">
+    <value>Seleccionar recomendaciones</value>
+  </data>
+  <data name="CheckSuggestionsButton.Text" xml:space="preserve">
+    <value>Seleccionar sugerencias</value>
+  </data>
+  <data name="RecommendedModsCancelButton.Text" xml:space="preserve">
     <value>Cancelar</value>
   </data>
-  <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Instalar</value>
+  <data name="RecommendedModsContinueButton.Text" xml:space="preserve">
+    <value>Continuar</value>
   </data>
-  <data name="AllModVersionsInstallNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="RecommendedDialogLabel.Text" xml:space="preserve">
+    <value>Los módulos seleccionados recomiendan, sugieren o soportan los siguientes módulos:</value>
   </data>
-  <data name="MainInstallNo" xml:space="preserve">
-    <value>No</value>
+  <data name="RecommendationsGroup.Header" xml:space="preserve">
+    <value>Recomendaciones</value>
   </data>
-  <data name="ModInfoLicenseLabel" xml:space="preserve">
-    <value>Licencia:</value>
+  <data name="SuggestionsGroup.Header" xml:space="preserve">
+    <value>Sugerencias</value>
   </data>
-  <data name="Downloading" xml:space="preserve">
-    <value>Descargando {0}</value>
+  <data name="SupportedByGroup.Header" xml:space="preserve">
+    <value>Soportado por (no respaldado por los mods seleccionados)</value>
   </data>
-  <data name="SettingsDialogSummmary" xml:space="preserve">
-    <value>{0} ficheros, {1}, {2} libres</value>
-  </data>
-  <data name="SettingsDialogSummmaryFreeSpaceUnknown" xml:space="preserve">
-    <value>{0} ficheros, {1}, espacio libre desconocido</value>
-  </data>
-  <data name="SettingsDialogSummaryInvalid" xml:space="preserve">
-    <value>Ruta no válida: {0}</value>
-  </data>
-  <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="AddAuthTokenHost" xml:space="preserve">
-    <value>Host:</value>
-  </data>
-  <data name="AddAuthTokenToken" xml:space="preserve">
-    <value>Token:</value>
-  </data>
-  <data name="AddAuthTokenCancel" xml:space="preserve">
-    <value>&amp;Cancelar</value>
-  </data>
-  <data name="EditLabelsDialogDelete" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="EditLabelsDialogCancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="EditLabelsDialogSave" xml:space="preserve">
-    <value>Guardar</value>
-  </data>
-  <data name="ChangesetConfirmRemoveAutoRemovalNo" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="ChangesetConfirmRemoveUserRequestedNo" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="TriStateToggleYesTooltip" xml:space="preserve">
-    <value>Sí</value>
-  </data>
-  <data name="TriStateToggleNoTooltip" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="ModSearchInstalledSuffix" xml:space="preserve">
-    <value>instalado</value>
-  </data>
-  <data name="ChangeTypeInstall" xml:space="preserve">
-    <value>Instalar</value>
-  </data>
-  <data name="ChangeTypeRemove" xml:space="preserve">
-    <value>Quitar</value>
-  </data>
-  <data name="ChangeTypeUpdate" xml:space="preserve">
-    <value>Actualizar</value>
-  </data>
-  <data name="ChangeTypeReplace" xml:space="preserve">
-    <value>Reemplazar</value>
-  </data>
-  <data name="ModDownloadsFailedColHdr" xml:space="preserve">
+  <data name="ModNameHeader.Text" xml:space="preserve">
     <value>Mod</value>
   </data>
-  <data name="RepoDownloadsFailedColHdr" xml:space="preserve">
-    <value>Repositorio</value>
+  <data name="SourceModulesHeader.Text" xml:space="preserve">
+    <value>Mod relacionado</value>
   </data>
-  <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
-    <value>Eliminar</value>
-  </data>
-  <data name="DeleteUnmanagedFileCancel" xml:space="preserve">
-    <value>Cancelar</value>
-  </data>
-  <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
-    <value>Cancelar</value>
+  <data name="DescriptionHeader.Text" xml:space="preserve">
+    <value>Descripción del mod</value>
   </data>
 </root>
