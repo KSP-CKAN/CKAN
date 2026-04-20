@@ -471,6 +471,12 @@ Jeśli podejrzewasz błąd w programie: https://github.com/KSP-CKAN/CKAN/issues/
   <data name="ModInfoSteamStoreLabel" xml:space="preserve">
     <value>Sklep steam:</value>
   </data>
+  <data name="ModInfoGogStoreLabel" xml:space="preserve">
+    <value>Sklep GOG:</value>
+  </data>
+  <data name="ModInfoEpicStoreLabel" xml:space="preserve">
+    <value>Sklep Epic Games:</value>
+  </data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve">
     <value>Kliknij Ctrl lub Shift, aby przykleić</value>
   </data>
@@ -632,6 +638,9 @@ Znajdź folder, w którym twoja gra jest zainstalowana i wybierz jeden z tych pl
   </data>
   <data name="SettingsToolTipClearCacheButton" xml:space="preserve">
     <value>Usuń pliki z pamięci podręcznej</value>
+  </data>
+  <data name="SettingsDialogCacheProgress" xml:space="preserve">
+    <value>Przenoszenie ({0}%)</value>
   </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
     <value>{0} plików, {1}, {2} wolne</value>

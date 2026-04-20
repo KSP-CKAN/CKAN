@@ -129,6 +129,9 @@
   <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Otwórz folder gry</value>
   </data>
+  <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;historia instalacji...</value>
+  </data>
   <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Zainstaluj z .ckan...</value>
   </data>
@@ -143,6 +146,9 @@
   </data>
   <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>Audytuj &amp;rekomendacje</value>
+  </data>
+  <data name="DownloadStatisticsToolStripMenuItem.Text" xml:space="preserve">
+    <value>Pobierz statystyki...</value>
   </data>
   <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>Czas gry...</value>
