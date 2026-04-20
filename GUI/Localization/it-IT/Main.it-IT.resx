@@ -126,14 +126,23 @@
   <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Gestione istanze di gioco</value>
   </data>
+  <data name="ManageGameInstancesToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Aggiungi, clona o  passa a un'altra istanza di gioco</value>
+  </data>
   <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Apri Cartella Di Gioco</value>
   </data>
   <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Cronologia Installazioni...</value>
   </data>
+  <data name="InstallationHistoryToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Sfoglia la cronologia delle mod installate in passato</value>
+  </data>
   <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Installa da .ckan...</value>
+  </data>
+  <data name="InstallFromckanToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Seleziona un file .ckan contenente i metadati di un modulo e installalo</value>
   </data>
   <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>Importa mods &amp;scaricate...</value>

@@ -117,6 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="autoCheckLabel.Text" xml:space="preserve">
+    <value>Vorresti che CKAN controlli automaticamente se ci sono nuove versioni di CKAN all'avvio?
+
+Puoi controllare manualmente se ci sono nuove versioni di CKAN o modificare questa impostazione in futuro nella finestra delle Impostazioni</value>
+  </data>
   <data name="YesButton.Text" xml:space="preserve">
     <value>Sì, verifica aggiornamenti</value>
   </data>

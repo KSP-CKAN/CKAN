@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="groupBox1.Text" xml:space="preserve">
-    <value>Plugins Attivi</value>
+    <value>Plugin Attivi</value>
   </data>
   <data name="groupBox2.Text" xml:space="preserve">
     <value>Plugin Dormienti</value>
