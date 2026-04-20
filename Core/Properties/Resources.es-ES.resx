@@ -268,10 +268,37 @@ Actualice CKAN para cargar esta instancia de juego.</value>
   <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve">
     <value>¡No se encontraron archivos que coincidan con {0} para instalar!</value>
   </data>
+  <data name="RelationshipDescriptorAnyOfJoiner" xml:space="preserve">
+    <value>{0} O {1}</value>
+  </data>
+  <data name="GameInstanceManagerCacheMigrationNotEnoughFreeSpace" xml:space="preserve">
+    <value>¡No hay suficiente espacio para mover los archivos!</value>
+  </data>
+  <data name="ModuleInstallerInstallingMod" xml:space="preserve">
+    <value>Instalando {0}...</value>
+  </data>
   <data name="ModuleInstallerContinuePrompt" xml:space="preserve">
     <value>¿Continuar?</value>
   </data>
   <data name="KrakenInstanceNameTaken" xml:space="preserve">
     <value>Este nombre de instancia ya está siendo utilizado: {0}</value>
+  </data>
+  <data name="RelationshipTypeProvides" xml:space="preserve">
+    <value>Proporciona</value>
+  </data>
+  <data name="RelationshipTypeDepends" xml:space="preserve">
+    <value>Depende de</value>
+  </data>
+  <data name="RelationshipTypeRecommends" xml:space="preserve">
+    <value>Se recomienda</value>
+  </data>
+  <data name="RelationshipTypeSuggests" xml:space="preserve">
+    <value>Sugiere</value>
+  </data>
+  <data name="RelationshipTypeSupports" xml:space="preserve">
+    <value>Soporta</value>
+  </data>
+  <data name="RelationshipTypeConflicts" xml:space="preserve">
+    <value>Conflictos</value>
   </data>
 </root>

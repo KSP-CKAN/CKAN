@@ -127,7 +127,7 @@
     <value>Ricarica</value>
   </data>
   <data name="UpdateAllToolButton.Text" xml:space="preserve">
-    <value>Aggiungi aggiornamenti disponibili</value>
+    <value>Aggiorna tutto</value>
   </data>
   <data name="ApplyToolButton.Text" xml:space="preserve">
     <value>Applica modifiche</value>

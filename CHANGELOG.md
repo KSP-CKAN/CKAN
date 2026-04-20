@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Auto-size new repo popup to fit rows in list (#4543 by: HebaruSan)
 - [GUI] DPI-based font scaling for Mono (#4566 by: HebaruSan)
 - [Core] Purge ZIPs corrupted after downloading (#4577 by: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4578 by: HebaruSan)
 
 ### Bugfixes
 

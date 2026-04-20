@@ -221,6 +221,11 @@
   <data name="RegistryManagerDefaultModpackAbstract" xml:space="preserve">
     <value>已安装在 KSP 实例 {0} 的模组列表</value>
   </data>
+  <data name="RegistryManagerRegistryVersionNotSupported" xml:space="preserve">
+    <value>此版本的 CKAN 太旧无法加载:
+{0}
+更新 CKAN以加载游戏实例。</value>
+  </data>
   <data name="CkanModuleDeserialisationError" xml:space="preserve">
     <value>JSON 反序列化错误: {0}</value>
   </data>
@@ -262,6 +267,9 @@
   </data>
   <data name="ModuleInstallDescriptorNoFilesFound" xml:space="preserve">
     <value>没有找到匹配 {0} 的文件来安装！</value>
+  </data>
+  <data name="ModuleInstallDescriptorNotMatchingLeadingPath" xml:space="preserve">
+    <value>输出文件名 ({0}) 不匹配stanza 的主要路径 ({1})</value>
   </data>
   <data name="ModuleInstallDescriptorAsNoPathSeparators" xml:space="preserve">
     <value>`as` 不能含有路径分隔符</value>
@@ -382,6 +390,9 @@
   <data name="GameInstanceCloneInvalid" xml:space="preserve">
     <value>所选实例并非有效的 {0} 实例</value>
   </data>
+  <data name="GameInstanceManagerCloneNotEnoughFreeSpace" xml:space="preserve">
+    <value>目标路径空间不足，无法复制文件！</value>
+  </data>
   <data name="GameInstanceFakeBadVersion" xml:space="preserve">
     <value>选中的 {0} 版本并非已知版本: {1}</value>
   </data>
@@ -419,6 +430,9 @@
   </data>
   <data name="ModuleInstallerInstalledMod" xml:space="preserve">
     <value>安装 {0} 完成</value>
+  </data>
+  <data name="ModuleInstallerInstalledModFiltered" xml:space="preserve">
+    <value>安装完成了 {0} ({1} 文件已过滤)</value>
   </data>
   <data name="ModuleInstallerUpdatingRegistry" xml:space="preserve">
     <value>正在更新注册表</value>
@@ -613,6 +627,9 @@ Owning Mod(已有Mod): {2}</value>
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
     <value>我们的下载由于证书错误失败了！</value>
   </data>
+  <data name="KrakenRequestTimedOut" xml:space="preserve">
+    <value>URL 超时： {0}</value>
+  </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>从 {0} 下载时被限速了。
 请考虑添加一个验证 token 来提高限制速率。</value>
@@ -626,6 +643,10 @@ Owning Mod(已有Mod): {2}</value>
   <data name="KrakenIsDLC" xml:space="preserve">
     <value>CKAN无法安装扩展‘ {0}’。</value>
   </data>
+  <data name="KrakenIsDLCStorePage" xml:space="preserve">
+    <value>如需安装、升级或卸载此扩展包，请前往其商店页面购买，并按照指引进行操作：
+{0}</value>
+  </data>
   <data name="NotEnoughSpaceToCache" xml:space="preserve">
     <value>缓存文件夹中没有足够空间来存储模块 ！</value>
   </data>
@@ -637,6 +658,18 @@ Owning Mod(已有Mod): {2}</value>
 需要存储 {3} 到 {1}，但只有 {2} 可用！
 释放该设备上的空间，或更改您的设置以使用另一个位置。
 </value>
+  </data>
+  <data name="KrakenNotGameDir" xml:space="preserve">
+    <value>实例无效： {0}</value>
+  </data>
+  <data name="KrakenInstanceNameTaken" xml:space="preserve">
+    <value>此实例名称已被占用： {0}</value>
+  </data>
+  <data name="KrakenNoInstance" xml:space="preserve">
+    <value>没有具有此名称或此路径的实例: {0}</value>
+  </data>
+  <data name="DirectoryNotEmpty" xml:space="preserve">
+    <value>目录非空: {0}</value>
   </data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} 与 {1} 冲突</value>
@@ -676,6 +709,10 @@ Owning Mod(已有Mod): {2}</value>
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>由 {0} 推荐</value>
+  </data>
+  <data name="ResolvedRelationshipsTreeUnsatisfied" xml:space="preserve">
+    <value>安装时无法满足 {0} ：
+{1}</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (元软件包)</value>
@@ -718,6 +755,18 @@ Owning Mod(已有Mod): {2}</value>
   </data>
   <data name="ReleaseStatusDevelopmentDescription" xml:space="preserve">
     <value>前沿尝鲜版（极不稳定）</value>
+  </data>
+  <data name="FoundDuplicatesConfirmation" xml:space="preserve">
+    <value>找到 {0} 重复的已安装文件。是否去重？</value>
+  </data>
+  <data name="DeduplicatedRelPath" xml:space="preserve">
+    <value>删除了{1}的{0}份重复文件</value>
+  </data>
+  <data name="DoneDeduplicatingFiles" xml:space="preserve">
+    <value>去重完成。节省空间：{0}</value>
+  </data>
+  <data name="NoDuplicatesFound" xml:space="preserve">
+    <value>未找到重复安装的文件。</value>
   </data>
   <data name="ModuleLabelListFavourites" xml:space="preserve">
     <value>收藏</value>

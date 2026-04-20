@@ -470,6 +470,12 @@
   <data name="ModInfoSteamStoreLabel" xml:space="preserve">
     <value>Steam商店：</value>
   </data>
+  <data name="ModInfoGogStoreLabel" xml:space="preserve">
+    <value>GOG商店：</value>
+  </data>
+  <data name="ModInfoEpicStoreLabel" xml:space="preserve">
+    <value>Epic 游戏商店：</value>
+  </data>
   <data name="ModInfoToolTipReverseRelationships" xml:space="preserve">
     <value>Ctrl-单击或Shift-单击以置顶</value>
   </data>
@@ -632,6 +638,9 @@
   <data name="SettingsToolTipClearCacheButton" xml:space="preserve">
     <value>从缓存中删除文件</value>
   </data>
+  <data name="SettingsDialogCacheProgress" xml:space="preserve">
+    <value>移动中... ({0}%)</value>
+  </data>
   <data name="SettingsDialogSummmary" xml:space="preserve">
     <value>{0} 文件, {1}, {2} 空余</value>
   </data>
@@ -696,6 +705,12 @@
   </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;复制链接地址</value>
+  </data>
+  <data name="UtilShowHideLink" xml:space="preserve">
+    <value>&amp;切换隐藏带标签 {0} 的模块</value>
+  </data>
+  <data name="UtilAddRemoveModuleLink" xml:space="preserve">
+    <value>在 {0} 中包含/排除当前模块(&amp;T)</value>
   </data>
   <data name="StatusInstanceLabelTextWithPlayTime" xml:space="preserve">
     <value>游戏实例： {0} ({1} {2}, 已游玩 {3}h)</value>
@@ -956,6 +971,12 @@
   <data name="ManageModsHiddenLabelsAndTags" xml:space="preserve">
     <value>隐藏标签和分类：</value>
   </data>
+  <data name="ManageModsLabelAddMultiple" xml:space="preserve">
+    <value>{0} (添加 {1} 模组)</value>
+  </data>
+  <data name="ManageModsLabelRemoveMultiple" xml:space="preserve">
+    <value>{0} (删除 {1} 模组)</value>
+  </data>
   <data name="ManageModsRefreshStaleToolTip" xml:space="preserve">
     <value>您的模组列表上次更新于 {0} 天前。
 请定期点击“刷新”以保持最新状态。
@@ -1042,8 +1063,40 @@ Ctrl-单击或Shift-单击以合并当前搜索</value>
   <data name="SelectionDialogDefault" xml:space="preserve">
     <value>{0} (默认)</value>
   </data>
+  <data name="MainInstallDeduplicateScanning" xml:space="preserve">
+    <value>正在检查其他游戏实例，以排查可能重复的安装文件……</value>
+  </data>
+  <data name="MainDeduplicateWaitTitle" xml:space="preserve">
+    <value>正在复制安装的文件</value>
+  </data>
+  <data name="MainDeduplicateScanning" xml:space="preserve">
+    <value>正在扫描重复安装的文件……</value>
+  </data>
   <data name="InstallFiltersAddPreset" xml:space="preserve">
     <value>过滤 {0}</value>
+  </data>
+  <data name="InstallFiltersGlobalFiltersForGame" xml:space="preserve">
+    <value>{0} 的全局筛选器</value>
+  </data>
+  <data name="DownloadStatisticsPieChartTitle" xml:space="preserve">
+    <value>下载量（按服务器）</value>
+  </data>
+  <data name="DownloadStatisticsTableDonateLinkText" xml:space="preserve">
+    <value>捐赠</value>
+  </data>
+  <data name="DownloadStatisticsTableDonateLinkToolTip" xml:space="preserve">
+    <value>点击以在您的浏览器中打开 {0} 的捐赠链接</value>
+  </data>
+  <data name="InstallAllCheckboxConfirmation" xml:space="preserve">
+    <value>您已选择以下mod但尚未安装：
+
+{0}
+
+勾选此项将取消对上述mod的选择。此操作不可撤销。
+您确定要这样做吗？</value>
+  </data>
+  <data name="InstallAllCheckboxConfirmationYes" xml:space="preserve">
+    <value>反选</value>
   </data>
   <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve">
     <value>取消</value>

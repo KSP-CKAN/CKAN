@@ -132,6 +132,9 @@
   <data name="AuthorLabel.Text" xml:space="preserve">
     <value>作者:</value>
   </data>
+  <data name="DownloadCountLabel.Text" xml:space="preserve">
+    <value>下载量：</value>
+  </data>
   <data name="LicenseLabel.Text" xml:space="preserve">
     <value>协议:</value>
   </data>

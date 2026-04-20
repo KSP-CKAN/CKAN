@@ -615,6 +615,9 @@ Odwiedź tę stronę, aby uzyskać pomoc:
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
     <value>Nasze pobieranie nie powiodło się z błędem certyfikatu!</value>
   </data>
+  <data name="KrakenRequestTimedOut" xml:space="preserve">
+    <value>Adres URL wygasł: {0}</value>
+  </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>Pobieranie z {0} zostało ograniczone.
 Rozważ dodanie tokenu uwierzytelniającego, aby zwiększyć limit ograniczania.</value>
@@ -645,8 +648,14 @@ Należy przechować {3} do {1}, ale dostępne jest tylko {2}!
 Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokalizacji.
 </value>
   </data>
+  <data name="KrakenNotGameDir" xml:space="preserve">
+    <value>Nieprawidłowa instancja: {0}</value>
+  </data>
   <data name="KrakenInstanceNameTaken" xml:space="preserve">
     <value>Ta nazwa instalacji jest już zajęta: {0}</value>
+  </data>
+  <data name="KrakenNoInstance" xml:space="preserve">
+    <value>Brak instancji o tej nazwie lub ścieżce: {0} </value>
   </data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} koliduje z {1}</value>
@@ -686,6 +695,10 @@ Zwolnij miejsce na tym urządzeniu lub zmień ustawienia, aby użyć innej lokal
   </data>
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>Zalecane przez {0}</value>
+  </data>
+  <data name="ResolvedRelationshipsTreeUnsatisfied" xml:space="preserve">
+    <value>Nie można spełnić {0} podczas instalacji:
+{1}</value>
   </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapackage)</value>

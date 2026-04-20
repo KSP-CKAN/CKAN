@@ -126,17 +126,35 @@
   <data name="ManageGameInstancesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;管理游戏</value>
   </data>
+  <data name="ManageGameInstancesToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>添加、克隆或切换到其他游戏实例</value>
+  </data>
   <data name="OpenGameDirectoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;打开游戏目录</value>
   </data>
   <data name="InstallationHistoryToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;历史安装记录...</value>
   </data>
+  <data name="InstallationHistoryToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>浏览mod安装历史</value>
+  </data>
   <data name="InstallFromckanToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;从.ckan文件安装Mod...</value>
   </data>
+  <data name="InstallFromckanToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>选择包含一个模组元数据的.ckan文件并安装模组</value>
+  </data>
   <data name="ImportDownloadsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;导入已下载Mod...</value>
+  </data>
+  <data name="ImportDownloadsToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>选择从 CKAN 之外下载的 ZIP 文件并将它们放入缓存以进行安装</value>
+  </data>
+  <data name="DeduplicateToolStripMenuItem.Text" xml:space="preserve">
+    <value>正在对已安装的文件去重……</value>
+  </data>
+  <data name="DeduplicateToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>扫描所有游戏实例中已安装的文件并共享可以共享的文件</value>
   </data>
   <data name="ExportModListToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;保存已安装的模组列表 (无法重新导入)...</value>
@@ -147,11 +165,23 @@
   <data name="AuditRecommendationsToolStripMenuItem.Text" xml:space="preserve">
     <value>检查推荐</value>
   </data>
+  <data name="AuditRecommendationsToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>查看所有已安装模组的推荐和建议</value>
+  </data>
+  <data name="DownloadStatisticsToolStripMenuItem.Text" xml:space="preserve">
+    <value>下载统计……</value>
+  </data>
   <data name="ViewPlayTimeToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;游玩时间...</value>
   </data>
+  <data name="ViewPlayTimeToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>查看并编辑您玩每个游戏实例的时间</value>
+  </data>
   <data name="ViewUnmanagedFilesToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;未管理文件...</value>
+  </data>
+  <data name="ViewUnmanagedFilesToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>列出此游戏实例中未被CKAN安装的文件</value>
   </data>
   <data name="ExitToolStripMenuItem.Text" xml:space="preserve">
     <value>退出</value>
@@ -165,14 +195,26 @@
   <data name="GameCommandlineToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;游戏启动选项</value>
   </data>
+  <data name="GameCommandlineToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>配置此游戏实例运行方式</value>
+  </data>
   <data name="compatibleGameVersionsToolStripMenuItem.Text" xml:space="preserve">
     <value>兼容的游戏版本</value>
+  </data>
+  <data name="compatibleGameVersionsToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>选择游戏版本以指定哪些mod是兼容的</value>
   </data>
   <data name="preferredHostsToolStripMenuItem.Text" xml:space="preserve">
     <value>首选&amp;服务器</value>
   </data>
+  <data name="preferredHostsToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>配置下载服务器优先级</value>
+  </data>
   <data name="installFiltersToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;安装路径过滤</value>
+  </data>
+  <data name="installFiltersToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>阻止安装一些模组文件</value>
   </data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;插件</value>
@@ -251,6 +293,9 @@
   </data>
   <data name="InstallationHistoryTabPage.Text" xml:space="preserve">
     <value>安装历史记录</value>
+  </data>
+  <data name="DownloadStatisticsTabPage.Text" xml:space="preserve">
+    <value>下载统计信息</value>
   </data>
   <data name="DownloadStatisticsOKButton.Text" xml:space="preserve">
     <value>确认</value>

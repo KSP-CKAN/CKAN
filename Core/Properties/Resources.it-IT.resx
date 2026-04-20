@@ -450,6 +450,9 @@ Sovrascrivere?</value>
   <data name="ModuleInstallerRemovingMod" xml:space="preserve">
     <value>Rimozione di {0}...</value>
   </data>
+  <data name="ModuleInstallerRemovedMod" xml:space="preserve">
+    <value>Finito di rimuovere {0}</value>
+  </data>
   <data name="ModuleInstallerAboutToUpgrade" xml:space="preserve">
     <value>Stai per aggiornare:</value>
   </data>
@@ -487,6 +490,9 @@ Rimuovilo manualmente prima di provare a installarlo.</value>
   <data name="ModuleInstallerReplaceNotInstalled" xml:space="preserve">
     <value>Non è possibile sostituire {0} perché non è installato. Prova invece a installare {1}.</value>
   </data>
+  <data name="ModuleInstallerImportScanningFiles" xml:space="preserve">
+    <value>Scansione dei file...</value>
+  </data>
   <data name="ModuleInstallerImportAlreadyCached" xml:space="preserve">
     <value>Già in cache: {0}</value>
   </data>
@@ -520,6 +526,9 @@ Se il gioco è ancora in esecuzione, chiuderlo e riprovare. Altrimenti controlla
   </data>
   <data name="KrakenMissingDependency" xml:space="preserve">
     <value>{0} dipendenza mancante {1}</value>
+  </data>
+  <data name="KrakenMissingDependencyNeededFor" xml:space="preserve">
+    <value>necessario per {0}</value>
   </data>
   <data name="KrakenConflictsWith" xml:space="preserve">
     <value>{0} conflitti con {1}</value>
@@ -593,6 +602,9 @@ Consulta questa pagina per aiuto:
   <data name="KrakenMissingCertificateNotUnix" xml:space="preserve">
     <value>Il nostro download è fallito con un errore di certificato!</value>
   </data>
+  <data name="KrakenRequestTimedOut" xml:space="preserve">
+    <value>URL scaduto: {0}</value>
+  </data>
   <data name="KrakenDownloadThrottled" xml:space="preserve">
     <value>Il download da {0} è stato limitato.
 Prendi in considerazione l'aggiunta di un token di autenticazione per aumentare il limite prima del throttling.</value>
@@ -623,8 +635,17 @@ Hai bisogno di memorizzare {3} su {1}, ma sono disponibili soltanto {2}!
 Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'altra posizione.
 </value>
   </data>
+  <data name="KrakenNotGameDir" xml:space="preserve">
+    <value>L'istanza non è valida: {0}</value>
+  </data>
   <data name="KrakenInstanceNameTaken" xml:space="preserve">
     <value>Il nome dell'istanza è già stato preso: {0}</value>
+  </data>
+  <data name="KrakenNoInstance" xml:space="preserve">
+    <value>Nessuna istanza con questo nome o in questo percorso: {0}</value>
+  </data>
+  <data name="DirectoryNotEmpty" xml:space="preserve">
+    <value>Cartella non vuota: {0}</value>
   </data>
   <data name="RelationshipResolverConflictsWith" xml:space="preserve">
     <value>{0} conflitti con {1}</value>
@@ -665,6 +686,10 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   <data name="RelationshipResolverRecommendedReason" xml:space="preserve">
     <value>Raccomandata da {0}</value>
   </data>
+  <data name="ResolvedRelationshipsTreeUnsatisfied" xml:space="preserve">
+    <value>Impossibile soddisfare {0} durante l'installazione:
+{1}</value>
+  </data>
   <data name="NetModuleCacheMetapackage" xml:space="preserve">
     <value>{0} {1} (metapacchetto)</value>
   </data>
@@ -682,6 +707,15 @@ Libera spazio su quel dispositivo o modifica le impostazioni per utilizzare un'a
   </data>
   <data name="ModpackName" xml:space="preserve">
     <value>installata-{0}</value>
+  </data>
+  <data name="InstalledModuleToString" xml:space="preserve">
+    <value>{0} (installato {1})</value>
+  </data>
+  <data name="InstalledModuleToStringAutoInstalled" xml:space="preserve">
+    <value>{0} (installato {1}, installato automaticamente)</value>
+  </data>
+  <data name="ReleaseStatusStableName" xml:space="preserve">
+    <value>Stabile</value>
   </data>
   <data name="ModuleLabelListFavourites" xml:space="preserve">
     <value>Preferiti</value>

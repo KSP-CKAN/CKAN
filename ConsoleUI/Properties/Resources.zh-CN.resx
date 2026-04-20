@@ -441,6 +441,9 @@
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>名称</value>
   </data>
+  <data name="InstallDeduplicateScanning" xml:space="preserve">
+    <value>正在检查其他游戏实例，以排查可能重复的安装文件……</value>
+  </data>
   <data name="DeleteDirectoriesHeader" xml:space="preserve">
     <value>删除目录</value>
   </data>
@@ -793,6 +796,21 @@
   </data>
   <data name="ModListFilterMenuTip" xml:space="preserve">
     <value>编辑要排除在安装范围之外的文件和文件夹列表</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesMenu" xml:space="preserve">
+    <value>正在对已安装的文件去重……</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesMenuTip" xml:space="preserve">
+    <value>正在扫描游戏副本并以硬链接整合重复文件</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesProgressTitle" xml:space="preserve">
+    <value>正在复制安装的文件</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesProgressMessage" xml:space="preserve">
+    <value>正在扫描重复实例……</value>
+  </data>
+  <data name="ModListDeduplicateInstalledFilesScanning" xml:space="preserve">
+    <value>正在扫描重复实例……</value>
   </data>
   <data name="ModListHelpMenu" xml:space="preserve">
     <value>帮助</value>
