@@ -143,7 +143,7 @@ namespace CKAN
             if (e.ChangeType == WatcherChangeTypes.Deleted)
             {
                 log.DebugFormat("Purging hashes reactively: {0}", e.FullPath);
-                PurgeHashes(null, e.FullPath);
+                PurgeHashes(e.FullPath);
             }
         }
 
@@ -232,7 +232,7 @@ namespace CKAN
                     // Local file too old, delete it
                     log.Debug("Found stale file, deleting it");
                     File.Delete(file);
-                    PurgeHashes(null, file);
+                    PurgeHashes(file);
                 }
             }
             else
@@ -422,7 +422,7 @@ namespace CKAN
             string targetPath = Path.Combine(cachePath.FullName, fullName);
 
             // Purge hashes associated with the new file
-            PurgeHashes(txFileMgr, targetPath);
+            PurgeHashes(targetPath);
 
             log.InfoFormat("Storing {0} in {1}", path, targetPath);
 
@@ -454,11 +454,10 @@ namespace CKAN
             if (GetCachedFilename(url) is string file
                 && File.Exists(file))
             {
-                var txFileMgr = new TxFileManager();
-                txFileMgr.Delete(file);
+                File.Delete(file);
                 // We've changed our cache, so signal that immediately.
                 cachedFiles?.Remove(CreateURLHash(url));
-                PurgeHashes(txFileMgr, file);
+                PurgeHashes(file);
                 return true;
             }
             return false;
@@ -470,16 +469,14 @@ namespace CKAN
                    .ToArray()
                    .Any(found => found);
 
-        private void PurgeHashes(TxFileManager? txFileMgr, string file)
+        private void PurgeHashes(string file)
         {
             try
             {
                 sha1Cache.TryRemove(file, out _);
                 sha256Cache.TryRemove(file, out _);
-
-                txFileMgr ??= new TxFileManager();
-                txFileMgr.Delete($"{file}.sha1");
-                txFileMgr.Delete($"{file}.sha256");
+                File.Delete($"{file}.sha1");
+                File.Delete($"{file}.sha256");
             }
             catch
             {

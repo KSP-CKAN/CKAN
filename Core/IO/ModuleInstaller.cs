@@ -291,31 +291,41 @@ namespace CKAN.IO
             User.RaiseMessage(Properties.Resources.ModuleInstallerInstallingMod,
                               $"{module.name} {module.version}");
 
-            using (var transaction = CkanTransaction.CreateTransactionScope())
+            try
             {
-                // Install all the things!
-                var files = InstallModule(module, filename, registry, candidateDuplicates,
-                                          ref possibleConfigOnlyDirs, out int filteredCount, progress);
-
-                // Register our module and its files.
-                registry.RegisterModule(module, files, instance, autoInstalled);
-
-                // Finish our transaction, but *don't* save the registry; we may be in an
-                // intermediate, inconsistent state.
-                // This is fine from a transaction standpoint, as we may not have an enclosing
-                // transaction, and if we do, they can always roll us back.
-                transaction.Complete();
-
-                if (filteredCount > 0)
+                using (var transaction = CkanTransaction.CreateTransactionScope())
                 {
-                    User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledModFiltered,
-                                      $"{module.name} {module.version}", filteredCount);
+                    // Install all the things!
+                    var files = InstallModule(module, filename, registry, candidateDuplicates,
+                                              ref possibleConfigOnlyDirs, out int filteredCount, progress);
+
+                    // Register our module and its files.
+                    registry.RegisterModule(module, files, instance, autoInstalled);
+
+                    // Finish our transaction, but *don't* save the registry; we may be in an
+                    // intermediate, inconsistent state.
+                    // This is fine from a transaction standpoint, as we may not have an enclosing
+                    // transaction, and if we do, they can always roll us back.
+                    transaction.Complete();
+
+                    if (filteredCount > 0)
+                    {
+                        User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledModFiltered,
+                                          $"{module.name} {module.version}", filteredCount);
+                    }
+                    else
+                    {
+                        User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
+                                          $"{module.name} {module.version}");
+                    }
                 }
-                else
-                {
-                    User.RaiseMessage(Properties.Resources.ModuleInstallerInstalledMod,
-                                      $"{module.name} {module.version}");
-                }
+            }
+            catch (ZipException zexc)
+            {
+                cache.Purge(module);
+                throw new InvalidModuleFileKraken(module, filename ?? "",
+                                                  string.Format(Properties.Resources.ModuleInstallerCorruptInCache,
+                                                                module, zexc.Message));
             }
 
             // Fire our callback that we've installed a module, if we have one.

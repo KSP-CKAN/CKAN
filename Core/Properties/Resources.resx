@@ -265,6 +265,10 @@ Please remove manually before trying to install it.</value></data>
   <data name="ModuleInstallerImportNotFound" xml:space="preserve"><value>Not found in index: {0}</value></data>
   <data name="ModuleInstallerImportInstallPrompt" xml:space="preserve"><value>Install {0} compatible imported mods in game instance {1} ({2})?</value></data>
   <data name="ModuleInstallerImportDeletePrompt" xml:space="preserve"><value>Scanning complete. Delete {0} old files after import?</value></data>
+  <data name="ModuleInstallerCorruptInCache" xml:space="preserve"><value>Download for {0} was corrupted and has been purged.
+This may be due to a failing storage device; you should back up all important data, scan your storage device for errors, and replace it as soon as you can.
+If you try installing this module again, it will be re-downloaded and may succeed.
+Exception details: {1}</value></data>
   <data name="KrakenDependencyNotSatisfied" xml:space="preserve"><value>Dependency on {0} version {1} not satisfied</value></data>
   <data name="KrakenDependencyModuleNotFound" xml:space="preserve"><value>Module not found: {0} {1}</value></data>
   <data name="KrakenProvidedByMoreThanOne" xml:space="preserve"><value>{1} requires {0}, which can be provided by multiple mods.
