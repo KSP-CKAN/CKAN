@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Sort Contents tab alphanumerically, folders first (#4529 by: HebaruSan)
 - [GUI] Auto-size new repo popup to fit rows in list (#4543 by: HebaruSan)
 - [GUI] DPI-based font scaling for Mono (#4566 by: HebaruSan)
+- [Core] Purge ZIPs corrupted after downloading (#4577 by: HebaruSan)
 
 ### Bugfixes
 

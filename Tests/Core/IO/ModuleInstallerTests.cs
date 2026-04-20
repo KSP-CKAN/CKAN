@@ -2322,6 +2322,39 @@ namespace Tests.Core.IO
             }
         }
 
+        [Test]
+        public void InstallList_CorruptInCache_PurgesAndThrows()
+        {
+            // Arrange
+            using (var repo     = new TemporaryRepository(TestData.DogeCoinFlag_101()))
+            using (var repoData = new TemporaryRepositoryData(nullUser, repo.repo))
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                           new Repository[] { repo.repo }))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
+            {
+                var installer = new ModuleInstaller(inst.KSP, cache, config, nullUser);
+                var cachePath = cache.Store(TestData.DogeCoinFlag_101_module(),
+                                            TestData.DogeCoinFlagZip(),
+                                            null)!;
+                File.Copy(TestData.DogeCoinFlagZipCorrupt(), cachePath, true);
+
+                // Act / Assert
+                var exc = Assert.Throws<InvalidModuleFileKraken>(() =>
+                {
+                    HashSet<string>? possibleConfigOnlyDirs = null;
+                    installer.InstallList(new CkanModule[] { TestData.DogeCoinFlag_101_module() },
+                                          new RelationshipResolverOptions(inst.KSP.StabilityToleranceConfig),
+                                          regMgr, ref possibleConfigOnlyDirs);
+                });
+                FileAssert.DoesNotExist(cachePath);
+                Assert.AreEqual("Download for DogeCoinFlag 1.01 was corrupted and has been purged.\r\nThis may be due to a failing storage device; you should back up all important data, scan your storage device for errors, and replace it as soon as you can.\r\nIf you try installing this module again, it will be re-downloaded and may succeed.\r\nException details: Cannot find central directory",
+                                exc?.Message);
+            }
+        }
+
         public static IEnumerable<string> AbsoluteInstalledPaths(GameInstance  inst,
                                                                  CKAN.Registry registry)
             => registry.InstalledFileInfo()
