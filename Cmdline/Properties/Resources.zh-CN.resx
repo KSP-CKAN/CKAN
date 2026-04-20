@@ -195,4 +195,7 @@
   <data name="StabilityListModHeader" xml:space="preserve">
     <value>Mod</value>
   </data>
+  <data name="ScanningForDuplicates" xml:space="preserve">
+    <value>正在扫描重复安装的文件……</value>
+  </data>
 </root>
