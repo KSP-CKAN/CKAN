@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Fix item with the same key exception (#4569 by: HebaruSan)
 - [Core] Silently skip Steam libraries on missing drives (#4570 by: HebaruSan)
 - [ConsoleUI] Fit mod choice prompt to screen height in ConsoleUI (#4573 by: HebaruSan)
+- [Build] Remove symlink-based DLL deduplication from MacOS build (#4557 by: HebaruSan)
 
 ### Internal
 
