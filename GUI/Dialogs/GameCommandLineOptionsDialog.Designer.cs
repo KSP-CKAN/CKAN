@@ -70,6 +70,7 @@ namespace CKAN.GUI
             this.CmdLineGrid.StandardTab = false;
             this.CmdLineGrid.TabIndex = 1;
             this.CmdLineGrid.EditingControlShowing += this.CmdLineGrid_EditingControlShowing;
+            this.CmdLineGrid.CellValueChanged += this.CmdLineGrid_CellValueChanged;
             this.CmdLineGrid.UserDeletingRow += this.CmdLineGrid_UserDeletingRow;
             //
             // CmdLineColumn

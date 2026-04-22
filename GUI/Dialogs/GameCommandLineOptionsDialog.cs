@@ -40,6 +40,7 @@ namespace CKAN.GUI
                                          AllowRemove = true,
                                      };
             this.defaults = defaults;
+            EnableDisableReset();
             return ShowDialog(parent);
         }
 
@@ -67,6 +68,11 @@ namespace CKAN.GUI
             }
         }
 
+        private void CmdLineGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            EnableDisableReset();
+        }
+
         private void CmdLineGrid_UserDeletingRow(object sender, DataGridViewRowCancelEventArgs e)
         {
             // You can't delete the last row
@@ -74,6 +80,12 @@ namespace CKAN.GUI
             {
                 e.Cancel = true;
             }
+            EnableDisableReset();
+        }
+
+        private void EnableDisableReset()
+        {
+            ResetToDefaultsButton.Enabled = defaults != null && !Results.SequenceEqual(defaults);
         }
 
         private void ResetToDefaultsButton_Click(object? sender, EventArgs? e)
@@ -86,6 +98,7 @@ namespace CKAN.GUI
                                          AllowEdit   = true,
                                          AllowRemove = true,
                                      };
+            EnableDisableReset();
         }
 
         private void AddButton_Click(object? sender, EventArgs? e)
@@ -101,6 +114,7 @@ namespace CKAN.GUI
                 CmdLineGrid.CurrentCell = first;
             }
             CmdLineGrid.BeginEdit(false);
+            EnableDisableReset();
         }
 
         private void AcceptChangesButton_Click(object? sender, EventArgs? e)
