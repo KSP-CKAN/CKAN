@@ -68,6 +68,31 @@ namespace CKAN.GUI
             }
         }
 
+        private void PlayTimeGrid_CurrentCellChanged(object sender, EventArgs e)
+        {
+            // DataGridView doesn't like changing the current cell in the notification
+            // for current cell changed
+            if (IsHandleCreated)
+            {
+                BeginInvoke(new MethodInvoker(SkipReadOnlyCells));
+            }
+        }
+
+        private void SkipReadOnlyCells()
+        {
+            // Bounce out of uneditable cells
+            if (PlayTimeGrid.CurrentCell is
+                {
+                    OwningColumn: { ReadOnly: true },
+                    RowIndex:     int row,
+                    ColumnIndex:  int col,
+                }
+                && col + 1 < PlayTimeGrid.ColumnCount)
+            {
+                PlayTimeGrid.CurrentCell = PlayTimeGrid.Rows[row].Cells[col + 1];
+            }
+        }
+
         private void PlayTimeGrid_CellValueChanged(object sender, DataGridViewCellEventArgs evt)
         {
             ShowTotal();
