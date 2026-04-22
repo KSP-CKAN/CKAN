@@ -54,6 +54,7 @@ namespace CKAN.Games
         Uri DefaultRepositoryURL  { get; }
         Uri RepositoryListURL     { get; }
         Uri MetadataBugtrackerURL { get; }
+        Uri DiscordURL            { get; }
         Uri ModSupportURL         { get; }
     }
 }

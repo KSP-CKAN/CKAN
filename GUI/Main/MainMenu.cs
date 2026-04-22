@@ -183,14 +183,12 @@ namespace CKAN.GUI
 
         #region Help menu
 
-        private void userGuideToolStripMenuItem_Click(object? sender, EventArgs? e)
+        private void gameDiscordToolStripMenuItem_Click(object? sender, EventArgs? e)
         {
-            Utilities.ProcessStartURL(HelpURLs.UserGuide);
-        }
-
-        private void discordToolStripMenuItem_Click(object? sender, EventArgs? e)
-        {
-            Utilities.ProcessStartURL(HelpURLs.CKANDiscord);
+            if (CurrentInstance != null)
+            {
+                Utilities.ProcessStartURL(CurrentInstance.Game.DiscordURL.ToString());
+            }
         }
 
         private void modSupportToolStripMenuItem_Click(object? sender, EventArgs? e)
@@ -199,6 +197,16 @@ namespace CKAN.GUI
             {
                 Utilities.ProcessStartURL(CurrentInstance.Game.ModSupportURL.ToString());
             }
+        }
+
+        private void userGuideToolStripMenuItem_Click(object? sender, EventArgs? e)
+        {
+            Utilities.ProcessStartURL(HelpURLs.UserGuide);
+        }
+
+        private void discordToolStripMenuItem_Click(object? sender, EventArgs? e)
+        {
+            Utilities.ProcessStartURL(HelpURLs.CKANDiscord);
         }
 
         private void reportClientIssueToolStripMenuItem_Click(object? sender, EventArgs? e)
