@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using Cake.Common;
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
+using Cake.Common.Tools.ILMerge;
+using Cake.Common.Tools.ILRepack;
 using Cake.Core;
 using Cake.Core.IO;
 using Cake.Frosting;
@@ -135,6 +137,37 @@ public partial class BuildContext : FrostingContext
                 Paths.RootDirectory.GetRelativePath(target),
                 Paths.RootDirectory.GetRelativePath(log));
         }
+    }
+
+    public void Repack(FilePath               target,
+                       DirectoryPath          assembliesPath,
+                       string                 sourceFilename,
+                       TargetPlatformVersion? targetPlatform,
+                       FilePath               logFile)
+    {
+        this.CreateDirectory(target.GetDirectory());
+        this.CreateDirectory(logFile.GetDirectory());
+        var source     = assembliesPath.CombineWithFilePath(sourceFilename);
+        var assemblyPaths = this.GetFiles($"{assembliesPath}/*.dll");
+        // Need facade to instantiate types from netstandard2.0 DLLs on Mono
+        assemblyPaths.Add(FacadesDirectory().CombineWithFilePath("netstandard.dll"));
+        assemblyPaths.Add(this.GetFiles($"{assembliesPath}/*/*.resources.dll"));
+        if (target.FullPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+        {
+            assemblyPaths.Add(this.GetFiles($"{assembliesPath}/*.exe"));
+        }
+        assemblyPaths.Remove(source);
+        ReportRepacking(target, logFile);
+        this.ILRepack(target, source, assemblyPaths,
+                      new ILRepackSettings
+                      {
+                          Libs                 = [assembliesPath],
+                          TargetPlatform       = targetPlatform,
+                          Parallel             = true,
+                          Verbose              = false,
+                          SetupProcessSettings = RepackSilently,
+                          Log                  = logFile.FullPath,
+                      });
     }
 
     public static void RepackSilently(ProcessSettings settings)
