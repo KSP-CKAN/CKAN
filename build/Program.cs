@@ -36,7 +36,7 @@ public static class Program
                     .Combine("_build")
                     .Combine("tools"));
             })
-            .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.27"))
+            .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.44"))
             .InstallTool(new Uri("nuget:?package=NUnit.ConsoleRunner&version=3.16.3"))
             .InstallTool(new Uri("nuget:?package=altcover&version=9.0.1"))
             .InstallTool(new Uri("nuget:?package=altcover.api&version=9.0.1"))
