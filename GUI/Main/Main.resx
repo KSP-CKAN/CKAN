@@ -154,9 +154,14 @@
   <data name="installFiltersToolStripMenuItem.ToolTipText" xml:space="preserve"><value>Prevent some mod files from being installed</value></data>
   <data name="pluginsToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Plugins</value></data>
   <data name="helpToolStripMenuItem.Text" xml:space="preserve"><value>&amp;Help</value></data>
+  <data name="gameDiscordToolStripMenuItem.Text" xml:space="preserve"><value>Game &amp;Discord</value></data>
+  <data name="gameDiscordToolStripMenuItem.ToolTipText" xml:space="preserve"><value>Chat about game related topics
+(dump your B9PartSwitch error screenshots here!)</value></data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve"><value>Get help for an in-game problem with mods</value></data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve"><value>CKAN &amp;user guide</value></data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve"><value>CKAN &amp;Discord</value></data>
-  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve"><value>Get help for an in-game problem with mods</value></data>
+  <data name="discordToolStripMenuItem.ToolTipText" xml:space="preserve"><value>Discuss CKAN and get help with CKAN-related problems
+(see the other Discord option for in-game help with mods)</value></data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with the CKAN &amp;client</value></data>
   <data name="reportMetadataIssueToolStripMenuItem.Text" xml:space="preserve"><value>Report an issue with mod &amp;metadata</value></data>
   <data name="aboutToolStripMenuItem.Text" xml:space="preserve"><value>&amp;About</value></data>

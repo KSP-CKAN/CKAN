@@ -457,6 +457,9 @@ namespace CKAN.GUI
                                             .Resolve<IConfiguration>(),
                               configuration);
 
+            gameDiscordToolStripMenuItem.Text = string.Format("{0} Discord",
+                                                              CurrentInstance.Game.ShortName);
+
             if (configuration.CheckForUpdatesOnLaunch && CheckForCKANUpdate())
             {
                 UpdateCKAN();

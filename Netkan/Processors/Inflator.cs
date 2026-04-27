@@ -5,10 +5,12 @@ using System.Linq;
 using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
+using Newtonsoft.Json.Linq;
 using log4net;
 
 using CKAN.Configuration;
 using CKAN.NetKAN.Model;
+using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Validators;
@@ -82,7 +84,7 @@ namespace CKAN.NetKAN.Processors
                 {
                     // Mix properties between sections if they don't start with x_netkan
                     var stripped = netkans.Select(nk => nk.Json())
-                                          .Select(StripNetkanMetadataTransformer.Strip)
+                                          .Select(json => json.StripProperties(IsHostRelated))
                                           .ToArray();
                     netkans = netkans.Select(nk => nk.MergeFrom(stripped))
                                      .ToArray();
@@ -137,6 +139,9 @@ namespace CKAN.NetKAN.Processors
                 throw;
             }
         }
+
+        private static bool IsHostRelated(JProperty prop)
+            => prop.Name.StartsWith("x_netkan") || prop.Name == "$kref";
 
         internal void ValidateCkan(Metadata ckan)
         {

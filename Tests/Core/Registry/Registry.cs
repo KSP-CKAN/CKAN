@@ -60,6 +60,27 @@ namespace Tests.Core.Registry
         }
 
         [Test]
+        public void LatestAvailableWithProvides_SameIdentifierInMultipleRepos_SinglePerIdentifier()
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var repo1 = new TemporaryRepository(TestData.kOS_014()))
+            using (var repo2 = new TemporaryRepository(TestData.kOS_014_epoch()))
+            using (var repoData = new TemporaryRepositoryData(user, repo1.repo, repo2.repo))
+            {
+                repo2.repo.name = "temp2";
+                var registry = new CKAN.Registry(repoData.Manager, repo1.repo, repo2.repo);
+
+                // Act
+                var found = registry.LatestAvailableWithProvides("kOS", stabilityTolerance, null);
+
+                // Assert
+                CollectionAssert.AreEquivalent(new CkanModule[] { TestData.kOS_014_epoch_module() },
+                                               found);
+            }
+        }
+
+        [Test]
         public void CompatibleModules_NoDLCInstalled_ExcludesModulesDependingOnMH()
         {
             // Arrange

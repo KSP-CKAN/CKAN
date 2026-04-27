@@ -56,6 +56,38 @@ namespace System.Linq
 
         #if NETFRAMEWORK || NETSTANDARD2_0
 
+        public static TSource? MaxBy<TSource, TKey>(this IEnumerable<TSource> source,
+                                                    Func<TSource, TKey>       keySelector,
+                                                    IComparer<TKey>?          comparer = null)
+        {
+            using (var iterator = source.GetEnumerator())
+            {
+                if (!iterator.MoveNext())
+                {
+                    if (default(TSource) == null)
+                    {
+                        return default;
+                    }
+                    throw new InvalidOperationException("Sequence contains no elements");
+                }
+
+                comparer ??= Comparer<TKey>.Default;
+                var maxElement = iterator.Current;
+                var maxKey     = keySelector(maxElement);
+                while (iterator.MoveNext())
+                {
+                    var currentElement = iterator.Current;
+                    var currentKey     = keySelector(currentElement);
+                    if (comparer.Compare(currentKey, maxKey) > 0)
+                    {
+                        maxElement = currentElement;
+                        maxKey     = currentKey;
+                    }
+                }
+                return maxElement;
+            }
+        }
+
         /// <summary>
         /// Eliminate duplicate elements based on the value returned by a callback
         /// </summary>

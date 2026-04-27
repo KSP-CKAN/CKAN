@@ -68,6 +68,10 @@ namespace Tests.NetKAN.Processors
                                      ]
                                  }
                              ]");
+                http.Setup(h => h.DownloadText(It.Is<Uri>(u => u.Host == "spacedock.info"),
+                                               It.IsAny<string?>(), It.IsAny<string?>()))
+                    .Returns(@"{""name"":""Doge Coin Flag"",""id"":1234,""game"":""Kerbal Space Program"",""game_id"":3102,""short_description"":""A fake mod for testing"",""downloads"":0,""followers"":0,""author"":""pjf"",""default_version_id"":1,""shared_authors"":[],""license"":""MIT"",""url"":""/mod/1234/DogeCoinFlag"",""versions"":[{""friendly_version"":""1.0"",""game_version"":""1.2.2"",""id"":1,""download_path"":""/mod/1234/DogeCoinFlag/download/1.0"",""downloads"":0}],""description"":""A fake mod for testing""}");
+
                 http.Setup(h => h.DownloadModule(It.IsAny<Metadata>()))
                     .Returns(TestData.DogeCoinFlagImportableZip());
 

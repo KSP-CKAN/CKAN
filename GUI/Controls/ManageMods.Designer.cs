@@ -371,6 +371,7 @@ namespace CKAN.GUI
             //
             // Installed
             //
+            this.Installed.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.Installed.Name = "Installed";
             this.Installed.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Installed.Frozen = true;
@@ -381,6 +382,7 @@ namespace CKAN.GUI
             //
             // AutoInstalled
             //
+            this.AutoInstalled.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.AutoInstalled.Name = "AutoInstalled";
             this.AutoInstalled.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.AutoInstalled.Frozen = true;
@@ -391,6 +393,7 @@ namespace CKAN.GUI
             //
             // UpdateCol
             //
+            this.UpdateCol.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.UpdateCol.Name = "UpdateCol";
             this.UpdateCol.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UpdateCol.Frozen = true;
@@ -401,6 +404,7 @@ namespace CKAN.GUI
             //
             // ReplaceCol
             //
+            this.ModName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.ReplaceCol.Name = "ReplaceCol";
             this.ReplaceCol.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ReplaceCol.Frozen = true;
@@ -411,22 +415,25 @@ namespace CKAN.GUI
             //
             // ModName
             //
+            this.ModName.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.ModName.Name = "ModName";
             this.ModName.ReadOnly = true;
             this.ModName.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.ModName.Width = 250;
+            this.ModName.MinimumWidth = 250;
             resources.ApplyResources(this.ModName, "ModName");
             //
             // Author
             //
+            this.Author.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Author.Name = "Author";
             this.Author.ReadOnly = true;
             this.Author.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Author.Width = 120;
+            this.Author.MinimumWidth = 120;
             resources.ApplyResources(this.Author, "Author");
             //
             // InstalledVersion
             //
+            this.InstalledVersion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.InstalledVersion.Name = "InstalledVersion";
             this.InstalledVersion.ReadOnly = true;
             this.InstalledVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -435,14 +442,16 @@ namespace CKAN.GUI
             //
             // LatestVersion
             //
+            this.LatestVersion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.LatestVersion.Width = 70;
+            this.LatestVersion.MinimumWidth = 70;
             resources.ApplyResources(this.LatestVersion, "LatestVersion");
             //
             // GameCompatibility
             //
+            this.GameCompatibility.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.GameCompatibility.Name = "GameCompatibility";
             this.GameCompatibility.ReadOnly = true;
             this.GameCompatibility.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -451,6 +460,7 @@ namespace CKAN.GUI
             //
             // DownloadSize
             //
+            this.DownloadSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.DownloadSize.Name = "DownloadSize";
             this.DownloadSize.ReadOnly = true;
             this.DownloadSize.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -459,6 +469,7 @@ namespace CKAN.GUI
             //
             // InstallSize
             //
+            this.InstallSize.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.InstallSize.Name = "InstallSize";
             this.InstallSize.ReadOnly = true;
             this.InstallSize.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -467,6 +478,7 @@ namespace CKAN.GUI
             //
             // ReleaseDate
             //
+            this.ReleaseDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.ReleaseDate.Name = "ReleaseDate";
             this.ReleaseDate.ReadOnly = true;
             this.ReleaseDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -475,6 +487,7 @@ namespace CKAN.GUI
             //
             // InstallDate
             //
+            this.InstallDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.InstallDate.Name = "InstallDate";
             this.InstallDate.ReadOnly = true;
             this.InstallDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -483,6 +496,7 @@ namespace CKAN.GUI
             //
             // DownloadCount
             //
+            this.DownloadCount.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCellsExceptHeader;
             this.DownloadCount.Name = "DownloadCount";
             this.DownloadCount.ReadOnly = true;
             this.DownloadCount.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
@@ -492,10 +506,11 @@ namespace CKAN.GUI
             //
             // Description
             //
+            this.Description.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Description.Name = "Description";
             this.Description.ReadOnly = true;
             this.Description.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.Description.Width = 821;
+            this.Description.MinimumWidth = 600;
             resources.ApplyResources(this.Description, "Description");
             //
             // ModListContextMenuStrip

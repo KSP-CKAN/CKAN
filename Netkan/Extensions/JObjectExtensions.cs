@@ -103,5 +103,37 @@ namespace CKAN.NetKAN.Extensions
             };
         }
 
+        public static JObject StripProperties(this JObject json, Func<JProperty, bool> match)
+        {
+            var propertiesToRemove = new List<string>();
+            foreach (var property in json.Properties())
+            {
+                if (match(property))
+                {
+                    propertiesToRemove.Add(property.Name);
+                }
+                else
+                {
+                    switch (property.Value)
+                    {
+                        case JObject jobj:
+                            jobj.StripProperties(match);
+                            break;
+                        case JArray jarr:
+                            foreach (var element in jarr.OfType<JObject>())
+                            {
+                                element.StripProperties(match);
+                            }
+                            break;
+                    }
+                }
+            }
+            foreach (var propertyName in propertiesToRemove)
+            {
+                json.Remove(propertyName);
+            }
+            return json;
+        }
+
     }
 }

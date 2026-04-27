@@ -1649,7 +1649,8 @@ namespace CKAN.GUI
             // Update our mod listing
             MainModList = new ModList(guiMods, currentInstance,
                                       ModuleLabelList.ModuleLabels, ModuleTagList.ModuleTags,
-                                      ServiceLocator.Container.Resolve<IConfiguration>(), guiConfig, ChangeSet);
+                                      ServiceLocator.Container.Resolve<IConfiguration>(), guiConfig,
+                                      CreateGraphics(), ChangeSet);
             MainModList.ModFiltersUpdated += UpdateFilters;
 
             UpdateChangeSetAndConflicts(currentInstance, registry);

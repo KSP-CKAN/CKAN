@@ -36,7 +36,7 @@ public static class Program
                     .Combine("_build")
                     .Combine("tools"));
             })
-            .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.27"))
+            .InstallTool(new Uri("nuget:?package=ILRepack&version=2.0.44"))
             .InstallTool(new Uri("nuget:?package=NUnit.ConsoleRunner&version=3.16.3"))
             .InstallTool(new Uri("nuget:?package=altcover&version=9.0.1"))
             .InstallTool(new Uri("nuget:?package=altcover.api&version=9.0.1"))
@@ -176,67 +176,29 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        context.CreateDirectory(context.Paths.RepackDirectory.Combine(context.BuildConfiguration));
-
-        var cmdLineBinDirectory = context.Paths.OutDirectory
-                                               .Combine("CKAN-CmdLine")
-                                               .Combine(context.BuildConfiguration)
-                                               .Combine("bin")
-                                               .Combine(context.BuildNetFramework);
-        var assemblyPaths = context.GetFiles($"{cmdLineBinDirectory}/*.dll");
-        assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-GUI.exe"));
-        assemblyPaths.Add(cmdLineBinDirectory.CombineWithFilePath("CKAN-ConsoleUI.exe"));
-        var cmdlinePath = context.Paths.OutDirectory.Combine("CKAN-CmdLine")
-            .Combine(context.BuildConfiguration)
-            .Combine("bin")
-            .Combine(context.BuildNetFramework);
-        assemblyPaths.Add(context.GetFiles($"{cmdlinePath}/*/*.resources.dll"));
-        // Need facade to instantiate types from netstandard2.0 DLLs on Mono
-        assemblyPaths.Add(context.FacadesDirectory().CombineWithFilePath("netstandard.dll"));
-        var ckanLogFile = context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
-                                         .CombineWithFilePath("ckan.log");
-        context.ReportRepacking(context.Paths.CkanFile, ckanLogFile);
-        context.ILRepack(
-            context.Paths.CkanFile,
-            cmdLineBinDirectory.CombineWithFilePath("CKAN-CmdLine.exe"),
-            assemblyPaths,
-            new ILRepackSettings
-            {
-                Libs                 = [cmdLineBinDirectory],
-                TargetPlatform       = TargetPlatformVersion.v4,
-                Parallel             = true,
-                Verbose              = false,
-                SetupProcessSettings = BuildContext.RepackSilently,
-                Log                  = ckanLogFile.FullPath,
-            });
-
-        var autoupdateBinDirectory = context.Paths.OutDirectory.Combine("CKAN-AutoUpdateHelper")
+        var repackPath = context.Paths.RepackDirectory.Combine(context.BuildConfiguration);
+        context.Repack(context.Paths.CkanFile,
+                       context.Paths.OutDirectory.Combine("CKAN-CmdLine")
                                                  .Combine(context.BuildConfiguration)
                                                  .Combine("bin")
-                                                 .Combine(context.BuildNetFramework);
-        var updaterLogFile = context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
-                                            .CombineWithFilePath("AutoUpdater.log");
-        context.ReportRepacking(context.Paths.UpdaterFile, updaterLogFile);
-        context.ILRepack(
-            context.Paths.UpdaterFile,
-            autoupdateBinDirectory.CombineWithFilePath("CKAN-AutoUpdateHelper.exe"),
-            context.GetFiles($"{autoupdateBinDirectory}/*/*.resources.dll"),
-            new ILRepackSettings
-            {
-                Libs           = [autoupdateBinDirectory],
-                TargetPlatform = TargetPlatformVersion.v4,
-                Parallel       = true,
-                Verbose        = false,
-                SetupProcessSettings = BuildContext.RepackSilently,
-                Log            = updaterLogFile.FullPath,
-            });
+                                                 .Combine(context.BuildNetFramework),
+                       "CKAN-CmdLine.exe",
+                       TargetPlatformVersion.v4,
+                       repackPath.CombineWithFilePath("ckan.log"));
+        context.Repack(context.Paths.UpdaterFile,
+                       context.Paths.OutDirectory.Combine("CKAN-AutoUpdateHelper")
+                                                 .Combine(context.BuildConfiguration)
+                                                 .Combine("bin")
+                                                 .Combine(context.BuildNetFramework),
+                       "CKAN-AutoUpdateHelper.exe",
+                       TargetPlatformVersion.v4,
+                       repackPath.CombineWithFilePath("AutoUpdater.log"));
 
         var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.CkanFile.GetFilename());
         context.CopyFile(context.Paths.CkanFile, finalExePath);
         BuildContext.ChmodExecutable(finalExePath);
     }
 }
-
 
 [TaskName("Repack-Netkan")]
 [TaskDescription("Intermediate - Merge all the separate DLLs and EXEs to a single executable.")]
@@ -246,30 +208,15 @@ public sealed class RepackNetkanTask : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         context.CreateDirectory(context.Paths.RepackDirectory.Combine(context.BuildConfiguration));
-        var netkanBinDirectory = context.Paths.OutDirectory.Combine("CKAN-NetKAN")
-            .Combine(context.BuildConfiguration)
-            .Combine("bin")
-            .Combine(context.BuildNetFramework);
-        var netkanLogFile = context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
-            .CombineWithFilePath("netkan.log");
-        var assemblyPaths = context.GetFiles($"{netkanBinDirectory}/*.dll");
-        // Need facade to instantiate types from netstandard2.0 DLLs on Mono
-        assemblyPaths.Add(context.FacadesDirectory().CombineWithFilePath("netstandard.dll"));
-        context.ReportRepacking(context.Paths.NetkanFile, netkanLogFile);
-        context.ILRepack(
-            context.Paths.NetkanFile,
-            netkanBinDirectory.CombineWithFilePath("CKAN-NetKAN.exe"),
-            assemblyPaths,
-            new ILRepackSettings
-            {
-                Libs           = [netkanBinDirectory],
-                TargetPlatform = TargetPlatformVersion.v4,
-                Parallel       = true,
-                Verbose        = false,
-                SetupProcessSettings = BuildContext.RepackSilently,
-                Log            = netkanLogFile.FullPath,
-            }
-        );
+        context.Repack(context.Paths.NetkanFile,
+                       context.Paths.OutDirectory.Combine("CKAN-NetKAN")
+                                                 .Combine(context.BuildConfiguration)
+                                                 .Combine("bin")
+                                                 .Combine(context.BuildNetFramework),
+                       "CKAN-NetKAN.exe",
+                       TargetPlatformVersion.v4,
+                       context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
+                                                    .CombineWithFilePath("netkan.log"));
 
         var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.NetkanFile.GetFilename());
         context.CopyFile(context.Paths.NetkanFile, finalExePath);

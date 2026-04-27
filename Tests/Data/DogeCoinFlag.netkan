@@ -1,4 +1,8 @@
 identifier: DogeCoinFlag
 $kref: '#/ckan/github/testuser/testrepo'
+---
+identifier: DogeCoinFlag
+$kref: '#/ckan/spacedock/1234'
+$vref: '#/ckan/ksp-avc'
 tags:
   - flags
