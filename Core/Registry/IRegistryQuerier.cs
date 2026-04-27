@@ -27,7 +27,7 @@ namespace CKAN
         /// the specified game version.
         /// </summary>
         IEnumerable<CkanModule> CompatibleModules(StabilityToleranceConfig stabilityTolerance,
-                                                  GameVersionCriteria?     ksp_version);
+                                                  GameVersionCriteria      ksp_version);
 
         /// <summary>
         /// Get full JSON metadata string for a mod's available versions

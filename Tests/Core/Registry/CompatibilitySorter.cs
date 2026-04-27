@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -98,6 +99,61 @@ namespace Tests.Core.Registry
                 Assert.AreEqual(highPrio!.ToJson(),
                                 sorter.LatestCompatible.First(m => m.identifier == identifier).ToJson());
             }
+        }
+
+        [Test]
+        public void LatestCompatible_SameIdentifierInMultipleRepos_SinglePerIdentifier()
+        {
+            // Arrange
+            var gameVer1 = GameVersion.Parse("1.2.2");
+            var gameVer2 = GameVersion.Parse("1.12.5");
+            var modgen = new RandomModuleGenerator(new Random());
+            var avail1 = new AvailableModule("mod1", new CkanModule[]
+            {
+                modgen.GenerateRandomModule(identifier: "mod1", version: new ModuleVersion("3:1.0"), ksp_version: gameVer1),
+            });
+            var avail2 = new AvailableModule("mod2", new CkanModule[]
+            {
+                modgen.GenerateRandomModule(identifier: "mod2", version: new ModuleVersion("3:2.0"), ksp_version: gameVer2),
+                modgen.GenerateRandomModule(identifier: "mod2", version: new ModuleVersion("3:3.0"), ksp_version: gameVer2),
+            });
+            var avail3 = new AvailableModule("mod1", new CkanModule[]
+            {
+                modgen.GenerateRandomModule(identifier: "mod1", version: new ModuleVersion("1.0"), ksp_version: gameVer1),
+            });
+            var avail4 = new AvailableModule("mod2", new CkanModule[]
+            {
+                modgen.GenerateRandomModule(identifier: "mod2", version: new ModuleVersion("2.0"), ksp_version: gameVer2),
+                modgen.GenerateRandomModule(identifier: "mod2", version: new ModuleVersion("3.0"), ksp_version: gameVer2),
+            });
+
+            // Act
+            var sorter = new CompatibilitySorter(new StabilityToleranceConfig(""),
+                                                 new GameVersionCriteria(gameVer2),
+                                                 new Dictionary<string, AvailableModule>[]
+                                                 {
+                                                     new Dictionary<string, AvailableModule> { { "mod1", avail1 }, },
+                                                     new Dictionary<string, AvailableModule> { { "mod2", avail2 }, },
+                                                     new Dictionary<string, AvailableModule> { { "mod1", avail3 }, },
+                                                     new Dictionary<string, AvailableModule> { { "mod2", avail4 }, },
+                                                 },
+                                                 new Dictionary<string, AvailableModule[]>
+                                                 {
+                                                     { "mod1", new AvailableModule[] { avail1, avail3 } },
+                                                     { "mod2", new AvailableModule[] { avail2, avail4 } },
+                                                 },
+                                                 new Dictionary<string, InstalledModule> {},
+                                                 new string[] {},
+                                                 new Dictionary<string, UnmanagedModuleVersion> {});
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                CollectionAssert.AreEquivalent(new CkanModule[] { avail2.ByVersion(new ModuleVersion("3:3.0"))! },
+                                               sorter.LatestCompatible);
+                CollectionAssert.AreEquivalent(new CkanModule[] { avail1.ByVersion(new ModuleVersion("3:1.0"))! },
+                                               sorter.LatestIncompatible);
+            });
         }
     }
 }
