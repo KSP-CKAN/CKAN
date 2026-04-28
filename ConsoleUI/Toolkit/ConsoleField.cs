@@ -84,7 +84,7 @@ namespace CKAN.ConsoleUI.Toolkit {
             Console.BackgroundColor = theme.FieldBg;
             if (string.IsNullOrEmpty(Value)) {
                 Console.ForegroundColor = theme.FieldGhostFg;
-                Console.Write(GhostText().PadRight(w));
+                Console.Write(FormatExactWidth(GhostText(), w));
             } else {
                 Console.ForegroundColor = focused
                     ? theme.FieldFocusedFg

@@ -112,6 +112,27 @@ namespace CKAN.ConsoleUI {
                 instanceList.SetData(manager.Instances.Values);
                 return true;
             });
+
+            instanceList.AddTip("C", Properties.Resources.InstanceListClone);
+            instanceList.AddBinding(Keys.C, sender =>
+            {
+                if (instanceList.Selection is GameInstance inst) {
+                    try {
+                        var cd = new CloneInstanceDialog(theme);
+                        cd.Run();
+                        if (cd.Proceed)
+                        {
+                            manager.CloneInstance(inst, cd.NewName, cd.NewPath, Platform.IsWindows);
+                            instanceList.SetData(manager.Instances.Values);
+                        }
+                    } catch (Exception exc) {
+                        RaiseError("{0}", exc.Message);
+                    }
+                    DrawBackground();
+                }
+                return true;
+            });
+
             instanceList.AddTip("R", Properties.Resources.Remove);
             instanceList.AddBinding(Keys.R, sender =>
             {

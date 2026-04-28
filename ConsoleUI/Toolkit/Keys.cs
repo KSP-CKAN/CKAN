@@ -247,6 +247,13 @@ namespace CKAN.ConsoleUI.Toolkit {
         );
 
         /// <summary>
+        /// Representation of letter 'c' for key bindings
+        /// </summary>
+        public static readonly ConsoleKeyInfo C = new ConsoleKeyInfo(
+            'c', ConsoleKey.C, false, false, false
+        );
+
+        /// <summary>
         /// Representation of letter 'd' for key bindings
         /// </summary>
         public static readonly ConsoleKeyInfo D = new ConsoleKeyInfo(
