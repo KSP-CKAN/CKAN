@@ -243,15 +243,13 @@ namespace CKAN
         /// <exception cref="DirectoryNotFoundKraken">Thrown by CopyDirectory() if directory doesn't exist. Should never be thrown here.</exception>
         /// <exception cref="PathErrorKraken">Thrown by CopyDirectory() if the target folder already exists and is not empty.</exception>
         /// <exception cref="IOException">Thrown by CopyDirectory() if something goes wrong during the process.</exception>
-        public void CloneInstance(GameInstance existingInstance,
-                                  string       newName,
-                                  string       newPath,
-                                  bool         shareStockFolders = false)
-        {
-            CloneInstance(existingInstance, newName, newPath,
-                          existingInstance.Game.LeaveEmptyInClones,
-                          shareStockFolders);
-        }
+        public GameInstance CloneInstance(GameInstance existingInstance,
+                                          string       newName,
+                                          string       newPath,
+                                          bool         shareStockFolders = false)
+            => CloneInstance(existingInstance, newName, newPath,
+                             existingInstance.Game.LeaveEmptyInClones,
+                             shareStockFolders);
 
         /// <summary>
         /// Clones an existing game installation.
