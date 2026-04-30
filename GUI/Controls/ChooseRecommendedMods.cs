@@ -302,6 +302,10 @@ namespace CKAN.GUI
                                                                      .OfType<ListViewItem>()
                                                                      .Where(NotDLC)
                                                                      .Any(lvi => !lvi.Checked);
+            CheckSuggestionsButton.Enabled = SuggestionsGroup.Items
+                                                             .OfType<ListViewItem>()
+                                                             .Where(NotDLC)
+                                                             .Any(lvi => !lvi.Checked);
         }
 
         private bool NotDLC(ListViewItem item)
