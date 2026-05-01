@@ -500,7 +500,6 @@ namespace CKAN.GUI
             //
             // MainTabControl
             //
-            this.MainTabControl.BackColor = System.Drawing.SystemColors.Control;
             this.MainTabControl.Controls.Add(this.ManageModsTabPage);
             this.MainTabControl.Controls.Add(this.ChangesetTabPage);
             this.MainTabControl.Controls.Add(this.WaitTabPage);
@@ -523,7 +522,6 @@ namespace CKAN.GUI
             //
             // ManageModsTabPage
             //
-            this.ManageModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ManageModsTabPage.Controls.Add(this.ManageMods);
             this.ManageModsTabPage.Location = new System.Drawing.Point(4, 29);
             this.ManageModsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -557,7 +555,6 @@ namespace CKAN.GUI
             //
             // ChangesetTabPage
             //
-            this.ChangesetTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ChangesetTabPage.Controls.Add(this.Changeset);
             this.ChangesetTabPage.Location = new System.Drawing.Point(4, 29);
             this.ChangesetTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -583,7 +580,6 @@ namespace CKAN.GUI
             //
             // WaitTabPage
             //
-            this.WaitTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.WaitTabPage.Controls.Add(this.Wait);
             this.WaitTabPage.Location = new System.Drawing.Point(4, 29);
             this.WaitTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -607,7 +603,6 @@ namespace CKAN.GUI
             //
             // ChooseRecommendedModsTabPage
             //
-            this.ChooseRecommendedModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ChooseRecommendedModsTabPage.Controls.Add(this.ChooseRecommendedMods);
             this.ChooseRecommendedModsTabPage.Location = new System.Drawing.Point(4, 29);
             this.ChooseRecommendedModsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -631,7 +626,6 @@ namespace CKAN.GUI
             //
             // PlayTimeTabPage
             //
-            this.PlayTimeTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.PlayTimeTabPage.Controls.Add(this.PlayTime);
             this.PlayTimeTabPage.Location = new System.Drawing.Point(4, 29);
             this.PlayTimeTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -654,7 +648,6 @@ namespace CKAN.GUI
             //
             // UnmanagedFilesTabPage
             //
-            this.UnmanagedFilesTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.UnmanagedFilesTabPage.Controls.Add(this.UnmanagedFiles);
             this.UnmanagedFilesTabPage.Location = new System.Drawing.Point(4, 29);
             this.UnmanagedFilesTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -677,7 +670,6 @@ namespace CKAN.GUI
             //
             // InstallationHistoryTabPage
             //
-            this.InstallationHistoryTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.InstallationHistoryTabPage.Controls.Add(this.InstallationHistory);
             this.InstallationHistoryTabPage.Location = new System.Drawing.Point(4, 29);
             this.InstallationHistoryTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -702,7 +694,6 @@ namespace CKAN.GUI
             //
             // ChooseProvidedModsTabPage
             //
-            this.ChooseProvidedModsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.ChooseProvidedModsTabPage.Controls.Add(this.ChooseProvidedMods);
             this.ChooseProvidedModsTabPage.Location = new System.Drawing.Point(4, 29);
             this.ChooseProvidedModsTabPage.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -725,7 +716,6 @@ namespace CKAN.GUI
             //
             // DeleteDirectoriesTabPage
             //
-            this.DeleteDirectoriesTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.DeleteDirectoriesTabPage.Controls.Add(this.DeleteDirectories);
             this.DeleteDirectoriesTabPage.Location = new System.Drawing.Point(0, 0);
             this.DeleteDirectoriesTabPage.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -747,7 +737,6 @@ namespace CKAN.GUI
             //
             // EditModpackTabPage
             //
-            this.EditModpackTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.EditModpackTabPage.Controls.Add(this.EditModpack);
             this.EditModpackTabPage.Location = new System.Drawing.Point(0, 0);
             this.EditModpackTabPage.Margin = new System.Windows.Forms.Padding(0, 0, 0, 0);
@@ -770,7 +759,6 @@ namespace CKAN.GUI
             //
             // DownloadStatisticsTabPage
             //
-            this.DownloadStatisticsTabPage.BackColor = System.Drawing.SystemColors.Control;
             this.DownloadStatisticsTabPage.Controls.Add(this.DownloadStatistics);
             this.DownloadStatisticsTabPage.Controls.Add(this.DownloadStatisticsButtonPanel);
             this.DownloadStatisticsTabPage.Location = new System.Drawing.Point(0, 0);

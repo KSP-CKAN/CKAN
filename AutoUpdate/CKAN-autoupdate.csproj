@@ -19,9 +19,10 @@
     <LangVersion>9</LangVersion>
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
     <ApplicationIcon>..\assets\ckan.ico</ApplicationIcon>
-    <TargetFrameworks>net481;net8.0-windows</TargetFrameworks>
-    <UseWindowsForms Condition=" '$(TargetFramework)' == 'net8.0-windows' ">true</UseWindowsForms>
+    <TargetFrameworks>net481;net10.0-windows</TargetFrameworks>
+    <UseWindowsForms Condition=" '$(TargetFramework)' == 'net10.0-windows' ">true</UseWindowsForms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
@@ -35,7 +36,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
-    <PackageReference Include="IndexRange" Version="1.0.3" />
+    <PackageReference Include="IndexRange" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\_build\meta\GlobalAssemblyVersionInfo.cs">

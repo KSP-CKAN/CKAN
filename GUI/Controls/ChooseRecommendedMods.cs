@@ -23,6 +23,8 @@ namespace CKAN.GUI
         public ChooseRecommendedMods()
         {
             InitializeComponent();
+            Toolbar.Renderer = new FlatToolStripRenderer();
+            RecommendedModsListView.EnsureReadableGroupHeaders();
         }
 
         [ForbidGUICalls]
@@ -302,6 +304,10 @@ namespace CKAN.GUI
                                                                      .OfType<ListViewItem>()
                                                                      .Where(NotDLC)
                                                                      .Any(lvi => !lvi.Checked);
+            CheckSuggestionsButton.Enabled = SuggestionsGroup.Items
+                                                             .OfType<ListViewItem>()
+                                                             .Where(NotDLC)
+                                                             .Any(lvi => !lvi.Checked);
         }
 
         private bool NotDLC(ListViewItem item)

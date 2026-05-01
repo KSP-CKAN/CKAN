@@ -17,7 +17,9 @@ namespace CKAN.GUI
         public InstallationHistory()
         {
             InitializeComponent();
+            Toolbar.Renderer = new FlatToolStripRenderer();
             Toolbar.ScaleFonts();
+            ModsListView.EnsureReadableGroupHeaders();
         }
 
         public void LoadHistory(GameInstance          inst,

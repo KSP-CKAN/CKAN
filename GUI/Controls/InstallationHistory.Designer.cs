@@ -36,7 +36,7 @@ namespace CKAN.GUI
             this.Splitter = new CKAN.GUI.UsableSplitContainer();
             this.HistoryListView = new ThemedListView();
             this.TimestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ModsListView = new ThemedListView();
+            this.ModsListView = new CKAN.GUI.ThemedListView();
             this.NotInstalledGroup = new System.Windows.Forms.ListViewGroup();
             this.InstalledGroup = new System.Windows.Forms.ListViewGroup();
             this.NameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

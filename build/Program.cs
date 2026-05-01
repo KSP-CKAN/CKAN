@@ -137,21 +137,6 @@ public sealed class BuildTask : FrostingTask<BuildContext>
                 Configuration = context.BuildConfiguration,
             });
 
-            if (context.BuildConfiguration == "Release")
-            {
-                var pubSettings = new DotNetPublishSettings
-                {
-                    Configuration  = context.BuildConfiguration,
-                    Framework      = "net8.0",
-                    Runtime        = "linux-x64",
-                    SelfContained  = true,
-                };
-                // Publish Netkan for Inflator and Metadata containers
-                context.DotNetPublish(context.Paths.NetkanProject.FullPath, pubSettings);
-                // Publish Cmdline for Metadata container
-                context.DotNetPublish(context.Paths.CmdlineProject.FullPath, pubSettings);
-            }
-
             // Use Mono to build for net481 since dotnet can't use WinForms on Linux
             context.MSBuild(context.Solution, new MSBuildSettings
             {
@@ -163,8 +148,22 @@ public sealed class BuildTask : FrostingTask<BuildContext>
             context.DotNetBuild(context.Solution, new DotNetBuildSettings
             {
                 Configuration = "NoGUI",
-                Framework     = "net8.0",
+                Framework     = context.BuildDotNet,
             });
+        }
+        if (context.BuildConfiguration == "Release")
+        {
+            var pubSettings = new DotNetPublishSettings
+            {
+                Configuration  = context.BuildConfiguration,
+                Framework      = context.BuildDotNet,
+                Runtime        = "linux-x64",
+                SelfContained  = true,
+            };
+            // Publish Netkan for Inflator and Metadata containers
+            context.DotNetPublish(context.Paths.NetkanProject.FullPath, pubSettings);
+            // Publish Cmdline for Metadata container
+            context.DotNetPublish(context.Paths.CmdlineProject.FullPath, pubSettings);
         }
     }
 }
@@ -197,6 +196,30 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
         var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.CkanFile.GetFilename());
         context.CopyFile(context.Paths.CkanFile, finalExePath);
         BuildContext.ChmodExecutable(finalExePath);
+
+        if (context.IsRunningOnWindows())
+        {
+            context.CreateDirectory(repackPath);
+            // Publish single file Windows .NET 10 build for dark theme
+            context.DotNetPublish(context.Paths.CmdlineProject.FullPath,
+                                  new DotNetPublishSettings
+                                  {
+                                      Configuration     = context.BuildConfiguration,
+                                      Framework         = $"{context.BuildDotNet}-windows",
+                                      Runtime           = "win-x64",
+                                      PublishSingleFile = true,
+                                      SelfContained     = false,
+                                  });
+            context.CopyFile(context.Paths.OutDirectory.Combine("CKAN-CmdLine")
+                                                       .Combine(context.BuildConfiguration)
+                                                       .Combine("bin")
+                                                       .Combine($"{context.BuildDotNet}-windows")
+                                                       .Combine("win-x64")
+                                                       .Combine("publish")
+                                                       .CombineWithFilePath("CKAN-CmdLine.exe"),
+                             context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
+                                                          .CombineWithFilePath("ckan-windows.exe"));
+        }
     }
 }
 
@@ -237,6 +260,12 @@ public sealed class PrepareSignPathTask : FrostingTask<BuildContext>
         context.CopyFile(context.Paths.CkanFile,    targetDir.CombineWithFilePath(context.Paths.CkanFile.GetFilename()));
         context.CopyFile(context.Paths.UpdaterFile, targetDir.CombineWithFilePath(context.Paths.UpdaterFile.GetFilename()));
         context.CopyFile(context.Paths.NupkgFile,   targetDir.CombineWithFilePath(context.Paths.NupkgFile.GetFilename()));
+        if (context.IsRunningOnWindows())
+        {
+            context.CopyFile(context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
+                                                          .CombineWithFilePath("ckan-windows.exe"),
+                             targetDir.CombineWithFilePath("ckan-windows.exe"));
+        }
     }
 }
 
@@ -299,6 +328,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
     {
         var where  = context.Argument<string?>("where", null);
         var labels = context.Argument("labels", "Off");
+        var withCoverage = context.Argument("coverage", "On") != "Off";
         var nunitOutputDirectory = context.Paths.BuildDirectory
                                                 .Combine("test")
                                                 .Combine("nunit");
@@ -335,26 +365,32 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 ResultsDirectory = nunitOutputDirectory,
                 Verbosity        = DotNetVerbosity.Minimal,
             };
-            testSettings.ArgumentCustomization = altcoverSettings.Concatenate(testSettings.ArgumentCustomization);
+            if (withCoverage)
+            {
+                testSettings.ArgumentCustomization = altcoverSettings.Concatenate(testSettings.ArgumentCustomization);
+            }
             context.DotNetTest(context.Solution, testSettings);
-            // Now combine the target-specific coverage data into one file
-            OpenCover.Merge(new string[]
-                            {
-                                "coverage.net8.0.xml",
-                                "coverage.net8.0-windows.xml",
-                                "coverage.net481.xml",
-                            }.Select(context.Paths.CoverageOutputFile)
-                             .Select(f => f.FullPath)
-                             .Select(XDocument.Load))
-                     .Save(context.Paths.CoverageOutputFile("coverage.xml")
-                                        .FullPath);
-            // Remove spurious duplicate entries with '\' paths from cobertura.xml
-            var cobertura = XDocument.Load(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
-            cobertura.Descendants().Where(elt => elt.Attribute("filename")
-                                                    ?.Value.Contains('\\')
-                                                    ?? false)
-                                   .Remove();
-            cobertura.Save(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
+            if (withCoverage)
+            {
+                // Now combine the target-specific coverage data into one file
+                OpenCover.Merge(new string[]
+                                {
+                                    $"coverage.{context.BuildDotNet}.xml",
+                                    $"coverage.{context.BuildDotNet}-windows.xml",
+                                    $"coverage.{context.BuildNetFramework}.xml",
+                                }.Select(context.Paths.CoverageOutputFile)
+                                 .Select(f => f.FullPath)
+                                 .Select(XDocument.Load))
+                         .Save(context.Paths.CoverageOutputFile("coverage.xml")
+                                            .FullPath);
+                // Remove spurious duplicate entries with '\' paths from cobertura.xml
+                var cobertura = XDocument.Load(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
+                cobertura.Descendants().Where(elt => elt.Attribute("filename")
+                                                        ?.Value.Contains('\\')
+                                                        ?? false)
+                                       .Remove();
+                cobertura.Save(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
+            }
         }
         else
         {
@@ -370,7 +406,7 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
             context.DotNetTest(context.Solution, new DotNetTestSettings
             {
                 Configuration    = "NoGUI",
-                Framework        = "net8.0",
+                Framework        = context.BuildDotNet,
                 NoRestore        = true,
                 NoBuild          = true,
                 NoLogo           = true,
@@ -379,9 +415,12 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 Verbosity        = DotNetVerbosity.Minimal,
             });
 
-            // Add coverage instrumentation to our test assemblies
-            context.RunAltCover(altcoverSettings.PreparationPhase
-                                                .ToArguments(testDir, instrumentedDir));
+            if (withCoverage)
+            {
+                // Add coverage instrumentation to our test assemblies
+                context.RunAltCover(altcoverSettings.PreparationPhase
+                                                    .ToArguments(testDir, instrumentedDir));
+            }
 
             // Run the tests
             context.NUnit3(testFile.FullPath, new NUnit3Settings
@@ -395,9 +434,12 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                 Process       = NUnit3ProcessOption.InProcess,
             });
 
-            // Transform the raw coverage data into coverage.xml and print a summary
-            context.RunAltCover(altcoverSettings.CollectionPhase
-                                                .ToArguments(instrumentedDir));
+            if (withCoverage)
+            {
+                // Transform the raw coverage data into coverage.xml and print a summary
+                context.RunAltCover(altcoverSettings.CollectionPhase
+                                                    .ToArguments(instrumentedDir));
+            }
         }
     }
 }

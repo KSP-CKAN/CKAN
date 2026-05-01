@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
@@ -40,6 +41,7 @@ namespace CKAN.GUI
             PerformLayout();
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool? Value
         {
             get => YesRadioButton.Checked ? true

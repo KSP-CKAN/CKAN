@@ -42,14 +42,28 @@ namespace CKAN.GUI
 
             if (args.Contains(URLHandlers.UrlRegistrationArgument))
             {
-                //Passing in null will cause a NullReferenceException if it tries to show the dialog
-                //asking for elevation permission, but we want that to happen. Doing that keeps us
-                //from getting in to a infinite loop of trying to register.
+                // Passing in null will cause a NullReferenceException if it tries to show the dialog
+                // asking for elevation permission, but we want that to happen. Doing that keeps us
+                // from getting in to a infinite loop of trying to register.
                 URLHandlers.RegisterURLHandler(null, null, null);
             }
             else
             {
+                #if NET10_0_OR_GREATER
+                if (Platform.IsWindows && Util.DarkMode)
+                {
+                    Application.SetColorMode(SystemColorMode.System);
+                }
+                #endif
                 var main = new Main(args, manager, userAgent);
+                if (Platform.IsWindows && Util.DarkMode)
+                {
+                    int val = 1;
+                    DwmSetWindowAttribute(main.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
+                                          ref val, sizeof(int));
+                    DwmSetWindowAttribute(main.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE,
+                                          ref val, sizeof(int));
+                }
                 if (!showConsole)
                 {
                     Util.HideConsoleWindow();
@@ -71,5 +85,11 @@ namespace CKAN.GUI
 
         [DllImport("user32.dll")]
         private static extern bool SetProcessDPIAware();
+
+        [DllImport("dwmapi.dll")]
+        private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
+        private const int DWMWA_USE_IMMERSIVE_DARK_MODE             = 20;
     }
 }

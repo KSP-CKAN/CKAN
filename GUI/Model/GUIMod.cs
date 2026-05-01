@@ -360,7 +360,7 @@ namespace CKAN.GUI
             if (row.Cells[col.Index] is DataGridViewCheckBoxCell auto_cell
                 && InstalledMod != null)
             {
-                var old_value = (bool) auto_cell.Value;
+                var old_value = auto_cell.Value is true;
 
                 bool value = set_value_to ?? old_value;
                 InstalledMod.AutoInstalled = value;

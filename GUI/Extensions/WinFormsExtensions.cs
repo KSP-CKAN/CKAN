@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Diagnostics.CodeAnalysis;
 #if NET5_0_OR_GREATER
@@ -61,8 +62,8 @@ namespace CKAN.GUI
                 control.Font = control.Font.Scale(dpi);
                 if (control is DataGridView grid)
                 {
-                    grid.DefaultCellStyle.Font = grid.DefaultCellStyle.Font.Scale(dpi);
-                    grid.ColumnHeadersDefaultCellStyle.Font = grid.ColumnHeadersDefaultCellStyle.Font.Scale(dpi);
+                    grid.DefaultCellStyle.Font = grid.DefaultCellStyle.Font?.Scale(dpi);
+                    grid.ColumnHeadersDefaultCellStyle.Font = grid.ColumnHeadersDefaultCellStyle.Font?.Scale(dpi);
                 }
             }
         }
@@ -74,6 +75,31 @@ namespace CKAN.GUI
                 && dpi != 96)
             {
                 item.Font = item.Font.Scale(dpi);
+            }
+        }
+
+        public static Bitmap Inverted(this Bitmap bitmap)
+        {
+            using (var attr = new ImageAttributes())
+            {
+                attr.SetColorMatrix(new ColorMatrix(new float[][]
+                                    {
+                                        new float[] { -1,  0,  0, 0, 0 },
+                                        new float[] {  0, -1,  0, 0, 0 },
+                                        new float[] {  0,  0, -1, 0, 0 },
+                                        new float[] {  0,  0,  0, 1, 0 },
+                                        new float[] {  1,  1,  1, 0, 1 },
+                                    }));
+                var dest = new Bitmap(bitmap.Width, bitmap.Height);
+                using (var g = Graphics.FromImage(dest))
+                {
+                    g.DrawImage(bitmap,
+                                new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                                0, 0, bitmap.Width, bitmap.Height,
+                                GraphicsUnit.Pixel,
+                                attr);
+                }
+                return dest;
             }
         }
 

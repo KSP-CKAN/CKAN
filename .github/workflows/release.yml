@@ -159,8 +159,8 @@ jobs:
         with:
           name: signed
           path: _build/signed
-      - name: Upload ckan.exe and AutoUpdater.exe release assets
-        run: gh release upload ${{ github.event.release.tag_name }} _build/signed/ckan.exe _build/signed/AutoUpdater.exe
+      - name: Upload ckan.exe, ckan-windows.exe, and AutoUpdater.exe release assets
+        run: gh release upload ${{ github.event.release.tag_name }} _build/signed/ckan.exe _build/signed/ckan-windows.exe _build/signed/AutoUpdater.exe
 
   notify-discord:
     needs:

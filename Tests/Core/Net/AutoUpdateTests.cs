@@ -23,8 +23,10 @@ namespace Tests.Core.Net.AutoUpdateTests
         {
             // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
             // This is on by default in .NET 4.6, but not in 4.5.
+            #pragma warning disable SYSLIB0014
             ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12
                                                   | SecurityProtocolType.Tls13;
+            #pragma warning restore SYSLIB0014
 
             var updater = new AutoUpdate();
             var update  = updater.GetUpdate(devBuild);

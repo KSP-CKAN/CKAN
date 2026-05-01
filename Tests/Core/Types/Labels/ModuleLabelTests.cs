@@ -1,6 +1,7 @@
+using NUnit.Framework;
+
 using CKAN;
 using CKAN.Games.KerbalSpaceProgram;
-using NUnit.Framework;
 
 namespace Tests.Core
 {

@@ -21,7 +21,7 @@ namespace CKAN
             Version         = new CkanModuleVersion(versionJson.version.ToString(), "dev");
             ReleaseNotes    = versionJson.changelog;
             UpdaterDownload = new Uri(S3BaseUrl, AutoUpdaterUrlPiece);
-            ReleaseDownload = new Uri(S3BaseUrl, CkanUrlPiece);
+            ReleaseDownload = new Uri(S3BaseUrl, ExeName);
         }
 
         public override IReadOnlyCollection<NetAsyncDownloader.DownloadTarget> Targets => new[]
@@ -37,6 +37,5 @@ namespace CKAN
             new Uri("https://ksp-ckan.s3-us-west-2.amazonaws.com/");
         private const           string VersionJsonUrlPiece = "version.json";
         private const           string AutoUpdaterUrlPiece = "AutoUpdater.exe";
-        private const           string CkanUrlPiece        = "ckan.exe";
     }
 }

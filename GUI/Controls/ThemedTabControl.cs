@@ -17,8 +17,11 @@ namespace CKAN.GUI
     {
         public ThemedTabControl() : base()
         {
+            // In net10, we use the nice dark mode
+            #if !NET10_0_OR_GREATER
             // Tell the base class that we want to draw things ourselves
             DrawMode = TabDrawMode.OwnerDrawFixed;
+            #endif
         }
 
         protected override void OnDrawItem(DrawItemEventArgs e)

@@ -21,11 +21,11 @@
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsNotAsErrors>CS0618</WarningsNotAsErrors>
+    <WarningsNotAsErrors>CS0618,NU1901,NU1902,NU1903,NU1904</WarningsNotAsErrors>
     <NoWarn>IDE1006,NU1701,CS1591</NoWarn>
-    <TargetFrameworks>net481;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net481;net10.0-windows</TargetFrameworks>
     <BaseTargetFramework>$(TargetFramework.Replace("-windows", ""))</BaseTargetFramework>
-    <UseWindowsForms Condition=" '$(TargetFramework)' == 'net8.0-windows' ">true</UseWindowsForms>
+    <UseWindowsForms Condition=" '$(TargetFramework)' == 'net10.0-windows' ">true</UseWindowsForms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <FileAlignment>512</FileAlignment>
     <ErrorReport>prompt</ErrorReport>
@@ -34,12 +34,12 @@
     <AppConfig>App.config</AppConfig>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="Autofac" Version="9.1.0" />
     <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="log4net" Version="3.3.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
-    <PackageReference Include="IndexRange" Version="1.0.3" />
+    <PackageReference Include="IndexRange" Version="1.1.1" />
     <PackageReference Include="StringSyntaxAttribute" Version="1.0.0" />
     <PackageReference Include="OxyPlot.WindowsForms" Version="2.2.0" />
   </ItemGroup>
@@ -53,7 +53,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Xml" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="6.2.0" />
   </ItemGroup>

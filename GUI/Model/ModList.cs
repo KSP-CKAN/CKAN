@@ -452,10 +452,10 @@ namespace CKAN.GUI
             => row.Tag is GUIMod gmod
                    ? gmod.GetModChanges(upgradeCol?.Visible == true
                                         && row.Cells[upgradeCol.Index] is DataGridViewCheckBoxCell upgradeCell
-                                        && (bool)upgradeCell.Value,
+                                        && upgradeCell.Value is true,
                                         replaceCol?.Visible == true
                                         && row.Cells[replaceCol.Index] is DataGridViewCheckBoxCell replaceCell
-                                        && (bool)replaceCell.Value,
+                                        && replaceCell.Value is true,
                                         registry.MetadataChanged(gmod.Identifier))
                    : Enumerable.Empty<ModChange>();
 

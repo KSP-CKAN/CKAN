@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 #if NET5_0_OR_GREATER
@@ -33,6 +34,7 @@ namespace CKAN.GUI
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public GUIMod? SelectedModule
         {
             set
@@ -66,7 +68,7 @@ namespace CKAN.GUI
 
         private void DependsGraphTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (e.Node.Tag is CkanModule module)
+            if (e.Node?.Tag is CkanModule module)
             {
                 ModuleDoubleClicked?.Invoke(module);
             }
@@ -106,8 +108,9 @@ namespace CKAN.GUI
                 IRegistryQuerier registry = RegistryManager.Instance(Manager.CurrentInstance, repoData).registry;
                 TreeNode root = new TreeNode($"{module.name} {module.version}", 0, 0)
                 {
-                    Name = module.identifier,
-                    Tag  = module
+                    Name      = module.identifier,
+                    Tag       = module,
+                    ForeColor = SystemColors.WindowText,
                 };
                 DependsGraphTree.Nodes.Add(root);
                 AddChildren(registry, Manager.CurrentInstance.StabilityToleranceConfig, root);
@@ -421,6 +424,7 @@ namespace CKAN.GUI
             {
                 Name        = identifier,
                 ToolTipText = $"{RelationshipType.Provides.LocalizeDescription()} {identifier}",
+                ForeColor   = SystemColors.WindowText,
             };
 
     }

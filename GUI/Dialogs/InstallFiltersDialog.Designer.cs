@@ -120,7 +120,6 @@ namespace CKAN.GUI
             this.Name = "InstallFiltersDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Load += new System.EventHandler(this.InstallFiltersDialog_Load);
-            this.Closing += new System.ComponentModel.CancelEventHandler(this.InstallFiltersDialog_Closing);
             resources.ApplyResources(this, "$this");
             this.GlobalFiltersGroupBox.ResumeLayout(false);
             this.InstanceFiltersGroupBox.ResumeLayout(false);

@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using Timer = System.Timers.Timer;
 #if NET5_0_OR_GREATER
@@ -14,6 +16,10 @@ using log4net;
 
 namespace CKAN.GUI
 {
+    #if NET10_0_OR_GREATER
+    using WinReg = Microsoft.Win32.Registry;
+    #endif
+
     #if NET5_0_OR_GREATER
     [SupportedOSPlatform("windows")]
     #endif
@@ -212,11 +218,10 @@ namespace CKAN.GUI
             var copyLink = new ToolStripMenuItem(Properties.Resources.UtilCopyLink);
             copyLink.Click += (sender, ev) => Clipboard.SetText(url);
 
-            var menu = new ContextMenuStrip();
-            if (Platform.IsMono)
+            var menu = new ContextMenuStrip
             {
-                menu.Renderer = new FlatToolStripRenderer();
-            }
+                Renderer = new FlatToolStripRenderer(),
+            };
             menu.Items.Add(copyLink);
             menu.ScaleFonts();
             menu.Show(where ?? Cursor.Position);
@@ -318,7 +323,7 @@ namespace CKAN.GUI
 
         #region Color manipulation
 
-        public static Color BlendColors(Color[] colors)
+        public static Color BlendColors(params Color[] colors)
             => colors.Length <  1 ? Color.Empty
              //: colors is [var c] ? c
              : colors.Length == 1 && colors[0] is var c ? c
@@ -345,8 +350,29 @@ namespace CKAN.GUI
 
         public static Color? ForeColorForBackColor(this Color backColor)
             => backColor == Color.Transparent || backColor == Color.Empty ? null
-             : backColor.GetLuminance() >= luminanceThreshold             ? Color.Black
-             :                                                              Color.White;
+             : foreColorCache.GetOrAdd(backColor, c => c.IsLight()
+                                                           ? Color.Black
+                                                           : Color.White);
+
+        private static readonly ConcurrentDictionary<Color, Color> foreColorCache = new ConcurrentDictionary<Color, Color>();
+
+        public static Color LinkColorForBackColor(this Color backColor)
+            => backColor == Color.Transparent || backColor == Color.Empty ? Color.Blue
+             : linkColorCache.GetOrAdd(backColor, c => c.IsLight()
+                                                           ? Color.Blue
+                                                           : BlendColors(Color.Blue, Color.White));
+
+        private static readonly ConcurrentDictionary<Color, Color> linkColorCache = new ConcurrentDictionary<Color, Color>();
+
+        public static void NormalizeForeColor(this Control control)
+        {
+            control.ForeColor = control.BackColor.ForeColorForBackColor()
+                                ?? control.ForeColor;
+        }
+
+        public static string ToHex(this Color c) => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+
+        public static bool IsLight(this Color c) => c.GetLuminance() >= luminanceThreshold;
 
         /// <summary>
         /// Below this is considered "dark," above is considered "light"
@@ -437,6 +463,41 @@ namespace CKAN.GUI
                                                             - lbl.Padding.Horizontal))));
 
         #endregion
+
+        public static bool DarkMode => Platform.IsWindows
+                                           #if NET10_0_OR_GREATER
+                                           ? WinReg.GetValue(DarkModeKey, "AppsUseLightTheme", 1) is not 1
+                                           #else
+                                           ? false
+                                           #endif
+                                     : Platform.IsUnix
+                                           ? (CommandOutputContains("gsettings",
+                                                                    "get org.gnome.desktop.interface color-scheme",
+                                                                    "prefer-dark")
+                                              ?? CommandOutputContains("kreadconfig5",
+                                                                       "--group Colors --key ColorScheme",
+                                                                       "Dark")
+                                              ?? false)
+                                     : Platform.IsMac
+                                           && (CommandOutputContains("defaults",
+                                                                     "read -g AppleInterfaceStyle",
+                                                                     "Dark")
+                                               ?? false);
+
+        private static bool? CommandOutputContains(string command, string args, string checkFor)
+            => Utilities.DefaultIfThrows(() => Process.Start(new ProcessStartInfo()
+                                                             {
+                                                                 FileName               = command,
+                                                                 Arguments              = args,
+                                                                 UseShellExecute        = false,
+                                                                 RedirectStandardOutput = true,
+                                                                 CreateNoWindow         = true,
+                                                             }))
+                        ?.StandardOutput.ReadToEnd().Contains(checkFor);
+
+        #if NET10_0_OR_GREATER
+        private const string DarkModeKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\CurrentVersion\Themes\Personalize";
+        #endif
 
         // Hides the console window on Windows
         // useful when running the GUI

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
+using System.ComponentModel;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
@@ -47,6 +48,7 @@ namespace CKAN.GUI
             });
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string TagToolTipText
         {
             get => tagToolTip;
@@ -143,11 +145,10 @@ namespace CKAN.GUI
         private static void OpenLinkLabelContextMenu(LinkLabel                  label,
                                                      params ToolStripMenuItem[] options)
         {
-            var menu = new ContextMenuStrip();
-            if (Platform.IsMono)
+            var menu = new ContextMenuStrip
             {
-                menu.Renderer = new FlatToolStripRenderer();
-            }
+                Renderer = new FlatToolStripRenderer(),
+            };
             menu.Items.AddRange(options);
             menu.ScaleFonts();
             menu.Show(label.PointToScreen(new Point(0, label.Height)));

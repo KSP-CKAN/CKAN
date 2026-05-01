@@ -20,7 +20,8 @@ namespace Build;
 
 public partial class BuildContext : FrostingContext
 {
-    public string BuildNetFramework { get; } = "net481";
+    public string BuildNetFramework => "net481";
+    public string BuildDotNet       => "net10.0";
 
     public string Target { get; }
 
@@ -89,43 +90,6 @@ public partial class BuildContext : FrostingContext
         return version;
     }
 
-    [GeneratedRegex(@"^\s*##\s+v(?<version>\S+)\s?.*$")]
-    private static partial Regex VersionRegex();
-
-    public DirectoryPath FacadesDirectory()
-    {
-        if (this.IsRunningOnWindows())
-        {
-            return Environment.GetSpecialPath(SpecialPath.ProgramFilesX86)
-                .Combine("Reference Assemblies")
-                .Combine("Microsoft")
-                .Combine("Framework")
-                .Combine(".NETFramework")
-                .Combine("v4.8")
-                .Combine("Facades");
-        }
-
-        DirectoryPath monoLib;
-        if (this.IsRunningOnMacOs())
-        {
-            monoLib = new DirectoryPath("/Library")
-                .Combine("Frameworks")
-                .Combine("Mono.framework")
-                .Combine("Versions")
-                .Combine("Current")
-                .Combine("lib");
-        }
-        else
-        {
-            monoLib = new DirectoryPath("/usr").Combine("lib");
-        }
-
-        return monoLib
-            .Combine("mono")
-            .Combine("4.8-api")
-            .Combine("Facades");
-    }
-
     public void ReportRepacking(FilePath target, FilePath log)
     {
         // ILRepack is extremely noisy by default and has no options to
@@ -161,7 +125,7 @@ public partial class BuildContext : FrostingContext
         this.ILRepack(target, source, assemblyPaths,
                       new ILRepackSettings
                       {
-                          Libs                 = [assembliesPath],
+                          Libs                 = [assembliesPath, ApiDirectory()],
                           TargetPlatform       = targetPlatform,
                           Parallel             = true,
                           Verbose              = false,
@@ -232,4 +196,31 @@ public partial class BuildContext : FrostingContext
             throw new Exception($"AltCover failed with exit code: {exitCode}");
         }
     }
+
+    [GeneratedRegex(@"^\s*##\s+v(?<version>\S+)\s?.*$")]
+    private static partial Regex VersionRegex();
+
+    private DirectoryPath ApiDirectory()
+        => this.IsRunningOnWindows()
+               ? Environment.GetSpecialPath(SpecialPath.ProgramFilesX86)
+                            .Combine("Reference Assemblies")
+                            .Combine("Microsoft")
+                            .Combine("Framework")
+                            .Combine(".NETFramework")
+                            .Combine("v4.8")
+
+         : this.IsRunningOnMacOs()
+               ? new DirectoryPath("/Library").Combine("Frameworks")
+                                              .Combine("Mono.framework")
+                                              .Combine("Versions")
+                                              .Combine("Current")
+                                              .Combine("lib")
+                                              .Combine("mono")
+                                              .Combine("4.8-api")
+
+         : new DirectoryPath("/usr").Combine("lib")
+                                    .Combine("mono")
+                                    .Combine("4.8-api");
+
+    private DirectoryPath FacadesDirectory() => ApiDirectory().Combine("Facades");
 }

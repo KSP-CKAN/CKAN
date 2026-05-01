@@ -31,6 +31,7 @@ namespace CKAN.GUI
                 Title               = Properties.Resources.DownloadStatisticsPieChartTitle,
                 TitleColor          = SystemColors.ControlText.ToOxyColor(),
                 TextColor           = SystemColors.ControlText.ToOxyColor(),
+                SubtitleColor       = SystemColors.ControlText.ToOxyColor(),
                 PlotAreaBorderColor = SystemColors.Control.ToOxyColor(),
             };
             var totalSize = bytesPerHost.Values.Sum();
@@ -39,6 +40,7 @@ namespace CKAN.GUI
             Model.Series.Add(new PieSeries()
             {
                 Title               = Properties.Resources.DownloadStatisticsPieChartTitle,
+                TextColor           = SystemColors.ControlText.ToOxyColor(),
                 Diameter            = 0.75,
                 TickRadialLength    = 25,
                 StartAngle          = 180,

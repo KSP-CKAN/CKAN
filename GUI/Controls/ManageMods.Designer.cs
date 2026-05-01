@@ -330,7 +330,6 @@ namespace CKAN.GUI
             this.ModGrid.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ModGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
             this.ModGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
-            this.ModGrid.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.ModGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,

@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [Core] Purge ZIPs corrupted after downloading (#4577 by: HebaruSan)
 - [Multiple] Translation updates from Crowdin (#4578 by: HebaruSan)
 - [ConsoleUI] Game instance cloning for ConsoleUI (#4593 by: HebaruSan)
+- [GUI] Windows dark mode in .NET 10 build (#4594 by: HebaruSan)
 
 ### Bugfixes
 

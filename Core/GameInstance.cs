@@ -242,7 +242,7 @@ namespace CKAN
         public static string? PortableDir(IGame game)
             => new string?[]
                {
-                   Assembly.GetExecutingAssembly()?.Location,
+                   PathToRunningExe(),
                    Process.GetCurrentProcess()?.MainModule?.FileName,
                }
                    .OfType<string>()
@@ -252,6 +252,13 @@ namespace CKAN
                    .Select(path => new DirectoryInfo(path))
                    .FirstOrDefault(game.GameInFolder)
                    ?.FullName;
+
+        private static string? PathToRunningExe()
+            #if NET5_0_OR_GREATER
+            => Environment.ProcessPath;
+            #else
+            => Assembly.GetEntryAssembly()?.Location;
+            #endif
 
         /// <summary>
         /// Detects the version of a game in a given directory.
