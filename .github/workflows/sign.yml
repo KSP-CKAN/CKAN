@@ -4,17 +4,12 @@ on:
   workflow_call:
 
 jobs:
-  build:
-    uses: ./.github/workflows/build.yml
-    with:
-      configuration: Release
   smoke-inflator:
     uses: ./.github/workflows/smoke.yml
 
   sign:
     runs-on: ubuntu-latest
     needs:
-      - build
       - smoke-inflator
     steps:
       - uses: SignPath/github-action-submit-signing-request@v2
@@ -25,7 +20,7 @@ jobs:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           signing-policy-slug: release-signing
           artifact-configuration-slug: release
-          github-artifact-id: ${{ needs.build.outputs.unsigned-artifact-id }}
+          github-artifact-id: ${{ needs.smoke-inflator.outputs.unsigned-artifact-id }}
           wait-for-completion: true
           output-artifact-directory: _build/signed
       - name: Upload signed artifact
