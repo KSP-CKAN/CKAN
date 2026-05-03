@@ -126,6 +126,11 @@ namespace CKAN.GUI
                 var needRemoveForAuto = changes.All(ch => ch.ChangeType == GUIModChangeType.Install
                                                           || ch.IsAutoRemoval);
 
+                var skipFiles = changes.OfType<ModUpgrade>()
+                                       .Where(ch => ch.SkipReinstallingFiles)
+                                       .Select(ch => ch.targetMod)
+                                       .ToHashSet();
+
                 // First compose sets of what the user wants installed, upgraded, and removed.
                 foreach (ModChange change in changes)
                 {
@@ -271,7 +276,7 @@ namespace CKAN.GUI
                             if (!canceled && toUpgrade.Count > 0)
                             {
                                 installer.Upgrade(toUpgrade, downloader, ref possibleConfigOnlyDirs, registry_manager,
-                                                  deduper, autoInstalled, true, false);
+                                                  deduper, autoInstalled, skipFiles, true, false);
                                 toUpgrade.Clear();
                             }
                             if (canceled)

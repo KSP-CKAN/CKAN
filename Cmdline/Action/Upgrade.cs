@@ -190,7 +190,7 @@ namespace CKAN.CmdLine
                 (ModuleInstaller installer, NetAsyncModulesDownloader downloader, RegistryManager regMgr, ref HashSet<string>? possibleConfigOnlyDirs, ISet<CkanModule> autoInstalled) =>
                     installer.Upgrade(modules, downloader,
                                       ref possibleConfigOnlyDirs,
-                                      regMgr, deduper, autoInstalled, true, true),
+                                      regMgr, deduper, autoInstalled, null, true, true),
                 modules.Add);
         }
 
@@ -251,7 +251,7 @@ namespace CKAN.CmdLine
                     if (to_upgrade.Count > 0)
                     {
                         installer.Upgrade(to_upgrade, downloader,
-                                          ref possibleConfigOnlyDirs, regMgr, deduper, autoInstalled, true);
+                                          ref possibleConfigOnlyDirs, regMgr, deduper, autoInstalled, null, true);
                     }
                 },
                 m => identsAndVersions.Add(m.identifier));

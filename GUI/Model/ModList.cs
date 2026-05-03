@@ -453,7 +453,8 @@ namespace CKAN.GUI
                                         replaceCol?.Visible == true
                                         && row.Cells[replaceCol.Index] is DataGridViewCheckBoxCell replaceCell
                                         && replaceCell.Value is true,
-                                        registry.MetadataChanged(gmod.Identifier))
+                                        registry.MetadataChanged(gmod.Identifier, out bool installedFilesChanged),
+                                        installedFilesChanged)
                    : Enumerable.Empty<ModChange>();
 
         public static Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(

@@ -566,8 +566,9 @@ namespace CKAN
                 && (ReferenceEquals(this, obj)
                     || (obj.GetType() == GetType() && Equals((CkanModule)obj)));
 
-        public bool MetadataEquals(CkanModule other)
+        public bool MetadataEquals(CkanModule other, out bool installedFilesChanged)
         {
+            installedFilesChanged = true;
             if ((install == null) != (other.install == null)
                     || (install != null && other.install != null
                         && install.Length != other.install.Length))
@@ -599,6 +600,10 @@ namespace CKAN
             {
                 return false;
             }
+
+            // Conditions above this line affect the files that get installed for this mod;
+            // conditions after this line do not.
+            installedFilesChanged = false;
 
             if (!RelationshipsAreEquivalent(conflicts,  other.conflicts))
             {

@@ -219,7 +219,7 @@ namespace CKAN
             // Check if the installed module is up to date
             var comp = latestMod.version.CompareTo(instVer);
             if (comp == -1
-                || (comp == 0 && !querier.MetadataChanged(identifier)
+                || (comp == 0 && !querier.MetadataChanged(identifier, out _)
                               // Check if any of the files or directories are missing
                               && (!checkMissingFiles
                                   || instance == null
@@ -334,15 +334,18 @@ namespace CKAN
         /// </summary>
         /// <param name="querier">A registry</param>
         /// <param name="identifier">Identifier of mod to check</param>
+        /// <param name="installedFilesChanged">Set to true if the changed properties affect how/which files get installed</param>
         /// <returns>True if any property has changed that can affect how the mod is installed</returns>
-        public static bool MetadataChanged(this IRegistryQuerier querier, string identifier)
+        public static bool MetadataChanged(this IRegistryQuerier querier, string identifier,
+                                                                          out bool installedFilesChanged)
         {
+            installedFilesChanged = false;
             try
             {
                 var installed = querier.InstalledModule(identifier)?.Module;
                 return installed != null
                     && (!querier.GetModuleByVersion(identifier, installed.version)
-                                ?.MetadataEquals(installed)
+                                ?.MetadataEquals(installed, out installedFilesChanged)
                                 ?? false);
             }
             catch

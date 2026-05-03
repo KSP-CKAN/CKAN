@@ -1459,7 +1459,7 @@ namespace CKAN.GUI
                                                       registry.GetModuleByVersion(module.identifier,
                                                                                   module.version)
                                                               ?? module,
-                                                      true, false, config)
+                                                      true, false, true, config)
                                        as ModChange)
                            .ToList(),
                     null);

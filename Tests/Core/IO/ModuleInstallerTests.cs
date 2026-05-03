@@ -1657,7 +1657,7 @@ namespace Tests.Core.IO
                                       registry.LatestAvailable(ident, inst.KSP.StabilityToleranceConfig, inst.KSP.VersionCriteria()))
                                                     .OfType<CkanModule>()
                                                     .ToArray(),
-                                  downloader, ref possibleConfigOnlyDirs, regMgr, null, null, false);
+                                  downloader, ref possibleConfigOnlyDirs, regMgr, null, null, null, false);
 
                 // Assert
                 CollectionAssert.AreEquivalent(correctRemainingIdentifiers,
@@ -1755,7 +1755,7 @@ namespace Tests.Core.IO
                     installer.Upgrade(toUpgrade.Select(CkanModule.FromJson)
                                                .ToArray(),
                                       downloader, ref possibleConfigOnlyDirs,
-                                      regMgr, null, null, false);
+                                      regMgr, null, null, null, false);
                 });
                 CollectionAssert.AreEquivalent(registry.InstalledModules.Select(im => im.Module),
                                                autoInstalled.Select(CkanModule.FromJson)
@@ -1822,6 +1822,42 @@ namespace Tests.Core.IO
                                       regMgr,
                                       ConfirmPrompt: false);
                 });
+            }
+        }
+
+        [Test]
+        public void Upgrade_WithSkipFiles_FilesNotTouched()
+        {
+            // Arrange
+            var repo = new Repository("test", "https://github.com/");
+            using (var inst     = new DisposableKSP(TestData.TestRegistry()))
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager(),
+                                                           new Repository[] { repo }))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
+            {
+                var registry  = regMgr.registry;
+                var installer = new ModuleInstaller(inst.KSP, cache, config, nullUser);
+                var module    = TestData.DogeCoinFlag_101_module_find();
+
+                // Act
+                HashSet<string>? possibleConfigOnlyDirs = null;
+                installer.Upgrade(new CkanModule[] { module },
+                                  new NetAsyncModulesDownloader(nullUser, cache),
+                                  ref possibleConfigOnlyDirs,regMgr,
+                                  null, null,
+                                  new HashSet<CkanModule> { module });
+
+                // Assert
+                var gameDataPath = Path.Combine(inst.KSP.GameDir, "GameData");
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   CKANPathUtils.NormalizePath(Path.Combine(gameDataPath, "README.md"))
+                                               },
+                                               new DirectoryInfo(gameDataPath).EnumerateFileSystemInfos()
+                                                                              .Select(fsi => fsi.FullName)
+                                                                              .Select(CKANPathUtils.NormalizePath));
             }
         }
 

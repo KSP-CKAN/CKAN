@@ -35,7 +35,7 @@ namespace Tests.GUI
                                         config);
 
                 // Assert
-                Assert.AreEqual(true, sut.IsUserRequested);
+                Assert.IsTrue(sut.IsUserRequested);
                 Assert.AreEqual("Requested by user", sut.Description);
                 Assert.AreEqual("Install ModuleManager 2.5.1 (Requested by user)", sut.ToString());
                 Assert.AreEqual(new ModChange(TestData.ModuleManagerModule(),
@@ -53,12 +53,14 @@ namespace Tests.GUI
             }
         }
 
-        [TestCase(false, false, "Re-install (missing folders or files)"),
-         TestCase(false, true,  "Re-install (metadata changed)"),
-         TestCase(true,  false, "Re-install (user requested)"),
-         TestCase(true,  true,  "Re-install (user requested)")]
+        [TestCase(false, false, false, "Re-install (missing folders or files)"),
+         TestCase(false, true,  false, "Re-install (metadata changed)"),
+         TestCase(false, true,  true,  "Re-install (metadata changed)"),
+         TestCase(true,  false, false, "Re-install (user requested)"),
+         TestCase(true,  true,  false, "Re-install (user requested)")]
         public void AllProperties_Upgrade_Correct(bool   userReinstall,
                                                   bool   metadataChanged,
+                                                  bool   installedFilesChanged,
                                                   string reason)
         {
             // Arrange
@@ -71,22 +73,24 @@ namespace Tests.GUI
                 // Act
                 var sut = new ModUpgrade(TestData.ModuleManagerModule(),
                                          TestData.ModuleManagerModule(),
-                                         userReinstall, metadataChanged,
+                                         userReinstall, metadataChanged, installedFilesChanged,
                                          config);
 
                 // Assert
-                Assert.AreEqual(true, sut.IsUserRequested);
+                Assert.IsTrue(sut.IsUserRequested);
+                Assert.AreEqual(metadataChanged && !installedFilesChanged,
+                                sut.SkipReinstallingFiles);
                 Assert.AreEqual(reason, sut.Description);
                 Assert.AreEqual($"Update ModuleManager 2.5.1 ({reason})",
                                 sut.ToString());
                 Assert.AreEqual(new ModUpgrade(TestData.ModuleManagerModule(),
                                                TestData.ModuleManagerModule(),
-                                               userReinstall, metadataChanged,
+                                               userReinstall, metadataChanged, false,
                                                config),
                                 sut);
                 Assert.AreNotEqual(new ModUpgrade(TestData.BurnControllerModule(),
                                                   TestData.BurnControllerModule(),
-                                                  userReinstall, metadataChanged,
+                                                  userReinstall, metadataChanged, false,
                                                   config),
                                    sut);
             }

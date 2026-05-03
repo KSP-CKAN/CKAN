@@ -954,6 +954,18 @@ namespace CKAN
             InvalidateInstalledCaches();
         }
 
+        public void ReregisterModule(GameInstance inst, CkanModule module)
+        {
+            EnlistWithTransaction();
+            sorter = null;
+            if (installed_modules.TryGetValue(module.identifier, out InstalledModule? instMod))
+            {
+                installed_modules[module.identifier] = new InstalledModule(inst, module,
+                                                                           instMod.Files, instMod.AutoInstalled);
+            }
+            InvalidateInstalledCaches();
+        }
+
         /// <summary>
         /// Set the list of manually installed DLLs to the given mapping.
         /// Files registered to a mod are not allowed and will be ignored.
