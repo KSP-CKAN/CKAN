@@ -33,7 +33,6 @@ namespace CKAN.GUI
         /// <param name="instance">Game instance for getting labels</param>
         /// <param name="allLabels">All label definitions</param>
         /// <param name="allTags">All tag definitions</param>
-        /// <param name="coreConfig">Core configuration</param>
         /// <param name="guiConfig">GUI configuration</param>
         /// <param name="graphics">Graphics object for calculating word wrap</param>
         /// <param name="mc">Changes the user has made</param>
@@ -42,14 +41,12 @@ namespace CKAN.GUI
                        GameInstance                instance,
                        ModuleLabelList             allLabels,
                        ModuleTagList               allTags,
-                       IConfiguration              coreConfig,
                        GUIConfiguration            guiConfig,
                        Graphics                    graphics,
                        List<ModChange>?            mc = null)
         {
             this.allLabels        = allLabels;
             this.allTags          = allTags;
-            this.coreConfig       = coreConfig;
             this.guiConfig        = guiConfig;
             this.graphics         = graphics;
             activeSearches        = guiConfig.DefaultSearches
@@ -459,11 +456,20 @@ namespace CKAN.GUI
                                         registry.MetadataChanged(gmod.Identifier))
                    : Enumerable.Empty<ModChange>();
 
+        public static Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
+            IRegistryQuerier         registry,
+            HashSet<ModChange>       changeSet,
+            IConfiguration           coreConfig,
+            GameInstance             instance)
+            => ComputeFullChangeSetFromUserChangeSet(registry, changeSet, coreConfig,
+                                                     instance.Game, instance.StabilityToleranceConfig, instance.VersionCriteria());
+
         /// <summary>
         /// Returns a changeset and conflicts based on the selections of the user.
         /// </summary>
         /// <param name="registry">The registry for getting available mods</param>
         /// <param name="changeSet">User's choices of installation and removal</param>
+        /// <param name="coreConfig">Core configuration</param>
         /// <param name="game">Game of the game instance</param>
         /// <param name="stabilityTolerance">Prerelease configuration</param>
         /// <param name="version">The version of the current game instance</param>
@@ -473,9 +479,10 @@ namespace CKAN.GUI
         /// 2. Mapping from conflicting mods to description of the conflict
         /// 3. Descriptions of all conflicts
         /// </returns>
-        public Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
+        public static Tuple<ICollection<ModChange>, Dictionary<CkanModule, string>, List<string>> ComputeFullChangeSetFromUserChangeSet(
             IRegistryQuerier         registry,
             HashSet<ModChange>       changeSet,
+            IConfiguration           coreConfig,
             IGame                    game,
             StabilityToleranceConfig stabilityTolerance,
             GameVersionCriteria      version)
@@ -684,7 +691,6 @@ namespace CKAN.GUI
 
         private readonly ModuleLabelList                allLabels;
         private readonly ModuleTagList                  allTags;
-        private readonly IConfiguration                 coreConfig;
         private readonly GUIConfiguration               guiConfig;
         private readonly Graphics                       graphics;
         private          IReadOnlyCollection<ModSearch> activeSearches;
