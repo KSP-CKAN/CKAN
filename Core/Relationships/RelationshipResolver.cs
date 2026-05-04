@@ -404,7 +404,7 @@ namespace CKAN
                 if (possibleDup.identifier == module.identifier)
                 {
                     if (possibleDup.version == module.version
-                        && !possibleDup.MetadataEquals(module))
+                        && !possibleDup.MetadataEquals(module, out _))
                     {
                         // If the version is the same and the metadata changed,
                         // queue this up as a reinstall (remove the old version)

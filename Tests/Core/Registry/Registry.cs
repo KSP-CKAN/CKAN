@@ -287,6 +287,26 @@ namespace Tests.Core.Registry
         }
 
         [Test]
+        public void ReregisterModule_WithInstalledModule_Works()
+        {
+            // Arrange
+            var repo = new Repository("test", "https://github.com/");
+            using (var inst   = new DisposableKSP(TestData.TestRegistry()))
+            using (var regMgr = RegistryManager.Instance(inst.KSP, new RepositoryDataManager(),
+                                                         new Repository[] { repo }))
+            {
+                var registry = regMgr.registry;
+                Assert.IsNull(registry.InstalledModule("DogeCoinFlag")?.Module.install?[0].find);
+
+                // Act
+                registry.ReregisterModule(inst.KSP, TestData.DogeCoinFlag_101_module_find());
+
+                // Assert
+                Assert.AreEqual("DogeCoinFlag", registry.InstalledModule("DogeCoinFlag")?.Module.install?[0].find);
+            }
+        }
+
+        [Test]
         public void HasUpdate_WithUpgradeableManuallyInstalledMod_ReturnsTrue()
         {
             // Arrange

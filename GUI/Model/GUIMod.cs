@@ -308,7 +308,8 @@ namespace CKAN.GUI
 
         public IEnumerable<ModChange> GetModChanges(bool upgradeChecked,
                                                     bool replaceChecked,
-                                                    bool metadataChanged)
+                                                    bool metadataChanged,
+                                                    bool installedFilesChanged)
         {
             var installed = InstalledMod?.Module;
             if (replaceChecked)
@@ -328,7 +329,7 @@ namespace CKAN.GUI
                 {
                     yield return new ModUpgrade(Mod,
                                                 SelectedMod,
-                                                false, false,
+                                                false, false, false,
                                                 ServiceLocator.Container.Resolve<IConfiguration>());
                 }
                 else
@@ -350,7 +351,7 @@ namespace CKAN.GUI
                 // Reinstall
                 yield return new ModUpgrade(Mod,
                                             SelectedMod,
-                                            false, metadataChanged,
+                                            false, metadataChanged, installedFilesChanged,
                                             ServiceLocator.Container.Resolve<IConfiguration>());
             }
         }

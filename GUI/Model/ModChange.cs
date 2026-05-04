@@ -143,12 +143,14 @@ namespace CKAN.GUI
                           CkanModule       targetMod,
                           bool             userReinstall,
                           bool             metadataChanged,
+                          bool             installedFilesChanged,
                           IConfiguration   config)
             : base(mod, GUIModChangeType.Update, config)
         {
-            this.targetMod       = targetMod;
-            this.userReinstall   = userReinstall;
-            this.metadataChanged = metadataChanged;
+            this.targetMod             = targetMod;
+            this.userReinstall         = userReinstall;
+            this.metadataChanged       = metadataChanged;
+            this.installedFilesChanged = installedFilesChanged;
         }
 
         public override string NameAndStatus(NetModuleCache cache)
@@ -171,7 +173,11 @@ namespace CKAN.GUI
             => targetMod.identifier == Mod.identifier
                 && targetMod.version == Mod.version;
 
+        public bool SkipReinstallingFiles
+            => metadataChanged && !installedFilesChanged;
+
         private readonly bool userReinstall;
         private readonly bool metadataChanged;
+        private readonly bool installedFilesChanged;
     }
 }

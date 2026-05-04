@@ -723,7 +723,7 @@ namespace CKAN.GUI
                                 // Metapackages aren't intending to prompt users to choose providing mods
                                 rel.ExactMatch(registry_manager.registry, stabilityTolerance, crit, installed, toInstall)
                                 // Otherwise look for incompatible
-                                ?? rel.ExactMatch(registry_manager.registry, stabilityTolerance, null, installed, toInstall))
+                                ?? rel.ExactMatch(registry_manager.registry, stabilityTolerance, null, null, null))
                             .OfType<CkanModule>());
                     }
                     toInstall.Add(module);
@@ -733,7 +733,6 @@ namespace CKAN.GUI
                     currentUser.RaiseError("{0}", kraken.InnerException == null
                         ? kraken.Message
                         : $"{kraken.Message}: {kraken.InnerException.Message}");
-
                     continue;
                 }
                 catch (Exception ex)
@@ -751,7 +750,7 @@ namespace CKAN.GUI
 
             var modpacks = toInstall.Where(m => m.IsMetapackage)
                                     .ToArray();
-            if (modpacks.Any())
+            if (modpacks is { Length: > 0 })
             {
                 CkanModule.GetMinMaxVersions(modpacks,
                                              out _, out _,
@@ -796,10 +795,13 @@ namespace CKAN.GUI
                                Properties.Resources.AllModVersionsInstallYes,
                                Properties.Resources.AllModVersionsInstallNo))
             {
-                UpdateChangesDialog(toInstall.Select(m => new ModChange(m, GUIModChangeType.Install,
-                                                                        ServiceLocator.Container.Resolve<IConfiguration>()))
-                                             .ToList(),
-                                    null);
+                var tuple = ModList.ComputeFullChangeSetFromUserChangeSet(
+                    registry_manager.registry,
+                    toInstall.Select(m => new ModChange(m, GUIModChangeType.Install,
+                                                        ServiceLocator.Container.Resolve<IConfiguration>()))
+                             .ToHashSet(),
+                    ServiceLocator.Container.Resolve<IConfiguration>(), CurrentInstance);
+                UpdateChangesDialog(tuple.Item1.ToList(), tuple.Item2);
                 tabController.ShowTab(ChangesetTabPage.Name, 1);
             }
         }

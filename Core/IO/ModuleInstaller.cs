@@ -1295,6 +1295,7 @@ namespace CKAN.IO
                             RegistryManager                    registry_manager,
                             InstalledFilesDeduplicator?        deduper            = null,
                             ISet<CkanModule>?                  autoInstalled      = null,
+                            ISet<CkanModule>?                  skipFiles          = null,
                             bool                               enforceConsistency = true,
                             bool                               ConfirmPrompt      = true)
         {
@@ -1328,11 +1329,13 @@ namespace CKAN.IO
                 fullChangeset.Remove(ident);
             }
 
-            // Only install stuff that's already there if explicitly requested in param
             var toInstall = fullChangeset.Values
+                                         // Only install stuff that's already there if explicitly requested in param
                                          .Except(registry.InstalledModules
                                                          .Select(im => im.Module)
                                                          .Except(modules))
+                                         // Don't touch files for mods in skipFiles (still need to handle their dependencies though)
+                                         .Except(skipFiles ?? new HashSet<CkanModule>())
                                          .ToArray();
             autoInstalled ??= new HashSet<CkanModule>();
             autoInstalled.UnionWith(toInstall.Where(resolver.IsAutoInstalled));
@@ -1439,6 +1442,13 @@ namespace CKAN.IO
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUpgradeUserDeclined);
             }
 
+            if (skipFiles != null)
+            {
+                foreach (var module in skipFiles.Intersect(modules))
+                {
+                    registry.ReregisterModule(instance, module);
+                }
+            }
             AddRemove(ref possibleConfigOnlyDirs,
                       registry_manager,
                       resolver,

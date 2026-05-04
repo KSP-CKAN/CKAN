@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Translation updates from Crowdin (#4578 by: HebaruSan)
 - [ConsoleUI] Game instance cloning for ConsoleUI (#4593 by: HebaruSan)
 - [GUI] Windows dark mode in .NET 10 build (#4594 by: HebaruSan)
+- [Multiple] Leave mod files alone for relationship-only metadata changes (#4599 by: HebaruSan)
 
 ### Bugfixes
 

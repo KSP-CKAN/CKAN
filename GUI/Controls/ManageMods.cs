@@ -1459,7 +1459,7 @@ namespace CKAN.GUI
                                                       registry.GetModuleByVersion(module.identifier,
                                                                                   module.version)
                                                               ?? module,
-                                                      true, false, config)
+                                                      true, false, true, config)
                                        as ModChange)
                            .ToList(),
                     null);
@@ -1663,7 +1663,7 @@ namespace CKAN.GUI
             // Update our mod listing
             MainModList = new ModList(guiMods, currentInstance,
                                       ModuleLabelList.ModuleLabels, ModuleTagList.ModuleTags,
-                                      ServiceLocator.Container.Resolve<IConfiguration>(), guiConfig,
+                                      guiConfig,
                                       CreateGraphics(), ChangeSet);
             MainModList.ModFiltersUpdated += UpdateFilters;
 
@@ -2227,9 +2227,8 @@ namespace CKAN.GUI
                        gmod.SelectedMod = ch.targetMod;
                     }
                 }
-                var gameVersion = inst.VersionCriteria();
-                var tuple = MainModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set, inst.Game,
-                                                                              inst.StabilityToleranceConfig, gameVersion);
+                var tuple = ModList.ComputeFullChangeSetFromUserChangeSet(registry, user_change_set,
+                                                                          ServiceLocator.Container.Resolve<IConfiguration>(), inst);
                 full_change_set = tuple.Item1.ToList();
                 new_conflicts = tuple.Item2.ToDictionary(
                     item => new GUIMod(item.Key, repoData, registry, inst.StabilityToleranceConfig,
