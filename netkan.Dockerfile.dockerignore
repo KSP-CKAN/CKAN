@@ -62,8 +62,6 @@
 **/System.ServiceProcess.dll
 **/System.Text.Encoding.CodePages.dll
 **/System.Text.Encoding.dll
-**/System.Text.Encodings.Web.dll
-**/System.Text.Json.dll
 **/System.Threading.Overlapped.dll
 **/System.Threading.Tasks.Dataflow.dll
 **/System.Threading.Tasks.dll
