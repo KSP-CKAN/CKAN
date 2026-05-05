@@ -34,13 +34,7 @@ namespace CKAN.GUI
             {
                 ModGrid.BorderStyle = BorderStyle.None;
             }
-            uninstallingFont = new Font(SystemFonts.DefaultFont, FontStyle.Strikeout);
-            if (Platform.IsMono
-                && (int)CreateGraphics().DpiX is int dpi
-                && dpi != 96)
-            {
-                uninstallingFont = uninstallingFont.Scale(dpi);
-            }
+            uninstallingFont = new Font(ModGrid.Font, FontStyle.Strikeout);
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
             FilterCompatibleButton.ToolTipText      = Properties.Resources.FilterLinkToolTip;
