@@ -68,22 +68,23 @@ namespace CKAN.GUI
             log.Info("Starting the GUI");
             if (//cmdlineArgs is [_, string focusIdent, ..]
                 cmdlineArgs.Length > 1
-                && cmdlineArgs[1] is string focusIdent)
+                && cmdlineArgs[1] is string focusIdentArg
+                && focusIdentArg.Length >= 2)
             {
                 if (//focusIdent is ['/', '/', .. var rest]
-                    focusIdent.Length > 2)
+                    focusIdentArg.StartsWith("//"))
                 {
-                    focusIdent = focusIdent[2..];
+                    focusIdent = focusIdentArg[2..];
                 }
                 else if (//focusIdent is ['c', 'k', 'a', 'n', ':', '/', '/', .. var rest2]
-                    focusIdent.StartsWith("ckan://"))
+                    focusIdentArg.StartsWith("ckan://"))
                 {
-                    focusIdent = focusIdent[7..];
+                    focusIdent = focusIdentArg[7..];
                 }
                 if (//focusIdent is [.. var start, '/']
-                    focusIdent.EndsWith("/"))
+                    focusIdentArg.EndsWith("/"))
                 {
-                    focusIdent = focusIdent[..^1];
+                    focusIdent = focusIdentArg[..^1];
                 }
             }
 
