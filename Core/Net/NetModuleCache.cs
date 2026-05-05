@@ -79,6 +79,8 @@ namespace CKAN
         {
             cache.CheckFreeSpace(bytesToStore);
         }
+        public bool OnSameDevice(DirectoryInfo dir)
+            => cache.OnSameDevice(dir);
 
         public FileInfo? GetInProgressFileName(CkanModule m)
             => m.download == null

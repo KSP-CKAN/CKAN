@@ -16,7 +16,7 @@ ENV PATH="$PATH:/root/.local/bin"
 RUN apt-get update \
     && apt-get update -y \
     && apt-get install -y --no-install-recommends \
-        ca-certificates libicu74 git libffi-dev \
+        ca-certificates libicu78 git libffi-dev \
         python3 python-is-python3
 
 # Trust all git repos

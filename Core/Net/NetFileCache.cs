@@ -575,6 +575,11 @@ namespace CKAN
             }
         }
 
+        public bool OnSameDevice(DirectoryInfo dir)
+            => HardLink.GetDeviceIdentifiers(cachePath.FullName, dir.FullName)
+                       .Distinct()
+                       .Count() < 2;
+
         /// <summary>
         /// Generate the hash used for caching
         /// </summary>
