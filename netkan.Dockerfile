@@ -9,7 +9,7 @@ ENV LANG=C.utf-8
 # Install dotnet dependencies
 RUN apt-get update \
     && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends ca-certificates libicu74
+    && apt-get install -y --no-install-recommends ca-certificates libicu78
 
 # Purge APT download cache, package lists, and logs
 RUN apt-get clean \
