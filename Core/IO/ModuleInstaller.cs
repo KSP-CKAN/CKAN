@@ -83,19 +83,11 @@ namespace CKAN.IO
                 throw new ModuleIsDLCKraken(dlc.First());
             }
 
-            // Make sure we have enough space to install this stuff
-            var installBytes = modsToInstall.Sum(m => m.install_size);
-            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir),
-                                         installBytes,
-                                         Properties.Resources.NotEnoughSpaceToInstall);
-
+            // Check which mods need to be downloaded
             var cached    = new List<CkanModule>();
             var downloads = new List<CkanModule>();
-            User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToInstall);
-            User.RaiseMessage("");
             foreach (var module in modsToInstall)
             {
-                User.RaiseMessage(" * {0}", cache.DescribeAvailability(config, module));
                 if (!module.IsMetapackage && !cache.IsMaybeCachedZip(module))
                 {
                     downloads.Add(module);
@@ -105,13 +97,30 @@ namespace CKAN.IO
                     cached.Add(module);
                 }
             }
+
+            // Make sure we have enough space to install this stuff
+            var installBytes  = modsToInstall.Sum(m => m.install_size);
+            var downloadBytes = CkanModule.GroupByDownloads(downloads)
+                                          .Sum(grp => grp.First().download_size);
+            CKANPathUtils.CheckFreeSpace(new DirectoryInfo(instance.GameDir),
+                                         cache.OnSameDevice(new DirectoryInfo(instance.GameDir))
+                                             // Check for combined download+install space if same device
+                                             ? downloadBytes + installBytes
+                                             : installBytes,
+                                         Properties.Resources.NotEnoughSpaceToInstall);
+
+            // Prompt user for confirmation, if needed
+            User.RaiseMessage(Properties.Resources.ModuleInstallerAboutToInstall);
+            User.RaiseMessage("");
+            foreach (var module in modsToInstall)
+            {
+                User.RaiseMessage(" * {0}", cache.DescribeAvailability(config, module));
+            }
             if (ConfirmPrompt && !User.RaiseYesNoDialog(Properties.Resources.ModuleInstallerContinuePrompt))
             {
                 throw new CancelledActionKraken(Properties.Resources.ModuleInstallerUserDeclined);
             }
 
-            var downloadBytes = CkanModule.GroupByDownloads(downloads)
-                                          .Sum(grp => grp.First().download_size);
             var rateCounter = new ByteRateCounter()
             {
                 Size      = downloadBytes + installBytes,
