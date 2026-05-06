@@ -279,7 +279,8 @@ namespace CKAN
                                                        .ToArray()),
                     new ResolutionContext(registry, installed,
                                           allInstalling.Append(source).ToArray(),
-                                          stabilityTolerance, crit))
+                                          new StabilityToleranceConfig(stabilityTolerance),
+                                          crit))
         {
         }
 
