@@ -41,6 +41,7 @@ All notable changes to this project will be documented in this file.
 - [Build] Remove symlink-based DLL deduplication from MacOS build (#4557 by: HebaruSan)
 - [Multiple] Layout and scaling related fixes (#4591 by: HebaruSan)
 - [Multiple] Non-Latin letter search (#4605 by: HebaruSan)
+- [Build] Automatically pull focus for the Terminal window on MacOS (#4606 by: cheesebellies; reviewed: HebaruSan)
 
 ### Internal
 
