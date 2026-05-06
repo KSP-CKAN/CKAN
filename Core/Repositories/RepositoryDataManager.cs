@@ -271,9 +271,8 @@ namespace CKAN
         private void saveETags()
         {
             var txFileMgr = new TxFileManager();
-            txFileMgr.WriteAllText(etagsPath,
-                                   JsonConvert.SerializeObject(etags, Formatting.Indented),
-                                   Encoding.UTF8);
+            txFileMgr.WriteAllBytes(etagsPath,
+                                    Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(etags, Formatting.Indented)));
         }
 
         private void setETag(NetAsyncDownloader.DownloadTarget target,

@@ -345,9 +345,8 @@ namespace CKAN
 
                 foreach (var anchor in game.InstanceAnchorFiles)
                 {
-                    txFileMgr.WriteAllText(Path.Combine(newPath, anchor),
-                                           version.WithoutBuild.ToString(),
-                                           Encoding.UTF8);
+                    txFileMgr.WriteAllBytes(Path.Combine(newPath, anchor),
+                                            Encoding.UTF8.GetBytes(version.WithoutBuild.ToString() ?? ""));
                 }
 
                 // Don't write the buildID.txts if we have no build, otherwise it would be -1.
@@ -355,17 +354,15 @@ namespace CKAN
                 {
                     foreach (var b in KspBuildIdVersionProvider.buildIDfilenames)
                     {
-                        txFileMgr.WriteAllText(Path.Combine(newPath, b),
-                                               string.Format("build id = {0}", version.Build),
-                                               Encoding.UTF8);
+                        txFileMgr.WriteAllBytes(Path.Combine(newPath, b),
+                                                Encoding.UTF8.GetBytes(string.Format("build id = {0}", version.Build)));
                     }
                 }
 
                 // Create the readme.txt WITHOUT build number
-                txFileMgr.WriteAllText(Path.Combine(newPath, "readme.txt"),
-                                       string.Format("Version {0}",
-                                                     version.WithoutBuild.ToString()),
-                                       Encoding.UTF8);
+                txFileMgr.WriteAllBytes(Path.Combine(newPath, "readme.txt"),
+                                        Encoding.UTF8.GetBytes(string.Format("Version {0}",
+                                                     version.WithoutBuild.ToString())));
 
                 // Create the needed folder structure and the readme.txt for DLCs that should be simulated.
                 if (dlcs != null)
@@ -384,10 +381,9 @@ namespace CKAN
 
                         string dlcDir = Path.Combine(newPath, dlcDetector.InstallPath());
                         txFileMgr.CreateDirectory(dlcDir);
-                        txFileMgr.WriteAllText(
+                        txFileMgr.WriteAllBytes(
                             Path.Combine(dlcDir, "readme.txt"),
-                            string.Format("Version {0}", dlcVersion),
-                            Encoding.UTF8);
+                            Encoding.UTF8.GetBytes(string.Format("Version {0}", dlcVersion)));
                     }
                 }
 

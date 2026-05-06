@@ -40,6 +40,7 @@ All notable changes to this project will be documented in this file.
 - [ConsoleUI] Fit mod choice prompt to screen height in ConsoleUI (#4573 by: HebaruSan)
 - [Build] Remove symlink-based DLL deduplication from MacOS build (#4557 by: HebaruSan)
 - [Multiple] Layout and scaling related fixes (#4591 by: HebaruSan)
+- [Multiple] Non-Latin letter search (#4605 by: HebaruSan)
 
 ### Internal
 

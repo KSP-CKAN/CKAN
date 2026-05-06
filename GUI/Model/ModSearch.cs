@@ -55,10 +55,10 @@ namespace CKAN.GUI
         {
             Instance = instance;
             Name = (ShouldNegateTerm(byName, out string subName) ? "-" : "")
-                + CkanModule.nonAlphaNums.Replace(subName, "");
+                + CkanModule.nonAlphaNumsAnyLanguage.Replace(subName, "");
             initStringList(Authors, byAuthors);
             Description = (ShouldNegateTerm(byDescription, out string subDesc) ? "-" : "")
-                + CkanModule.nonAlphaNums.Replace(subDesc, "");
+                + CkanModule.nonAlphaNumsAnyLanguage.Replace(subDesc, "");
             initStringList(Localizations, localizations);
             initStringList(Licenses,      licenses);
 
@@ -200,7 +200,7 @@ namespace CKAN.GUI
                 allLabels,
                 instance,
                 // Can't search for spaces, so massage them like SearchableAuthors
-                "", authors.Select(a => CkanModule.nonAlphaNums.Replace(a, "")).ToList(), "",
+                "", authors.Select(a => CkanModule.nonAlphaNumsAnyLanguage.Replace(a, "")).ToList(), "",
                 null, null,
                 null, null, null, null, null,
                 null, null,
@@ -382,7 +382,7 @@ namespace CKAN.GUI
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchDescriptionPrefix, out string desc))
                 {
-                    byDescription += (ShouldNegateTerm(desc, out string subDesc) ? "-" : "") + CkanModule.nonAlphaNums.Replace(subDesc, "");
+                    byDescription += (ShouldNegateTerm(desc, out string subDesc) ? "-" : "") + CkanModule.nonAlphaNumsAnyLanguage.Replace(subDesc, "");
                 }
                 else if (TryPrefix(s, Properties.Resources.ModSearchLicensePrefix, out string lic))
                 {
@@ -477,7 +477,7 @@ namespace CKAN.GUI
                 else
                 {
                     // No special format = search names and identifiers
-                    byName += (ShouldNegateTerm(s, out string subS) ? "-" : "") + CkanModule.nonAlphaNums.Replace(subS, "");
+                    byName += (ShouldNegateTerm(s, out string subS) ? "-" : "") + CkanModule.nonAlphaNumsAnyLanguage.Replace(subS, "");
                 }
             }
             return new ModSearch(
