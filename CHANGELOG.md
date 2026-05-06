@@ -42,6 +42,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Layout and scaling related fixes (#4591 by: HebaruSan)
 - [Multiple] Non-Latin letter search (#4605 by: HebaruSan)
 - [Build] Automatically pull focus for the Terminal window on MacOS (#4606 by: cheesebellies; reviewed: HebaruSan)
+- [GUI] Resets Play Button state if the game launch is cancelled (#4607 by: neilsapno; reviewed: HebaruSan)
 
 ### Internal
 

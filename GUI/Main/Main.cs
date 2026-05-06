@@ -978,6 +978,7 @@ namespace CKAN.GUI
                         Properties.Resources.MainGoBack);
                     if (result.Item1 != DialogResult.Yes)
                     {
+                        ManageMods.OnGameExit();
                         return;
                     }
                     else if (result.Item2)
