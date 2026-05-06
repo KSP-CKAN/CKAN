@@ -31,6 +31,11 @@ namespace CKAN
                                          GameVersionCriteria             crit,
                                          OptionalRelationships           optRels)
         {
+            this.modules = modules;
+            this.registry = registry;
+            this.installed = installed;
+            this.stabilityTolerance = stabilityTolerance;
+            this.crit = crit;
             resolved = ResolveManyCached(modules, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache).ToArray();
         }
 
@@ -55,8 +60,27 @@ namespace CKAN
                     : ResolveRelationships(module, module.suggests, new SelectionReason.Suggested(module),
                                            definitelyInstalling, allInstalling, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache));
 
-        public IEnumerable<ResolvedRelationship[]> Unsatisfied()
-            => resolved.SelectMany(rr => rr.UnsatisfiedFrom());
+        public IEnumerable<UnsatisfiedRelation> Unsatisfied()
+            => resolved.SelectMany(rr => rr.UnsatisfiedFrom())
+                       .Select(EnrichRejection);
+
+        // Sometimes we end up with a ResolvedByNew with no modules that satisfy it.
+        // This augments the unsatisfied relation with potential candidates that were
+        // filtered out so that we can give a better explanation of why they couldn't
+        // be used.
+        private UnsatisfiedRelation EnrichRejection(UnsatisfiedRelation u)
+        {
+            if (u.rejection != null
+                || u.depends.LastOrDefault() is not ResolvedByNew last
+                || last.resolved.Count > 0)
+            {
+                return u;
+            }
+
+            return UnsatisfiedCandidates(last.relationship, last, modules).FirstOrDefault() is { } found
+                ? new UnsatisfiedRelation(u.depends, found.rejection)
+                : u;
+        }
 
         public IReadOnlyList<CkanModule> Candidates(RelationshipDescriptor          rel,
                                                     IReadOnlyCollection<CkanModule> installing,
@@ -64,7 +88,7 @@ namespace CKAN
                                                     IGame                           game)
         {
             var candidates = new List<CkanModule>();
-            var unresolved = new List<ResolvedRelationship[]>();
+            var unresolved = new List<UnsatisfiedRelation>();
             switch (relationshipCache.GetValueOrDefault(rel))
             {
                 case ResolvedByInstalling resInstalling:
@@ -79,53 +103,171 @@ namespace CKAN
                     // We need to have this loop at this level to accumulate the list of candidates
                     foreach ((CkanModule module, ResolvedRelationship[] rrs) in resRel.resolved)
                     {
-                        if (installing.Any(m => m.identifier == module.identifier
-                                                && m.version != module.version))
+                        var versionClash = installing.FirstOrDefault(m => m.identifier == module.identifier
+                                                                          && m.version  != module.version);
+                        if (versionClash != null)
                         {
-                            // Skip other versions of mods being installed
+                            unresolved.Add(new UnsatisfiedRelation(new ResolvedRelationship[] { resRel },
+                                                                   new RejectedByVersionMismatch(module, versionClash)));
+                            continue;
                         }
-                        else if (module.BadRelationships(installing)
-                                  .Select(r => relationshipCache.GetValueOrDefault(r.Descriptor))
-                                  .OfType<ResolvedRelationship>()
-                                  .Select(badRR => new ResolvedRelationship[] { resRel, badRR })
+
+                        var providesConflict = FindProvidesConflict(module, installing, installed);
+                        if (providesConflict != null)
+                        {
+                            unresolved.Add(new UnsatisfiedRelation(new ResolvedRelationship[] { resRel },
+                                                                   providesConflict));
+                            continue;
+                        }
+
+                        if (module.BadRelationships(installing)
+                                  .Select(r => new UnsatisfiedRelation(
+                                                   relationshipCache.GetValueOrDefault(r.Descriptor) is ResolvedRelationship leaf
+                                                       ? new ResolvedRelationship[] { resRel, leaf }
+                                                       : new ResolvedRelationship[] { resRel },
+                                                   new RejectedByRelationship(module, r)))
                                   .ToArray()
                             is { Length: > 0 } badRels)
                         {
                             unresolved.AddRange(badRels);
+                            continue;
                         }
-                        else if (rrs.SelectMany(subRR => subRR.BadRelationships(installing))
-                                    .Select(tuple => tuple.Item2.Type == RelationshipType.Depends
-                                                     && relationshipCache.TryGetValue(tuple.Item2.Descriptor,
-                                                                                      out ResolvedRelationship? leaf)
-                                                         ? tuple.Item1.Prepend(resRel).Append(leaf).ToArray()
-                                                         : tuple.Item1.Prepend(resRel).ToArray())
-                                    .ToArray()
-                                 is { Length: > 0 } badRRs)
+                        
+                        if (rrs.SelectMany(subRR => subRR.BadRelationships(installing))
+                                .Select(u =>
+                                {
+                                    ResolvedRelationship[] chain;
+                                    if (u.rejection is RejectedByRelationship inner
+                                        && inner.violation.Type == RelationshipType.Depends
+                                        && relationshipCache.TryGetValue(inner.violation.Descriptor,
+                                                                         out ResolvedRelationship? leaf))
+                                    {
+                                        chain = u.depends.Prepend(resRel).Append(leaf).ToArray();
+                                    }
+                                    else
+                                    {
+                                        chain = u.depends.Prepend(resRel).ToArray();
+                                    }
+                                    return new UnsatisfiedRelation(chain, u.rejection);
+                                })
+                                .ToArray()
+                            is { Length: > 0 } badRRs)
                         {
                             unresolved.AddRange(badRRs);
+                            continue;
                         }
-                        else
-                        {
-                            candidates.Add(module);
-                        }
+
+                        candidates.Add(module);
                     }
                     break;
             }
-            if (candidates.Count == 0)
+
+            if (candidates.Count != 0)
             {
-                if (unresolved.Count > 0)
+                return candidates;
+            }
+
+            // We weren't able to find anything. Redo the lookup without filters so
+            // we can describe what couldn't be satisfied.
+            if (unresolved.Count == 0
+                && relationshipCache.GetValueOrDefault(rel) is ResolvedByNew cached)
+            {
+                unresolved.AddRange(UnsatisfiedCandidates(rel, cached, installing));
+            }
+
+            if (unresolved.Count == 0)
+            {
+                throw new InconsistentKraken(string.Format(
+                    Properties.Resources.ResolvedRelationshipsTreeUnsatisfied,
+                    rel,
+                    string.Join(Environment.NewLine, installing.OrderBy(i => i.identifier))));
+            }
+
+            throw new DependenciesNotSatisfiedKraken(unresolved.Select(PrependAncestors).ToArray(),
+                                                     registry, game, this);
+        }
+
+        // The chains we build inside Candidates() only see the ResolvedByNew that the
+        // descriptor maps to; the wider ancestor context (e.g. Parent -> Intermediate ->
+        // this) lives in other cache entries. Walk up by finding the cached ResolvedByNew
+        // whose `resolved` keys contain the current head's source, and prepend it.
+        private UnsatisfiedRelation PrependAncestors(UnsatisfiedRelation u)
+        {
+            if (u.depends.Length == 0)
+            {
+                return u;
+            }
+            var chain = u.depends.ToList();
+            var current = chain[0];
+            while (true)
+            {
+                var parent = relationshipCache.Values
+                                              .OfType<ResolvedByNew>()
+                                              .FirstOrDefault(r => r != current
+                                                                   && !chain.Contains(r)
+                                                                   && r.resolved.ContainsKey(current.source));
+                if (parent == null)
                 {
-                    throw new DependenciesNotSatisfiedKraken(unresolved, registry, game, this);
+                    break;
                 }
-                else
+                chain.Insert(0, parent);
+                current = parent;
+            }
+            return chain.Count == u.depends.Length
+                ? u
+                : new UnsatisfiedRelation(chain.ToArray(), u.rejection);
+        }
+
+        private IEnumerable<UnsatisfiedRelation> UnsatisfiedCandidates(
+            RelationshipDescriptor          rel,
+            ResolvedByNew                   resolved,
+            IReadOnlyCollection<CkanModule> installing)
+        {
+            foreach (var module in rel.LatestAvailableWithProvides(registry, stabilityTolerance, crit, null, null))
+            {
+                var rejection = FindProvidesConflict(module, installing, installed)
+                                ?? module.BadRelationships(installed)
+                                            .Concat(module.BadRelationships(installing))
+                                            .Select(r => (ProviderRejection)new RejectedByRelationship(module, r))
+                                            .FirstOrDefault();
+                if (rejection != null)
                 {
-                    throw new InconsistentKraken(string.Format(Properties.Resources.ResolvedRelationshipsTreeUnsatisfied,
-                                                               rel,
-                                                               string.Join(Environment.NewLine,
-                                                                           installing.OrderBy(i => i.identifier))));
+                    yield return new UnsatisfiedRelation(
+                        new ResolvedRelationship[] { resolved }, rejection);
                 }
             }
-            return candidates;
+        }
+
+        private static ProviderRejection? FindProvidesConflict(
+            CkanModule                      candidate,
+            IReadOnlyCollection<CkanModule> installing,
+            IReadOnlyCollection<CkanModule> installed)
+        {
+            if (candidate.provides == null)
+            {
+                return null;
+            }
+
+            foreach (var providedId in candidate.provides)
+            {
+                var installedConflict = installed.FirstOrDefault(m => m.identifier != candidate.identifier
+                                                                   && (m.identifier == providedId
+                                                                       || (m.provides?.Contains(providedId) ?? false)));
+                if (installedConflict != null)
+                {
+                    return new RejectedByProvidesConflict(candidate, providedId, installedConflict, blockerIsInstalled: true);
+                }
+
+                var installingConflict = installing.FirstOrDefault(m => m.identifier != candidate.identifier
+                                                                     && (m.identifier == providedId
+                                                                         || (m.provides?.Contains(providedId) ?? false)));
+                if (installingConflict != null)
+                {
+                    return new RejectedByProvidesConflict(candidate, providedId, installingConflict, blockerIsInstalled: false);
+                }
+            }
+
+            return null;
         }
 
         [ExcludeFromCodeCoverage]
@@ -193,7 +335,12 @@ namespace CKAN
                                                                    crit, optRels, relationshipCache))
                                 .WithSource(source, reason);
 
-        private readonly ResolvedRelationship[] resolved;
-        private readonly RelationshipCache      relationshipCache = new RelationshipCache();
+        private readonly ResolvedRelationship[]          resolved;
+        private readonly IReadOnlyCollection<CkanModule> modules;
+        private readonly IRegistryQuerier                registry;
+        private readonly IReadOnlyCollection<CkanModule> installed;
+        private readonly StabilityToleranceConfig        stabilityTolerance;
+        private readonly GameVersionCriteria             crit;
+        private readonly RelationshipCache               relationshipCache = new RelationshipCache();
     }
 }

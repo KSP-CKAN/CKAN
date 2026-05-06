@@ -1867,6 +1867,208 @@ namespace Tests.Core.Relationships
             }
         }
 
+        [TestCase(
+            new string[]
+            {
+                @"{ ""identifier"": ""InstalledProvider"" }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"": [ ""InstalledProvider"" ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Parent 1.0, but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+        ),
+        TestCase(
+            // Same as the above test case, but now with an explicit conflicts clause.
+            new string[]
+            {
+                @"{ ""identifier"": ""InstalledProvider"" }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""InstalledProvider"" ],
+                    ""conflicts"": [ { ""name"": ""InstalledProvider"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Parent 1.0, but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+        ),
+        TestCase(
+            // Now the conflicting provider is reached transitively.
+            new string[]
+            {
+                @"{ ""identifier"": ""InstalledProvider"" }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""InstalledProvider"" ],
+                    ""conflicts"": [ { ""name"": ""InstalledProvider"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+        ),
+        TestCase(
+            // Now the provide is indirect, so there's no installed module with that
+            // specific indentifier.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""InstalledProvider"",
+                    ""provides"": [ ""Thing"" ]
+                }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""Thing"" ],
+                    ""conflicts"": [ { ""name"": ""InstalledProvider"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+        ),
+        TestCase(
+            // Now with AlternateProvider conflicting on the virtual dep.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""InstalledProvider"",
+                    ""provides"": [ ""Thing"" ]
+                }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""Thing"" ],
+                    ""conflicts"": [ { ""name"": ""Thing"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+        ),
+        TestCase(
+            // Now without an explicit conflict, just the implicit provides conflict.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""InstalledProvider"",
+                    ""provides"": [ ""Thing"" ]
+                }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""Thing"" ],
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+        )]
+        public void Constructor_ProvidesConflict_Throws(string[] availableModules,
+                                                        string[] alreadyInstalled,
+                                                        string[] newInstalls,
+                                                        string[] errors)
+        {
+            var user = new NullUser();
+            using var inst     = new DisposableKSP();
+            using var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults).ToArray());
+            using var repoData = new TemporaryRepositoryData(user, repo.repo);
+            using var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager, new Repository[] { repo.repo });
+
+            var registry  = regMgr.registry;
+            var opts      = RelationshipResolverOptions.DefaultOpts(inst.KSP.StabilityToleranceConfig);
+            var toInstall = newInstalls
+                .Select(ident => registry.LatestAvailable(ident,
+                                                          inst.KSP.StabilityToleranceConfig,
+                                                          inst.KSP.VersionCriteria()))
+                .OfType<CkanModule>()
+                .ToArray();
+
+            foreach (var module in alreadyInstalled)
+            {
+                registry.RegisterModule(
+                    registry.LatestAvailable(module,
+                                             inst.KSP.StabilityToleranceConfig,
+                                             inst.KSP.VersionCriteria())!,
+                    Array.Empty<string>(),
+                    inst.KSP,
+                    false);
+            }
+
+            var exc = Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+            {
+                var rr = new RelationshipResolver(
+                    toInstall, null,
+                    RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                    registry, game, crit);
+            })!;
+
+            CollectionAssert.AreEqual(
+                errors,
+                exc.Message.Split(new string[] { Environment.NewLine },
+                                  StringSplitOptions.RemoveEmptyEntries));
+        }
+
         [TestCase(new string[]
                   {
                       @"{
