@@ -12,6 +12,78 @@ namespace CKAN
 {
     using RelationshipCache = ConcurrentDictionary<RelationshipDescriptor, ResolvedRelationship>;
 
+    public abstract class ProviderRejection
+    {
+        public readonly CkanModule provider;
+        protected ProviderRejection(CkanModule provider)
+        {
+            this.provider = provider;
+        }
+    }
+
+    public sealed class RejectedByRelationship : ProviderRejection
+    {
+        public readonly Relationship violation;
+        public RejectedByRelationship(CkanModule provider, Relationship violation)
+            : base(provider)
+        {
+            this.violation = violation;
+        }
+
+        public override bool Equals(object? other)
+            => other is RejectedByRelationship r
+               && provider.Equals(r.provider)
+               && violation.Equals(r.violation);
+
+        public override int GetHashCode()
+            => (provider, violation).GetHashCode();
+    }
+
+    public sealed class RejectedByProvidesConflict : ProviderRejection
+    {
+        public readonly string     providedIdentifier;
+        public readonly CkanModule blockingMod;
+        public readonly bool       blockerIsInstalled;
+        public RejectedByProvidesConflict(CkanModule provider,
+                                          string     providedIdentifier,
+                                          CkanModule blockingMod,
+                                          bool       blockerIsInstalled)
+            : base(provider)
+        {
+            this.providedIdentifier = providedIdentifier;
+            this.blockingMod        = blockingMod;
+            this.blockerIsInstalled = blockerIsInstalled;
+        }
+
+        public override bool Equals(object? other)
+            => other is RejectedByProvidesConflict r
+               && provider.Equals(r.provider)
+               && providedIdentifier == r.providedIdentifier
+               && blockingMod.Equals(r.blockingMod)
+               && blockerIsInstalled == r.blockerIsInstalled;
+
+        public override int GetHashCode()
+            => (provider, providedIdentifier, blockingMod, blockerIsInstalled).GetHashCode();
+    }
+
+    public sealed class RejectedByVersionMismatch : ProviderRejection
+    {
+        public readonly CkanModule blockingMod;
+        public RejectedByVersionMismatch(CkanModule provider, CkanModule blockingMod)
+            : base(provider)
+        {
+            this.blockingMod = blockingMod;
+        }
+
+        public override bool Equals(object? other)
+            => other is RejectedByVersionMismatch r
+               && provider.Equals(r.provider)
+               && blockingMod.Equals(r.blockingMod);
+
+        public override int GetHashCode()
+            => (provider, blockingMod).GetHashCode();
+    }
+
     public abstract class ResolvedRelationship : IEquatable<ResolvedRelationship>
     {
         public ResolvedRelationship(CkanModule             source,
@@ -56,13 +128,13 @@ namespace CKAN
             => (source, relationship, reason).GetHashCode();
 
 
-        public virtual IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom()
+        public virtual IEnumerable<UnsatisfiedRelation> UnsatisfiedFrom()
             => reason is SelectionReason.Depends && Unsatisfied()
-                   ? Enumerable.Repeat(new ResolvedRelationship[] { this }, 1)
-                   : Enumerable.Empty<ResolvedRelationship[]>();
+                   ? Enumerable.Repeat(new UnsatisfiedRelation(new ResolvedRelationship[] { this }, null), 1)
+                   : Enumerable.Empty<UnsatisfiedRelation>();
 
-        public virtual IReadOnlyCollection<(ResolvedRelationship[], Relationship)> BadRelationships(IReadOnlyCollection<CkanModule> installing)
-            => Array.Empty<(ResolvedRelationship[], Relationship)>();
+        public virtual IReadOnlyCollection<UnsatisfiedRelation> BadRelationships(IReadOnlyCollection<CkanModule> installing)
+            => Array.Empty<UnsatisfiedRelation>();
     }
 
     public class ResolvedByInstalled : ResolvedRelationship
@@ -218,7 +290,7 @@ namespace CKAN
                                 : new ResolvedByNew(newSrc, relationship, newRsn, resolved);
 
 
-        public override IEnumerable<ResolvedRelationship[]> UnsatisfiedFrom()
+        public override IEnumerable<UnsatisfiedRelation> UnsatisfiedFrom()
         {
             // Our goal here is to return an array of ResolvedRelationships for each full
             // trace from rr to a relationship we can't satisfy.
@@ -228,7 +300,7 @@ namespace CKAN
                 // Now if this relationship itself can't be resolved directly, return it.
                 if (Unsatisfied())
                 {
-                    return Enumerable.Repeat(new ResolvedRelationship[] { this }, 1);
+                    return Enumerable.Repeat(new UnsatisfiedRelation(new ResolvedRelationship[] { this }, null), 1);
                 }
                 // Now we know it's a dependency that has at least one option for satisfying it,
                 // but those options may or may not be fully satisfied when considering _their_ dependencies.
@@ -242,29 +314,32 @@ namespace CKAN
 
                 return unsats.Any(u => u.Length == 0)
                     // One of the dependencies is fully satisfied
-                    ? Enumerable.Empty<ResolvedRelationship[]>()
-                    : unsats.SelectMany(uns => uns.Select(u => u.Prepend(this).ToArray()));
+                    ? Enumerable.Empty<UnsatisfiedRelation>()
+                    : unsats.SelectMany(uns => uns.Select(u => new UnsatisfiedRelation(
+                                                                   u.depends.Prepend(this).ToArray(),
+                                                                   u.rejection)));
             }
-            return Enumerable.Empty<ResolvedRelationship[]>();
+            return Enumerable.Empty<UnsatisfiedRelation>();
         }
 
-        public override IReadOnlyCollection<(ResolvedRelationship[], Relationship)> BadRelationships(IReadOnlyCollection<CkanModule> installing)
+        public override IReadOnlyCollection<UnsatisfiedRelation> BadRelationships(IReadOnlyCollection<CkanModule> installing)
         {
             if (reason is SelectionReason.Depends)
             {
-                var unsatisfied = new List<(ResolvedRelationship[], Relationship)>();
+                var unsatisfied = new List<UnsatisfiedRelation>();
                 foreach ((CkanModule module, ResolvedRelationship[] resRels) in resolved)
                 {
                     if (module.BadRelationships(installing)
-                              .Select(r => (new ResolvedRelationship[] { this }, r))
+                              .Select(r => new UnsatisfiedRelation(new ResolvedRelationship[] { this },
+                                                                   new RejectedByRelationship(module, r)))
                               .ToArray()
                         is { Length: > 0 } badRels)
                     {
                         unsatisfied.AddRange(badRels);
                     }
                     else if (resRels.SelectMany(rr => rr.BadRelationships(installing))
-                                    .Select(tuple => (tuple.Item1.Prepend(this).ToArray(),
-                                                      tuple.Item2))
+                                    .Select(u => new UnsatisfiedRelation(u.depends.Prepend(this).ToArray(),
+                                                                         u.rejection))
                                     .ToArray()
                              is { Length: > 0 } badRRs)
                     {
@@ -273,12 +348,32 @@ namespace CKAN
                     else
                     {
                         // This relationship is satisfied
-                        return Array.Empty<(ResolvedRelationship[], Relationship)>();
+                        return Array.Empty<UnsatisfiedRelation>();
                     }
                 }
                 return unsatisfied;
             }
-            return Array.Empty<(ResolvedRelationship[], Relationship)>();
+            return Array.Empty<UnsatisfiedRelation>();
+        }
+    }
+
+    public sealed class UnsatisfiedRelation
+    {
+        /// <summary>
+        /// The dependency chain to reach this relationship.
+        /// </summary>
+        public readonly ResolvedRelationship[] depends;
+
+        /// <summary>
+        /// The reason that this relationship could not be satisfied, if any.
+        /// </summary>
+        public readonly ProviderRejection? rejection;
+
+        public UnsatisfiedRelation(ResolvedRelationship[] depends,
+                                   ProviderRejection? rejection)
+        {
+            this.depends = depends;
+            this.rejection = rejection;
         }
     }
 }
