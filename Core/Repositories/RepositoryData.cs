@@ -127,8 +127,7 @@ namespace CKAN
                 serializer.Serialize(writer, this);
             }
             var txFileMgr = new TxFileManager();
-            txFileMgr.WriteAllText(path, sw + Environment.NewLine,
-                                   Encoding.UTF8);
+            txFileMgr.WriteAllBytes(path, Encoding.UTF8.GetBytes(sw + Environment.NewLine));
         }
 
         /// <summary>

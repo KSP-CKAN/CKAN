@@ -413,7 +413,7 @@ namespace CKAN
                 Directory.CreateDirectory(directoryPath);
             }
 
-            txFileMgr.WriteAllText(path, Serialize(), Encoding.UTF8);
+            txFileMgr.WriteAllBytes(path, Encoding.UTF8.GetBytes(Serialize()));
 
             if (!Directory.Exists(gameInstance.InstallHistoryDir))
             {
@@ -449,7 +449,7 @@ namespace CKAN
             var serialized = SerializeCurrentInstall(recommends, withVersions);
             foreach (var path in paths)
             {
-                txFileMgr.WriteAllText(path, serialized, Encoding.UTF8);
+                txFileMgr.WriteAllBytes(path, Encoding.UTF8.GetBytes(serialized));
             }
         }
 
