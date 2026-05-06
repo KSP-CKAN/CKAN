@@ -416,36 +416,56 @@ namespace CKAN
             }
         }
 
+        // Find modules that conflict with each other through a provides relation.
+        // This only happens when one of the mods involved explicitly conflicts with
+        // either the virtual provides id, or each other.
         public static ProviderRejection? FindProvidesConflict(
             CkanModule                      candidate,
             IReadOnlyCollection<CkanModule> installing,
             IReadOnlyCollection<CkanModule> installed)
         {
-            if (candidate.provides == null)
+            foreach (var blocker in installed)
             {
-                return null;
+                if (blocker.identifier != candidate.identifier
+                    && ProvidesConflictId(candidate, blocker) is string id)
+                {
+                    return new RejectedByProvidesConflict(candidate, id, blocker, blockerIsInstalled: true);
+                }
             }
 
-            foreach (var providedId in candidate.provides)
+            foreach (var blocker in installing)
             {
-                var installedConflict = installed.FirstOrDefault(m => m.identifier != candidate.identifier
-                                                                   && (m.identifier == providedId
-                                                                       || (m.provides?.Contains(providedId) ?? false)));
-                if (installedConflict != null)
+                if (blocker.identifier != candidate.identifier
+                    && ProvidesConflictId(candidate, blocker) is string id)
                 {
-                    return new RejectedByProvidesConflict(candidate, providedId, installedConflict, blockerIsInstalled: true);
-                }
-
-                var installingConflict = installing.FirstOrDefault(m => m.identifier != candidate.identifier
-                                                                     && (m.identifier == providedId
-                                                                         || (m.provides?.Contains(providedId) ?? false)));
-                if (installingConflict != null)
-                {
-                    return new RejectedByProvidesConflict(candidate, providedId, installingConflict, blockerIsInstalled: false);
+                    return new RejectedByProvidesConflict(candidate, id, blocker, blockerIsInstalled: false);
                 }
             }
 
             return null;
+        }
+
+        private static string? ProvidesConflictId(CkanModule candidate, CkanModule blocker)
+        {
+            // Only flag when there's an explicit conflicts clause (either direction).
+            // Multiple modules providing the same id is fine on its own.
+            if (!candidate.BadRelationships(new[] { blocker })
+                          .Any(r => r.Type == RelationshipType.Conflicts))
+            {
+                return null;
+            }
+
+            // Find a shared id for the message — include each side's identifier as
+            // an implicit provide so identifier-shadowing cases still produce a
+            // meaningful name.
+            var blockerIds = new HashSet<string>(blocker.provides ?? Enumerable.Empty<string>())
+            {
+                blocker.identifier,
+            };
+
+            return (candidate.provides ?? Enumerable.Empty<string>())
+                       .Append(candidate.identifier)
+                       .FirstOrDefault(blockerIds.Contains);
         }
     }
 
