@@ -1341,7 +1341,8 @@ namespace CKAN.GUI
                     bool row_match;
                     if (exactMatch)
                     {
-                        row_match = mod?.Name == key || mod?.Identifier == key;
+                        row_match = mod?.Name == key
+                                    || string.Equals(mod?.Identifier, key, StringComparison.OrdinalIgnoreCase);
                     }
                     else
                     {
