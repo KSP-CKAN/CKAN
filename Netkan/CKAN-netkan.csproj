@@ -33,8 +33,8 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="9.1.0" />
-    <PackageReference Include="AWSSDK.Core" Version="4.0.3.30" />
-    <PackageReference Include="AWSSDK.SQS" Version="4.0.2.25" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.500.96" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.502.55" />
     <PackageReference Include="CommandLineParser" Version="1.9.71" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="log4net" Version="3.3.0" />
