@@ -23,6 +23,6 @@ cd "$MACOS_PATH"
 
 osascript <<END
 tell application "Terminal"
-    do script "cd \"`pwd`\"; ./CKAN-CmdLine consoleui"
+    do script "cd \"`pwd`\"; ./CKAN-CmdLine consoleui" in front window
 end tell
 END
