@@ -31,11 +31,6 @@ namespace CKAN
                                          GameVersionCriteria             crit,
                                          OptionalRelationships           optRels)
         {
-            this.modules = modules;
-            this.registry = registry;
-            this.installed = installed;
-            this.stabilityTolerance = stabilityTolerance;
-            this.crit = crit;
             resolved = ResolveManyCached(modules, registry, dlls, installed, stabilityTolerance, crit, optRels, relationshipCache).ToArray();
         }
 
@@ -68,19 +63,13 @@ namespace CKAN
         // This augments the unsatisfied relation with potential candidates that were
         // filtered out so that we can give a better explanation of why they couldn't
         // be used.
-        private UnsatisfiedRelation EnrichRejection(UnsatisfiedRelation u)
-        {
-            if (u.rejection != null
-                || u.depends.LastOrDefault() is not ResolvedByNew last
-                || last.resolved.Count > 0)
-            {
-                return u;
-            }
-
-            return UnsatisfiedCandidates(last.relationship, last, modules).FirstOrDefault() is { } found
-                ? new UnsatisfiedRelation(u.depends, found.rejection)
-                : u;
-        }
+        private static UnsatisfiedRelation EnrichRejection(UnsatisfiedRelation u)
+            => u.rejection == null
+               && u.depends.LastOrDefault() is ResolvedByNew last
+               && last.resolved.Count == 0
+               && last.UnsatisfiedCandidates().FirstOrDefault() is { } found
+                   ? new UnsatisfiedRelation(u.depends, found.rejection)
+                   : u;
 
         public IReadOnlyList<CkanModule> Candidates(RelationshipDescriptor          rel,
                                                     IReadOnlyCollection<CkanModule> installing,
@@ -112,7 +101,9 @@ namespace CKAN
                             continue;
                         }
 
-                        var providesConflict = FindProvidesConflict(module, installing, installed);
+                        var providesConflict = ResolvedByNew.FindProvidesConflict(
+                            module, installing,
+                            resRel.context?.Installed ?? Array.Empty<CkanModule>());
                         if (providesConflict != null)
                         {
                             unresolved.Add(new UnsatisfiedRelation(new ResolvedRelationship[] { resRel },
@@ -172,7 +163,7 @@ namespace CKAN
             if (unresolved.Count == 0
                 && relationshipCache.GetValueOrDefault(rel) is ResolvedByNew cached)
             {
-                unresolved.AddRange(UnsatisfiedCandidates(rel, cached, installing));
+                unresolved.AddRange(cached.UnsatisfiedCandidates());
             }
 
             if (unresolved.Count == 0)
@@ -216,58 +207,6 @@ namespace CKAN
             return chain.Count == u.depends.Length
                 ? u
                 : new UnsatisfiedRelation(chain.ToArray(), u.rejection);
-        }
-
-        private IEnumerable<UnsatisfiedRelation> UnsatisfiedCandidates(
-            RelationshipDescriptor          rel,
-            ResolvedByNew                   resolved,
-            IReadOnlyCollection<CkanModule> installing)
-        {
-            foreach (var module in rel.LatestAvailableWithProvides(registry, stabilityTolerance, crit, null, null))
-            {
-                var rejection = FindProvidesConflict(module, installing, installed)
-                                ?? module.BadRelationships(installed)
-                                            .Concat(module.BadRelationships(installing))
-                                            .Select(r => (ProviderRejection)new RejectedByRelationship(module, r))
-                                            .FirstOrDefault();
-                if (rejection != null)
-                {
-                    yield return new UnsatisfiedRelation(
-                        new ResolvedRelationship[] { resolved }, rejection);
-                }
-            }
-        }
-
-        private static ProviderRejection? FindProvidesConflict(
-            CkanModule                      candidate,
-            IReadOnlyCollection<CkanModule> installing,
-            IReadOnlyCollection<CkanModule> installed)
-        {
-            if (candidate.provides == null)
-            {
-                return null;
-            }
-
-            foreach (var providedId in candidate.provides)
-            {
-                var installedConflict = installed.FirstOrDefault(m => m.identifier != candidate.identifier
-                                                                   && (m.identifier == providedId
-                                                                       || (m.provides?.Contains(providedId) ?? false)));
-                if (installedConflict != null)
-                {
-                    return new RejectedByProvidesConflict(candidate, providedId, installedConflict, blockerIsInstalled: true);
-                }
-
-                var installingConflict = installing.FirstOrDefault(m => m.identifier != candidate.identifier
-                                                                     && (m.identifier == providedId
-                                                                         || (m.provides?.Contains(providedId) ?? false)));
-                if (installingConflict != null)
-                {
-                    return new RejectedByProvidesConflict(candidate, providedId, installingConflict, blockerIsInstalled: false);
-                }
-            }
-
-            return null;
         }
 
         [ExcludeFromCodeCoverage]
@@ -335,12 +274,7 @@ namespace CKAN
                                                                    crit, optRels, relationshipCache))
                                 .WithSource(source, reason);
 
-        private readonly ResolvedRelationship[]          resolved;
-        private readonly IReadOnlyCollection<CkanModule> modules;
-        private readonly IRegistryQuerier                registry;
-        private readonly IReadOnlyCollection<CkanModule> installed;
-        private readonly StabilityToleranceConfig        stabilityTolerance;
-        private readonly GameVersionCriteria             crit;
-        private readonly RelationshipCache               relationshipCache = new RelationshipCache();
+        private readonly ResolvedRelationship[] resolved;
+        private readonly RelationshipCache      relationshipCache = new RelationshipCache();
     }
 }

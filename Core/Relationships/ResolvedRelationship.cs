@@ -66,6 +66,28 @@ namespace CKAN
             => (provider, providedIdentifier, blockingMod, blockerIsInstalled).GetHashCode();
     }
 
+    public sealed class ResolutionContext
+    {
+        public readonly IRegistryQuerier                Registry;
+        public readonly IReadOnlyCollection<CkanModule> Installed;
+        public readonly IReadOnlyCollection<CkanModule> Installing;
+        public readonly StabilityToleranceConfig        StabilityTolerance;
+        public readonly GameVersionCriteria             Crit;
+
+        public ResolutionContext(IRegistryQuerier                registry,
+                                 IReadOnlyCollection<CkanModule> installed,
+                                 IReadOnlyCollection<CkanModule> installing,
+                                 StabilityToleranceConfig        stabilityTolerance,
+                                 GameVersionCriteria             crit)
+        {
+            Registry           = registry;
+            Installed          = installed;
+            Installing         = installing;
+            StabilityTolerance = stabilityTolerance;
+            Crit               = crit;
+        }
+    }
+
     public sealed class RejectedByVersionMismatch : ProviderRejection
     {
         public readonly CkanModule blockingMod;
@@ -210,10 +232,12 @@ namespace CKAN
         public ResolvedByNew(CkanModule                                              source,
                              RelationshipDescriptor                                  relationship,
                              SelectionReason                                         reason,
-                             IReadOnlyDictionary<CkanModule, ResolvedRelationship[]> resolved)
+                             IReadOnlyDictionary<CkanModule, ResolvedRelationship[]> resolved,
+                             ResolutionContext?                                      context = null)
               : base(source, relationship, reason)
         {
             this.resolved = resolved;
+            this.context  = context;
         }
 
         public ResolvedByNew(CkanModule             source,
@@ -252,7 +276,10 @@ namespace CKAN
                                                        providers.Count == 1
                                                            ? relationshipCache
                                                            : new RelationshipCache(relationshipCache))
-                                                       .ToArray()))
+                                                       .ToArray()),
+                    new ResolutionContext(registry, installed,
+                                          allInstalling.Append(source).ToArray(),
+                                          stabilityTolerance, crit))
         {
         }
 
@@ -261,6 +288,11 @@ namespace CKAN
         /// If this is empty, then the relationship cannot be satisfied.
         /// </summary>
         public readonly IReadOnlyDictionary<CkanModule, ResolvedRelationship[]> resolved;
+
+        /// <summary>
+        /// The world this relationship was resolved against, if known.
+        /// </summary>
+        public readonly ResolutionContext? context;
 
         public override bool Contains(CkanModule mod)
             => resolved.Any(rr => rr.Key == mod || rr.Value.Any(rrr => rrr.Contains(mod)));
@@ -287,7 +319,7 @@ namespace CKAN
 
         public override ResolvedRelationship WithSource(CkanModule newSrc, SelectionReason newRsn)
             => source == newSrc ? this
-                                : new ResolvedByNew(newSrc, relationship, newRsn, resolved);
+                                : new ResolvedByNew(newSrc, relationship, newRsn, resolved, context);
 
 
         public override IEnumerable<UnsatisfiedRelation> UnsatisfiedFrom()
@@ -354,6 +386,66 @@ namespace CKAN
                 return unsatisfied;
             }
             return Array.Empty<UnsatisfiedRelation>();
+        }
+
+        /// <summary>
+        /// Re-resolves this relationship without filters and returns a list of
+        /// <see cref="UnsatisfiedRelation"/> that describe why each candidate
+        /// would be rejected.
+        /// </summary>
+        public IEnumerable<UnsatisfiedRelation> UnsatisfiedCandidates()
+        {
+            if (context == null)
+            {
+                yield break;
+            }
+
+            foreach (var module in relationship.LatestAvailableWithProvides(
+                         context.Registry, context.StabilityTolerance, context.Crit, null, null))
+            {
+                var rejection = FindProvidesConflict(module, context.Installing, context.Installed)
+                                ?? module.BadRelationships(context.Installed)
+                                          .Concat(module.BadRelationships(context.Installing))
+                                          .Select(r => (ProviderRejection)new RejectedByRelationship(module, r))
+                                          .FirstOrDefault();
+                if (rejection != null)
+                {
+                    yield return new UnsatisfiedRelation(
+                        new ResolvedRelationship[] { this }, rejection);
+                }
+            }
+        }
+
+        public static ProviderRejection? FindProvidesConflict(
+            CkanModule                      candidate,
+            IReadOnlyCollection<CkanModule> installing,
+            IReadOnlyCollection<CkanModule> installed)
+        {
+            if (candidate.provides == null)
+            {
+                return null;
+            }
+
+            foreach (var providedId in candidate.provides)
+            {
+                var installedConflict = installed.FirstOrDefault(m => m.identifier != candidate.identifier
+                                                                   && (m.identifier == providedId
+                                                                       || (m.provides?.Contains(providedId) ?? false)));
+                if (installedConflict != null)
+                {
+                    return new RejectedByProvidesConflict(candidate, providedId, installedConflict, blockerIsInstalled: true);
+                }
+
+                var installingConflict = installing.FirstOrDefault(m => m.identifier != candidate.identifier
+                                                                     && (m.identifier == providedId
+                                                                         || (m.provides?.Contains(providedId) ?? false)));
+                if (installingConflict != null)
+                {
+                    return new RejectedByProvidesConflict(candidate, providedId, installingConflict, blockerIsInstalled: false);
+                }
+            }
+
+            return null;
         }
     }
 
