@@ -43,6 +43,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Non-Latin letter search (#4605 by: HebaruSan)
 - [Build] Automatically pull focus for the Terminal window on MacOS (#4606 by: cheesebellies; reviewed: HebaruSan)
 - [GUI] Resets Play Button state if the game launch is cancelled (#4607 by: neilsapno; reviewed: HebaruSan)
+- [GUI] Don't revert removals on providing mod choice (#4609 by: HebaruSan)
 
 ### Internal
 
