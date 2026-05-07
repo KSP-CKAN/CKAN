@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 #if !NET5_0_OR_GREATER
 using System.Reflection;
 #endif
@@ -10,25 +11,16 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Versioning;
 #endif
 
-using CKAN.Extensions;
-
-using IniParser;
-using IniParser.Exceptions;
-using IniParser.Model;
 using log4net;
 
 namespace CKAN.GUI
 {
-    #if NET5_0_OR_GREATER
-    [SupportedOSPlatform("windows")]
-    #endif
     [ExcludeFromCodeCoverage]
     public static class URLHandlers
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(URLHandlers));
         public  const  string UrlRegistrationArgument = "registerUrl";
 
-        private static readonly string MimeAppsListPath = "mimeapps.list";
         private static readonly string ApplicationsPath = ".local/share/applications/";
         private const           string HandlerFileName  = "ckan-handler.desktop";
 
@@ -47,7 +39,6 @@ namespace CKAN.GUI
                     ApplicationsPath = Path.Combine(home, ApplicationsPath);
                 }
                 Directory.CreateDirectory(ApplicationsPath);
-                MimeAppsListPath = Path.Combine(ApplicationsPath, MimeAppsListPath);
             }
         }
 
@@ -155,73 +146,71 @@ namespace CKAN.GUI
         #endif
         private static void RegisterURLHandler_Linux()
         {
-            var parser = new FileIniDataParser();
-
-            // Yes, 'Assigment' is the spelling used by the library.
-            parser.Parser.Configuration.AssigmentSpacer = "";
-            IniData data;
-
             log.InfoFormat("Trying to register URL handler");
-
-            if (!File.Exists(MimeAppsListPath))
-            {
-                log.InfoFormat("{0} does not exist, trying to create it", MimeAppsListPath);
-                File.WriteAllLines(MimeAppsListPath, new string[] { "[Default Applications]" });
-            }
-
-            try
-            {
-                data = parser.ReadFile(MimeAppsListPath);
-            }
-            catch (DirectoryNotFoundException ex)
-            {
-                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
-                return;
-            }
-            catch (FileNotFoundException ex)
-            {
-                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
-                return;
-            }
-            catch (ParsingException ex)
-            {
-                log.InfoFormat("Skipping URL handler: {0}", ex.Message);
-                return;
-            }
-
-            if (data["Added Associations"] == null)
-            {
-                data.Sections.AddSection("Added Associations");
-            }
-            data["Added Associations"].RemoveKey("x-scheme-handler/ckan");
-            data["Added Associations"].AddKey("x-scheme-handler/ckan", HandlerFileName);
-
-            parser.WriteFile(MimeAppsListPath, data);
 
             var handlerPath = Path.Combine(ApplicationsPath, HandlerFileName);
 
-            if (File.Exists(handlerPath))
+            #if NET5_0_OR_GREATER
+            var desiredExec = "\"" + PathToRunningExe() + "\" gui %u";
+            #else
+            var desiredExec = "mono \"" + PathToRunningExe() + "\" gui %u";
+            #endif
+
+            var desiredContent = new StringBuilder()
+                .AppendLine("[Desktop Entry]")
+                .AppendLine("Version=1.0")
+                .AppendLine("Type=Application")
+                .AppendLine($"Exec={desiredExec}")
+                .AppendLine("Icon=ckan")
+                .AppendLine("StartupNotify=true")
+                .AppendLine("NoDisplay=true")
+                .AppendLine("Terminal=false")
+                .AppendLine("Categories=Utility")
+                .AppendLine("MimeType=x-scheme-handler/ckan")
+                .AppendLine("Name=CKAN Launcher")
+                .AppendLine("Comment=Launch CKAN")
+                .ToString();
+
+            var existingContent = File.Exists(handlerPath)
+                ? File.ReadAllText(handlerPath)
+                : null;
+
+            if (existingContent != desiredContent)
             {
-                File.Delete(handlerPath);
+                log.InfoFormat("Writing URL handler desktop file to {0}", handlerPath);
+
+                // Write without a Byte Order Mark. update-desktop-database errors on BOM-prefixed files.
+                File.WriteAllText(handlerPath, desiredContent, new UTF8Encoding(false));
+                AutoUpdate.SetExecutable(handlerPath);
+
+                RunCommand("xdg-mime", $"default {HandlerFileName} x-scheme-handler/ckan");
+                RunCommand("update-desktop-database", ApplicationsPath);
             }
+            else
+            {
+                log.InfoFormat("URL handler desktop file is already up to date");
+            }
+        }
 
-            "".WriteThroughTo(handlerPath);
-            data = parser.ReadFile(handlerPath);
-            data.Sections.AddSection("Desktop Entry");
-            data["Desktop Entry"].AddKey("Version", "1.0");
-            data["Desktop Entry"].AddKey("Type", "Application");
-            data["Desktop Entry"].AddKey("Exec", "mono \"" + PathToRunningExe() + "\" gui %u");
-            data["Desktop Entry"].AddKey("Icon", "ckan");
-            data["Desktop Entry"].AddKey("StartupNotify", "true");
-            data["Desktop Entry"].AddKey("NoDisplay", "true");
-            data["Desktop Entry"].AddKey("Terminal", "false");
-            data["Desktop Entry"].AddKey("Categories", "Utility");
-            data["Desktop Entry"].AddKey("MimeType", "x-scheme-handler/ckan");
-            data["Desktop Entry"].AddKey("Name", "CKAN Launcher");
-            data["Desktop Entry"].AddKey("Comment", "Launch CKAN");
-
-            parser.WriteFile(handlerPath, data);
-            AutoUpdate.SetExecutable(handlerPath);
+        private static void RunCommand(string command, string args)
+        {
+            try
+            {
+                log.InfoFormat("Running {0} {1}", command, args);
+                using var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = command,
+                    Arguments = args,
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                });
+                process?.WaitForExit();
+            }
+            catch (Exception ex)
+            {
+                // xdg-mime and update-desktop-database are not guaranteed to be on all systems.
+                log.WarnFormat("Could not run {0}: {1}", command, ex.Message);
+            }
         }
     }
 }
