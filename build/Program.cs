@@ -208,7 +208,7 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
                                       Framework         = $"{context.BuildDotNet}-windows",
                                       Runtime           = "win-x64",
                                       PublishSingleFile = true,
-                                      SelfContained     = false,
+                                      SelfContained     = true,
                                   });
             context.CopyFile(context.Paths.OutDirectory.Combine("CKAN-CmdLine")
                                                        .Combine(context.BuildConfiguration)
