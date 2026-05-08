@@ -50,6 +50,8 @@ namespace CKAN.GUI
             this.FilterIncompatibleButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterAllButton = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterLabelsToolButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.FilterLabelsToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.FilterLabelsEditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FilterTagsToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavBackwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
             this.NavForwardToolButton = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,7 +80,7 @@ namespace CKAN.GUI
             this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.untaggedFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.labelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.labelsToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reinstallToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadContentsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -278,6 +280,13 @@ namespace CKAN.GUI
             this.FilterLabelsToolButton.Size = new System.Drawing.Size(179, 22);
             resources.ApplyResources(this.FilterLabelsToolButton, "FilterLabelsToolButton");
             this.FilterLabelsToolButton.DropDown.Opening += new System.ComponentModel.CancelEventHandler(FilterLabelsToolButton_DropDown_Opening);
+            //
+            // FilterLabelsEditToolStripMenuItem
+            //
+            this.FilterLabelsEditToolStripMenuItem.Name = "FilterLabelsEditToolStripMenuItem";
+            this.FilterLabelsEditToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.FilterLabelsEditToolStripMenuItem.Click += new System.EventHandler(this.editLabelsToolStripMenuItem_Click);
+            resources.ApplyResources(this.FilterLabelsEditToolStripMenuItem, "FilterLabelsEditToolStripMenuItem");
             //
             // NavBackwardToolButton
             //
@@ -632,6 +641,8 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem FilterIncompatibleButton;
         private System.Windows.Forms.ToolStripMenuItem FilterAllButton;
         private System.Windows.Forms.ToolStripMenuItem FilterLabelsToolButton;
+        private System.Windows.Forms.ToolStripSeparator FilterLabelsToolStripSeparator;
+        private System.Windows.Forms.ToolStripMenuItem FilterLabelsEditToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem FilterTagsToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavBackwardToolButton;
         private System.Windows.Forms.ToolStripMenuItem NavForwardToolButton;
@@ -659,7 +670,7 @@ namespace CKAN.GUI
         private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
         private System.Windows.Forms.ContextMenuStrip ModListHeaderContextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem labelsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator labelToolStripSeparator;
+        private System.Windows.Forms.ToolStripSeparator labelsToolStripSeparator;
         private System.Windows.Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reinstallToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadContentsToolStripMenuItem;

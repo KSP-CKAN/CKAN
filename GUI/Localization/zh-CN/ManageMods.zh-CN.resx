@@ -240,6 +240,9 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>编辑标签...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>编辑标签...</value>
+  </data>
   <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
     <value>Ctrl-单击或Shift-单击重新下载元数据，即使自上次刷新以来没有变化</value>
   </data>

@@ -240,6 +240,9 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Modifier les labels...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>Modifier les labels...</value>
+  </data>
   <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
     <value>Ctrl-clic ou Maj-clic pour re-télécharger les métadonnées, même si elles sont identiques</value>
   </data>

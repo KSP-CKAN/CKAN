@@ -231,4 +231,7 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Wijzig Labels...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>Wijzig Labels...</value>
+  </data>
 </root>

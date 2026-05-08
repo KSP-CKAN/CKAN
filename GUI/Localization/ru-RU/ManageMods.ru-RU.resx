@@ -231,4 +231,7 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Изменить ярлыки...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>Изменить ярлыки...</value>
+  </data>
 </root>
