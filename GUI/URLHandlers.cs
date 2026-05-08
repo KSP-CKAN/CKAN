@@ -194,12 +194,22 @@ namespace CKAN.GUI
                 log.InfoFormat("Running {0} {1}", command, args);
                 using var process = Process.Start(new ProcessStartInfo
                 {
-                    FileName = command,
-                    Arguments = args,
-                    UseShellExecute = false,
-                    RedirectStandardError = true,
+                    FileName               = command,
+                    Arguments              = args,
+                    UseShellExecute        = false,
+                    RedirectStandardError  = true,
+                    RedirectStandardOutput = true,
                 });
-                process?.WaitForExit();
+                if (process != null)
+                {
+                    var stderr = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+                    if (process.ExitCode != 0)
+                    {
+                        log.WarnFormat("{0} exited with code {1}: {2}",
+                                       command, process.ExitCode, stderr);
+                    }
+                }
             }
             catch (Exception ex)
             {
