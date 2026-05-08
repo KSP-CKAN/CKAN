@@ -186,6 +186,17 @@ namespace CKAN
                     c.provider,
                     c.blockingMod,
                     depends),
+                RejectedByVersionMismatch v when v.blockerChain.Length > 0 => string.Format(
+                    Properties.Resources.KrakenRejectedVersionMismatchFor,
+                    v.provider,
+                    v.blockingMod,
+                    depends,
+                    FormatDependsChain(v.blockerChain)),
+                RejectedByVersionMismatch v => string.Format(
+                    Properties.Resources.KrakenRejectedVersionMismatch,
+                    v.provider,
+                    v.blockingMod,
+                    depends),
                 _ => string.Format(
                     Properties.Resources.KrakenMissingDependency,
                     depends,

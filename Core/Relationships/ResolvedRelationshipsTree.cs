@@ -96,8 +96,10 @@ namespace CKAN
                                                                           && m.version  != module.version);
                         if (versionClash != null)
                         {
-                            unresolved.Add(new UnsatisfiedRelation(new ResolvedRelationship[] { resRel },
-                                                                   new RejectedByVersionMismatch(module, versionClash)));
+                            unresolved.Add(new UnsatisfiedRelation(
+                                new ResolvedRelationship[] { resRel },
+                                new RejectedByVersionMismatch(module, versionClash,
+                                                              FindBlockerChain(versionClash))));
                             continue;
                         }
 
@@ -185,13 +187,13 @@ namespace CKAN
         // descriptor maps to; the wider ancestor context (e.g. Parent -> Intermediate ->
         // this) lives in other cache entries. Walk up by finding the cached ResolvedByNew
         // whose `resolved` keys contain the current head's source, and prepend it.
-        private UnsatisfiedRelation PrependAncestors(UnsatisfiedRelation u)
+        private ResolvedRelationship[] PrependAncestors(ResolvedRelationship[] initialChain)
         {
-            if (u.depends.Length == 0)
+            if (initialChain.Length == 0)
             {
-                return u;
+                return initialChain;
             }
-            var chain = u.depends.ToList();
+            var chain = initialChain.ToList();
             var current = chain[0];
             while (true)
             {
@@ -207,10 +209,27 @@ namespace CKAN
                 chain.Insert(0, parent);
                 current = parent;
             }
-            return chain.Count == u.depends.Length
-                ? u
-                : new UnsatisfiedRelation(chain.ToArray(), u.rejection);
+            return chain.Count == initialChain.Length
+                ? initialChain
+                : chain.ToArray();
         }
+
+        private UnsatisfiedRelation PrependAncestors(UnsatisfiedRelation u)
+            => PrependAncestors(u.depends) is var chain && chain != u.depends
+                   ? new UnsatisfiedRelation(chain, u.rejection)
+                   : u;
+
+        // For a mod that's already in the live changeset, locate the cached
+        // ResolvedByNew that selected it as a candidate, then walk up to a
+        // top-level ancestor. Returns an empty chain when the mod was added
+        // outside the cache (e.g. directly by the user).
+        private ResolvedRelationship[] FindBlockerChain(CkanModule blocker)
+            => relationshipCache.Values
+                                .OfType<ResolvedByNew>()
+                                .FirstOrDefault(r => r.resolved.ContainsKey(blocker))
+               is ResolvedByNew bottom
+                   ? PrependAncestors(new ResolvedRelationship[] { bottom })
+                   : Array.Empty<ResolvedRelationship>();
 
         [ExcludeFromCodeCoverage]
         public override string ToString()
