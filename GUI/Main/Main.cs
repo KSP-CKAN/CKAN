@@ -70,6 +70,8 @@ namespace CKAN.GUI
                 cmdlineArgs.Length > 1
                 && cmdlineArgs[1] is string { Length: >= 2 } focusIdentArg)
             {
+                focusIdent = focusIdentArg;
+
                 // Strip any leading "//" or any leading "ckan://".
                 if (//focusIdentArg is ['/', '/', .. var rest]
                     focusIdentArg.Length > 2
