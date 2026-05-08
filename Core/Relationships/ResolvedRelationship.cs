@@ -95,11 +95,15 @@ namespace CKAN
 
     public sealed class RejectedByVersionMismatch : ProviderRejection
     {
-        public readonly CkanModule blockingMod;
-        public RejectedByVersionMismatch(CkanModule provider, CkanModule blockingMod)
+        public readonly CkanModule             blockingMod;
+        public readonly ResolvedRelationship[] blockerChain;
+        public RejectedByVersionMismatch(CkanModule              provider,
+                                         CkanModule              blockingMod,
+                                         ResolvedRelationship[]? blockerChain = null)
             : base(provider)
         {
-            this.blockingMod = blockingMod;
+            this.blockingMod  = blockingMod;
+            this.blockerChain = blockerChain ?? Array.Empty<ResolvedRelationship>();
         }
 
         public override bool Equals(object? other)

@@ -2130,6 +2130,64 @@ namespace Tests.Core.Relationships
             });
         }
 
+        [TestCase(
+            // Here we attempt to install two different versions of the same mod.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""Lib"",
+                    ""version"":    ""1.0"",
+                    ""provides"":   [ ""OldVirtual"" ]
+                }",
+                @"{
+                    ""identifier"": ""Lib"",
+                    ""version"":    ""2.0"",
+                    ""provides"":   [ ""NewVirtual"" ]
+                }",
+                @"{
+                    ""identifier"": ""ModA"",
+                    ""depends"":    [ { ""name"": ""OldVirtual"" } ]
+                }",
+                @"{
+                    ""identifier"": ""ModB"",
+                    ""depends"":    [ { ""name"": ""NewVirtual"" } ]
+                }"
+            },
+            new string[] { "ModA", "ModB" },
+            new string[] { "Version conflict: Lib 2.0 is needed for ModB 1.0, and Lib 1.0 is needed for ModA 1.0, but both cannot be installed at the same time" }
+        )]
+        public void Constructor_VersionMismatch_Throws(string[] availableModules,
+                                                       string[] newInstalls,
+                                                       string[] errors)
+        {
+            var user = new NullUser();
+            using var inst     = new DisposableKSP();
+            using var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults).ToArray());
+            using var repoData = new TemporaryRepositoryData(user, repo.repo);
+            using var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager, new Repository[] { repo.repo });
+
+            var registry  = regMgr.registry;
+            var toInstall = newInstalls
+                .Select(ident => registry.LatestAvailable(ident,
+                                                          inst.KSP.StabilityToleranceConfig,
+                                                          inst.KSP.VersionCriteria()))
+                .OfType<CkanModule>()
+                .ToArray();
+
+            var exc = Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+            {
+                var rr = new RelationshipResolver(
+                    toInstall, null,
+                    RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                    registry, game, crit);
+            })!;
+
+            CollectionAssert.AreEqual(
+                errors,
+                exc.Message.Split(new string[] { Environment.NewLine },
+                                  StringSplitOptions.RemoveEmptyEntries));
+        }
+
         [TestCase(new string[]
                   {
                       @"{
