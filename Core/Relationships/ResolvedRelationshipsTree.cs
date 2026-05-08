@@ -101,23 +101,26 @@ namespace CKAN
                             continue;
                         }
 
-                        var providesConflict = ResolvedByNew.FindProvidesConflict(
+                        var conflict = ResolvedByNew.FindConflict(
                             module, installing,
                             resRel.context?.Installed ?? Array.Empty<CkanModule>());
-                        if (providesConflict != null)
+                        if (conflict != null)
                         {
                             unresolved.Add(new UnsatisfiedRelation(new ResolvedRelationship[] { resRel },
-                                                                   providesConflict));
+                                                                   conflict));
                             continue;
                         }
 
-                        if (module.BadRelationships(installing)
-                                  .Select(r => new UnsatisfiedRelation(
-                                                   relationshipCache.GetValueOrDefault(r.Descriptor) is ResolvedRelationship leaf
+                        if (RejectedByRelationship.WrapMany(
+                                module,
+                                module.BadRelationships(installing)
+                                      .Where(r => r.Type == RelationshipType.Depends))
+                                .Select(rej => new UnsatisfiedRelation(
+                                                   relationshipCache.GetValueOrDefault(rej.violation.Descriptor) is ResolvedRelationship leaf
                                                        ? new ResolvedRelationship[] { resRel, leaf }
                                                        : new ResolvedRelationship[] { resRel },
-                                                   new RejectedByRelationship(module, r)))
-                                  .ToArray()
+                                                   rej))
+                                .ToArray()
                             is { Length: > 0 } badRels)
                         {
                             unresolved.AddRange(badRels);

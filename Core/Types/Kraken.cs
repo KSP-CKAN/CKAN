@@ -175,11 +175,16 @@ namespace CKAN
 
             return rejection switch
             {
-                RejectedByProvidesConflict p => string.Format(
+                RejectedByConflict c when c.sharedProvidesId != null => string.Format(
                     Properties.Resources.KrakenRejectedProvidesConflict,
-                    p.provider,
-                    p.providedIdentifier,
-                    p.blockingMod,
+                    c.provider,
+                    c.sharedProvidesId,
+                    c.blockingMod,
+                    depends),
+                RejectedByConflict c => string.Format(
+                    Properties.Resources.KrakenRejectedConflict,
+                    c.provider,
+                    c.blockingMod,
                     depends),
                 _ => string.Format(
                     Properties.Resources.KrakenMissingDependency,

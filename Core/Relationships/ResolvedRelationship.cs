@@ -30,6 +30,11 @@ namespace CKAN
             this.violation = violation;
         }
 
+        public static IEnumerable<RejectedByRelationship> WrapMany(
+                CkanModule                candidate,
+                IEnumerable<Relationship> violations)
+            => violations.Select(r => new RejectedByRelationship(candidate, r));
+
         public override bool Equals(object? other)
             => other is RejectedByRelationship r
                && provider.Equals(r.provider)
@@ -39,31 +44,31 @@ namespace CKAN
             => (provider, violation).GetHashCode();
     }
 
-    public sealed class RejectedByProvidesConflict : ProviderRejection
+    public sealed class RejectedByConflict : ProviderRejection
     {
-        public readonly string     providedIdentifier;
+        public readonly string?    sharedProvidesId;
         public readonly CkanModule blockingMod;
         public readonly bool       blockerIsInstalled;
-        public RejectedByProvidesConflict(CkanModule provider,
-                                          string     providedIdentifier,
-                                          CkanModule blockingMod,
-                                          bool       blockerIsInstalled)
+        public RejectedByConflict(CkanModule provider,
+                                  string?    sharedProvidesId,
+                                  CkanModule blockingMod,
+                                  bool       blockerIsInstalled)
             : base(provider)
         {
-            this.providedIdentifier = providedIdentifier;
+            this.sharedProvidesId   = sharedProvidesId;
             this.blockingMod        = blockingMod;
             this.blockerIsInstalled = blockerIsInstalled;
         }
 
         public override bool Equals(object? other)
-            => other is RejectedByProvidesConflict r
+            => other is RejectedByConflict r
                && provider.Equals(r.provider)
-               && providedIdentifier == r.providedIdentifier
+               && sharedProvidesId == r.sharedProvidesId
                && blockingMod.Equals(r.blockingMod)
                && blockerIsInstalled == r.blockerIsInstalled;
 
         public override int GetHashCode()
-            => (provider, providedIdentifier, blockingMod, blockerIsInstalled).GetHashCode();
+            => (provider, sharedProvidesId, blockingMod, blockerIsInstalled).GetHashCode();
     }
 
     public sealed class ResolutionContext
@@ -362,10 +367,9 @@ namespace CKAN
                 var unsatisfied = new List<UnsatisfiedRelation>();
                 foreach ((CkanModule module, ResolvedRelationship[] resRels) in resolved)
                 {
-                    if (module.BadRelationships(installing)
-                              .Select(r => new UnsatisfiedRelation(new ResolvedRelationship[] { this },
-                                                                   new RejectedByRelationship(module, r)))
-                              .ToArray()
+                    if (RejectedByRelationship.WrapMany(module, module.BadRelationships(installing))
+                            .Select(rej => new UnsatisfiedRelation(new ResolvedRelationship[] { this }, rej))
+                            .ToArray()
                         is { Length: > 0 } badRels)
                     {
                         unsatisfied.AddRange(badRels);
@@ -404,11 +408,13 @@ namespace CKAN
             foreach (var module in relationship.LatestAvailableWithProvides(
                          context.Registry, context.StabilityTolerance, context.Crit, null, null))
             {
-                var rejection = FindProvidesConflict(module, context.Installing, context.Installed)
-                                ?? module.BadRelationships(context.Installed)
-                                          .Concat(module.BadRelationships(context.Installing))
-                                          .Select(r => (ProviderRejection)new RejectedByRelationship(module, r))
-                                          .FirstOrDefault();
+                var rejection = FindConflict(module, context.Installing, context.Installed)
+                                ?? (ProviderRejection?)RejectedByRelationship.WrapMany(
+                                       module,
+                                       module.BadRelationships(context.Installed)
+                                             .Concat(module.BadRelationships(context.Installing))
+                                             .Where(r => r.Type == RelationshipType.Depends))
+                                   .FirstOrDefault();
                 if (rejection != null)
                 {
                     yield return new UnsatisfiedRelation(
@@ -417,10 +423,11 @@ namespace CKAN
             }
         }
 
-        // Find modules that conflict with each other through a provides relation.
-        // This only happens when one of the mods involved explicitly conflicts with
-        // either the virtual provides id, or each other.
-        public static ProviderRejection? FindProvidesConflict(
+        // Find a mod that explicitly conflicts with the candidate (in either
+        // direction). Returns a rejection naming both sides; if they happen to
+        // share a virtual provides id, that's recorded for nicer messaging but
+        // is not required for the rejection to fire.
+        public static ProviderRejection? FindConflict(
             CkanModule                      candidate,
             IReadOnlyCollection<CkanModule> installing,
             IReadOnlyCollection<CkanModule> installed)
@@ -428,37 +435,36 @@ namespace CKAN
             foreach (var blocker in installed)
             {
                 if (blocker.identifier != candidate.identifier
-                    && ProvidesConflictId(candidate, blocker) is string id)
+                    && HasExplicitConflict(candidate, blocker))
                 {
-                    return new RejectedByProvidesConflict(candidate, id, blocker, blockerIsInstalled: true);
+                    return new RejectedByConflict(candidate, SharedProvidesId(candidate, blocker),
+                                                  blocker, blockerIsInstalled: true);
                 }
             }
 
             foreach (var blocker in installing)
             {
                 if (blocker.identifier != candidate.identifier
-                    && ProvidesConflictId(candidate, blocker) is string id)
+                    && HasExplicitConflict(candidate, blocker))
                 {
-                    return new RejectedByProvidesConflict(candidate, id, blocker, blockerIsInstalled: false);
+                    return new RejectedByConflict(candidate, SharedProvidesId(candidate, blocker),
+                                                  blocker, blockerIsInstalled: false);
                 }
             }
 
             return null;
         }
 
-        private static string? ProvidesConflictId(CkanModule candidate, CkanModule blocker)
-        {
-            // Only flag when there's an explicit conflicts clause (either direction).
-            // Multiple modules providing the same id is fine on its own.
-            if (!candidate.BadRelationships(new[] { blocker })
-                          .Any(r => r.Type == RelationshipType.Conflicts))
-            {
-                return null;
-            }
+        private static bool HasExplicitConflict(CkanModule candidate, CkanModule blocker)
+            => candidate.BadRelationships(new[] { blocker })
+                        .Any(r => r.Type == RelationshipType.Conflicts);
 
-            // Find a shared id for the message — include each side's identifier as
-            // an implicit provide so identifier-shadowing cases still produce a
-            // meaningful name.
+        // Best-effort: find a shared virtual id between the two mods so the
+        // message can name it. Each side's identifier is treated as an implicit
+        // provide so identifier-shadowing cases still produce a meaningful name.
+        // Returns null when there is no shared id; the conflict still stands.
+        private static string? SharedProvidesId(CkanModule candidate, CkanModule blocker)
+        {
             var blockerIds = new HashSet<string>(blocker.provides ?? Enumerable.Empty<string>())
             {
                 blocker.identifier,
