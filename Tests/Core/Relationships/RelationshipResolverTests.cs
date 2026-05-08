@@ -1977,19 +1977,8 @@ namespace Tests.Core.Relationships
             new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
         ),
         TestCase(
-            // Mirrors installing Sol-Configs (depends on Sol-Core, which depends on
-            // ParallaxContinued-KTL) into an install that already has the original
-            // Parallax. ParallaxContinued has an explicit "conflicts: Parallax"
-            // clause, but Parallax declares no provides matching anything
-            // ParallaxContinued provides, so there is no shared virtual id for
-            // FindProvidesConflict to anchor on. The candidate falls through to
-            // BadRelationships, producing a RejectedByRelationship — but
-            // DependenciesNotSatisfiedKraken.FormatRelation only specially
-            // formats RejectedByProvidesConflict, so the conflict information
-            // is dropped and the user sees the generic "Unsatisfied dependency"
-            // template with no hint that an already-installed Parallax is the
-            // blocker. The expected message captures that current-but-unhelpful
-            // output.
+            // This is an explicit conflict that doesn't go through any provide
+            // relationships.
             new string[] {
                 @"{ ""identifier"": ""Parallax"" }",
                 @"{
@@ -2008,12 +1997,12 @@ namespace Tests.Core.Relationships
             },
             new string[] { "Parallax" },
             new string[] { "SolConfigs" },
-            new string[] { "Unsatisfied dependency ParallaxContinued (KSP All versions) needed for: SolCore 1.0 (needed for SolConfigs 1.0)" }
+            new string[] { "ParallaxContinued 1.0 is needed for SolCore 1.0 (needed for SolConfigs 1.0), but cannot be installed because it conflicts with Parallax 1.0" }
         )]
-        public void Constructor_ProvidesConflict_Throws(string[] availableModules,
-                                                        string[] alreadyInstalled,
-                                                        string[] newInstalls,
-                                                        string[] errors)
+        public void Constructor_Conflict_Throws(string[] availableModules,
+                                                string[] alreadyInstalled,
+                                                string[] newInstalls,
+                                                string[] errors)
         {
             var user = new NullUser();
             using var inst     = new DisposableKSP();
