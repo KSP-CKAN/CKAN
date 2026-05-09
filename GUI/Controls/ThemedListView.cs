@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 #if NET5_0_OR_GREATER
@@ -46,25 +47,16 @@ namespace CKAN.GUI
             rect.Offset(0, -1);
             e.Graphics.DrawRectangle(SystemPens.ControlDark, rect);
             // Text
-            if (Platform.IsMono
-                && (int)e.Graphics.DpiX is int dpi
-                && dpi != 96
-                && e.Font is Font f)
-            {
-                var replacementEventArgs = new DrawListViewColumnHeaderEventArgs(
-                                               e.Graphics, e.Bounds, e.ColumnIndex, e.Header,
-                                               e.State, Util.ForeColorForBackColor(BackColor) ?? ForeColor, e.BackColor,
-                                               f.Scale(dpi));
-                replacementEventArgs.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
-            }
-            else
-            {
-                var replacementEventArgs = new DrawListViewColumnHeaderEventArgs(
-                                               e.Graphics, e.Bounds, e.ColumnIndex, e.Header,
-                                               e.State, Util.ForeColorForBackColor(BackColor) ?? ForeColor, e.BackColor,
-                                               e.Font);
-                replacementEventArgs.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
-            }
+            var replacementEventArgs = new DrawListViewColumnHeaderEventArgs(
+                                           e.Graphics, e.Bounds, e.ColumnIndex, e.Header, e.State,
+                                           e.BackColor.ForeColorForBackColor() ?? e.ForeColor, e.BackColor,
+                                           Platform.IsMono
+                                           && (int)e.Graphics.DpiX is int dpi
+                                           && dpi != 96
+                                           && e.Font is Font f
+                                               ? f.Scale(dpi)
+                                               : e.Font);
+            replacementEventArgs.DrawText(TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
             // Alert event subscribers
             base.OnDrawColumnHeader(e);
         }

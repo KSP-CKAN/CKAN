@@ -350,6 +350,8 @@ namespace CKAN.GUI
 
         public static Color? ForeColorForBackColor(this Color backColor)
             => backColor == Color.Transparent || backColor == Color.Empty ? null
+             : backColor == SystemColors.Window  ? SystemColors.WindowText
+             : backColor == SystemColors.Control ? SystemColors.ControlText
              : foreColorCache.GetOrAdd(backColor, c => c.IsLight()
                                                            ? Color.Black
                                                            : Color.White);
