@@ -358,6 +358,8 @@ namespace CKAN.GUI
                                                        ToolTipText = Properties.Resources.FilterLinkToolTip,
                                                    })
                                    .ToArray());
+                FilterLabelsToolButton.DropDownItems.Add(FilterLabelsToolStripSeparator);
+                FilterLabelsToolButton.DropDownItems.Add(FilterLabelsEditToolStripMenuItem);
             }
         }
 
@@ -400,7 +402,7 @@ namespace CKAN.GUI
                             });
                     }
                 }
-                LabelsContextMenuStrip.Items.Add(labelToolStripSeparator);
+                LabelsContextMenuStrip.Items.Add(labelsToolStripSeparator);
                 LabelsContextMenuStrip.Items.Add(editLabelsToolStripMenuItem);
                 e.Cancel = false;
             }

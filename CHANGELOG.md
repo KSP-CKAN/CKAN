@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Windows dark mode in .NET 10 build (#4594, #4610 by: HebaruSan)
 - [Multiple] Leave mod files alone for relationship-only metadata changes (#4599 by: HebaruSan)
 - [Multiple] Better free space check for single disk systems (#4604 by: HebaruSan)
+- [GUI] Add edit labels option to labels filter dropdown (#4616 by: HebaruSan)
 
 ### Bugfixes
 

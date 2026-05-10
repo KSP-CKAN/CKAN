@@ -68,12 +68,6 @@ namespace CKAN.GUI
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new CKAN.GUI.UsableSplitContainer();
-            this.LabelsContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.modListToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.tagFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.untaggedFilterToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.labelToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.editLabelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ModInfo = new CKAN.GUI.ModInfo();
             this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusInstanceLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -999,12 +993,6 @@ namespace CKAN.GUI
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private CKAN.GUI.UsableSplitContainer splitContainer1;
-        private System.Windows.Forms.ToolStripSeparator modListToolStripSeparator;
-        private System.Windows.Forms.ToolStripSeparator tagFilterToolStripSeparator;
-        private System.Windows.Forms.ToolStripSeparator untaggedFilterToolStripSeparator;
-        private System.Windows.Forms.ContextMenuStrip LabelsContextMenuStrip;
-        private System.Windows.Forms.ToolStripSeparator labelToolStripSeparator;
-        private System.Windows.Forms.ToolStripMenuItem editLabelsToolStripMenuItem;
         private CKAN.GUI.ModInfo ModInfo;
         private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
         private System.Windows.Forms.ToolStripStatusLabel StatusInstanceLabel;

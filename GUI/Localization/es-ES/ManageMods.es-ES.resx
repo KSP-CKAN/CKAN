@@ -240,6 +240,9 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Editar categorías...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>Editar categorías...</value>
+  </data>
   <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
     <value>Ctrl-clic o Mayúscula-clic para volver a descargar metadatos incluso si no hay cambios desde la última actualización</value>
   </data>

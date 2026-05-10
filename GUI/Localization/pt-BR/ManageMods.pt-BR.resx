@@ -231,6 +231,9 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>Editar rótulos...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>Editar rótulos...</value>
+  </data>
   <data name="RefreshToolButton.ToolTipText" xml:space="preserve">
     <value>Ctrl-clique ou Shift-clique para baixar novamente os metadados mesmo que não haja mudanças desde a última atualização</value>
   </data>

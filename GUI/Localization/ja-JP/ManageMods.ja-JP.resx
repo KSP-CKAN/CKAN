@@ -234,4 +234,7 @@
   <data name="editLabelsToolStripMenuItem.Text" xml:space="preserve">
     <value>ラベルを編集...</value>
   </data>
+  <data name="FilterLabelsEditToolStripMenuItem.Text" xml:space="preserve">
+    <value>ラベルを編集...</value>
+  </data>
 </root>
