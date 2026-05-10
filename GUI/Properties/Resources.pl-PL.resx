@@ -321,7 +321,7 @@ Czy na pewno chcesz go zainstalować?</value>
 Czy na pewno chcesz go zainstalować?</value>
   </data>
   <data name="AllModVersionsInstallYes" xml:space="preserve">
-    <value>Rozmiar instalacji</value>
+    <value>Zainstaluj</value>
   </data>
   <data name="AllModVersionsInstallNo" xml:space="preserve">
     <value>Anuluj</value>
@@ -983,7 +983,7 @@ Lub wybierz "Aktualizuj repozytoria po uruchomieniu" w ustawieniach.</value>
     <value>Brak</value>
   </data>
   <data name="ChangeTypeInstall" xml:space="preserve">
-    <value>Rozmiar instalacji</value>
+    <value>Zainstaluj</value>
   </data>
   <data name="ChangeTypeRemove" xml:space="preserve">
     <value>Usuń</value>
