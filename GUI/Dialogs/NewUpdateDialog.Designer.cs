@@ -40,8 +40,8 @@ namespace CKAN.GUI
             // label1
             //
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
-            this.label1.Location = new System.Drawing.Point(9, 9);
+            this.label1.Font = new System.Drawing.Font(System.Drawing.SystemFonts.MessageBoxFont, System.Drawing.FontStyle.Bold);
+            this.label1.Location = new System.Drawing.Point(12, 8);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 0;
@@ -50,8 +50,8 @@ namespace CKAN.GUI
             // VersionLabel
             //
             this.VersionLabel.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Bold);
-            this.VersionLabel.Location = new System.Drawing.Point(68, 9);
+            this.VersionLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.MessageBoxFont, System.Drawing.FontStyle.Bold);
+            this.VersionLabel.Location = new System.Drawing.Point(90, 8);
             this.VersionLabel.Name = "VersionLabel";
             this.VersionLabel.Size = new System.Drawing.Size(43, 13);
             this.VersionLabel.TabIndex = 1;
@@ -64,10 +64,10 @@ namespace CKAN.GUI
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ReleaseNotesTextbox.BackColor = System.Drawing.SystemColors.Control;
             this.ReleaseNotesTextbox.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.ReleaseNotesTextbox.Location = new System.Drawing.Point(12, 25);
+            this.ReleaseNotesTextbox.Location = new System.Drawing.Point(12, 34);
             this.ReleaseNotesTextbox.Name = "ReleaseNotesTextbox";
             this.ReleaseNotesTextbox.ReadOnly = true;
-            this.ReleaseNotesTextbox.Size = new System.Drawing.Size(402, 246);
+            this.ReleaseNotesTextbox.Size = new System.Drawing.Size(576, 317);
             this.ReleaseNotesTextbox.TabIndex = 3;
             this.ReleaseNotesTextbox.Text = "";
             //
@@ -78,9 +78,9 @@ namespace CKAN.GUI
             this.InstallUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.InstallUpdateButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.InstallUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.InstallUpdateButton.Location = new System.Drawing.Point(314, 277);
+            this.InstallUpdateButton.Location = new System.Drawing.Point(488, 360);
             this.InstallUpdateButton.Name = "InstallUpdateButton";
-            this.InstallUpdateButton.Size = new System.Drawing.Size(100, 23);
+            this.InstallUpdateButton.Size = new System.Drawing.Size(100, 30);
             this.InstallUpdateButton.TabIndex = 4;
             this.InstallUpdateButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.InstallUpdateButton, "InstallUpdateButton");
@@ -92,30 +92,30 @@ namespace CKAN.GUI
             this.CancelUpdateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelUpdateButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.CancelUpdateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.CancelUpdateButton.Location = new System.Drawing.Point(208, 277);
+            this.CancelUpdateButton.Location = new System.Drawing.Point(382, 360);
             this.CancelUpdateButton.Name = "CancelUpdateButton";
-            this.CancelUpdateButton.Size = new System.Drawing.Size(100, 23);
+            this.CancelUpdateButton.Size = new System.Drawing.Size(100, 30);
             this.CancelUpdateButton.TabIndex = 5;
             this.CancelUpdateButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.CancelUpdateButton, "CancelUpdateButton");
             //
             // NewUpdateDialog
             //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.ClientSize = new System.Drawing.Size(426, 310);
+            this.ClientSize = new System.Drawing.Size(600, 400);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.VersionLabel);
+            this.Controls.Add(this.ReleaseNotesTextbox);
             this.Controls.Add(this.CancelUpdateButton);
             this.Controls.Add(this.InstallUpdateButton);
-            this.Controls.Add(this.ReleaseNotesTextbox);
-            this.Controls.Add(this.VersionLabel);
-            this.Controls.Add(this.label1);
             this.Icon = EmbeddedImages.AppIcon;
             this.MinimumSize = new System.Drawing.Size(354, 245);
             this.Name = "NewUpdateDialog";
             resources.ApplyResources(this, "$this");
             this.ResumeLayout(false);
             this.PerformLayout();
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 
         }
 

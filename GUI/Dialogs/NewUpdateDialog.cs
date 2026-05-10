@@ -19,6 +19,8 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             this.ScaleFonts();
+            label1.ScaleFonts();
+            VersionLabel.ScaleFonts();
             VersionLabel.Text = version;
             ReleaseNotesTextbox.Text = releaseNotes?.Trim() ?? "";
         }

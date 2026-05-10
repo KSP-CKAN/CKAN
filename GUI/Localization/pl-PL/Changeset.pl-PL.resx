@@ -121,7 +121,7 @@
     <value>Mod</value>
   </data>
   <data name="ChangeTypeColumn.HeaderText" xml:space="preserve">
-    <value>Zmień</value>
+    <value>Zmiana</value>
   </data>
   <data name="ReasonsColumn.HeaderText" xml:space="preserve">
     <value>Powód działania</value>
