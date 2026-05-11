@@ -93,6 +93,7 @@ namespace CKAN
                 // Need to check against installed mods and those to install.
                 var conflictingModules = modlist.Values
                                                 .Concat(installed_modules)
+                                                .Distinct()
                                                 .Where(listed_mod => listed_mod.ConflictsWith(module));
                 foreach (CkanModule listed_mod in conflictingModules)
                 {
@@ -125,7 +126,8 @@ namespace CKAN
             try
             {
                 // Check that our solution is actually sane
-                SanityChecker.EnforceConsistency(modlist.Values.Concat(installed_modules),
+                SanityChecker.EnforceConsistency(modlist.Values.Concat(installed_modules)
+                                                               .Distinct(),
                                                  dlls,
                                                  registry.InstalledDlc);
             }
@@ -224,7 +226,7 @@ namespace CKAN
 
                 // If we already have this dependency covered,
                 // resolve its relationships if we haven't already
-                if (descriptor.MatchesAny(modlist.Values, null, null,
+                if (descriptor.MatchesAny(modlist.Values.Distinct().ToArray(), null, null,
                                           out CkanModule? installingCandidate)
                     && installingCandidate != null)
                 {
@@ -284,7 +286,7 @@ namespace CKAN
                     candidates = resolved.Candidates(descriptor,
                                                      options.get_recommenders
                                                          ? Dependencies().ToArray()
-                                                         : modlist.Values,
+                                                         : modlist.Values.Distinct().ToArray(),
                                                      registry, game);
                     log.DebugFormat("Got {0} candidates for {1}",
                                     candidates.Count, descriptor);
@@ -344,6 +346,7 @@ namespace CKAN
                 var fixed_mods = (options.get_recommenders ? Dependencies()
                                                            : modlist.Values)
                                      .Concat(installed_modules)
+                                     .Distinct()
                                      .ToHashSet();
 
                 var conflicting_mod = fixed_mods.FirstOrDefault(mod => mod.ConflictsWith(candidate));
