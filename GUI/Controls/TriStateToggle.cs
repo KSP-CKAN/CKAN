@@ -24,6 +24,7 @@ namespace CKAN.GUI
                 ReshowDelay  = 250,
                 ShowAlways   = true,
             };
+            ToolTip.ScaleFonts();
 
             YesRadioButton  = MakeRadioButton(0, EmbeddedImages.triToggleYes,
                 Properties.Resources.TriStateToggleYesTooltip);

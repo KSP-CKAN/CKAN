@@ -26,6 +26,7 @@ namespace CKAN.GUI
             InitializeComponent();
 
             ToolTip.SetToolTip(ExpandButton, Properties.Resources.EditModSearchTooltipExpandButton);
+            ToolTip.ScaleFonts();
 
             // TextBox resizes unpredictably at runtime, so we need special logic
             // to line up the button with it

@@ -30,6 +30,7 @@ namespace CKAN.GUI
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             ToolTip.SetToolTip(ReverseRelationshipsCheckbox, Properties.Resources.ModInfoToolTipReverseRelationships);
+            ToolTip.ScaleFonts();
 
             DependsGraphTree.BeforeExpand += BeforeExpand;
         }

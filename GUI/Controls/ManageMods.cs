@@ -37,6 +37,7 @@ namespace CKAN.GUI
             uninstallingFont = new Font(ModGrid.Font, FontStyle.Strikeout);
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
+            ToolTip.ScaleFonts();
             FilterCompatibleButton.ToolTipText      = Properties.Resources.FilterLinkToolTip;
             FilterInstalledButton.ToolTipText       = Properties.Resources.FilterLinkToolTip;
             FilterInstalledUpdateButton.ToolTipText = Properties.Resources.FilterLinkToolTip;

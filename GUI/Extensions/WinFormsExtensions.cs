@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 #if NET5_0_OR_GREATER
 using System.Runtime.Versioning;
 #endif
@@ -65,6 +66,10 @@ namespace CKAN.GUI
                     grid.DefaultCellStyle.Font = grid.DefaultCellStyle.Font?.Scale(dpi);
                     grid.ColumnHeadersDefaultCellStyle.Font = grid.ColumnHeadersDefaultCellStyle.Font?.Scale(dpi);
                 }
+                if (control is ToolStrip strip)
+                {
+                    strip.ScaleToolTipFonts();
+                }
             }
         }
 
@@ -75,6 +80,34 @@ namespace CKAN.GUI
                 && dpi != 96)
             {
                 item.Font = item.Font.Scale(dpi);
+            }
+        }
+
+        public static void ScaleFonts(this ToolTip tip)
+        {
+            if (Platform.IsMono
+                && tip.GetType().GetField("tooltip_window",
+                                          BindingFlags.Instance | BindingFlags.NonPublic)
+                                ?.GetValue(tip)
+                   is Control control)
+            {
+                control.ScaleFonts();
+            }
+        }
+
+        public static void ScaleToolTipFonts(this ToolStrip strip)
+        {
+            if (Platform.IsMono
+                && typeof(ToolStrip).GetProperty("ToolTipWindow",
+                                                 BindingFlags.NonPublic | BindingFlags.Instance)
+                                    ?.GetValue(strip)
+                   is ToolTip tooltip)
+            {
+                tooltip.ScaleFonts();
+                foreach (var item in strip.Items.OfType<ToolStripMenuItem>())
+                {
+                    item.DropDown.ScaleToolTipFonts();
+                }
             }
         }
 

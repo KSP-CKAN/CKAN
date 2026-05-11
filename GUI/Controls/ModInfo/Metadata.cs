@@ -19,6 +19,7 @@ namespace CKAN.GUI
         public Metadata()
         {
             InitializeComponent();
+            ToolTip.ScaleFonts();
             staticRowCount = MetadataTable.RowCount;
         }
 
