@@ -21,6 +21,7 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             ToolTip.SetToolTip(AddSearchButton, Properties.Resources.EditModSearchesTooltipAddSearchButton);
+            ToolTip.ScaleFonts();
         }
 
         public event Action?                  SurrenderFocus;

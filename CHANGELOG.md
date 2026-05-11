@@ -11,9 +11,9 @@ All notable changes to this project will be documented in this file.
 - [Build] Don't leave launch shell waiting for CKAN to close on Linux (#4517 by: nuew; reviewed: HebaruSan)
 - [GUI] Sort Contents tab alphanumerically, folders first (#4529 by: HebaruSan)
 - [GUI] Auto-size new repo popup to fit rows in list (#4543 by: HebaruSan)
-- [GUI] DPI-based font scaling for Mono (#4566 by: HebaruSan)
+- [GUI] DPI-based font scaling for Mono (#4566, #4617 by: HebaruSan)
 - [Core] Purge ZIPs corrupted after downloading (#4577 by: HebaruSan)
-- [Multiple] Translation updates from Crowdin (#4578 by: gongass_, Champ0999, Giuseppe499, ambition, Damian Gorol (GinoMoses); reviewed: HebaruSan)
+- [Multiple] Translation updates from Crowdin (#4578, #4614 by: gongass_, Champ0999, Giuseppe499, ambition, Damian Gorol (GinoMoses), Polpolando; reviewed: HebaruSan)
 - [ConsoleUI] Game instance cloning for ConsoleUI (#4593 by: HebaruSan)
 - [GUI] Windows dark mode in .NET 10 build (#4594, #4610 by: HebaruSan)
 - [Multiple] Leave mod files alone for relationship-only metadata changes (#4599 by: HebaruSan)
@@ -45,7 +45,6 @@ All notable changes to this project will be documented in this file.
 - [Build] Automatically pull focus for the Terminal window on MacOS (#4606 by: cheesebellies; reviewed: HebaruSan)
 - [GUI] Resets Play Button state if the game launch is cancelled (#4607 by: neilsapno; reviewed: HebaruSan)
 - [GUI] Don't revert removals on providing mod choice (#4609 by: HebaruSan)
-- [GUI] Polish translation fixes (#4614 by: Polpolando; reviewed: HebaruSan)
 
 ### Internal
 

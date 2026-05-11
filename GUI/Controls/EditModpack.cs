@@ -41,6 +41,7 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(IgnoreRadioButton,       Properties.Resources.EditModpackTooltipIgnore);
             ToolTip.SetToolTip(CancelExportButton,      Properties.Resources.EditModpackTooltipCancel);
             ToolTip.SetToolTip(ExportModpackButton,     Properties.Resources.EditModpackTooltipExport);
+            ToolTip.ScaleFonts();
         }
 
         [ForbidGUICalls]

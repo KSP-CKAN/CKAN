@@ -38,6 +38,7 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(IgnoreMissingFilesCheckBox, Properties.Resources.EditLabelsToolTipIgnoreMissingFiles);
             ToolTip.SetToolTip(MoveUpButton, Properties.Resources.EditLabelsToolTipMoveUp);
             ToolTip.SetToolTip(MoveDownButton, Properties.Resources.EditLabelsToolTipMoveDown);
+            ToolTip.ScaleFonts();
         }
 
         private void LoadTree()

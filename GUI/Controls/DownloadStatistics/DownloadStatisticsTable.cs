@@ -24,13 +24,14 @@ namespace CKAN.GUI
 
             ResumeLayout();
 
-            tooltip = new ToolTip()
+            ToolTip = new ToolTip()
                       {
                           AutoPopDelay = 10000,
                           InitialDelay = 250,
                           ReshowDelay  = 250,
                           ShowAlways   = true,
                       };
+            ToolTip.ScaleFonts();
         }
 
         public void SetData(IReadOnlyDictionary<string, long> bytesPerHost)
@@ -92,7 +93,7 @@ namespace CKAN.GUI
                            TabStop      = true,
                            LinkColor    = BackColor.LinkColorForBackColor(),
                        };
-            tooltip.SetToolTip(link, tooltipText);
+            ToolTip.SetToolTip(link, tooltipText);
             link.LinkClicked += (sender, e) => Util.HandleLinkClicked(url, e);
             link.KeyDown     += (sender, e) =>
                                 {
@@ -119,6 +120,6 @@ namespace CKAN.GUI
             { "archive.org",    "https://archive.org/donate"        },
         };
 
-        private readonly ToolTip tooltip;
+        private readonly ToolTip ToolTip;
     }
 }

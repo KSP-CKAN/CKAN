@@ -18,6 +18,12 @@ namespace CKAN.GUI
     #endif
     public partial class TagsLabelsLinkList : FlowLayoutPanel
     {
+        public TagsLabelsLinkList()
+            : base()
+        {
+            ToolTip.ScaleFonts();
+        }
+
         [ForbidGUICalls]
         public void UpdateTagsAndLabels(IEnumerable<ModuleTag>?   tags,
                                         IEnumerable<ModuleLabel>? labels)

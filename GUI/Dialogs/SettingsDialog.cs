@@ -38,6 +38,7 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(ResetCacheButton,  Properties.Resources.SettingsToolTipResetCacheButton);
             ToolTip.SetToolTip(OpenCacheButton,   Properties.Resources.SettingsToolTipOpenCacheButton);
             ToolTip.SetToolTip(ClearCacheButton,  Properties.Resources.SettingsToolTipClearCacheButton);
+            ToolTip.ScaleFonts();
 
             this.coreConfig = coreConfig;
             this.guiConfig  = guiConfig;

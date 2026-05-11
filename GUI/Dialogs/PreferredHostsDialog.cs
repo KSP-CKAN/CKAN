@@ -30,6 +30,7 @@ namespace CKAN.GUI
             ToolTip.SetToolTip(MoveLeftButton,  Properties.Resources.PreferredHostsTooltipMoveLeft);
             ToolTip.SetToolTip(MoveUpButton,    Properties.Resources.PreferredHostsTooltipMoveUp);
             ToolTip.SetToolTip(MoveDownButton,  Properties.Resources.PreferredHostsTooltipMoveDown);
+            ToolTip.ScaleFonts();
         }
 
         /// <summary>
