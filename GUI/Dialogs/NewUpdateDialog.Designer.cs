@@ -102,6 +102,7 @@ namespace CKAN.GUI
             // NewUpdateDialog
             //
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.CancelButton = this.CancelUpdateButton;
             this.ClientSize = new System.Drawing.Size(600, 400);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.VersionLabel);
