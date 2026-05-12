@@ -2,7 +2,7 @@ using System.Reflection;
 
 [assembly: AssemblyProduct("CKAN")]
 [assembly: AssemblyCompany("CKAN Contributors")]
-[assembly: AssemblyCopyright("Copyright © 2014–2025")]
+[assembly: AssemblyCopyright("Copyright © 2014–2026")]
 
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

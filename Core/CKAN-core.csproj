@@ -35,7 +35,7 @@
                    System.Text.RegularExpressions.RegexOptions.Singleline))</Version>
     <PackageVersion>$(Version)</PackageVersion>
     <Authors>The CKAN Authors</Authors>
-    <Copyright>Copyright © CKAN Authors 2014–2025</Copyright>
+    <Copyright>Copyright © CKAN Authors 2014–2026</Copyright>
     <PackageTags>KerbalSpaceProgram Mods</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
