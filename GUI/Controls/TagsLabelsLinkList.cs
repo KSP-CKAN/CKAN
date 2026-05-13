@@ -118,6 +118,10 @@ namespace CKAN.GUI
                         TagClicked?.Invoke(t, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
                         break;
 
+                    case { Button: MouseButtons.Middle }:
+                        TagClicked?.Invoke(t, true);
+                        break;
+
                     case { Button: MouseButtons.Right }:
                         var showHideLink = new ToolStripMenuItem(string.Format(Properties.Resources.UtilShowHideLink,
                                                                                t.Name));
@@ -137,6 +141,9 @@ namespace CKAN.GUI
                 {
                     case { Button: MouseButtons.Left }:
                         LabelClicked?.Invoke(l, ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift));
+                        break;
+                    case { Button: MouseButtons.Middle }:
+                        LabelClicked?.Invoke(l, true);
                         break;
                     case { Button: MouseButtons.Right }:
                         var addRemoveLink = new ToolStripMenuItem(string.Format(Properties.Resources.UtilAddRemoveModuleLink,

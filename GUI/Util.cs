@@ -184,6 +184,7 @@ namespace CKAN.GUI
             switch (e?.Button)
             {
                 case MouseButtons.Left:
+                case MouseButtons.Middle:
                     OpenLinkFromLinkLabel(url);
                     if (e.Link != null)
                     {
