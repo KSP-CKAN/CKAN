@@ -184,6 +184,7 @@ namespace CKAN.GUI
             switch (e?.Button)
             {
                 case MouseButtons.Left:
+                case MouseButtons.Middle:
                     OpenLinkFromLinkLabel(url);
                     if (e.Link != null)
                     {
@@ -498,7 +499,7 @@ namespace CKAN.GUI
                         ?.StandardOutput.ReadToEnd().Contains(checkFor);
 
         #if NET10_0_OR_GREATER
-        private const string DarkModeKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\CurrentVersion\Themes\Personalize";
+        private const string DarkModeKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize";
         #endif
 
         // Hides the console window on Windows

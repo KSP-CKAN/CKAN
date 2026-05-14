@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.5
 
+### Bugfixes
 
+- [Multiple] Fix installation of unrecognized imported ZIPs (#4628 by: HebaruSan)
 
 ## v1.36.4
 
