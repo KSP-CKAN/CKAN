@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Linq;
 
-using CKAN.IO;
+using Autofac;
 
-// Don't warn if we use our own obsolete properties
-#pragma warning disable 0618
+using CKAN.Configuration;
+using CKAN.IO;
 
 namespace CKAN.GUI
 {
@@ -44,42 +44,57 @@ namespace CKAN.GUI
                     Wait.StartWaiting(
                         (sender, e) =>
                         {
-                            if (e != null && Manager?.Cache != null && ManageMods.MainModList != null)
+                            if (e != null && Manager?.Cache != null)
                             {
-                                e.Result = ModuleImporter.ImportFiles(
-                                    GetFiles(dlg.FileNames),
-                                    currentUser,
-                                    mod =>
-                                    {
-                                        if (ManageMods.MainModList
-                                                      .full_list_of_mod_rows
-                                                      .TryGetValue(mod.identifier,
-                                                                   out DataGridViewRow? row)
-                                            && row.Tag is GUIMod gmod)
-                                        {
-                                            gmod.SelectedMod = mod;
-                                        }
-                                    },
-                                    RegistryManager.Instance(CurrentInstance, repoData).registry,
-                                    CurrentInstance, Manager.Cache);
+                                var toInstall = new List<CkanModule>();
+                                e.Result = (success: ModuleImporter.ImportFiles(
+                                                         GetFiles(dlg.FileNames),
+                                                         currentUser,
+                                                         toInstall.Add,
+                                                         RegistryManager.Instance(CurrentInstance, repoData).registry,
+                                                         CurrentInstance, Manager.Cache),
+                                            toInstall);
                             }
                         },
                         (sender, e) =>
                         {
                             EnableMainWindow();
-                            if (e?.Error == null && e?.Result is bool result && result)
+                            switch (e)
                             {
-                                // Put GUI back the way we found it
-                                HideWaitDialog();
-                            }
-                            else
-                            {
-                                if (e?.Error is Exception exc)
-                                {
+                                case { Error: Kraken k }:
+                                    log.Error(k.Message, k);
+                                    currentUser.RaiseMessage("{0}", k.Message);
+                                    Wait.Finish();
+                                    break;
+
+                                case { Error: Exception exc }:
                                     log.Error(exc.Message, exc);
-                                    currentUser.RaiseMessage("{0}", exc.Message);
-                                }
-                                Wait.Finish();
+                                    currentUser.RaiseMessage("{0}", exc.ToString());
+                                    Wait.Finish();
+                                    break;
+
+                                case { Result: (false, _) }:
+                                    // Failed, error already shown by importer
+                                    Wait.Finish();
+                                    break;
+
+                                case { Result: (true, List<CkanModule> { Count: < 1 }) }:
+                                    // Succeeded, nothing to import; put GUI back the way we found it
+                                    HideWaitDialog();
+                                    break;
+
+                                case { Result: (true, List<CkanModule> { Count: > 0 } toInstall) }:
+                                    var regMgr = RegistryManager.Instance(CurrentInstance, repoData);
+                                    var tuple = ModList.ComputeFullChangeSetFromUserChangeSet(
+                                        regMgr.registry,
+                                        toInstall.Select(m => new ModChange(m, GUIModChangeType.Install,
+                                                                            ServiceLocator.Container.Resolve<IConfiguration>()))
+                                                 .ToHashSet(),
+                                        ServiceLocator.Container.Resolve<IConfiguration>(), CurrentInstance);
+                                    UpdateChangesDialog(tuple.Item1.ToList(), tuple.Item2);
+                                    HideWaitDialog();
+                                    tabController.ShowTab(ChangesetTabPage.Name, 1);
+                                    break;
                             }
                         },
                         false,
