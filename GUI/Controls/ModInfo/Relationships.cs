@@ -374,8 +374,8 @@ namespace CKAN.GUI
             bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
             bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, stabilityTolerance, crit);
             string suffix = compatible || Manager?.CurrentInstance == null
-                ? ""
-                : $" ({registry.CompatibleGameVersions(Manager.CurrentInstance.Game, module.identifier)})";
+                                ? ""
+                                : $" ({registry.CompatibleGameVersions(Manager.CurrentInstance.Game, module.identifier)})";
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
             {
                 Name        = module.identifier,
