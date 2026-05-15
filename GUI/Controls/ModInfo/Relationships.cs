@@ -118,8 +118,7 @@ namespace CKAN.GUI
                 root.Expand();
                 // Expand virtual depends nodes
                 foreach (var node in root.Nodes.OfType<TreeNode>()
-                                               .Where(nd => nd.Nodes.Count > 0
-                                                            && nd.ImageIndex == (int)RelationshipType.Depends + 1))
+                                               .Where(nd => nd.Nodes.Count > 0))
                 {
                     node.Expand();
                 }
