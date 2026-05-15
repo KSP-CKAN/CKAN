@@ -360,18 +360,22 @@ namespace CKAN.GUI
             {
                 Name        = identifier,
                 ToolTipText = $"{relType.LocalizeDescription()} {identifier}",
-                ForeColor   = SystemColors.GrayText,
+                NodeFont    = LegendVirtualLabel.Font,
             };
         }
 
         private TreeNode IndexedNode(IRegistryQuerier         registry,
                                      CkanModule               module,
-                                     RelationshipType         relationship,
+                                     RelationshipType         relType,
                                      RelationshipDescriptor   relDescr,
                                      StabilityToleranceConfig stabilityTolerance,
                                      GameVersionCriteria?     crit)
         {
-            int icon = (int)relationship + 1;
+            var installed = registry.InstalledModule(module.identifier)?.Module == module;
+            var installedConflict = relType == RelationshipType.Conflicts && installed
+                                    && module != selectedModule?.Module;
+            int icon = installedConflict ? (int)relType + 2
+                                         : (int)relType + 1;
             bool missingDLC = module.IsDLC && !registry.InstalledDlc.ContainsKey(module.identifier);
             bool compatible = crit != null && registry.IdentifierCompatible(module.identifier, stabilityTolerance, crit);
             string suffix = compatible || Manager?.CurrentInstance == null
@@ -380,44 +384,43 @@ namespace CKAN.GUI
             return new TreeNode($"{module.name} {module.version}{suffix}", icon, icon)
             {
                 Name        = module.identifier,
-                ToolTipText = $"{relationship.LocalizeDescription()} {relDescr}",
+                ToolTipText = $"{relType.LocalizeDescription()} {relDescr}",
                 Tag         = module,
-                ForeColor   = (compatible && !missingDLC)
-                                  ? SystemColors.WindowText
-                                  : Color.Red,
-                NodeFont    = new Font(DependsGraphTree.Font,
-                                       registry.IsInstalled(module.identifier, false)
-                                           ? FontStyle.Bold
-                                           : FontStyle.Regular),
+                ForeColor   = installedConflict
+                                  ? Color.Red
+                                  : (!compatible || missingDLC)
+                                      ? LegendIncompatibleLabel.ForeColor
+                                      : SystemColors.WindowText,
+                NodeFont    = installed ? LegendInstalledLabel.Font
+                                        : SystemFonts.DefaultFont,
             };
         }
 
         private TreeNode NonModuleNode(RelationshipDescriptor relDescr,
                                        ModuleVersion?         version,
-                                       RelationshipType       relationship)
+                                       RelationshipType       relType)
         {
-            int icon = (int)relationship + 1;
+            int icon = (int)relType + 1;
             return new TreeNode($"{relDescr} {version}", icon, icon)
             {
                 Name        = relDescr.ToString(),
-                ToolTipText = relationship.LocalizeDescription(),
-                NodeFont    = new Font(DependsGraphTree.Font,
-                                       FontStyle.Bold),
+                ToolTipText = relType.LocalizeDescription(),
+                NodeFont    = LegendInstalledLabel.Font,
             };
         }
 
-        private static TreeNode NonindexedNode(RelationshipDescriptor relDescr,
-                                               RelationshipType       relationship)
+        private TreeNode NonindexedNode(RelationshipDescriptor relDescr,
+                                        RelationshipType       relType)
         {
             // Completely nonexistent dependency, e.g. "AJE"
-            int icon = (int)relationship + 1;
+            int icon = (int)relType + 1;
             return new TreeNode(string.Format(Properties.Resources.ModInfoNotIndexed,
                                               relDescr.ToString()),
                                 icon, icon)
             {
                 Name        = relDescr.ToString(),
-                ToolTipText = relationship.LocalizeDescription(),
-                ForeColor   = Color.Red,
+                ToolTipText = relType.LocalizeDescription(),
+                ForeColor   = LegendIncompatibleLabel.ForeColor,
             };
         }
 

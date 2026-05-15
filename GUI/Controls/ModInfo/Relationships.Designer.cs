@@ -83,6 +83,7 @@ namespace CKAN.GUI
             this.DependsGraphTree.ImageList.Images.Add("Suggests", global::CKAN.GUI.EmbeddedImages.info);
             this.DependsGraphTree.ImageList.Images.Add("Supports", global::CKAN.GUI.EmbeddedImages.smile);
             this.DependsGraphTree.ImageList.Images.Add("Conflicts", global::CKAN.GUI.EmbeddedImages.alert);
+            this.DependsGraphTree.ImageList.Images.Add("InstalledConflicts", global::CKAN.GUI.EmbeddedImages.stop);
             //
             // LegendTable
             //
@@ -132,14 +133,14 @@ namespace CKAN.GUI
             // LegendIncompatibleLabel
             //
             this.LegendIncompatibleLabel.AutoSize = true;
-            this.LegendIncompatibleLabel.ForeColor = System.Drawing.Color.Red;
+            this.LegendIncompatibleLabel.ForeColor = System.Drawing.SystemColors.GrayText;
             this.LegendIncompatibleLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendIncompatibleLabel, "LegendIncompatibleLabel");
             //
             // LegendVirtualLabel
             //
             this.LegendVirtualLabel.AutoSize = true;
-            this.LegendVirtualLabel.ForeColor = System.Drawing.SystemColors.GrayText;
+            this.LegendVirtualLabel.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont, System.Drawing.FontStyle.Italic);
             this.LegendVirtualLabel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 6);
             resources.ApplyResources(this.LegendVirtualLabel, "LegendVirtualLabel");
             //
