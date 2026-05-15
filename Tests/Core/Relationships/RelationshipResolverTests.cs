@@ -1867,6 +1867,327 @@ namespace Tests.Core.Relationships
             }
         }
 
+        [TestCase(
+            // Same as the above test case, but now with an explicit conflicts clause.
+            new string[]
+            {
+                @"{ ""identifier"": ""InstalledProvider"" }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""InstalledProvider"" ],
+                    ""conflicts"": [ { ""name"": ""InstalledProvider"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Parent 1.0, but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+        ),
+        TestCase(
+            // Now the conflicting provider is reached transitively.
+            new string[]
+            {
+                @"{ ""identifier"": ""InstalledProvider"" }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""InstalledProvider"" ],
+                    ""conflicts"": [ { ""name"": ""InstalledProvider"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+        ),
+        TestCase(
+            // Now the provide is indirect, so there's no installed module with that
+            // specific indentifier.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""InstalledProvider"",
+                    ""provides"": [ ""Thing"" ]
+                }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""Thing"" ],
+                    ""conflicts"": [ { ""name"": ""InstalledProvider"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+        ),
+        TestCase(
+            // Now with AlternateProvider conflicting on the virtual dep.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""InstalledProvider"",
+                    ""provides"": [ ""Thing"" ]
+                }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""Thing"" ],
+                    ""conflicts"": [ { ""name"": ""Thing"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" },
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+        ),
+        TestCase(
+            // This is an explicit conflict that doesn't go through any provide
+            // relationships.
+            new string[] {
+                @"{ ""identifier"": ""Parallax"" }",
+                @"{
+                    ""identifier"": ""ParallaxContinued"",
+                    ""provides"":   [ ""ParallaxContinuedAlias"" ],
+                    ""conflicts"":  [ { ""name"": ""Parallax"" } ]
+                }",
+                @"{
+                    ""identifier"": ""SolCore"",
+                    ""depends"":    [ { ""name"": ""ParallaxContinued"" } ]
+                }",
+                @"{
+                    ""identifier"": ""SolConfigs"",
+                    ""depends"":    [ { ""name"": ""SolCore"" } ]
+                }"
+            },
+            new string[] { "Parallax" },
+            new string[] { "SolConfigs" },
+            new string[] { "ParallaxContinued 1.0 is needed for SolCore 1.0 (needed for SolConfigs 1.0), but cannot be installed because it conflicts with Parallax 1.0" }
+        )]
+        public void Constructor_Conflict_Throws(string[] availableModules,
+                                                string[] alreadyInstalled,
+                                                string[] newInstalls,
+                                                string[] errors)
+        {
+            var user = new NullUser();
+            using var inst     = new DisposableKSP();
+            using var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults).ToArray());
+            using var repoData = new TemporaryRepositoryData(user, repo.repo);
+            using var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager, new Repository[] { repo.repo });
+
+            var registry  = regMgr.registry;
+            var opts      = RelationshipResolverOptions.DefaultOpts(inst.KSP.StabilityToleranceConfig);
+            var toInstall = newInstalls
+                .Select(ident => registry.LatestAvailable(ident,
+                                                          inst.KSP.StabilityToleranceConfig,
+                                                          inst.KSP.VersionCriteria()))
+                .OfType<CkanModule>()
+                .ToArray();
+
+            foreach (var module in alreadyInstalled)
+            {
+                registry.RegisterModule(
+                    registry.LatestAvailable(module,
+                                             inst.KSP.StabilityToleranceConfig,
+                                             inst.KSP.VersionCriteria())!,
+                    Array.Empty<string>(),
+                    inst.KSP,
+                    false);
+            }
+
+            var exc = Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+            {
+                var rr = new RelationshipResolver(
+                    toInstall, null,
+                    RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                    registry, game, crit);
+            })!;
+
+            CollectionAssert.AreEqual(
+                errors,
+                exc.Message.Split(new string[] { Environment.NewLine },
+                                  StringSplitOptions.RemoveEmptyEntries));
+        }
+
+        [TestCase(
+            new string[]
+            {
+                @"{ ""identifier"": ""InstalledProvider"" }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"": [ ""InstalledProvider"" ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" }
+        ),
+        TestCase(
+            // It is OK to have multiple types that provide the same id as
+            // long as they don't conflict.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""InstalledProvider"",
+                    ""provides"": [ ""Thing"" ]
+                }",
+                @"{
+                    ""identifier"": ""AlternateProvider"",
+                    ""provides"":  [ ""Thing"" ],
+                }",
+                @"{
+                    ""identifier"": ""Intermediate"",
+                    ""depends"": [
+                        { ""name"": ""AlternateProvider"" }
+                    ]
+                }",
+                @"{
+                    ""identifier"": ""Parent"",
+                    ""depends"": [
+                        { ""name"": ""Intermediate"" }
+                    ]
+                }"
+            },
+            new string[] { "InstalledProvider" },
+            new string[] { "Parent" }
+        )]
+        public void Constructor_ProvidesConflict_DoesNotThrow(string[] availableModules,
+                                                              string[] alreadyInstalled,
+                                                              string[] newInstalls)
+        {
+            var user = new NullUser();
+            using var inst     = new DisposableKSP();
+            using var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults).ToArray());
+            using var repoData = new TemporaryRepositoryData(user, repo.repo);
+            using var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager, new Repository[] { repo.repo });
+
+            var registry  = regMgr.registry;
+            var opts      = RelationshipResolverOptions.DefaultOpts(inst.KSP.StabilityToleranceConfig);
+            var toInstall = newInstalls
+                .Select(ident => registry.LatestAvailable(ident,
+                                                          inst.KSP.StabilityToleranceConfig,
+                                                          inst.KSP.VersionCriteria()))
+                .OfType<CkanModule>()
+                .ToArray();
+
+            foreach (var module in alreadyInstalled)
+            {
+                registry.RegisterModule(
+                    registry.LatestAvailable(module,
+                                             inst.KSP.StabilityToleranceConfig,
+                                             inst.KSP.VersionCriteria())!,
+                    Array.Empty<string>(),
+                    inst.KSP,
+                    false);
+            }
+
+            Assert.DoesNotThrow(() =>
+            {
+                var rr = new RelationshipResolver(
+                    toInstall, null,
+                    RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                    registry, game, crit);
+            });
+        }
+
+        [TestCase(
+            // Here we attempt to install two different versions of the same mod.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""Lib"",
+                    ""version"":    ""1.0"",
+                    ""provides"":   [ ""OldVirtual"" ]
+                }",
+                @"{
+                    ""identifier"": ""Lib"",
+                    ""version"":    ""2.0"",
+                    ""provides"":   [ ""NewVirtual"" ]
+                }",
+                @"{
+                    ""identifier"": ""ModA"",
+                    ""depends"":    [ { ""name"": ""OldVirtual"" } ]
+                }",
+                @"{
+                    ""identifier"": ""ModB"",
+                    ""depends"":    [ { ""name"": ""NewVirtual"" } ]
+                }"
+            },
+            new string[] { "ModA", "ModB" },
+            new string[] { "Version conflict: Lib 2.0 is needed for ModB 1.0, and Lib 1.0 is needed for ModA 1.0, but both cannot be installed at the same time" }
+        )]
+        public void Constructor_VersionMismatch_Throws(string[] availableModules,
+                                                       string[] newInstalls,
+                                                       string[] errors)
+        {
+            var user = new NullUser();
+            using var inst     = new DisposableKSP();
+            using var repo     = new TemporaryRepository(availableModules.Select(MergeWithDefaults).ToArray());
+            using var repoData = new TemporaryRepositoryData(user, repo.repo);
+            using var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager, new Repository[] { repo.repo });
+
+            var registry  = regMgr.registry;
+            var toInstall = newInstalls
+                .Select(ident => registry.LatestAvailable(ident,
+                                                          inst.KSP.StabilityToleranceConfig,
+                                                          inst.KSP.VersionCriteria()))
+                .OfType<CkanModule>()
+                .ToArray();
+
+            var exc = Assert.Throws<DependenciesNotSatisfiedKraken>(() =>
+            {
+                var rr = new RelationshipResolver(
+                    toInstall, null,
+                    RelationshipResolverOptions.DependsOnlyOpts(stabilityTolerance),
+                    registry, game, crit);
+            })!;
+
+            CollectionAssert.AreEqual(
+                errors,
+                exc.Message.Split(new string[] { Environment.NewLine },
+                                  StringSplitOptions.RemoveEmptyEntries));
+        }
+
         [TestCase(new string[]
                   {
                       @"{

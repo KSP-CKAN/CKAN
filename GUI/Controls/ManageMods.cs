@@ -2247,7 +2247,7 @@ namespace CKAN.GUI
             {
                 RaiseError?.Invoke(k.Message);
                 var identifiers = k.unsatisfied
-                                   .SelectMany(uns => uns.Select(rr => rr.source.identifier))
+                                   .SelectMany(uns => uns.depends.Select(rr => rr.source.identifier))
                                    .Distinct();
 
                 foreach (var ident in identifiers)

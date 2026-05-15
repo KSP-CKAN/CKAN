@@ -173,7 +173,7 @@ namespace CKAN.GUI
                                                       .OfType<ListViewItem>()
                                                       .Where(item => item.Tag is CkanModule mod
                                                                      && k.unsatisfied.Any(stack =>
-                                                                         stack.Any(rr => rr.Contains(mod))));
+                                                                         stack.depends.Any(rr => rr.Contains(mod))));
                     foreach (var row in rows)
                     {
                         row.BackColor = Color.LightCoral;

@@ -282,6 +282,10 @@ Which {0} provider would you like to install?</value></data>
 If the game is still running, close it and try again. Otherwise check the permissions.</value></data>
   <data name="KrakenMissingDependency" xml:space="preserve"><value>Unsatisfied dependency {1} needed for: {0}</value></data>
   <data name="KrakenMissingDependencyNeededFor" xml:space="preserve"><value>needed for {0}</value></data>
+  <data name="KrakenRejectedProvidesConflict" xml:space="preserve"><value>{0} is needed for {3}, but cannot be installed because it conflicts with {2} which also provides {1}</value></data>
+  <data name="KrakenRejectedConflict" xml:space="preserve"><value>{0} is needed for {2}, but cannot be installed because it conflicts with {1}</value></data>
+  <data name="KrakenRejectedVersionMismatch" xml:space="preserve"><value>Version conflict: {0} is needed for {2}, but {1} is already being installed</value></data>
+  <data name="KrakenRejectedVersionMismatchFor" xml:space="preserve"><value>Version conflict: {0} is needed for {2}, and {1} is needed for {3}, but both cannot be installed at the same time</value></data>
   <data name="KrakenConflictsWith" xml:space="preserve"><value>{0} conflicts with {1}</value></data>
   <data name="KrakenFileExistsWithOwner" xml:space="preserve"><value>Oh no! We tried to overwrite a file owned by another mod!
 
