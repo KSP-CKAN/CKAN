@@ -177,7 +177,15 @@ namespace Tests.GUI
             using (var cacheDir = new TemporaryDirectory())
             using (var cache    = new NetModuleCache(cacheDir))
             {
-                var sut     = new GUIMod(instMod, repoData, Registry.Empty(repoData),
+                var registry = new Registry(repoData,
+                                            new Dictionary<string, InstalledModule>()
+                                            {
+                                                { instMod.identifier, instMod },
+                                            },
+                                            new Dictionary<string, string>(),
+                                            new Dictionary<string, string>(),
+                                            new SortedDictionary<string, Repository>());
+                var sut     = new GUIMod(instMod, repoData, registry,
                                          inst.KSP.StabilityToleranceConfig, inst.KSP,
                                          cache, false, true, true);
                 var callbackCount = 0;

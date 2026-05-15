@@ -327,18 +327,16 @@ namespace CKAN.GUI
             //
             // ModGrid
             //
-            this.ModGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.ModGrid.AllowUserToAddRows = false;
             this.ModGrid.AllowUserToDeleteRows = false;
             this.ModGrid.AllowUserToResizeRows = false;
+            this.ModGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders;
             this.ModGrid.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.ModGrid.EnableHeadersVisualStyles = false;
+            this.ModGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModGrid.ColumnHeadersDefaultCellStyle.BackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.SelectionBackColor = System.Drawing.SystemColors.Control;
             this.ModGrid.ColumnHeadersDefaultCellStyle.ForeColor = System.Drawing.SystemColors.ControlText;
             this.ModGrid.ColumnHeadersDefaultCellStyle.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.ModGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.ModGrid.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.ModGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModGrid.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Installed,
@@ -356,6 +354,10 @@ namespace CKAN.GUI
             this.InstallDate,
             this.DownloadCount,
             this.Description});
+            this.ModGrid.DefaultCellStyle.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.ModGrid.DefaultCellStyle.Padding = new System.Windows.Forms.Padding(2, 4, 2, 4);
+            this.ModGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ModGrid.EnableHeadersVisualStyles = false;
             this.ModGrid.Location = new System.Drawing.Point(0, 111);
             this.ModGrid.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ModGrid.MultiSelect = true;
