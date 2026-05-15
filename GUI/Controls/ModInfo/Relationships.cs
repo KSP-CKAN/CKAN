@@ -123,6 +123,8 @@ namespace CKAN.GUI
                 {
                     node.Expand();
                 }
+                // Scroll to top
+                DependsGraphTree.TopNode = root;
                 DependsGraphTree.EndUpdate();
             }
         }
