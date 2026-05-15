@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## v1.36.5
 
+### Features
+
+- [GUI] Relationships tab improvements (#4631 by: HebaruSan)
+
 ### Bugfixes
 
 - [Multiple] Fix installation of unrecognized imported ZIPs (#4628 by: HebaruSan)
