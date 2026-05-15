@@ -23,7 +23,8 @@ namespace CKAN.GUI
         private CkanModule       Mod                 { get; set; }
         public  CkanModule?      LatestCompatibleMod { get; private set; }
         public  CkanModule?      LatestAvailableMod  { get; private set; }
-        public  InstalledModule? InstalledMod        { get; private set; }
+        public  InstalledModule? InstalledMod => registry.InstalledModule(Identifier);
+        private readonly IRegistryQuerier registry;
 
         /// <summary>
         /// The module of the checkbox that is checked in the MainAllModVersions list if any,
@@ -146,7 +147,7 @@ namespace CKAN.GUI
                    incompatible, hideEpochs, hideV)
         {
             IsInstalled      = true;
-            InstalledMod     = instMod;
+            this.registry    = registry;
             selectedMod      = registry.GetModuleByVersion(instMod.identifier, instMod.Module.version)
                                ?? instMod.Module;
             InstallDate      = instMod.InstallTime;
@@ -183,6 +184,7 @@ namespace CKAN.GUI
                       bool  hideEpochs,
                       bool  hideV)
         {
+            this.registry  = registry;
             Identifier     = mod.identifier;
             IsAutodetected = registry.IsAutodetected(Identifier);
             DownloadCount  = repoDataMgr.GetDownloadCount(registry.Repositories.Values, Identifier);
