@@ -35,7 +35,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Autofac" Version="9.1.0" />
-    <PackageReference Include="ini-parser" Version="2.5.2" />
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="Nullable" Version="1.3.1" PrivateAssets="all" />
