@@ -249,18 +249,18 @@ namespace CKAN.GUI
                                                            GameVersionCriteria      crit)
             => (module.provides?.Select(ProvidedNode)
                     ?? Enumerable.Empty<TreeNode>())
-                .Concat(kindsOfRelationships.SelectMany(relationship =>
-                    GetModRelationships(module, relationship).Select(dependency =>
+                .Concat(kindsOfRelationships.SelectMany(relType =>
+                    GetModRelationships(module, relType).Select(rel =>
                         // Look for compatible mods
-                        FindDependencyShallow(registry, dependency, relationship, stabilityTolerance, crit)
+                        FindDependencyShallow(registry, rel, relType, stabilityTolerance, crit)
                         // Then incompatible mods
-                        ?? FindDependencyShallow(registry, dependency, relationship, stabilityTolerance, null)
+                        ?? FindDependencyShallow(registry, rel, relType, stabilityTolerance, null)
                         // Then give up and note the name without a module
-                        ?? NonindexedNode(dependency, relationship))));
+                        ?? NonindexedNode(rel, relType))));
 
         private TreeNode? FindDependencyShallow(IRegistryQuerier         registry,
                                                 RelationshipDescriptor   relDescr,
-                                                RelationshipType         relationship,
+                                                RelationshipType         relType,
                                                 StabilityToleranceConfig stabilityTolerance,
                                                 GameVersionCriteria?     crit)
         {
@@ -268,7 +268,7 @@ namespace CKAN.GUI
                                           registry, stabilityTolerance, crit,
                                           // Ignore conflicts with installed mods
                                           new List<CkanModule>())
-                                     .Select(dep => IndexedNode(registry, dep, relationship, relDescr, stabilityTolerance, crit))
+                                     .Select(dep => IndexedNode(registry, dep, relType, relDescr, stabilityTolerance, crit))
                                      .ToList();
 
             // Check if this dependency is installed
@@ -280,11 +280,11 @@ namespace CKAN.GUI
             {
                 if (matched == null)
                 {
-                    childNodes.Add(NonModuleNode(relDescr, null, relationship));
+                    childNodes.Add(NonModuleNode(relDescr, null, relType));
                 }
                 else
                 {
-                    var newNode = IndexedNode(registry, matched, relationship, relDescr, stabilityTolerance, crit);
+                    var newNode = IndexedNode(registry, matched, relType, relDescr, stabilityTolerance, crit);
                     if (childNodes.FindIndex(nd => (nd.Tag as CkanModule)?.identifier == matched.identifier)
                         is int index && index != -1)
                     {
@@ -314,7 +314,7 @@ namespace CKAN.GUI
             else
             {
                 // Several found or not same id, return a "provides" node
-                return providesNode(relDescr.ToString() ?? "", relationship,
+                return providesNode(relDescr.ToString() ?? "", relType,
                                     childNodes.ToArray());
             }
         }
@@ -348,17 +348,17 @@ namespace CKAN.GUI
                                         .OrderByDescending(r => registry.IsInstalled(r.Name, false))
                                         .ThenBy(r => r.Name)));
 
-        private static TreeNode providesNode(string           identifier,
-                                             RelationshipType relationship,
-                                             TreeNode[]       children)
+        private TreeNode providesNode(string           identifier,
+                                      RelationshipType relType,
+                                      TreeNode[]       children)
         {
-            int icon = (int)relationship + 1;
+            int icon = (int)relType + 1;
             return new TreeNode(string.Format(Properties.Resources.ModInfoVirtual,
                                               identifier),
                                 icon, icon, children)
             {
                 Name        = identifier,
-                ToolTipText = $"{relationship.LocalizeDescription()} {identifier}",
+                ToolTipText = $"{relType.LocalizeDescription()} {identifier}",
                 ForeColor   = SystemColors.GrayText,
             };
         }
