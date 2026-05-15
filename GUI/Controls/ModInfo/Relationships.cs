@@ -199,10 +199,10 @@ namespace CKAN.GUI
         private static readonly RelationshipType[] kindsOfRelationships = new RelationshipType[]
         {
             RelationshipType.Depends,
+            RelationshipType.Conflicts,
             RelationshipType.Recommends,
             RelationshipType.Suggests,
             RelationshipType.Supports,
-            RelationshipType.Conflicts,
         };
 
         private void AddChildren(IRegistryQuerier         registry,
