@@ -201,70 +201,70 @@ namespace CKAN.GUI
             //
             this.FilterCompatibleButton.Name = "FilterCompatibleButton";
             this.FilterCompatibleButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterCompatibleButton.Click += new System.EventHandler(this.FilterCompatibleButton_Click);
+            this.FilterCompatibleButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterCompatibleButton_Click);
             resources.ApplyResources(this.FilterCompatibleButton, "FilterCompatibleButton");
             //
             // FilterInstalledButton
             //
             this.FilterInstalledButton.Name = "FilterInstalledButton";
             this.FilterInstalledButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterInstalledButton.Click += new System.EventHandler(this.FilterInstalledButton_Click);
+            this.FilterInstalledButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterInstalledButton_Click);
             resources.ApplyResources(this.FilterInstalledButton, "FilterInstalledButton");
             //
             // FilterInstalledUpdateButton
             //
             this.FilterInstalledUpdateButton.Name = "FilterInstalledUpdateButton";
             this.FilterInstalledUpdateButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterInstalledUpdateButton.Click += new System.EventHandler(this.FilterInstalledUpdateButton_Click);
+            this.FilterInstalledUpdateButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterInstalledUpdateButton_Click);
             resources.ApplyResources(this.FilterInstalledUpdateButton, "FilterInstalledUpdateButton");
             //
             // FilterReplaceableButton
             //
             this.FilterReplaceableButton.Name = "FilterReplaceableButton";
             this.FilterReplaceableButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterReplaceableButton.Click += new System.EventHandler(this.FilterReplaceableButton_Click);
+            this.FilterReplaceableButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterReplaceableButton_Click);
             resources.ApplyResources(this.FilterReplaceableButton, "FilterReplaceableButton");
             //
             // FilterCachedButton
             //
             this.FilterCachedButton.Name = "FilterCachedButton";
             this.FilterCachedButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterCachedButton.Click += new System.EventHandler(this.FilterCachedButton_Click);
+            this.FilterCachedButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterCachedButton_Click);
             resources.ApplyResources(this.FilterCachedButton, "FilterCachedButton");
             //
             // FilterUncachedButton
             //
             this.FilterUncachedButton.Name = "FilterUncachedButton";
             this.FilterUncachedButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterUncachedButton.Click += new System.EventHandler(this.FilterUncachedButton_Click);
+            this.FilterUncachedButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterUncachedButton_Click);
             resources.ApplyResources(this.FilterUncachedButton, "FilterUncachedButton");
             //
             // FilterNewButton
             //
             this.FilterNewButton.Name = "FilterNewButton";
             this.FilterNewButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterNewButton.Click += new System.EventHandler(this.FilterNewButton_Click);
+            this.FilterNewButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterNewButton_Click);
             resources.ApplyResources(this.FilterNewButton, "FilterNewButton");
             //
             // FilterNotInstalledButton
             //
             this.FilterNotInstalledButton.Name = "FilterNotInstalledButton";
             this.FilterNotInstalledButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterNotInstalledButton.Click += new System.EventHandler(this.FilterNotInstalledButton_Click);
+            this.FilterNotInstalledButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterNotInstalledButton_Click);
             resources.ApplyResources(this.FilterNotInstalledButton, "FilterNotInstalledButton");
             //
             // FilterIncompatibleButton
             //
             this.FilterIncompatibleButton.Name = "FilterIncompatibleButton";
             this.FilterIncompatibleButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterIncompatibleButton.Click += new System.EventHandler(this.FilterIncompatibleButton_Click);
+            this.FilterIncompatibleButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterIncompatibleButton_Click);
             resources.ApplyResources(this.FilterIncompatibleButton, "FilterIncompatibleButton");
             //
             // FilterAllButton
             //
             this.FilterAllButton.Name = "FilterAllButton";
             this.FilterAllButton.Size = new System.Drawing.Size(307, 30);
-            this.FilterAllButton.Click += new System.EventHandler(this.FilterAllButton_Click);
+            this.FilterAllButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FilterAllButton_Click);
             resources.ApplyResources(this.FilterAllButton, "FilterAllButton");
             //
             // FilterTagsToolButton
