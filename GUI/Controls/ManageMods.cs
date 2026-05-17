@@ -79,6 +79,9 @@ namespace CKAN.GUI
 
             if (Platform.IsMono)
             {
+                // Mono renders all blank cells if we add padding
+                ModGrid.DefaultCellStyle.Padding = new Padding(0);
+                // Mono doesn't resize column headers correctly
                 ModGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
                 ResizeColumnHeaders();
                 ModGrid.ColumnWidthChanged += (sender, e) => ResizeColumnHeaders();
