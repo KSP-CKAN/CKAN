@@ -60,7 +60,10 @@ namespace CKAN.IO
                                             .Where(m => m.IsCompatible(instance.VersionCriteria()))
                                             .ToHashSet();
 
-            var deletable = matched.Keys.ToList();
+            // Don't offer to delete mods w/ no metadata in main repo (probably paid mods w/ internal .ckans)
+            var deletable = matched.Where(kvp => kvp.Value.All(m => registry.GetModuleByVersion(m.identifier, m.version) != null))
+                                   .Select(kvp => kvp.Key)
+                                   .ToList();
             var delete    = allowDelete
                             && deletable.Count > 0
                             && user.RaiseYesNoDialog(string.Format(Properties.Resources.ModuleInstallerImportDeletePrompt,
