@@ -320,22 +320,20 @@ namespace CKAN.GUI
                 FilterTagsToolButton.DropDownItems.Clear();
                 FilterTagsToolButton.DropDownItems.AddRange(
                     registry.Tags.OrderBy(kvp => kvp.Key)
-                                 .Select(kvp => new ToolStripMenuItem(
-                                                    $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})",
-                                                    null, tagFilterButton_Click)
+                                 .Select(kvp => AddMouseDownHandler(new ToolStripMenuItem(
+                                                    $"{kvp.Key} ({kvp.Value.ModuleIdentifiers.Count})")
                                                 {
                                                     Tag         = kvp.Value,
                                                     ToolTipText = Properties.Resources.FilterLinkToolTip,
-                                                })
+                                                }, tagFilterButton_Click))
                                  .OfType<ToolStripItem>()
                                  .Append(untaggedFilterToolStripSeparator)
-                                 .Append(new ToolStripMenuItem(
+                                 .Append(AddMouseDownHandler(new ToolStripMenuItem(
                                              string.Format(Properties.Resources.MainLabelsUntagged,
-                                                           registry.Untagged.Count),
-                                             null, tagFilterButton_Click)
+                                                           registry.Untagged.Count))
                                          {
                                              Tag = null
-                                         })
+                                         }, tagFilterButton_Click))
                                  .ToArray());
             }
         }
@@ -348,16 +346,15 @@ namespace CKAN.GUI
                 FilterLabelsToolButton.DropDownItems.AddRange(
                     ModuleLabelList.ModuleLabels
                                    .LabelsFor(currentInstance.Name)
-                                   .Select(mlbl => new ToolStripMenuItem(
-                                                       $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.Game)})",
-                                                       null, customFilterButton_Click)
+                                   .Select(mlbl => AddMouseDownHandler(new ToolStripMenuItem(
+                                                       $"{mlbl.Name} ({mlbl.ModuleCount(currentInstance.Game)})")
                                                    {
                                                        Tag         = mlbl,
                                                        BackColor   = mlbl.Color ?? Color.Transparent,
                                                        ForeColor   = mlbl.Color?.ForeColorForBackColor()
                                                                                ?? SystemColors.ControlText,
                                                        ToolTipText = Properties.Resources.FilterLinkToolTip,
-                                                   })
+                                                   }, customFilterButton_Click))
                                    .ToArray());
                 FilterLabelsToolButton.DropDownItems.Add(FilterLabelsToolStripSeparator);
                 FilterLabelsToolButton.DropDownItems.Add(FilterLabelsEditToolStripMenuItem);
@@ -441,77 +438,83 @@ namespace CKAN.GUI
             }
         }
 
+        private static ToolStripMenuItem AddMouseDownHandler(ToolStripMenuItem item, MouseEventHandler handler)
+        {
+            item.MouseDown += handler;
+            return item;
+        }
+
         #endregion
 
-        private void tagFilterButton_Click(object? sender, EventArgs? e)
+        private void tagFilterButton_Click(object? sender, MouseEventArgs? e)
         {
             var clicked = sender as ToolStripMenuItem;
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Tag, ModuleLabelList.ModuleLabels, clicked?.Tag as ModuleTag, null), merge);
         }
 
-        private void customFilterButton_Click(object? sender, EventArgs? e)
+        private void customFilterButton_Click(object? sender, MouseEventArgs? e)
         {
             var clicked = sender as ToolStripMenuItem;
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.CustomLabel, ModuleLabelList.ModuleLabels, null, clicked?.Tag as ModuleLabel), merge);
         }
 
-        private void FilterCompatibleButton_Click(object? sender, EventArgs? e)
+        private void FilterCompatibleButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Compatible, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterInstalledButton_Click(object? sender, EventArgs? e)
+        private void FilterInstalledButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Installed, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterInstalledUpdateButton_Click(object? sender, EventArgs? e)
+        private void FilterInstalledUpdateButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.InstalledUpdateAvailable, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterReplaceableButton_Click(object? sender, EventArgs? e)
+        private void FilterReplaceableButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Replaceable, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterCachedButton_Click(object? sender, EventArgs? e)
+        private void FilterCachedButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Cached, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterUncachedButton_Click(object? sender, EventArgs? e)
+        private void FilterUncachedButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Uncached, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterNewButton_Click(object? sender, EventArgs? e)
+        private void FilterNewButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.NewInRepository, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterNotInstalledButton_Click(object? sender, EventArgs? e)
+        private void FilterNotInstalledButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.NotInstalled, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterIncompatibleButton_Click(object? sender, EventArgs? e)
+        private void FilterIncompatibleButton_Click(object? sender, MouseEventArgs? e)
         {
-            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift);
+            var merge = ModifierKeys.HasAnyFlag(Keys.Control, Keys.Shift) || e?.Button == MouseButtons.Middle;
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.Incompatible, ModuleLabelList.ModuleLabels), merge);
         }
 
-        private void FilterAllButton_Click(object? sender, EventArgs? e)
+        private void FilterAllButton_Click(object? sender, MouseEventArgs? e)
         {
             Filter(ModList.FilterToSavedSearch(currentInstance!, GUIModFilter.All, ModuleLabelList.ModuleLabels), false);
         }
