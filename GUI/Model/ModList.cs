@@ -224,8 +224,8 @@ namespace CKAN.GUI
             var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility       };
             var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize            };
             var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize             };
-            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.Module.release_date?.ToLocalTime() };
-            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate             };
+            var releaseDate   = new DataGridViewTextBoxCell { Value = FormatDate(mod.Module.release_date?.ToLocalTime()) };
+            var installDate   = new DataGridViewTextBoxCell { Value = FormatDate(mod.InstallDate)             };
             var desc          = new DataGridViewTextBoxCell
                                 {
                                     Value       = ToGridText(mod.Abstract),
@@ -682,6 +682,11 @@ namespace CKAN.GUI
         }
 
         #endregion
+
+        private static string? FormatDate(DateTime? dt) =>
+            dt == null ? null
+                       : dt.Value.Date == DateTime.Today ? dt.Value.ToString("t")
+                                                         : dt.Value.ToString("d");
 
         private static Color SelectionBlend(Color c)
             => c == Color.Empty
