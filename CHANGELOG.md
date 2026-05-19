@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix installation of unrecognized imported ZIPs (#4628, #4636 by: HebaruSan)
 - [Multiple] Auto-size grid rows to ensure high-DPI visibility of checkboxes (#4630 by: HebaruSan)
 
+### Internal
+
+- [Netkan] Apply all subdocuments of internal .ckans (#4640 by: HebaruSan)
+
 ## v1.36.4
 
 ### Features

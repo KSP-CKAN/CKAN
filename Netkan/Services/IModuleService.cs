@@ -13,7 +13,7 @@ namespace CKAN.NetKAN.Services
     {
         Tuple<ZipEntry, bool>? FindInternalAvc(CkanModule module, ZipFile zipfile, string internalFilePath);
         AvcVersion? GetInternalAvc(CkanModule module, string filePath, string? internalFilePath = null);
-        JObject? GetInternalCkan(CkanModule module, string zipPath);
+        IEnumerable<JObject> GetInternalCkans(CkanModule module, string zipPath);
         bool HasInstallableFiles(CkanModule module, string filePath);
 
         IEnumerable<InstallableFile> GetConfigFiles(CkanModule module, ZipFile zip);

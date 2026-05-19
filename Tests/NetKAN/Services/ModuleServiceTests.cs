@@ -64,7 +64,7 @@ namespace Tests.NetKAN.Services
             CkanModule mod = CkanModule.FromJson(TestData.DogeCoinFlag_101());
 
             // Act
-            var result = sut.GetInternalCkan(mod, TestData.DogeCoinFlagZip());
+            var result = sut.GetInternalCkans(mod, TestData.DogeCoinFlagZip()).FirstOrDefault();
 
             // Assert
             Assert.That(result, Is.Not.Null,

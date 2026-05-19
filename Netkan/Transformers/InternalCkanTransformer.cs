@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using log4net;
 
 using CKAN.NetKAN.Extensions;
@@ -37,30 +39,32 @@ namespace CKAN.NetKAN.Transformers
                 // Set it to a default if missing so CkanModule can initialize.
                 var moduleJson = metadata.Json();
                 moduleJson.SafeAdd("version", "1");
-                CkanModule   mod  = CkanModule.FromJson(moduleJson.ToString());
-                var internalJson = _moduleService.GetInternalCkan(mod, contents);
-
-                if (internalJson != null)
+                CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
+                if (_moduleService.GetInternalCkans(mod, contents).ToArray()
+                    is { Length: > 0 } internalJsons)
                 {
                     var json = metadata.Json();
-                    Log.InfoFormat("Executing internal CKAN transformation with {0}", metadata.Kref);
-                    Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
-
-                    foreach (var property in internalJson.Properties())
+                    foreach (var internalJson in internalJsons)
                     {
-                        // We've already got the file, too late to tell us where it lives
-                        if (property.Name == "$kref")
+                        Log.InfoFormat("Executing internal CKAN transformation with {0}", metadata.Kref);
+                        Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
+
+                        foreach (var property in internalJson.Properties())
                         {
-                            Log.DebugFormat("Skipping $kref property: {0}", property.Value);
-                            continue;
+                            // We've already got the file, too late to tell us where it lives
+                            if (property.Name == "$kref")
+                            {
+                                Log.DebugFormat("Skipping $kref property: {0}", property.Value);
+                                continue;
+                            }
+                            json.SafeAdd(property.Name, property.Value);
                         }
-                        json.SafeAdd(property.Name, property.Value);
+
+                        GameVersion.SetJsonCompatibility(json, null, null, null);
+                        json.SafeMerge("resources", internalJson["resources"]);
+
+                        Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
                     }
-
-                    GameVersion.SetJsonCompatibility(json, null, null, null);
-                    json.SafeMerge("resources", internalJson["resources"]);
-
-                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
                     yield return new Metadata(json);
                     yield break;
                 }
