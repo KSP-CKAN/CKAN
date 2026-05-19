@@ -44,8 +44,8 @@ namespace CKAN.NetKAN.Services
         /// <param name="zipPath">Where the ZIP file is</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        public JObject? GetInternalCkan(CkanModule module, string zipPath)
-            => GetInternalCkan(module, new ZipFile(zipPath), game);
+        public IEnumerable<JObject> GetInternalCkans(CkanModule module, string zipPath)
+            => GetInternalCkans(module, new ZipFile(zipPath), game);
 
         /// <summary>
         /// Find and parse a .ckan file in the ZIP.
@@ -56,7 +56,7 @@ namespace CKAN.NetKAN.Services
         /// <param name="zip">The ZipFile to search</param>
         /// <param name="inst">Game instance for generating InstallableFiles</param>
         /// <returns>Parsed contents of the file, or null if none found</returns>
-        private static JObject? GetInternalCkan(CkanModule module, ZipFile zip, IGame game)
+        private static IEnumerable<JObject> GetInternalCkans(CkanModule module, ZipFile zip, IGame game)
             => (module.install != null
                     // Find embedded .ckan files that would be included in the install
                     ? GetFilesBySuffix(module, zip, ".ckan", game)
@@ -64,9 +64,7 @@ namespace CKAN.NetKAN.Services
                     // Find embedded .ckan files anywhere in the ZIP
                     : zip.OfType<ZipEntry>()
                          .Where(ModuleInstaller.IsInternalCkan))
-                .Select(entry => DeserializeFromStream(
-                                    zip.GetInputStream(entry)))
-                .FirstOrDefault();
+                .SelectMany(entry => DeserializeFromStream(zip.GetInputStream(entry)));
 
         public bool HasInstallableFiles(CkanModule module, string filePath)
             => Utilities.DefaultIfThrows(() =>
@@ -115,12 +113,11 @@ namespace CKAN.NetKAN.Services
         /// Return a parsed JObject from a stream.
         /// Courtesy https://stackoverflow.com/questions/8157636/can-json-net-serialize-deserialize-to-from-a-stream/17788118#17788118
         /// </summary>
-        private static JObject? DeserializeFromStream(Stream stream)
+        private static IEnumerable<JObject> DeserializeFromStream(Stream stream)
         {
             using (var sr = new StreamReader(stream))
             {
-                // Only one document per internal .ckan
-                return YamlExtensions.Parse(sr).FirstOrDefault()?.ToJObject();
+                return YamlExtensions.Parse(sr).Select(yaml => yaml.ToJObject());
             }
         }
 
