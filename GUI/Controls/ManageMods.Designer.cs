@@ -452,11 +452,11 @@ namespace CKAN.GUI
             //
             // LatestVersion
             //
-            this.LatestVersion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.LatestVersion.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
             this.LatestVersion.Name = "LatestVersion";
             this.LatestVersion.ReadOnly = true;
             this.LatestVersion.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.LatestVersion.MinimumWidth = 70;
+            this.LatestVersion.Width = 140;
             resources.ApplyResources(this.LatestVersion, "LatestVersion");
             //
             // GameCompatibility

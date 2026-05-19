@@ -683,8 +683,8 @@ namespace CKAN.GUI
 
         #endregion
 
-        private static string? FormatDate(DateTime? dt) =>
-            dt == null ? null
+        private static string FormatDate(DateTime? dt) =>
+            dt == null ? ""
                        : dt.Value.Date == DateTime.Today ? dt.Value.ToString("t")
                                                          : dt.Value.ToString("d");
 
