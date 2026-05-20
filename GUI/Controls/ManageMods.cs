@@ -62,7 +62,7 @@ namespace CKAN.GUI
 
             // History is read-only until the UI is started. We switch
             // out of it at the end of OnLoad() when we call NavInit().
-            navHistory = new NavigationHistory<GUIMod> { IsReadOnly = true };
+            navHistory = new NavigationHistory<GUIMod>();
 
             // Initialize navigation. This should be called as late as
             // possible, once the UI is "settled" from its initial load.
@@ -2083,7 +2083,6 @@ namespace CKAN.GUI
         private void NavInit()
         {
             navHistory.OnHistoryChange += NavOnHistoryChange;
-            navHistory.IsReadOnly = false;
             var currentMod = SelectedModule;
             if (currentMod != null)
             {
@@ -2116,9 +2115,7 @@ namespace CKAN.GUI
         {
             // Focusing on a mod also causes navigation, but we don't want
             // this to affect the history, so we switch to read-only mode.
-            navHistory.IsReadOnly = true;
             FocusMod(module.Name, true);
-            navHistory.IsReadOnly = false;
         }
 
         private void NavOnHistoryChange()

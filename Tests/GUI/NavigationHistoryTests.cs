@@ -59,6 +59,35 @@ namespace Tests.GUI
         }
 
         [Test]
+        public void After_DuplicateHistoryItem_NoChange()
+        {
+            // Arrange
+            var nav = new NavigationHistory<int>();
+
+            // Act / Assert
+            nav.AddToHistory(1);
+            Assert.IsFalse(nav.TryGoForward(out int val));
+            Assert.AreEqual(default(int), val);
+            nav.AddToHistory(2);
+            nav.AddToHistory(3);
+            Assert.IsTrue(nav.TryGoBackward(out val));
+            Assert.AreEqual(2, val);
+            nav.AddToHistory(2);
+            nav.AddToHistory(2);
+            Assert.IsTrue(nav.TryGoForward(out val));
+            Assert.AreEqual(3, val);
+            Assert.IsFalse(nav.CanNavigateForward);
+            Assert.IsTrue(nav.TryGoBackward(out val));
+            Assert.AreEqual(2, val);
+            Assert.IsTrue(nav.TryGoBackward(out val));
+            Assert.AreEqual(1, val);
+            Assert.IsTrue(nav.CanNavigateForward);
+            Assert.IsFalse(nav.TryGoBackward(out val));
+            Assert.AreEqual(default(int), val);
+        }
+
+
+        [Test]
         public void While_AtHeadOfHistory_CannotNavigateForward()
         {
             // arrange
@@ -199,142 +228,6 @@ namespace Tests.GUI
             Assert.IsFalse(navForwAfterNine);
             Assert.AreEqual(1, one);
             Assert.AreEqual(9, nine);
-        }
-
-        [Test]
-        public void ReadOnlyMode_BlocksAddingToHistory()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>
-            {
-                IsReadOnly = true
-            };
-
-            // act
-
-            nav.AddToHistory(1);
-            nav.AddToHistory(2);
-            nav.AddToHistory(3);
-
-            nav.IsReadOnly = false;
-
-            // assert
-
-            Assert.IsFalse(nav.CanNavigateBackward);
-            Assert.IsFalse(nav.CanNavigateForward);
-        }
-
-        [Test]
-        public void ReadOnlyMode_BlocksBackwardNavigation()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>();
-
-            nav.AddToHistory(1);
-            nav.AddToHistory(2);
-            nav.AddToHistory(3);
-
-            nav.IsReadOnly = true;
-
-            // act
-
-            nav.TryGoBackward(out _);
-            nav.TryGoBackward(out _);
-            nav.TryGoBackward(out _);
-
-            var canStillNavigate = nav.CanNavigateBackward;
-
-            nav.IsReadOnly = false;
-
-            nav.TryGoBackward(out var two);
-
-            // assert
-
-            Assert.True(canStillNavigate);
-            Assert.AreEqual(2, two);
-        }
-
-        [Test]
-        public void ReadOnlyMode_BlocksForwardNavigation()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>();
-
-            nav.AddToHistory(1);
-            nav.AddToHistory(2);
-            nav.AddToHistory(3);
-
-            nav.TryGoBackward(out _);
-            nav.TryGoBackward(out _);
-
-            nav.IsReadOnly = true;
-
-            // act
-
-            nav.TryGoForward(out _);
-            nav.TryGoForward(out _);
-            nav.TryGoForward(out _);
-
-            var canStillNavigate = nav.CanNavigateForward;
-
-            nav.IsReadOnly = false;
-
-            nav.TryGoForward(out var two);
-
-            // assert
-
-            Assert.True(canStillNavigate);
-            Assert.AreEqual(2, two);
-        }
-
-        [Test]
-        public void BackwardsNavigation_DuringReadOnlyMode_ProducesDefaultValue()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>();
-
-            nav.AddToHistory(1);
-            nav.AddToHistory(2);
-            nav.AddToHistory(3);
-
-            nav.IsReadOnly = true;
-
-            // act
-
-            nav.TryGoBackward(out var zero);
-
-            // assert
-
-            Assert.AreEqual(default(int), zero);
-        }
-
-        [Test]
-        public void ForwardsNavigation_DuringReadOnlyMode_ProducesDefaultValue()
-        {
-            // arrange
-
-            var nav = new NavigationHistory<int>();
-
-            nav.AddToHistory(1);
-            nav.AddToHistory(2);
-            nav.AddToHistory(3);
-
-            nav.TryGoBackward(out _);
-            nav.TryGoBackward(out _);
-
-            nav.IsReadOnly = true;
-
-            // act
-
-            nav.TryGoForward(out var zero);
-
-            // assert
-
-            Assert.AreEqual(default(int), zero);
         }
 
         [Test]

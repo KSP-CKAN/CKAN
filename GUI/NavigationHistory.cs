@@ -11,23 +11,13 @@ namespace CKAN.GUI
     public class NavigationHistory<T>
         where T : notnull
     {
-        private readonly List<T> m_navigationHistory;
-        private int m_currentIndex;
-
-        public NavigationHistory()
-        {
-            m_navigationHistory = new List<T>();
-            m_currentIndex = -1;
-            IsReadOnly = false;
-        }
-
         #region Events
 
         public delegate void HistoryChangeHandler();
 
         public event HistoryChangeHandler? OnHistoryChange;
 
-        public void InvokeOnHistoryChange()
+        private void InvokeOnHistoryChange()
         {
             OnHistoryChange?.Invoke();
         }
@@ -45,77 +35,83 @@ namespace CKAN.GUI
         public bool CanNavigateForward => m_currentIndex < (m_navigationHistory.Count - 1);
 
         /// <summary>
-        /// Indicates whether the history is in read-only mode.
-        /// During read-only mode, all calls that could modify the state of the
-        /// history are silenly ignored.
-        /// </summary>
-        public bool IsReadOnly { get; set; }
-
-        /// <summary>
         /// Adds the given item to the head of the navigation history.
         /// </summary>
         /// <param name="item"></param>
         public void AddToHistory(T item)
         {
-            if (IsReadOnly)
+            lock (mutex)
             {
-                return;
+                if (m_currentIndex >= 0 && m_currentIndex < m_navigationHistory.Count
+                    && item.Equals(m_navigationHistory[m_currentIndex]))
+                {
+                    // Don't add (or truncate) if same as current item
+                    return;
+                }
+
+                if (CanNavigateForward)
+                {
+                    /*
+                     * This operation removes all history AHEAD of the current index,
+                     * adds a new item to the head of the list, and advances the index.
+                     *
+                     * Let's say this is your current state:
+                     *
+                     * =============
+                     * |x|y|z|a|b|c|
+                     * =============
+                     *      ^
+                     *
+                     * When you add an item to the history ('d'),
+                     * the next state will be:
+                     *
+                     * =========
+                     * |x|y|z|d|
+                     * =========
+                     *        ^
+                     */
+                    m_navigationHistory.RemoveRange(m_currentIndex + 1, m_navigationHistory.Count - (m_currentIndex + 1));
+                }
+
+                m_navigationHistory.Add(item);
+                m_currentIndex++;
+
+                InvokeOnHistoryChange();
             }
-
-            /*
-             * This operation removes all history AHEAD of the current index,
-             * adds a new item to the head of the list, and advances the index.
-             *
-             * Let's say this is your current state:
-             *
-             * =============
-             * |x|y|z|a|b|c|
-             * =============
-             *      ^
-             *
-             * When you add an item to the history ('d'),
-             * the next state will be:
-             *
-             * =========
-             * |x|y|z|d|
-             * =========
-             *        ^
-             */
-
-            if (CanNavigateForward)
-            {
-                m_navigationHistory.RemoveRange(m_currentIndex + 1, m_navigationHistory.Count - (m_currentIndex + 1));
-            }
-
-            m_navigationHistory.Add(item);
-            m_currentIndex++;
-
-            InvokeOnHistoryChange();
         }
 
         public bool TryGoBackward([NotNullWhen(true)] out T? newCurrentItem)
         {
-            if (!IsReadOnly && CanNavigateBackward)
+            lock (mutex)
             {
-                newCurrentItem = m_navigationHistory[--m_currentIndex];
-                InvokeOnHistoryChange();
-                return true;
+                if (CanNavigateBackward)
+                {
+                    newCurrentItem = m_navigationHistory[--m_currentIndex];
+                    InvokeOnHistoryChange();
+                    return true;
+                }
+                newCurrentItem = default;
+                return false;
             }
-            newCurrentItem = default;
-            return false;
         }
 
         public bool TryGoForward([NotNullWhen(true)] out T? newCurrentItem)
         {
-            if (!IsReadOnly && CanNavigateForward)
+            lock (mutex)
             {
-                newCurrentItem = m_navigationHistory[++m_currentIndex];
-                InvokeOnHistoryChange();
-                return true;
+                if (CanNavigateForward)
+                {
+                    newCurrentItem = m_navigationHistory[++m_currentIndex];
+                    InvokeOnHistoryChange();
+                    return true;
+                }
+                newCurrentItem = default;
+                return false;
             }
-            newCurrentItem = default;
-            return false;
         }
 
+        private readonly List<T> m_navigationHistory = new List<T>();
+        private readonly object mutex = new object();
+        private int m_currentIndex = -1;
     }
 }
