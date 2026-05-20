@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Fix installation of unrecognized imported ZIPs (#4628, #4636 by: HebaruSan)
 - [Multiple] Auto-size grid rows to ensure high-DPI visibility of checkboxes (#4630 by: HebaruSan)
 - [GUI] Replace NavigationHistory.IsReadOnly with same-value check (#4641 by: HebaruSan)
+- [GUI] Fix ckan://identifier (#4603 by: Halbann; reviewed: HebaruSan)
 
 ### Internal
 

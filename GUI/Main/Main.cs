@@ -68,22 +68,30 @@ namespace CKAN.GUI
             log.Info("Starting the GUI");
             if (//cmdlineArgs is [_, string focusIdent, ..]
                 cmdlineArgs.Length > 1
-                && cmdlineArgs[1] is string focusIdent)
+                && cmdlineArgs[1] is string { Length: >= 2 } focusIdentArg)
             {
-                if (//focusIdent is ['/', '/', .. var rest]
-                    focusIdent.Length > 2)
+                focusIdent = focusIdentArg;
+
+                // Strip any leading "//" or any leading "ckan://".
+                if (//focusIdentArg is ['/', '/', .. var rest]
+                    focusIdentArg.Length > 2
+                    && focusIdentArg.StartsWith("//"))
                 {
-                    focusIdent = focusIdent[2..];
+                    focusIdent = focusIdentArg[2..];
                 }
-                else if (//focusIdent is ['c', 'k', 'a', 'n', ':', '/', '/', .. var rest2]
-                    focusIdent.StartsWith("ckan://"))
+                else if (//focusIdenArg is ['c', 'k', 'a', 'n', ':', '/', '/', .. var rest2]
+                    focusIdentArg.Length > 7
+                    && focusIdentArg.StartsWith("ckan://"))
                 {
-                    focusIdent = focusIdent[7..];
+                    focusIdent = focusIdentArg[7..];
                 }
+
+                // Strip any trailing forward slashes.
                 if (//focusIdent is [.. var start, '/']
-                    focusIdent.EndsWith("/"))
+                    focusIdent is { Length: > 1 }
+                    && focusIdent.EndsWith("/"))
                 {
-                    focusIdent = focusIdent[..^1];
+                    focusIdent = focusIdent.TrimEnd('/');
                 }
             }
 
