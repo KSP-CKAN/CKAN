@@ -116,7 +116,7 @@ namespace CKAN.GUI
                 DependsGraphTree.Nodes.Add(root);
                 AddChildren(registry, Manager.CurrentInstance.StabilityToleranceConfig, root);
                 root.Expand();
-                // Expand virtual depends nodes
+                // Expand virtual nodes
                 foreach (var node in root.Nodes.OfType<TreeNode>()
                                                .Where(nd => nd.Nodes.Count > 0))
                 {

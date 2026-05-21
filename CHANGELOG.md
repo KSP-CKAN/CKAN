@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file.
 ### Internal
 
 - [Netkan] Apply all subdocuments of internal .ckans (#4640 by: HebaruSan)
+- [Build] Sync certs from newer location in RPM package (#4642 by: HebaruSan)
 
 ## v1.36.4
 
