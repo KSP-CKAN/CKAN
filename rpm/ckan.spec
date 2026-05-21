@@ -28,8 +28,7 @@ Official client for the Comprehensive Kerbal Archive Network (CKAN).
 Acts as a mod manager for Kerbal Space Program mods.
 
 %post
-cert-sync /etc/pki/tls/certs/ca-bundle.crt
-cert-sync --user /etc/pki/tls/cert.pem
+cert-sync /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
 
 %install
 umask 0022
