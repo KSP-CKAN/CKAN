@@ -60,8 +60,6 @@ namespace CKAN.GUI
 
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
-            // History is read-only until the UI is started. We switch
-            // out of it at the end of OnLoad() when we call NavInit().
             navHistory = new NavigationHistory<GUIMod>();
 
             // Initialize navigation. This should be called as late as
