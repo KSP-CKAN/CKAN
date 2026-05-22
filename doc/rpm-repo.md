@@ -36,7 +36,7 @@ Things may break! But if they do and you [report it to us](https://github.com/KS
 ### Fedora with DNF5
 
 ```
-sudo dnf config-manager addrepo --from-repofile https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/stable/ckan_nightly.repo
+sudo dnf config-manager addrepo --from-repofile https://ksp-ckan.s3-us-west-2.amazonaws.com/rpm/nightly/ckan_nightly.repo
 sudo dnf install ckan
 ```
 
