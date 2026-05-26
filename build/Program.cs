@@ -151,20 +151,6 @@ public sealed class BuildTask : FrostingTask<BuildContext>
                 Framework     = context.BuildDotNet,
             });
         }
-        if (context.BuildConfiguration == "Release")
-        {
-            var pubSettings = new DotNetPublishSettings
-            {
-                Configuration  = context.BuildConfiguration,
-                Framework      = context.BuildDotNet,
-                Runtime        = "linux-x64",
-                SelfContained  = true,
-            };
-            // Publish Netkan for Inflator and Metadata containers
-            context.DotNetPublish(context.Paths.NetkanProject.FullPath, pubSettings);
-            // Publish Cmdline for Metadata container
-            context.DotNetPublish(context.Paths.CmdlineProject.FullPath, pubSettings);
-        }
     }
 }
 
@@ -219,6 +205,22 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
                                                        .CombineWithFilePath("CKAN-CmdLine.exe"),
                              context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
                                                           .CombineWithFilePath("ckan-windows.exe"));
+        }
+
+        if (context.BuildConfiguration == "Release")
+        {
+            var pubSettings = new DotNetPublishSettings
+            {
+                Configuration     = context.BuildConfiguration,
+                Framework         = context.BuildDotNet,
+                Runtime           = "linux-x64",
+                PublishSingleFile = true,
+                SelfContained     = true,
+            };
+            // Publish Netkan for Inflator and Metadata containers
+            context.DotNetPublish(context.Paths.NetkanProject.FullPath, pubSettings);
+            // Publish Cmdline for Metadata container
+            context.DotNetPublish(context.Paths.CmdlineProject.FullPath, pubSettings);
         }
     }
 }
