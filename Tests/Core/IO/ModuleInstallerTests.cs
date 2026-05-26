@@ -1763,12 +1763,16 @@ namespace Tests.Core.IO
             }
         }
 
-        [TestCase(true,  true),
-         TestCase(true,  false),
-         TestCase(false, true),
-         TestCase(false, false)]
+        [TestCase(true,  true,  false),
+         TestCase(true,  false, false),
+         TestCase(true,  false, true),
+         TestCase(false, true,  false),
+         TestCase(false, false, false),
+         TestCase(false, false, true),
+        ]
         public void Upgrade_IncompleteInCache_Completes(bool startInstalled,
-                                                        bool withIncomplete)
+                                                        bool withIncomplete,
+                                                        bool withComplete)
         {
             // Arrange
             using (var inst     = new DisposableKSP())
@@ -1789,6 +1793,7 @@ namespace Tests.Core.IO
                 var module      = registry.LatestAvailable("DogeCoinFlag",
                                                            inst.KSP.StabilityToleranceConfig,
                                                            inst.KSP.VersionCriteria())!;
+                module.license  = new List<License> { License.UnknownLicense };
                 module.download = new List<Uri> { new Uri($"{server.Url}/DogeCoinFlag-1.01.zip") };
 
                 if (withIncomplete)
@@ -1798,6 +1803,11 @@ namespace Tests.Core.IO
                     File.WriteAllBytes(filename, File.ReadAllBytes(TestData.DogeCoinFlagZip())
                                                      .Take(20000)
                                                      .ToArray());
+                }
+                else if (withComplete)
+                {
+                    var filename = manager.Cache!.GetInProgressFileName(module)!.FullName;
+                    File.Copy(TestData.DogeCoinFlagZip(), filename);
                 }
                 if (startInstalled)
                 {
@@ -2142,6 +2152,13 @@ namespace Tests.Core.IO
                                        .WithBody(File.ReadAllBytes(TestData.DogeCoinFlagZip())
                                                      .Skip(20000)
                                                      .ToArray()));
+            server.Given(Request.Create()
+                                .WithHeader("Range", new ExactMatcher("bytes=53647-"))
+                                .WithPath("/DogeCoinFlag-1.01.zip")
+                                .UsingGet())
+                  .RespondWith(Response.Create()
+                                       .WithStatusCode(HttpStatusCode.RequestedRangeNotSatisfiable)
+                                       .WithBody("Error page from server"));
             server.Given(Request.Create()
                                 .WithPath("/DogeCoinFlag-1.01.zip")
                                 .UsingGet())

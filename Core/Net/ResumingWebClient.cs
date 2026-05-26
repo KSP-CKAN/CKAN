@@ -135,8 +135,10 @@ namespace CKAN
                   })
             {
                 log.DebugFormat("GetWebResponse failed with range error, closing stream for {0}", request.RequestUri);
-                // Don't save the error page into a file
+                #if NETFRAMEWORK
+                // Don't save the error page into a file (confuses WebClient on dotnet)
                 response.Close();
+                #endif
                 return response;
             }
         }
