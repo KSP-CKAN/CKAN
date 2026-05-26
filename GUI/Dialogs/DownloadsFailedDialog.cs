@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Net;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -220,7 +222,15 @@ namespace CKAN.GUI
         {
             Retry = true;
             Data  = data;
-            Error = exc.GetBaseException().Message;
+            Error = exc.GetBaseException() switch
+                    {
+                        // For actual download errors, just report the summary
+                        Kraken       k  => k.Message,
+                        WebException we => we.Message,
+                        IOException  ie => ie.Message,
+                        // If something truly unexpected happens, show the stack trace
+                        var          e  => e.ToString(),
+                    };
         }
 
         /// <summary>

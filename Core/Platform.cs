@@ -49,9 +49,9 @@ namespace CKAN
         public static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
         #if NET6_0_OR_GREATER
-        [SupportedOSPlatformGuard("windows6.1")]
-        public static readonly bool IsWindows61
-            = IsWindows && OperatingSystem.IsWindowsVersionAtLeast(6, 1);
+        [SupportedOSPlatformGuard("windows11.0")]
+        public static readonly bool IsWindows11
+            =  IsWindows && OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000);
         #endif
 
         /// <summary>

@@ -469,7 +469,8 @@ namespace CKAN.GUI
 
         public static bool DarkMode => Platform.IsWindows
                                            #if NET10_0_OR_GREATER
-                                           ? WinReg.GetValue(DarkModeKey, "AppsUseLightTheme", 1) is not 1
+                                           ? Platform.IsWindows11
+                                             && WinReg.GetValue(DarkModeKey, "AppsUseLightTheme", 1) is not 1
                                            #else
                                            ? false
                                            #endif

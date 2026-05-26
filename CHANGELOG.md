@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - [Multiple] Auto-size grid rows to ensure high-DPI visibility of checkboxes (#4630 by: HebaruSan)
 - [GUI] Replace NavigationHistory.IsReadOnly with same-value check (#4641 by: HebaruSan)
 - [GUI] Fix ckan://identifier (#4603 by: Halbann; reviewed: HebaruSan)
+- [Multiple] Don't close 416 responses on dotnet (#4646 by: HebaruSan)
 
 ### Internal
 
