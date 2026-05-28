@@ -3,7 +3,7 @@ Version: @VERSION@
 Architecture: all
 Section: utils
 Priority: optional
-Depends: mono-runtime (>=5.0), ca-certificates-mono, libmono-microsoft-csharp4.0-cil, libmono-system-net-http-webrequest4.0-cil, libmono-system-servicemodel4.0a-cil, libmono-system-componentmodel-composition4.0-cil
+Depends: mono-runtime (>=5.0), ca-certificates-mono | mono-runtime (>=6.14.1+ds-4), libmono-microsoft-csharp4.0-cil | mono-libraries, libmono-system-net-http-webrequest4.0-cil | mono-libraries, libmono-system-servicemodel4.0a-cil | mono-libraries, libmono-system-componentmodel-composition4.0-cil | mono-libraries
 Maintainer: The CKAN authors <debian@ksp-ckan.space>
 Description: KSP-CKAN official client.
  Official client for the Comprehensive Kerbal Archive Network (CKAN).
