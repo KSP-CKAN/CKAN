@@ -768,6 +768,17 @@ namespace CKAN.GUI
             }
         }
 
+        private void ModGrid_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            // The grid sometimes raises this after a column becomes visible when some of its cells have null values.
+            // Log and ignore it.
+            log.Debug(string.Format("ModGrid_DataError: row {0}, col {1}, value {2}",
+                                    ModGrid.Rows[e.RowIndex].Tag,
+                                    ModGrid.Columns[e.ColumnIndex].HeaderText,
+                                    Utilities.DefaultIfThrows(() => ModGrid.Rows[e.RowIndex].Cells[e.ColumnIndex])?.Value),
+                      e.Exception);
+        }
+
         private void ShowHeaderContextMenu(bool columns = true,
                                            bool tags    = true)
         {
