@@ -941,18 +941,13 @@ namespace CKAN.GUI
         /// </summary>
         private void ModGrid_KeyPress(object? sender, KeyPressEventArgs? e)
         {
-            if (e != null)
+            // Only search for letters and numbers
+            if (e is { KeyChar: char c }
+                && c.ToString() is string key
+                && !CkanModule.nonAlphaNumsAnyLanguage.IsMatch(key))
             {
-                // Don't search for spaces or newlines
-                if (e.KeyChar is ((char)Keys.Space) or ((char)Keys.Enter))
-                {
-                    return;
-                }
-
-                var key = e.KeyChar.ToString();
                 // Determine time passed since last key press.
-                TimeSpan interval = DateTime.Now - lastSearchTime;
-                if (interval.TotalSeconds < 1)
+                if (DateTime.Now - lastSearchTime is { TotalSeconds: < 1 })
                 {
                     // Last keypress was < 1 sec ago, so combine the last and current keys.
                     key = lastSearchKey + key;
