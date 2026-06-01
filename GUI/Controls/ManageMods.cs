@@ -865,9 +865,19 @@ namespace CKAN.GUI
         /// </summary>
         private void ModGrid_KeyDown(object? sender, KeyEventArgs? e)
         {
-            switch (e?.KeyCode)
+            switch (e)
             {
-                case Keys.Home:
+                case { KeyCode: Keys.A, Control: true}:
+                    for (int row = 0; row <  ModGrid.Rows.Count; ++row)
+                    {
+                        ModGrid.Rows[row].Selected = true;
+                    }
+                    e.Handled = true;
+                    break;
+
+                case { KeyCode: Keys.Home, Control: var c, Shift: var s }:
+                    var origSel1 = ModGrid.SelectedRows.OfType<DataGridViewRow>().ToArray();
+                    var bottomRow = ModGrid.CurrentRow;
                     // First row.
                     // Handles for empty filters
                     if (//ModGrid.Rows is [DataGridViewRow top, ..]
@@ -876,11 +886,20 @@ namespace CKAN.GUI
                     {
                         ModGrid.CurrentCell = top.Cells[SelectableColumnIndex()];
                     }
-
+                    if (s && bottomRow is { Index: int maxIndex })
+                    {
+                        ModGrid.SelectRows(0, maxIndex);
+                    }
+                    if (c)
+                    {
+                        ModGrid.SelectRows(origSel1);
+                    }
                     e.Handled = true;
                     break;
 
-                case Keys.End:
+                case { KeyCode: Keys.End, Control: var c, Shift: var s }:
+                    var origSel2 = ModGrid.SelectedRows.OfType<DataGridViewRow>().ToArray();
+                    var topRow = ModGrid.CurrentRow;
                     // Last row.
                     // Handles for empty filters
                     if (//ModGrid.Rows is [.., DataGridViewRow bottom]
@@ -889,11 +908,18 @@ namespace CKAN.GUI
                     {
                         ModGrid.CurrentCell = bottom.Cells[SelectableColumnIndex()];
                     }
-
+                    if (s && topRow is { Index: int minIndex })
+                    {
+                        ModGrid.SelectRows(minIndex, ModGrid.Rows.Count - 1);
+                    }
+                    if (c)
+                    {
+                        ModGrid.SelectRows(origSel2);
+                    }
                     e.Handled = true;
                     break;
 
-                case Keys.Space:
+                case { KeyCode: Keys.Space }:
                     // If they've selected one row and focused one of the checkbox columns,
                     // don't intercept
                     if (ModGrid.SelectedRows   is { Count: > 1 }
@@ -925,7 +951,7 @@ namespace CKAN.GUI
                     }
                     break;
 
-                case Keys.Apps:
+                case { KeyCode: Keys.Apps }:
                     ShowModContextMenu();
                     e.Handled = true;
                     break;
