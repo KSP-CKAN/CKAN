@@ -207,35 +207,26 @@ namespace CKAN.GUI
                     Value = "-"
                 };
 
-            var name   = new DataGridViewTextBoxCell { Value = ToGridText(mod.Name)                       };
-            var author = new DataGridViewTextBoxCell { Value = ToGridText(string.Join(", ", mod.Authors)) };
-
-            var installVersion = new DataGridViewTextBoxCell()
-            {
-                Value = mod.InstalledVersion
-            };
-
-            var latestVersion = new DataGridViewTextBoxCell()
-            {
-                Value = mod.LatestVersion
-            };
-
-            var downloadCount = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"   };
-            var compat        = new DataGridViewTextBoxCell { Value = mod.GameCompatibility       };
-            var downloadSize  = new DataGridViewTextBoxCell { Value = mod.DownloadSize            };
-            var installSize   = new DataGridViewTextBoxCell { Value = mod.InstallSize             };
-            var releaseDate   = new DataGridViewTextBoxCell { Value = mod.Module.release_date?.ToLocalTime() };
-            var installDate   = new DataGridViewTextBoxCell { Value = mod.InstallDate             };
-            var desc          = new DataGridViewTextBoxCell
-                                {
-                                    Value       = ToGridText(mod.Abstract),
-                                    ToolTipText = mod.Description is { Length: > 0 }
-                                                      ? string.Join(Environment.NewLine,
-                                                                    graphics.WordWrap(mod.Description, 600)
-                                                                            .Prepend("")
-                                                                            .Prepend(mod.Abstract))
-                                                      : mod.Abstract,
-                                };
+            var name           = new DataGridViewTextBoxCell { Value = ToGridText(mod.Name)                                  };
+            var author         = new DataGridViewTextBoxCell { Value = ToGridText(string.Join(", ", mod.Authors))            };
+            var installVersion = new DataGridViewTextBoxCell { Value = mod.InstalledVersion ?? ""                            };
+            var latestVersion  = new DataGridViewTextBoxCell { Value = mod.LatestVersion                                     };
+            var compat         = new DataGridViewTextBoxCell { Value = mod.GameCompatibility ?? ""                           };
+            var downloadSize   = new DataGridViewTextBoxCell { Value = mod.DownloadSize ?? ""                                };
+            var installSize    = new DataGridViewTextBoxCell { Value = mod.InstallSize                                       };
+            var releaseDate    = new DataGridViewTextBoxCell { Value = (object?)mod.Module.release_date?.ToLocalTime() ?? "" };
+            var installDate    = new DataGridViewTextBoxCell { Value = (object?)mod.InstallDate ?? ""                        };
+            var downloadCount  = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"                             };
+            var desc           = new DataGridViewTextBoxCell
+                                 {
+                                     Value       = ToGridText(mod.Abstract),
+                                     ToolTipText = mod.Description is { Length: > 0 }
+                                                       ? string.Join(Environment.NewLine,
+                                                                     graphics.WordWrap(mod.Description, 600)
+                                                                             .Prepend("")
+                                                                             .Prepend(mod.Abstract))
+                                                       : mod.Abstract,
+                                 };
 
             item.Cells.AddRange(selecting, autoInstalled, updating, replacing, name, author, installVersion, latestVersion, compat, downloadSize, installSize, releaseDate, installDate, downloadCount, desc);
 
