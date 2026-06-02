@@ -28,13 +28,13 @@ namespace CKAN.IO
                 && LibraryFoldersConfigPath(libraryPath) is string libFoldersConfigPath
                 && OpenRead(libFoldersConfigPath) is FileStream stream)
             {
-                log.InfoFormat("Found Steam at {0}", libraryPath);
+                log.InfoFormat("Found Steam at {0}", Platform.FormatPath(libraryPath));
                 var txtParser     = KVSerializer.Create(KVSerializationFormat.KeyValues1Text);
                 var appPaths      = (Utilities.DefaultIfThrows(
                                                    () => DeserializeAll<Dictionary<int, LibraryFolder>>(txtParser, stream),
                                                    exc =>
                                                    {
-                                                       log.Warn($"Failed to parse {libFoldersConfigPath}", exc);
+                                                       log.Warn($"Failed to parse {Platform.FormatPath(libFoldersConfigPath)}", exc);
                                                        return null;
                                                    })
                                               ?.Values
@@ -56,7 +56,7 @@ namespace CKAN.IO
                 Games = steamGames.Concat(nonSteamGames)
                                   .ToArray();
                 log.DebugFormat("Games: {0}",
-                                string.Join(", ", Games.Select(g => $"{g.LaunchUrl} ({g.GameDir})")));
+                                string.Join(", ", Games.Select(g => $"{g.LaunchUrl} ({Platform.FormatPath(g.GameDir?.FullName ?? "")})")));
             }
             else
             {
@@ -81,7 +81,7 @@ namespace CKAN.IO
             => Utilities.DefaultIfThrows(() => File.OpenRead(path),
                                          exc =>
                                          {
-                                             log.Warn($"Failed to open {path}", exc);
+                                             log.Warn($"Failed to open {Platform.FormatPath(path)}", exc);
                                              return null;
                                          });
 
@@ -89,14 +89,14 @@ namespace CKAN.IO
                                                               string       appPath)
             => Utilities.DefaultIfThrows(() => Directory.EnumerateFiles(appPath, "*.acf"),
                                          exc => {
-                                             log.Warn($"Failed to enumerate files for {appPath}", exc);
+                                             log.Warn($"Failed to enumerate files for {Platform.FormatPath(appPath)}", exc);
                                              return null;
                                          })
                         ?.SelectWithCatch(acfFile => DeserializeAll<SteamGame>(acfParser, File.OpenRead(acfFile))
                                                         .NormalizeDir(Path.Combine(appPath, "common")),
                                          (acfFile, exc) =>
                                          {
-                                             log.Warn($"Failed to parse {acfFile}:", exc);
+                                             log.Warn($"Failed to parse {Platform.FormatPath(acfFile)}:", exc);
                                              return default;
                                          })
                          .OfType<GameBase>()
@@ -107,7 +107,7 @@ namespace CKAN.IO
             => Utilities.DefaultIfThrows(() => DeserializeAll<Dictionary<int, NonSteamGame>>(vdfParser, File.OpenRead(path)),
                                          exc =>
                                          {
-                                             log.Warn($"Failed to parse {path}", exc);
+                                             log.Warn($"Failed to parse {Platform.FormatPath(path)}", exc);
                                              return null;
                                          })
                         ?.Values

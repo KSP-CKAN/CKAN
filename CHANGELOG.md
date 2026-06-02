@@ -15,6 +15,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Replace NavigationHistory.IsReadOnly with same-value check (#4641 by: HebaruSan)
 - [GUI] Fix ckan://identifier (#4603 by: Halbann; reviewed: HebaruSan)
 - [Multiple] Don't close 416 responses on dotnet (#4646 by: HebaruSan)
+- [GUI] Avoid null values for auto-sized columns (#4657 by: HebaruSan)
 
 ### Internal
 

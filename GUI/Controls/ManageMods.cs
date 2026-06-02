@@ -768,6 +768,17 @@ namespace CKAN.GUI
             }
         }
 
+        private void ModGrid_DataError(object? sender, DataGridViewDataErrorEventArgs e)
+        {
+            // The grid sometimes raises this after a column becomes visible when some of its cells have null values.
+            // Log and ignore it.
+            log.Debug(string.Format("ModGrid_DataError: row {0}, col {1}, value {2}",
+                                    ModGrid.Rows[e.RowIndex].Tag,
+                                    ModGrid.Columns[e.ColumnIndex].HeaderText,
+                                    Utilities.DefaultIfThrows(() => ModGrid.Rows[e.RowIndex].Cells[e.ColumnIndex])?.Value),
+                      e.Exception);
+        }
+
         private void ShowHeaderContextMenu(bool columns = true,
                                            bool tags    = true)
         {
@@ -865,9 +876,19 @@ namespace CKAN.GUI
         /// </summary>
         private void ModGrid_KeyDown(object? sender, KeyEventArgs? e)
         {
-            switch (e?.KeyCode)
+            switch (e)
             {
-                case Keys.Home:
+                case { KeyCode: Keys.A, Control: true}:
+                    for (int row = 0; row <  ModGrid.Rows.Count; ++row)
+                    {
+                        ModGrid.Rows[row].Selected = true;
+                    }
+                    e.Handled = true;
+                    break;
+
+                case { KeyCode: Keys.Home, Control: var c, Shift: var s }:
+                    var origSel1 = ModGrid.SelectedRows.OfType<DataGridViewRow>().ToArray();
+                    var bottomRow = ModGrid.CurrentRow;
                     // First row.
                     // Handles for empty filters
                     if (//ModGrid.Rows is [DataGridViewRow top, ..]
@@ -876,11 +897,20 @@ namespace CKAN.GUI
                     {
                         ModGrid.CurrentCell = top.Cells[SelectableColumnIndex()];
                     }
-
+                    if (s && bottomRow is { Index: int maxIndex })
+                    {
+                        ModGrid.SelectRows(0, maxIndex);
+                    }
+                    if (c)
+                    {
+                        ModGrid.SelectRows(origSel1);
+                    }
                     e.Handled = true;
                     break;
 
-                case Keys.End:
+                case { KeyCode: Keys.End, Control: var c, Shift: var s }:
+                    var origSel2 = ModGrid.SelectedRows.OfType<DataGridViewRow>().ToArray();
+                    var topRow = ModGrid.CurrentRow;
                     // Last row.
                     // Handles for empty filters
                     if (//ModGrid.Rows is [.., DataGridViewRow bottom]
@@ -889,11 +919,18 @@ namespace CKAN.GUI
                     {
                         ModGrid.CurrentCell = bottom.Cells[SelectableColumnIndex()];
                     }
-
+                    if (s && topRow is { Index: int minIndex })
+                    {
+                        ModGrid.SelectRows(minIndex, ModGrid.Rows.Count - 1);
+                    }
+                    if (c)
+                    {
+                        ModGrid.SelectRows(origSel2);
+                    }
                     e.Handled = true;
                     break;
 
-                case Keys.Space:
+                case { KeyCode: Keys.Space }:
                     // If they've selected one row and focused one of the checkbox columns,
                     // don't intercept
                     if (ModGrid.SelectedRows   is { Count: > 1 }
@@ -925,7 +962,7 @@ namespace CKAN.GUI
                     }
                     break;
 
-                case Keys.Apps:
+                case { KeyCode: Keys.Apps }:
                     ShowModContextMenu();
                     e.Handled = true;
                     break;
@@ -941,18 +978,13 @@ namespace CKAN.GUI
         /// </summary>
         private void ModGrid_KeyPress(object? sender, KeyPressEventArgs? e)
         {
-            if (e != null)
+            // Only search for letters and numbers
+            if (e is { KeyChar: char c }
+                && c.ToString() is string key
+                && !CkanModule.nonAlphaNumsAnyLanguage.IsMatch(key))
             {
-                // Don't search for spaces or newlines
-                if (e.KeyChar is ((char)Keys.Space) or ((char)Keys.Enter))
-                {
-                    return;
-                }
-
-                var key = e.KeyChar.ToString();
                 // Determine time passed since last key press.
-                TimeSpan interval = DateTime.Now - lastSearchTime;
-                if (interval.TotalSeconds < 1)
+                if (DateTime.Now - lastSearchTime is { TotalSeconds: < 1 })
                 {
                     // Last keypress was < 1 sec ago, so combine the last and current keys.
                     key = lastSearchKey + key;

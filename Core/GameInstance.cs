@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if !NET5_0_OR_GREATER
 using System.Reflection;
+#endif
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -70,7 +72,7 @@ namespace CKAN
         [MemberNotNull(nameof(playTime))]
         private void SetupCkanDirectories()
         {
-            log.InfoFormat("Initialising {0}", CkanDir);
+            log.InfoFormat("Initialising {0}", Platform.FormatPath(CkanDir));
 
             // TxFileManager knows if we are in a transaction
             var txFileMgr = new TxFileManager(CkanDir);
@@ -89,7 +91,7 @@ namespace CKAN
                 User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, InstallHistoryDir);
                 txFileMgr.CreateDirectory(InstallHistoryDir);
             }
-            log.InfoFormat("Initialised {0}", CkanDir);
+            log.InfoFormat("Initialised {0}", Platform.FormatPath(CkanDir));
         }
 
         #endregion

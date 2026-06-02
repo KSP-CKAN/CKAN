@@ -370,6 +370,7 @@ namespace CKAN.GUI
             this.ModGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModGrid_CellContentClick);
             this.ModGrid.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModGrid_CellMouseDoubleClick);
             this.ModGrid.ColumnHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.ModGrid_HeaderMouseClick);
+            this.ModGrid.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.ModGrid_DataError);
             this.ModGrid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ModGrid_KeyDown);
             this.ModGrid.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ModGrid_KeyPress);
             this.ModGrid.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ModGrid_MouseDown);

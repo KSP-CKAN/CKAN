@@ -63,7 +63,7 @@ namespace CKAN
             // Create a lock for this registry, so we cannot touch it again.
             if (!GetLock())
             {
-                log.DebugFormat("Unable to acquire registry lock: {0}", lockfilePath);
+                log.DebugFormat("Unable to acquire registry lock: {0}", Platform.FormatPath(lockfilePath));
                 throw new RegistryInUseKraken(lockfilePath);
             }
 
@@ -130,11 +130,11 @@ namespace CKAN
             var directory = gameInstance.CkanDir;
             if (!registryCache.ContainsKey(directory))
             {
-                log.DebugFormat("Registry not in cache at {0}", directory);
+                log.DebugFormat("Registry not in cache at {0}", Platform.FormatPath(directory));
                 return;
             }
 
-            log.DebugFormat("Dispose of registry at {0}", directory);
+            log.DebugFormat("Dispose of registry at {0}", Platform.FormatPath(directory));
             registryCache.Remove(directory);
         }
 
@@ -155,10 +155,10 @@ namespace CKAN
         /// </summary>
         private void CheckStaleLock()
         {
-            log.DebugFormat("Checking for stale lock file at {0}", lockfilePath);
+            log.DebugFormat("Checking for stale lock file at {0}", Platform.FormatPath(lockfilePath));
             if (IsInstanceMaybeLocked(gameInstance.CkanDir))
             {
-                log.DebugFormat("Lock file found at {0}", lockfilePath);
+                log.DebugFormat("Lock file found at {0}", Platform.FormatPath(lockfilePath));
                 string contents;
                 try
                 {
@@ -167,7 +167,7 @@ namespace CKAN
                 catch
                 {
                     // If we can't read the file, we can't check whether it's stale.
-                    log.DebugFormat("Lock file unreadable at {0}", lockfilePath);
+                    log.DebugFormat("Lock file unreadable at {0}", Platform.FormatPath(lockfilePath));
                     return;
                 }
                 log.DebugFormat("Lock file contents: {0}", contents);
@@ -189,7 +189,7 @@ namespace CKAN
                         // so the lock file is stale and we can delete it.
                         try
                         {
-                            log.DebugFormat("Deleting stale lock file at {0}", lockfilePath);
+                            log.DebugFormat("Deleting stale lock file at {0}", Platform.FormatPath(lockfilePath));
                             File.Delete(lockfilePath);
                         }
                         catch
@@ -212,7 +212,7 @@ namespace CKAN
             {
                 CheckStaleLock();
 
-                log.DebugFormat("Trying to create lock file: {0}", lockfilePath);
+                log.DebugFormat("Trying to create lock file: {0}", Platform.FormatPath(lockfilePath));
 
                 lockfileStream = new FileStream(lockfilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 512, FileOptions.DeleteOnClose);
 
@@ -221,11 +221,11 @@ namespace CKAN
                 lockfileWriter.Write(Process.GetCurrentProcess().Id);
                 lockfileWriter.Flush();
                 // The lock file is now locked and open.
-                log.DebugFormat("Lock file created: {0}", lockfilePath);
+                log.DebugFormat("Lock file created: {0}", Platform.FormatPath(lockfilePath));
             }
             catch (IOException)
             {
-                log.DebugFormat("Failed to create lock file: {0}", lockfilePath);
+                log.DebugFormat("Failed to create lock file: {0}", Platform.FormatPath(lockfilePath));
                 return false;
             }
 
@@ -241,7 +241,7 @@ namespace CKAN
             // it finds the stream is already disposed.
             if (lockfileWriter != null)
             {
-                log.DebugFormat("Disposing of lock file writer at {0}", lockfilePath);
+                log.DebugFormat("Disposing of lock file writer at {0}", Platform.FormatPath(lockfilePath));
                 lockfileWriter.Dispose();
                 lockfileWriter = null;
             }
@@ -250,7 +250,7 @@ namespace CKAN
             // but we're extra tidy just in case.
             if (lockfileStream != null)
             {
-                log.DebugFormat("Disposing of lock file stream at {0}", lockfilePath);
+                log.DebugFormat("Disposing of lock file stream at {0}", Platform.FormatPath(lockfilePath));
                 lockfileStream.Dispose();
                 lockfileStream = null;
             }
@@ -268,7 +268,7 @@ namespace CKAN
             string directory = inst.CkanDir;
             if (!registryCache.ContainsKey(directory))
             {
-                log.DebugFormat("Preparing to load registry at {0}", directory);
+                log.DebugFormat("Preparing to load registry at {0}", Platform.FormatPath(directory));
                 registryCache[directory] = new RegistryManager(directory, inst, repoData,
                                                                repositories ?? Array.Empty<Repository>());
             }
@@ -323,7 +323,9 @@ namespace CKAN
                 previousCorruptedMessage = exc.Message;
                 previousCorruptedPath    = path + "_CORRUPTED_" + DateTime.Now.ToString("yyyyMMddHHmmss");
                 log.ErrorFormat("{0} is corrupted, archiving to {1}: {2}",
-                    path, previousCorruptedPath, previousCorruptedMessage);
+                    Platform.FormatPath(path),
+                    Platform.FormatPath(previousCorruptedPath),
+                    previousCorruptedMessage);
                 File.Move(path, previousCorruptedPath);
                 Create(repoData, repositories);
             }
@@ -351,7 +353,7 @@ namespace CKAN
         private void Create(RepositoryDataManager   repoData,
                             IEnumerable<Repository> repositories)
         {
-            log.InfoFormat("Creating new CKAN registry at {0}", path);
+            log.InfoFormat("Creating new CKAN registry at {0}", Platform.FormatPath(path));
             registry = new Registry(repoData, repositories);
             AscertainDefaultRepo();
             ScanUnmanagedFiles();
@@ -391,7 +393,7 @@ namespace CKAN
         {
             var txFileMgr = new TxFileManager(gameInstance.CkanDir);
 
-            log.InfoFormat("Saving CKAN registry at {0}", path);
+            log.InfoFormat("Saving CKAN registry at {0}", Platform.FormatPath(path));
 
             if (enforce_consistency)
             {
@@ -403,7 +405,8 @@ namespace CKAN
 
             if (directoryPath == null)
             {
-                log.ErrorFormat("Failed to save registry, invalid path: {0}", path);
+                log.ErrorFormat("Failed to save registry, invalid path: {0}",
+                                Platform.FormatPath(path));
                 throw new DirectoryNotFoundKraken(path, string.Format(
                     Properties.Resources.RegistryManagerDirectoryNotFound, path));
             }
@@ -587,7 +590,7 @@ namespace CKAN
                                      .OfType<IGrouping<string, string>>()
                                      .ToDictionary(grp => grp.Key,
                                                    grp => grp.First());
-                log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values));
+                log.DebugFormat("Registering DLLs: {0}", string.Join(", ", dlls.Values.Select(Platform.FormatPath)));
                 var dllChanged = registry.SetDlls(dlls);
 
                 var dlcChanged = ScanDlc();

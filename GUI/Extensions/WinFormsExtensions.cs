@@ -170,5 +170,21 @@ namespace CKAN.GUI
                 }
             }
         }
+
+        public static void SelectRows(this DataGridView grid, int start, int end)
+        {
+            for (int row = start; row <= end; ++row)
+            {
+                grid.Rows[row].Selected = true;
+            }
+        }
+
+        public static void SelectRows(this DataGridView grid, IEnumerable<DataGridViewRow> rows)
+        {
+            foreach (var r in rows.Where(r => r.DataGridView == grid))
+            {
+                r.Selected = true;
+            }
+        }
     }
 }
