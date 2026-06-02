@@ -299,7 +299,8 @@ namespace CKAN.CmdLine
             // GUI expects its first param to be an identifier, don't confuse it
             GUI.GUI.Main_(args.Except(new string[] {"--verbose", "--debug", "--show-console", "--asroot"})
                               .ToArray(),
-                          options.NetUserAgent, manager, options.ShowConsole);
+                          options.NetUserAgent, manager,
+                          options.ShowConsole || options.Debug || options.Verbose);
 
             return Exit.OK;
         }
