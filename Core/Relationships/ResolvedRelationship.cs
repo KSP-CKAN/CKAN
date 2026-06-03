@@ -12,109 +12,6 @@ namespace CKAN
 {
     using RelationshipCache = ConcurrentDictionary<RelationshipDescriptor, ResolvedRelationship>;
 
-    public abstract class ProviderRejection
-    {
-        public readonly CkanModule provider;
-        protected ProviderRejection(CkanModule provider)
-        {
-            this.provider = provider;
-        }
-    }
-
-    public sealed class RejectedByRelationship : ProviderRejection
-    {
-        public readonly Relationship violation;
-        public RejectedByRelationship(CkanModule provider, Relationship violation)
-            : base(provider)
-        {
-            this.violation = violation;
-        }
-
-        public static IEnumerable<RejectedByRelationship> WrapMany(
-                CkanModule                candidate,
-                IEnumerable<Relationship> violations)
-            => violations.Select(r => new RejectedByRelationship(candidate, r));
-
-        public override bool Equals(object? other)
-            => other is RejectedByRelationship r
-               && provider.Equals(r.provider)
-               && violation.Equals(r.violation);
-
-        public override int GetHashCode()
-            => (provider, violation).GetHashCode();
-    }
-
-    public sealed class RejectedByConflict : ProviderRejection
-    {
-        public readonly string?    sharedProvidesId;
-        public readonly CkanModule blockingMod;
-        public readonly bool       blockerIsInstalled;
-        public RejectedByConflict(CkanModule provider,
-                                  string?    sharedProvidesId,
-                                  CkanModule blockingMod,
-                                  bool       blockerIsInstalled)
-            : base(provider)
-        {
-            this.sharedProvidesId   = sharedProvidesId;
-            this.blockingMod        = blockingMod;
-            this.blockerIsInstalled = blockerIsInstalled;
-        }
-
-        public override bool Equals(object? other)
-            => other is RejectedByConflict r
-               && provider.Equals(r.provider)
-               && sharedProvidesId == r.sharedProvidesId
-               && blockingMod.Equals(r.blockingMod)
-               && blockerIsInstalled == r.blockerIsInstalled;
-
-        public override int GetHashCode()
-            => (provider, sharedProvidesId, blockingMod, blockerIsInstalled).GetHashCode();
-    }
-
-    public sealed class ResolutionContext
-    {
-        public readonly IRegistryQuerier                Registry;
-        public readonly IReadOnlyCollection<CkanModule> Installed;
-        public readonly IReadOnlyCollection<CkanModule> Installing;
-        public readonly StabilityToleranceConfig        StabilityTolerance;
-        public readonly GameVersionCriteria             Crit;
-
-        public ResolutionContext(IRegistryQuerier                registry,
-                                 IReadOnlyCollection<CkanModule> installed,
-                                 IReadOnlyCollection<CkanModule> installing,
-                                 StabilityToleranceConfig        stabilityTolerance,
-                                 GameVersionCriteria             crit)
-        {
-            Registry           = registry;
-            Installed          = installed;
-            Installing         = installing;
-            StabilityTolerance = stabilityTolerance;
-            Crit               = crit;
-        }
-    }
-
-    public sealed class RejectedByVersionMismatch : ProviderRejection
-    {
-        public readonly CkanModule             blockingMod;
-        public readonly ResolvedRelationship[] blockerChain;
-        public RejectedByVersionMismatch(CkanModule              provider,
-                                         CkanModule              blockingMod,
-                                         ResolvedRelationship[]? blockerChain = null)
-            : base(provider)
-        {
-            this.blockingMod  = blockingMod;
-            this.blockerChain = blockerChain ?? Array.Empty<ResolvedRelationship>();
-        }
-
-        public override bool Equals(object? other)
-            => other is RejectedByVersionMismatch r
-               && provider.Equals(r.provider)
-               && blockingMod.Equals(r.blockingMod);
-
-        public override int GetHashCode()
-            => (provider, blockingMod).GetHashCode();
-    }
-
     public abstract class ResolvedRelationship : IEquatable<ResolvedRelationship>
     {
         public ResolvedRelationship(CkanModule             source,
@@ -413,7 +310,7 @@ namespace CKAN
                          context.Registry, context.StabilityTolerance, context.Crit, null, null))
             {
                 var rejection = FindConflict(module, context.Installing, context.Installed)
-                                ?? (ProviderRejection?)RejectedByRelationship.WrapMany(
+                                ?? (RejectedProvider?)RejectedByRelationship.WrapMany(
                                        module,
                                        module.BadRelationships(context.Installed)
                                              .Concat(module.BadRelationships(context.Installing))
@@ -431,7 +328,7 @@ namespace CKAN
         // direction). Returns a rejection naming both sides; if they happen to
         // share a virtual provides id, that's recorded for nicer messaging but
         // is not required for the rejection to fire.
-        public static ProviderRejection? FindConflict(
+        public static RejectedProvider? FindConflict(
             CkanModule                      candidate,
             IReadOnlyCollection<CkanModule> installing,
             IReadOnlyCollection<CkanModule> installed)
@@ -480,23 +377,4 @@ namespace CKAN
         }
     }
 
-    public sealed class UnsatisfiedRelation
-    {
-        /// <summary>
-        /// The dependency chain to reach this relationship.
-        /// </summary>
-        public readonly ResolvedRelationship[] depends;
-
-        /// <summary>
-        /// The reason that this relationship could not be satisfied, if any.
-        /// </summary>
-        public readonly ProviderRejection? rejection;
-
-        public UnsatisfiedRelation(ResolvedRelationship[] depends,
-                                   ProviderRejection? rejection)
-        {
-            this.depends = depends;
-            this.rejection = rejection;
-        }
-    }
 }

@@ -128,7 +128,6 @@ namespace CKAN
                             unresolved.AddRange(badRels);
                             continue;
                         }
-                        
                         if (rrs.SelectMany(subRR => subRR.BadRelationships(installing))
                                 .Select(u =>
                                 {
