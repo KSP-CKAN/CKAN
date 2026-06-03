@@ -1886,7 +1886,7 @@ namespace Tests.Core.Relationships
             },
             new string[] { "InstalledProvider" },
             new string[] { "Parent" },
-            new string[] { "AlternateProvider 1.0 is needed for Parent 1.0, but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+            new string[] { "AlternateProvider 1.0 is needed for Parent 1.0, but cannot be installed because it conflicts with InstalledProvider 1.0, which also provides InstalledProvider" }
         ),
         TestCase(
             // Now the conflicting provider is reached transitively.
@@ -1913,7 +1913,7 @@ namespace Tests.Core.Relationships
             },
             new string[] { "InstalledProvider" },
             new string[] { "Parent" },
-            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides InstalledProvider" }
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0, which also provides InstalledProvider" }
         ),
         TestCase(
             // Now the provide is indirect, so there's no installed module with that
@@ -1944,7 +1944,7 @@ namespace Tests.Core.Relationships
             },
             new string[] { "InstalledProvider" },
             new string[] { "Parent" },
-            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0, which also provides Thing" }
         ),
         TestCase(
             // Now with AlternateProvider conflicting on the virtual dep.
@@ -1974,7 +1974,7 @@ namespace Tests.Core.Relationships
             },
             new string[] { "InstalledProvider" },
             new string[] { "Parent" },
-            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0 which also provides Thing" }
+            new string[] { "AlternateProvider 1.0 is needed for Intermediate 1.0 (needed for Parent 1.0), but cannot be installed because it conflicts with InstalledProvider 1.0, which also provides Thing" }
         ),
         TestCase(
             // This is an explicit conflict that doesn't go through any provide
