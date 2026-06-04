@@ -160,9 +160,9 @@ namespace CKAN.GUI
                     // ... so the Items list can contain null!!
                     foreach (var item in RecommendedModsListView.Items.OfType<ListViewItem>())
                     {
-                        item.BackColor = item.Tag is CkanModule m && conflicts.ContainsKey(m)
-                            ? Color.LightCoral
-                            : Color.Empty;
+                        bool conflicted = item.Tag is CkanModule m && conflicts.ContainsKey(m);
+                        item.BackColor = conflicted ? ModList.ConflictBackColor : Color.Empty;
+                        item.ForeColor = conflicted ? ModList.ConflictForeColor : Color.Empty;
                     }
                     RecommendedModsContinueButton.Enabled = conflicts.Count == 0;
                     OnConflictFound?.Invoke(string.Join("; ", resolver.ConflictDescriptions));
@@ -176,7 +176,8 @@ namespace CKAN.GUI
                                                                          stack.depends.Any(rr => rr.Contains(mod))));
                     foreach (var row in rows)
                     {
-                        row.BackColor = Color.LightCoral;
+                        row.BackColor = ModList.ConflictBackColor;
+                        row.ForeColor = ModList.ConflictForeColor;
                     }
                     RecommendedModsContinueButton.Enabled = false;
                     OnConflictFound?.Invoke(k.Message);

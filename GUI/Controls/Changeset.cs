@@ -62,7 +62,11 @@ namespace CKAN.GUI
                 row.DefaultCellStyle.ForeColor = obj?.WarningLabel != null
                                                  ? Color.Red : SystemColors.WindowText;
                 row.DefaultCellStyle.BackColor = obj?.Conflict != null
-                                                 ? Color.LightCoral : Color.Empty;
+                                                 ? ModList.ConflictBackColor
+                                                 : Color.Empty;
+                row.DefaultCellStyle.ForeColor = obj?.Conflict != null
+                                                 ? ModList.ConflictForeColor
+                                                 : Color.Empty;
                 if (obj?.Change.IsRemovable ?? false)
                 {
                     foreach (var icon in row.Cells.OfType<DataGridViewImageCell>())

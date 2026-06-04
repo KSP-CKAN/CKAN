@@ -340,7 +340,7 @@ namespace CKAN.GUI
 
         private Color GetRowBackground(GUIMod mod, bool conflicted, GameInstance instance)
             => conflicted
-                   ? conflictColor
+                   ? ConflictBackColor
                    : Util.BlendColors(allLabels.LabelsFor(instance.Name)
                                                .Where(l => l.ContainsModule(instance.Game,
                                                                             mod.Identifier))
@@ -687,7 +687,8 @@ namespace CKAN.GUI
         private readonly Graphics                       graphics;
         private          IReadOnlyCollection<ModSearch> activeSearches;
 
-        private static readonly Color conflictColor = Color.FromArgb(255, 64, 64);
+        public  static readonly Color ConflictBackColor = Color.FromArgb(255, 64, 64);
+        public  static readonly Color ConflictForeColor = ConflictBackColor.ForeColorForBackColor() ?? SystemColors.WindowText;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ModList));
     }
