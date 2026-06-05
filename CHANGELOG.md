@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Features
 
 - [GUI] Relationships tab improvements (#4631 by: HebaruSan)
+- [Core] Improve error messages for provide conflicts (#4608 by: Phantomical; reviewed: HebaruSan)
 
 ### Bugfixes
 

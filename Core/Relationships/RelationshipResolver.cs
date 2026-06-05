@@ -291,8 +291,25 @@ namespace CKAN
                     log.DebugFormat("Got {0} candidates for {1}",
                                     candidates.Count, descriptor);
                 }
+                catch (DependenciesNotSatisfiedKraken k)
+                when (options.proceed_with_inconsistencies)
+                {
+                    foreach (var u in k.unsatisfied)
+                    {
+                        switch (u.rejection)
+                        {
+                            case RejectedByConflict rjc:
+                                AddReason(rjc.provider,
+                                          u.depends.LastOrDefault()?.reason ?? reason);
+                                conflicts.Add(new ModPair(rjc.provider, rjc.blockingMod));
+                                conflicts.Add(new ModPair(rjc.blockingMod, rjc.provider));
+                                break;
+                        }
+                    }
+                    continue;
+                }
                 catch
-                when (soft_resolve || options.proceed_with_inconsistencies)
+                when (soft_resolve)
                 {
                     log.InfoFormat("{0} is recommended/suggested but it is not listed in the index, or not available for your game version.",
                                    descriptor);
@@ -575,7 +592,7 @@ namespace CKAN
         /// <summary>
         /// Return descriptions of all the current conflicts.
         /// Avoids duplicates and explains why dependencies are in the list.
-        /// Use for reporting the conflicts to the user, use ConflictsList for coloring rows.
+        /// Use for reporting the conflicts to the user, use ConflictList for coloring rows.
         /// </summary>
         public IEnumerable<string> ConflictDescriptions
             => conflicts.Where(kvp => kvp.Value == null

@@ -115,25 +115,17 @@ namespace CKAN
         /// <summary>
         /// Initialize the exception representing failed dependency resolution
         /// </summary>
-        /// <param name="unsatisfied">List of chain of relationships with last one unsatisfied</param>
+        /// <param name="unsatisfied">Dependency chains with optional rejection reason for each unsatisfiable provider</param>
         /// <param name="registry">Registry to use for formatting</param>
         /// <param name="game">Game to use for formatting</param>
         /// <param name="resolved">Resolved relationships tree</param>
         /// <param name="innerException">Originating exception parameter for base class</param>
-        public DependenciesNotSatisfiedKraken(IReadOnlyCollection<ResolvedRelationship[]> unsatisfied,
-                                              IRegistryQuerier                            registry,
-                                              IGame                                       game,
-                                              ResolvedRelationshipsTree                   resolved,
-                                              Exception?                                  innerException = null)
-            : base(string.Join(Environment.NewLine + Environment.NewLine,
-                               unsatisfied.GroupBy(rrs => rrs.Last().relationship)
-                                          .OrderByDescending(grp => grp.Count())
-                                          .ThenBy(grp => grp.Key.ToString())
-                                          .Select(grp => string.Format(Properties.Resources.KrakenMissingDependency,
-                                                                       string.Join("; ",
-                                                                                   grp.DistinctBy(rrs => rrs.Last().source)
-                                                                                      .Select(FormatDependsChain)),
-                                                                       grp.Key.ToStringWithCompat(registry, game)))),
+        public DependenciesNotSatisfiedKraken(IReadOnlyCollection<UnsatisfiedRelation> unsatisfied,
+                                              IRegistryQuerier                         registry,
+                                              IGame                                    game,
+                                              ResolvedRelationshipsTree                resolved,
+                                              Exception?                               innerException = null)
+            : base(BuildMessage(unsatisfied, registry, game),
                    innerException)
         {
             this.unsatisfied = unsatisfied;
@@ -141,17 +133,64 @@ namespace CKAN
                             resolved);
         }
 
-        public DependenciesNotSatisfiedKraken(ResolvedRelationship      badOne,
-                                              IRegistryQuerier          registry,
-                                              IGame                     game,
-                                              ResolvedRelationshipsTree resolved,
-                                              Exception?                innerException = null)
-            : this(new ResolvedRelationship[][] { new ResolvedRelationship[] { badOne } },
-                   registry, game, resolved, innerException)
-        {
-        }
+        public readonly IReadOnlyCollection<UnsatisfiedRelation> unsatisfied;
 
-        public readonly IReadOnlyCollection<ResolvedRelationship[]> unsatisfied;
+        private static string BuildMessage(IReadOnlyCollection<UnsatisfiedRelation> unsatisfied,
+                                           IRegistryQuerier                         registry,
+                                           IGame                                    game)
+            => string.Join(Environment.NewLine + Environment.NewLine,
+                           unsatisfied.GroupBy(u => (u.depends.Last().relationship, u.rejection))
+                                      .OrderByDescending(grp => grp.Count())
+                                      .ThenBy(grp => grp.Key.relationship.ToString())
+                                      .Select(grp => FormatRelation(grp.Key.relationship,
+                                                                    grp.Key.rejection,
+                                                                    grp, registry, game)));
+
+        private static string FormatRelation(RelationshipDescriptor           relation,
+                                             RejectedProvider?                rejection,
+                                             IEnumerable<UnsatisfiedRelation> unsatisfied,
+                                             IRegistryQuerier                 registry,
+                                             IGame                            game)
+            => FormatRelation(relation, rejection,
+                              string.Join("; ",
+                                          unsatisfied.DistinctBy(u => u.depends.Last().source)
+                                                     .Select(u => FormatDependsChain(u.depends))),
+                              registry, game);
+
+        private static string FormatRelation(RelationshipDescriptor relation,
+                                             RejectedProvider?      rejection,
+                                             string                 dependsDescription,
+                                             IRegistryQuerier       registry,
+                                             IGame                  game)
+            => rejection switch
+               {
+                   RejectedByConflict c when c.sharedProvidesId != null => string.Format(
+                       Properties.Resources.KrakenRejectedProvidesConflict,
+                       c.provider,
+                       c.sharedProvidesId,
+                       c.blockingMod,
+                       dependsDescription),
+                   RejectedByConflict c => string.Format(
+                       Properties.Resources.KrakenRejectedConflict,
+                       c.provider,
+                       c.blockingMod,
+                       dependsDescription),
+                   RejectedByVersionMismatch v when v.blockerChain.Length > 0 => string.Format(
+                       Properties.Resources.KrakenRejectedVersionMismatchFor,
+                       v.provider,
+                       v.blockingMod,
+                       dependsDescription,
+                       FormatDependsChain(v.blockerChain)),
+                   RejectedByVersionMismatch v => string.Format(
+                       Properties.Resources.KrakenRejectedVersionMismatch,
+                       v.provider,
+                       v.blockingMod,
+                       dependsDescription),
+                   _ => string.Format(
+                       Properties.Resources.KrakenMissingDependency,
+                       dependsDescription,
+                       relation.ToStringWithCompat(registry, game) ?? "")
+               };
 
         private static string FormatDependsChain(ResolvedRelationship[] dependsChain)
             => dependsChain.Length == 1
