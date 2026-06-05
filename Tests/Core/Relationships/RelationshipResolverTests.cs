@@ -2154,8 +2154,29 @@ namespace Tests.Core.Relationships
                 }"
             },
             new string[] { "ModA", "ModB" },
-            new string[] { "Version conflict: Lib 2.0 is needed for ModB 1.0, and Lib 1.0 is needed for ModA 1.0, but both cannot be installed at the same time" }
-        )]
+            new string[] { "Version conflict: Lib 2.0 is needed for ModB 1.0, and Lib 1.0 is needed for ModA 1.0, but both cannot be installed at the same time" }),
+        TestCase(
+            // Here we attempt to install two different versions of the same mod.
+            new string[]
+            {
+                @"{
+                    ""identifier"": ""Lib"",
+                    ""version"":    ""1.0"",
+                    ""provides"":   [ ""OldVirtual"" ]
+                }",
+                @"{
+                    ""identifier"": ""Lib"",
+                    ""version"":    ""2.0"",
+                    ""provides"":   [ ""NewVirtual"" ]
+                }",
+                @"{
+                    ""identifier"": ""ModA"",
+                    ""depends"":    [ { ""name"": ""OldVirtual"" } ]
+                }",
+            },
+            new string[] { "ModA", "Lib" },
+            new string[] { "Version conflict: Lib 1.0 is needed for ModA 1.0, but Lib 2.0 is already being installed" }),
+        ]
         public void Constructor_VersionMismatch_Throws(string[] availableModules,
                                                        string[] newInstalls,
                                                        string[] errors)
