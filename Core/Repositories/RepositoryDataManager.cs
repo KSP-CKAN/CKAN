@@ -75,9 +75,9 @@ namespace CKAN
         public int? GetDownloadCount(IEnumerable<Repository>? repos, string identifier)
             => GetRepoDatas(repos).Select(data => data.DownloadCounts)
                                   .OfType<SortedDictionary<string, int>>()
-                                  .Select(counts => counts.GetValueOrDefault(identifier))
-                                  .OfType<int>()
-                                  .FirstOrDefault();
+                                  .Select(counts => counts.TryGetValue(identifier, out int val)
+                                                        ? (int?)val : null)
+                                  .FirstOrDefault(c => c != null);
 
         #endregion
 

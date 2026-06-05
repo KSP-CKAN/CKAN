@@ -16,6 +16,7 @@ using CKAN.GUI;
 using CKAN.Versioning;
 
 using Tests.Core.Configuration;
+using Tests.Core.Relationships;
 using Tests.Data;
 
 namespace Tests.GUI
@@ -81,6 +82,38 @@ namespace Tests.GUI
                     };
                     Assert.True(mod.HasUpdate);
                 }
+            }
+        }
+
+        [Test]
+        public void DownloadSizeInstallSize_Metapackage_NSlashA()
+        {
+            // Arrange
+            var metapackJson = RelationshipResolverTests.MergeWithDefaults(
+                                   @"{
+                                       ""identifier"": ""MyModPack"",
+                                       ""version"":    ""1.0"",
+                                       ""kind"":       ""metapackage""
+                                   }");
+            var user = new NullUser();
+            using (var gameInstWrapper = new DisposableKSP())
+            using (var repo = new TemporaryRepository(metapackJson))
+            using (var repoData = new TemporaryRepositoryData(user, repo.repo))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
+            {
+                var metapack = CkanModule.FromJson(metapackJson);
+
+                // Act
+                var gmod = new GUIMod(metapack, new RepositoryDataManager(),
+                                                new CKAN.Registry(repoData.Manager, repo.repo),
+                                                gameInstWrapper.KSP.StabilityToleranceConfig,
+                                                gameInstWrapper.KSP, cache, false, false, false);
+
+                // Assert
+                Assert.AreEqual("N/A", gmod.DownloadSize);
+                Assert.AreEqual("N/A", gmod.InstallSize);
+                Assert.AreEqual("1.0", gmod.Version);
             }
         }
 
