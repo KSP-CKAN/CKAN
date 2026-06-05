@@ -517,37 +517,45 @@ namespace CKAN.GUI
                 }
             }
 
-            var installedModules = registry.InstalledModules
-                                           .ToDictionary(imod => imod.Module.identifier,
-                                                         imod => imod.Module);
-
-            foreach (var dependent in registry.FindReverseDependencies(
-                                          toRemove.Select(mod => mod.identifier)
-                                                  .Except(toInstall.Select(m => m.identifier))
-                                                  .ToList(),
-                                          toInstall))
+            // Check for depending mods if any are still left
+            if (!registry.InstalledModules.Select(im => im.Module)
+                                          .All(toRemove.Contains))
             {
-                if (!changeSet.Any(ch => ch.ChangeType == GUIModChangeType.Replace
-                                         && ch.Mod.identifier == dependent)
-                    && installedModules.TryGetValue(dependent, out CkanModule? depMod)
-                    && (registry.GetModuleByVersion(depMod.identifier, depMod.version)
-                        ?? registry.InstalledModule(dependent)?.Module)
-                        is CkanModule modByVer)
+                var installedModules = registry.InstalledModules.ToDictionary(
+                                           imod => imod.Module.identifier,
+                                           imod => imod.Module);
+                foreach (var dependent in registry.FindReverseDependencies(
+                                              toRemove.Select(mod => mod.identifier)
+                                                      .Except(toInstall.Select(m => m.identifier))
+                                                      .ToList(),
+                                              toInstall))
                 {
-                    changeSet.Add(new ModChange(modByVer, GUIModChangeType.Remove,
-                                                new SelectionReason.DependencyRemoved(),
-                                                coreConfig));
-                    toRemove.Add(modByVer);
+                    if (!changeSet.Any(ch => ch.ChangeType == GUIModChangeType.Replace
+                                             && ch.Mod.identifier == dependent)
+                        && installedModules.TryGetValue(dependent, out CkanModule? depMod)
+                        && (registry.GetModuleByVersion(depMod.identifier, depMod.version)
+                            ?? registry.InstalledModule(dependent)?.Module)
+                            is CkanModule modByVer)
+                    {
+                        changeSet.Add(new ModChange(modByVer, GUIModChangeType.Remove,
+                                                    new SelectionReason.DependencyRemoved(),
+                                                    coreConfig));
+                        toRemove.Add(modByVer);
+                    }
                 }
-            }
-
-            foreach (var im in registry.FindRemovableAutoInstalled(
-                InstalledAfterChanges(registry, changeSet).ToArray(),
-                Array.Empty<CkanModule>(), game, stabilityTolerance, version))
-            {
-                changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed(),
-                                            coreConfig));
-                toRemove.Add(im.Module);
+                // Check for auto-installed dependencies if any mods are still left
+                if (!registry.InstalledModules.Select(im => im.Module)
+                                              .All(toRemove.Contains))
+                {
+                    foreach (var im in registry.FindRemovableAutoInstalled(
+                        InstalledAfterChanges(registry, changeSet).ToArray(),
+                        Array.Empty<CkanModule>(), game, stabilityTolerance, version))
+                    {
+                        changeSet.Add(new ModChange(im.Module, GUIModChangeType.Remove, new SelectionReason.NoLongerUsed(),
+                                                    coreConfig));
+                        toRemove.Add(im.Module);
+                    }
+                }
             }
 
             // Get as many dependencies as we can, but leave decisions and prompts for installation time

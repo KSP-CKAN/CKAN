@@ -19,6 +19,7 @@ using CKAN;
 using CKAN.IO;
 using CKAN.GUI;
 using Tests.Core.Configuration;
+using Tests.Core.Relationships;
 using Tests.Data;
 
 namespace Tests.GUI
@@ -710,6 +711,64 @@ namespace Tests.GUI
                                                    "VirginKalactic-NodeToggle",
                                                },
                                                full.Item1.Select(ch => ch.Mod.identifier).Order());
+            }
+        }
+
+        [Test]
+        public void ComputeFullChangeSetFromUserChangeSet_WithAutoRemovable_Removes()
+        {
+            // Arrange
+            var installed = new string[]
+            {
+                @"{
+                    ""identifier"": ""Mod1""
+                }",
+                @"{
+                    ""identifier"": ""Mod2"",
+                    ""depends"":    [ { ""name"": ""Mod1"" } ]
+                }",
+                @"{
+                    ""identifier"": ""Mod3"",
+                    ""depends"":    [ { ""name"": ""Mod2"" } ]
+                }",
+            };
+            var user      = new NullUser();
+            var repo      = new Repository("test", "https://github.com/");
+            var guiConfig = new GUIConfiguration();
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var repoData = new TemporaryRepositoryData(user))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
+            {
+                var registry = new CKAN.Registry(repoData.Manager, repo);
+                foreach (var m in installed.Select(RelationshipResolverTests.MergeWithDefaults)
+                                           .Select(CkanModule.FromJson))
+                {
+                    registry.RegisterModule(m, Array.Empty<string>(), inst.KSP, true);
+                }
+                var labels  = ModuleLabelList.GetDefaultLabels();
+                var mods    = ModList.GetGUIMods(registry, repoData.Manager, inst.KSP, labels, cache, guiConfig)
+                                     .ToArray();
+                var modlist = new ModList(mods, inst.KSP,
+                                          labels, new ModuleTagList(),
+                                          guiConfig, graphics);
+
+                // Act
+                var changes = modlist.ComputeUserChangeSet(registry, inst.KSP, null, null);
+                var full    = ModList.ComputeFullChangeSetFromUserChangeSet(registry, changes,
+                                                                            config, inst.KSP);
+
+                // Assert
+                CollectionAssert.AreEquivalent(new string[]
+                                               {
+                                                   "Mod1",
+                                                   "Mod2",
+                                                   "Mod3",
+                                               },
+                                               full.Item1.Where(ch => ch.ChangeType == GUIModChangeType.Remove)
+                                                         .Select(ch => ch.Mod.identifier)
+                                                         .Order());
             }
         }
 
