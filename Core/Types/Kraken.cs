@@ -133,16 +133,6 @@ namespace CKAN
                             resolved);
         }
 
-        public DependenciesNotSatisfiedKraken(ResolvedRelationship      badOne,
-                                              IRegistryQuerier          registry,
-                                              IGame                     game,
-                                              ResolvedRelationshipsTree resolved,
-                                              Exception?                innerException = null)
-            : this(new[] { new UnsatisfiedRelation(new ResolvedRelationship[] { badOne }, null) },
-                   registry, game, resolved, innerException)
-        {
-        }
-
         public readonly IReadOnlyCollection<UnsatisfiedRelation> unsatisfied;
 
         private static string BuildMessage(IReadOnlyCollection<UnsatisfiedRelation> unsatisfied,

@@ -27,9 +27,11 @@ namespace CKAN
         public readonly RelationshipDescriptor relationship;
         public readonly SelectionReason        reason;
 
+        [ExcludeFromCodeCoverage]
         public virtual bool Contains(CkanModule mod)
             => false;
 
+        [ExcludeFromCodeCoverage]
         protected virtual bool Unsatisfied()
             => false;
 
@@ -44,6 +46,7 @@ namespace CKAN
         public abstract ResolvedRelationship WithSource(CkanModule      newSrc,
                                                         SelectionReason newRsn);
 
+        [ExcludeFromCodeCoverage]
         public override bool Equals(object? other)
             => Equals(other as ResolvedRelationship);
 
@@ -78,6 +81,7 @@ namespace CKAN
 
         public readonly CkanModule installed;
 
+        [ExcludeFromCodeCoverage]
         public override bool Contains(CkanModule mod)
             => installed == mod;
 
@@ -103,6 +107,7 @@ namespace CKAN
 
         public readonly CkanModule installing;
 
+        [ExcludeFromCodeCoverage]
         public override bool Contains(CkanModule mod)
             => installing == mod;
 
@@ -144,14 +149,6 @@ namespace CKAN
         {
             this.resolved = resolved;
             this.context  = context;
-        }
-
-        public ResolvedByNew(CkanModule             source,
-                             RelationshipDescriptor relationship,
-                             SelectionReason        reason)
-             : this(source, relationship, reason,
-                    new Dictionary<CkanModule, ResolvedRelationship[]>())
-        {
         }
 
         public ResolvedByNew(CkanModule                      source,
@@ -201,6 +198,7 @@ namespace CKAN
         /// </summary>
         public readonly ResolutionContext? context;
 
+        [ExcludeFromCodeCoverage]
         public override bool Contains(CkanModule mod)
             => resolved.Any(rr => rr.Key == mod || rr.Value.Any(rrr => rrr.Contains(mod)));
 
