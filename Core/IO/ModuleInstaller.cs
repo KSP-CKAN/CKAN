@@ -1665,8 +1665,8 @@ namespace CKAN.IO
                                              recommenders.Concat(recommendations.Keys)
                                                          .Concat(suggestions.Keys))
                                  .Where(kvp => !exclude.Contains(kvp.Key)
-                                               && CanInstall(toInstall.Append(kvp.Key).ToList(),
-                                                          opts, registry, instance.Game, crit))
+                                               && CanInstall(toInstall.Append(kvp.Key).ToList(), toRemove,
+                                                             opts, registry, instance.Game, crit))
                                  .ToDictionary();
 
             return recommendations.Count > 0
@@ -1680,6 +1680,7 @@ namespace CKAN.IO
         /// </summary>
         /// <param name="opts">Installer options</param>
         /// <param name="toInstall">Mods we want to install</param>
+        /// <param name="toRemove">Mods we want to uninstall</param>
         /// <param name="registry">Registry of instance into which we want to install</param>
         /// <param name="game">Game instance</param>
         /// <param name="crit">Game version criteria</param>
@@ -1687,6 +1688,7 @@ namespace CKAN.IO
         /// True if it's possible to install these mods, false otherwise
         /// </returns>
         public static bool CanInstall(IReadOnlyCollection<CkanModule> toInstall,
+                                      IReadOnlyCollection<CkanModule> toRemove,
                                       RelationshipResolverOptions     opts,
                                       IRegistryQuerier                registry,
                                       IGame                           game,
@@ -1695,37 +1697,28 @@ namespace CKAN.IO
             string request = string.Join(", ", toInstall.Select(m => m.identifier));
             try
             {
-                var installed = toInstall.Select(m => registry.InstalledModule(m.identifier)?.Module)
-                                         .OfType<CkanModule>();
-                var resolver = new RelationshipResolver(toInstall, installed, opts, registry, game, crit);
-
+                var resolver = new RelationshipResolver(toInstall, toRemove,
+                                                        opts, registry, game, crit);
                 var resolverModList = resolver.ModList(false).ToArray();
                 if (resolverModList.Length >= toInstall.Count(m => !m.IsMetapackage))
                 {
                     // We can install with no further dependencies
-                    string recipe = string.Join(", ", resolverModList.Select(m => m.identifier));
-                    log.Debug($"Installable: {request}: {recipe}");
+                    log.DebugFormat("Installable: {0}: {1}",
+                                    request, string.Join(", ", resolverModList.Select(m => m.identifier)));
                     return true;
                 }
                 else
                 {
-                    log.DebugFormat("Can't install {0}: {1}", request, string.Join("; ", resolver.ConflictDescriptions));
+                    log.DebugFormat("Can't install {0}: {1}",
+                                    request, string.Join("; ", resolver.ConflictDescriptions));
                     return false;
                 }
             }
             catch (TooManyModsProvideKraken k)
             {
                 // One of the dependencies is virtual
-                foreach (var mod in k.modules)
-                {
-                    // Try each option recursively to see if any are successful
-                    if (CanInstall(toInstall.Append(mod).ToArray(), opts, registry, game, crit))
-                    {
-                        // Child call will emit debug output, so we don't need to here
-                        return true;
-                    }
-                }
-                log.Debug($"Can't install {request}: Can't install provider of {k.requested}");
+                return k.modules.Any(mod => CanInstall(toInstall.Append(mod).ToArray(), toRemove,
+                                                       opts, registry, game, crit));
             }
             catch (InconsistentKraken k)
             {

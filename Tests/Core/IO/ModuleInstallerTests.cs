@@ -1068,6 +1068,7 @@ namespace Tests.Core.IO
                                                                                                   inst.KSP.VersionCriteria()))
                                                                              .OfType<CkanModule>()
                                                                              .ToArray(),
+                                                           registry.InstalledModules.Select(im => im.Module).ToArray(),
                                                            opts, registry, inst.KSP.Game, inst.KSP.VersionCriteria()));
             }
         }
