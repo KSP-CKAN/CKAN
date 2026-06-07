@@ -25,7 +25,7 @@ namespace CKAN
     // Base class for both modules (installed via the CKAN) and bundled
     // modules (which are more lightweight)
     [JsonObject(MemberSerialization.OptIn)]
-    public class CkanModule : IEquatable<CkanModule>
+    public class CkanModule : IEquatable<CkanModule?>
     {
 
         #region Fields
@@ -685,7 +685,7 @@ namespace CKAN
         public override int GetHashCode()
             => (identifier, version).GetHashCode();
 
-        bool IEquatable<CkanModule>.Equals(CkanModule? other)
+        bool IEquatable<CkanModule?>.Equals(CkanModule? other)
             => Equals(other);
 
         /// <summary>

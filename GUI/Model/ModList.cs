@@ -100,31 +100,29 @@ namespace CKAN.GUI
                                                       NetModuleCache        cache,
                                                       bool                  hideEpochs,
                                                       bool                  hideV)
-            => registry.CheckUpgradeable(inst,
-                                         allLabels.HeldIdentifiers(inst)
-                                                  .ToHashSet(),
-                                         allLabels.IgnoreMissingIdentifiers(inst)
-                                                  .ToHashSet())
-                       .SelectMany(kvp => kvp.Value
-                                             .Select(mod => registry.IsAutodetected(mod.identifier)
-                                                            ? new GUIMod(mod, repoData, registry,
-                                                                         inst.StabilityToleranceConfig,
-                                                                         inst, cache, null,
-                                                                         hideEpochs, hideV)
-                                                              {
-                                                                  HasUpdate = kvp.Key,
-                                                              }
-                                                            : registry.InstalledModule(mod.identifier)
-                                                              is InstalledModule found
-                                                              ? new GUIMod(found,
-                                                                           repoData, registry,
-                                                                           inst.StabilityToleranceConfig,
-                                                                           inst, cache, null,
-                                                                           hideEpochs, hideV)
-                                                              {
-                                                                  HasUpdate = kvp.Key,
-                                                              }
-                                                              : null))
+            => registry.InstalledModulesByUpgradeability(inst,
+                                                         allLabels.HeldIdentifiers(inst)
+                                                                  .ToHashSet(),
+                                                         allLabels.IgnoreMissingIdentifiers(inst)
+                                                                  .ToHashSet())
+                       .Select(tuple => registry.IsAutodetected(tuple.Item2.identifier)
+                                            ? new GUIMod(tuple.Item2, repoData, registry,
+                                                         inst.StabilityToleranceConfig,
+                                                         inst, cache, null,
+                                                         hideEpochs, hideV)
+                                              {
+                                                  HasUpdate = tuple.Item1,
+                                              }
+                                            : registry.InstalledModule(tuple.Item2.identifier)
+                                              is InstalledModule found
+                                                  ? new GUIMod(found, repoData, registry,
+                                                               inst.StabilityToleranceConfig,
+                                                               inst, cache, null,
+                                                               hideEpochs, hideV)
+                                                    {
+                                                        HasUpdate = tuple.Item1,
+                                                    }
+                                                  : null)
                        .OfType<GUIMod>()
                        .Concat(registry.CompatibleModules(inst.StabilityToleranceConfig, inst.VersionCriteria())
                                        .Where(m => !installedIdents.Contains(m.identifier))
@@ -403,15 +401,14 @@ namespace CKAN.GUI
                           .ToArray()
                 is { Length: > 0 } upgrades)
             {
-                var upgradeable = registry.CheckUpgradeable(instance,
-                                                            // Hold identifiers not chosen for upgrading
-                                                            registry.Installed(false)
-                                                                    .Select(kvp => kvp.Key)
-                                                                    .Except(upgrades.Select(ch => ch.Mod.identifier))
-                                                                    .ToHashSet(),
-                                                            allLabels.IgnoreMissingIdentifiers(instance)
-                                                                     .ToHashSet())
-                                          [true]
+                var upgradeable = registry.UpgradeableModules(instance,
+                                                              // Hold identifiers not chosen for upgrading
+                                                              registry.Installed(false)
+                                                                      .Select(kvp => kvp.Key)
+                                                                      .Except(upgrades.Select(ch => ch.Mod.identifier))
+                                                                      .ToHashSet(),
+                                                              allLabels.IgnoreMissingIdentifiers(instance)
+                                                                       .ToHashSet())
                                           .ToDictionary(m => m.identifier,
                                                         m => m);
                 foreach (var change in upgrades)
@@ -631,26 +628,25 @@ namespace CKAN.GUI
                                    List<ModChange>?          ChangeSet,
                                    DataGridViewRowCollection rows)
         {
-            var upgGroups = registry.CheckUpgradeable(inst,
+            var dlls = registry.InstalledDlls.ToList();
+            bool hasUpgradeable = false;
+            foreach (var (upgradeable, module) in registry.InstalledModulesByUpgradeability(
+                                                      inst,
                                                       allLabels.HeldIdentifiers(inst)
                                                                .ToHashSet(),
                                                       allLabels.IgnoreMissingIdentifiers(inst)
-                                                               .ToHashSet());
-            var dlls = registry.InstalledDlls.ToList();
-            foreach ((var upgradeable, var mods) in upgGroups)
+                                                               .ToHashSet()))
             {
-                foreach (var ident in mods.Select(m => m.identifier))
-                {
-                    dlls.Remove(ident);
-                    CheckRowUpgradeable(inst, ChangeSet, rows, ident, upgradeable);
-                }
+                hasUpgradeable = hasUpgradeable || upgradeable;
+                dlls.Remove(module.identifier);
+                CheckRowUpgradeable(inst, ChangeSet, rows, module.identifier, upgradeable);
             }
             // AD mods don't have CkanModules in the return value of CheckUpgradeable
             foreach (var ident in dlls)
             {
                 CheckRowUpgradeable(inst, ChangeSet, rows, ident, false);
             }
-            return upgGroups[true].Count > 0;
+            return hasUpgradeable;
         }
 
         private void CheckRowUpgradeable(GameInstance              inst,

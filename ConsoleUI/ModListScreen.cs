@@ -104,7 +104,7 @@ namespace CKAN.ConsoleUI {
                             case "i":
                                 return registry.IsInstalled(m.identifier, false);
                             case "u":
-                                return upgradeableGroups?[true].Any(upg => upg.identifier == m.identifier) ?? false;
+                                return upgradeable?.Any(upg => upg.identifier == m.identifier) ?? false;
                             case "n":
                                 // Filter new
                                 return recent.Contains(m.identifier);
@@ -212,7 +212,7 @@ namespace CKAN.ConsoleUI {
             {
                 if (moduleList.Selection != null && manager.CurrentInstance != null) {
                     LaunchSubScreen(new ModInfoScreen(theme, manager, manager.CurrentInstance, registry, userAgent,
-                                                      plan, moduleList.Selection, upgradeableGroups?[true], debug));
+                                                      plan, moduleList.Selection, upgradeable, debug));
                 }
                 return true;
             });
@@ -225,7 +225,7 @@ namespace CKAN.ConsoleUI {
             );
             moduleList.AddTip("+", Properties.Resources.ModListUpgradeTip,
                 () => moduleList.Selection != null && !moduleList.Selection.IsDLC
-                    && (upgradeableGroups?[true].Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)
+                    && (upgradeable?.Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)
             );
             moduleList.AddTip("+", Properties.Resources.ModListReplaceTip,
                 () => moduleList.Selection != null
@@ -240,7 +240,7 @@ namespace CKAN.ConsoleUI {
                     if (!registry.IsInstalled(moduleList.Selection.identifier, false)) {
                         plan.ToggleInstall(moduleList.Selection);
                     } else if (registry.IsInstalled(moduleList.Selection.identifier, false)
-                            && (upgradeableGroups?[true].Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)) {
+                            && (upgradeable?.Any(upg => upg.identifier == moduleList.Selection.identifier) ?? false)) {
                         plan.ToggleUpgrade(moduleList.Selection);
                     } else if (registry.GetReplacement(moduleList.Selection.identifier,
                                                        manager.CurrentInstance.StabilityToleranceConfig,
@@ -437,11 +437,11 @@ namespace CKAN.ConsoleUI {
         }
 
         private bool HasAnyUpgradeable()
-            => (upgradeableGroups?[true].Count ?? 0) > 0;
+            => (upgradeable?.Length ?? 0) > 0;
 
         private bool UpgradeAll()
         {
-            plan.Upgrade.UnionWith(upgradeableGroups?[true].Select(m => m.identifier)
+            plan.Upgrade.UnionWith(upgradeable?.Select(m => m.identifier)
                                    ?? Enumerable.Empty<string>());
             return true;
         }
@@ -684,8 +684,8 @@ namespace CKAN.ConsoleUI {
                             allMods.Add(im.Module);
                         }
                     }
-                    upgradeableGroups = registry
-                                        .CheckUpgradeable(manager.CurrentInstance, new HashSet<string>());
+                    upgradeable = registry.UpgradeableModules(manager.CurrentInstance, new HashSet<string>())
+                                          .ToArray();
                 }
                 return allMods;
             }
@@ -768,7 +768,7 @@ namespace CKAN.ConsoleUI {
         /// </returns>
         public string StatusSymbol(CkanModule m)
             => StatusSymbol(plan.GetModStatus(manager, registry, m.identifier,
-                                              upgradeableGroups?[true] ?? new List<CkanModule>()));
+                                              upgradeable ?? new CkanModule[] {}));
 
         /// <summary>
         /// Return the symbol to use to represent a mod's StatusSymbol.
@@ -807,14 +807,14 @@ namespace CKAN.ConsoleUI {
             return total;
         }
 
-        private readonly GameInstanceManager                 manager;
-        private          RegistryManager                     regMgr;
-        private readonly string?                             userAgent;
-        private          Registry                            registry;
-        private readonly RepositoryDataManager               repoData;
-        private          Dictionary<bool, List<CkanModule>>? upgradeableGroups;
-        private readonly bool                                debug;
-        private          TimeSpan                            timeSinceUpdate = TimeSpan.Zero;
+        private readonly GameInstanceManager             manager;
+        private          RegistryManager                 regMgr;
+        private readonly string?                         userAgent;
+        private          Registry                        registry;
+        private readonly RepositoryDataManager           repoData;
+        private          CkanModule[]?                   upgradeable;
+        private readonly bool                            debug;
+        private          TimeSpan                        timeSinceUpdate = TimeSpan.Zero;
 
         private readonly ConsoleField               searchBox;
         private readonly ConsoleListBox<CkanModule> moduleList;
@@ -931,7 +931,7 @@ namespace CKAN.ConsoleUI {
         public InstallStatus GetModStatus(GameInstanceManager manager,
                                           IRegistryQuerier registry,
                                           string identifier,
-                                          List<CkanModule> upgradeable)
+                                          IReadOnlyCollection<CkanModule> upgradeable)
         {
             if (manager.CurrentInstance != null
                 && registry.IsInstalled(identifier, false)) {

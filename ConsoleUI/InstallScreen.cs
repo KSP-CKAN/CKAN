@@ -114,14 +114,14 @@ namespace CKAN.ConsoleUI {
                                 plan.Install.Clear();
                             }
                             if (plan.Upgrade.Count > 0) {
-                                var upgGroups = registry
-                                                .CheckUpgradeable(manager.CurrentInstance,
-                                                                  // Hold identifiers not chosen for upgrading
-                                                                  registry.Installed(false)
-                                                                          .Keys
-                                                                          .Except(plan.Upgrade)
-                                                                          .ToHashSet());
-                                inst.Upgrade(upgGroups[true], dl, ref possibleConfigOnlyDirs, regMgr, deduper, autoInstalled);
+                                var upgradeable = registry.UpgradeableModules(manager.CurrentInstance,
+                                                                              // Hold identifiers not chosen for upgrading
+                                                                              registry.Installed(false)
+                                                                                      .Keys
+                                                                                      .Except(plan.Upgrade)
+                                                                                      .ToHashSet())
+                                                          .ToArray();
+                                inst.Upgrade(upgradeable, dl, ref possibleConfigOnlyDirs, regMgr, deduper, autoInstalled);
                                 plan.Upgrade.Clear();
                             }
                             if (plan.Replace.Count > 0) {

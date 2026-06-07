@@ -71,14 +71,13 @@ namespace Tests.GUI
                     var registry = new Registry(repoData.Manager, repo.repo);
 
                     registry.RegisterModule(old_version, new List<string>(), tidy.KSP, false);
-                    var upgradeableGroups = registry.CheckUpgradeable(tidy.KSP,
-                                                                      new HashSet<string>());
+                    var upgradeable = registry.UpgradeableModules(tidy.KSP, new HashSet<string>()).ToArray();
 
                     var mod = new GUIMod(old_version, repoData.Manager, registry,
                                          tidy.KSP.StabilityToleranceConfig, tidy.KSP, cache,
                                          null, false, false)
                     {
-                        HasUpdate = upgradeableGroups[true].Any(m => m.identifier == old_version.identifier),
+                        HasUpdate = upgradeable.Any(m => m.identifier == old_version.identifier),
                     };
                     Assert.True(mod.HasUpdate);
                 }
