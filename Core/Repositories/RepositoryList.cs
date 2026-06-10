@@ -4,9 +4,10 @@ using CKAN.Games;
 
 namespace CKAN
 {
-    public struct RepositoryList
+    public class RepositoryList
     {
-        public Repository[] repositories;
+        public Repository[]     repositories = new Repository[] {};
+        public BlacklistEntry[] blacklist    = new BlacklistEntry[] {};
 
         public static RepositoryList? DefaultRepositories(IGame game, string? userAgent)
         {
