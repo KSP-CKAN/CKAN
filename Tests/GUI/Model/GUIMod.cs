@@ -64,9 +64,9 @@ namespace Tests.GUI
                 using (var repo = new TemporaryRepository(old_version.ToJson(),
                                                           new_version.ToJson()))
                 using (var repoData = new TemporaryRepositoryData(user, repo.repo))
-            using (var cacheDir = new TemporaryDirectory())
-            using (var cache    = new NetModuleCache(cacheDir))
-            {
+                using (var cacheDir = new TemporaryDirectory())
+                using (var cache    = new NetModuleCache(cacheDir))
+                {
                     var registry = new Registry(repoData.Manager, repo.repo);
 
                     registry.RegisterModule(old_version, new List<string>(), tidy.KSP, false);
