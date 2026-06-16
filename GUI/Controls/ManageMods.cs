@@ -34,7 +34,10 @@ namespace CKAN.GUI
             {
                 ModGrid.BorderStyle = BorderStyle.None;
             }
-            uninstallingFont = new Font(ModGrid.Font, FontStyle.Strikeout);
+            uninstallingStyle = new DataGridViewCellStyle()
+            {
+                Font = new Font(ModGrid.Font, FontStyle.Strikeout),
+            };
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
             ToolTip.ScaleFonts();
@@ -103,7 +106,7 @@ namespace CKAN.GUI
         private DateTime lastSearchTime;
         private string? lastSearchKey;
         private readonly NavigationHistory<GUIMod> navHistory;
-        private readonly Font uninstallingFont;
+        private readonly DataGridViewCellStyle uninstallingStyle;
 
         private List<ModChange>?            currentChangeSet;
         private Dictionary<GUIMod, string>? conflicts;
@@ -213,12 +216,12 @@ namespace CKAN.GUI
                         if (removing.Contains(ident))
                         {
                             // Set strikeout font for rows being uninstalled
-                            row.DefaultCellStyle.Font = uninstallingFont;
+                            row.DefaultCellStyle = uninstallingStyle;
                         }
-                        else if (row.DefaultCellStyle.Font != null)
+                        else if (row.DefaultCellStyle != null)
                         {
                             // Clear strikeout font for rows not being uninstalled
-                            row.DefaultCellStyle.Font = ModGrid.DefaultCellStyle.Font;
+                            row.DefaultCellStyle = null;
                         }
                     }
                 }
