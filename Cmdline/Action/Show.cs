@@ -32,7 +32,7 @@ namespace CKAN.CmdLine
 
             int combined_exit_code = Exit.OK;
             // Check installed modules for an exact match.
-            var registry = RegistryManager.Instance(instance, repoData).registry;
+            var registry = RegistryManager.Instance(instance, repoData, headless: user.Headless).registry;
             foreach (string modName in options.modules)
             {
                 (InstalledModule?, CkanModule?) toShow = (null, null);

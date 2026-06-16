@@ -158,7 +158,7 @@ namespace CKAN.GUI
                                           ? instFromBox
                                           : manager.DetermineGame(new DirectoryInfo(existingPath), user) is IGame sourceGame
                                               ? new GameInstance(sourceGame, existingPath,
-                                                                 "irrelevant", user)
+                                                                 "irrelevant")
                                               : null;
                 if (instanceToClone == null)
                 {

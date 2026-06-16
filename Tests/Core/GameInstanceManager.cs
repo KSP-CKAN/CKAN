@@ -137,7 +137,7 @@ namespace Tests.Core
             {
                 var badKSP = new GameInstance(new KerbalSpaceProgram(),
                                               TestData.bad_ksp_dirs().First(),
-                                              "badDir", new NullUser());
+                                              "badDir");
 
                 Assert.Throws<NotGameDirKraken>(() =>
                     manager?.CloneInstance(badKSP, badName, tempdir));

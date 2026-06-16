@@ -82,8 +82,7 @@ namespace CKAN
             switch (KnownGames.knownGames.Select(g => GameInstance.PortableDir(g)
                                                       is string p
                                                           ? new GameInstance(g, p,
-                                                                             Properties.Resources.GameInstanceManagerPortable,
-                                                                             User)
+                                                                             Properties.Resources.GameInstanceManagerPortable)
                                                           : null)
                                          .OfType<GameInstance>()
                                          .Where(i => i.Valid)
@@ -169,7 +168,7 @@ namespace CKAN
                                         .OfType<Tuple<string, DirectoryInfo>>()
                                         .Select(tuple => tuple.Item1 != null && g.GameInFolder(tuple.Item2)
                                                        ? new GameInstance(g, tuple.Item2.FullName,
-                                                                          tuple.Item1 ?? g.ShortName, User)
+                                                                          tuple.Item1 ?? g.ShortName)
                                                        : null)
                                         .OfType<GameInstance>())
                                   .Where(inst => inst.Valid)
@@ -228,7 +227,7 @@ namespace CKAN
         public GameInstance? AddInstance(string path, string name, IUser user)
         {
             var game = DetermineGame(new DirectoryInfo(path), user);
-            return game == null ? null : AddInstance(new GameInstance(game, path, name, user));
+            return game == null ? null : AddInstance(new GameInstance(game, path, name));
         }
 
         /// <summary>
@@ -302,7 +301,7 @@ namespace CKAN
                                     new string[] { "CKAN" });
 
             // Add the new instance to the config
-            return AddInstance(new GameInstance(existingInstance.Game, newPath, newName, User));
+            return AddInstance(new GameInstance(existingInstance.Game, newPath, newName));
         }
 
         /// <summary>
@@ -388,7 +387,7 @@ namespace CKAN
                 }
 
                 // Add the new instance to the config
-                GameInstance new_instance = new GameInstance(game, newPath, newName, User);
+                GameInstance new_instance = new GameInstance(game, newPath, newName);
                 AddInstance(new_instance);
                 transaction.Complete();
                 return new_instance;
@@ -518,8 +517,7 @@ namespace CKAN
             if (DetermineGame(di, User) is IGame game)
             {
                 var inst = new GameInstance(game, path,
-                                            Properties.Resources.GameInstanceByPathName,
-                                            User);
+                                            Properties.Resources.GameInstanceByPathName);
                 if (inst.Valid)
                 {
                     return inst;
@@ -573,7 +571,7 @@ namespace CKAN
                                ?? KnownGames.knownGames.First();
                     log.DebugFormat("Loading {0} from {1}", name, Platform.FormatPath(path));
                     // Add unconditionally, sort out invalid instances downstream
-                    instances.Add(name, new GameInstance(game, path, name, User));
+                    instances.Add(name, new GameInstance(game, path, name));
                 }
                 catch (Exception exc)
                 {

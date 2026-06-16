@@ -241,7 +241,7 @@ namespace CKAN.CmdLine
                                                    .RunCommand(GetGameInstance(manager), opts),
                     InstallOptions     opts => new Install(manager, repoData, user)
                                                    .RunCommand(GetGameInstance(manager), opts),
-                    ScanOptions        opts => Scan(GetGameInstance(manager), repoData),
+                    ScanOptions        opts => Scan(GetGameInstance(manager), repoData, user),
                     ListOptions        opts => new List(repoData, user, Console.OpenStandardOutput())
                                                    .RunCommand(GetGameInstance(manager), opts),
                     ShowOptions        opts => new Show(repoData, user)
@@ -331,9 +331,10 @@ namespace CKAN.CmdLine
         /// <param name="next_command">Changes the output message if set.</param>
         /// <returns>Exit.OK if instance is consistent, Exit.ERROR otherwise </returns>
         private static int Scan(CKAN.GameInstance     inst,
-                                RepositoryDataManager repoData)
+                                RepositoryDataManager repoData,
+                                IUser                 user)
         {
-            RegistryManager.Instance(inst, repoData).ScanUnmanagedFiles();
+            RegistryManager.Instance(inst, repoData, headless: user.Headless).ScanUnmanagedFiles();
             return Exit.OK;
         }
 
