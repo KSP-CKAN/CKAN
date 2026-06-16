@@ -36,7 +36,7 @@ namespace CKAN.ConsoleUI {
                              string?             userAgent,
                              ChangePlan          cp,
                              CkanModule          m,
-                             List<CkanModule>?   upgradeable,
+                             CkanModule[]?       upgradeable,
                              bool                dbg)
             : base(theme)
         {
@@ -47,8 +47,7 @@ namespace CKAN.ConsoleUI {
             this.registry = registry;
             this.userAgent = userAgent;
             this.upgradeable = upgradeable
-                                ?? registry.CheckUpgradeable(instance, new HashSet<string>())
-                                           [true];
+                               ?? registry.UpgradeableModules(instance, new HashSet<string>()).ToArray();
 
             int midL = (Console.WindowWidth / 2) - 1;
 
@@ -345,9 +344,9 @@ namespace CKAN.ConsoleUI {
             return top - 1;
         }
 
-        private string RelationshipString(RelationshipDescriptor rel,
-                                          List<CkanModule>       upgradeable,
-                                          int                    width)
+        private string RelationshipString(RelationshipDescriptor          rel,
+                                          IReadOnlyCollection<CkanModule> upgradeable,
+                                          int                             width)
             => ScreenObject.TruncateLength((ModListScreen.StatusSymbol(
                                                 rel is ModuleRelationshipDescriptor mrd
                                                     // Show install status
@@ -624,7 +623,7 @@ namespace CKAN.ConsoleUI {
         private readonly GameInstanceManager        manager;
         private readonly IRegistryQuerier           registry;
         private readonly string?                    userAgent;
-        private readonly List<CkanModule>           upgradeable;
+        private readonly CkanModule[]               upgradeable;
         private readonly ChangePlan                 plan;
         private readonly CkanModule                 mod;
         private readonly ReleaseStatusComboButtons? stabilityToleranceButtons;

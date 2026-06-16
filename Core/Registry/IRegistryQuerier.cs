@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 
 using Autofac;
 using log4net;
@@ -175,6 +176,8 @@ namespace CKAN
             => querier.IsInstalled(identifier)
                 && querier.InstalledVersion(identifier) is UnmanagedModuleVersion;
 
+        #region Upgradeability
+
         /// <summary>
         /// Is the mod installed and does it have a newer version compatible with the game instance's version criteria
         /// </summary>
@@ -192,6 +195,7 @@ namespace CKAN
                                      GameInstance?                    instance,
                                      HashSet<string>                  filters,
                                      bool                             checkMissingFiles,
+                                     [NotNullWhen(true)]
                                      out CkanModule?                  latestMod,
                                      IReadOnlyCollection<CkanModule>? installed = null)
         {
@@ -203,131 +207,169 @@ namespace CKAN
                 return false;
             }
             // Check if it's available
-            try
-            {
-                latestMod = querier.LatestAvailable(identifier, stabilityTolerance,
-                                                    instance?.VersionCriteria(), null, installed);
-            }
-            catch
-            {
-                latestMod = null;
-            }
-            if (latestMod == null)
-            {
-                return false;
-            }
-            // Check if the installed module is up to date
-            var comp = latestMod.version.CompareTo(instVer);
-            if (comp == -1
-                || (comp == 0 && !querier.MetadataChanged(identifier, out _)
-                              // Check if any of the files or directories are missing
-                              && (!checkMissingFiles
-                                  || instance == null
-                                  || (querier.InstalledModule(identifier)
-                                             ?.AllFilesExist(instance, filters)
-                                             // Manually installed, consider up to date
-                                             ?? true))))
-            {
-                latestMod = null;
-                return false;
-            }
-            // Checking with a RelationshipResolver here would commit us to
-            // testing against the currently installed modules in the registry,
-            // which could block us from upgrading away from a problem.
-            // Trust our LatestAvailable call above.
-            return true;
+            latestMod = Utilities.DefaultIfThrows(() =>
+                            querier.LatestAvailable(identifier, stabilityTolerance,
+                                                    instance?.VersionCriteria(), null, installed));
+            return latestMod is { IsDLC: false }
+                   && latestMod.version.CompareTo(instVer) switch
+                      {
+                          // Installed version is later, keep it
+                          -1 => false,
+
+                          // Same version, check if there's any reason to re-install
+                          0  => querier.MetadataChanged(identifier, out _)
+                                || (checkMissingFiles
+                                    // Check if any of the files or directories are missing
+                                    && instance != null
+                                    && (!querier.InstalledModule(identifier)
+                                                ?.AllFilesExist(instance, filters)
+                                                // Manually installed, consider up to date
+                                                ?? false)),
+
+                          // Checking with a RelationshipResolver here would commit us to
+                          // testing against the currently installed modules in the registry,
+                          // which could block us from upgrading away from a problem.
+                          // Trust our LatestAvailable call above.
+                          _  => true,
+                      };
         }
 
-        /// <summary>
-        /// Partition the installed mods based on whether they are upgradeable
-        /// </summary>
-        /// <param name="querier">A registry</param>
-        /// <param name="instance">The registry's game instance</param>
-        /// <param name="heldIdents">Identifiers of mods that the user has designated as not to be upgraded</param>
-        /// <param name="ignoreMissingIdents">Identifiers of mods that the user has designated as allowed to have missing files</param>
-        /// <returns>
-        /// Dictionary with true key containing list of upgradeable installed modules
-        /// and false key containing list of non-upgradeable installed modules
-        /// </returns>
-        public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
-                                                                          GameInstance          instance,
-                                                                          HashSet<string>       heldIdents,
-                                                                          HashSet<string>?      ignoreMissingIdents = null)
-        {
-            var filters = ServiceLocator.Container.Resolve<IConfiguration>()
-                                                  .GetGlobalInstallFilters(instance.Game)
-                                                  .Concat(instance.InstallFilters)
-                                                  .ToHashSet();
-            // Get the absolute latest versions ignoring restrictions,
-            // to break out of mutual version-depending deadlocks
-            var unlimited = querier.Installed(false)
-                                   .Keys
-                                   .Select(ident => !heldIdents.Contains(ident)
-                                                    && querier.HasUpdate(ident, instance.StabilityToleranceConfig, instance, filters,
-                                                                         !ignoreMissingIdents?.Contains(ident) ?? true,
-                                                                         out CkanModule? latest)
-                                                    && latest is not null
-                                                    && !latest.IsDLC
-                                                        ? latest
-                                                        : querier.GetInstalledVersion(ident))
-                                   .OfType<CkanModule>()
-                                   .ToList();
-            return querier.CheckUpgradeable(instance, heldIdents, unlimited, filters, ignoreMissingIdents);
-        }
+        public static IEnumerable<CkanModule> UpgradeableModules(this IRegistryQuerier querier,
+                                                                 GameInstance          instance,
+                                                                 HashSet<string>       heldIdents,
+                                                                 HashSet<string>?      ignoreMissingIdents = null)
+            => querier.InstalledModulesByUpgradeability(instance, heldIdents, ignoreMissingIdents)
+                      .Where(tuple => tuple.upgradeable)
+                      .Select(tuple => tuple.module);
 
-        /// <summary>
-        /// Partition the installed mods based on whether they are upgradeable
-        /// </summary>
-        /// <param name="querier">A registry</param>
-        /// <param name="instance">The registry's game instance</param>
-        /// <param name="heldIdents">Identifiers of mods that the user has designated as not to be upgraded</param>
-        /// <param name="initial">Installed modules to start out considering as possibly upgradeable, to be checked against each other</param>
-        /// <param name="filters">Install filters that will cause missing files to be skipped</param>
-        /// <param name="ignoreMissingIdents">Identifiers of mods that the user has designated as allowed to have missing files</param>
-        /// <returns>
-        /// Dictionary with true key containing list of upgradeable installed modules
-        /// and false key containing list of non-upgradeable installed modules
-        /// </returns>
-        public static Dictionary<bool, List<CkanModule>> CheckUpgradeable(this IRegistryQuerier querier,
-                                                                          GameInstance          instance,
-                                                                          HashSet<string>       heldIdents,
-                                                                          List<CkanModule>      initial,
-                                                                          HashSet<string>?      filters             = null,
-                                                                          HashSet<string>?      ignoreMissingIdents = null)
+        public static IEnumerable<CkanModule> UpgradeableModulesWithConstraints(
+                this IRegistryQuerier           querier,
+                GameInstance                    instance,
+                IReadOnlyCollection<CkanModule> limiters,
+                HashSet<string>                 heldIdents,
+                HashSet<string>?                ignoreMissingIdents = null)
+            => querier.InstalledModulesByUpgradeabilityWithConstraints(instance, limiters, heldIdents,
+                                                                       ServiceLocator.Container
+                                                                                     .Resolve<IConfiguration>()
+                                                                                     .GetGlobalInstallFilters(instance.Game)
+                                                                                     .Concat(instance.InstallFilters)
+                                                                                     .ToHashSet(),
+                                                                       ignoreMissingIdents)
+                      .Where(tuple => tuple.upgradeable)
+                      .Select(tuple => tuple.module);
+
+        public static (bool upgradeable, CkanModule module)[] InstalledModulesByUpgradeability(
+                this IRegistryQuerier querier,
+                GameInstance          instance,
+                HashSet<string>       heldIdents,
+                HashSet<string>?      ignoreMissingIdents = null)
+            => querier.InstalledModulesByUpgradeability(instance,
+                                                        ServiceLocator.Container
+                                                                      .Resolve<IConfiguration>()
+                                                                      .GetGlobalInstallFilters(instance.Game)
+                                                                      .Concat(instance.InstallFilters)
+                                                                      .ToHashSet(),
+                                                        heldIdents, ignoreMissingIdents);
+
+        private static (bool upgradeable, CkanModule module)[] InstalledModulesByUpgradeability(
+                this IRegistryQuerier querier,
+                GameInstance          instance,
+                HashSet<string>       filters,
+                HashSet<string>       heldIdents,
+                HashSet<string>?      ignoreMissingIdents = null)
+            => querier.FindUpgradeabilitySolutions(instance,
+                                                   querier.Installed(false).Keys,
+                                                   Array.Empty<(bool, CkanModule)>(),
+                                                   filters, heldIdents, ignoreMissingIdents)
+                      // The solutions should already be valid and sorted best to worst, so just take the first
+                      .First();
+
+        private static IEnumerable<(bool upgradeable, CkanModule module)[]> FindUpgradeabilitySolutions(
+                this IRegistryQuerier                   querier,
+                GameInstance                            instance,
+                IReadOnlyCollection<string>             remainingIdents,
+                (bool upgradeable, CkanModule module)[] partialSolution,
+                HashSet<string>                         filters,
+                HashSet<string>                         heldIdents,
+                HashSet<string>?                        ignoreMissingIdents = null)
         {
-            filters ??= ServiceLocator.Container.Resolve<IConfiguration>()
-                                                .GetGlobalInstallFilters(instance.Game)
-                                                .Concat(instance.InstallFilters)
-                                                .ToHashSet();
-            // Use those as the installed modules
-            var upgradeable    = new List<CkanModule>();
-            var notUpgradeable = new List<CkanModule>();
-            foreach (var ident in initial.Select(module => module.identifier))
+            if (remainingIdents.Count == 0)
             {
+                // We are a leaf node, return whatever we received if it is a valid solution
+                if (partialSolution.All(tuple => !tuple.upgradeable)
+                    || Utilities.DefaultIfThrows(() =>
+                           new RelationshipResolver(partialSolution.Where(tuple => tuple.upgradeable)
+                                                                   .Select(tuple => tuple.module),
+                                                    partialSolution.Where(tuple => tuple.upgradeable)
+                                                                   .Select(tuple => tuple.module.identifier)
+                                                                   .Select(querier.GetInstalledVersion)
+                                                                   .OfType<CkanModule>(),
+                                                    RelationshipResolverOptions.DependsOnlyOpts(instance.StabilityToleranceConfig),
+                                                    querier, instance.Game, instance.VersionCriteria()))
+                       is not null)
+                {
+                    yield return partialSolution;
+                }
+                yield break;
+            }
+            foreach (var ident in remainingIdents)
+            {
+                var otherIdents = remainingIdents.Where(i => i != ident)
+                                                 .ToArray();
                 if (!heldIdents.Contains(ident)
                     && querier.HasUpdate(ident, instance.StabilityToleranceConfig, instance, filters,
                                          !ignoreMissingIdents?.Contains(ident) ?? true,
-                                         out CkanModule? latest, initial)
-                    && latest is not null
-                    && !latest.IsDLC)
+                                         out CkanModule? latest,
+                                         partialSolution.Select(tuple => tuple.module)
+                                                        .ToArray()))
                 {
-                    upgradeable.Add(latest);
-                }
-                else
-                {
-                    var current = querier.InstalledModule(ident);
-                    if (current != null && !current.Module.IsDLC)
+                    // Upgrading this mod is allowed so far, use it to check the remaining mods
+                    foreach (var solution in querier.FindUpgradeabilitySolutions(
+                                                 instance, otherIdents,
+                                                 partialSolution.Concat(Enumerable.Repeat((upgradeable: true,
+                                                                                           module:      latest),
+                                                                                          1))
+                                                                .ToArray(),
+                                                 filters, heldIdents, ignoreMissingIdents))
                     {
-                        notUpgradeable.Add(current.Module);
+                        yield return solution;
                     }
                 }
+
+                foreach (var solution in querier.FindUpgradeabilitySolutions(
+                                             instance, otherIdents,
+                                             querier.GetInstalledVersion(ident)
+                                             is { IsDLC: false } imod
+                                                 ? partialSolution.Append((false, imod))
+                                                                  .ToArray()
+                                                 : partialSolution,
+                                             filters, heldIdents, ignoreMissingIdents))
+                {
+                    yield return solution;
+                }
             }
-            return new Dictionary<bool, List<CkanModule>>
-            {
-                { true,  upgradeable    },
-                { false, notUpgradeable },
-            };
         }
+
+        private static IEnumerable<(bool upgradeable, CkanModule module)> InstalledModulesByUpgradeabilityWithConstraints(
+                this IRegistryQuerier           querier,
+                GameInstance                    instance,
+                IReadOnlyCollection<CkanModule> limiters,
+                HashSet<string>                 filters,
+                HashSet<string>                 heldIdents,
+                HashSet<string>?                ignoreMissingIdents = null)
+            => limiters.Select(module => !heldIdents.Contains(module.identifier)
+                                         && querier.HasUpdate(module.identifier,
+                                                              instance.StabilityToleranceConfig,
+                                                              instance, filters,
+                                                              !ignoreMissingIdents?.Contains(module.identifier) ?? true,
+                                                              out CkanModule? latest,
+                                                              limiters)
+                                            ? (true,  latest)
+                                            : (false, querier.InstalledModule(module.identifier)
+                                                      is { Module: { IsDLC: false } imod }
+                                                          ? imod : null))
+                      .Where(tuple => tuple.Item2 != null)
+                      .OfType<(bool upgradeable, CkanModule module)>();
 
         /// <summary>
         /// Check if any important metadata of a module has changed since it was installed
@@ -342,11 +384,10 @@ namespace CKAN
             installedFilesChanged = false;
             try
             {
-                var installed = querier.InstalledModule(identifier)?.Module;
-                return installed != null
-                    && (!querier.GetModuleByVersion(identifier, installed.version)
-                                ?.MetadataEquals(installed, out installedFilesChanged)
-                                ?? false);
+                return querier.InstalledModule(identifier)?.Module is CkanModule installed
+                       && (!querier.GetModuleByVersion(identifier, installed.version)
+                                   ?.MetadataEquals(installed, out installedFilesChanged)
+                                   ?? false);
             }
             catch
             {
@@ -354,6 +395,8 @@ namespace CKAN
                 return false;
             }
         }
+
+        #endregion Upgradeability
 
         /// <summary>
         /// Generate a string describing the range of game versions

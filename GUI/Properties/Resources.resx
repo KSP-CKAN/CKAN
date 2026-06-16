@@ -329,6 +329,9 @@ Find the folder where your game is installed and choose one of these files:
   <data name="SettingsDialogRepoDeleteDelete" xml:space="preserve"><value>Delete</value></data>
   <data name="SettingsDialogRepoDeleteCancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="SettingsDialogRepoAddDuplicateURL" xml:space="preserve"><value>Repository with URL already in list: {0}</value></data>
+  <data name="SettingsDialogRepoAddBlacklist" xml:space="preserve"><value>Not adding {0}:
+
+  {1}</value></data>
   <data name="AddAuthTokenTitle" xml:space="preserve"><value>Add Authentication Token</value></data>
   <data name="AddAuthTokenHost" xml:space="preserve"><value>Host:</value></data>
   <data name="AddAuthTokenToken" xml:space="preserve"><value>Token:</value></data>

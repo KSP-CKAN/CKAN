@@ -138,6 +138,7 @@ namespace CKAN.GUI
             => module.IsCompatible(crit)
                && currentInstance != null
                && ModuleInstaller.CanInstall(new List<CkanModule>() { module },
+                                             Array.Empty<CkanModule>(),
                                              RelationshipResolverOptions.DependsOnlyOpts(currentInstance.StabilityToleranceConfig),
                                              registry, game, crit);
 

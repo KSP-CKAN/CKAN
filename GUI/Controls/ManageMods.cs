@@ -287,7 +287,8 @@ namespace CKAN.GUI
                 && ModGrid.Rows.Contains(row)
                 && row.Index >= 0)
             {
-                foreach (DataGridViewCell cell in row.Cells)
+                foreach (var cell in row.Cells.OfType<DataGridViewCell>()
+                                              .Where(c => c.ColumnIndex != Description.Index))
                 {
                     cell.ToolTipText = tooltip;
                 }

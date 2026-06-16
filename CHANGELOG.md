@@ -17,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - [GUI] Fix ckan://identifier (#4603 by: Halbann; reviewed: HebaruSan)
 - [Multiple] Don't close 416 responses on dotnet (#4646 by: HebaruSan)
 - [GUI] Avoid null values for auto-sized columns (#4657 by: HebaruSan)
+- [Multiple] Better partial upgrade checking (#4669 by: HebaruSan)
 
 ### Internal
 

@@ -270,8 +270,17 @@ namespace CKAN.GUI
                                            .ToArray());
 
             HasReplacement = registry.GetReplacement(mod, stabilityTolerance, instance.VersionCriteria()) != null;
-            DownloadSize   = mod.download_size == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.download_size);
-            InstallSize    = mod.install_size  == 0 ? Properties.Resources.GUIModNSlashA : CkanModule.FmtSize(mod.install_size);
+            if (mod.IsMetapackage)
+            {
+                // Nothing to download or install
+                DownloadSize = Properties.Resources.GUIModNSlashA;
+                InstallSize  = Properties.Resources.GUIModNSlashA;
+            }
+            else
+            {
+                DownloadSize = mod.download_size == 0 ? "" : CkanModule.FmtSize(mod.download_size);
+                InstallSize  = mod.install_size  == 0 ? "" : CkanModule.FmtSize(mod.install_size);
+            }
 
             // Get the Searchables.
             SearchableName        = mod.SearchableName;
