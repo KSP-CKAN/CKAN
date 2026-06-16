@@ -1329,14 +1329,14 @@ namespace CKAN.GUI
             if (freezeChangeSet)
             {
                 // Already frozen by some outer block, let it handle the cleanup
-                action?.Invoke();
+                action.Invoke();
             }
             else
             {
                 freezeChangeSet = true;
                 try
                 {
-                    action?.Invoke();
+                    action.Invoke();
                 }
                 finally
                 {
