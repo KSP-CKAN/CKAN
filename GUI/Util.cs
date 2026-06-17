@@ -452,6 +452,10 @@ namespace CKAN.GUI
             => Platform.IsMono ? (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height
                                : (int)g.MeasureString(text, font, maxWidth).Height;
 
+        public static int StringHeight<T>(this T c, int maxWidth)
+            where T : Control
+            => c.CreateGraphics().StringHeight(c.Text, c.Font, maxWidth);
+
         /// <summary>
         /// Calculate how much vertical space is needed to display a label's text
         /// </summary>

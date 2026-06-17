@@ -101,8 +101,8 @@ namespace CKAN.GUI
                     AddResourceLink(Properties.Resources.ModInfoGogStoreLabel,              res.gogstore);
                     AddResourceLink(Properties.Resources.ModInfoEpicStoreLabel,             res.epicstore);
                 }
+                WrapRows();
                 MetadataTable.ResumeLayout(true);
-                ResizeResourceRows();
             });
         }
 
@@ -178,14 +178,11 @@ namespace CKAN.GUI
             }
         }
 
-        private int LinkLabelStringHeight(LinkLabel lb, int fitWidth)
-            => lb.Padding.Vertical + lb.Margin.Vertical + 10
-                + Util.StringHeight(CreateGraphics(), lb.Text, lb.Font, fitWidth);
-
-        protected override void OnResize(EventArgs e)
+        private void MetadataTable_Resize(object sender, EventArgs args)
         {
-            base.OnResize(e);
-            ResizeResourceRows();
+            MetadataTable.SuspendLayout();
+            WrapRows();
+            MetadataTable.ResumeLayout(true);
         }
 
         private void ClearResourceLinks()
@@ -208,32 +205,23 @@ namespace CKAN.GUI
             }
         }
 
-        private int RightColumnWidth
-            => MetadataTable.Width
-                - MetadataTable.Padding.Horizontal
-                - MetadataTable.Margin.Horizontal
-                - (int)MetadataTable.ColumnStyles[0].Width;
-
         private void AddResourceLink(string label, Uri? link)
         {
-            const int vPadding = 3;
             if (link != null)
             {
                 Label lbl = new Label()
                 {
                     AutoSize  = true,
-                    Dock      = DockStyle.Fill,
                     ForeColor = SystemColors.GrayText,
-                    Padding   = new Padding(0, vPadding, 0, vPadding),
                     Text      = label,
                 };
                 LinkLabel llbl = new LinkLabel()
                 {
-                    AutoSize = false,
-                    Dock     = DockStyle.Fill,
-                    Padding  = new Padding(0, vPadding, 0, vPadding),
+                    AutoSize = true,
+                    Margin   = new Padding(4),
                     TabStop  = true,
-                    Text     = link.ToString(),
+                    Text     = link.OriginalString,
+                    Tag      = link,
                     // Lighter colors for dark mode
                     LinkColor = BackColor.LinkColorForBackColor(),
                 };
@@ -243,33 +231,40 @@ namespace CKAN.GUI
                 MetadataTable.Controls.Add(lbl,  0, row);
                 MetadataTable.Controls.Add(llbl, 1, row);
                 MetadataTable.RowCount = row + 1;
-                MetadataTable.RowStyles.Add(
-                    new RowStyle(SizeType.Absolute, Math.Max(
-                        // "Remote version file" wraps
-                        Util.LabelStringHeight(CreateGraphics(), lbl),
-                        LinkLabelStringHeight(llbl, RightColumnWidth))));
+                MetadataTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
             }
         }
 
-        private void ResizeResourceRows()
+        private void WrapRows()
         {
-            if (staticRowCount > 0)
+            const int bottomMargin = 10;
+            if (MetadataTable.GetColumnWidths() is { Length: >= 2 } colWidths)
             {
-                MetadataTable.SuspendLayout();
-                var rWidth = RightColumnWidth;
-                var g = CreateGraphics();
-                for (int row = staticRowCount; row < MetadataTable.RowStyles.Count; ++row)
+                for (int col = 0; col < MetadataTable.ColumnCount; ++col)
                 {
-                    if (MetadataTable.GetControlFromPosition(0, row) is Label lab
-                        && MetadataTable.GetControlFromPosition(1, row) is LinkLabel link)
+                    for (int row = 0; row < MetadataTable.RowCount; ++row)
                     {
-                        MetadataTable.RowStyles[row].Height = Math.Max(
-                            // "Remote version file" wraps
-                            Util.LabelStringHeight(g, lab),
-                            LinkLabelStringHeight(link, rWidth));
+                        switch (MetadataTable.GetControlFromPosition(col, row))
+                        {
+                            case TextBox tb:
+                                // Text boxes have internal padding that is about the size of the default label margin
+                                tb.Margin = new Padding(tb.Margin.Left, 0, tb.Margin.Right, bottomMargin);
+                                // Text boxes don't like using MaximumSize
+                                tb.Size   = new Size(colWidths[col] - tb.Margin.Horizontal,
+                                                     tb.StringHeight(colWidths[col] - tb.Margin.Horizontal));
+                                break;
+                            case FlowLayoutPanel flp:
+                                flp.Margin      = new Padding(flp.Margin.Left, 0, 0, bottomMargin);
+                                flp.MaximumSize = new Size(colWidths[col] - flp.Margin.Horizontal, 1000);
+                                break;
+                            case Control c:
+                                c.Margin      = new Padding(c.Margin.Left, c.Margin.Top, c.Margin.Right, bottomMargin);
+                                c.MaximumSize = new Size(colWidths[col] - c.Margin.Horizontal,
+                                                         c.StringHeight(colWidths[col] - c.Margin.Horizontal) + c.Margin.Vertical);
+                                break;
+                        }
                     }
                 }
-                MetadataTable.ResumeLayout(true);
             }
         }
 
