@@ -61,6 +61,27 @@ namespace CKAN.GUI
                                                                      (sender, e) => Util.Invoke(this, () => ModGrid_SelectionChanged(sender, e)),
                                                                      100));
 
+            ModGrid.Resize += new EventHandler(Util.Debounce<EventArgs>(
+                                  (sender, e) => Util.Invoke(this, () =>
+                                  {
+                                      // Expand/contract large columns to use the available space efficiently
+                                      ModName.AutoSizeMode       = DataGridViewAutoSizeColumnMode.Fill;
+                                      Author.AutoSizeMode        = DataGridViewAutoSizeColumnMode.Fill;
+                                      LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                                      Description.AutoSizeMode   = DataGridViewAutoSizeColumnMode.Fill;
+                                  }),
+                                  (sender, e) => false,
+                                  (sender, e) => false,
+                                  (sender, e) => Util.Invoke(this, () =>
+                                  {
+                                      // Now make them resizable again
+                                      ModName.AutoSizeMode       = DataGridViewAutoSizeColumnMode.NotSet;
+                                      Author.AutoSizeMode        = DataGridViewAutoSizeColumnMode.NotSet;
+                                      LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+                                      Description.AutoSizeMode   = DataGridViewAutoSizeColumnMode.NotSet;
+                                  }),
+                                  250));
+
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             navHistory = new NavigationHistory<GUIMod>();
@@ -1477,18 +1498,6 @@ namespace CKAN.GUI
         private void ModGrid_Resize(object? sender, EventArgs? e)
         {
             InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
-
-            // Expand/contract large columns to use the available space efficiently
-            ModName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Author.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            // Now make them resizable again
-            ModName.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-            Author.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-            LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-            Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
         }
 
         private void reinstallToolStripMenuItem_Click(object? sender, EventArgs? e)
