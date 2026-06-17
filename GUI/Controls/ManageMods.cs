@@ -218,7 +218,7 @@ namespace CKAN.GUI
                             // Set strikeout font for rows being uninstalled
                             row.DefaultCellStyle = uninstallingStyle;
                         }
-                        else if (row.DefaultCellStyle != null)
+                        else if (row.DefaultCellStyle == uninstallingStyle)
                         {
                             // Clear strikeout font for rows not being uninstalled
                             row.DefaultCellStyle = null;
