@@ -53,7 +53,8 @@ namespace CKAN
         private RegistryManager(string                          path,
                                 GameInstance                    inst,
                                 RepositoryDataManager           repoData,
-                                IReadOnlyCollection<Repository> initialRepositories)
+                                IReadOnlyCollection<Repository> initialRepositories,
+                                bool                            headless = false)
         {
             gameInstance = inst;
 
@@ -89,7 +90,7 @@ namespace CKAN
             {
                 // Only log an error for this if user-interactive,
                 // automated tools do not care that no one picked a Scatterer config
-                if (gameInstance.User.Headless)
+                if (headless)
                 {
                     log.InfoFormat("Loaded registry with inconsistencies:\r\n\r\n{0}", kraken.Message);
                 }
@@ -263,14 +264,16 @@ namespace CKAN
         /// </summary>
         public static RegistryManager Instance(GameInstance                     inst,
                                                RepositoryDataManager            repoData,
-                                               IReadOnlyCollection<Repository>? repositories = null)
+                                               IReadOnlyCollection<Repository>? repositories = null,
+                                               bool                             headless = false)
         {
             string directory = inst.CkanDir;
             if (!registryCache.ContainsKey(directory))
             {
                 log.DebugFormat("Preparing to load registry at {0}", Platform.FormatPath(directory));
                 registryCache[directory] = new RegistryManager(directory, inst, repoData,
-                                                               repositories ?? Array.Empty<Repository>());
+                                                               repositories ?? Array.Empty<Repository>(),
+                                                               headless);
             }
 
             return registryCache[directory];

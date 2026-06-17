@@ -25,7 +25,7 @@ namespace Tests.Core
             ksp_dir = TestData.NewTempDir();
             nullUser = new NullUser();
             Utilities.CopyDirectory(TestData.good_ksp_dir(), ksp_dir, Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>(), Array.Empty<string>());
-            ksp = new GameInstance(new KerbalSpaceProgram(), ksp_dir, "test", nullUser);
+            ksp = new GameInstance(new KerbalSpaceProgram(), ksp_dir, "test");
         }
 
         [TearDown]
@@ -121,7 +121,7 @@ namespace Tests.Core
             File.WriteAllText(jsonpath, compatible_ksp_versions_json);
 
             // Act
-            GameInstance my_ksp = new GameInstance(new KerbalSpaceProgram(), gamedir, "missing-ver-test", nullUser);
+            GameInstance my_ksp = new GameInstance(new KerbalSpaceProgram(), gamedir, "missing-ver-test");
 
             // Assert
             Assert.IsFalse(my_ksp.Valid);
@@ -155,7 +155,7 @@ namespace Tests.Core
             // Act & Assert
             Assert.DoesNotThrow(() =>
             {
-                GameInstance my_ksp = new GameInstance(new KerbalSpaceProgram(), gamedir, "null-compat-ver-test", nullUser);
+                GameInstance my_ksp = new GameInstance(new KerbalSpaceProgram(), gamedir, "null-compat-ver-test");
             });
 
             Directory.Delete(gamedir, true);

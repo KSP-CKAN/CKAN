@@ -32,11 +32,10 @@ namespace CKAN
         /// Returns a game instance object.
         /// Will initialise a CKAN instance in the game dir if it does not already exist.
         /// </summary>
-        public GameInstance(IGame game, string gameDir, string name, IUser? user)
+        public GameInstance(IGame game, string gameDir, string name)
         {
             Game = game;
             Name = name;
-            User = user ?? new NullUser();
             // Make sure our path is absolute and has normalised slashes.
             GameDir = CKANPathUtils.NormalizePath(Path.GetFullPath(gameDir));
             if (Platform.IsWindows)
@@ -79,8 +78,8 @@ namespace CKAN
 
             if (!Directory.Exists(CkanDir))
             {
-                User.RaiseMessage(Properties.Resources.GameInstanceSettingUp);
-                User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, CkanDir);
+                log.Debug(Properties.Resources.GameInstanceSettingUp);
+                log.DebugFormat(Properties.Resources.GameInstanceCreatingDir, CkanDir);
                 txFileMgr.CreateDirectory(CkanDir);
             }
 
@@ -88,7 +87,7 @@ namespace CKAN
 
             if (!Directory.Exists(InstallHistoryDir))
             {
-                User.RaiseMessage(Properties.Resources.GameInstanceCreatingDir, InstallHistoryDir);
+                log.DebugFormat(Properties.Resources.GameInstanceCreatingDir, InstallHistoryDir);
                 txFileMgr.CreateDirectory(InstallHistoryDir);
             }
             log.InfoFormat("Initialised {0}", Platform.FormatPath(CkanDir));
@@ -97,8 +96,6 @@ namespace CKAN
         #endregion
 
         #region Fields and Properties
-
-        public IUser User { get; private set; }
 
         public string Name { get; set; }
 
@@ -360,7 +357,7 @@ namespace CKAN
                    new string[] { "CKAN" });
 
         [ExcludeFromCodeCoverage]
-        public void PlayGame(string command, Action? onExit = null)
+        public void PlayGame(string command, IUser user, Action? onExit = null)
         {
             if (Game.AdjustCommandLine(command.Split(' '), Version())
                 //is [string binary, ..] and string[] split
@@ -399,7 +396,7 @@ namespace CKAN
                 }
                 catch (Exception exception)
                 {
-                    User.RaiseError(Properties.Resources.GameInstancePlayGameFailed, exception.Message);
+                    user.RaiseError(Properties.Resources.GameInstancePlayGameFailed, exception.Message);
                 }
             }
         }

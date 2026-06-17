@@ -498,7 +498,7 @@ namespace CKAN.ConsoleUI {
 
         private bool PlayGame(string commandLine)
         {
-            manager.CurrentInstance?.PlayGame(commandLine);
+            manager.CurrentInstance?.PlayGame(commandLine, this);
             return true;
         }
 

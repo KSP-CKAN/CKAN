@@ -287,13 +287,33 @@ namespace CKAN
         private static IEnumerable<(bool upgradeable, CkanModule module)[]> FindUpgradeabilitySolutions(
                 this IRegistryQuerier                   querier,
                 GameInstance                            instance,
-                IReadOnlyCollection<string>             remainingIdents,
-                (bool upgradeable, CkanModule module)[] partialSolution,
+                IReadOnlyCollection<string>             startingIdents,
+                (bool upgradeable, CkanModule module)[] initialSolution,
                 HashSet<string>                         filters,
                 HashSet<string>                         heldIdents,
                 HashSet<string>?                        ignoreMissingIdents = null)
         {
-            if (remainingIdents.Count == 0)
+            // Find non-upgradeable mods so we can skip looping over them
+            var initialMods    = initialSolution.Select(tuple => tuple.module).ToArray();
+            var notUpgradeable = startingIdents.Where(ident => heldIdents.Contains(ident)
+                                                               || !querier.HasUpdate(ident,
+                                                                                     instance.StabilityToleranceConfig,
+                                                                                     instance, filters,
+                                                                                     !ignoreMissingIdents?.Contains(ident)
+                                                                                                         ?? true,
+                                                                                     out CkanModule? latest,
+                                                                                     initialMods))
+                                               .Select(querier.GetInstalledVersion)
+                                               .OfType<CkanModule>()
+                                               .ToArray();
+            var remainingIdents = startingIdents.Except(notUpgradeable.Select(m => m.identifier)).ToArray();
+            var partialSolution = initialSolution.Concat(notUpgradeable.Where(m => !m.IsDLC)
+                                                                       .Select(m => (upgradeable: false,
+                                                                                     module:      m)))
+                                                 .ToArray();
+            var partialMods     = partialSolution.Select(tuple => tuple.module).ToArray();
+
+            if (remainingIdents.Length == 0)
             {
                 // We are a leaf node, return whatever we received if it is a valid solution
                 if (partialSolution.All(tuple => !tuple.upgradeable)
@@ -316,12 +336,12 @@ namespace CKAN
             {
                 var otherIdents = remainingIdents.Where(i => i != ident)
                                                  .ToArray();
+                // Have to check HasUpdate again to account for the additions to partialSolution
                 if (!heldIdents.Contains(ident)
                     && querier.HasUpdate(ident, instance.StabilityToleranceConfig, instance, filters,
                                          !ignoreMissingIdents?.Contains(ident) ?? true,
                                          out CkanModule? latest,
-                                         partialSolution.Select(tuple => tuple.module)
-                                                        .ToArray()))
+                                         partialMods))
                 {
                     // Upgrading this mod is allowed so far, use it to check the remaining mods
                     foreach (var solution in querier.FindUpgradeabilitySolutions(

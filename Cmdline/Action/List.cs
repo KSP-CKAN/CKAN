@@ -24,7 +24,7 @@ namespace CKAN.CmdLine
         {
             ListOptions options = (ListOptions) raw_options;
 
-            var regMgr   = RegistryManager.Instance(instance, repoData);
+            var regMgr   = RegistryManager.Instance(instance, repoData, headless: user.Headless);
             var registry = regMgr.registry;
 
             ExportFileType? exportFileType = null;

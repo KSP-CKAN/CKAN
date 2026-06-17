@@ -35,7 +35,7 @@ namespace CKAN.CmdLine
         public int RunCommand(CKAN.GameInstance instance, object raw_options)
         {
             RemoveOptions options = (RemoveOptions) raw_options;
-            RegistryManager regMgr = RegistryManager.Instance(instance, repoData);
+            RegistryManager regMgr = RegistryManager.Instance(instance, repoData, headless: user.Headless);
 
             // Use one (or more!) regex to select the modules to remove
             if (options.regex)

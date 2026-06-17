@@ -34,7 +34,10 @@ namespace CKAN.GUI
             {
                 ModGrid.BorderStyle = BorderStyle.None;
             }
-            uninstallingFont = new Font(ModGrid.Font, FontStyle.Strikeout);
+            uninstallingStyle = new DataGridViewCellStyle()
+            {
+                Font = new Font(ModGrid.Font, FontStyle.Strikeout),
+            };
 
             ToolTip.SetToolTip(InstallAllCheckbox, Properties.Resources.ManageModsInstallAllCheckboxTooltip);
             ToolTip.ScaleFonts();
@@ -103,7 +106,7 @@ namespace CKAN.GUI
         private DateTime lastSearchTime;
         private string? lastSearchKey;
         private readonly NavigationHistory<GUIMod> navHistory;
-        private readonly Font uninstallingFont;
+        private readonly DataGridViewCellStyle uninstallingStyle;
 
         private List<ModChange>?            currentChangeSet;
         private Dictionary<GUIMod, string>? conflicts;
@@ -213,12 +216,12 @@ namespace CKAN.GUI
                         if (removing.Contains(ident))
                         {
                             // Set strikeout font for rows being uninstalled
-                            row.DefaultCellStyle.Font = uninstallingFont;
+                            row.DefaultCellStyle = uninstallingStyle;
                         }
-                        else if (row.DefaultCellStyle.Font != null)
+                        else if (row.DefaultCellStyle != null)
                         {
                             // Clear strikeout font for rows not being uninstalled
-                            row.DefaultCellStyle.Font = ModGrid.DefaultCellStyle.Font;
+                            row.DefaultCellStyle = null;
                         }
                     }
                 }
@@ -1329,14 +1332,14 @@ namespace CKAN.GUI
             if (freezeChangeSet)
             {
                 // Already frozen by some outer block, let it handle the cleanup
-                action?.Invoke();
+                action.Invoke();
             }
             else
             {
                 freezeChangeSet = true;
                 try
                 {
-                    action?.Invoke();
+                    action.Invoke();
                 }
                 finally
                 {
@@ -1474,6 +1477,18 @@ namespace CKAN.GUI
         private void ModGrid_Resize(object? sender, EventArgs? e)
         {
             InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
+
+            // Expand/contract large columns to use the available space efficiently
+            ModName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Author.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+            // Now make them resizable again
+            ModName.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+            Author.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+            LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+            Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
         }
 
         private void reinstallToolStripMenuItem_Click(object? sender, EventArgs? e)
@@ -1735,6 +1750,15 @@ namespace CKAN.GUI
             });
 
             UpdateFilters();
+
+            // Fit small columns to their contents at load
+            ModGrid.AutoResizeColumn(InstalledVersion.Index,  DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+            ModGrid.AutoResizeColumn(GameCompatibility.Index, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+            ModGrid.AutoResizeColumn(DownloadSize.Index,      DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+            ModGrid.AutoResizeColumn(InstallSize.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+            ModGrid.AutoResizeColumn(ReleaseDate.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+            ModGrid.AutoResizeColumn(InstallDate.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+            ModGrid.AutoResizeColumn(DownloadCount.Index,     DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
 
             // Hide update and replacement columns if not needed.
             // Write it to the configuration, else they are hidden again after a filter change.

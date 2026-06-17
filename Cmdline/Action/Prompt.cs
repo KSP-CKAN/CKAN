@@ -188,7 +188,7 @@ namespace CKAN.CmdLine
         private string[] GetAvailIdentifiers(string prefix)
         {
             CKAN.GameInstance inst = MainClass.GetGameInstance(manager);
-            return RegistryManager.Instance(inst, repoData)
+            return RegistryManager.Instance(inst, repoData, headless: user.Headless)
                                   .registry
                                   .CompatibleModules(inst.StabilityToleranceConfig, inst.VersionCriteria())
                                   .Where(m => !m.IsDLC)
@@ -206,7 +206,7 @@ namespace CKAN.CmdLine
         private string[] GetInstIdentifiers(string prefix)
         {
             CKAN.GameInstance inst = MainClass.GetGameInstance(manager);
-            var registry = RegistryManager.Instance(inst, repoData).registry;
+            var registry = RegistryManager.Instance(inst, repoData, headless: user.Headless).registry;
             return registry.Installed(false, false)
                            .Keys
                            .Where(ident => ident.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase)

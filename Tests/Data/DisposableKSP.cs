@@ -30,8 +30,7 @@ namespace Tests.Data
                                     Array.Empty<string>(),
                                     Array.Empty<string>(),
                                     Array.Empty<string>());
-            KSP = new GameInstance(game, _disposableDir,
-                                   name, new NullUser());
+            KSP = new GameInstance(game, _disposableDir, name);
         }
 
         public DisposableKSP(string registryFile)

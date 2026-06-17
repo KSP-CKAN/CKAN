@@ -79,7 +79,7 @@ namespace CKAN.CmdLine
                     if (options.list_changes)
                     {
                         // Get a list of compatible modules prior to the update.
-                        var registry = RegistryManager.Instance(instance, repoData).registry;
+                        var registry = RegistryManager.Instance(instance, repoData, headless: user.Headless).registry;
                         var crit     = instance.VersionCriteria();
                         var compatible_prior = registry.CompatibleModules(stabilityTolerance, crit).ToList();
                         UpdateRepositories(instance, options.NetUserAgent, options.force);
@@ -177,7 +177,7 @@ namespace CKAN.CmdLine
         /// <param name="repository">Repository to update. If null all repositories are used.</param>
         private void UpdateRepositories(CKAN.GameInstance instance, string? userAgent, bool force = false)
         {
-            var registry = RegistryManager.Instance(instance, repoData).registry;
+            var registry = RegistryManager.Instance(instance, repoData, headless: user.Headless).registry;
             var result = repoData.Update(registry.Repositories.Values.ToArray(),
                                          instance.Game, force,
                                          new NetAsyncDownloader(user, () => null, userAgent), user, userAgent);

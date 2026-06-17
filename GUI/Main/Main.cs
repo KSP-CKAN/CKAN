@@ -998,6 +998,7 @@ namespace CKAN.GUI
                 }
 
                 CurrentInstance.PlayGame(command,
+                                         currentUser,
                                          () =>
                                          {
                                              ManageMods.OnGameExit();
