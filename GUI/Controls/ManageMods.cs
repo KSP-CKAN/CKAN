@@ -94,11 +94,11 @@ namespace CKAN.GUI
             var g = CreateGraphics();
             ModGrid.ColumnHeadersHeight = ModGrid.Columns.OfType<DataGridViewColumn>().Max(col =>
                 ModGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical
-                + Util.StringHeight(g, col.HeaderText,
-                                    col.HeaderCell?.Style?.Font
-                                                  ?? ModGrid.ColumnHeadersDefaultCellStyle.Font
-                                                  ?? SystemFonts.DefaultFont,
-                                    col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
+                + g.StringHeight(col.HeaderText,
+                                 col.HeaderCell?.Style?.Font
+                                               ?? ModGrid.ColumnHeadersDefaultCellStyle.Font
+                                               ?? SystemFonts.DefaultFont,
+                                 col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));

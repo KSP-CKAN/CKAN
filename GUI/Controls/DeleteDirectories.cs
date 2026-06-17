@@ -95,7 +95,7 @@ namespace CKAN.GUI
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            ExplanationLabel.Height = Util.LabelStringHeight(CreateGraphics(), ExplanationLabel);
+            ExplanationLabel.Height = CreateGraphics().LabelStringHeight(ExplanationLabel);
         }
 
         /// <summary>

@@ -43,10 +43,9 @@ namespace CKAN.GUI
                     ClientSize.Width,
                     Math.Min(
                         maxHeight,
-                        padding + Util.StringHeight(CreateGraphics(),
-                                                    ErrorMessage.Text,
-                                                    ErrorMessage.Font,
-                                                    ErrorMessage.Width - 4)));
+                        padding + CreateGraphics().StringHeight(ErrorMessage.Text,
+                                                                ErrorMessage.Font,
+                                                                ErrorMessage.Width - 4)));
                 if (!Visible)
                 {
                     StartPosition = mainForm.actuallyVisible

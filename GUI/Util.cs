@@ -448,8 +448,9 @@ namespace CKAN.GUI
         /// <returns>
         /// Number of pixels needed vertically to fit the string
         /// </returns>
-        public static int StringHeight(Graphics g, string text, Font font, int maxWidth)
-            => (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height;
+        public static int StringHeight(this Graphics g, string text, Font font, int maxWidth)
+            => Platform.IsMono ? (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height
+                               : (int)g.MeasureString(text, font, maxWidth).Height;
 
         /// <summary>
         /// Calculate how much vertical space is needed to display a label's text
@@ -459,11 +460,11 @@ namespace CKAN.GUI
         /// <returns>
         /// Number of pixels needed vertically to show the label's full text
         /// </returns>
-        public static int LabelStringHeight(Graphics g, Label lbl)
+        public static int LabelStringHeight(this Graphics g, Label lbl)
             => (int)(YScale(g) * (lbl.Margin.Vertical + lbl.Padding.Vertical
-                                  + StringHeight(g, lbl.Text, lbl.Font,
-                                                 (lbl.Width - lbl.Margin.Horizontal
-                                                            - lbl.Padding.Horizontal))));
+                                  + g.StringHeight(lbl.Text, lbl.Font,
+                                                   (lbl.Width - lbl.Margin.Horizontal
+                                                              - lbl.Padding.Horizontal))));
 
         #endregion
 
