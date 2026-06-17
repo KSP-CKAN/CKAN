@@ -113,19 +113,21 @@ namespace CKAN.GUI
             AuthorsPanel.SuspendLayout();
             AuthorsPanel.Controls.Clear();
             AuthorsPanel.Controls.AddRange(
-                authors.Select(AuthorLink).ToArray());
+                authors.Select((a, i) => AuthorLink(a, i < authors.Count - 1)).ToArray());
             AuthorsPanel.ResumeLayout(true);
         }
 
-        private LinkLabel AuthorLink(string name)
+        private LinkLabel AuthorLink(string name, bool withComma)
         {
             var link = new LinkLabel()
             {
                 AutoSize     = true,
+                ForeColor    = SystemColors.GrayText,
                 LinkColor    = SystemColors.GrayText,
                 LinkBehavior = LinkBehavior.HoverUnderline,
-                Margin       = new Padding(0, 0, 4, 4),
-                Text         = name,
+                Margin       = new Padding(0, 0, 2, 2),
+                Text         = withComma ? $"{name}," : name,
+                LinkArea     = new LinkArea(0, name.Length),
                 Tag          = name,
             };
             link.LinkClicked += OnAuthorClick;
