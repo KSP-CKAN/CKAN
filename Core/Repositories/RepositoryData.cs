@@ -123,7 +123,10 @@ namespace CKAN
                 Indentation = 0,
             })
             {
-                JsonSerializer serializer = new JsonSerializer();
+                JsonSerializer serializer = new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                };
                 serializer.Serialize(writer, this);
             }
             var txFileMgr = new TxFileManager();

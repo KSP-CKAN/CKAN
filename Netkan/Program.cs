@@ -202,7 +202,10 @@ namespace CKAN.NetKAN
                 jwriter.Indentation = 4;
                 jwriter.IndentChar = ' ';
 
-                var serializer = new JsonSerializer();
+                var serializer = new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                };
                 serializer.Serialize(jwriter, json);
 
                 (swriter + Environment.NewLine).WriteThroughTo(finalPath);

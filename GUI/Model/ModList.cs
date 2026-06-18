@@ -213,7 +213,7 @@ namespace CKAN.GUI
             var downloadSize   = new DataGridViewTextBoxCell { Value = mod.DownloadSize ?? ""                                };
             var installSize    = new DataGridViewTextBoxCell { Value = mod.InstallSize                                       };
             var releaseDate    = new DataGridViewTextBoxCell { Value = (object?)mod.Module.release_date?.ToLocalTime() ?? "" };
-            var installDate    = new DataGridViewTextBoxCell { Value = (object?)mod.InstallDate ?? ""                        };
+            var installDate    = new DataGridViewTextBoxCell { Value = (object?)mod.InstallDate?.ToLocalTime() ?? ""         };
             var downloadCount  = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"                             };
             var desc           = new DataGridViewTextBoxCell
                                  {

@@ -196,7 +196,10 @@ namespace CKAN
                 IndentChar  = ' '
             })
             {
-                new JsonSerializer().Serialize(writer, this);
+                new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                }.Serialize(writer, this);
             }
             return sw.ToString();
         }

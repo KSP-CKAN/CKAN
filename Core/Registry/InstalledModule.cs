@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 
-using CKAN.IO;
 using Newtonsoft.Json;
+
+using CKAN.IO;
 
 namespace CKAN
 {
@@ -70,7 +71,7 @@ namespace CKAN
 
         public InstalledModule(GameInstance? ksp, CkanModule module, IEnumerable<string> relative_files, bool autoInstalled)
         {
-            install_time = DateTime.Now;
+            install_time = DateTime.UtcNow;
             source_module = module;
             // We need case insensitive path matching on Windows
             installed_files = new Dictionary<string, InstalledModuleFile>(Platform.PathComparer);

@@ -475,7 +475,10 @@ namespace CKAN
                 writer.Formatting  = Formatting.Indented;
                 writer.Indentation = 4;
                 writer.IndentChar  = ' ';
-                new JsonSerializer().Serialize(writer, this);
+                new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                }.Serialize(writer, this);
             }
             return sw + Environment.NewLine;
         }

@@ -385,7 +385,10 @@ namespace CKAN
                 writer.Formatting = Formatting.Indented;
                 writer.Indentation = 0;
 
-                JsonSerializer serializer = new JsonSerializer();
+                JsonSerializer serializer = new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                };
                 serializer.Serialize(writer, registry);
             }
 
