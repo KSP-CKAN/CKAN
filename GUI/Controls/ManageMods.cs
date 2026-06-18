@@ -51,6 +51,7 @@ namespace CKAN.GUI
             FilterNotInstalledButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
             FilterIncompatibleButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
 
+            Toolbar.GotFocus += new EventHandler((sender, args) => ModGrid.Select());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
             ApplyToolButton.Enabled = false;

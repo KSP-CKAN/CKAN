@@ -117,7 +117,7 @@ namespace CKAN.GUI
             this.Toolbar.Name = "Toolbar";
             this.Toolbar.ShowItemToolTips = true;
             this.Toolbar.Size = new System.Drawing.Size(5876, 48);
-            this.Toolbar.TabStop = true;
+            this.Toolbar.TabStop = false;
             this.Toolbar.TabIndex = 4;
             this.Toolbar.Text = "Toolbar";
             //
