@@ -93,6 +93,9 @@ namespace CKAN.GUI
             }
         }
 
+        public Point ButtonLocation => Location + (Size)ExpandButton.Location;
+        public Size  ButtonSize     => ExpandButton.Size;
+
         public void CloseSearch(Point screenCoords)
         {
             // Treat the entire main window as an uncheck button, and let
