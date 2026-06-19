@@ -424,6 +424,12 @@
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;NONE&gt;</value>
   </data>
+  <data name="InstanceListClone" xml:space="preserve">
+    <value>复制</value>
+  </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>复制游戏实例</value>
+  </data>
   <data name="InstallTitle" xml:space="preserve">
     <value>安装、升级和删除模组</value>
   </data>
