@@ -201,6 +201,12 @@
   <data name="InstanceListDefaultToggle" xml:space="preserve">
     <value>Standard</value>
   </data>
+  <data name="InstanceListClone" xml:space="preserve">
+    <value>Klonen</value>
+  </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>Neue Instanz</value>
+  </data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Name</value>
   </data>
