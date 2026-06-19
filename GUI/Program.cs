@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+#if NET6_0_OR_GREATER
+using System.Drawing;
+#endif
 using System.Windows.Forms;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
@@ -36,6 +39,15 @@ namespace CKAN.GUI
             {
                 // By default, Windows will stretch the window and make it blurry; tell it not to.
                 SetProcessDPIAware();
+                #if NET6_0_OR_GREATER
+                Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);
+                if (Util.TextScaleFactor is not 1f and var factor)
+                {
+                    Application.SetDefaultFont(
+                        new Font(SystemFonts.DefaultFont.FontFamily,
+                                 SystemFonts.DefaultFont.SizeInPoints * factor));
+                }
+                #endif
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

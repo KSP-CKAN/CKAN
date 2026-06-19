@@ -53,7 +53,7 @@ namespace CKAN.GUI
 
         private void Setup(string text, string? yesText, string? noText)
         {
-            var height = Util.StringHeight(CreateGraphics(), text, DescriptionLabel.Font, ClientSize.Width - 25) + (2 * 54);
+            var height = CreateGraphics().StringHeight(text, DescriptionLabel.Font, ClientSize.Width - 25) + (2 * 54);
             DescriptionLabel.Text = text;
             DescriptionLabel.TextAlign = text.Contains("\n")
                 ? HorizontalAlignment.Left
@@ -79,7 +79,7 @@ namespace CKAN.GUI
             SuppressCheckbox.Visible = true;
         }
 
-        private const int maxHeight = 600;
+        private static int maxHeight => (int)(Util.TextScaleFactor * 600);
         private TaskCompletionSource<Tuple<DialogResult, bool>>? task;
         private readonly string defaultYes;
         private readonly string defaultNo;

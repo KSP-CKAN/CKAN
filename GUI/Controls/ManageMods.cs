@@ -51,6 +51,7 @@ namespace CKAN.GUI
             FilterNotInstalledButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
             FilterIncompatibleButton.ToolTipText    = Properties.Resources.FilterLinkToolTip;
 
+            Toolbar.GotFocus += new EventHandler((sender, args) => ModGrid.Select());
             FilterToolButton.MouseHover += (sender, args) => FilterToolButton.ShowDropDown();
             ApplyToolButton.MouseHover += (sender, args) => ApplyToolButton.ShowDropDown();
             ApplyToolButton.Enabled = false;
@@ -60,6 +61,27 @@ namespace CKAN.GUI
                                                                      (sender, e) => false,
                                                                      (sender, e) => Util.Invoke(this, () => ModGrid_SelectionChanged(sender, e)),
                                                                      100));
+
+            ModGrid.Resize += new EventHandler(Util.Debounce<EventArgs>(
+                                  (sender, e) => Util.Invoke(this, () =>
+                                  {
+                                      // Expand/contract large columns to use the available space efficiently
+                                      ModName.AutoSizeMode       = DataGridViewAutoSizeColumnMode.Fill;
+                                      Author.AutoSizeMode        = DataGridViewAutoSizeColumnMode.Fill;
+                                      LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                                      Description.AutoSizeMode   = DataGridViewAutoSizeColumnMode.Fill;
+                                  }),
+                                  (sender, e) => false,
+                                  (sender, e) => false,
+                                  (sender, e) => Util.Invoke(this, () =>
+                                  {
+                                      // Now make them resizable again
+                                      ModName.AutoSizeMode       = DataGridViewAutoSizeColumnMode.NotSet;
+                                      Author.AutoSizeMode        = DataGridViewAutoSizeColumnMode.NotSet;
+                                      LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+                                      Description.AutoSizeMode   = DataGridViewAutoSizeColumnMode.NotSet;
+                                  }),
+                                  250));
 
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
@@ -94,11 +116,11 @@ namespace CKAN.GUI
             var g = CreateGraphics();
             ModGrid.ColumnHeadersHeight = ModGrid.Columns.OfType<DataGridViewColumn>().Max(col =>
                 ModGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical
-                + Util.StringHeight(g, col.HeaderText,
-                                    col.HeaderCell?.Style?.Font
-                                                  ?? ModGrid.ColumnHeadersDefaultCellStyle.Font
-                                                  ?? SystemFonts.DefaultFont,
-                                    col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
+                + g.StringHeight(col.HeaderText,
+                                 col.HeaderCell?.Style?.Font
+                                               ?? ModGrid.ColumnHeadersDefaultCellStyle.Font
+                                               ?? SystemFonts.DefaultFont,
+                                 col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));
@@ -1477,18 +1499,6 @@ namespace CKAN.GUI
         private void ModGrid_Resize(object? sender, EventArgs? e)
         {
             InstallAllCheckbox.Top = ModGrid.Top - InstallAllCheckbox.Height;
-
-            // Expand/contract large columns to use the available space efficiently
-            ModName.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Author.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-            // Now make them resizable again
-            ModName.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-            Author.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-            LatestVersion.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
-            Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
         }
 
         private void reinstallToolStripMenuItem_Click(object? sender, EventArgs? e)
@@ -1751,20 +1761,20 @@ namespace CKAN.GUI
 
             UpdateFilters();
 
-            // Fit small columns to their contents at load
-            ModGrid.AutoResizeColumn(InstalledVersion.Index,  DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-            ModGrid.AutoResizeColumn(GameCompatibility.Index, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-            ModGrid.AutoResizeColumn(DownloadSize.Index,      DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-            ModGrid.AutoResizeColumn(InstallSize.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-            ModGrid.AutoResizeColumn(ReleaseDate.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-            ModGrid.AutoResizeColumn(InstallDate.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-            ModGrid.AutoResizeColumn(DownloadCount.Index,     DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
-
-            // Hide update and replacement columns if not needed.
-            // Write it to the configuration, else they are hidden again after a filter change.
-            // After the update / replacement, they are hidden again.
             Util.Invoke(ModGrid, () =>
             {
+                // Fit small columns to their contents at load
+                ModGrid.AutoResizeColumn(InstalledVersion.Index,  DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                ModGrid.AutoResizeColumn(GameCompatibility.Index, DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                ModGrid.AutoResizeColumn(DownloadSize.Index,      DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                ModGrid.AutoResizeColumn(InstallSize.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                ModGrid.AutoResizeColumn(ReleaseDate.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                ModGrid.AutoResizeColumn(InstallDate.Index,       DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+                ModGrid.AutoResizeColumn(DownloadCount.Index,     DataGridViewAutoSizeColumnMode.AllCellsExceptHeader);
+
+                // Hide update and replacement columns if not needed.
+                // Write it to the configuration, else they are hidden again after a filter change.
+                // After the update / replacement, they are hidden again.
                 UpdateCol.Visible  = has_unheld_updates;
                 ReplaceCol.Visible = MainModList.Modules.Any(mod => mod.IsInstalled && mod.HasReplacement);
             });

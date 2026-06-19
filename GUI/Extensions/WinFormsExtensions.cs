@@ -71,6 +71,20 @@ namespace CKAN.GUI
                     strip.ScaleToolTipFonts();
                 }
             }
+            else if (Util.TextScaleFactor is not 1f and var factor)
+            {
+                if (control is Form)
+                {
+                    control.SuspendLayout();
+                    control.Scale(new SizeF(factor, factor));
+                    control.ResumeLayout(true);
+                }
+                if (control is ToolStrip or ProgressBar or Label or TreeView)
+                {
+                    control.Font = new Font(control.Font.FontFamily,
+                                            control.Font.Size * factor);
+                }
+            }
         }
 
         public static void ScaleFonts(this ToolStripItem item)
@@ -80,6 +94,11 @@ namespace CKAN.GUI
                 && dpi != 96)
             {
                 item.Font = item.Font.Scale(dpi);
+            }
+            else if (Util.TextScaleFactor is not 1f and var factor)
+            {
+                item.Font = new Font(item.Font.FontFamily,
+                                     item.Font.Size * factor);
             }
         }
 

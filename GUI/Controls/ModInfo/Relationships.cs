@@ -27,6 +27,7 @@ namespace CKAN.GUI
         {
             InitializeComponent();
             LegendInstalledLabel.ScaleFonts();
+            LegendVirtualLabel.ScaleFonts();
             repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
 
             ToolTip.SetToolTip(ReverseRelationshipsCheckbox, Properties.Resources.ModInfoToolTipReverseRelationships);
@@ -392,7 +393,7 @@ namespace CKAN.GUI
                                       ? LegendIncompatibleLabel.ForeColor
                                       : SystemColors.WindowText,
                 NodeFont    = installed ? LegendInstalledLabel.Font
-                                        : SystemFonts.DefaultFont,
+                                        : null,
             };
         }
 

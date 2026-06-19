@@ -22,6 +22,7 @@ using CKAN.Games.KerbalSpaceProgram2;
 
 using Tests.Core.Configuration;
 using Tests.Data;
+using Tests.Core.Relationships;
 
 namespace Tests.Core.IO
 {
@@ -1505,10 +1506,10 @@ namespace Tests.Core.IO
         {
             // Arrange
             var user = new NullUser();
-            using (var cacheDir = new TemporaryDirectory())
             using (var inst     = new DisposableKSP())
             using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
             using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager()))
+            using (var cacheDir = new TemporaryDirectory())
             using (var cache    = new NetModuleCache(cacheDir))
             {
                 var installer = new ModuleInstaller(inst.KSP, cache, config, user);
@@ -1568,6 +1569,51 @@ namespace Tests.Core.IO
                 {
                     DirectoryAssert.Exists(absPath);
                 }
+            }
+        }
+
+        [TestCase(true), TestCase(false)]
+        public void UninstallList_ModInStockFolder_DoesNotOfferToDeleteStockFolder(bool stockDirEmpty)
+        {
+            // Arrange
+            var user = new NullUser();
+            using (var inst     = new DisposableKSP())
+            using (var config   = new FakeConfiguration(inst.KSP, inst.KSP.Name))
+            using (var regMgr   = RegistryManager.Instance(inst.KSP, new RepositoryDataManager()))
+            using (var cacheDir = new TemporaryDirectory())
+            using (var cache    = new NetModuleCache(cacheDir))
+            {
+                var installer = new ModuleInstaller(inst.KSP, cache, config, user);
+                var mod = CkanModule.FromJson(RelationshipResolverTests.MergeWithDefaults(
+                    @"{
+                        ""identifier"": ""KSPArtemisSuit""
+                    }"));
+                var absPaths = new string[]
+                               {
+                                   "GameData/Squad/Artemis_Suit/README.txt",
+                                   "GameData/Squad/Artemis_Suit/Config/SUITCOMBOS.cfg",
+                                   "GameData/Squad/Artemis_Suit/Icons/icon1.png",
+                                   "GameData/Squad/Artemis_Suit/Icons/icon2.png",
+                                   "GameData/Squad/Artemis_Suit/Textures/SoupAerospace.png",
+                               }.Select(inst.KSP.ToAbsoluteGameDir)
+                                .ToArray();
+                foreach (var f in stockDirEmpty
+                                      ? absPaths
+                                      : absPaths.Prepend(inst.KSP.ToAbsoluteGameDir("GameData/Squad/stockstuff.txt")))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(f)!);
+                    File.WriteAllText(f, "");
+                }
+                regMgr.registry.RegisterModule(mod, absPaths, inst.KSP, false);
+
+                // Act
+                HashSet<string>? possibleConfigOnlyDirs = null;
+                installer.UninstallList(new string[] { "KSPArtemisSuit" },
+                                        ref possibleConfigOnlyDirs, regMgr, false);
+
+                // Assert
+                DirectoryAssert.Exists(inst.KSP.ToAbsoluteGameDir("GameData/Squad"));
+                Assert.That(possibleConfigOnlyDirs, Is.Null.Or.Empty);
             }
         }
 

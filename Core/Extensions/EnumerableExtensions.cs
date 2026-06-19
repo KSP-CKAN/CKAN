@@ -231,8 +231,6 @@ namespace CKAN.Extensions
             {
                 result = func(result, item);
                 yield return result;
-
-
             }
         }
 

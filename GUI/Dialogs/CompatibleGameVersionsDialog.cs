@@ -79,8 +79,7 @@ namespace CKAN.GUI
             {
                 MessageLabel.Text = msg;
                 MessageLabel.Visible = true;
-                MessageLabel.Height = Util.LabelStringHeight(CreateGraphics(),
-                                                             MessageLabel);
+                MessageLabel.Height = CreateGraphics().LabelStringHeight(MessageLabel);
                 Height += MessageLabel.Height;
             }
         }
@@ -90,8 +89,7 @@ namespace CKAN.GUI
             base.OnResize(e);
             if (MessageLabel.Visible)
             {
-                MessageLabel.Height = Util.LabelStringHeight(CreateGraphics(),
-                                                             MessageLabel);
+                MessageLabel.Height = CreateGraphics().LabelStringHeight(MessageLabel);
             }
         }
 

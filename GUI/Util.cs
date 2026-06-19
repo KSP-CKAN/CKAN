@@ -16,7 +16,7 @@ using log4net;
 
 namespace CKAN.GUI
 {
-    #if NET10_0_OR_GREATER
+    #if NET6_0_OR_GREATER
     using WinReg = Microsoft.Win32.Registry;
     #endif
 
@@ -448,8 +448,15 @@ namespace CKAN.GUI
         /// <returns>
         /// Number of pixels needed vertically to fit the string
         /// </returns>
-        public static int StringHeight(Graphics g, string text, Font font, int maxWidth)
-            => (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height;
+        [ExcludeFromCodeCoverage]
+        public static int StringHeight(this Graphics g, string text, Font font, int maxWidth)
+            => Platform.IsMono ? (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height
+                               : (int)g.MeasureString(text, font, maxWidth).Height;
+
+        [ExcludeFromCodeCoverage]
+        public static int StringHeight<T>(this T c, int maxWidth)
+            where T : Control
+            => c.CreateGraphics().StringHeight(c.Text, c.Font, maxWidth);
 
         /// <summary>
         /// Calculate how much vertical space is needed to display a label's text
@@ -459,14 +466,16 @@ namespace CKAN.GUI
         /// <returns>
         /// Number of pixels needed vertically to show the label's full text
         /// </returns>
-        public static int LabelStringHeight(Graphics g, Label lbl)
+        [ExcludeFromCodeCoverage]
+        public static int LabelStringHeight(this Graphics g, Label lbl)
             => (int)(YScale(g) * (lbl.Margin.Vertical + lbl.Padding.Vertical
-                                  + StringHeight(g, lbl.Text, lbl.Font,
-                                                 (lbl.Width - lbl.Margin.Horizontal
-                                                            - lbl.Padding.Horizontal))));
+                                  + g.StringHeight(lbl.Text, lbl.Font,
+                                                   (lbl.Width - lbl.Margin.Horizontal
+                                                              - lbl.Padding.Horizontal))));
 
         #endregion
 
+        #pragma warning disable IDE0075
         public static bool DarkMode => Platform.IsWindows
                                            #if NET10_0_OR_GREATER
                                            ? Platform.IsWindows11
@@ -487,6 +496,18 @@ namespace CKAN.GUI
                                                                      "read -g AppleInterfaceStyle",
                                                                      "Dark")
                                                ?? false);
+        #pragma warning restore IDE0075
+
+        [ExcludeFromCodeCoverage]
+        public static float TextScaleFactor
+            #if NET6_0_OR_GREATER
+            => Platform.IsWindows
+               && WinReg.GetValue(TextScaleFactorKey, "TextScaleFactor", 100)
+                  is >= 100 and <= 300 and int f
+                      ? f / 100f : 1;
+            #else
+            => 1;
+            #endif
 
         private static bool? CommandOutputContains(string command, string args, string checkFor)
             => Utilities.DefaultIfThrows(() => Process.Start(new ProcessStartInfo()
@@ -503,6 +524,10 @@ namespace CKAN.GUI
         private const string DarkModeKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize";
         #endif
 
+        #if NET6_0_OR_GREATER
+        private const string TextScaleFactorKey = @"HKEY_CURRENT_USER\Software\Microsoft\Accessibility";
+        #endif
+
         // Hides the console window on Windows
         // useful when running the GUI
         [DllImport("kernel32.dll", SetLastError=true)]
@@ -517,7 +542,10 @@ namespace CKAN.GUI
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private static float XScale(Graphics g) => g.DpiX / 96f;
+
+        [ExcludeFromCodeCoverage]
         private static float YScale(Graphics g) => g.DpiY / 96f;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Util));

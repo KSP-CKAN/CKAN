@@ -1007,19 +1007,20 @@ namespace CKAN.IO
                 // before parents. GH #78.
                 foreach (string directory in directoriesToDelete.OrderByDescending(dir => dir.Length))
                 {
+                    var relPath = instance.ToRelativeGameDir(directory);
                     log.DebugFormat("Checking {0}...", directory);
                     // It is bad if any of this directories gets removed
                     // So we protect them
                     // A few string comparisons will be cheaper than hitting the disk, so do this first
-                    if (instance.Game.IsReservedDirectory(instance, directory))
+                    if (instance.Game.IsReservedDirectory(instance, directory)
+                        || instance.Game.StockFolders.Contains(relPath))
                     {
                         log.DebugFormat("Directory {0} is reserved, skipping", directory);
                         continue;
                     }
 
                     // See what's left in this folder and what we can do about it
-                    GroupFilesByRemovable(instance.ToRelativeGameDir(directory),
-                                          registry, modFiles, instance.Game,
+                    GroupFilesByRemovable(relPath, registry, modFiles, instance.Game,
                                           (Directory.Exists(directory)
                                               ? Directory.EnumerateFileSystemEntries(directory, "*", SearchOption.AllDirectories)
                                               : Enumerable.Empty<string>())
@@ -1129,53 +1130,47 @@ namespace CKAN.IO
         /// </summary>
         /// <param name="directories">The collection of directory path strings to examine</param>
         public HashSet<string> AddParentDirectories(HashSet<string> directories)
-        {
-            var gameDir = CKANPathUtils.NormalizePath(instance.GameDir);
-            return directories
-                .Where(dir => !string.IsNullOrWhiteSpace(dir))
-                // Normalize all paths before deduplicate
-                .Select(CKANPathUtils.NormalizePath)
-                // Remove any duplicate paths
-                .Distinct()
-                .SelectMany(dir =>
-                {
-                    var results = new HashSet<string>(Platform.PathComparer);
-                    // Adding in the DirectorySeparatorChar fixes attempts on Windows
-                    // to parse "X:" which resolves to Environment.CurrentDirectory
-                    var dirInfo = new DirectoryInfo(
-                        dir.EndsWith("/") ? dir : dir + Path.DirectorySeparatorChar);
+            => directories.Where(dir => dir is { Length: > 0 })
+                          // Normalize all paths before deduplicate
+                          .Select(CKANPathUtils.NormalizePath)
+                          // Remove any duplicate paths
+                          .Distinct()
+                          .SelectMany(dir =>
+                          {
+                              var results = new HashSet<string>(Platform.PathComparer);
+                              // Adding in the DirectorySeparatorChar fixes attempts on Windows
+                              // to parse "X:" which resolves to Environment.CurrentDirectory
+                              var dirInfo = new DirectoryInfo(
+                                  dir.EndsWith("/") ? dir : dir + Path.DirectorySeparatorChar);
 
-                    // If this is a parentless directory (Windows)
-                    // or if the Root equals the current directory (Mono)
-                    if (dirInfo.Parent == null || dirInfo.Root == dirInfo)
-                    {
-                        return results;
-                    }
+                              // If this is a parentless directory (Windows)
+                              // or if the Root equals the current directory (Mono)
+                              if (dirInfo.Parent == null || dirInfo.Root == dirInfo)
+                              {
+                                  return results;
+                              }
 
-                    if (!dir.StartsWith(gameDir, Platform.PathComparison))
-                    {
-                        dir = CKANPathUtils.ToAbsolute(dir, gameDir);
-                    }
+                              if (!dir.StartsWith(instance.GameDir, Platform.PathComparison))
+                              {
+                                  dir = CKANPathUtils.ToAbsolute(dir, instance.GameDir);
+                              }
 
-                    // Remove the system paths, leaving the path under the instance directory
-                    var relativeHead = CKANPathUtils.ToRelative(dir, gameDir);
-                    // Don't try to remove GameRoot
-                    if (!string.IsNullOrEmpty(relativeHead))
-                    {
-                        var pathArray = relativeHead.Split('/');
-                        var builtPath = "";
-                        foreach (var path in pathArray)
-                        {
-                            builtPath += path + '/';
-                            results.Add(CKANPathUtils.ToAbsolute(builtPath, gameDir));
-                        }
-                    }
-
-                    return results;
-                })
-                .Where(dir => !instance.Game.IsReservedDirectory(instance, dir))
-                .ToHashSet();
-        }
+                              for (var builtPath = CKANPathUtils.ToRelative(dir, instance.GameDir);
+                                   // Don't try to remove GameRoot
+                                   builtPath is { Length: > 0 };
+                                   builtPath = Path.GetDirectoryName(builtPath))
+                              {
+                                  if (instance.Game.StockFolders.Contains(builtPath))
+                                  {
+                                      // Can't delete this, no point in checking parent either
+                                      break;
+                                  }
+                                  results.Add(CKANPathUtils.ToAbsolute(builtPath, instance.GameDir));
+                              }
+                              return results;
+                          })
+                          .Where(dir => !instance.Game.IsReservedDirectory(instance, dir))
+                          .ToHashSet();
 
         #endregion
 

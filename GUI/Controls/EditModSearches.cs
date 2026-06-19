@@ -125,7 +125,7 @@ namespace CKAN.GUI
                 // Dock handles the layout for us
                 Dock      = DockStyle.Top,
                 ShowLabel = editors.Count < 1,
-                TabIndex  = editors.Count * 2
+                TabIndex  = AddSearchButton.TabIndex,
             };
             ctl.ApplySearch    += EditModSearch_ApplySearch;
             ctl.SurrenderFocus += EditModSearch_SurrenderFocus;
@@ -137,10 +137,23 @@ namespace CKAN.GUI
             ctl.BringToFront();
             // Still need to be able to see the add button, without this it's covered up
             AddSearchButton.BringToFront();
+            // Put it at the end of the tab order
+            ++AddSearchButton.TabIndex;
 
             Height = editors.Sum(ems => ems.Height);
 
             return ctl;
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+            if (editors.LastOrDefault() is EditModSearch ctl)
+            {
+                // Try to fit its size to the search box next to it
+                AddSearchButton.Size     = ctl.ButtonSize;
+                AddSearchButton.Location = ctl.ButtonLocation + new Size(AddSearchButton.Width, 0);
+            }
         }
 
         private void RemoveSearch(EditModSearch which)
@@ -158,6 +171,7 @@ namespace CKAN.GUI
 
                 editors.Remove(which);
                 Controls.Remove(which);
+                --AddSearchButton.TabIndex;
                 // Make sure the top label is always visible
                 if (//editors is [var editor, ..]
                     editors.Count > 0

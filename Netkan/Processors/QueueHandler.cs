@@ -331,7 +331,10 @@ namespace CKAN.NetKAN.Processors
                     IndentChar  = ' ',
                 })
             {
-                var serializer = new JsonSerializer();
+                var serializer = new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                };
                 serializer.Serialize(writer, ckan.AllJson);
             }
             return sw + Environment.NewLine;

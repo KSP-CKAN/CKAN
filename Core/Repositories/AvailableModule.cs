@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 using log4net;
 using Newtonsoft.Json;
@@ -186,6 +187,7 @@ namespace CKAN
         /// <returns>
         /// Nicely formatted JSON string containing metadata for all of this mod's available versions
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public string FullMetadata()
         {
             StringWriter sw = new StringWriter(new StringBuilder());
@@ -196,7 +198,10 @@ namespace CKAN
                 IndentChar  = ' '
             })
             {
-                new JsonSerializer().Serialize(writer, this);
+                new JsonSerializer()
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                }.Serialize(writer, this);
             }
             return sw.ToString();
         }
