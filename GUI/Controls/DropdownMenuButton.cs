@@ -38,16 +38,18 @@ namespace CKAN.GUI
 
             if (Menu != null)
             {
-                int arrowX = ClientRectangle.Width - 14,
+                var factor = Util.TextScaleFactor;
+                int arrowX = ClientRectangle.Width - (int)(14 * factor),
                     arrowY = (ClientRectangle.Height / 2) - 1;
 
                 pevent.Graphics.FillPolygon(
                     Enabled ? SystemBrushes.ControlText : SystemBrushes.ButtonShadow,
                     new Point[]
                     {
-                        new Point(arrowX,     arrowY),
-                        new Point(arrowX + 7, arrowY),
-                        new Point(arrowX + 3, arrowY + 4)
+                        new Point(arrowX, arrowY),
+                        new Point(arrowX + (int)(7 * factor), arrowY),
+                        new Point(arrowX + (int)(3 * factor),
+                                  arrowY + (int)(4 * factor))
                     }
                 );
             }

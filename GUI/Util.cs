@@ -16,7 +16,7 @@ using log4net;
 
 namespace CKAN.GUI
 {
-    #if NET10_0_OR_GREATER
+    #if NET6_0_OR_GREATER
     using WinReg = Microsoft.Win32.Registry;
     #endif
 
@@ -472,6 +472,7 @@ namespace CKAN.GUI
 
         #endregion
 
+        #pragma warning disable IDE0075
         public static bool DarkMode => Platform.IsWindows
                                            #if NET10_0_OR_GREATER
                                            ? Platform.IsWindows11
@@ -492,6 +493,17 @@ namespace CKAN.GUI
                                                                      "read -g AppleInterfaceStyle",
                                                                      "Dark")
                                                ?? false);
+        #pragma warning restore IDE0075
+
+        public static float TextScaleFactor
+            #if NET6_0_OR_GREATER
+            => Platform.IsWindows
+               && WinReg.GetValue(TextScaleFactorKey, "TextScaleFactor", 100)
+                  is >= 100 and <= 300 and int f
+                      ? f / 100f : 1;
+            #else
+            => 1;
+            #endif
 
         private static bool? CommandOutputContains(string command, string args, string checkFor)
             => Utilities.DefaultIfThrows(() => Process.Start(new ProcessStartInfo()
@@ -506,6 +518,10 @@ namespace CKAN.GUI
 
         #if NET10_0_OR_GREATER
         private const string DarkModeKey = @"HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Themes\Personalize";
+        #endif
+
+        #if NET6_0_OR_GREATER
+        private const string TextScaleFactorKey = @"HKEY_CURRENT_USER\Software\Microsoft\Accessibility";
         #endif
 
         // Hides the console window on Windows

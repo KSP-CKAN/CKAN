@@ -79,7 +79,7 @@ namespace CKAN.GUI
             SuppressCheckbox.Visible = true;
         }
 
-        private const int maxHeight = 600;
+        private static int maxHeight => (int)(Util.TextScaleFactor * 600);
         private TaskCompletionSource<Tuple<DialogResult, bool>>? task;
         private readonly string defaultYes;
         private readonly string defaultNo;

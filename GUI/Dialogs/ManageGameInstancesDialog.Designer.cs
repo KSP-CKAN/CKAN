@@ -121,20 +121,47 @@ namespace CKAN.GUI
             this.GameInstallPath.Width = 370;
             resources.ApplyResources(this.GameInstallPath, "GameInstallPath");
             //
-            // SelectButton
+            // SetAsDefaultCheckbox
             //
-            this.SelectButton.AutoSize = true;
-            this.SelectButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.SelectButton.Enabled = false;
-            this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SelectButton.Location = new System.Drawing.Point(459, 320);
-            this.SelectButton.Name = "SelectButton";
-            this.SelectButton.Size = new System.Drawing.Size(75, 23);
-            this.SelectButton.TabIndex = 1;
-            this.SelectButton.UseVisualStyleBackColor = true;
-            this.SelectButton.Click += new System.EventHandler(this.SelectButton_Click);
-            resources.ApplyResources(this.SelectButton, "SelectButton");
+            this.SetAsDefaultCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.SetAsDefaultCheckbox.AutoSize = true;
+            this.SetAsDefaultCheckbox.AutoCheck = false;
+            this.SetAsDefaultCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
+            this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
+            this.SetAsDefaultCheckbox.Size = new System.Drawing.Size(91, 17);
+            this.SetAsDefaultCheckbox.TabIndex = 4;
+            this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
+            this.SetAsDefaultCheckbox.Click += new System.EventHandler(this.SetAsDefaultCheckbox_Click);
+            resources.ApplyResources(this.SetAsDefaultCheckbox, "SetAsDefaultCheckbox");
+            //
+            // ForgetButton
+            //
+            this.ForgetButton.AutoSize = true;
+            this.ForgetButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ForgetButton.Location = new System.Drawing.Point(121, 320);
+            this.ForgetButton.Name = "ForgetButton";
+            this.ForgetButton.Size = new System.Drawing.Size(80, 23);
+            this.ForgetButton.TabIndex = 5;
+            this.ForgetButton.UseVisualStyleBackColor = true;
+            this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
+            resources.ApplyResources(this.ForgetButton, "ForgetButton");
+            //
+            // RenameButton
+            //
+            this.RenameButton.AutoSize = true;
+            this.RenameButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.RenameButton.Location = new System.Drawing.Point(207, 320);
+            this.RenameButton.Name = "RenameButton";
+            this.RenameButton.Size = new System.Drawing.Size(80, 23);
+            this.RenameButton.TabIndex = 3;
+            this.RenameButton.UseVisualStyleBackColor = true;
+            this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
+            resources.ApplyResources(this.RenameButton, "RenameButton");
             //
             // AddNewButton
             //
@@ -142,10 +169,11 @@ namespace CKAN.GUI
             this.AddNewButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
             this.AddNewButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.AddNewButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddNewButton.Location = new System.Drawing.Point(327, 320);
+            this.AddNewButton.Location = new System.Drawing.Point(293, 320);
+            this.AddNewButton.Padding = new System.Windows.Forms.Padding(0);
             this.AddNewButton.Menu = this.AddNewMenu;
             this.AddNewButton.Name = "AddNewButton";
-            this.AddNewButton.Size = new System.Drawing.Size(126, 23);
+            this.AddNewButton.Size = new System.Drawing.Size(160, 23);
             this.AddNewButton.TabIndex = 2;
             this.AddNewButton.UseVisualStyleBackColor = true;
             resources.ApplyResources(this.AddNewButton, "AddNewButton");
@@ -180,47 +208,20 @@ namespace CKAN.GUI
             this.CloneGameInstanceMenuItem.Click += new System.EventHandler(this.CloneGameInstanceMenuItem_Click);
             resources.ApplyResources(this.CloneGameInstanceMenuItem, "CloneGameInstanceMenuItem");
             //
-            // RenameButton
+            // SelectButton
             //
-            this.RenameButton.AutoSize = true;
-            this.RenameButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            this.RenameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.RenameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RenameButton.Location = new System.Drawing.Point(216, 320);
-            this.RenameButton.Name = "RenameButton";
-            this.RenameButton.Size = new System.Drawing.Size(105, 23);
-            this.RenameButton.TabIndex = 3;
-            this.RenameButton.UseVisualStyleBackColor = true;
-            this.RenameButton.Click += new System.EventHandler(this.RenameButton_Click);
-            resources.ApplyResources(this.RenameButton, "RenameButton");
-            //
-            // SetAsDefaultCheckbox
-            //
-            this.SetAsDefaultCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.SetAsDefaultCheckbox.AutoSize = true;
-            this.SetAsDefaultCheckbox.AutoCheck = false;
-            this.SetAsDefaultCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SetAsDefaultCheckbox.Location = new System.Drawing.Point(12, 324);
-            this.SetAsDefaultCheckbox.Name = "SetAsDefaultCheckbox";
-            this.SetAsDefaultCheckbox.Size = new System.Drawing.Size(91, 17);
-            this.SetAsDefaultCheckbox.TabIndex = 4;
-            this.SetAsDefaultCheckbox.UseVisualStyleBackColor = true;
-            this.SetAsDefaultCheckbox.Click += new System.EventHandler(this.SetAsDefaultCheckbox_Click);
-            resources.ApplyResources(this.SetAsDefaultCheckbox, "SetAsDefaultCheckbox");
-            //
-            // ForgetButton
-            //
-            this.ForgetButton.AutoSize = true;
-            this.ForgetButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
-            this.ForgetButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ForgetButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ForgetButton.Location = new System.Drawing.Point(140, 320);
-            this.ForgetButton.Name = "ForgetButton";
-            this.ForgetButton.Size = new System.Drawing.Size(70, 23);
-            this.ForgetButton.TabIndex = 5;
-            this.ForgetButton.UseVisualStyleBackColor = true;
-            this.ForgetButton.Click += new System.EventHandler(this.Forget_Click);
-            resources.ApplyResources(this.ForgetButton, "ForgetButton");
+            this.SelectButton.AutoSize = true;
+            this.SelectButton.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowOnly;
+            this.SelectButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.SelectButton.Enabled = false;
+            this.SelectButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SelectButton.Location = new System.Drawing.Point(459, 320);
+            this.SelectButton.Name = "SelectButton";
+            this.SelectButton.Size = new System.Drawing.Size(75, 23);
+            this.SelectButton.TabIndex = 1;
+            this.SelectButton.UseVisualStyleBackColor = true;
+            this.SelectButton.Click += new System.EventHandler(this.SelectButton_Click);
+            resources.ApplyResources(this.SelectButton, "SelectButton");
             //
             // ManageGameInstancesDialog
             //

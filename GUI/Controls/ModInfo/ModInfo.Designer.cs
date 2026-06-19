@@ -78,7 +78,7 @@ namespace CKAN.GUI
             // MetadataModuleNameTextBox
             //
             this.MetadataModuleNameTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.MetadataModuleNameTextBox.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.FontFamily, 13, System.Drawing.FontStyle.Bold, System.Drawing.SystemFonts.CaptionFont.Unit);
+            this.MetadataModuleNameTextBox.Font = new System.Drawing.Font(System.Drawing.SystemFonts.DefaultFont.FontFamily, 13, System.Drawing.FontStyle.Bold, System.Drawing.SystemFonts.DefaultFont.Unit);
             this.MetadataModuleNameTextBox.Location = new System.Drawing.Point(3, 0);
             this.MetadataModuleNameTextBox.Name = "MetadataModuleNameTextBox";
             this.MetadataModuleNameTextBox.Size = new System.Drawing.Size(494, 46);
