@@ -1005,9 +1005,6 @@
   <data name="ChangeTypeReplace" xml:space="preserve">
     <value>替换</value>
   </data>
-  <data name="ModDownloadsFailedMessage" xml:space="preserve">
-    <value>以下模组下载失败。 您可以重试或中止，如果您重试， 您可以选择从变更列表中移除一些模组(以及依赖它们的任何模组)。 共享相同下载链接的模组将自动更新到相同的选项。</value>
-  </data>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
@@ -1025,10 +1022,6 @@
   </data>
   <data name="AuthorSearchName">
     <value>由 {0} 制作的模组</value>
-  </data>
-  <data name="FilterLinkToolTip">
-    <value>单击以搜索
-Ctrl-单击或Shift-单击以合并当前搜索</value>
   </data>
   <data name="FolderContainsManagedFiles">
     <value>无法删除 {0} ，因为它包含了CKAN安装的文件。
