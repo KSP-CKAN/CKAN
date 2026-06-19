@@ -424,6 +424,12 @@
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;BRAK&gt;</value>
   </data>
+  <data name="InstanceListClone" xml:space="preserve">
+    <value>Klonuj</value>
+  </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>Sklonuj lub utwórz udawaną instalację</value>
+  </data>
   <data name="InstallTitle" xml:space="preserve">
     <value>Instalowanie, Aktualizowanie i Usuwanie Modów</value>
   </data>
