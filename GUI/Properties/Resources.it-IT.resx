@@ -910,9 +910,6 @@ Sei sicuro di voler saltare questo cambiamento?</value>
   <data name="ChangeTypeReplace" xml:space="preserve">
     <value>Sostituisci</value>
   </data>
-  <data name="ModDownloadsFailedMessage" xml:space="preserve">
-    <value>Non è stato possibile scaricare le seguenti mod. Puoi riprovare o annullare e, se riprovi, puoi scegliere di rimuovere alcune mod (e tutte le mod che dipendono da esse) dall'elenco delle modifiche. Le mod che condividono lo stesso link di download saranno automaticamente aggiornate alla stessa scelta.</value>
-  </data>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
@@ -930,10 +927,6 @@ Sei sicuro di voler saltare questo cambiamento?</value>
   </data>
   <data name="AuthorSearchName">
     <value>Mod di {0}</value>
-  </data>
-  <data name="FilterLinkToolTip">
-    <value>Clicca per cercare
-Ctrl-clic o Shift-click per combinare con la ricerca corrente</value>
   </data>
   <data name="FolderContainsManagedFiles">
     <value>Non è possibile eliminare {0} perché contiene file installati da CKAN.
