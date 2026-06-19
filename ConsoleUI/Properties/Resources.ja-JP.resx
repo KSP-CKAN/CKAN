@@ -204,6 +204,9 @@
   <data name="InstanceListDefaultToggle" xml:space="preserve">
     <value>デフォルト</value>
   </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>KSPインスタンスを複製または作成</value>
+  </data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>名前</value>
   </data>
