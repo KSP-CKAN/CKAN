@@ -101,17 +101,17 @@ namespace CKAN.Games.KerbalSpaceProgram
         /// Checks the path against a list of reserved game directories
         /// </summary>
         /// <param name="inst">Game instance we're checking</param>
-        /// <param name="path">Path to check</param>
+        /// <param name="absPath">Absolute path to check</param>
         /// <returns>True if reserved, false otherwise</returns>
-        public bool IsReservedDirectory(GameInstance inst, string path)
-            => path == inst.GameDir || path == inst.CkanDir
-            || path == PrimaryModDirectory(inst)
-            || path == Missions(inst)
-            || path == Scenarios(inst) || path == Tutorial(inst)
-            || path == Ships(inst)     || path == ShipsThumbs(inst)
-            || path == ShipsVab(inst)  || path == ShipsThumbsVAB(inst)
-            || path == ShipsSph(inst)  || path == ShipsThumbsSPH(inst)
-            || path == ShipsScript(inst);
+        public bool IsReservedDirectory(GameInstance inst, string absPath)
+            => absPath == inst.GameDir || absPath == inst.CkanDir
+            || absPath == PrimaryModDirectory(inst)
+            || absPath == Missions(inst)
+            || absPath == Scenarios(inst) || absPath == Tutorial(inst)
+            || absPath == Ships(inst)     || absPath == ShipsThumbs(inst)
+            || absPath == ShipsVab(inst)  || absPath == ShipsThumbsVAB(inst)
+            || absPath == ShipsSph(inst)  || absPath == ShipsThumbsSPH(inst)
+            || absPath == ShipsScript(inst);
 
         public bool AllowInstallationIn(string name, [NotNullWhen(true)] out string? path)
             => allowedFolders.TryGetValue(name, out path);
