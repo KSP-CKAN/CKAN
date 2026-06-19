@@ -421,6 +421,9 @@
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;НЕТ&gt;</value>
   </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>Клонировать сборку</value>
+  </data>
   <data name="InstallTitle" xml:space="preserve">
     <value>Установка, обновление и удаление модификаций</value>
   </data>
