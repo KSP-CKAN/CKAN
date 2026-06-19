@@ -180,14 +180,14 @@
   <data name="helpToolStripMenuItem.Text" xml:space="preserve">
     <value>Hilfe</value>
   </data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
+    <value>Erhalte Hilfe für ein Ingame-Problem mit Mods</value>
+  </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
     <value>Benutzerhandbuch</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
     <value>CKAN &amp;Discord</value>
-  </data>
-  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
-    <value>Erhalte Hilfe für ein Ingame-Problem mit Mods</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
     <value>Fehler mit dem CKAN Client melden</value>
