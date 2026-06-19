@@ -173,9 +173,6 @@
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
     <value>{0}: {1} не является корректным ZIP-файлом: {2}</value>
   </data>
-  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
-    <value>{0}: SHA256 для {1} — {2}, должно быть {3}</value>
-  </data>
   <data name="NetRepoUpdatingBuildMap" xml:space="preserve">
     <value>Обновление информации о версии игры</value>
   </data>
