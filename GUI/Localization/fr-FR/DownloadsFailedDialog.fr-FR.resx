@@ -129,6 +129,9 @@
   <data name="ErrorColumn.HeaderText" xml:space="preserve">
     <value>Erreur</value>
   </data>
+  <data name="CopyErrorToolStripMenuItem.Text" xml:space="preserve">
+    <value>Copier les erreurs dans le presse-papier</value>
+  </data>
   <data name="RetryButton.Text" xml:space="preserve">
     <value>Réessayer</value>
   </data>
