@@ -138,15 +138,6 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>添加</value>
   </data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
-    <value>注意:如果您添加类似于“1.2”的版本您将会强制所有兼容1.2.xx（例如1.2.0、1.2.1等等）的Mod与该版本兼容</value>
-  </data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
-    <value>如果游戏被更新，此对话框将重新弹出以便您调整设置。</value>
-  </data>
-  <data name="WarningLabel.Text" xml:space="preserve">
-    <value>警告！无法检查Mod是否真正与所选版本兼容！请小心操作。</value>
-  </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>取消</value>
   </data>
