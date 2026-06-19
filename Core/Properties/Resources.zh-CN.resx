@@ -173,9 +173,6 @@
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
     <value>{0}: {1} 并不是一个有效的 ZIP 文件: {2}</value>
   </data>
-  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
-    <value>{0}: {1} 的 SHA256 值为 {2}，但应该为 {3}</value>
-  </data>
   <data name="NetRepoUpdatingBuildMap" xml:space="preserve">
     <value>刷新游戏版本数据</value>
   </data>
