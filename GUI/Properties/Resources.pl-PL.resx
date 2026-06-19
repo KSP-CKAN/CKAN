@@ -994,9 +994,6 @@ Lub wybierz "Aktualizuj repozytoria po uruchomieniu" w ustawieniach.</value>
   <data name="ChangeTypeReplace" xml:space="preserve">
     <value>Zastąp</value>
   </data>
-  <data name="ModDownloadsFailedMessage" xml:space="preserve">
-    <value>Nie udało się pobrać następujących modyfikacji. Możesz ponowić próbę lub przerwać i spróbować ponownie, możesz usunąć niektóre modyfikacje (i dowolne modyfikacje, które ich wymagają) z zestawu zmian. Modyfikacje, które dzielą ten sam link pobierania, zostaną automatycznie zaktualizowane do tego samego wyboru.</value>
-  </data>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
@@ -1014,10 +1011,6 @@ Lub wybierz "Aktualizuj repozytoria po uruchomieniu" w ustawieniach.</value>
   </data>
   <data name="AuthorSearchName">
     <value>Według autora {0}</value>
-  </data>
-  <data name="FilterLinkToolTip">
-    <value>Kliknij, aby wyszukać
-Kliknij razem z Ctrl lub Shift, aby połączyć z bieżącym wyszukiwaniem</value>
   </data>
   <data name="FolderContainsManagedFiles">
     <value>Nie można usunąć folderu {0}, ponieważ zawiera pliki zainstalowane przez CKAN.
