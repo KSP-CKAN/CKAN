@@ -424,6 +424,12 @@
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;NINGUNO&gt;</value>
   </data>
+  <data name="InstanceListClone" xml:space="preserve">
+    <value>Clonar</value>
+  </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>Clonar instancia del juego</value>
+  </data>
   <data name="InstallTitle" xml:space="preserve">
     <value>Instalando, Actualizando, y Eliminando Mods</value>
   </data>
