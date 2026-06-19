@@ -222,14 +222,21 @@
   <data name="helpToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Aide</value>
   </data>
+  <data name="gameDiscordToolStripMenuItem.Text" xml:space="preserve">
+    <value>&amp;Discord du Jeu</value>
+  </data>
+  <data name="gameDiscordToolStripMenuItem.ToolTipText" xml:space="preserve">
+    <value>Discutez à propos des sujets liés au jeu
+(postez vos captures d'écran d'erreur B9PartSwitch ici !)</value>
+  </data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
+    <value>Obtenir de l'aide pour un problème dans le jeu avec des mods</value>
+  </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Guide de l'utilisateur CKAN</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Discord CKAN</value>
-  </data>
-  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
-    <value>Obtenir de l'aide pour un problème dans le jeu avec des mods</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
     <value>Signaler un problème avec le &amp;client CKAN</value>
