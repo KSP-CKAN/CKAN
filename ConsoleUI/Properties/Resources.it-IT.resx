@@ -421,6 +421,12 @@
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;NESSUNA&gt;</value>
   </data>
+  <data name="InstanceListClone" xml:space="preserve">
+    <value>Clona</value>
+  </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>Clonare un'istanza</value>
+  </data>
   <data name="InstallTitle" xml:space="preserve">
     <value>Installazione, aggiornamento e rimozione di Mod</value>
   </data>
