@@ -138,15 +138,6 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>Добавить</value>
   </data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
-    <value>Пример: при выборе версии установки игры «1.x» с данной установкой будут совместимы все модификации, совместимые с версиями 1.x.0, 1.x.1 и т.д.</value>
-  </data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
-    <value>Для уточнения настроек это окно будет показываться после каждого обновления игры.</value>
-  </data>
-  <data name="WarningLabel.Text" xml:space="preserve">
-    <value>Внимание! Невозможно убедиться в полной совместимости модификаций с выбранными версиями игры! Действуйте с осторожностью.</value>
-  </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>Отмена</value>
   </data>
