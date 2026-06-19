@@ -138,15 +138,6 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>Aggiungi</value>
   </data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
-    <value>Nota: se aggiungi una versione come "1.2" obbligherai tutte le mod compatibili con la 1.2.xx (1.2.0, 1.2.1, ecc.) a essere compatibili con questa istanza di gioco.</value>
-  </data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
-    <value>Se il gioco viene aggiornato, questa finestra di dialogo verrà visualizzata nuovamente per permetterti di regolare le impostazioni.</value>
-  </data>
-  <data name="WarningLabel.Text" xml:space="preserve">
-    <value>Attenzione! Non c'è modo di verificare se la mod è veramente compatibile con le versioni qui selezionate! Ti preghiamo di agire con cautela.</value>
-  </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>Annulla</value>
   </data>
