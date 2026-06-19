@@ -222,14 +222,14 @@
   <data name="helpToolStripMenuItem.Text" xml:space="preserve">
     <value>帮助</value>
   </data>
+  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
+    <value>获取有关游戏内mod问题的帮助</value>
+  </data>
   <data name="userGuideToolStripMenuItem.Text" xml:space="preserve">
     <value>CKAN &amp;用户指南</value>
   </data>
   <data name="discordToolStripMenuItem.Text" xml:space="preserve">
     <value>CKAN &amp;Discord</value>
-  </data>
-  <data name="modSupportToolStripMenuItem.Text" xml:space="preserve">
-    <value>获取有关游戏内mod问题的帮助</value>
   </data>
   <data name="reportClientIssueToolStripMenuItem.Text" xml:space="preserve">
     <value>报告CKAN客户端的问题</value>
