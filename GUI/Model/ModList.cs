@@ -205,16 +205,16 @@ namespace CKAN.GUI
                     Value = "-"
                 };
 
-            var name           = new DataGridViewTextBoxCell { Value = ToGridText(mod.Name)                                  };
-            var author         = new DataGridViewTextBoxCell { Value = ToGridText(string.Join(", ", mod.Authors))            };
-            var installVersion = new DataGridViewTextBoxCell { Value = mod.InstalledVersion ?? ""                            };
-            var latestVersion  = new DataGridViewTextBoxCell { Value = mod.LatestVersion                                     };
-            var compat         = new DataGridViewTextBoxCell { Value = mod.GameCompatibility ?? ""                           };
-            var downloadSize   = new DataGridViewTextBoxCell { Value = mod.DownloadSize ?? ""                                };
-            var installSize    = new DataGridViewTextBoxCell { Value = mod.InstallSize                                       };
-            var releaseDate    = new DataGridViewTextBoxCell { Value = (object?)mod.Module.release_date?.ToLocalTime() ?? "" };
-            var installDate    = new DataGridViewTextBoxCell { Value = (object?)mod.InstallDate?.ToLocalTime() ?? ""         };
-            var downloadCount  = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"                             };
+            var name           = new DataGridViewTextBoxCell { Value = ToGridText(mod.Name)                               };
+            var author         = new DataGridViewTextBoxCell { Value = ToGridText(string.Join(", ", mod.Authors))         };
+            var installVersion = new DataGridViewTextBoxCell { Value = mod.InstalledVersion ?? ""                         };
+            var latestVersion  = new DataGridViewTextBoxCell { Value = mod.LatestVersion                                  };
+            var compat         = new DataGridViewTextBoxCell { Value = mod.GameCompatibility ?? ""                        };
+            var downloadSize   = new DataGridViewTextBoxCell { Value = mod.DownloadSize ?? ""                             };
+            var installSize    = new DataGridViewTextBoxCell { Value = mod.InstallSize                                    };
+            var releaseDate    = new DataGridViewTextBoxCell { Value = FormatDate(mod.Module.release_date?.ToLocalTime()) };
+            var installDate    = new DataGridViewTextBoxCell { Value = FormatDate(mod.InstallDate?.ToLocalTime())         };
+            var downloadCount  = new DataGridViewTextBoxCell { Value = $"{mod.DownloadCount:N0}"                          };
             var desc           = new DataGridViewTextBoxCell
                                  {
                                      Value       = ToGridText(mod.Abstract),
@@ -237,6 +237,10 @@ namespace CKAN.GUI
 
         private static string ToGridText(string text)
             => Platform.IsMono ? text.Replace("&", "&&") : text;
+
+        private static string FormatDate(DateTime? dt)
+            => dt?.ToString(dt.Value.Date == DateTime.Today ? "t" : "d")
+                 ?? "";
 
         #endregion
 
