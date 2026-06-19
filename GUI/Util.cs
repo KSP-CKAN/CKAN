@@ -448,10 +448,12 @@ namespace CKAN.GUI
         /// <returns>
         /// Number of pixels needed vertically to fit the string
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static int StringHeight(this Graphics g, string text, Font font, int maxWidth)
             => Platform.IsMono ? (int)g.MeasureString(text, font, (int)(maxWidth / XScale(g))).Height
                                : (int)g.MeasureString(text, font, maxWidth).Height;
 
+        [ExcludeFromCodeCoverage]
         public static int StringHeight<T>(this T c, int maxWidth)
             where T : Control
             => c.CreateGraphics().StringHeight(c.Text, c.Font, maxWidth);
@@ -464,6 +466,7 @@ namespace CKAN.GUI
         /// <returns>
         /// Number of pixels needed vertically to show the label's full text
         /// </returns>
+        [ExcludeFromCodeCoverage]
         public static int LabelStringHeight(this Graphics g, Label lbl)
             => (int)(YScale(g) * (lbl.Margin.Vertical + lbl.Padding.Vertical
                                   + g.StringHeight(lbl.Text, lbl.Font,
@@ -495,6 +498,7 @@ namespace CKAN.GUI
                                                ?? false);
         #pragma warning restore IDE0075
 
+        [ExcludeFromCodeCoverage]
         public static float TextScaleFactor
             #if NET6_0_OR_GREATER
             => Platform.IsWindows
@@ -538,7 +542,10 @@ namespace CKAN.GUI
             }
         }
 
+        [ExcludeFromCodeCoverage]
         private static float XScale(Graphics g) => g.DpiX / 96f;
+
+        [ExcludeFromCodeCoverage]
         private static float YScale(Graphics g) => g.DpiY / 96f;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Util));
