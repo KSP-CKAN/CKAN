@@ -138,15 +138,6 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>Hinzufügen</value>
   </data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
-    <value>Beachte: Wenn du Versionen wie "1.2" hinzufügst, werden alle Versionen im Bereich 1.2.xx (also 1.2.0, 1.2.1, etc.) als kompatibel markiert.</value>
-  </data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
-    <value>Nach jedem Spielupdate wird dir dieser Dialog wieder angezeigt, damit du deine Auswahl überprüfen kannst.</value>
-  </data>
-  <data name="WarningLabel.Text" xml:space="preserve">
-    <value>Achtung! Ob Mods tatsächlich mit den ausgewählten Versionen kompatibel sind, ist nicht überprüfbar! Sei vorsichtig.</value>
-  </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>Abbrechen</value>
   </data>
