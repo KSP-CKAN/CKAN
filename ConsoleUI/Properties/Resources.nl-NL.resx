@@ -327,6 +327,9 @@
   <data name="InstanceListNoVersion" xml:space="preserve">
     <value>&lt;NONE&gt;</value>
   </data>
+  <data name="CloneInstanceTitle" xml:space="preserve">
+    <value>Dupliceer Spel Instance</value>
+  </data>
   <data name="InstallTooManyModsNameHeader" xml:space="preserve">
     <value>Naam</value>
   </data>
