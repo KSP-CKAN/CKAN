@@ -138,15 +138,6 @@
   <data name="AddVersionToListButton.Text" xml:space="preserve">
     <value>追加</value>
   </data>
-  <data name="WildcardExplanationLabel.Text" xml:space="preserve">
-    <value>注釈: "1.2"のようなバージョンを追加した場合はに1.2.xx (1.2.0, 1.2.1, etc) に対応する全てのModがこのゲームインスタンスに対応するものとされます。 </value>
-  </data>
-  <data name="FutureUpdatesLabel.Text" xml:space="preserve">
-    <value>ゲームがアップデートされる際には設定を調整できるようにこのダイアログが再び表示されます。</value>
-  </data>
-  <data name="WarningLabel.Text" xml:space="preserve">
-    <value>警告！ ここでそのModが本当に選択されたバージョンに対応しているか確認する方法がありません！ 慎重に選択してください。</value>
-  </data>
   <data name="CancelChooseCompatibleVersionsButton.Text" xml:space="preserve">
     <value>取消</value>
   </data>
