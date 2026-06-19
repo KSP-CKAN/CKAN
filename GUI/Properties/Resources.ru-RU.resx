@@ -812,9 +812,6 @@
   <data name="ChangeTypeReplace" xml:space="preserve">
     <value>Замена</value>
   </data>
-  <data name="ModDownloadsFailedMessage" xml:space="preserve">
-    <value>Не удалось загрузить следующие моды. Вы можете повторить или отменить, и при повторной попытке, вы можете удалить из списка изменений некоторые моды (и любые модификации, зависящие от них). Моды, имеющие одну и ту же ссылку на загрузку, будут автоматически обновлены до того же выбора.</value>
-  </data>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Модификация</value>
   </data>
@@ -832,10 +829,6 @@
   </data>
   <data name="AuthorSearchName">
     <value>Моды от {0}</value>
-  </data>
-  <data name="FilterLinkToolTip">
-    <value>Нажмите для поиска
-Ctrl-клик или Shift-клик для совмещения с текущим поиском</value>
   </data>
   <data name="DeleteUnmanagedFileDelete" xml:space="preserve">
     <value>Удалить</value>
