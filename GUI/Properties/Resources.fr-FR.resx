@@ -1011,9 +1011,6 @@ Ou cochez "mettre à jour au lancement" dans les paramètres.</value>
   <data name="ChangeTypeReplace" xml:space="preserve">
     <value>Remplacement</value>
   </data>
-  <data name="ModDownloadsFailedMessage" xml:space="preserve">
-    <value>Les mods suivants n'ont pas pu être téléchargés. Vous pouvez réessayer ou annuler, et si vous réessayez, vous pouvez choisir de supprimer certains mods (et tous les mods qui dépendent d'eux) de la liste des changements. Les mods qui partagent le même lien de téléchargement seront automatiquement mis à jour au même choix.</value>
-  </data>
   <data name="ModDownloadsFailedColHdr" xml:space="preserve">
     <value>Mod</value>
   </data>
@@ -1031,10 +1028,6 @@ Ou cochez "mettre à jour au lancement" dans les paramètres.</value>
   </data>
   <data name="AuthorSearchName">
     <value>Mods de {0}</value>
-  </data>
-  <data name="FilterLinkToolTip">
-    <value>Cliquer pour rechercher
-Ctrl-clic ou Maj-clic pour combiner avec la recherche en cours</value>
   </data>
   <data name="FolderContainsManagedFiles">
     <value>Impossible de supprimer {0} car il contient des fichiers qui ont été installés par CKAN.
