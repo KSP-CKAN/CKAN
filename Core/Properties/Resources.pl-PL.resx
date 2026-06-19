@@ -173,9 +173,6 @@ Zainstaluj pakiet `mono-complete` lub pasujący do twojego systemu operacyjnego.
   <data name="NetModuleCacheNotValidZIP" xml:space="preserve">
     <value>{0}: {1} nie jest prawidłowym plikiem ZIP: {2}</value>
   </data>
-  <data name="NetModuleCacheMismatchSHA256" xml:space="preserve">
-    <value>{0}: {1} ma SHA256 {2}, powinno być {3}</value>
-  </data>
   <data name="NetRepoUpdatingBuildMap" xml:space="preserve">
     <value>Odświeżanie danych wersji gry</value>
   </data>
