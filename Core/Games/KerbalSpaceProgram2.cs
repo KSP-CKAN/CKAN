@@ -78,6 +78,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
             "GameData/Mods",
             "BepInEx",
             "BepInEx/plugins",
+            "mods", // KSP2 Redux Mod Directory
         };
 
         public string[] AutoRemovableDirs => Array.Empty<string>();
@@ -258,6 +259,7 @@ namespace CKAN.Games.KerbalSpaceProgram2
         // (PrimaryModDirectoryRelative is allowed implicitly)
         private readonly Dictionary<string, string> allowedFolders = new Dictionary<string, string>
         {
+            { "mods",            "mods"            }, // KSP2 Redux Mods Folder
             { "BepInEx",         "BepInEx"         },
             { "BepInEx/plugins", "BepInEx/plugins" },
         };
