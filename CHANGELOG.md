@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Features
 
+- [GUI] Add local mod profiles for switching requested mods within one game installation.
 - [GUI] Relationships tab improvements (#4631 by: HebaruSan)
 - [Core] Improve error messages for provide conflicts (#4608 by: Phantomical; reviewed: HebaruSan)
 - [Multiple] Support Windows text scaling setting on net10 (#4677 by: HebaruSan)

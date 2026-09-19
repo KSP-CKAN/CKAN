@@ -32,6 +32,7 @@ namespace CKAN.GUI
             System.ComponentModel.ComponentResourceManager resources = new SingleAssemblyComponentResourceManager(typeof(Main));
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ManageProfilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ManageGameInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenGameDirectoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -152,6 +153,7 @@ namespace CKAN.GUI
             //
             this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ManageGameInstancesToolStripMenuItem,
+            this.ManageProfilesToolStripMenuItem,
             this.OpenGameDirectoryToolStripMenuItem,
             this.toolStripSeparator1,
             this.InstallationHistoryToolStripMenuItem,
@@ -169,6 +171,9 @@ namespace CKAN.GUI
             this.ViewUnmanagedFilesToolStripMenuItem,
             this.toolStripSeparator8,
             this.ExitToolStripMenuItem});
+            this.ManageProfilesToolStripMenuItem.Name = "ManageProfilesToolStripMenuItem";
+            this.ManageProfilesToolStripMenuItem.Click += ManageProfilesToolStripMenuItem_Click;
+            resources.ApplyResources(this.ManageProfilesToolStripMenuItem, "ManageProfilesToolStripMenuItem");
             this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
             this.FileToolStripMenuItem.Size = new System.Drawing.Size(50, 29);
             resources.ApplyResources(this.FileToolStripMenuItem, "FileToolStripMenuItem");
@@ -957,6 +962,7 @@ namespace CKAN.GUI
 
         private System.Windows.Forms.MenuStrip MainMenu;
         private System.Windows.Forms.ToolStripMenuItem FileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ManageProfilesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ManageGameInstancesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenGameDirectoryToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

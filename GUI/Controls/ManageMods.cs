@@ -197,6 +197,8 @@ namespace CKAN.GUI
             RaiseError?.Invoke(error);
         }
 
+        public bool HasPendingChanges => currentChangeSet?.Count > 0;
+
         private List<ModChange>? ChangeSet
         {
             get => currentChangeSet;

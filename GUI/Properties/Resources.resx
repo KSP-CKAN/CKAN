@@ -496,4 +496,11 @@ Using this checkbox will de-select these mods. This cannot be undone.
 Are you sure?</value></data>
   <data name="InstallAllCheckboxConfirmationYes" xml:space="preserve"><value>De-select</value></data>
   <data name="InstallAllCheckboxConfirmationNo" xml:space="preserve"><value>Cancel</value></data>
+  <data name="ProfilesActive" xml:space="preserve"><value>Active profile: {0}</value></data>
+  <data name="ProfilesNone" xml:space="preserve"><value>None</value></data>
+  <data name="ProfilesDeletePrompt" xml:space="preserve"><value>Delete profile {0}? This does not uninstall any mods.</value></data>
+  <data name="ProfilesSwitchTitle" xml:space="preserve"><value>Switch to profile: {0}</value></data>
+  <data name="ProfilesSwitchFailed" xml:space="preserve"><value>The profile could not be applied. The previous profile remains active.</value></data>
+  <data name="ProfilesStatus" xml:space="preserve"><value>Profile: {0}</value></data>
+  <data name="ProfilesPendingChanges" xml:space="preserve"><value>Apply or clear the pending mod changes before switching profiles.</value></data>
 </root>

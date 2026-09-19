@@ -185,4 +185,5 @@
   <data name="InstallationHistoryTabPage.Text" xml:space="preserve"><value>Installation History</value></data>
   <data name="DownloadStatisticsTabPage.Text" xml:space="preserve"><value>Download Statistics</value></data>
   <data name="DownloadStatisticsOKButton.Text" xml:space="preserve"><value>OK</value></data>
+  <data name="ManageProfilesToolStripMenuItem.Text" xml:space="preserve"><value>Manage mod profiles...</value></data>
 </root>

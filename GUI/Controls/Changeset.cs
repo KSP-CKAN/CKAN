@@ -45,6 +45,13 @@ namespace CKAN.GUI
                        ?? new List<ChangesetRow>());
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public bool AllowIndividualChanges
+        {
+            get => DeleteColumn.Visible;
+            set => DeleteColumn.Visible = value;
+        }
+
         public CkanModule? SelectedItem => SelectedRow?.Change.Mod;
 
         public event Action<CkanModule?>? OnSelectedItemsChanged;
@@ -81,7 +88,7 @@ namespace CKAN.GUI
 
         private void ChangesGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (ChangesGrid.CurrentCell?.OwningColumn == DeleteColumn
+            if (AllowIndividualChanges && ChangesGrid.CurrentCell?.OwningColumn == DeleteColumn
                 && ChangesGrid.CurrentRow?.DataBoundItem is ChangesetRow row
                 && row.Change.IsRemovable
                 && row.ConfirmUncheck())

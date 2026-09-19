@@ -390,6 +390,10 @@ namespace CKAN.GUI
                     CurrentInstance.Game.ShortName,
                     CurrentInstance.Version()?.ToString(),
                     CurrentInstance.playTime?.ToString() ?? "");
+                if (RegistryManager.Instance(CurrentInstance, repoData).registry.ActiveProfile is string profile)
+                {
+                    StatusInstanceLabel.Text += "    |    " + string.Format(Properties.Resources.ProfilesStatus, profile);
+                }
             }
         }
 

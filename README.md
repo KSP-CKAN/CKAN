@@ -42,6 +42,23 @@ This repository includes a validator that you can use to [validate your files][3
 
 CKAN can download, install and update mods in just a few clicks. See the [User guide][2] to get started with CKAN.
 
+### Mod profiles
+
+For one game installation, choose **File → Manage mod profiles** to save the current
+requested mods under a name. Create more profiles from the current installation,
+then select one and review the proposed changes before switching. Installs,
+removals, upgrades, and changes to whether a mod is marked as automatically
+installed update the active profile after CKAN saves the installation.
+
+Profiles remember requested mods, not exact versions or copies of game files.
+CKAN resolves dependencies and checks compatibility and conflicts when switching.
+Mods shared by both profiles remain installed when their versions satisfy the
+target. Files outside CKAN's ownership are preserved; a conflicting file blocks
+the switch. Profiles do not switch saves, settings, or manually installed content.
+Older CKAN releases may discard profile names and mod selections when they save a
+profiled installation; the mods themselves remain installed and still appear as
+installed in CKAN.
+
 ## CKAN for modders
 
 While anyone can contribute metadata for your mod, we believe that you know your mod best.

@@ -11,6 +11,8 @@ namespace CKAN.GUI
     {
         private void UpdateChangesDialog(List<ModChange> changeset, Dictionary<CkanModule, string>? conflicts)
         {
+            pendingProfile = null;
+            Changeset.AllowIndividualChanges = true;
             if (CurrentInstance != null)
             {
                 Changeset.LoadChangeset(
@@ -32,6 +34,14 @@ namespace CKAN.GUI
 
         private void Changeset_OnCancelChanges(bool reset)
         {
+            if (pendingProfile != null)
+            {
+                pendingProfile = null;
+                Changeset.AllowIndividualChanges = true;
+                EnableMainWindow();
+                tabController.ShowTab(ManageModsTabPage.Name);
+                return;
+            }
             if (reset)
             {
                 ManageMods.ClearChangeSet();
@@ -41,6 +51,13 @@ namespace CKAN.GUI
 
         private void Changeset_OnConfirmChanges(List<ModChange> changeset)
         {
+            if (pendingProfile is string profile)
+            {
+                pendingProfile = null;
+                Changeset.AllowIndividualChanges = true;
+                ApplyProfile(profile);
+                return;
+            }
             if (CurrentInstance != null)
             {
                 DisableMainWindow();
