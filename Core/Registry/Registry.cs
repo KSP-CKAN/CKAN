@@ -29,7 +29,7 @@ namespace CKAN
     // anything has changed. But that would involve catching access to a lot of the data
     // structures we pass back, and we're not doing that yet.
 
-    public class Registry : IEnlistmentNotification, IRegistryQuerier
+    public partial class Registry : IEnlistmentNotification, IRegistryQuerier
     {
         [JsonIgnore] private const int LATEST_REGISTRY_VERSION = 3;
         [JsonIgnore] private static readonly ILog log = LogManager.GetLogger(typeof(Registry));

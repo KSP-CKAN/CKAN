@@ -23,7 +23,7 @@ namespace CKAN.IO
         public bool     makedir;
     }
 
-    public class ModuleInstaller
+    public partial class ModuleInstaller
     {
         // Constructor
         public ModuleInstaller(GameInstance      inst,
@@ -42,6 +42,8 @@ namespace CKAN.IO
         }
 
         public IUser User { get; set; }
+
+        private bool preserveUnmanagedFiles;
 
         public event Action<CkanModule, long, long>?      InstallProgress;
         public event Action<InstalledModule, long, long>? RemoveProgress;
@@ -415,6 +417,10 @@ namespace CKAN.IO
                                 throw new DllLocationMismatchKraken(dll, string.Format(
                                     Properties.Resources.ModuleInstallerBadDLLLocation, module.identifier, dll));
                             }
+                            if (preserveUnmanagedFiles)
+                            {
+                                throw new FileExistsKraken(instance.ToAbsoluteGameDir(dll));
+                            }
                             // Delete the manually installed DLL transaction-style because we believe we'll be replacing it
                             var toDelete = instance.ToAbsoluteGameDir(dll);
                             log.DebugFormat("Deleting manually installed DLL {0}", toDelete);
@@ -425,7 +431,7 @@ namespace CKAN.IO
                     }
 
                     // Look for overwritable files if session is interactive
-                    if (!User.Headless)
+                    if (!preserveUnmanagedFiles && !User.Headless)
                     {
                         if (FindConflictingFiles(zipfile, files, registry).ToArray()
                             is (InstallableFile file, bool same)[] { Length: > 0 } conflicting)
@@ -1002,6 +1008,12 @@ namespace CKAN.IO
                 // Remove from registry.
                 registry.DeregisterModule(instance, identifier);
 
+                if (preserveUnmanagedFiles)
+                {
+                    transaction.Complete();
+                    return;
+                }
+
                 // Our collection of directories may leave empty parent directories.
                 directoriesToDelete = AddParentDirectories(directoriesToDelete);
 
@@ -1181,7 +1193,7 @@ namespace CKAN.IO
         /// <summary>
         /// Adds and removes the listed modules as a single transaction.
         /// No relationships will be processed.
-        /// This *will* save the registry.
+        /// Normally saves the registry; profile switching saves after activation.
         /// </summary>
         /// <param name="possibleConfigOnlyDirs">Directories that the user might want to remove after uninstall</param>
         /// <param name="registry_manager">Registry to use</param>
@@ -1193,6 +1205,7 @@ namespace CKAN.IO
         /// <param name="downloader">Downloader to use</param>
         /// <param name="deduper">Deduplicator to use</param>
         /// <param name="enforceConsistency">Whether to enforce consistency</param>
+        /// <param name="saveResult">Whether to save the registry after applying changes</param>
         private void AddRemove(ref HashSet<string>?                 possibleConfigOnlyDirs,
                                RegistryManager                      registry_manager,
                                RelationshipResolver                 resolver,
@@ -1202,7 +1215,8 @@ namespace CKAN.IO
                                ISet<CkanModule>                     skipFiles,
                                IDownloader                          downloader,
                                bool                                 enforceConsistency,
-                               InstalledFilesDeduplicator?          deduper = null)
+                               InstalledFilesDeduplicator?          deduper = null,
+                               bool                                 saveResult = true)
         {
             using (var tx = CkanTransaction.CreateTransactionScope())
             {
@@ -1286,7 +1300,10 @@ namespace CKAN.IO
                     modInstallCompletedBytes += mod.install_size;
                 }
 
-                registry_manager.Save(enforceConsistency);
+                if (saveResult)
+                {
+                    registry_manager.Save(enforceConsistency);
+                }
                 tx.Complete();
                 EnforceCacheSizeLimit(registry_manager.registry, cache, config);
             }

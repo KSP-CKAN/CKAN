@@ -422,6 +422,7 @@ namespace CKAN
                 Directory.CreateDirectory(directoryPath);
             }
 
+            registry.CaptureActiveProfile();
             txFileMgr.WriteAllBytes(path, Encoding.UTF8.GetBytes(Serialize()));
 
             if (!Directory.Exists(gameInstance.InstallHistoryDir))
