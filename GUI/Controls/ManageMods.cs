@@ -133,6 +133,7 @@ namespace CKAN.GUI
         private List<ModChange>?            currentChangeSet;
         private Dictionary<GUIMod, string>? conflicts;
         private bool freezeChangeSet = false;
+        private readonly List<CkanModule> markedReinstalls = new List<CkanModule>();
 
         public event Action<string>?                      RaiseMessage;
         public event Action<string>?                      RaiseError;
@@ -1305,6 +1306,7 @@ namespace CKAN.GUI
             {
                 WithFrozenChangeset(() =>
                 {
+                    markedReinstalls.Clear();
                     foreach (DataGridViewRow row in MainModList.full_list_of_mod_rows.Values)
                     {
                         if (row.Tag is GUIMod gmod)
@@ -1349,7 +1351,7 @@ namespace CKAN.GUI
             }
         }
 
-        private void WithFrozenChangeset(Action action)
+        public void WithFrozenChangeset(Action action)
         {
             if (freezeChangeSet)
             {
@@ -1509,20 +1511,43 @@ namespace CKAN.GUI
                 is { Length: > 0 } and var modules
                 && currentInstance != null)
             {
-                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
-                var config = ServiceLocator.Container.Resolve<IConfiguration>();
-                StartChangeSet?.Invoke(
-                    modules.Select(module =>
-                                       // "Upgrade" to latest metadata for same module version
-                                       // (avoids removing and re-installing dependencies)
-                                       new ModReinstall(registry.GetModuleByVersion(module.identifier,
-                                                                                    module.version)
-                                                        ?? module,
-                                                        true, false, true, config)
-                                       as ModChange)
-                           .ToList(),
-                    null);
+                StartChangeSet?.Invoke(ReinstallChanges(modules, currentInstance).ToList(), null);
             }
+        }
+
+        /// <summary>
+        /// Mark mods for re-install. The marks survive changeset recalculation.
+        /// </summary>
+        public void MarkModsForReinstall(ICollection<CkanModule> modules)
+        {
+            if (modules.Count > 0 && currentInstance != null)
+            {
+                foreach (var module in modules)
+                {
+                    if (!markedReinstalls.Contains(module))
+                    {
+                        markedReinstalls.Add(module);
+                    }
+                }
+                var registry = RegistryManager.Instance(currentInstance, repoData).registry;
+                UpdateChangeSetAndConflicts(currentInstance, registry);
+            }
+        }
+
+        [ForbidGUICalls]
+        private IEnumerable<ModChange> ReinstallChanges(IEnumerable<CkanModule> modules, GameInstance instance)
+        {
+            var registry = RegistryManager.Instance(instance, repoData).registry;
+            var config = ServiceLocator.Container.Resolve<IConfiguration>();
+
+            return modules.Select(module =>
+                                      // "Upgrade" to latest metadata for same module version
+                                      // (avoids removing and re-installing dependencies)
+                                      new ModReinstall(registry.GetModuleByVersion(module.identifier,
+                                                                                   module.version)
+                                                       ?? module,
+                                                       true, false, true, config)
+                                      as ModChange);
         }
 
         [ForbidGUICalls]
@@ -1647,6 +1672,8 @@ namespace CKAN.GUI
             }
 
             log.Info("Updating the mod list");
+
+            markedReinstalls.Clear();
 
             var regMgr = RegistryManager.Instance(currentInstance, repoData);
             IRegistryQuerier registry = regMgr.registry;
@@ -2280,6 +2307,16 @@ namespace CKAN.GUI
             Dictionary<GUIMod, string>? new_conflicts = null;
 
             var user_change_set = MainModList.ComputeUserChangeSet(registry, inst, UpdateCol, ReplaceCol);
+
+            if (markedReinstalls.Count > 0)
+            {
+                // A reinstall clashes with any other change to the same mod. Skip reinstalling mods with other changes.
+                var changing = user_change_set.Select(ch => ch.Mod.identifier).ToHashSet();
+                var reinstalls = markedReinstalls.Where(m => !changing.Contains(m.identifier));
+
+                user_change_set.UnionWith(ReinstallChanges(reinstalls, inst));
+            }
+
             try
             {
                 // Set the target versions of upgrading mods based on what's actually allowed

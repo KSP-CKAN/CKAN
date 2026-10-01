@@ -22,13 +22,12 @@ namespace CKAN.GUI
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        public static void Main(string[] args)
+        public static void Main()
         {
-            Main_(args, null);
+            Main_(null);
         }
 
-        public static void Main_(string[]             args,
-                                 string?              userAgent,
+        public static void Main_(string?              userAgent,
                                  GameInstanceManager? manager = null,
                                  bool                 showConsole = false)
         {
@@ -52,36 +51,26 @@ namespace CKAN.GUI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            if (args.Contains(URLHandlers.UrlRegistrationArgument))
+            #if NET10_0_OR_GREATER
+            if (Platform.IsWindows && Util.DarkMode)
             {
-                // Passing in null will cause a NullReferenceException if it tries to show the dialog
-                // asking for elevation permission, but we want that to happen. Doing that keeps us
-                // from getting in to a infinite loop of trying to register.
-                URLHandlers.RegisterURLHandler(null, null, null);
+                Application.SetColorMode(SystemColorMode.System);
             }
-            else
+            #endif
+            var main = new Main(manager, userAgent);
+            if (Platform.IsWindows && Util.DarkMode)
             {
-                #if NET10_0_OR_GREATER
-                if (Platform.IsWindows && Util.DarkMode)
-                {
-                    Application.SetColorMode(SystemColorMode.System);
-                }
-                #endif
-                var main = new Main(args, manager, userAgent);
-                if (Platform.IsWindows && Util.DarkMode)
-                {
-                    int val = 1;
-                    DwmSetWindowAttribute(main.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
-                                          ref val, sizeof(int));
-                    DwmSetWindowAttribute(main.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE,
-                                          ref val, sizeof(int));
-                }
-                if (!showConsole)
-                {
-                    Util.HideConsoleWindow();
-                }
-                Application.Run(main);
+                int val = 1;
+                DwmSetWindowAttribute(main.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1,
+                                      ref val, sizeof(int));
+                DwmSetWindowAttribute(main.Handle, DWMWA_USE_IMMERSIVE_DARK_MODE,
+                                      ref val, sizeof(int));
             }
+            if (!showConsole)
+            {
+                Util.HideConsoleWindow();
+            }
+            Application.Run(main);
         }
 
         public static void UnhandledExceptionEventHandler(object sender, UnhandledExceptionEventArgs e)

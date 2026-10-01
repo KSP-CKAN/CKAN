@@ -75,6 +75,13 @@ namespace CKAN.CmdLine
             }
         }
 
+        // This could be implemented if needed by making RaiseYesNoDialog keybinds dynamic (first letter of yes/no strings).
+        /// <summary>
+        /// This overload has no use case in the command line. Forwards directly to <see cref="RaiseYesNoDialog(string)"/>.
+        /// </summary>
+        public bool RaiseYesNoDialog(string question, string yes, string no)
+            => RaiseYesNoDialog(question);
+
         /// <summary>
         /// Ask the user to select one of the elements of the array.
         /// The output is index 0 based.

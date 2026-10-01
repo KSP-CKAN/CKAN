@@ -160,6 +160,28 @@ namespace CKAN
             => querier.GetModuleByVersion(ident, new ModuleVersion(version));
 
         /// <summary>
+        /// Like GetModuleByVersion, but tolerates a version that differs only by its epoch or a leading v.
+        /// We hide both when displaying a version, which, without this tolerance, could cause confusion for users creating ckan:// links.
+        /// </summary>
+        public static CkanModule? GetModuleByVersionTolerant(this IRegistryQuerier querier, string ident, string version)
+        {
+            List<CkanModule>? available = Utilities.DefaultIfThrows(() => querier.AvailableByIdentifier(ident).ToList());
+            if (available == null)
+            {
+                return null;
+            }
+
+            var wanted = new ModuleVersion(version);
+
+            // Try an exact match, then set aside the epoch, then set aside the epoch and a leading v.
+            // When epochs are set aside there can be several matches, and we always want whichever is newer.
+            // available is sorted newest first, so take the first match.
+            return available.FirstOrDefault(m => m.version.Matches(wanted, false, false))
+                   ?? available.FirstOrDefault(m => m.version.Matches(wanted, true, false))
+                   ?? available.FirstOrDefault(m => m.version.Matches(wanted, true, true));
+        }
+
+        /// <summary>
         ///     Check if a mod is installed (either via CKAN, DLL, or virtually)
         ///     If withProvides is set to false then we skip the check for if the
         ///     mod has been provided (rather than existing as a real mod).

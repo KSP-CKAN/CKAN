@@ -557,10 +557,6 @@
 자동으로 업데이트 할 수 없어요. 왜냐하면 ckan.exe가 읽기 전용이거나 저희가 덮어씌울 수 없기 때문이에요.
 https://github.com/KSP-CKAN/CKAN/releases/latest 에서 수동으로 업데이트 해주세요.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN은 ckan:// URLs에 핸들러를 추가할 권한이 필요해요.
-CKAN에게 이것을 허용할 건가요? 아니요를 누르면 이 메세지를 다시 보지 않게 됩니다.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;링크 주소 복사</value>
   </data>

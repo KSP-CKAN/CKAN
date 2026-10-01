@@ -12,6 +12,7 @@ using Cake.Common.Solution.Project.Properties;
 using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNet.Restore;
 using Cake.Common.Tools.DotNet.Build;
+using Cake.Common.Tools.DotNet.MSBuild;
 using Cake.Common.Tools.DotNet.Publish;
 using Cake.Common.Tools.DotNet.Test;
 using Cake.Common.Tools.ILMerge;
@@ -186,6 +187,15 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
         if (context.IsRunningOnWindows())
         {
             context.CreateDirectory(repackPath);
+            // Publish the URL handler with Native AOT for embedding in ckan-windows.exe below.
+            // Requires MSVC on Windows.
+            context.DotNetPublish(context.Paths.UrlHandlerProject.FullPath,
+                                  new DotNetPublishSettings
+                                  {
+                                      Configuration   = context.BuildConfiguration,
+                                      Framework       = context.BuildDotNet,
+                                      OutputDirectory = context.Paths.UrlHandlerAotStub.GetDirectory(),
+                                  });
             // Publish single file Windows .NET 10 build for dark theme
             context.DotNetPublish(context.Paths.CmdlineProject.FullPath,
                                   new DotNetPublishSettings
@@ -195,6 +205,9 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
                                       Runtime           = "win-x64",
                                       PublishSingleFile = true,
                                       SelfContained     = true,
+                                      MSBuildSettings   = new DotNetMSBuildSettings()
+                                          .WithProperty("AotUrlHandlerStubPath",
+                                                        context.Paths.UrlHandlerAotStub.FullPath),
                                   });
             context.CopyFile(context.Paths.OutDirectory.Combine("CKAN-CmdLine")
                                                        .Combine(context.BuildConfiguration)

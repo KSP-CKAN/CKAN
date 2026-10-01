@@ -122,6 +122,28 @@ namespace CKAN.ConsoleUI.Toolkit {
                 d.PressButton(1);
                 return false;
             });
+            return RunYesNo(d);
+        }
+
+        /// <summary>
+        /// Ask the user a question using arbitrary Yes/No strings.
+        /// No Y and N key bindings because the strings are arbitrary.
+        /// </summary>
+        /// <param name="question">Message to display to the user</param>
+        /// <param name="yes">String of the button that returns true</param>
+        /// <param name="no">String of the button that returns false</param>
+        /// <returns>True if the user selected Yes, and false if the user selected No.</returns>
+        public virtual bool RaiseYesNoDialog(string question, string yes, string no)
+        {
+            var d = new ConsoleMessageDialog(
+                theme,
+                string.Join("", messagePieces) + question,
+                new List<string>() { yes, no });
+            return RunYesNo(d);
+        }
+
+        private bool RunYesNo(ConsoleMessageDialog d)
+        {
             messagePieces.Clear();
             bool val = d.Run() == 0;
             DrawBackground();

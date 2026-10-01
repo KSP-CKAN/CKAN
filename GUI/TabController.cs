@@ -73,6 +73,8 @@ namespace CKAN.GUI
             });
         }
 
+        public bool TabLocked => m_TabLock;
+
         public void SetTabLock(bool state)
         {
             Util.Invoke(m_TabControl, () =>

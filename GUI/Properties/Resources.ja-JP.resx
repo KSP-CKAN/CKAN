@@ -556,10 +556,6 @@ Try to move {2} out of {3} and restart CKAN.</value>
     <value>更新中にエラーが発生しました。
 自動更新できません、何故ならckan.exeが読み取り専用になっているか、書き込みの権限がありません。https://github.com/KSP-CKAN/CKAN/releases/latest から手動で更新してください。</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKANはckan:// URLsハンドラを追加する権限が必要です。
-CKANにこの動作をする許可を与えますか？ いいえをクリックした場合はこのメッセージは再び表示されません。</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Copy link address</value>
   </data>

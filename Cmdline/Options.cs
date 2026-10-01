@@ -399,15 +399,24 @@ namespace CKAN.CmdLine
     internal class PromptOptions    : CommonOptions { }
     internal class CleanOptions     : InstanceSpecificOptions { }
 
+    internal class UIOptions : InstanceSpecificOptions
+    {
+        [Option("url", HelpText = "A ckan:// URL to handle once the UI is loaded")]
+        public string? Url { get; set; }
+
+        [Option("no-handoff", DefaultValue = false, HelpText = "Handle the value of --url here, even if another UI is already running")]
+        public bool NoHandoff { get; set; }
+    }
+
     #if NETFRAMEWORK || WINDOWS
-    internal class GuiOptions : InstanceSpecificOptions
+    internal class GuiOptions : UIOptions
     {
         [Option("show-console", HelpText = "Shows the console while running the GUI")]
         public bool ShowConsole { get; set; }
     }
     #endif
 
-    internal class ConsoleUIOptions : InstanceSpecificOptions
+    internal class ConsoleUIOptions : UIOptions
     {
         [Option("theme", HelpText = "Name of color scheme to use, falls back to environment variable CKAN_CONSOLEUI_THEME")]
         public string? Theme { get; set; }

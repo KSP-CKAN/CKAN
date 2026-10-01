@@ -644,10 +644,6 @@ Se sospetti un bug nel client: https://github.com/KSP-CKAN/CKAN/issues/new/choos
     <value>Errore durante l'aggiornamento.
 Impossibile aggiornare automaticamente, perché ckan.exe è in sola lettura o non siamo autorizzati a sovrascriverlo. Per favore aggiorna manualmente tramite https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN richiede l'autorizzazione per aggiungere un gestore per gli URL ckan:/.
-Vuoi consentire a CKAN di farlo? Se fai clic su no, non vedrai più questo messaggio.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Copia indirizzo link</value>
   </data>

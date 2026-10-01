@@ -22,6 +22,17 @@
         <string>xmmd</string>
         <key>CFBundleVersion</key>
         <string>@VERSION@</string>
+        <!-- <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleURLName</key>
+                <string>org.ksp-ckan.ckan</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>ckan</string>
+                </array>
+            </dict>
+        </array> -->
         <key>NSAppleScriptEnabled</key>
         <string>NO</string>
     </dict>

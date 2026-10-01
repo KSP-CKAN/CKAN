@@ -441,7 +441,7 @@ namespace CKAN
                 string ident   = match.Groups["mod"].Value;
                 string version = match.Groups["version"].Value;
 
-                var module = registry.GetModuleByVersion(ident, version);
+                var module = registry.GetModuleByVersionTolerant(ident, version);
 
                 if (module == null
                         || (ksp_version != null && !module.IsCompatible(ksp_version)))

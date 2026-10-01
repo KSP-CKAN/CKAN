@@ -5,6 +5,7 @@ using Autofac;
 
 using CKAN.Configuration;
 using CKAN.ConsoleUI.Toolkit;
+using CKAN.IO;
 
 namespace CKAN.ConsoleUI {
 
@@ -25,6 +26,10 @@ namespace CKAN.ConsoleUI {
         {
             if (ConsoleTheme.Themes.TryGetValue(themeName ?? "default", out ConsoleTheme? theme))
             {
+                // Start the key reader thread. Input goes through a queue so that
+                // other threads can post actions onto the UI thread.
+                ConsoleInput.Start();
+
                 var repoData = ServiceLocator.Container.Resolve<RepositoryDataManager>();
                 // GameInstanceManager only uses its IUser object to construct game instance objects,
                 // which only use it to inform the user about the creation of the CKAN/ folder.
@@ -33,6 +38,12 @@ namespace CKAN.ConsoleUI {
                 GameInstanceManager manager = mgr
                                               ?? new GameInstanceManager(new NullUser(),
                                                                          ServiceLocator.Container.Resolve<IConfiguration>());
+
+                // Register ckan:// URL handler.
+                URLHandlers.RegisterURLHandler("consoleui");
+
+                // Begin listening for URL handoffs.
+                URLPipe.StartServer();
 
                 // The splash screen returns true when it's safe to run the rest of the app.
                 // This can be blocked by a lock file, for example.
@@ -59,6 +70,9 @@ namespace CKAN.ConsoleUI {
 
                     new ExitScreen().Run(theme);
                 }
+
+                // Don't await the shut down because the process is exiting.
+                _ = URLPipe.StopServer();
             }
             else
             {

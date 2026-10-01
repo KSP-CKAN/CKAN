@@ -118,6 +118,29 @@
     <value>System.Resources.ResXResourceWriter, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AutoUpdateNotFetched" xml:space="preserve"><value>We have not fetched the release info yet. Can't update.</value></data>
+  <data name="InstallUrlNoneFound" xml:space="preserve"><value>None of the mods in that link are in the {1} registry. They may be for a different game or their identifiers may be incorrect.
+
+{0}</value></data>
+  <data name="InstallUrlNotFound" xml:space="preserve"><value>These mods are not in the {1} registry and will be skipped. They may be for a different game or their identifiers may be incorrect:
+
+{0}</value></data>
+  <data name="InstallUrlPinMissed" xml:space="preserve"><value>That link asks for specific mod versions that are not in the registry. These versions will be used instead:
+
+{0}</value></data>
+  <data name="InstallUrlIncompatible" xml:space="preserve"><value>Some of the mods in that link (or their dependencies) are not supported on your current compatible game versions ({1}) and may not work at all. If you have any problems with them, you should NOT ask their maintainers for help.
+
+{0}</value></data>
+  <data name="InstallUrlAlreadyInstalled" xml:space="preserve"><value>These mods are already installed:
+
+{0}</value></data>
+  <data name="InstallUrlContinue" xml:space="preserve"><value>Continue</value></data>
+  <data name="InstallUrlCancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="InstallUrlInstall" xml:space="preserve"><value>Install</value></data>
+  <data name="InstallUrlReinstall" xml:space="preserve"><value>Re-install</value></data>
+  <data name="InstallUrlSkip" xml:space="preserve"><value>Skip</value></data>
+  <data name="UrlBadSyntax" xml:space="preserve"><value>CKAN could not make sense of that link. Double check the syntax.</value></data>
+  <data name="UrlUnknownOperation" xml:space="preserve"><value>That link uses an unknown operation. Supported operations in this version of CKAN are: 'install', 'search' and 'focus'.</value></data>
+  <data name="UrlNoValidKeys" xml:space="preserve"><value>That link doesn't contain any valid keys like 'q=' and 'mod='.</value></data>
   <data name="NetDownloading" xml:space="preserve"><value>Downloading {0}</value></data>
   <data name="NetInvalidLocation" xml:space="preserve"><value>Invalid URL in Location header: {0}</value></data>
   <data name="ByteRateCounterRateSummary" xml:space="preserve"><value>{0}/sec - {1} ({2}) left - {3}%</value></data>

@@ -18,7 +18,7 @@ namespace CKAN.ConsoleUI {
     /// <summary>
     /// Screen listing mods available for a given install
     /// </summary>
-    public class ModListScreen : ConsoleScreen {
+    public partial class ModListScreen : ConsoleScreen {
 
         /// <summary>
         /// Initialize the screen
@@ -425,7 +425,7 @@ namespace CKAN.ConsoleUI {
             ConsoleKeyInfo k = default;
             ConsoleMessageDialog keyprompt = new ConsoleMessageDialog(theme, Properties.Resources.ModListPressAKey, new List<string>());
             keyprompt.Run(() => {
-                k = Console.ReadKey(true);
+                k = ConsoleInput.NextKey();
             });
             ConsoleMessageDialog output = new ConsoleMessageDialog(
                 theme,
@@ -644,7 +644,7 @@ namespace CKAN.ConsoleUI {
                 {
                     deduper.DeduplicateAll(ps);
                     ps.RaiseMessage(Properties.Resources.SplashPressAnyKey);
-                    Console.ReadKey(true);
+                    ConsoleInput.NextKey();
                 }
                 catch (CancelledActionKraken)
                 {
@@ -860,7 +860,7 @@ namespace CKAN.ConsoleUI {
         /// <param name="mod">The mod to add or remove</param>
         public void ToggleRemove(CkanModule mod)
         {
-            Install.Remove(mod);
+            RemoveInstall(mod.identifier);
             Upgrade.Remove(mod.identifier);
             toggleContains(Remove, mod.identifier);
         }
@@ -873,7 +873,9 @@ namespace CKAN.ConsoleUI {
         {
             Upgrade.Remove(mod.identifier);
             Remove.Remove(mod.identifier);
-            toggleContains(Install, mod);
+            if (RemoveInstall(mod.identifier) == 0) {
+                Install.Add(mod);
+            }
         }
 
         /// <summary>
@@ -882,10 +884,20 @@ namespace CKAN.ConsoleUI {
         /// <param name="mod">The mod to add or remove</param>
         public void ToggleUpgrade(CkanModule mod)
         {
-            Install.Remove(mod);
+            RemoveInstall(mod.identifier);
             Remove.Remove(mod.identifier);
             toggleContains(Upgrade, mod.identifier);
         }
+
+        /// <summary>
+        /// Take a mod off the install list, regardless of version.
+        /// </summary>
+        /// <param name="identifier">The mod to remove</param>
+        /// <returns>
+        /// Number of modules removed
+        /// </returns>
+        public int RemoveInstall(string identifier)
+            => Install.RemoveWhere(m => m.identifier == identifier);
 
         /// <summary>
         /// Add or remove a mod from the replace list

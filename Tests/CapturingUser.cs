@@ -24,6 +24,9 @@ namespace Tests
             return yesNoAnswerer(question);
         }
 
+        public bool RaiseYesNoDialog(string question, string yes, string no)
+            => RaiseYesNoDialog(question);
+
         public int RaiseSelectionDialog(string message, params object[] args)
         {
             RaisedSelectionDialogs.Add(new Tuple<string, object[]>(message, args));

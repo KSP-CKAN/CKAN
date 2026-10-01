@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ckan:// test page</title>
+<style>
+  body { font-family: sans-serif; max-width: 800px; margin: 2em auto; padding: 0 1em; }
+  li { margin: 0.5em 0; }
+  a { font-family: monospace; }
+</style>
+</head>
+<body>
+
+<h1>ckan:// test page</h1>
+
+<p>Test links for the ckan:// handler. Operations are defined in
+Core/IO/ProtocolRouter.cs. A running CKAN picks the URL over a pipe, otherwise a new one is launched.</p>
+
+<h2>`focus`</h2>
+<p>Highlight a mod in the list.</p>
+<ul>
+<li><a href="ckan://focus?mod=JNSQ">ckan://focus?mod=JNSQ</a></li>
+<li><a href="ckan://focus?mod=Astrogator">ckan://focus?mod=Astrogator</a></li>
+</ul>
+
+<h2>`search`</h2>
+<p>Apply a search filter. %40 is an escaped @ for author search.</p>
+<ul>
+<li><a href="ckan://search?q=engine">ckan://search?q=engine</a></li>
+<li><a href="ckan://search?q=%40Nertea">ckan://search?q=%40Nertea</a></li>
+</ul>
+
+<h2>`install`</h2>
+<p>Add one or more mods to the changeset. mod:version pins a version.
+A version missing from the registry falls back to latest compatible.</p>
+<ul>
+<li><a href="ckan://install?mod=RealSolarSystem&amp;mod=ROEngines&amp;mod=ROTanks&amp;mod=ROCapsules&amp;mod=ROSolar">ckan://install?mod=RealSolarSystem&amp;mod=ROEngines&amp;mod=ROTanks&amp;mod=ROCapsules&amp;mod=ROSolar</a></li>
+<li><a href="ckan://install?mod=JNSQ:0.10.0&amp;mod=Astrogator:1.0.0">ckan://install?mod=JNSQ:0.10.0&amp;mod=Astrogator:1.0.0</a></li>
+<li><a href="ckan://install?mod=Astrogator:0.10.5">ckan://install?mod=Astrogator:0.10.5</a><br>Downgrade, assuming a newer version is installed</li>
+</ul>
+
+<h2>`install` pop ups</h2>
+<ul>
+<li><a href="ckan://install?mod=Astrogator:9.9.9">ckan://install?mod=Astrogator:9.9.9</a><br>9.9.9 is not a real version of Astrogator</li>
+<li><a href="ckan://install?mod=RealSolarSystem&amp;mod=NotARealMod">ckan://install?mod=RealSolarSystem&amp;mod=NotARealMod</a></li>
+<li><a href="ckan://install?mod=NotARealMod&amp;mod=StillNotReal">ckan://install?mod=NotARealMod&amp;mod=AlsoNotReal</a></li>
+<li><a href="ckan://install?mod=DDSLoader">ckan://install?mod=DDSLoader</a><br>Assuming a modern KSP version</li>
+<li><a href="ckan://install?mod=MechJeb2:2.5.8.0">ckan://install?mod=MechJeb2:2.5.8.0</a><br>A pinned version that only supports KSP 1.1</li>
+<li><a href="ckan://install?mod=Astrogator">ckan://install?mod=Astrogator</a><br>Assuming it's already installed</li>
+</ul>
+
+<h2>bad links</h2>
+<ul>
+<li><a href="ckan://uninstall?mod=JNSQ">ckan://uninstall?mod=JNSQ</a><br>`uninstall` isn't a real operation</li>
+<li><a href="ckan://install?id=JNSQ">ckan://install?id=JNSQ</a><br>`id` should be `mod`</li>
+</ul>
+
+</body>
+</html> 

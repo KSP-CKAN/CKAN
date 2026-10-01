@@ -52,13 +52,22 @@ namespace CKAN.ConsoleUI.Toolkit {
         }
 
         /// <summary>
+        /// Set the value in the field and put the cursor at the end.
+        /// </summary>
+        /// <param name="val">The new value</param>
+        public void SetValue(string val)
+        {
+            Value    = val;
+            Position = val.Length;
+            Changed();
+        }
+
+        /// <summary>
         /// Reset the value in the field
         /// </summary>
         public void Clear()
         {
-            Position = 0;
-            Value    = "";
-            Changed();
+            SetValue("");
         }
 
         /// <summary>

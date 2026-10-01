@@ -533,10 +533,6 @@ Se você suspeita de um problema com no CKAN: https://github.com/KSP-CKAN/CKAN/i
     <value>Erro durante a atualização.
 Não é possível atualizar automaticamente, pois o ckan.exe é somente leitura ou não temos permissão para sobrescreve-lo. Por favor atualize manualmente através do link https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>O CKAN requer permissão para adicionar um manipulador para ckan:// URLs.
-Você deseja permitir que o CKAN faça isso? Se você clicar em Não, você não verá esta mensagem novamente.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Copiar endereço do link</value>
   </data>

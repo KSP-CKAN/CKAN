@@ -700,10 +700,6 @@ Znajdź folder, w którym twoja gra jest zainstalowana i wybierz jeden z tych pl
     <value>Błąd podczas aktualizacji.
 Nie można zaktualizować automatycznie, ponieważ ckan.exe jest tylko do odczytu lub nie możemy go nadpisać. Proszę zaktualizować ręcznie przez https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN wymaga uprawnień do obsługi linków ckan://.
-Czy chcesz zezwolić na to CKAN-owi? Jeśli klikniesz nie, nie zobaczysz tej wiadomości ponownie.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Kopiuj adres linku</value>
   </data>

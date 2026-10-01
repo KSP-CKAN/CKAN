@@ -51,6 +51,17 @@ namespace CKAN.GUI
             => main.YesNoDialog(question);
 
         /// <summary>
+        /// Shows a small form with the question and the given strings used instead of yes and no.
+        /// </summary>
+        /// <returns><c>true</c> if user pressed yes, <c>false</c> if no.</returns>
+        /// <param name="question">Question.</param>
+        /// <param name="yes">String that will be used for yes.</param>
+        /// <param name="no">String that will be used for no.</param>
+        [ForbidGUICalls]
+        public bool RaiseYesNoDialog(string question, string yes, string no)
+            => main.YesNoDialog(question, yes, no);
+
+        /// <summary>
         /// Will show a small form with the message and a list to choose from.
         /// </summary>
         /// <returns>The index of the selection in the args array. 0-based!</returns>

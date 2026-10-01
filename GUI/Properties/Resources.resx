@@ -348,8 +348,6 @@ Find the folder where your game is installed and choose one of these files:
   <data name="AddAuthTokenDupHost" xml:space="preserve"><value>{0} already has an authentication token.</value></data>
   <data name="SettingsDialogUpdateFailed" xml:space="preserve"><value>Error during update.
 Can't update automatically, because ckan.exe is read-only or we are not allowed to overwrite it. Please update manually via https://github.com/KSP-CKAN/CKAN/releases/latest.</value></data>
-  <data name="URLHandlersPrompt" xml:space="preserve"><value>CKAN requires permission to add a handler for ckan:// URLs.
-Do you want to allow CKAN to do this? If you click no you won't see this message again.</value></data>
   <data name="UtilCopyLink" xml:space="preserve"><value>&amp;Copy link address</value></data>
   <data name="UtilShowHideLink" xml:space="preserve"><value>&amp;Toggle hiding of modules with tag {0}</value></data>
   <data name="UtilAddRemoveModuleLink" xml:space="preserve"><value>&amp;Toggle inclusion of current module in {0}</value></data>

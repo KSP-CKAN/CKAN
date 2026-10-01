@@ -1,5 +1,6 @@
 using System;
 
+using CKAN.IO;
 using CKAN.ConsoleUI.Toolkit;
 
 namespace CKAN.ConsoleUI {
@@ -38,10 +39,12 @@ namespace CKAN.ConsoleUI {
                 Console.CursorVisible = true;
                 return false;
             }
-            // Draw screen with press any key
-            Draw(theme, true);
-            // Wait for a key
-            Console.ReadKey(true);
+            if (ProtocolRouter.PendingLaunchUrl == null) {
+                // Draw screen with press any key
+                Draw(theme, true);
+                // Wait for a key
+                ConsoleInput.NextKey();
+            }
             return true;
         }
 

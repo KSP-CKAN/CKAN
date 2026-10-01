@@ -96,6 +96,22 @@ namespace CKAN.Versioning
                     : _string;
 
         /// <summary>
+        /// Compare with another version, optionally setting aside the epoch and a leading v.
+        /// </summary>
+        public bool Matches(ModuleVersion other, bool ignoreEpoch, bool ignoreV)
+        {
+            if (!ignoreEpoch && !ignoreV)
+            {
+                return CompareTo(other) == 0;
+            }
+
+            var thisIgnored = new ModuleVersion(ToString(ignoreEpoch, ignoreV));
+            var otherIgnored = new ModuleVersion(other.ToString(ignoreEpoch, ignoreV));
+
+            return thisIgnored.CompareTo(otherIgnored) == 0;
+        }
+
+        /// <summary>
         /// Remove prepending v V. Version_ etc
         /// </summary>
         private static string StripV(string version)

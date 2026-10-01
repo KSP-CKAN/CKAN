@@ -45,7 +45,6 @@ namespace CKAN.GUI
         public PluginController? pluginController;
 
         private readonly TabController tabController;
-        private string? focusIdent;
 
         private bool needRegistrySave = false;
 
@@ -58,42 +57,12 @@ namespace CKAN.GUI
         /// A constructor just initializes the object, it doesn't ask the user questions.
         /// That's the job of OnLoad or OnShown.
         /// </summary>
-        /// <param name="cmdlineArgs">The strings from the command line that launched us</param>
         /// <param name="mgr">Game instance manager created by the cmdline handler</param>
         /// <param name="userAgent">User agent to use for web queries</param>
-        public Main(string[]             cmdlineArgs,
-                    GameInstanceManager? mgr,
+        public Main(GameInstanceManager? mgr,
                     string?              userAgent)
         {
             log.Info("Starting the GUI");
-            if (//cmdlineArgs is [_, string focusIdent, ..]
-                cmdlineArgs.Length > 1
-                && cmdlineArgs[1] is string { Length: >= 2 } focusIdentArg)
-            {
-                focusIdent = focusIdentArg;
-
-                // Strip any leading "//" or any leading "ckan://".
-                if (//focusIdentArg is ['/', '/', .. var rest]
-                    focusIdentArg.Length > 2
-                    && focusIdentArg.StartsWith("//"))
-                {
-                    focusIdent = focusIdentArg[2..];
-                }
-                else if (//focusIdenArg is ['c', 'k', 'a', 'n', ':', '/', '/', .. var rest2]
-                    focusIdentArg.Length > 7
-                    && focusIdentArg.StartsWith("ckan://"))
-                {
-                    focusIdent = focusIdentArg[7..];
-                }
-
-                // Strip any trailing forward slashes.
-                if (//focusIdent is [.. var start, '/']
-                    focusIdent is { Length: > 1 }
-                    && focusIdent.EndsWith("/"))
-                {
-                    focusIdent = focusIdent.TrimEnd('/');
-                }
-            }
 
             var mainConfig = ServiceLocator.Container.Resolve<IConfiguration>();
 
@@ -184,6 +153,8 @@ namespace CKAN.GUI
 
             // Disable the modinfo controls until a mod has been choosen. This has an effect if the modlist is empty.
             ActiveModInfo = null;
+
+            WireProtocolRouter();
         }
 
         protected override void OnLoad(EventArgs e)
@@ -206,7 +177,8 @@ namespace CKAN.GUI
             Size = configuration.WindowSize;
             WindowState = configuration.IsWindowMaximised ? FormWindowState.Maximized : FormWindowState.Normal;
 
-            URLHandlers.RegisterURLHandler(configuration, CurrentInstance, currentUser);
+            URLHandlers.RegisterURLHandler("gui");
+            URLPipe.StartServer();
 
             Util.Invoke(this, () => Text = $"CKAN {Meta.GetVersion()}");
 
@@ -496,6 +468,9 @@ namespace CKAN.GUI
 
         protected override void OnFormClosed(FormClosedEventArgs e)
         {
+            UnwireProtocolRouter();            
+            _ = URLPipe.StopServer(); // Don't await the pipe server shutdown. Process is exiting anyway.
+
             if (CurrentInstance != null)
             {
                 RegistryManager.DisposeInstance(CurrentInstance);
@@ -1071,13 +1046,7 @@ namespace CKAN.GUI
                             HideWaitDialog();
                             EnableMainWindow();
                             SetupDefaultSearch();
-                            if (focusIdent != null)
-                            {
-                                log.Debug("Attempting to select mod from startup parameters");
-                                ManageMods.FocusMod(focusIdent, true, true);
-                                // Only do it the first time
-                                focusIdent = null;
-                            }
+                            ProtocolRouter.HandlePendingLaunchUrl();
                             break;
                     }
                 },

@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <PropertyGroup>
     <AssemblyName>CKAN-CmdLine</AssemblyName>
     <OutputPath Condition=" '$(Configuration)' != '' ">..\_build\out\$(AssemblyName)\$(Configuration)\bin\</OutputPath>
@@ -67,6 +67,20 @@
                       Lines="$([System.IO.File]::ReadAllText('$(IntermediateOutputPath)Resources.Designer.cs').Replace('new global::System.Resources.ResourceManager', 'new SingleAssemblyResourceManager').Replace('internal', 'public'))"
                       Overwrite="true" />
   </Target>
+  <!-- Pack the URL handler exe into this assembly as an embedded resource (excluding non-Windows net10.0 build).
+       Normally that is the net481 handler built by the ProjectReference below. For ckan-windows.exe (self-contained)
+       the Cake build publishes the handler as AOT first and passes it in via AotUrlHandlerStubPath. -->
+  <Target Name="EmbedURLHandlerStub"
+          DependsOnTargets="ResolveProjectReferences"
+          BeforeTargets="AssignTargetPaths"
+          Condition=" '$(TargetFramework)' != 'net10.0' ">
+    <ItemGroup>
+      <_UrlHandlerStub Include="$(AotUrlHandlerStubPath)" Condition=" '$(AotUrlHandlerStubPath)' != '' " />
+      <EmbeddedResource Include="@(_UrlHandlerStub)">
+        <LogicalName>CKAN.CmdLine.ckan-urlhandler.exe</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+  </Target>
   <ItemGroup>
     <ProjectReference Include="..\Core\CKAN-core.csproj">
       <SetTargetFramework>TargetFramework=$(BaseTargetFramework)</SetTargetFramework>
@@ -83,6 +97,15 @@
       <SetTargetFramework>TargetFramework=$(TargetFramework)</SetTargetFramework>
       <Project>{A79F9D54-315C-472B-928F-713A5860B2BE}</Project>
       <Name>CKAN-GUI</Name>
+    </ProjectReference>
+    <!-- Build the net481 URL handler first so that EmbedURLHandlerStub can embed it via _UrlHandlerStub. -->
+    <ProjectReference Include="..\URLHandler\CKAN-urlhandler.csproj"
+                      Condition=" '$(TargetFramework)' != 'net10.0' And '$(AotUrlHandlerStubPath)' == '' ">
+      <SetTargetFramework>TargetFramework=net481</SetTargetFramework>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <OutputItemType>_UrlHandlerStub</OutputItemType>
+      <Project>{DC40C717-697C-4CC2-A985-7304457E4732}</Project>
+      <Name>CKAN-urlhandler</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -13,6 +13,8 @@ namespace CKAN
 
         bool RaiseYesNoDialog(string question);
 
+        bool RaiseYesNoDialog(string question, string yes, string no);
+
         /// <summary>
         /// Ask the user to select one of the elements of the array.
         /// The output is index 0 based.
@@ -45,6 +47,14 @@ namespace CKAN
         /// NullUser returns true.
         /// </summary>
         public bool RaiseYesNoDialog(string question)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// NullUser returns true.
+        /// </summary>
+        public bool RaiseYesNoDialog(string question, string yes, string no)
         {
             return true;
         }

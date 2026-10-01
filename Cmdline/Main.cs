@@ -19,6 +19,7 @@ using log4net.Core;
 using CKAN.Configuration;
 using CKAN.Versioning;
 using CKAN.Games;
+using CKAN.IO;
 
 namespace CKAN.CmdLine
 {
@@ -71,6 +72,29 @@ namespace CKAN.CmdLine
                 log.Info("Verbose logging enabled");
             }
             log.Info("CKAN started.");
+
+            // Try to hand the value of --url to a running instance over the pipe before loading anything.
+            // no-handoff: skip this because the caller already checked that this is the cold case (saves 50 ms).
+            var urlIndex = Array.IndexOf(args, "--url");
+            if (urlIndex >= 0 && urlIndex + 1 < args.Length && !args.Contains("--no-handoff"))
+            {
+                var url = args[urlIndex + 1];
+                if (URLPipe.TrySend(url))
+                {
+                    log.Info("URL handed off to a running instance. Exiting");
+                    return Exit.OK;
+                }
+                log.Info("No running instance found. Launching");
+
+                // On Linux, URL handler's .desktop file has Terminal=false to hide a terminal flash in the warm case.
+                // This is the cold case, and the console UI can't draw without a terminal, so restart with a terminal.
+                if (Platform.IsUnix && args[0] == "consoleui"
+                    && Console.IsInputRedirected && Console.IsOutputRedirected
+                    && URLHandlers.RelaunchConsoleUIInTerminal(url))
+                {
+                    return Exit.OK;
+                }
+            }
 
             // Force-allow TLS 1.2 for HTTPS URLs, because GitHub requires it.
             // This is on by default in .NET 4.6, but not in 4.5.
@@ -155,6 +179,12 @@ namespace CKAN.CmdLine
             // Process commandline options.
             CommonOptions options = (CommonOptions)cmdline.options;
             options.Merge(opts);
+
+            if (options is UIOptions uiOptions)
+            {
+                ProtocolRouter.PendingLaunchUrl = uiOptions.Url;
+            }
+
             if (manager == null)
             {
                 manager = new GameInstanceManager(user, ServiceLocator.Container.Resolve<IConfiguration>());
@@ -223,7 +253,7 @@ namespace CKAN.CmdLine
                         #if NET6_0_OR_GREATER
                             Platform.IsWindows ?
                         #endif
-                            Gui(manager, opts, args)
+                            Gui(manager, opts)
                         #if NET6_0_OR_GREATER
                             : Exit.ERROR
                         #endif
@@ -291,15 +321,12 @@ namespace CKAN.CmdLine
         [SupportedOSPlatform("windows")]
         #endif
         [ExcludeFromCodeCoverage]
-        private static int Gui(GameInstanceManager manager, GuiOptions options, string[] args)
+        private static int Gui(GameInstanceManager manager, GuiOptions options)
         {
             // TODO: Sometimes when the GUI exits, we get a System.ArgumentException,
             // but trying to catch it here doesn't seem to help. Dunno why.
 
-            // GUI expects its first param to be an identifier, don't confuse it
-            GUI.GUI.Main_(args.Except(new string[] {"--verbose", "--debug", "--show-console", "--asroot"})
-                              .ToArray(),
-                          options.NetUserAgent, manager,
+            GUI.GUI.Main_(options.NetUserAgent, manager,
                           options.ShowConsole || options.Debug || options.Verbose);
 
             return Exit.OK;

@@ -153,7 +153,9 @@ namespace CKAN.ConsoleUI.Toolkit {
 
             do {
                 Draw();
-                ConsoleKeyInfo k = Console.ReadKey(true);
+                if (ConsoleInput.PumpEvent(this) is not ConsoleKeyInfo k) {
+                    continue;
+                }
                 if (bindings.TryGetValue(k, out KeyAction? screenBinding)) {
                     done = !screenBinding(this);
                 } else if (objects.Count > 0) {

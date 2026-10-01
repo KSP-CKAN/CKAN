@@ -705,10 +705,6 @@ Trouvez le dossier où votre jeu est installé et sélectionnez l'un de ces fich
     <value>Erreur lors de la mise à jour.
 Mise à jour automatique impossible : ckan.exe est en lecture-seule ou nous ne sommes pas autorisés à le remplacer. Veuillez mettre à jour manuellement via https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN demande la permission d'ajouter un handler pour les adresses ckan://.
-Voulez-vous autoriser à faire cela ? Si vous cliquez non, vous ne verrez plus ce message.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Copier l'adresse du lien</value>
   </data>

@@ -512,11 +512,6 @@ Wenn du ein Fehler mit dem CKAN Client vermutest: https://github.com/KSP-CKAN/CK
     <value>Fehler bei der Aktualisierung.
 CKAN kann nicht automatisch aktualisiert werden, da ckan.exe schreibgeschützt ist oder wir es nicht überschreiben dürfen. Bitte aktualisiere manuell via https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN benötigt eine Erlaubnis, um einen Handler für ckan:// URLs hinzuzufügen.
-Möchtest du CKAN dies erlauben?
-Wenn du auf Nein klickst, siehst du diese Nachricht nicht mehr.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Linkadresse kopieren</value>
   </data>

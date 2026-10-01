@@ -578,10 +578,6 @@
     <value>Ошибка в процессе обновления.
 Не удаётся автоматически обновить программу, так как файл «ckan.exe» помечен как «только для чтения». Обновите CKAN вручную из https://github.com/KSP-CKAN/CKAN/releases/latest.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN нуждается в разрешении для добавления обработчика ссылок вида «ckan://».
-Хотите ли вы разрешить CKAN это делать? При выборе «Нет» вы не увидите это сообщение снова.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;Скопировать адрес ссылки</value>
   </data>

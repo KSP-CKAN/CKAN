@@ -699,10 +699,6 @@
     <value>更新时发生错误.
 无法自动更新，因为CKAN.exe为只读或者我们不允许覆盖它. 请在 https://github.com/KSP-CKAN/CKAN/releases/latest 中下载并手动更新.</value>
   </data>
-  <data name="URLHandlersPrompt" xml:space="preserve">
-    <value>CKAN需要获得计算机的管理员权限.
-您是否允许CKAN这么做? 如果您不允许，将不会再看到此消息.</value>
-  </data>
   <data name="UtilCopyLink" xml:space="preserve">
     <value>&amp;复制链接地址</value>
   </data>
