@@ -120,6 +120,10 @@
   <data name="TimestampColumn.Text" xml:space="preserve"><value>Timestamp</value></data>
   <data name="NotInstalledGroup.Header" xml:space="preserve"><value>Not currently installed</value></data>
   <data name="InstalledGroup.Header" xml:space="preserve"><value>Currently installed</value></data>
+  <data name="AddedGroup.Header" xml:space="preserve"><value>Added</value></data>
+  <data name="RemovedGroup.Header" xml:space="preserve"><value>Removed</value></data>
+  <data name="UpgradedGroup.Header" xml:space="preserve"><value>Upgraded</value></data>
+  <data name="DowngradedGroup.Header" xml:space="preserve"><value>Downgraded</value></data>
   <data name="NameColumn.Text" xml:space="preserve"><value>Name</value></data>
   <data name="VersionColumn.Text" xml:space="preserve"><value>Version</value></data>
   <data name="AuthorColumn.Text" xml:space="preserve"><value>Authors</value></data>
@@ -127,6 +131,9 @@
   <data name="SelectInstallMessage.Text" xml:space="preserve"><value>Click a timestamp at the left to see which mods were installed</value></data>
   <data name="LoadingMessage.Text" xml:space="preserve"><value>Loading installation history...</value></data>
   <data name="NoModsMessage.Text" xml:space="preserve"><value>No mods were installed</value></data>
+  <data name="NoChangesMessage.Text" xml:space="preserve"><value>No changes</value></data>
   <data name="InstallButton.Text" xml:space="preserve"><value>Install</value></data>
+  <data name="ChangesCheckBox.Text" xml:space="preserve"><value>Changes only</value></data>
+  <data name="ChangesCheckBox.ToolTip" xml:space="preserve"><value>Compare the selected entry with the one before it. Ctrl-click or Shift-click another entry to compare the two</value></data>
   <data name="OKButton.Text" xml:space="preserve"><value>OK</value></data>
 </root>
