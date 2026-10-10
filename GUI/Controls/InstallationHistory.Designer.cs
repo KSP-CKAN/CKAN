@@ -33,12 +33,18 @@ namespace CKAN.GUI
             this.ToolTip = new System.Windows.Forms.ToolTip();
             this.Toolbar = new System.Windows.Forms.MenuStrip();
             this.InstallButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.ChangesCheckBox = new System.Windows.Forms.CheckBox();
+            this.ChangesHost = new System.Windows.Forms.ToolStripControlHost(this.ChangesCheckBox);
             this.Splitter = new CKAN.GUI.UsableSplitContainer();
             this.HistoryListView = new ThemedListView();
             this.TimestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ModsListView = new CKAN.GUI.ThemedListView();
             this.NotInstalledGroup = new System.Windows.Forms.ListViewGroup();
             this.InstalledGroup = new System.Windows.Forms.ListViewGroup();
+            this.AddedGroup = new System.Windows.Forms.ListViewGroup();
+            this.RemovedGroup = new System.Windows.Forms.ListViewGroup();
+            this.UpgradedGroup = new System.Windows.Forms.ListViewGroup();
+            this.DowngradedGroup = new System.Windows.Forms.ListViewGroup();
             this.NameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.VersionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.AuthorColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -46,6 +52,7 @@ namespace CKAN.GUI
             this.SelectInstallMessage = new System.Windows.Forms.ListViewItem();
             this.LoadingMessage = new System.Windows.Forms.ListViewItem();
             this.NoModsMessage = new System.Windows.Forms.ListViewItem();
+            this.NoChangesMessage = new System.Windows.Forms.ListViewItem();
             this.BottomButtonPanel = new CKAN.GUI.LeftRightRowPanel();
             this.OKButton = new System.Windows.Forms.Button();
             this.BottomButtonPanel.SuspendLayout();
@@ -57,7 +64,8 @@ namespace CKAN.GUI
             this.Toolbar.Dock = System.Windows.Forms.DockStyle.Top;
             this.Toolbar.ImageScalingSize = new System.Drawing.Size(24, 24);
             this.Toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.InstallButton});
+            this.InstallButton,
+            this.ChangesHost});
             this.Toolbar.CanOverflow = true;
             this.Toolbar.Location = new System.Drawing.Point(0, 0);
             this.Toolbar.Name = "Toolbar";
@@ -76,6 +84,24 @@ namespace CKAN.GUI
             this.InstallButton.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
             this.InstallButton.Click += new System.EventHandler(this.InstallButton_Click);
             resources.ApplyResources(this.InstallButton, "InstallButton");
+            //
+            // ChangesHost
+            //
+            this.ChangesHost.AutoSize = true;
+            this.ChangesHost.Margin = new System.Windows.Forms.Padding(10, 0, 0, 0);
+            this.ChangesHost.Name = "ChangesHost";
+            this.ChangesHost.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
+            //
+            // ChangesCheckBox
+            //
+            this.ChangesCheckBox.AutoSize = true;
+            this.ChangesCheckBox.BackColor = System.Drawing.Color.Transparent;
+            this.ChangesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ChangesCheckBox.Name = "ChangesCheckBox";
+            this.ChangesCheckBox.TabIndex = 1;
+            this.ChangesCheckBox.CheckedChanged += new System.EventHandler(this.ChangesCheckBox_CheckedChanged);
+            this.ToolTip.SetToolTip(this.ChangesCheckBox, resources.GetString("ChangesCheckBox.ToolTip"));
+            resources.ApplyResources(this.ChangesCheckBox, "ChangesCheckBox");
             //
             // Splitter
             //
@@ -109,7 +135,7 @@ namespace CKAN.GUI
             this.HistoryListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.HistoryListView.HideSelection = false;
             this.HistoryListView.Location = new System.Drawing.Point(0, 0);
-            this.HistoryListView.MultiSelect = false;
+            this.HistoryListView.MultiSelect = true;
             this.HistoryListView.Name = "HistoryListView";
             this.HistoryListView.Size = new System.Drawing.Size(230, 455);
             this.HistoryListView.TabIndex = 2;
@@ -135,6 +161,10 @@ namespace CKAN.GUI
             this.ModsListView.HideSelection = false;
             this.ModsListView.Groups.Add(this.NotInstalledGroup);
             this.ModsListView.Groups.Add(this.InstalledGroup);
+            this.ModsListView.Groups.Add(this.AddedGroup);
+            this.ModsListView.Groups.Add(this.RemovedGroup);
+            this.ModsListView.Groups.Add(this.UpgradedGroup);
+            this.ModsListView.Groups.Add(this.DowngradedGroup);
             this.ModsListView.Location = new System.Drawing.Point(0, 0);
             this.ModsListView.MultiSelect = false;
             this.ModsListView.Name = "ModsListView";
@@ -156,6 +186,30 @@ namespace CKAN.GUI
             this.InstalledGroup.Name = "InstalledGroup";
             this.InstalledGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
             resources.ApplyResources(this.InstalledGroup, "InstalledGroup");
+            //
+            // AddedGroup
+            //
+            this.AddedGroup.Name = "AddedGroup";
+            this.AddedGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.AddedGroup, "AddedGroup");
+            //
+            // RemovedGroup
+            //
+            this.RemovedGroup.Name = "RemovedGroup";
+            this.RemovedGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.RemovedGroup, "RemovedGroup");
+            //
+            // UpgradedGroup
+            //
+            this.UpgradedGroup.Name = "UpgradedGroup";
+            this.UpgradedGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.UpgradedGroup, "UpgradedGroup");
+            //
+            // DowngradedGroup
+            //
+            this.DowngradedGroup.Name = "DowngradedGroup";
+            this.DowngradedGroup.HeaderAlignment = System.Windows.Forms.HorizontalAlignment.Left;
+            resources.ApplyResources(this.DowngradedGroup, "DowngradedGroup");
             //
             // NameColumn
             //
@@ -188,6 +242,10 @@ namespace CKAN.GUI
             // NoModsMessage
             //
             resources.ApplyResources(this.NoModsMessage, "NoModsMessage");
+            //
+            // NoChangesMessage
+            //
+            resources.ApplyResources(this.NoChangesMessage, "NoChangesMessage");
             //
             // BottomButtonPanel
             //
@@ -233,6 +291,10 @@ namespace CKAN.GUI
         private CKAN.GUI.ThemedListView ModsListView;
         private System.Windows.Forms.ListViewGroup NotInstalledGroup;
         private System.Windows.Forms.ListViewGroup InstalledGroup;
+        private System.Windows.Forms.ListViewGroup AddedGroup;
+        private System.Windows.Forms.ListViewGroup RemovedGroup;
+        private System.Windows.Forms.ListViewGroup UpgradedGroup;
+        private System.Windows.Forms.ListViewGroup DowngradedGroup;
         private System.Windows.Forms.ColumnHeader NameColumn;
         private System.Windows.Forms.ColumnHeader VersionColumn;
         private System.Windows.Forms.ColumnHeader AuthorColumn;
@@ -240,7 +302,10 @@ namespace CKAN.GUI
         private System.Windows.Forms.ListViewItem SelectInstallMessage;
         private System.Windows.Forms.ListViewItem LoadingMessage;
         private System.Windows.Forms.ListViewItem NoModsMessage;
+        private System.Windows.Forms.ListViewItem NoChangesMessage;
         private CKAN.GUI.LeftRightRowPanel BottomButtonPanel;
         private System.Windows.Forms.Button OKButton;
+        private System.Windows.Forms.ToolStripControlHost ChangesHost;
+        private System.Windows.Forms.CheckBox ChangesCheckBox;
     }
 }
