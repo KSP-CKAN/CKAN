@@ -140,7 +140,7 @@ namespace CKAN.GUI
             {
                 // ImageList's default makes icons look like garbage
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit,
-                ImageSize  = CreateGraphics().ScaledSize(16, 16),
+                ImageSize  = this.WithGraphics(g => g.ScaledSize(16, 16)),
             };
             this.ModInfoTabControl.ImageList.Images.Add("Stop", global::CKAN.GUI.EmbeddedImages.stop);
             this.ModInfoTabControl.SelectedIndexChanged += new System.EventHandler(this.ModInfoTabControl_SelectedIndexChanged);

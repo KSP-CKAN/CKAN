@@ -456,7 +456,7 @@ namespace CKAN.GUI
         [ExcludeFromCodeCoverage]
         public static int StringHeight<T>(this T c, int maxWidth)
             where T : Control
-            => c.CreateGraphics().StringHeight(c.Text, c.Font, maxWidth);
+            => c.WithGraphics(g => g.StringHeight(c.Text, c.Font, maxWidth));
 
         /// <summary>
         /// Calculate how much vertical space is needed to display a label's text

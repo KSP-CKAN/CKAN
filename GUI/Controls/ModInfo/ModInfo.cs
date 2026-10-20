@@ -124,8 +124,8 @@ namespace CKAN.GUI
 
         private int TextBoxStringHeight(TextBox tb)
             => tb.Padding.Vertical + tb.Margin.Vertical
-                + tb.CreateGraphics().StringHeight(tb.Text, tb.Font,
-                                                   tb.Width - tb.Padding.Horizontal - tb.Margin.Horizontal);
+                + tb.WithGraphics(g => g.StringHeight(tb.Text, tb.Font,
+                                                      tb.Width - tb.Padding.Horizontal - tb.Margin.Horizontal));
 
         private int DescriptionHeight => TextBoxStringHeight(MetadataModuleDescriptionTextBox);
 
