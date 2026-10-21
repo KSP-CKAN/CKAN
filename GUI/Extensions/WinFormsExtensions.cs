@@ -74,7 +74,8 @@ namespace CKAN.GUI
         public static void ScaleFonts(this Control control)
         {
             if (Platform.IsMono
-                && control.WithGraphics(g => (int)g.DpiX) is int dpi
+                // CreateGraphics would create the control's handle, before its parent's
+                && ImageDpiX() is int dpi
                 && dpi != 96)
             {
                 control.Font = control.Font.Scale(dpi);
