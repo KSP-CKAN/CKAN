@@ -32,7 +32,7 @@ namespace CKAN.GUI
             {
                 ChooseProvidedModsLabel.Text = message;
                 ChooseProvidedModsLabel.Height =
-                    CreateGraphics().LabelStringHeight(ChooseProvidedModsLabel);
+                    this.WithGraphics(g => g.LabelStringHeight(ChooseProvidedModsLabel));
 
                 ChooseProvidedModsListView.Items.Clear();
                 ChooseProvidedModsListView.Items.AddRange(modules
@@ -55,7 +55,7 @@ namespace CKAN.GUI
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            ChooseProvidedModsLabel.Height = CreateGraphics().LabelStringHeight(ChooseProvidedModsLabel);
+            ChooseProvidedModsLabel.Height = this.WithGraphics(g => g.LabelStringHeight(ChooseProvidedModsLabel));
         }
 
         [ForbidGUICalls]

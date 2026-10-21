@@ -35,6 +35,23 @@ namespace CKAN.GUI
                                                     && pos.Column == column
                                                     && pos.Row    == row);
 
+        /// <summary>
+        /// Create a Graphics object for a control, pass it to a function,
+        /// and dispose it afterwards. An undisposed Graphics is freed by
+        /// its finalizer on the finalizer thread, which libgdiplus does not
+        /// support while the UI thread is drawing.
+        /// </summary>
+        /// <param name="control">The control to draw on</param>
+        /// <param name="func">Function to call with the Graphics object</param>
+        /// <returns>The return value of func</returns>
+        public static T WithGraphics<T>(this Control control, Func<Graphics, T> func)
+        {
+            using (var g = control.CreateGraphics())
+            {
+                return func(g);
+            }
+        }
+
         #region Icon sizing
 
         public static int ScaledWidth(this Graphics g, int w)
@@ -57,7 +74,7 @@ namespace CKAN.GUI
         public static void ScaleFonts(this Control control)
         {
             if (Platform.IsMono
-                && (int)control.CreateGraphics().DpiX is int dpi
+                && control.WithGraphics(g => (int)g.DpiX) is int dpi
                 && dpi != 96)
             {
                 control.Font = control.Font.Scale(dpi);
@@ -90,7 +107,7 @@ namespace CKAN.GUI
         public static void ScaleFonts(this ToolStripItem item)
         {
             if (Platform.IsMono
-                && (int)Graphics.FromImage(new Bitmap(1, 1)).DpiX is int dpi
+                && ImageDpiX() is int dpi
                 && dpi != 96)
             {
                 item.Font = item.Font.Scale(dpi);
@@ -99,6 +116,15 @@ namespace CKAN.GUI
             {
                 item.Font = new Font(item.Font.FontFamily,
                                      item.Font.Size * factor);
+            }
+        }
+
+        private static int ImageDpiX()
+        {
+            using (var bmp = new Bitmap(1, 1))
+            using (var g   = Graphics.FromImage(bmp))
+            {
+                return (int)g.DpiX;
             }
         }
 
