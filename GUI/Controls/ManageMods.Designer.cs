@@ -17,6 +17,11 @@ namespace CKAN.GUI
             {
                 components.Dispose();
             }
+            if (disposing)
+            {
+                modListGraphics?.Dispose();
+                modListGraphics = null;
+            }
             base.Dispose(disposing);
         }
 

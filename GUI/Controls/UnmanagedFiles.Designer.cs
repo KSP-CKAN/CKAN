@@ -138,7 +138,7 @@ namespace CKAN.GUI
             {
                 // ImageList's default makes icons look like garbage
                 ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit,
-                ImageSize  = CreateGraphics().ScaledSize(16, 16),
+                ImageSize  = this.WithGraphics(g => g.ScaledSize(16, 16)),
             };
             this.GameFolderTree.ImageList.Images.Add("folder", global::CKAN.GUI.EmbeddedImages.folder);
             this.GameFolderTree.ImageList.Images.Add("file", global::CKAN.GUI.EmbeddedImages.file);

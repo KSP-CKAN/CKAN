@@ -183,16 +183,17 @@ namespace CKAN.GUI
                         };
                         progressBars.Add(label, newPb);
                         // Make room before adding
-                        var newHeight = progressBars.Values
-                                                    .Take(1)
-                                                    .Concat(progressBars.Count == 1
-                                                                // If 1 row, show 1
-                                                                ? Enumerable.Empty<LabeledProgressBar>()
-                                                                // If >1 rows, show 1 + active
-                                                                : progressBars.Values
-                                                                              .Where(pb => pb.Value < 100))
-                                                    .Sum(pb => CreateGraphics().ScaledHeight(pb.GetPreferredSize(Size.Empty).Height)
-                                                               + pb.Margin.Vertical);
+                        var newHeight = this.WithGraphics(g =>
+                                            progressBars.Values
+                                                        .Take(1)
+                                                        .Concat(progressBars.Count == 1
+                                                                    // If 1 row, show 1
+                                                                    ? Enumerable.Empty<LabeledProgressBar>()
+                                                                    // If >1 rows, show 1 + active
+                                                                    : progressBars.Values
+                                                                                  .Where(pb => pb.Value < 100))
+                                                        .Sum(pb => g.ScaledHeight(pb.GetPreferredSize(Size.Empty).Height)
+                                                                   + pb.Margin.Vertical));
                         if (ProgressBarTable.Height < newHeight)
                         {
                             VerticalSplitter.SplitterDistance = ProgressBarTable.Top

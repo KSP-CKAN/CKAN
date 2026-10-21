@@ -113,14 +113,14 @@ namespace CKAN.GUI
 
         private void ResizeColumnHeaders()
         {
-            var g = CreateGraphics();
-            ModGrid.ColumnHeadersHeight = ModGrid.Columns.OfType<DataGridViewColumn>().Max(col =>
-                ModGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical
-                + g.StringHeight(col.HeaderText,
-                                 col.HeaderCell?.Style?.Font
-                                               ?? ModGrid.ColumnHeadersDefaultCellStyle.Font
-                                               ?? SystemFonts.DefaultFont,
-                                 col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal)));
+            ModGrid.ColumnHeadersHeight = this.WithGraphics(g =>
+                ModGrid.Columns.OfType<DataGridViewColumn>().Max(col =>
+                    ModGrid.ColumnHeadersDefaultCellStyle.Padding.Vertical
+                    + g.StringHeight(col.HeaderText,
+                                     col.HeaderCell?.Style?.Font
+                                                   ?? ModGrid.ColumnHeadersDefaultCellStyle.Font
+                                                   ?? SystemFonts.DefaultFont,
+                                     col.Width - (2 * ModGrid.ColumnHeadersDefaultCellStyle.Padding.Horizontal))));
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(ManageMods));
@@ -129,6 +129,8 @@ namespace CKAN.GUI
         private string? lastSearchKey;
         private readonly NavigationHistory<GUIMod> navHistory;
         private readonly DataGridViewCellStyle uninstallingStyle;
+        // Shared by every ModList, disposed with this control
+        private Graphics? modListGraphics;
 
         private List<ModChange>?            currentChangeSet;
         private Dictionary<GUIMod, string>? conflicts;
@@ -1723,7 +1725,7 @@ namespace CKAN.GUI
             MainModList = new ModList(guiMods, currentInstance,
                                       ModuleLabelList.ModuleLabels, ModuleTagList.ModuleTags,
                                       guiConfig,
-                                      CreateGraphics(), ChangeSet);
+                                      modListGraphics ??= CreateGraphics(), ChangeSet);
             MainModList.ModFiltersUpdated += UpdateFilters;
 
             UpdateChangeSetAndConflicts(currentInstance, registry);
