@@ -362,40 +362,30 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
             CollectionPhase  = new MyCollectOptions(context),
             Options          = new MyTestOptions(),
         };
-        var testSettings = new DotNetTestSettings
-        {
-            Configuration    = context.BuildConfiguration,
-            NoRestore        = true,
-            NoBuild          = true,
-            NoLogo           = true,
-            Filter           = dotNetFilter,
-            ResultsDirectory = nunitOutputDirectory,
-            Verbosity        = DotNetVerbosity.Minimal,
-        };
         // We don't enable coverage in dotnet test on Non-Windows platforms because it doesn't support running net481.
         // Instead, test coverage just comes entirely from NUnit in Mono.
         var dotNetCoverage = withCoverage && context.IsRunningOnWindows();
-        if (dotNetCoverage)
-        {
-            testSettings.ArgumentCustomization = altcoverSettings.Concatenate(testSettings.ArgumentCustomization);
-        }
 
+        // Run each framework's tests at the same time, like a single multi-targeted `dotnet test` would.
+        // Each gets its own coverage output files so they don't overwrite each other.
+        var jobs = new List<Action>();
         var dotNetFrameworks = new List<string>();
         foreach (var framework in context.Frameworks)
         {
             if (framework == context.BuildNetFramework && !context.IsRunningOnWindows())
             {
                 // dotnet test can't run net481 outside Windows
-                RunNUnitOnMono(context, where, labels, withCoverage,
-                               nunitOutputDirectory, altcoverSettings);
+                jobs.Add(() => RunNUnitOnMono(context, where, labels, withCoverage,
+                                              nunitOutputDirectory, altcoverSettings));
             }
             else
             {
-                testSettings.Framework = framework;
-                context.DotNetTest(context.Paths.TestsProject.FullPath, testSettings);
                 dotNetFrameworks.Add(framework);
+                jobs.Add(() => RunDotNetTest(context, framework, dotNetFilter,
+                                             dotNetCoverage, nunitOutputDirectory));
             }
         }
+        BuildContext.RunInParallel(jobs);
 
         if (dotNetCoverage)
         {
@@ -406,14 +396,47 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                             .Select(XDocument.Load))
                      .Save(context.Paths.CoverageOutputFile("coverage.xml")
                                         .FullPath);
-            // Remove spurious duplicate entries with '\' paths from cobertura.xml
-            var cobertura = XDocument.Load(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
-            cobertura.Descendants().Where(elt => elt.Attribute("filename")
-                                                    ?.Value.Contains('\\')
-                                                    ?? false)
-                                   .Remove();
-            cobertura.Save(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
+            foreach (var framework in dotNetFrameworks)
+            {
+                // Remove spurious duplicate entries with '\' paths from cobertura.xml
+                var path = context.Paths.CoverageOutputFile($"cobertura.{framework}.xml").FullPath;
+                var cobertura = XDocument.Load(path);
+                cobertura.Descendants().Where(elt => elt.Attribute("filename")
+                                                        ?.Value.Contains('\\')
+                                                        ?? false)
+                                       .Remove();
+                cobertura.Save(path);
+            }
         }
+    }
+
+    private static void RunDotNetTest(BuildContext  context,
+                                      string        framework,
+                                      string?       filter,
+                                      bool          withCoverage,
+                                      DirectoryPath resultsDirectory)
+    {
+        var testSettings = new DotNetTestSettings
+        {
+            Configuration    = context.BuildConfiguration,
+            Framework        = framework,
+            NoRestore        = true,
+            NoBuild          = true,
+            NoLogo           = true,
+            Filter           = filter,
+            ResultsDirectory = resultsDirectory,
+            Verbosity        = DotNetVerbosity.Minimal,
+        };
+        if (withCoverage)
+        {
+            testSettings.ArgumentCustomization = new CoverageSettings
+            {
+                PreparationPhase = new MyPrepareOptions(context),
+                CollectionPhase  = new MyCollectOptions(context, framework),
+                Options          = new MyTestOptions(),
+            }.Concatenate(testSettings.ArgumentCustomization);
+        }
+        context.DotNetTest(context.Paths.TestsProject.FullPath, testSettings);
     }
 
     // Run the net481 tests in the NUnit console runner on Mono
@@ -501,17 +524,23 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
     private readonly BuildContext context = context;
 }
 
-public class MyCollectOptions(BuildContext context) : CollectOptions
+// If framework is set, it is added to the file names (e.g. cobertura.net481.xml),
+// so test runs for different frameworks can write their output at the same time
+public class MyCollectOptions(BuildContext context, string? framework = null) : CollectOptions
 {
     public override TraceLevel Verbosity => TraceLevel.Info;
-    public override string OutputFile    => OutputPath("output.xml");
-    public override string Cobertura     => OutputPath("cobertura.xml");
-    public override string LcovReport    => OutputPath("lcov.info");
+    public override string OutputFile    => OutputPath("output", "xml");
+    public override string Cobertura     => OutputPath("cobertura", "xml");
+    public override string LcovReport    => OutputPath("lcov", "info");
 
-    private string OutputPath(string filename)
-        => context.Paths.CoverageOutputFile(filename).FullPath;
+    private string OutputPath(string name, string extension)
+        => context.Paths.CoverageOutputFile(framework == null
+                                                ? $"{name}.{extension}"
+                                                : $"{name}.{framework}.{extension}")
+                        .FullPath;
 
     private readonly BuildContext context = context;
+    private readonly string? framework = framework;
 }
 
 public class MyTestOptions : TestOptions

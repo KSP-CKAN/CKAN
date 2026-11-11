@@ -33,6 +33,11 @@ jobs:
         uses: coverallsapp/github-action@v2
         with:
           format: cobertura
+          # One report per target framework (Coveralls merges them all)
+          files: >-
+            _build/test/coverage/cobertura.net481.xml
+            _build/test/coverage/cobertura.net10.0.xml
+            _build/test/coverage/cobertura.net10.0-windows.xml
           parallel: true
           flag-name: windows-latest
       - name: Bundle assets for signing
