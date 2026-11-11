@@ -28,7 +28,7 @@ jobs:
         env:
           ErrorView: NormalView
         shell: powershell
-        run: .\build.ps1 test --configuration=${{ inputs.configuration }} --where="Category!=FlakyNetwork"
+        run: .\build.ps1 test --configuration=${{ inputs.configuration }} --framework=all --where="Category!=FlakyNetwork"
       - name: Report Coveralls
         uses: coverallsapp/github-action@v2
         with:
@@ -38,7 +38,7 @@ jobs:
       - name: Bundle assets for signing
         if: inputs.configuration == 'Release'
         shell: powershell
-        run: .\build.ps1 Prepare-SignPath --configuration=${{ inputs.configuration }} --exclusive
+        run: .\build.ps1 Prepare-SignPath --configuration=${{ inputs.configuration }} --framework=all --exclusive
       - name: Upload unsigned artifact
         id: upload-unsigned-artifact
         if: inputs.configuration == 'Release'
@@ -86,17 +86,15 @@ jobs:
         with:
           path: _build/tools
           key: build-tools-${{ hashFiles('build.sh', 'build.ps1', 'build/*') }}
-      - name: Restore cache for _build/lib/nuget
+      - name: Restore cache for NuGet packages
         uses: actions/cache@v5
         with:
-          path: |
-            _build/lib/nuget
-            ~/.nuget/packages
-          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj') }}
+          path: ~/.nuget/packages
+          key: nuget-oldref-modules-${{ hashFiles('**/packages.config') }}-${{ hashFiles('**/*.csproj', 'Directory.Build.props') }}
       - name: Build and run tests on Linux
         run: |
           sudo apt-get install -y xvfb
-          xvfb-run ./build.sh test --configuration=${{ inputs.configuration }} --where="Category!=FlakyNetwork"
+          xvfb-run ./build.sh test --configuration=${{ inputs.configuration }} --framework=all --where="Category!=FlakyNetwork"
       - name: Report Coveralls
         uses: coverallsapp/github-action@v2
         with:

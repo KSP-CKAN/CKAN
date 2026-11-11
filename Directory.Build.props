@@ -1,0 +1,10 @@
+<Project>
+  <!-- For consistency, we compile .NET Framework against the reference assemblies
+    from NuGet on every OS instead of e.g. a .NET Framework Developer Pack installed
+    on Windows. They're also used by ILRepack. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net481'">
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies"
+                      Version="1.0.3"
+                      PrivateAssets="all" />
+  </ItemGroup>
+</Project>
