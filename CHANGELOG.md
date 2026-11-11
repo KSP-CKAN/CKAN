@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 
 - [Netkan] Apply all subdocuments of internal .ckans (#4640 by: HebaruSan)
 - [Build] Sync certs from newer location in RPM package (#4642 by: HebaruSan)
+- [Build] Support self-contained .NET builds via build.sh on all platforms (#4736 by: lewisfm)
 
 ## v1.36.4
 

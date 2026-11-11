@@ -81,7 +81,6 @@ public sealed class RestoreTask : FrostingTask<BuildContext>
         context.DotNetRestore(new DotNetRestoreSettings
         {
             WorkingDirectory = context.Paths.RootDirectory,
-            PackagesDirectory = context.Paths.NugetDirectory,
             EnvironmentVariables = new Dictionary<string, string?> { { "Configuration", context.BuildConfiguration } }
         });
     }
@@ -118,37 +117,29 @@ public sealed class BuildTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        // dotnet build won't let us compile WinForms on non-Windows,
-        // fall back to mono
-        if (context.IsRunningOnWindows())
+        // Build Core for all of its target frameworks at once, which creates the nupkg
+        context.DotNetBuild(context.Paths.CoreProject.FullPath, new DotNetBuildSettings
         {
-            context.DotNetBuild(context.Solution, new DotNetBuildSettings
-            {
-                Configuration = context.BuildConfiguration,
-                NoRestore     = true,
-            });
-        }
-        else
-        {
-            // Use dotnet to build the Core DLL to get the nupkg
-            // (only created if all TargetFrameworks are built together)
-            context.DotNetBuild(context.Paths.CoreProject.FullPath, new DotNetBuildSettings
-            {
-                Configuration = context.BuildConfiguration,
-            });
+            Configuration = context.BuildConfiguration,
+            NoRestore     = true,
+        });
 
-            // Use Mono to build for net481 since dotnet can't use WinForms on Linux
-            context.MSBuild(context.Solution, new MSBuildSettings
+        foreach (var framework in context.Frameworks)
+        {
+            // We build Tests.csproj instead of CKAN.sln because the projects don't all support the same
+            // frameworks: `dotnet build CKAN.sln -f net10.0` would fail to build GUI and AutoUpdate, and
+            // `-f net10.0-windows` fails for Core, ConsoleUI and Netkan. However, Tests.csproj references every
+            // other project, and its ProjectReferences (via SetTargetFramework) specify which projects and
+            // frameworks each of our frameworks supports, so e.g. Netkan is built for net10.0 when building
+            // net10.0-windows, and GUI is skipped for net10.0. So building it indirectly builds everything the
+            // executables and tests need, and checks that the tests compile.
+            // One consequence of this is that any new project must be referenced from Tests.csproj, or it won't be
+            // built here.
+            context.DotNetBuild(context.Paths.TestsProject.FullPath, new DotNetBuildSettings
             {
                 Configuration = context.BuildConfiguration,
-                MaxCpuCount = 0,
-                Properties = { { "TargetFramework", [context.BuildNetFramework] } },
-            });
-            // Use dotnet to build the stuff Mono can't build
-            context.DotNetBuild(context.Solution, new DotNetBuildSettings
-            {
-                Configuration = "NoGUI",
-                Framework     = context.BuildDotNet,
+                Framework     = framework,
+                NoRestore     = true,
             });
         }
     }
@@ -162,49 +153,40 @@ public sealed class RepackCkanTask : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         var repackPath = context.Paths.RepackDirectory.Combine(context.BuildConfiguration);
-        context.Repack(context.Paths.CkanFile,
-                       context.Paths.OutDirectory.Combine("CKAN-CmdLine")
-                                                 .Combine(context.BuildConfiguration)
-                                                 .Combine("bin")
-                                                 .Combine(context.BuildNetFramework),
-                       "CKAN-CmdLine.exe",
-                       TargetPlatformVersion.v4,
-                       repackPath.CombineWithFilePath("ckan.log"));
-        context.Repack(context.Paths.UpdaterFile,
-                       context.Paths.OutDirectory.Combine("CKAN-AutoUpdateHelper")
-                                                 .Combine(context.BuildConfiguration)
-                                                 .Combine("bin")
-                                                 .Combine(context.BuildNetFramework),
-                       "CKAN-AutoUpdateHelper.exe",
-                       TargetPlatformVersion.v4,
-                       repackPath.CombineWithFilePath("AutoUpdater.log"));
-
-        var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.CkanFile.GetFilename());
-        context.CopyFile(context.Paths.CkanFile, finalExePath);
-        BuildContext.ChmodExecutable(finalExePath);
-
-        if (context.IsRunningOnWindows())
+        // The repack and publish can run at the same time because they access entirely different builds.
+        var jobs = new List<Action>();
+        if (context.BuildsNetFramework)
         {
-            context.CreateDirectory(repackPath);
-            // Publish single file Windows .NET 10 build for dark theme
-            context.DotNetPublish(context.Paths.CmdlineProject.FullPath,
-                                  new DotNetPublishSettings
-                                  {
-                                      Configuration     = context.BuildConfiguration,
-                                      Framework         = $"{context.BuildDotNet}-windows",
-                                      Runtime           = "win-x64",
-                                      PublishSingleFile = true,
-                                      SelfContained     = true,
-                                  });
-            context.CopyFile(context.Paths.OutDirectory.Combine("CKAN-CmdLine")
-                                                       .Combine(context.BuildConfiguration)
-                                                       .Combine("bin")
-                                                       .Combine($"{context.BuildDotNet}-windows")
-                                                       .Combine("win-x64")
-                                                       .Combine("publish")
-                                                       .CombineWithFilePath("CKAN-CmdLine.exe"),
-                             context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
-                                                          .CombineWithFilePath("ckan-windows.exe"));
+            jobs.Add(() => context.Repack(context.Paths.Ckan.NetFrameworkPath,
+                                          context.Paths.OutDirectory.Combine("CKAN-CmdLine")
+                                                                    .Combine(context.BuildConfiguration)
+                                                                    .Combine("bin")
+                                                                    .Combine(context.BuildNetFramework),
+                                          "CKAN-CmdLine.exe",
+                                          TargetPlatformVersion.v4,
+                                          repackPath.CombineWithFilePath("ckan.log")));
+            jobs.Add(() => context.Repack(context.Paths.UpdaterFile,
+                                          context.Paths.OutDirectory.Combine("CKAN-AutoUpdateHelper")
+                                                                    .Combine(context.BuildConfiguration)
+                                                                    .Combine("bin")
+                                                                    .Combine(context.BuildNetFramework),
+                                          "CKAN-AutoUpdateHelper.exe",
+                                          TargetPlatformVersion.v4,
+                                          repackPath.CombineWithFilePath("AutoUpdater.log")));
+        }
+
+        if (context.BuildsDotNet)
+        {
+            // On Windows this is the .NET 10 build with the GUI, for dark theme
+            jobs.Add(() => context.PublishNative(context.Paths.CmdlineProject, "CKAN-CmdLine",
+                                                 context.NativeCkanFramework, context.Paths.Ckan.NativePath));
+        }
+
+        BuildContext.RunInParallel(jobs);
+
+        foreach (var file in context.Paths.Ckan.AllFor(context.FrameworkKinds))
+        {
+            context.CopyToBuildDirectory(file);
         }
 
         if (context.BuildConfiguration == "Release")
@@ -233,19 +215,33 @@ public sealed class RepackNetkanTask : FrostingTask<BuildContext>
     public override void Run(BuildContext context)
     {
         context.CreateDirectory(context.Paths.RepackDirectory.Combine(context.BuildConfiguration));
-        context.Repack(context.Paths.NetkanFile,
-                       context.Paths.OutDirectory.Combine("CKAN-NetKAN")
-                                                 .Combine(context.BuildConfiguration)
-                                                 .Combine("bin")
-                                                 .Combine(context.BuildNetFramework),
-                       "CKAN-NetKAN.exe",
-                       TargetPlatformVersion.v4,
-                       context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
-                                                    .CombineWithFilePath("netkan.log"));
+        // The repack and publish can run at the same time because they access entirely different builds.
+        var jobs = new List<Action>();
+        if (context.BuildsNetFramework)
+        {
+            jobs.Add(() => context.Repack(context.Paths.Netkan.NetFrameworkPath,
+                                          context.Paths.OutDirectory.Combine("CKAN-NetKAN")
+                                                                    .Combine(context.BuildConfiguration)
+                                                                    .Combine("bin")
+                                                                    .Combine(context.BuildNetFramework),
+                                          "CKAN-NetKAN.exe",
+                                          TargetPlatformVersion.v4,
+                                          context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
+                                                                       .CombineWithFilePath("netkan.log")));
+        }
 
-        var finalExePath = context.Paths.BuildDirectory.CombineWithFilePath(context.Paths.NetkanFile.GetFilename());
-        context.CopyFile(context.Paths.NetkanFile, finalExePath);
-        BuildContext.ChmodExecutable(finalExePath);
+        if (context.BuildsDotNet)
+        {
+            jobs.Add(() => context.PublishNative(context.Paths.NetkanProject, "CKAN-NetKAN",
+                                                 context.BuildDotNet, context.Paths.Netkan.NativePath));
+        }
+
+        BuildContext.RunInParallel(jobs);
+
+        foreach (var file in context.Paths.Netkan.AllFor(context.FrameworkKinds))
+        {
+            context.CopyToBuildDirectory(file);
+        }
     }
 }
 
@@ -259,14 +255,21 @@ public sealed class PrepareSignPathTask : FrostingTask<BuildContext>
         var targetDir = context.Paths.BuildDirectory.Combine("signpath")
             .Combine(context.BuildConfiguration);
         context.CreateDirectory(targetDir);
-        context.CopyFile(context.Paths.CkanFile,    targetDir.CombineWithFilePath(context.Paths.CkanFile.GetFilename()));
-        context.CopyFile(context.Paths.UpdaterFile, targetDir.CombineWithFilePath(context.Paths.UpdaterFile.GetFilename()));
-        context.CopyFile(context.Paths.NupkgFile,   targetDir.CombineWithFilePath(context.Paths.NupkgFile.GetFilename()));
-        if (context.IsRunningOnWindows())
+        var files = new List<FilePath> { context.Paths.NupkgFile };
+        if (context.BuildsNetFramework)
         {
-            context.CopyFile(context.Paths.RepackDirectory.Combine(context.BuildConfiguration)
-                                                          .CombineWithFilePath("ckan-windows.exe"),
-                             targetDir.CombineWithFilePath("ckan-windows.exe"));
+            files.Add(context.Paths.Ckan.NetFrameworkPath);
+            files.Add(context.Paths.UpdaterFile);
+        }
+
+        if (context.BuildsDotNet && context.IsRunningOnWindows())
+        {
+            files.Add(context.Paths.Ckan.NativePath);
+        }
+
+        foreach (var file in files)
+        {
+            context.CopyFile(file, targetDir.CombineWithFilePath(file.GetFilename()));
         }
     }
 }
@@ -300,10 +303,13 @@ public sealed class TestCkanExecutableOnlyTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        var output = context.RunExecutable(context.Paths.CkanFile, "version").FirstOrDefault();
-        if (output != $"v{context.GetVersion()}")
+        foreach (var file in context.Paths.Ckan.AllFor(context.FrameworkKinds))
         {
-            throw new Exception($"ckan.exe smoke test failed: {output}");
+            var output = context.RunExecutable(file, "version").FirstOrDefault();
+            if (output != $"v{context.GetVersion()}")
+            {
+                throw new Exception($"{file.GetFilename()} smoke test failed: {output}");
+            }
         }
     }
 }
@@ -314,10 +320,13 @@ public sealed class TestNetkanExecutableOnlyTask : FrostingTask<BuildContext>
 {
     public override void Run(BuildContext context)
     {
-        var output = context.RunExecutable(context.Paths.NetkanFile, "--version").FirstOrDefault();
-        if (output != $"v{context.GetVersion()}")
+        foreach (var file in context.Paths.Netkan.AllFor(context.FrameworkKinds))
         {
-            throw new Exception($"netkan.exe smoke test failed: {output}");
+            var output = context.RunExecutable(file, "--version").FirstOrDefault();
+            if (output != $"v{context.GetVersion()}")
+            {
+                throw new Exception($"{file.GetFilename()} smoke test failed: {output}");
+            }
         }
     }
 }
@@ -347,101 +356,130 @@ public sealed class TestUnitTestsOnlyTask : FrostingTask<BuildContext>
                                  .Replace("name=", "Name~",
                                           StringComparison.CurrentCultureIgnoreCase);
 
-        // Only Mono's msbuild can handle WinForms on Linux,
-        // but dotnet build can handle multi-targeting on Windows
         var altcoverSettings = new CoverageSettings
         {
             PreparationPhase = new MyPrepareOptions(context),
             CollectionPhase  = new MyCollectOptions(context),
             Options          = new MyTestOptions(),
         };
-        if (context.IsRunningOnWindows())
+        // We don't enable coverage in dotnet test on Non-Windows platforms because it doesn't support running net481.
+        // Instead, test coverage just comes entirely from NUnit in Mono.
+        var dotNetCoverage = withCoverage && context.IsRunningOnWindows();
+
+        // Run each framework's tests at the same time, like a single multi-targeted `dotnet test` would.
+        // Each gets its own coverage output files so they don't overwrite each other.
+        var jobs = new List<Action>();
+        var dotNetFrameworks = new List<string>();
+        foreach (var framework in context.Frameworks)
         {
-            var testSettings = new DotNetTestSettings
+            if (framework == context.BuildNetFramework && !context.IsRunningOnWindows())
             {
-                Configuration    = context.BuildConfiguration,
-                NoRestore        = true,
-                NoBuild          = true,
-                NoLogo           = true,
-                Filter           = dotNetFilter,
-                ResultsDirectory = nunitOutputDirectory,
-                Verbosity        = DotNetVerbosity.Minimal,
-            };
-            if (withCoverage)
-            {
-                testSettings.ArgumentCustomization = altcoverSettings.Concatenate(testSettings.ArgumentCustomization);
+                // dotnet test can't run net481 outside Windows
+                jobs.Add(() => RunNUnitOnMono(context, where, labels, withCoverage,
+                                              nunitOutputDirectory, altcoverSettings));
             }
-            context.DotNetTest(context.Solution, testSettings);
-            if (withCoverage)
+            else
             {
-                // Now combine the target-specific coverage data into one file
-                OpenCover.Merge(new string[]
-                                {
-                                    $"coverage.{context.BuildDotNet}.xml",
-                                    $"coverage.{context.BuildDotNet}-windows.xml",
-                                    $"coverage.{context.BuildNetFramework}.xml",
-                                }.Select(context.Paths.CoverageOutputFile)
-                                 .Select(f => f.FullPath)
-                                 .Select(XDocument.Load))
-                         .Save(context.Paths.CoverageOutputFile("coverage.xml")
-                                            .FullPath);
+                dotNetFrameworks.Add(framework);
+                jobs.Add(() => RunDotNetTest(context, framework, dotNetFilter,
+                                             dotNetCoverage, nunitOutputDirectory));
+            }
+        }
+        BuildContext.RunInParallel(jobs);
+
+        if (dotNetCoverage)
+        {
+            // Now combine the target-specific coverage data into one file
+            OpenCover.Merge(dotNetFrameworks.Select(f => $"coverage.{f}.xml")
+                                            .Select(context.Paths.CoverageOutputFile)
+                                            .Select(f => f.FullPath)
+                                            .Select(XDocument.Load))
+                     .Save(context.Paths.CoverageOutputFile("coverage.xml")
+                                        .FullPath);
+            foreach (var framework in dotNetFrameworks)
+            {
                 // Remove spurious duplicate entries with '\' paths from cobertura.xml
-                var cobertura = XDocument.Load(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
+                var path = context.Paths.CoverageOutputFile($"cobertura.{framework}.xml").FullPath;
+                var cobertura = XDocument.Load(path);
                 cobertura.Descendants().Where(elt => elt.Attribute("filename")
                                                         ?.Value.Contains('\\')
                                                         ?? false)
                                        .Remove();
-                cobertura.Save(context.Paths.CoverageOutputFile("cobertura.xml").FullPath);
+                cobertura.Save(path);
             }
         }
-        else
+    }
+
+    private static void RunDotNetTest(BuildContext  context,
+                                      string        framework,
+                                      string?       filter,
+                                      bool          withCoverage,
+                                      DirectoryPath resultsDirectory)
+    {
+        var testSettings = new DotNetTestSettings
         {
-            var testDir = context.Paths.OutDirectory
-                                       .Combine("CKAN.Tests")
-                                       .Combine(context.BuildConfiguration)
-                                       .Combine("bin")
-                                       .Combine(context.BuildNetFramework);
-            var instrumentedDir = testDir.GetParent()
-                                         .Combine($"{context.BuildNetFramework}__Instrumented");
-            var testFile = instrumentedDir.CombineWithFilePath("CKAN.Tests.dll");
-
-            context.DotNetTest(context.Solution, new DotNetTestSettings
+            Configuration    = context.BuildConfiguration,
+            Framework        = framework,
+            NoRestore        = true,
+            NoBuild          = true,
+            NoLogo           = true,
+            Filter           = filter,
+            ResultsDirectory = resultsDirectory,
+            Verbosity        = DotNetVerbosity.Minimal,
+        };
+        if (withCoverage)
+        {
+            testSettings.ArgumentCustomization = new CoverageSettings
             {
-                Configuration    = "NoGUI",
-                Framework        = context.BuildDotNet,
-                NoRestore        = true,
-                NoBuild          = true,
-                NoLogo           = true,
-                Filter           = dotNetFilter,
-                ResultsDirectory = nunitOutputDirectory,
-                Verbosity        = DotNetVerbosity.Minimal,
-            });
+                PreparationPhase = new MyPrepareOptions(context),
+                CollectionPhase  = new MyCollectOptions(context, framework),
+                Options          = new MyTestOptions(),
+            }.Concatenate(testSettings.ArgumentCustomization);
+        }
+        context.DotNetTest(context.Paths.TestsProject.FullPath, testSettings);
+    }
 
-            if (withCoverage)
-            {
-                // Add coverage instrumentation to our test assemblies
-                context.RunAltCover(altcoverSettings.PreparationPhase
-                                                    .ToArguments(testDir, instrumentedDir));
-            }
+    // Run the net481 tests in the NUnit console runner on Mono
+    private static void RunNUnitOnMono(BuildContext     context,
+                                       string?          where,
+                                       string           labels,
+                                       bool             withCoverage,
+                                       DirectoryPath    nunitOutputDirectory,
+                                       CoverageSettings altcoverSettings)
+    {
+        var testDir = context.Paths.OutDirectory
+                                   .Combine("CKAN.Tests")
+                                   .Combine(context.BuildConfiguration)
+                                   .Combine("bin")
+                                   .Combine(context.BuildNetFramework);
+        var instrumentedDir = testDir.GetParent()
+                                     .Combine($"{context.BuildNetFramework}__Instrumented");
+        // The instrumented copy only exists with coverage on
+        var testFile = (withCoverage ? instrumentedDir : testDir).CombineWithFilePath("CKAN.Tests.dll");
 
-            // Run the tests
-            context.NUnit3(testFile.FullPath, new NUnit3Settings
-            {
-                Configuration = context.BuildConfiguration,
-                Where         = where,
-                Labels        = Enum.Parse<NUnit3Labels>(labels),
-                Work          = nunitOutputDirectory,
-                NoHeader      = true,
-                // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
-                Process       = NUnit3ProcessOption.InProcess,
-            });
+        if (withCoverage)
+        {
+            // Add coverage instrumentation to our test assemblies
+            context.RunAltCover(altcoverSettings.PreparationPhase
+                                                .ToArguments(testDir, instrumentedDir));
+        }
 
-            if (withCoverage)
-            {
-                // Transform the raw coverage data into coverage.xml and print a summary
-                context.RunAltCover(altcoverSettings.CollectionPhase
-                                                    .ToArguments(instrumentedDir));
-            }
+        context.NUnit3(testFile.FullPath, new NUnit3Settings
+        {
+            Configuration = context.BuildConfiguration,
+            Where         = where,
+            Labels        = Enum.Parse<NUnit3Labels>(labels),
+            Work          = nunitOutputDirectory,
+            NoHeader      = true,
+            // Work around System.Runtime.Remoting.RemotingException : Tcp transport error.
+            Process       = NUnit3ProcessOption.InProcess,
+        });
+
+        if (withCoverage)
+        {
+            // Transform the raw coverage data into coverage.xml and print a summary
+            context.RunAltCover(altcoverSettings.CollectionPhase
+                                                .ToArguments(instrumentedDir));
         }
     }
 }
@@ -452,23 +490,27 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
 {
     public override TraceLevel Verbosity => TraceLevel.Info;
 
-    public override IEnumerable<string> AssemblyFilter => [
+    public override IEnumerable<string> AssemblyFilter =>
+    [
         "Microsoft", "NUnit3", "testhost",
         "IndexRange", "OxyPlot", "Humanizer", @"AltCover\.Monitor",
         "CKAN-ConsoleUI", @"CKAN\.Tests",
     ];
 
-    public override IEnumerable<string> TypeFilter => [
+    public override IEnumerable<string> TypeFilter =>
+    [
         "System", "Microsoft",
     ];
 
-    public override IEnumerable<string> PathFilter => [
+    public override IEnumerable<string> PathFilter =>
+    [
         "_build",
         "GUI/Dialogs", "GUI/Controls", "GUI/Main",
         @"GUI\\Dialogs", @"GUI\\Controls", @"GUI\\Main",
     ];
 
-    public override IEnumerable<string> AttributeFilter => [
+    public override IEnumerable<string> AttributeFilter =>
+    [
         "ExcludeFromCodeCoverage",
     ];
 
@@ -482,17 +524,23 @@ public class MyPrepareOptions(BuildContext context) : PrepareOptions
     private readonly BuildContext context = context;
 }
 
-public class MyCollectOptions(BuildContext context) : CollectOptions
+// If framework is set, it is added to the file names (e.g. cobertura.net481.xml),
+// so test runs for different frameworks can write their output at the same time
+public class MyCollectOptions(BuildContext context, string? framework = null) : CollectOptions
 {
     public override TraceLevel Verbosity => TraceLevel.Info;
-    public override string OutputFile    => OutputPath("output.xml");
-    public override string Cobertura     => OutputPath("cobertura.xml");
-    public override string LcovReport    => OutputPath("lcov.info");
+    public override string OutputFile    => OutputPath("output", "xml");
+    public override string Cobertura     => OutputPath("cobertura", "xml");
+    public override string LcovReport    => OutputPath("lcov", "info");
 
-    private string OutputPath(string filename)
-        => context.Paths.CoverageOutputFile(filename).FullPath;
+    private string OutputPath(string name, string extension)
+        => context.Paths.CoverageOutputFile(framework == null
+                                                ? $"{name}.{extension}"
+                                                : $"{name}.{framework}.{extension}")
+                        .FullPath;
 
     private readonly BuildContext context = context;
+    private readonly string? framework = framework;
 }
 
 public class MyTestOptions : TestOptions
@@ -528,7 +576,8 @@ public static class CoverageExtensions
             "--collect",
             .. Verbosity(opts.Verbosity),
             opts.SummaryFormat is { Length: > 0 } sf
-                ? $"--summary={sf}" : "",
+                ? $"--summary={sf}"
+                : "",
             $"-r {dir}",
             $"-l {opts.LcovReport}",
             $"-c {opts.Cobertura}",
