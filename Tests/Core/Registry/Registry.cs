@@ -1028,5 +1028,29 @@ namespace Tests.Core.Registry
                 }
             }
         }
+
+        [Test]
+        public void FixModuleIdentifierCasing()
+        {
+            using var tempRepo = new TemporaryRepository(TestData.kOS_014());
+            using var repoData = new TemporaryRepositoryData(new NullUser(), tempRepo.repo);
+            var reg = new CKAN.Registry(repoData.Manager, tempRepo.repo);
+
+            Assert.AreEqual("kOS", reg.FixModuleIdentifierCasing("kOS"));
+            Assert.AreEqual("kOS", reg.FixModuleIdentifierCasing("kos"));
+            Assert.IsNull(reg.FixModuleIdentifierCasing("__baddata__"));
+        }
+
+        [Test]
+        public void FixModuleIdentifierCasing_NoRepositoryData_ReturnsNull()
+        {
+            var reg = new CKAN.Registry(null,
+                                        new Dictionary<string, InstalledModule>(),
+                                        new Dictionary<string, string>(),
+                                        new Dictionary<string, string>(),
+                                        new SortedDictionary<string, Repository>());
+
+            Assert.IsNull(reg.FixModuleIdentifierCasing("kOS"));
+        }
     }
 }

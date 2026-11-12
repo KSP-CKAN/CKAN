@@ -41,15 +41,22 @@ namespace CKAN.CmdLine
                     // Show the installed module
                     toShow = (instModule, null);
                 }
-                else if (registry.CompatibleModules(instance.StabilityToleranceConfig,
-                                                    instance.VersionCriteria())
-                                 .SingleOrDefault(mod => mod.name       == modName
-                                                      || mod.identifier == modName)
+                else if (Utilities.DefaultIfThrows(() => registry.LatestAvailable(modName,
+                                                                                  instance.StabilityToleranceConfig,
+                                                                                  instance.VersionCriteria()))
                          is CkanModule module)
                 {
-                    // Fall back to exact match in the available modules, if any,
-                    // either by "name" (the user-friendly display name) or by identifier
+                    // Module is not installed, but the user specified the exact identifier of it.
                     toShow = (null, module);
+                }
+                else if (registry.CompatibleModules(instance.StabilityToleranceConfig,
+                                                    instance.VersionCriteria())
+                                 .SingleOrDefault(mod => mod.name == modName)
+                         is CkanModule namedModule)
+                {
+                    // Fall back to exact match of the "name" (the user-friendly display name),
+                    // which requires checking all of the compatible modules
+                    toShow = (null, namedModule);
                 }
                 else
                 {

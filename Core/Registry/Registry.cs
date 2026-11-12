@@ -677,6 +677,29 @@ namespace CKAN
         }
 
         /// <summary>
+        /// Look up the correctly capitalized identifier of an available module.
+        /// </summary>
+        /// <param name="identifier">Identifier to look up, case-insensitive</param>
+        /// <returns>The identifier as it appears in the repositories, or null if no module matches</returns>
+        public string? FixModuleIdentifierCasing(string identifier)
+        {
+            if (repositories == null || repoDataMgr == null)
+            {
+                return null;
+            }
+            // If the name already has the right capitalization, there's no need to go searching to
+            // figure out the right replacement.
+            if (repoDataMgr.GetAvailableModules(repositories.Values, identifier).Any())
+            {
+                return identifier;
+            }
+            return repoDataMgr.GetAllAvailDicts(repositories.Values)
+                              .SelectMany(dict => dict.Keys)
+                              .FirstOrDefault(ident => string.Equals(ident, identifier,
+                                                                     StringComparison.OrdinalIgnoreCase));
+        }
+
+        /// <summary>
         /// <see cref="IRegistryQuerier.LatestAvailable" />
         /// </summary>
         public CkanModule? LatestAvailable(string                           identifier,
