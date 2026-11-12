@@ -693,6 +693,24 @@ namespace Tests.Data
                     }
                 }";
 
+        public static string TestMod => @"{
+                    ""spec_version"": 1,
+                    ""identifier"": ""TestMod"",
+                    ""name"": ""Test Mod"",
+                    ""abstract"": ""A test mod"",
+                    ""version"": ""1.0"",
+                    ""download"": ""https://github.com/""
+                }";
+
+        public static string OtherTestMod => @"{
+                    ""spec_version"": 1,
+                    ""identifier"": ""OtherTestMod"",
+                    ""name"": ""Other Test Mod"",
+                    ""abstract"": ""Another test mod"",
+                    ""version"": ""1.0"",
+                    ""download"": ""https://github.com/""
+                }";
+
         public static CkanModule kOS_014_module()
             => CkanModule.FromJson(kOS_014());
 

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Globalization;
 
@@ -220,6 +221,33 @@ namespace Tests.CmdLine
                     },
                     user.RaisedMessages);
             }
+        }
+
+        [TestCase("TestMod",        "Test Mod: A test mod"),
+         TestCase("Other Test Mod", "Other Test Mod: Another test mod")]
+        public void RunCommand_ExactIdentifierOrName_ShowsWithoutSearching(string modName,
+                                                                           string expectedFirstLine)
+        {
+            // Arrange
+            var user = new CapturingUser(false, _ => true, (_, _) => 1);
+            using var inst     = new DisposableKSP();
+            using var tempRepo = new TemporaryRepository(TestData.TestMod, TestData.OtherTestMod);
+            using var repoData = new TemporaryRepositoryData(new NullUser(), tempRepo.repo);
+            using var regMgr   = RegistryManager.Instance(inst.KSP, repoData.Manager,
+                                                          new [] { tempRepo.repo });
+            ICommand sut  = new Show(repoData.Manager, user);
+            var opts = new ShowOptions
+            {
+                modules = new List<string> { modName },
+            };
+
+            // Act
+            var exitCode = sut.RunCommand(inst.KSP, opts);
+
+            // Assert
+            Assert.AreEqual(Exit.OK, exitCode);
+            CollectionAssert.IsEmpty(user.RaisedErrors);
+            Assert.AreEqual(expectedFirstLine, user.RaisedMessages.First());
         }
     }
 }

@@ -165,20 +165,19 @@ namespace CKAN.CmdLine
         /// <summary>
         /// Find the proper capitalization of an identifier
         /// </summary>
-        /// <param name="mods">List of valid mods from the registry</param>
+        /// <param name="registry">Registry to search for available and installed modules</param>
         /// <param name="module">Identifier to be treated as case insensitive</param>
         /// <returns>
         /// The mod's properly capitalized identifier, or the original string if it doesn't exist
         /// </returns>
-        private static string CaseInsensitiveExactMatch(List<CkanModule> mods, string module)
-        {
-            // Look for a matching mod with a case insensitive search
-            var found = mods.FirstOrDefault(m => string.Equals(m.identifier,
-                                                               module,
-                                                               StringComparison.OrdinalIgnoreCase));
-            // If we don't find anything, use the original string so the main code can raise errors
-            return found?.identifier ?? module;
-        }
+        private static string CaseInsensitiveExactMatch(Registry registry, string module)
+            => registry.FixModuleIdentifierCasing(module)
+               ?? registry.InstalledModules
+                          .Select(im => im.identifier)
+                          .FirstOrDefault(ident => string.Equals(ident, module,
+                                                                 StringComparison.OrdinalIgnoreCase))
+               // If we don't find anything, use the original string so the main code can raise errors
+               ?? module;
 
         /// <summary>
         /// Convert case insensitive mod names from the user to case sensitive identifiers
@@ -187,10 +186,6 @@ namespace CKAN.CmdLine
         /// <param name="modules">List of strings to convert, format 'identifier' or 'identifier=version'</param>
         public static void AdjustModulesCase(CKAN.GameInstance instance, Registry registry, List<string> modules)
         {
-            var stabilityTolerance = instance.StabilityToleranceConfig;
-            // Get the list of all compatible and incompatible mods
-            var mods = registry.CompatibleModules(stabilityTolerance, instance.VersionCriteria()).ToList();
-            mods.AddRange(registry.IncompatibleModules(stabilityTolerance, instance.VersionCriteria()));
             for (int i = 0; i < modules.Count; ++i)
             {
                 Match match = CkanModule.idAndVersionMatcher.Match(modules[i]);
@@ -199,11 +194,11 @@ namespace CKAN.CmdLine
                     // Handle name=version format
                     string ident   = match.Groups["mod"].Value;
                     string version = match.Groups["version"].Value;
-                    modules[i] = $"{CaseInsensitiveExactMatch(mods, ident)}={version}";
+                    modules[i] = $"{CaseInsensitiveExactMatch(registry, ident)}={version}";
                 }
                 else
                 {
-                    modules[i] = CaseInsensitiveExactMatch(mods, modules[i]);
+                    modules[i] = CaseInsensitiveExactMatch(registry, modules[i]);
                 }
             }
         }
