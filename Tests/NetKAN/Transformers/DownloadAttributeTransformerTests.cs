@@ -4,6 +4,7 @@ using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Transformers
@@ -42,7 +43,7 @@ namespace Tests.NetKAN.Transformers
             mFileService.Setup(i => i.GetMimetype(downloadFilePath))
                 .Returns(downloadMimetype);
 
-            var sut = new DownloadAttributeTransformer(mHttp.Object, mFileService.Object);
+            var sut = new DownloadAttributeTransformer(mFileService.Object, new PassThroughCacheService(mHttp.Object));
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -77,7 +78,7 @@ namespace Tests.NetKAN.Transformers
             mHttp.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns((string?)null);
 
-            var sut = new DownloadAttributeTransformer(mHttp.Object, mFileService.Object);
+            var sut = new DownloadAttributeTransformer(mFileService.Object, new PassThroughCacheService(mHttp.Object));
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -100,7 +101,7 @@ namespace Tests.NetKAN.Transformers
             var mHttp = new Mock<IHttpService>();
             var mFileService = new Mock<IFileService>();
 
-            var sut = new DownloadAttributeTransformer(mHttp.Object, mFileService.Object);
+            var sut = new DownloadAttributeTransformer(mFileService.Object, new PassThroughCacheService(mHttp.Object));
 
             var json = new JObject();
             json["spec_version"] = 1;

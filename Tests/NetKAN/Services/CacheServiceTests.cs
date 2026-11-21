@@ -52,11 +52,10 @@ namespace Tests.NetKAN.Services
                                                                            && o.LastModified.Value.Kind == DateTimeKind.Utc)))
                     .Returns(new DownloadResult(null, true, "\"abc\"", lastModified));
                 var sut  = new CacheService(dir.Directory.FullName, http.Object);
-                var opts = new TransformOptions(1, null, null, null, false, null);
                 int runs = 0;
 
                 // Act
-                var first = sut.ExecuteCached(metadata, opts, typeof(CacheServiceTests),
+                var first = sut.ExecuteCached(metadata, typeof(CacheServiceTests),
                                               path =>
                                               {
                                                   ++runs;
@@ -68,7 +67,7 @@ namespace Tests.NetKAN.Services
                 Metadata[] second;
                 using (var collector = new WarningCollector())
                 {
-                    second = sut.ExecuteCached(metadata, opts, typeof(CacheServiceTests),
+                    second = sut.ExecuteCached(metadata, typeof(CacheServiceTests),
                                                path => { ++runs; return Array.Empty<Metadata>(); })
                                 .ToArray();
                     CollectionAssert.AreEqual(new[] { "first warning", "second \"quoted\" warning" },
@@ -100,22 +99,18 @@ namespace Tests.NetKAN.Services
                         ["download"]   = "https://example.com/mod.zip",
                         ["x_test"]     = version,
                     });
-                var opts1 = new TransformOptions(1, null, null, null, false, null);
-                var opts2 = new TransformOptions(2, null, new CKAN.Versioning.ModuleVersion("1.2"), null, false, null);
-
-                foreach (var (md, opts, caller) in new[]
+                foreach (var (md, caller) in new[]
                 {
-                    (Mod("a"), opts1, typeof(CacheServiceTests)),
-                    (Mod("a"), opts1, typeof(CacheServiceTests)),  // same as the first
-                    (Mod("b"), opts1, typeof(CacheServiceTests)),
-                    (Mod("a"), opts2, typeof(CacheServiceTests)),
-                    (Mod("a"), opts1, typeof(string)),
+                    (Mod("a"), typeof(CacheServiceTests)),
+                    (Mod("a"), typeof(CacheServiceTests)),  // same as the first
+                    (Mod("b"), typeof(CacheServiceTests)),
+                    (Mod("a"), typeof(string)),
                 })
                 {
-                    sut.ExecuteCached(md, opts, caller, path => Array.Empty<Metadata>()).ToArray();
+                    sut.ExecuteCached(md, caller, path => Array.Empty<Metadata>()).ToArray();
                 }
 
-                Assert.AreEqual(4, Directory.GetFiles(dir.Directory.FullName).Length);
+                Assert.AreEqual(3, Directory.GetFiles(dir.Directory.FullName).Length);
             }
         }
 

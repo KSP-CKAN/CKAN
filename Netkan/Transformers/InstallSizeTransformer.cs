@@ -6,6 +6,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using CKAN.IO;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Utils;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -13,31 +14,38 @@ namespace CKAN.NetKAN.Transformers
     {
         public string Name => "install_size";
 
-        public InstallSizeTransformer(IHttpService http, IModuleService moduleService)
+        public InstallSizeTransformer(IModuleService moduleService, ICacheService cacheService)
         {
-            _http = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.Download != null)
+            if (metadata.Download == null)
             {
+                return EnumerableHelpers.Once(metadata);
+            }
+
+            return _cacheService.ExecuteCached(metadata, typeof(InstallSizeTransformer), file =>
+            {
+                if (file == null)
+                {
+                    return metadata;
+                }
+
                 var json = metadata.Json();
-                CkanModule mod = CkanModule.FromJson(json.ToString());
-                ZipFile    zip = new ZipFile(_http.DownloadModule(metadata));
+                var mod = CkanModule.FromJson(json.ToString());
+                using var zip = new ZipFile(file);
+
                 json["install_size"] = _moduleService.FileSources(mod, zip)
                                                      .Where(ze => !ModuleInstaller.IsInternalCkan(ze))
                                                      .Sum(ze => ze.Size);
-                yield return new Metadata(json);
-            }
-            else
-            {
-                yield return metadata;
-            }
+                return new Metadata(json);
+            });
         }
 
-        private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
     }
 }

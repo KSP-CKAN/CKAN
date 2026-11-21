@@ -11,6 +11,7 @@ using CKAN.Extensions;
 using CKAN.NetKAN.Extensions;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using CKAN.NetKAN.Utils;
 
 namespace CKAN.NetKAN.Transformers
 {
@@ -22,10 +23,10 @@ namespace CKAN.NetKAN.Transformers
         /// </summary>
         /// <param name="http">HTTP service</param>
         /// <param name="moduleService">Module service</param>
-        public LocalizationsTransformer(IHttpService http, IModuleService moduleService)
+        public LocalizationsTransformer(IModuleService moduleService, ICacheService cacheService)
         {
-            _http          = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
         }
 
         /// <summary>
@@ -46,49 +47,50 @@ namespace CKAN.NetKAN.Transformers
             {
                 log.Debug("Localizations property already set, skipping");
                 // Already set, don't override (skips a bunch of file processing)
+
+                return EnumerableHelpers.Once(metadata);
             }
-            else
+
+            return _cacheService.ExecuteCached(metadata, typeof(LocalizationsTransformer), file =>
             {
                 var mod = CkanModule.FromJson(metadata.AllJson.ToString());
-                using (var zip = new ZipFile(_http.DownloadModule(metadata)))
+                using var zip = new ZipFile(file);
+                
+                log.Debug("Extracting locales");
+                // Extract the locale names from the ZIP's cfg files
+                var locales = _moduleService.GetConfigFiles(mod, zip)
+                    .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
+                    .SelectMany(contents => localizationRegex.Matches(contents)
+                                                                .Cast<Match>()
+                                                                .Select(m => m.Groups["contents"].Value))
+                    .SelectMany(contents => localeRegex.Matches(contents)
+                                                        .Cast<Match>()
+                                                        .Where(m => m.Groups["contents"].Value.Contains("="))
+                                                        .Select(m => m.Groups["locale"].Value))
+                    .Distinct()
+                    .Order()
+                    .Memoize();
+                log.Debug("Locales extracted");
+                
+                if (locales.Any())
                 {
-                    log.Debug("Extracting locales");
-                    // Extract the locale names from the ZIP's cfg files
-                    var locales = _moduleService.GetConfigFiles(mod, zip)
-                        .Select(cfg => new StreamReader(zip.GetInputStream(cfg.source)).ReadToEnd())
-                        .SelectMany(contents => localizationRegex.Matches(contents)
-                                                                 .Cast<Match>()
-                                                                 .Select(m => m.Groups["contents"].Value))
-                        .SelectMany(contents => localeRegex.Matches(contents)
-                                                           .Cast<Match>()
-                                                           .Where(m => m.Groups["contents"].Value.Contains("="))
-                                                           .Select(m => m.Groups["locale"].Value))
-                        .Distinct()
-                        .Order()
-                        .Memoize();
-                    log.Debug("Locales extracted");
-
-                    if (locales.Any())
-                    {
-                        var json = metadata.Json();
-                        json.SafeAdd(localizationsProperty, new JArray(locales));
-                        log.Debug("Localizations property set");
-                        yield return new Metadata(json);
-                        yield break;
-                    }
-                    else
-                    {
-                        log.Debug("No localizations found");
-                    }
+                    var json = metadata.Json();
+                    json.SafeAdd(localizationsProperty, new JArray(locales));
+                    log.Debug("Localizations property set");
+                    return new Metadata(json);
                 }
-            }
-            yield return metadata;
+                else
+                {
+                    log.Debug("No localizations found");
+                    return metadata;
+                }
+            });
         }
 
         private const string localizationsProperty = "localizations";
 
-        private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(LocalizationsTransformer));
 

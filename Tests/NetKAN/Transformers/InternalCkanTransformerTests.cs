@@ -40,7 +40,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(new JObject[] { internalCkan });
 
-            var sut = new InternalCkanTransformer(new PassThroughCacheService(mHttp.Object), mModuleService.Object);
+            var sut = new InternalCkanTransformer(mModuleService.Object, new PassThroughCacheService(mHttp.Object));
 
             var json = new JObject()
             {
@@ -84,7 +84,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(new JObject[] { internalCkan });
 
-            var sut = new InternalCkanTransformer(new PassThroughCacheService(mHttp.Object), mModuleService.Object);
+            var sut = new InternalCkanTransformer(mModuleService.Object, new PassThroughCacheService(mHttp.Object));
 
             var json = new JObject()
             {
@@ -123,7 +123,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(Array.Empty<JObject>());
 
-            var sut = new InternalCkanTransformer(new PassThroughCacheService(mHttp.Object), mModuleService.Object);
+            var sut = new InternalCkanTransformer(mModuleService.Object, new PassThroughCacheService(mHttp.Object));
 
             var json = new JObject()
             {

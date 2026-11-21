@@ -7,6 +7,7 @@ using NUnit.Framework;
 using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.Avc;
 using CKAN.NetKAN.Transformers;
 using CKAN.Versioning;
@@ -38,7 +39,7 @@ namespace Tests.NetKAN.Transformers
                                                        It.IsAny<string>()))
                           .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -81,7 +82,7 @@ namespace Tests.NetKAN.Transformers
                                                        It.IsAny<string>()))
                           .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -237,7 +238,7 @@ namespace Tests.NetKAN.Transformers
                                                        It.IsAny<string>()))
                           .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), null);
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();
@@ -273,7 +274,7 @@ namespace Tests.NetKAN.Transformers
                                                        It.IsAny<string>()))
                           .Returns(avcVersion);
 
-            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            var sut = new AvcTransformer(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), null);
 
             var json = new JObject();
             json["spec_version"] = 1;
@@ -309,7 +310,7 @@ namespace Tests.NetKAN.Transformers
                               version = new ModuleVersion("1.2.3")
                           });
 
-            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, null);
+            ITransformer sut = new AvcTransformer(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), null);
 
             JObject json = new JObject();
             json["spec_version"]                = 1;

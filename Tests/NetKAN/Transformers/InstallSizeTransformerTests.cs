@@ -6,6 +6,7 @@ using Moq;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.Games.KerbalSpaceProgram;
 
@@ -28,7 +29,7 @@ namespace Tests.NetKAN.Transformers
 
             var modSvc = new ModuleService(new KerbalSpaceProgram());
 
-            ITransformer sut = new InstallSizeTransformer(mHttp.Object, modSvc);
+            ITransformer sut = new InstallSizeTransformer(modSvc, new PassThroughCacheService(mHttp.Object));
 
             // Act
             var result = sut.Transform(new Metadata(json), opts).First();

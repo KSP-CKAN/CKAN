@@ -9,6 +9,7 @@ using Moq;
 using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Sources.Github;
 using Tests.Data;
@@ -49,9 +50,9 @@ namespace Tests.NetKAN.Transformers
                           ""version_check"": ""https://modwithswinfo.com/swinfo.json""
                       }", 1));
             var loader   = new SpaceWarpInfoLoader(http.Object, ghApi.Object);
-            var sut      = new SpaceWarpInfoTransformer(http.Object,
-                                                        loader,
-                                                        modSvc.Object);
+            var sut      = new SpaceWarpInfoTransformer(loader,
+                                                        modSvc.Object,
+                                                        new PassThroughCacheService(http.Object));
             var opts     = new TransformOptions(1, null, null, null, false, null);
             var metadata = new Metadata(new JObject()
             {

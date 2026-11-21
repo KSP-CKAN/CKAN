@@ -25,6 +25,7 @@ namespace CKAN.NetKAN.Transformers
 
         private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
         private readonly IGithubApi?    _github;
         private readonly VrefValidator  _vrefValidator;
 
@@ -32,10 +33,12 @@ namespace CKAN.NetKAN.Transformers
 
         public AvcTransformer(IHttpService   http,
                               IModuleService moduleService,
+                              ICacheService  cacheService,
                               IGithubApi?    github)
         {
             _http          = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
             _github        = github;
             _vrefValidator = new VrefValidator(_http, _moduleService);
         }
@@ -44,97 +47,98 @@ namespace CKAN.NetKAN.Transformers
         {
             _vrefValidator.Validate(metadata);
 
-            if (metadata.Vref?.Source == "ksp-avc")
+            if (metadata.Vref?.Source != "ksp-avc")
             {
+                return new Metadata[] { metadata };
+            }
 
-                Log.InfoFormat("Executing internal AVC transformation with {0}", metadata.Vref);
-                Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
+            Log.InfoFormat("Executing internal AVC transformation with {0}", metadata.Vref);
+            Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
 
-                var noVersion = metadata.Version == null;
+            var noVersion = metadata.Version == null;
 
-                var json = metadata.Json();
-                if (noVersion)
+            var json = metadata.Json();
+            if (noVersion)
+            {
+                json["version"] = "0"; // TODO: DBB: Dummy version necessary to the next statement doesn't throw
+            }
+
+            var mod = CkanModule.FromJson(json.ToString());
+
+            if (noVersion)
+            {
+                json.Remove("version");
+            }
+
+            return _cacheService.ExecuteCached(metadata, typeof(AvcTransformer), file =>
+            {
+                if (file == null
+                    || _moduleService.GetInternalAvc(mod, file, metadata.Vref.Id) is not AvcVersion avc)
                 {
-                    json["version"] = "0"; // TODO: DBB: Dummy version necessary to the next statement doesn't throw
+                    return new Metadata(json);
                 }
+            
+                Log.Info("Found internal AVC version file");
 
-                var mod = CkanModule.FromJson(json.ToString());
+                var resourcesJson = (JObject?)json["resources"];
+                var remoteUri = resourcesJson?["remote-avc"] != null
+                    && (string?)resourcesJson["remote-avc"] is string s
+                        ? new Uri(s)
+                        : GetRemoteAvcUri(avc);
 
-                if (noVersion)
+                if (remoteUri != null && avc.version != null)
                 {
-                    json.Remove("version");
-                }
+                    json.SafeMerge("resources",
+                                    new JObject()
+                                    {
+                                        { "remote-avc", remoteUri.OriginalString },
+                                    });
 
-                var file = _http.DownloadModule(metadata);
-                if (file != null
-                    && _moduleService.GetInternalAvc(mod, file, metadata.Vref.Id) is AvcVersion avc)
-                {
-                    Log.Info("Found internal AVC version file");
-
-                    var resourcesJson = (JObject?)json["resources"];
-                    var remoteUri = resourcesJson?["remote-avc"] != null
-                        && (string?)resourcesJson["remote-avc"] is string s
-                            ? new Uri(s)
-                            : GetRemoteAvcUri(avc);
-
-                    if (remoteUri != null && avc.version != null)
+                    try
                     {
-                        json.SafeMerge("resources",
-                                       new JObject()
-                                       {
-                                           { "remote-avc", remoteUri.OriginalString },
-                                       });
-
-                        try
+                        if (BadHosts.Contains(remoteUri.Host))
                         {
-                            if (BadHosts.Contains(remoteUri.Host))
-                            {
-                                Log.WarnFormat("AVC host does not contain version files: {0}",
-                                               remoteUri.Host);
-                            }
-                            else if ((_github?.DownloadText(remoteUri)
-                                      ?? _http.DownloadText(remoteUri))
-                                     is string remoteJson
-                                     && JsonConvert.DeserializeObject<AvcVersion>(remoteJson)
-                                        is AvcVersion remoteAvc
-                                     && avc.version.Equals(remoteAvc.version))
-                            {
-                                // Local AVC and Remote AVC describe the same version, prefer
-                                Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferentially.");
-                                avc = remoteAvc;
-                            }
+                            Log.WarnFormat("AVC host does not contain version files: {0}",
+                                            remoteUri.Host);
                         }
-                        catch (JsonReaderException e)
+                        else if ((_github?.DownloadText(remoteUri)
+                                    ?? _http.DownloadText(remoteUri))
+                                    is string remoteJson
+                                    && JsonConvert.DeserializeObject<AvcVersion>(remoteJson)
+                                    is AvcVersion remoteAvc
+                                    && avc.version.Equals(remoteAvc.version))
                         {
-                            Log.WarnFormat("Error parsing remote version file {0}: {1}",
-                                remoteUri, e.Message);
-                            Log.Debug(e);
-                        }
-                        catch (RequestThrottledKraken)
-                        {
-                            // Treat rate limiting as a real error to avoid temporary metadata degradation
-                            throw;
-                        }
-                        catch (Exception e)
-                        {
-                            Log.WarnFormat("Error fetching remote version file {0}: {1}", remoteUri, e.Message);
-                            Log.Debug(e);
+                            // Local AVC and Remote AVC describe the same version, prefer
+                            Log.Info("Remote AVC version file describes same version as local AVC version file, using it preferentially.");
+                            avc = remoteAvc;
                         }
                     }
-
-                    ApplyVersions(metadata, json, avc);
-
-                    // It's cool if we don't have version info at all, it's optional in the AVC spec.
-
-                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+                    catch (JsonReaderException e)
+                    {
+                        Log.WarnFormat("Error parsing remote version file {0}: {1}",
+                            remoteUri, e.Message);
+                        Log.Debug(e);
+                    }
+                    catch (RequestThrottledKraken)
+                    {
+                        // Treat rate limiting as a real error to avoid temporary metadata degradation
+                        throw;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.WarnFormat("Error fetching remote version file {0}: {1}", remoteUri, e.Message);
+                        Log.Debug(e);
+                    }
                 }
 
-                yield return new Metadata(json);
-            }
-            else
-            {
-                yield return metadata;
-            }
+                ApplyVersions(metadata, json, avc);
+
+                // It's cool if we don't have version info at all, it's optional in the AVC spec.
+
+                Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+
+                return new Metadata(json);
+            });
         }
 
         public static void ApplyVersions(Metadata metadata, JObject json, AvcVersion avc)

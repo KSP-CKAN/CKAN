@@ -11,7 +11,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Utils;
 
 namespace CKAN.NetKAN.Services
@@ -37,27 +36,19 @@ namespace CKAN.NetKAN.Services
         }
 
         public IEnumerable<Metadata> ExecuteCached(Metadata metadata,
-                                                   TransformOptions options,
                                                    Type caller,
                                                    Func<string?, Metadata> action)
         {
             return ExecuteCached(metadata,
-                                 options,
                                  caller,
                                  contents => new Metadata[]{action(contents)});
         }
 
         public IEnumerable<Metadata> ExecuteCached(Metadata metadata,
-                                                   TransformOptions options,
                                                    Type caller,
                                                    Func<string?, IEnumerable<Metadata>> action)
         {
-            if (metadata.Download is null)
-            {
-                throw new InvalidOperationException("Called ExecuteWithModel but metadata does not have a download URL");
-            }
-
-            var key = new CacheKey(metadata, options, caller);
+            var key = new CacheKey(metadata, caller);
             var entry = _overwrite ? null : GetCacheEntry(metadata, key);
             var httpOpts = entry is null
                 ? null
@@ -154,29 +145,22 @@ namespace CKAN.NetKAN.Services
         private readonly struct CacheKey
         {
             public readonly Metadata Metadata;
-            public readonly TransformOptions Options;
             public readonly string Transformer;
 
-            public CacheKey(Metadata metadata,
-                            TransformOptions options,
-                            string transformer)
+            public CacheKey(Metadata metadata, string transformer)
             {
                 Metadata = metadata;
-                Options = options;
                 Transformer = transformer;
             }
 
-            public CacheKey(Metadata metadata,
-                            TransformOptions options,
-                            Type transformer)
-                : this(metadata, options, transformer.FullName!)
+            public CacheKey(Metadata metadata, Type transformer)
+                : this(metadata, transformer.FullName!)
             { }
 
             public string GetSha256Hash()
             {
                 var json = new JArray(CacheVersion,
                                       Metadata.AllJson,
-                                      JToken.FromObject(Options),
                                       Transformer)
                                .ToString(Formatting.None);
                 using var sha = SHA256.Create();

@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using CKAN.NetKAN.Model;
-using CKAN.NetKAN.Transformers;
 
 namespace CKAN.NetKAN.Services
 {
     internal interface ICacheService
     {
         IEnumerable<Metadata> ExecuteCached(Metadata metadata,
-                                            TransformOptions options,
                                             Type caller,
                                             Func<string?, Metadata> action);
 
@@ -19,7 +17,6 @@ namespace CKAN.NetKAN.Services
         /// downloading the file.
         /// </summary>
         IEnumerable<Metadata> ExecuteCached(Metadata metadata,
-                                            TransformOptions options,
                                             Type caller,
                                             Func<string?, IEnumerable<Metadata>> action);
     }

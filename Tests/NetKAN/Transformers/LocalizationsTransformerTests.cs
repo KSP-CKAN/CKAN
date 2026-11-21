@@ -9,6 +9,7 @@ using Moq;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using Tests.Data;
 
@@ -69,7 +70,7 @@ namespace Tests.NetKAN.Transformers
                     .Returns(zipPath);
                 var game    = new KerbalSpaceProgram();
                 var modSvc  = new ModuleService(game);
-                var sut     = new LocalizationsTransformer(http.Object, modSvc);
+                var sut     = new LocalizationsTransformer(modSvc, new PassThroughCacheService(http.Object));
 
                 // Act
                 var result = sut.Transform(new Metadata(jobj), opts)

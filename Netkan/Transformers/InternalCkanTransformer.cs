@@ -18,22 +18,30 @@ namespace CKAN.NetKAN.Transformers
     {
         private static readonly ILog Log = LogManager.GetLogger(typeof(InternalCkanTransformer));
 
-        private readonly IHttpService _http;
+        private readonly ICacheService _cacheService;
         private readonly IModuleService _moduleService;
 
         public string Name => "internal_ckan";
 
-        public InternalCkanTransformer(IHttpService http, IModuleService moduleService)
+        public InternalCkanTransformer(IModuleService moduleService, ICacheService cacheService)
         {
-            _http = http;
             _moduleService = moduleService;
+            _cacheService = cacheService;
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
         {
-            if (metadata.Download != null
-                && _http.DownloadModule(metadata) is string contents)
+            if (metadata.Download == null)
             {
+                return new Metadata[]{ metadata };
+            }
+
+            return _cacheService.ExecuteCached(metadata, typeof(InternalCkanTransformer), contents =>
+            {
+                if (contents is null)
+                {
+                    return metadata;
+                }
 
                 // We run before the AVC transformer, which sets "version" for Jenkins.
                 // Set it to a default if missing so CkanModule can initialize.
@@ -41,35 +49,36 @@ namespace CKAN.NetKAN.Transformers
                 moduleJson.SafeAdd("version", "1");
                 CkanModule mod = CkanModule.FromJson(moduleJson.ToString());
                 if (_moduleService.GetInternalCkans(mod, contents).ToArray()
-                    is { Length: > 0 } internalJsons)
+                    is not { Length: > 0 } internalJsons)
                 {
-                    var json = metadata.Json();
-                    foreach (var internalJson in internalJsons)
-                    {
-                        Log.InfoFormat("Executing internal CKAN transformation with {0}", metadata.Kref);
-                        Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
-
-                        foreach (var property in internalJson.Properties())
-                        {
-                            // We've already got the file, too late to tell us where it lives
-                            if (property.Name == "$kref")
-                            {
-                                Log.DebugFormat("Skipping $kref property: {0}", property.Value);
-                                continue;
-                            }
-                            json.SafeAdd(property.Name, property.Value);
-                        }
-
-                        GameVersion.SetJsonCompatibility(json, null, null, null);
-                        json.SafeMerge("resources", internalJson["resources"]);
-
-                        Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
-                    }
-                    yield return new Metadata(json);
-                    yield break;
+                    return metadata;
                 }
-            }
-            yield return metadata;
+
+                var json = metadata.Json();
+                foreach (var internalJson in internalJsons)
+                {
+                    Log.InfoFormat("Executing internal CKAN transformation with {0}", metadata.Kref);
+                    Log.DebugFormat("Input metadata:{0}{1}", Environment.NewLine, metadata.AllJson);
+
+                    foreach (var property in internalJson.Properties())
+                    {
+                        // We've already got the file, too late to tell us where it lives
+                        if (property.Name == "$kref")
+                        {
+                            Log.DebugFormat("Skipping $kref property: {0}", property.Value);
+                            continue;
+                        }
+                        json.SafeAdd(property.Name, property.Value);
+                    }
+
+                    GameVersion.SetJsonCompatibility(json, null, null, null);
+                    json.SafeMerge("resources", internalJson["resources"]);
+
+                    Log.DebugFormat("Transformed metadata:{0}{1}", Environment.NewLine, json);
+                }
+
+                return new Metadata(json);
+            });
         }
     }
 }

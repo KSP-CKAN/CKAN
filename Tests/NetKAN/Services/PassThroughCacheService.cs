@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Transformers;
 
 namespace Tests.NetKAN.Services
 {
@@ -20,13 +19,11 @@ namespace Tests.NetKAN.Services
         }
 
         public IEnumerable<Metadata> ExecuteCached(Metadata                metadata,
-                                                   TransformOptions        options,
                                                    Type                    caller,
                                                    Func<string?, Metadata> action)
             => new Metadata[] { action(http.DownloadModule(metadata)) };
 
         public IEnumerable<Metadata> ExecuteCached(Metadata                             metadata,
-                                                   TransformOptions                     options,
                                                    Type                                 caller,
                                                    Func<string?, IEnumerable<Metadata>> action)
             => action(http.DownloadModule(metadata));
