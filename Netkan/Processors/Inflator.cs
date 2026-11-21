@@ -36,18 +36,51 @@ namespace CKAN.NetKAN.Processors
         {
         }
 
-        internal Inflator(bool         overwriteCache,
-                          string?      githubToken,
-                          string?      gitlabToken,
-                          string?      userAgent,
-                          bool?        prerelease,
-                          IGame        game,
-                          NetFileCache cache)
+        [ExcludeFromCodeCoverage]
+        private Inflator(bool                                   overwriteCache,
+                         string?                                githubToken,
+                         string?                                gitlabToken,
+                         string?                                userAgent,
+                         bool?                                  prerelease,
+                         IGame                                  game,
+                         (NetFileCache cache, string directory) found)
+            : this(overwriteCache, githubToken, gitlabToken,
+                   userAgent, prerelease, game,
+                   found.cache, found.directory)
+        {
+        }
+
+        internal Inflator(bool          overwriteCache,
+                          string?       githubToken,
+                          string?       gitlabToken,
+                          string?       userAgent,
+                          bool?         prerelease,
+                          IGame         game,
+                          NetFileCache  cache,
+                          string        cacheDir)
             : this(githubToken, gitlabToken,
                    prerelease, game,
                    cache,
                    new CachingHttpService(cache, overwriteCache, userAgent),
+                   cacheDir,
+                   overwriteCache)
+        {
+        }
+
+        private Inflator(string?      githubToken,
+                         string?      gitlabToken,
+                         bool?        prerelease,
+                         IGame        game,
+                         NetFileCache cache,
+                         IHttpService http,
+                         string       cacheDir,
+                         bool         overwriteCache)
+            : this(githubToken, gitlabToken,
+                   prerelease, game,
+                   cache,
+                   http,
                    new ModuleService(game),
+                   new CacheService(cacheDir, http, overwriteCache),
                    new FileService(cache))
         {
         }
@@ -59,6 +92,7 @@ namespace CKAN.NetKAN.Processors
                           NetFileCache   cache,
                           IHttpService   http,
                           IModuleService moduleService,
+                          ICacheService  cacheService,
                           IFileService   fileService)
         {
             log.Debug("Initializing inflator");
@@ -66,7 +100,7 @@ namespace CKAN.NetKAN.Processors
             this.http     = http;
             ckanValidator = new CkanValidator(http, moduleService, game, githubToken);
             transformer   = new NetkanTransformer(http, fileService, moduleService,
-                                                  githubToken, gitlabToken,
+                                                  cacheService, githubToken, gitlabToken,
                                                   prerelease, game, netkanValidator);
         }
 
@@ -150,19 +184,21 @@ namespace CKAN.NetKAN.Processors
         }
 
         [ExcludeFromCodeCoverage]
-        private static NetFileCache FindCache(IConfiguration cfg, string? cacheDir)
+        private static (NetFileCache cache, string directory) FindCache(IConfiguration cfg,
+                                                                        string?        cacheDir)
         {
             if (cacheDir != null)
             {
                 log.InfoFormat("Using user-supplied cache at {0}", cacheDir);
-                return new NetFileCache(cacheDir);
+                return (new NetFileCache(cacheDir), cacheDir);
             }
 
             try
             {
                 log.InfoFormat("Using main CKAN meta-cache at {0}", cfg.DownloadCacheDir);
                 // Create a new file cache in the same location so NetKAN can download pure URLs not sourced from CkanModules
-                return new NetFileCache(cfg.DownloadCacheDir ?? GameInstanceManager.DefaultDownloadCacheDir);
+                var dir = cfg.DownloadCacheDir ?? GameInstanceManager.DefaultDownloadCacheDir;
+                return (new NetFileCache(dir), dir);
             }
             catch
             {
@@ -171,7 +207,7 @@ namespace CKAN.NetKAN.Processors
             var tempdir = Path.GetTempPath();
             log.InfoFormat("Using tempdir for cache: {0}", tempdir);
 
-            return new NetFileCache(tempdir);
+            return (new NetFileCache(tempdir), tempdir);
         }
 
         private static void PurgeDownloads(IHttpService http, NetFileCache cache)

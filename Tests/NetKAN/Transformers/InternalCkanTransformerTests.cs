@@ -9,6 +9,7 @@ using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
+using Tests.NetKAN.Services;
 
 namespace Tests.NetKAN.Transformers
 {
@@ -39,7 +40,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(new JObject[] { internalCkan });
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new InternalCkanTransformer(new PassThroughCacheService(mHttp.Object), mModuleService.Object);
 
             var json = new JObject()
             {
@@ -83,7 +84,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(new JObject[] { internalCkan });
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new InternalCkanTransformer(new PassThroughCacheService(mHttp.Object), mModuleService.Object);
 
             var json = new JObject()
             {
@@ -122,7 +123,7 @@ namespace Tests.NetKAN.Transformers
                     It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(Array.Empty<JObject>());
 
-            var sut = new InternalCkanTransformer(mHttp.Object, mModuleService.Object);
+            var sut = new InternalCkanTransformer(new PassThroughCacheService(mHttp.Object), mModuleService.Object);
 
             var json = new JObject()
             {

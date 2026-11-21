@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.ExceptionServices;
 
 using LazyCache;
 using log4net;
@@ -25,6 +26,10 @@ namespace CKAN.NetKAN.Services
         }
 
         public string? DownloadModule(Metadata metadata)
+            => DownloadModule(metadata, null)?.Path;
+
+        public DownloadResult? DownloadModule(Metadata         metadata,
+                                              DownloadOptions? options)
         {
             if (metadata.Download is not { Count: > 0 })
             {
@@ -34,7 +39,8 @@ namespace CKAN.NetKAN.Services
             {
                 return DownloadPackage(metadata.Download[0],
                                        metadata.Identifier,
-                                       metadata.ReleaseDate);
+                                       metadata.ReleaseDate,
+                                       options);
             }
             catch
             {
@@ -46,18 +52,24 @@ namespace CKAN.NetKAN.Services
                 else
                 {
                     log.InfoFormat("Trying fallback URL: {0}", fallback);
-                    return DownloadPackage(fallback,
-                                           metadata.Identifier,
-                                           metadata.ReleaseDate,
-                                           metadata.Download[0]);
+                    // The validators belong to the primary URL, so don't send them
+                    // to the fallback. Its result has no validators either, so the
+                    // caller won't save the fallback's values for the primary URL.
+                    var result = DownloadPackage(fallback,
+                                                 metadata.Identifier,
+                                                 metadata.ReleaseDate,
+                                                 null,
+                                                 metadata.Download[0]);
+                    return new DownloadResult(result.Path);
                 }
             }
         }
 
-        private string DownloadPackage(Uri       url,
-                                       string    identifier,
-                                       DateTime? updated,
-                                       Uri?      primaryUrl = null)
+        private DownloadResult DownloadPackage(Uri              url,
+                                               string           identifier,
+                                               DateTime?        updated,
+                                               DownloadOptions? options,
+                                               Uri?             primaryUrl = null)
         {
             if (primaryUrl == null)
             {
@@ -74,62 +86,149 @@ namespace CKAN.NetKAN.Services
             _requestedURLs.TryAdd(url, default);
 
             var cachedFile = _cache.GetCachedFilename(primaryUrl, updated);
-
-            if (cachedFile != null && !string.IsNullOrWhiteSpace(cachedFile))
+            if (string.IsNullOrWhiteSpace(cachedFile))
             {
-                return cachedFile;
+                cachedFile = null;
             }
-            else
+
+            // Without options, a cached copy is good enough and we don't ask the server
+            if (options == null && cachedFile != null)
             {
-                var downloadedFile = Net.Download(url, out _, _userAgent,
-                                                  _cache.GetInProgressFileName(url,
-                                                                               $"netkan-{identifier}")
-                                                        .FullName);
+                return new DownloadResult(cachedFile);
+            }
 
-                string extension;
+            // Each URL is asked about at most once per run (unless a later caller
+            // needs the file and we only learned it hadn't changed). The lock stops
+            // parallel netkan sections from querying the same URL at the same time.
+            var run = _runResults.GetOrAdd(url, _ => new RunResult());
+            lock (run)
+            {
+                run.Failure?.Throw();
 
-                switch (FileIdentifier.IdentifyFile(downloadedFile))
+                if (run.Queried)
                 {
-                    case FileType.ASCII:
-                        extension = "txt";
-                        break;
-                    case FileType.GZip:
-                        extension = "gz";
-                        break;
-                    case FileType.Tar:
-                        extension = "tar";
-                        break;
-                    case FileType.TarGz:
-                        extension = "tar.gz";
-                        break;
-                    case FileType.Zip:
-                        if (!NetModuleCache.ZipValid(downloadedFile, out string? invalidReason, null))
-                        {
-                            log.Debug($"{url} is not a valid ZIP file: {invalidReason}");
-                            File.Delete(downloadedFile);
-                            throw new Kraken($"{url} is not a valid ZIP file: {invalidReason}");
-                        }
-                        extension = "zip";
-                        break;
-                    default:
-                        extension = "ckan-package";
-                        break;
+                    if (options != null && ValidatorsMatch(options, run))
+                    {
+                        return new DownloadResult(run.Path ?? cachedFile, true,
+                                                  run.ETag, run.LastModified);
+                    }
+                    if (run.Path != null && File.Exists(run.Path))
+                    {
+                        // Downloaded earlier in this run, so it's current
+                        return new DownloadResult(run.Path, false,
+                                                  run.ETag, run.LastModified);
+                    }
+                    // Only a 304 so far, and this caller needs the file; ask again
                 }
-
-                var destName = $"netkan-{identifier}.{extension}";
 
                 try
                 {
-                    return _cache.Store(primaryUrl, downloadedFile,
-                                        destName, move: true);
+                    var inProgressFile = _cache.GetInProgressFileName(url, $"netkan-{identifier}")
+                                               .FullName;
+                    var response = DownloadService.Download(url, inProgressFile,
+                                                       _userAgent ?? Net.UserAgentString,
+                                                       options);
+                    run.Queried      = true;
+                    run.ETag         = response.ETag;
+                    run.LastModified = response.LastModified;
+                    if (response.NotModified)
+                    {
+                        // The caller knows the file hasn't changed. Give them our copy if we
+                        // have one, but they may not need it.
+                        return new DownloadResult(cachedFile, true,
+                                                  response.ETag, response.LastModified);
+                    }
+
+                    run.Path = StoreDownload(inProgressFile, url, primaryUrl, identifier);
+                    return new DownloadResult(run.Path, false,
+                                              response.ETag, response.LastModified);
                 }
-                catch (IOException exc)
+                catch (Exception exc)
                 {
-                    // If cache is full, don't also fill /tmp
-                    log.Debug($"Failed to store to cache: {exc.Message}");
-                    File.Delete(downloadedFile);
+                    // Later callers get the same error (and go to their fallback URL)
+                    // instead of trying the server again
+                    run.Failure = ExceptionDispatchInfo.Capture(exc);
                     throw;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Would the server have answered 304 to these options, given what it sent
+        /// us earlier in this run? Same rules as the server: If-None-Match wins over
+        /// If-Modified-Since, and ETags are compared weakly.
+        /// </summary>
+        private static bool ValidatorsMatch(DownloadOptions options, RunResult run)
+            => options.ETag != null
+                   ? run.ETag != null && StripWeak(options.ETag) == StripWeak(run.ETag)
+                   : options.LastModified is DateTime since
+                     && run.LastModified is DateTime lastModified
+                     && lastModified <= since.ToUniversalTime();
+
+        private static string StripWeak(string etag)
+            => etag.StartsWith("W/", StringComparison.Ordinal) ? etag[2..] : etag;
+
+        /// <summary>
+        /// What we learned about one URL in the current run
+        /// </summary>
+        private sealed class RunResult
+        {
+            public bool                   Queried;
+            public string?                ETag;
+            public DateTime?              LastModified;
+            // Set only if we downloaded the file in this run
+            public string?                Path;
+            public ExceptionDispatchInfo? Failure;
+        }
+
+        private string StoreDownload(string downloadedFile,
+                                     Uri    url,
+                                     Uri    primaryUrl,
+                                     string identifier)
+        {
+            string extension;
+
+            switch (FileIdentifier.IdentifyFile(downloadedFile))
+            {
+                case FileType.ASCII:
+                    extension = "txt";
+                    break;
+                case FileType.GZip:
+                    extension = "gz";
+                    break;
+                case FileType.Tar:
+                    extension = "tar";
+                    break;
+                case FileType.TarGz:
+                    extension = "tar.gz";
+                    break;
+                case FileType.Zip:
+                    if (!NetModuleCache.ZipValid(downloadedFile, out string? invalidReason, null))
+                    {
+                        log.Debug($"{url} is not a valid ZIP file: {invalidReason}");
+                        File.Delete(downloadedFile);
+                        throw new Kraken($"{url} is not a valid ZIP file: {invalidReason}");
+                    }
+                    extension = "zip";
+                    break;
+                default:
+                    extension = "ckan-package";
+                    break;
+            }
+
+            var destName = $"netkan-{identifier}.{extension}";
+
+            try
+            {
+                return _cache.Store(primaryUrl, downloadedFile,
+                                    destName, move: true);
+            }
+            catch (IOException exc)
+            {
+                // If cache is full, don't also fill /tmp
+                log.Debug($"Failed to store to cache: {exc.Message}");
+                File.Delete(downloadedFile);
+                throw;
             }
         }
 
@@ -146,7 +245,10 @@ namespace CKAN.NetKAN.Services
         public IEnumerable<Uri> RequestedURLs => _requestedURLs.Keys;
         public void ClearRequestedURLs()
         {
+            // A new run starts; servers may have changed since the last one, and
+            // the last run's downloads may have been purged from the cache
             _requestedURLs.Clear();
+            _runResults.Clear();
         }
 
         public Uri? ResolveRedirect(Uri url)
@@ -159,6 +261,7 @@ namespace CKAN.NetKAN.Services
         private readonly string?                         _userAgent;
         // Microsoft declined to implement ConcurrentHashSet in favor of this
         private readonly ConcurrentDictionary<Uri, byte> _requestedURLs  = new ConcurrentDictionary<Uri, byte>();
+        private readonly ConcurrentDictionary<Uri, RunResult> _runResults = new ConcurrentDictionary<Uri, RunResult>();
         private readonly bool                            _overwriteCache = false;
         private readonly IAppCache                       _stringCache    = new CachingService();
 

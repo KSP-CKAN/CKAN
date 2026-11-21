@@ -12,6 +12,7 @@ using CKAN.NetKAN.Processors;
 using CKAN.NetKAN.Services;
 using CKAN.NetKAN.Transformers;
 using Tests.Data;
+using Tests.NetKAN.Services;
 
 namespace Tests.NetKAN.Processors
 {
@@ -30,7 +31,8 @@ namespace Tests.NetKAN.Processors
                 var modSvc   = new ModuleService(game);
                 var fileSvc  = new FileService(cache);
                 var sut      = new Inflator(null, null, null,
-                                            game, cache, http.Object, modSvc, fileSvc);
+                                            game, cache, http.Object, modSvc,
+                                            new PassThroughCacheService(http.Object), fileSvc);
                 var filename = TestData.TestNetkanPath();
                 var netkans  = YamlExtensions.Parse(TestData.TestNetkanContents())
                                              .Select(yaml => new Metadata(yaml))
@@ -96,7 +98,8 @@ namespace Tests.NetKAN.Processors
                 var modSvc  = new ModuleService(game);
                 var fileSvc = new FileService(cache);
                 var sut     = new Inflator(null, null, null,
-                                           game, cache, http.Object, modSvc, fileSvc);
+                                           game, cache, http.Object, modSvc,
+                                            new PassThroughCacheService(http.Object), fileSvc);
                 var ckans   = YamlExtensions.Parse(TestData.DogeCoinPlugin())
                                             .Select(yaml => new Metadata(yaml))
                                             .ToArray();
