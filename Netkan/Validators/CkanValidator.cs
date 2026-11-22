@@ -32,7 +32,7 @@ namespace CKAN.NetKAN.Validators
                 new MatchesKnownGameVersionsValidator(game),
                 new ObeysCKANSchemaValidator(),
                 new KindValidator(),
-                new HarmonyValidator(downloader, moduleService, game),
+                new HarmonyValidator(moduleService, cacheService, game),
                 new ModuleManagerDependsValidator(moduleService, cacheService),
                 new PluginsValidator(moduleService, cacheService, game),
                 new CraftsInShipsValidator(moduleService, cacheService),

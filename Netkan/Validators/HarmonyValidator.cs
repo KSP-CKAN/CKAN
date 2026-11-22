@@ -13,10 +13,11 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class HarmonyValidator : IValidator
     {
-        public HarmonyValidator(IHttpService http, IModuleService moduleService, IGame game)
+        public HarmonyValidator(IModuleService moduleService, ICacheService cacheService,
+                                IGame game)
         {
-            _http          = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
             _game          = game;
         }
 
@@ -26,10 +27,14 @@ namespace CKAN.NetKAN.Validators
             CkanModule mod  = CkanModule.FromJson(json.ToString());
             // The Harmony2 module is allowed to install a Harmony DLL;
             // anybody else must have "provides":["Harmony1"] to do so
-            if (_game.ShortName == "KSP" && !mod.IsDLC && mod.identifier != "Harmony2")
+            if (_game.ShortName != "KSP" || mod.IsDLC || mod.identifier == "Harmony2")
             {
-                // Need to peek at the mod's files
-                var package = _http.DownloadModule(metadata);
+                return;
+            }
+
+            // Need to peek at the mod's files
+            _cacheService.ExecuteCached(metadata, typeof(HarmonyValidator), package =>
+            {
                 if (!string.IsNullOrEmpty(package))
                 {
                     ZipFile zip = new ZipFile(package);
@@ -51,11 +56,11 @@ namespace CKAN.NetKAN.Validators
                         Log.Warn("Harmony1 provided by module that doesn't install a Harmony DLL, consider removing from provides list");
                     }
                 }
-            }
+            });
         }
 
-        private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
         private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(HarmonyValidator));
