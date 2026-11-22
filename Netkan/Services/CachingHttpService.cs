@@ -52,9 +52,8 @@ namespace CKAN.NetKAN.Services
                 else
                 {
                     log.InfoFormat("Trying fallback URL: {0}", fallback);
-                    // The validators belong to the primary URL, so don't send them
-                    // to the fallback. Its result has no validators either, so the
-                    // caller won't save the fallback's values for the primary URL.
+                    // Avoid passing on download options, they are for the
+                    // primary URL and don't necessarily apply here.
                     var result = DownloadPackage(fallback,
                                                  metadata.Identifier,
                                                  metadata.ReleaseDate,
@@ -97,9 +96,8 @@ namespace CKAN.NetKAN.Services
                 return new DownloadResult(cachedFile);
             }
 
-            // Each URL is asked about at most once per run (unless a later caller
-            // needs the file and we only learned it hadn't changed). The lock stops
-            // parallel netkan sections from querying the same URL at the same time.
+            // Keep a cache so we don't make repeated conditional requests for every
+            // cache use.
             var run = _runResults.GetOrAdd(url, _ => new RunResult());
             lock (run)
             {
@@ -245,8 +243,6 @@ namespace CKAN.NetKAN.Services
         public IEnumerable<Uri> RequestedURLs => _requestedURLs.Keys;
         public void ClearRequestedURLs()
         {
-            // A new run starts; servers may have changed since the last one, and
-            // the last run's downloads may have been purged from the cache
             _requestedURLs.Clear();
             _runResults.Clear();
         }

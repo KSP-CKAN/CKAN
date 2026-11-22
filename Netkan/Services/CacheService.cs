@@ -26,12 +26,10 @@ namespace CKAN.NetKAN.Services
         private readonly IHttpService _http;
         private readonly bool _overwrite;
 
-        /// <param name="overwrite">Ignore saved entries (but still save new ones),
-        /// same as the download cache's overwrite flag</param>
         public CacheService(string cacheDir, IHttpService http, bool overwrite = false)
         {
-            _cacheDir = cacheDir;
-            _http = http;
+            _cacheDir  = cacheDir;
+            _http      = http;
             _overwrite = overwrite;
         }
 
@@ -140,14 +138,12 @@ namespace CKAN.NetKAN.Services
         private string CachePath<T>(Metadata metadata, CacheKey key)
             => Path.Combine(_cacheDir, $"netkan-{key.GetSha256Hash(typeof(T))}-{metadata.Identifier}.json");
 
-        /// <summary>
-        /// Parse without turning date-like strings into DateTime tokens, so the
-        /// metadata comes back exactly as it was saved
-        /// </summary>
-        private static JObject ParseJson(string json)
+          private static JObject ParseJson(string json)
         {
             using var reader = new JsonTextReader(new StringReader(json))
             {
+                // We want the metadata to come back exactly as saved so avoid
+                // doing any processing on date parsing.
                 DateParseHandling = DateParseHandling.None,
             };
             return JObject.Load(reader);
