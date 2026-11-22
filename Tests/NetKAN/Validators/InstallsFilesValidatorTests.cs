@@ -5,6 +5,7 @@ using NUnit.Framework;
 using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Validators;
 using CKAN.Games.KerbalSpaceProgram;
 using Tests.Data;
@@ -34,7 +35,7 @@ namespace Tests.NetKAN.Validators
                 { "download",     "https://www.awesome-mod.example/AwesomeMod.zip" },
             };
 
-            var sut = new InstallsFilesValidator(mHttp.Object, mModuleService.Object,
+            var sut = new InstallsFilesValidator(mModuleService.Object, new PassThroughCacheService(mHttp.Object),
                                                  new KerbalSpaceProgram());
 
             // Act
@@ -66,7 +67,7 @@ namespace Tests.NetKAN.Validators
                 { "download",     "https://www.awesome-mod.example/AwesomeMod.zip" },
             };
 
-            var sut = new InstallsFilesValidator(mHttp.Object, mModuleService.Object,
+            var sut = new InstallsFilesValidator(mModuleService.Object, new PassThroughCacheService(mHttp.Object),
                                                  new KerbalSpaceProgram());
 
             // Act
@@ -86,7 +87,7 @@ namespace Tests.NetKAN.Validators
             http.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(TestData.DogeCoinFlagZip());
             var modSvc = new ModuleService(game);
-            var sut    = new InstallsFilesValidator(http.Object, modSvc, game);
+            var sut    = new InstallsFilesValidator(modSvc, new PassThroughCacheService(http.Object), game);
             var jobj   = new JObject()
             {
                 { "identifier", "DumbCoinFlag" },
@@ -125,7 +126,7 @@ namespace Tests.NetKAN.Validators
             http.Setup(i => i.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(TestData.DogeCoinFlagZip());
             var modSvc = new ModuleService(game);
-            var sut    = new InstallsFilesValidator(http.Object, modSvc, game);
+            var sut    = new InstallsFilesValidator(modSvc, new PassThroughCacheService(http.Object), game);
             var jobj   = new JObject()
             {
                 { "identifier", "DumbCoinFlag" },

@@ -9,6 +9,7 @@ using CKAN.Games.KerbalSpaceProgram2;
 using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using Tests.Data;
 
 namespace Tests.NetKAN.Validators
@@ -44,7 +45,7 @@ namespace Tests.NetKAN.Validators
             http.Setup(h => h.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(zip);
             var modSvc   = new ModuleService(new KerbalSpaceProgram());
-            var sut      = new VrefValidator(http.Object, modSvc);
+            var sut      = new VrefValidator(modSvc, new PassThroughCacheService(http.Object));
 
             using (var appender = new TemporaryWarningCapturer(nameof(VrefValidator)))
             {
@@ -97,7 +98,7 @@ namespace Tests.NetKAN.Validators
             http.Setup(h => h.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(zip);
             var modSvc   = new ModuleService(new KerbalSpaceProgram2());
-            var sut      = new VrefValidator(http.Object, modSvc);
+            var sut      = new VrefValidator(modSvc, new PassThroughCacheService(http.Object));
 
             using (var appender = new TemporaryWarningCapturer(nameof(VrefValidator)))
             {

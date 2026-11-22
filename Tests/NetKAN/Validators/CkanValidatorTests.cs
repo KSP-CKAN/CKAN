@@ -5,6 +5,7 @@ using NUnit.Framework;
 using CKAN;
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Validators;
 using CKAN.Games.KerbalSpaceProgram;
 
@@ -40,7 +41,7 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram(), null);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), new KerbalSpaceProgram(), null);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act
@@ -65,7 +66,7 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram(), null);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), new KerbalSpaceProgram(), null);
             var json = (JObject)ValidCkan.DeepClone();
             json.Remove(propertyName);
 
@@ -88,7 +89,7 @@ namespace Tests.NetKAN.Validators
             mModuleService.Setup(i => i.HasInstallableFiles(It.IsAny<CkanModule>(), It.IsAny<string>()))
                 .Returns(true);
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram(), null);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), new KerbalSpaceProgram(), null);
             var json = new JObject();
             json["spec_version"] = 1;
             json["identifier"] = "AmazingMod";
@@ -118,7 +119,7 @@ namespace Tests.NetKAN.Validators
             netkan["spec_version"] = 1;
             netkan["identifier"] = "AwesomeMod";
 
-            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new KerbalSpaceProgram(), null);
+            var sut = new CkanValidator(mHttp.Object, mModuleService.Object, new PassThroughCacheService(mHttp.Object), new KerbalSpaceProgram(), null);
             var json = (JObject)ValidCkan.DeepClone();
 
             // Act

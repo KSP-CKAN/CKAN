@@ -11,20 +11,48 @@ using log4net.Repository.Hierarchy;
 namespace CKAN.NetKAN.Utils
 {
     /// <summary>
-    /// Collects the warnings logged by the current thread (or async flow)
-    /// while the collector is open:
+    /// A message logged at Info level or above
+    /// </summary>
+    internal sealed class LogMessage
+    {
+        public LogMessage(string level, string logger, string message)
+        {
+            Level   = level;
+            Logger  = logger;
+            Message = message;
+        }
+
+        public string Level   { get; }
+        public string Logger  { get; }
+        public string Message { get; }
+
+        /// <summary>
+        /// Log this message again, from its original logger and at its original level
+        /// </summary>
+        public void Replay(Type callerStackBoundary)
+        {
+            var level = LogManager.GetRepository().LevelMap[Level] ?? log4net.Core.Level.Info;
+            LogManager.GetLogger(Logger)
+                      .Logger
+                      .Log(callerStackBoundary, level, Message, null);
+        }
+    }
+
+    /// <summary>
+    /// Collects the messages at Info level or above logged by the current
+    /// thread (or async flow) while the collector is open:
     ///
     /// <code>
-    /// using (var collector = new WarningCollector())
+    /// using (var collector = new LogCollector())
     /// {
     ///     ...
-    ///     var warnings = collector.Warnings;
+    ///     var messages = collector.Messages;
     /// }
     /// </code>
     /// </summary>
-    internal sealed class WarningCollector : IDisposable
+    internal sealed class LogCollector : IDisposable
     {
-        public WarningCollector()
+        public LogCollector()
         {
             EnsureAppenderAttached();
             parent        = current.Value;
@@ -32,15 +60,15 @@ namespace CKAN.NetKAN.Utils
         }
 
         /// <summary>
-        /// Snapshot of the warnings collected so far, in the order they were logged
+        /// Snapshot of the messages collected so far, in the order they were logged
         /// </summary>
-        public List<string> Warnings
+        public List<LogMessage> Messages
         {
             get
             {
-                lock (warnings)
+                lock (messages)
                 {
-                    return warnings.ToList();
+                    return messages.ToList();
                 }
             }
         }
@@ -70,11 +98,11 @@ namespace CKAN.NetKAN.Utils
             current.Value = entry;
         }
 
-        private void Add(string message)
+        private void Add(LogMessage message)
         {
-            lock (warnings)
+            lock (messages)
             {
-                warnings.Add(message);
+                messages.Add(message);
             }
         }
 
@@ -104,11 +132,14 @@ namespace CKAN.NetKAN.Utils
 
             protected override void Append(LoggingEvent evt)
             {
-                if (evt.Level != Level.Warn || evt.RenderedMessage is not string message)
+                if (evt.Level is not Level level
+                    || level < Level.Info
+                    || evt.RenderedMessage is not string text)
                 {
                     return;
                 }
 
+                var message = new LogMessage(level.Name, evt.LoggerName ?? "", text);
                 for (var collector = current.Value; collector != null; collector = collector.parent)
                 {
                     if (collector.disposed)
@@ -121,14 +152,14 @@ namespace CKAN.NetKAN.Utils
             }
         }
 
-        private readonly List<string>      warnings = new List<string>();
-        private readonly WarningCollector? parent;
-        private volatile bool              disposed;
+        private readonly List<LogMessage> messages = new List<LogMessage>();
+        private readonly LogCollector?    parent;
+        private volatile bool             disposed;
 
-        private const string AppenderName = "WarningCollector";
+        private const string AppenderName = "LogCollector";
 
-        private static readonly AsyncLocal<WarningCollector?> current    = new AsyncLocal<WarningCollector?>();
-        private static readonly CollectorAppender             appender   = new CollectorAppender();
-        private static readonly object                        attachLock = new object();
+        private static readonly AsyncLocal<LogCollector?> current    = new AsyncLocal<LogCollector?>();
+        private static readonly CollectorAppender         appender   = new CollectorAppender();
+        private static readonly object                    attachLock = new object();
     }
 }

@@ -5,6 +5,7 @@ using Moq;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.NetKAN.Validators;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using Tests.Data;
 
@@ -30,7 +31,7 @@ namespace Tests.NetKAN.Validators
             var http   = new Mock<IHttpService>();
             http.Setup(h => h.DownloadModule(It.IsAny<Metadata>()))
                 .Returns(TestData.DogeCoinPluginZip());
-            var sut    = new PluginsValidator(http.Object, modSvc, game);
+            var sut    = new PluginsValidator(modSvc, new PassThroughCacheService(http.Object), game);
             using (var appender = new TemporaryWarningCapturer(nameof(PluginsValidator)))
             {
                 // Act

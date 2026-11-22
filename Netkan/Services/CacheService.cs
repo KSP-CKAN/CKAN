@@ -79,25 +79,25 @@ namespace CKAN.NetKAN.Services
 
             if (entry is not null && response.NotModified)
             {
-                log.Debug($"Using cache entry for {metadata.Identifier}");
-                foreach (var warning in entry.Warnings)
+                log.Info($"Using cache entry for {metadata.Identifier}");
+                foreach (var message in entry.Log)
                 {
-                    log.Warn(warning);
+                    message.Replay(typeof(CacheService));
                 }
 
                 return entry.Item;
             }
 
-            T            item;
-            List<string> warnings;
+            T                item;
+            List<LogMessage> messages;
 
-            using (var collector = new WarningCollector())
+            using (var collector = new LogCollector())
             {
                 item     = action(response.Path);
-                warnings = collector.Warnings;
+                messages = collector.Messages;
             }
 
-            SaveCacheEntry(metadata, path, new CacheEntry<T>(item, warnings)
+            SaveCacheEntry(metadata, path, new CacheEntry<T>(item, messages)
             {
                 ETag         = response.ETag,
                 LastModified = response.LastModified,
@@ -189,15 +189,15 @@ namespace CKAN.NetKAN.Services
 
         private sealed class CacheEntry<T>
         {
-            public string?      ETag;
-            public DateTime?    LastModified;
-            public T            Item;
-            public List<string> Warnings;
+            public string?          ETag;
+            public DateTime?        LastModified;
+            public T                Item;
+            public List<LogMessage> Log;
 
-            public CacheEntry(T item, List<string> warnings)
+            public CacheEntry(T item, List<LogMessage> log)
             {
-                Item     = item;
-                Warnings = warnings;
+                Item = item;
+                Log  = log;
             }
 
             public JObject ToJson()
@@ -208,14 +208,12 @@ namespace CKAN.NetKAN.Services
                                                         .ToString("o", CultureInfo.InvariantCulture),
                        ["item"]          = Item is null ? JValue.CreateNull()
                                                         : JToken.FromObject(Item, serializer),
-                       ["warnings"]      = new JArray(Warnings),
+                       ["log"]           = JToken.FromObject(Log, serializer),
                    };
 
             public static CacheEntry<T> FromJson(JObject json)
                 => new CacheEntry<T>(json["item"]!.ToObject<T>(serializer)!,
-                                     json["warnings"]!.Values<string>()
-                                                      .OfType<string>()
-                                                      .ToList())
+                                     json["log"]!.ToObject<List<LogMessage>>(serializer)!)
                    {
                        ETag         = (string?)json["etag"],
                        LastModified = (string?)json["last_modified"] is string lm

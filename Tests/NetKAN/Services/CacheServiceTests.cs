@@ -4,6 +4,8 @@ using System.Linq;
 
 using log4net;
 using log4net.Config;
+using log4net.Repository.Hierarchy;
+using log4net.Core;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -23,6 +25,30 @@ namespace Tests.NetKAN.Services
         {
             BasicConfigurator.Configure(LogManager.GetRepository());
         }
+
+        // The tests' log4net.xml drops everything below WARN
+        [SetUp]
+        public void LowerLogLevel()
+        {
+            if (LogManager.GetRepository() is Hierarchy hierarchy)
+            {
+                previousLevel        = hierarchy.Root.Level;
+                hierarchy.Root.Level  = Level.All;
+                hierarchy.RaiseConfigurationChanged(EventArgs.Empty);
+            }
+        }
+
+        [TearDown]
+        public void RestoreLogLevel()
+        {
+            if (LogManager.GetRepository() is Hierarchy hierarchy)
+            {
+                hierarchy.Root.Level = previousLevel;
+                hierarchy.RaiseConfigurationChanged(EventArgs.Empty);
+            }
+        }
+
+        private Level? previousLevel;
 
         [Test]
         public void ExecuteCached_SecondRunNotModified_ReturnsSavedEntryWithoutRunningAction()
@@ -58,19 +84,28 @@ namespace Tests.NetKAN.Services
                                               path =>
                                               {
                                                   ++runs;
-                                                  log.Warn("first warning");
-                                                  log.Warn("second \"quoted\" warning");
+                                                  log.Debug("not saved");
+                                                  log.Info("some info");
+                                                  log.Warn("a \"quoted\" warning");
+                                                  log.Error("an error");
                                                   return new[] { new Metadata(output) };
                                               })
                                .ToArray();
                 Metadata[] second;
-                using (var collector = new WarningCollector())
+                using (var collector = new LogCollector())
                 {
                     second = sut.ExecuteCached(metadata, typeof(CacheServiceTests),
                                                path => { ++runs; return Array.Empty<Metadata>(); })
                                 .ToArray();
-                    CollectionAssert.AreEqual(new[] { "first warning", "second \"quoted\" warning" },
-                                              collector.Warnings);
+                    CollectionAssert.AreEqual(
+                        new[]
+                        {
+                            ("INFO",  typeof(CacheService).FullName,      "Using cache entry for Mod"),
+                            ("INFO",  typeof(CacheServiceTests).FullName, "some info"),
+                            ("WARN",  typeof(CacheServiceTests).FullName, "a \"quoted\" warning"),
+                            ("ERROR", typeof(CacheServiceTests).FullName, "an error"),
+                        },
+                        collector.Messages.Select(m => (m.Level, m.Logger, m.Message)));
                 }
 
                 // Assert

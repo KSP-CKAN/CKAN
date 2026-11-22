@@ -10,6 +10,7 @@ using CKAN.NetKAN.Validators;
 using CKAN.Games.KerbalSpaceProgram;
 using CKAN.NetKAN.Sources.Github;
 using CKAN.NetKAN.Services;
+using Tests.NetKAN.Services;
 using CKAN.NetKAN.Model;
 using Tests.Data;
 
@@ -47,9 +48,9 @@ namespace Tests.NetKAN.Validators
                       }", 1));
             var game = new KerbalSpaceProgram();
             var loader = new SpaceWarpInfoLoader(http.Object, github.Object);
-            var sut  = new SpaceWarpInfoValidator(http.Object,
-                                                  loader,
-                                                  modSvc.Object);
+            var sut  = new SpaceWarpInfoValidator(loader,
+                                                  modSvc.Object,
+                                                  new PassThroughCacheService(http.Object));
             var metadata = new Metadata(new JObject()
             {
                 { "identifier", "TestMod"                     },
