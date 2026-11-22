@@ -10,10 +10,10 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class PluginsValidator : IValidator
     {
-        public PluginsValidator(IHttpService http, IModuleService moduleService, IGame game)
+        public PluginsValidator(IModuleService moduleService, ICacheService cacheService, IGame game)
         {
-            _http          = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
             _game          = game;
         }
 
@@ -23,49 +23,55 @@ namespace CKAN.NetKAN.Validators
 
             var json = metadata.AllJson;
             var mod  = CkanModule.FromJson(json.ToString());
-            if (!mod.IsDLC)
+            if (mod.IsDLC)
             {
-                var package = _http.DownloadModule(metadata);
-                if (!string.IsNullOrEmpty(package))
+                return;
+            }
+
+            _cacheService.ExecuteCached(metadata, typeof(PluginsValidator), package =>
+            {
+                if (string.IsNullOrEmpty(package))
                 {
-                    var zip  = new ZipFile(package);
+                    return;
+                }
 
-                    if (_moduleService.GetPlugins(mod, zip)
-                                      .Select(f => f.destination)
-                                      .Order()
-                                      .ToArray()
-                        is { Length: > 0 } plugins)
+                using var zip = new ZipFile(package);
+
+                if (_moduleService.GetPlugins(mod, zip)
+                                    .Select(f => f.destination)
+                                    .Order()
+                                    .ToArray()
+                    is { Length: > 0 } plugins)
+                {
+                    if (plugins.Select(pl => GameInstance.DllPathToIdentifier(_game, pl))
+                                .OfType<string>()
+                                .Where(ident => ident is { Length: > 0 }
+                                                && !identifiersToIgnore.Contains(ident))
+                                .ToHashSet()
+                        is { Count: > 0 } dllIdentifiers
+                        && !dllIdentifiers.Contains(metadata.Identifier))
                     {
-                        if (plugins.Select(pl => GameInstance.DllPathToIdentifier(_game, pl))
-                                   .OfType<string>()
-                                   .Where(ident => ident is { Length: > 0 }
-                                                   && !identifiersToIgnore.Contains(ident))
-                                   .ToHashSet()
-                            is { Count: > 0 } dllIdentifiers
-                            && !dllIdentifiers.Contains(metadata.Identifier))
-                        {
-                            Log.WarnFormat("No plugin matching the identifier, manual installations won't be detected: {0}",
-                                           string.Join(", ", plugins));
-                        }
-
-                        bool boundedCompatibility = json.ContainsKey("ksp_version")
-                                                    || json.ContainsKey("ksp_version_max");
-                        if (!boundedCompatibility)
-                        {
-                            Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");
-                        }
+                        Log.WarnFormat("No plugin matching the identifier, manual installations won't be detected: {0}",
+                                        string.Join(", ", plugins));
                     }
-                    else if (_moduleService.GetSourceCode(mod, zip)
-                                           .Select(f => f.destination)
-                                           .Order()
-                                           .ToArray()
-                             is { Length: > 0 } sourceCode)
+
+                    bool boundedCompatibility = json.ContainsKey("ksp_version")
+                                                || json.ContainsKey("ksp_version_max");
+                    if (!boundedCompatibility)
                     {
-                        Log.WarnFormat("Found C# source code without DLL, mod may not have been compiled: {0}",
-                                       string.Join(", ", sourceCode));
+                        Log.Warn("Unbounded future compatibility for module with a plugin, consider setting $vref or ksp_version or ksp_version_max");
                     }
                 }
-            }
+                else if (_moduleService.GetSourceCode(mod, zip)
+                                        .Select(f => f.destination)
+                                        .Order()
+                                        .ToArray()
+                            is { Length: > 0 } sourceCode)
+                {
+                    Log.WarnFormat("Found C# source code without DLL, mod may not have been compiled: {0}",
+                                    string.Join(", ", sourceCode));
+                }
+            });
         }
 
         /// <summary>
@@ -79,8 +85,8 @@ namespace CKAN.NetKAN.Validators
             "MiniAVC"
         };
 
-        private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
         private readonly IGame          _game;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(PluginsValidator));

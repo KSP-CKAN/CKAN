@@ -34,7 +34,7 @@ namespace CKAN.NetKAN.Validators
                 new KindValidator(),
                 new HarmonyValidator(downloader, moduleService, game),
                 new ModuleManagerDependsValidator(moduleService, cacheService),
-                new PluginsValidator(downloader, moduleService, game),
+                new PluginsValidator(moduleService, cacheService, game),
                 new CraftsInShipsValidator(downloader, moduleService),
                 new SpaceWarpInfoValidator(downloader, swLoader, moduleService),
             };
