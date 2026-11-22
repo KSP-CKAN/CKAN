@@ -98,7 +98,8 @@ namespace CKAN.NetKAN.Processors
             log.Debug("Initializing inflator");
             this.cache    = cache;
             this.http     = http;
-            ckanValidator = new CkanValidator(http, moduleService, game, githubToken);
+            ckanValidator = new CkanValidator(http, moduleService, cacheService, game,
+                                              githubToken);
             transformer   = new NetkanTransformer(http, fileService, moduleService,
                                                   cacheService, githubToken, gitlabToken,
                                                   prerelease, game, netkanValidator);

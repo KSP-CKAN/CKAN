@@ -13,6 +13,7 @@ namespace CKAN.NetKAN.Validators
 
         public CkanValidator(IHttpService   downloader,
                              IModuleService moduleService,
+                             ICacheService  cacheService,
                              IGame          game,
                              string?        githubToken)        {
             var ghApi = new GithubApi(downloader, githubToken);
@@ -32,7 +33,7 @@ namespace CKAN.NetKAN.Validators
                 new ObeysCKANSchemaValidator(),
                 new KindValidator(),
                 new HarmonyValidator(downloader, moduleService, game),
-                new ModuleManagerDependsValidator(downloader, moduleService),
+                new ModuleManagerDependsValidator(moduleService, cacheService),
                 new PluginsValidator(downloader, moduleService, game),
                 new CraftsInShipsValidator(downloader, moduleService),
                 new SpaceWarpInfoValidator(downloader, swLoader, moduleService),
