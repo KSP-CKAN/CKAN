@@ -10,7 +10,6 @@ using NUnit.Framework;
 
 using CKAN.NetKAN.Model;
 using CKAN.NetKAN.Services;
-using CKAN.NetKAN.Transformers;
 using CKAN.NetKAN.Utils;
 using Tests.Data;
 
@@ -112,6 +111,79 @@ namespace Tests.NetKAN.Services
 
                 Assert.AreEqual(3, Directory.GetFiles(dir.Directory.FullName).Length);
             }
+        }
+
+        [Test]
+        public void ExecuteCached_OtherType_RoundTrips()
+        {
+            using (var dir = new TemporaryDirectory())
+            {
+                // Arrange
+                var metadata = new Metadata(new JObject
+                {
+                    ["identifier"] = "Mod",
+                    ["download"]   = "https://example.com/mod.zip",
+                });
+                var http = new Mock<IHttpService>();
+                http.Setup(h => h.DownloadModule(It.IsAny<Metadata>(), null))
+                    .Returns(new DownloadResult("file.zip", false, "\"abc\"", null));
+                http.Setup(h => h.DownloadModule(It.IsAny<Metadata>(), It.IsNotNull<DownloadOptions>()))
+                    .Returns(new DownloadResult(null, true, "\"abc\"", null));
+                var sut   = new CacheService(dir.Directory.FullName, http.Object);
+                var inner = new JObject
+                {
+                    ["identifier"] = "Mod",
+                    ["x_extra"]    = "not a typed field",
+                };
+                int runs = 0;
+
+                // Act
+                sut.ExecuteCached(metadata, typeof(CacheServiceTests),
+                                  path => { ++runs; return new CachedThing(42, new Metadata(inner)); });
+                var second = sut.ExecuteCached(metadata, typeof(CacheServiceTests),
+                                               path => { ++runs; return new CachedThing(0, null); });
+
+                // Assert
+                Assert.AreEqual(1, runs);
+                Assert.AreEqual(42, second.Number);
+                Assert.IsNotNull(second.Module);
+                Assert.IsTrue(JToken.DeepEquals(inner, second.Module!.AllJson),
+                              second.Module.AllJson.ToString());
+            }
+        }
+
+        [Test]
+        public void ExecuteCached_DifferentResultTypes_UseDifferentEntries()
+        {
+            using (var dir = new TemporaryDirectory())
+            {
+                var metadata = new Metadata(new JObject
+                {
+                    ["identifier"] = "Mod",
+                    ["download"]   = "https://example.com/mod.zip",
+                });
+                var http = new Mock<IHttpService>();
+                http.Setup(h => h.DownloadModule(It.IsAny<Metadata>(), It.IsAny<DownloadOptions?>()))
+                    .Returns(new DownloadResult("file.zip", false, "\"abc\"", null));
+                var sut = new CacheService(dir.Directory.FullName, http.Object);
+
+                sut.ExecuteCached(metadata, typeof(CacheServiceTests), path => 1);
+                sut.ExecuteCached(metadata, typeof(CacheServiceTests), path => "one");
+
+                Assert.AreEqual(2, Directory.GetFiles(dir.Directory.FullName).Length);
+            }
+        }
+
+        internal sealed class CachedThing
+        {
+            public CachedThing(int number, Metadata? module)
+            {
+                Number = number;
+                Module = module;
+            }
+
+            public int       Number { get; }
+            public Metadata? Module { get; }
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(CacheServiceTests));

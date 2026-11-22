@@ -28,6 +28,11 @@ namespace Tests.NetKAN.Services
                                                    Func<string?, IEnumerable<Metadata>> action)
             => action(http.DownloadModule(metadata));
 
+        public T ExecuteCached<T>(Metadata         metadata,
+                                  Type             caller,
+                                  Func<string?, T> action)
+            => action(http.DownloadModule(metadata));
+
         private readonly IHttpService http;
     }
 }

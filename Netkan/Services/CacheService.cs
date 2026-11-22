@@ -38,18 +38,24 @@ namespace CKAN.NetKAN.Services
         public IEnumerable<Metadata> ExecuteCached(Metadata metadata,
                                                    Type caller,
                                                    Func<string?, Metadata> action)
-        {
-            return ExecuteCached(metadata,
-                                 caller,
-                                 contents => new Metadata[]{action(contents)});
-        }
+            => new Metadata[] { ExecuteCached<Metadata>(metadata, caller, action) };
 
         public IEnumerable<Metadata> ExecuteCached(Metadata metadata,
                                                    Type caller,
                                                    Func<string?, IEnumerable<Metadata>> action)
+            => ExecuteCached(metadata, caller, contents => action(contents).ToList());
+
+        public T ExecuteCached<T>(Metadata metadata,
+                                  Type caller,
+                                  Func<string?, T> action)
         {
-            var key = new CacheKey(metadata, caller);
-            var entry = _overwrite ? null : GetCacheEntry(metadata, key);
+            if (metadata.Download is null)
+            {
+                return action(null);
+            }
+
+            var path  = CachePath<T>(metadata, new CacheKey(metadata, caller));
+            var entry = _overwrite ? null : GetCacheEntry<T>(path);
             var httpOpts = entry is null
                 ? null
                 : new DownloadOptions(entry.ETag, entry.LastModified);
@@ -68,36 +74,32 @@ namespace CKAN.NetKAN.Services
                     log.Warn(warning);
                 }
 
-                return entry.Metadata;
+                return entry.Item;
             }
 
-            List<Metadata> items;
-            List<string>   warnings;
+            T            item;
+            List<string> warnings;
 
             using (var collector = new WarningCollector())
             {
-                items = action(response.Path).ToList();
+                item     = action(response.Path);
                 warnings = collector.Warnings;
             }
 
-            entry = new CacheEntry(items, warnings)
+            SaveCacheEntry(metadata, path, new CacheEntry<T>(item, warnings)
             {
-                ETag = response.ETag,
-                LastModified = response.LastModified
-            };
+                ETag         = response.ETag,
+                LastModified = response.LastModified,
+            });
 
-            SaveCacheEntry(metadata, key, entry);
-
-            return items;
+            return item;
         }
 
-        private CacheEntry? GetCacheEntry(Metadata metadata, CacheKey key)
+        private static CacheEntry<T>? GetCacheEntry<T>(string path)
         {
-            var path = CachePath(metadata, key);
-
             try
             {
-                return CacheEntry.FromJson(ParseJson(File.ReadAllText(path)));
+                return CacheEntry<T>.FromJson(ParseJson(File.ReadAllText(path)));
             }
             catch (FileNotFoundException) {}
             catch (Exception e)
@@ -109,10 +111,8 @@ namespace CKAN.NetKAN.Services
             return null;
         }
 
-        private void SaveCacheEntry(Metadata metadata, CacheKey key, CacheEntry entry)
+        private void SaveCacheEntry<T>(Metadata metadata, string path, CacheEntry<T> entry)
         {
-            var path = CachePath(metadata, key);
-
             try
             {
                 Directory.CreateDirectory(_cacheDir);
@@ -126,8 +126,8 @@ namespace CKAN.NetKAN.Services
             }
         }
 
-        private string CachePath(Metadata metadata, CacheKey key)
-            => Path.Combine(_cacheDir, $"netkan-{key.GetSha256Hash()}-{metadata.Identifier}.json");
+        private string CachePath<T>(Metadata metadata, CacheKey key)
+            => Path.Combine(_cacheDir, $"netkan-{key.GetSha256Hash(typeof(T))}-{metadata.Identifier}.json");
 
         /// <summary>
         /// Parse without turning date-like strings into DateTime tokens, so the
@@ -157,9 +157,10 @@ namespace CKAN.NetKAN.Services
                 : this(metadata, transformer.FullName!)
             { }
 
-            public string GetSha256Hash()
+            public string GetSha256Hash(Type value)
             {
                 var json = new JArray(CacheVersion,
+                                      value.FullName!,
                                       Metadata.AllJson,
                                       Transformer)
                                .ToString(Formatting.None);
@@ -175,16 +176,16 @@ namespace CKAN.NetKAN.Services
             }
         }
 
-        private sealed class CacheEntry
+        private sealed class CacheEntry<T>
         {
-            public string? ETag;
-            public DateTime? LastModified;
-            public List<Metadata> Metadata;
+            public string?      ETag;
+            public DateTime?    LastModified;
+            public T            Item;
             public List<string> Warnings;
 
-            public CacheEntry(List<Metadata> metadata, List<string> warnings)
+            public CacheEntry(T item, List<string> warnings)
             {
-                Metadata = metadata;
+                Item     = item;
                 Warnings = warnings;
             }
 
@@ -194,17 +195,16 @@ namespace CKAN.NetKAN.Services
                        ["etag"]          = ETag,
                        ["last_modified"] = LastModified?.ToUniversalTime()
                                                         .ToString("o", CultureInfo.InvariantCulture),
-                       ["metadata"]      = new JArray(Metadata.Select(m => m.AllJson)),
+                       ["item"]          = Item is null ? JValue.CreateNull()
+                                                        : JToken.FromObject(Item, serializer),
                        ["warnings"]      = new JArray(Warnings),
                    };
 
-            public static CacheEntry FromJson(JObject json)
-                => new CacheEntry(json["metadata"]!.Children<JObject>()
-                                                   .Select(j => new Metadata(j))
-                                                   .ToList(),
-                                  json["warnings"]!.Values<string>()
-                                                   .OfType<string>()
-                                                   .ToList())
+            public static CacheEntry<T> FromJson(JObject json)
+                => new CacheEntry<T>(json["item"]!.ToObject<T>(serializer)!,
+                                     json["warnings"]!.Values<string>()
+                                                      .OfType<string>()
+                                                      .ToList())
                    {
                        ETag         = (string?)json["etag"],
                        LastModified = (string?)json["last_modified"] is string lm
@@ -212,6 +212,39 @@ namespace CKAN.NetKAN.Services
                                                            DateTimeStyles.RoundtripKind)
                                           : null,
                    };
+        }
+
+        private static readonly JsonSerializer serializer = JsonSerializer.Create(new JsonSerializerSettings
+        {
+            DateParseHandling = DateParseHandling.None,
+            Converters        = { new MetadataConverter() },
+        });
+
+        /// <summary>
+        /// Metadata only serializes its typed fields, so store the full JSON instead
+        /// </summary>
+        private sealed class MetadataConverter : JsonConverter<Metadata>
+        {
+            public override void WriteJson(JsonWriter writer, Metadata? value, JsonSerializer serializer)
+            {
+                if (value is null)
+                {
+                    writer.WriteNull();
+                }
+                else
+                {
+                    value.AllJson.WriteTo(writer);
+                }
+            }
+
+            public override Metadata? ReadJson(JsonReader     reader,
+                                               Type           objectType,
+                                               Metadata?      existingValue,
+                                               bool           hasExistingValue,
+                                               JsonSerializer serializer)
+                => reader.TokenType == JsonToken.Null
+                       ? null
+                       : new Metadata(JObject.Load(reader));
         }
     }
 }
