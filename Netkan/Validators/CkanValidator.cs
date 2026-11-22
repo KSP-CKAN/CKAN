@@ -28,7 +28,7 @@ namespace CKAN.NetKAN.Validators
                 new VersionStrictValidator(),
                 new ReplacedByValidator(),
                 new InstallValidator(),
-                new InstallsFilesValidator(downloader, moduleService, game),
+                new InstallsFilesValidator(moduleService, cacheService, game),
                 new MatchesKnownGameVersionsValidator(game),
                 new ObeysCKANSchemaValidator(),
                 new KindValidator(),

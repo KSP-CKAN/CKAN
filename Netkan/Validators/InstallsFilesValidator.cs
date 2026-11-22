@@ -12,22 +12,34 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class InstallsFilesValidator : IValidator
     {
-        private readonly IHttpService _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
         private readonly IGame _game;
 
-        public InstallsFilesValidator(IHttpService http, IModuleService moduleService, IGame game)
+        public InstallsFilesValidator(IModuleService moduleService,
+                                      ICacheService cacheService,
+                                      IGame game)
         {
-            _http = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
             _game = game;
         }
 
         public void Validate(Metadata metadata)
         {
             var mod = CkanModule.FromJson(metadata.AllJson.ToString());
-            if (!mod.IsDLC && _http.DownloadModule(metadata) is string file)
+            if (mod.IsDLC)
             {
+                return;
+            }
+
+            _cacheService.ExecuteCached(metadata, typeof(InstallsFilesValidator), file =>
+            {
+                if (file is null)
+                {
+                    return;
+                }
+
                 // Make sure this would actually generate an install.
                 if (!_moduleService.HasInstallableFiles(mod, file))
                 {
@@ -80,7 +92,7 @@ namespace CKAN.NetKAN.Validators
                                        string.Join(", ", unmatchedIncludeOnlys));
                     }
                 }
-            }
+            });
         }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(InstallsFilesValidator));
