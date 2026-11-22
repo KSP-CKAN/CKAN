@@ -10,10 +10,10 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class CraftsInShipsValidator : IValidator
     {
-        public CraftsInShipsValidator(IHttpService http, IModuleService moduleService)
+        public CraftsInShipsValidator(IModuleService moduleService, ICacheService cacheService)
         {
-            _http          = http;
             _moduleService = moduleService;
+            _cacheService  = cacheService;
         }
 
         public void Validate(Metadata metadata)
@@ -22,24 +22,30 @@ namespace CKAN.NetKAN.Validators
 
             JObject    json = metadata.AllJson;
             CkanModule mod  = CkanModule.FromJson(json.ToString());
-            if (!mod.IsDLC)
+            if (mod.IsDLC)
             {
-                var package = _http.DownloadModule(metadata);
-                if (!string.IsNullOrEmpty(package))
-                {
-                    var zip       = new ZipFile(package);
-                    var badCrafts = _moduleService.GetCrafts(mod, zip)
-                        .Where(f => !AllowedCraftPath(f.destination))
-                        .ToList();
-
-                    if (badCrafts.Count != 0)
-                    {
-                        Log.WarnFormat(
-                            "Craft files installed outside Ships folder: {0}",
-                            string.Join(", ", badCrafts.Select(f => f.destination).Order()));
-                    }
-                }
+                return;
             }
+
+            _cacheService.ExecuteCached(metadata, typeof(CraftsInShipsValidator), package =>
+            {
+                if (string.IsNullOrEmpty(package))
+                {
+                    return;
+                }
+
+                using var zip = new ZipFile(package);
+                var badCrafts = _moduleService.GetCrafts(mod, zip)
+                    .Where(f => !AllowedCraftPath(f.destination))
+                    .ToList();
+
+                if (badCrafts.Count != 0)
+                {
+                    Log.WarnFormat(
+                        "Craft files installed outside Ships folder: {0}",
+                        string.Join(", ", badCrafts.Select(f => f.destination).Order()));
+                }
+            });
         }
 
         private static bool AllowedCraftPath(string path)
@@ -47,8 +53,8 @@ namespace CKAN.NetKAN.Validators
                || path.StartsWith("Missions/")
                || path.StartsWith("GameData/ContractPacks/");
 
-        private readonly IHttpService   _http;
         private readonly IModuleService _moduleService;
+        private readonly ICacheService  _cacheService;
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(CraftsInShipsValidator));
     }
