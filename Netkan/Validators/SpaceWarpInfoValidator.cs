@@ -12,26 +12,36 @@ namespace CKAN.NetKAN.Validators
 {
     internal sealed class SpaceWarpInfoValidator : IValidator
     {
-        public SpaceWarpInfoValidator(IHttpService         httpSvc,
-                                      ISpaceWarpInfoLoader loader,
-                                      IModuleService       modSvc)
+        public SpaceWarpInfoValidator(ISpaceWarpInfoLoader loader,
+                                      IModuleService       modSvc,
+                                      ICacheService        cacheSvc)
         {
-            this.httpSvc = httpSvc;
-            this.loader  = loader;
-            this.modSvc  = modSvc;
+            this.loader   = loader;
+            this.modSvc   = modSvc;
+            this.cacheSvc = cacheSvc;
         }
 
         public void Validate(Metadata metadata)
         {
             var moduleJson = metadata.AllJson;
             var mod = CkanModule.FromJson(moduleJson.ToString());
-            if (httpSvc.DownloadModule(metadata) is string file
-                && new ZipFile(file) is ZipFile zip
-                && modSvc.GetInternalSpaceWarpInfos(mod, zip, null)
+
+            cacheSvc.ExecuteCached(metadata, typeof(SpaceWarpInfoValidator), file =>
+            {
+                if (file is null)
+                {
+                    return;
+                }
+
+                using var zip = new ZipFile(file);
+                if (modSvc.GetInternalSpaceWarpInfos(mod, zip, null)
                          .Select(loader.Load)
                          .FirstOrDefault()
-                   is SpaceWarpInfo swinfo)
-            {
+                   is not SpaceWarpInfo swinfo)
+                {
+                    return;
+                }
+
                 var moduleDeps = (mod.depends?.OfType<ModuleRelationshipDescriptor>()
                                               .Select(r => r.name)
                                   ?? Enumerable.Empty<string>())
@@ -52,12 +62,12 @@ namespace CKAN.NetKAN.Validators
                     log.WarnFormat("Dependencies from swinfo.json missing from module: {0}",
                                    string.Join(", ", missingDeps));
                 }
-            }
+            });
         }
 
-        private readonly IHttpService         httpSvc;
         private readonly ISpaceWarpInfoLoader loader;
         private readonly IModuleService       modSvc;
+        private readonly ICacheService        cacheSvc;
 
         private static readonly ILog log = LogManager.GetLogger(typeof(SpaceWarpInfoValidator));
     }
