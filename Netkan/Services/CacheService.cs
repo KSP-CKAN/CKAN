@@ -45,6 +45,17 @@ namespace CKAN.NetKAN.Services
                                                    Func<string?, IEnumerable<Metadata>> action)
             => ExecuteCached(metadata, caller, contents => action(contents).ToList());
 
+        public void ExecuteCached(Metadata metadata,
+                                  Type caller,
+                                  Action<string?> action)
+        {
+            ExecuteCached<byte>(metadata, caller, contents =>
+            {
+                action(contents);
+                return 0;
+            });
+        }
+
         public T ExecuteCached<T>(Metadata metadata,
                                   Type caller,
                                   Func<string?, T> action)

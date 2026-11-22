@@ -20,11 +20,8 @@ namespace CKAN.NetKAN.Services
                                             Type caller,
                                             Func<string?, IEnumerable<Metadata>> action);
 
-        /// <summary>
-        /// Same as above, for any result that Newtonsoft.Json can round-trip
-        /// </summary>
-        T ExecuteCached<T>(Metadata metadata,
-                           Type caller,
-                           Func<string?, T> action);
+        T ExecuteCached<T>(Metadata metadata, Type caller, Func<string?, T> action);
+
+        void ExecuteCached(Metadata metadata, Type caller, Action<string?> action);
     }
 }

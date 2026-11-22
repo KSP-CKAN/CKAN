@@ -40,7 +40,7 @@ namespace CKAN.NetKAN.Transformers
             _moduleService = moduleService;
             _cacheService  = cacheService;
             _github        = github;
-            _vrefValidator = new VrefValidator(_http, _moduleService);
+            _vrefValidator = new VrefValidator(_moduleService, _cacheService);
         }
 
         public IEnumerable<Metadata> Transform(Metadata metadata, TransformOptions opts)
